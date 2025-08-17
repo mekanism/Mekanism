@@ -914,6 +914,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         add(MekanismLang.INVALID_PACKET, "Invalid packet data received: %1$s");
         add(MekanismLang.ALPHA_WARNING, "Warning: " + modName + " is currently in alpha, and is not recommended for widespread use in modpacks. There are likely to be game breaking bugs, and various other issues that you can read more about %1$s.");
         add(MekanismLang.ALPHA_WARNING_HERE, "here");
+        add(MekanismLang.RECIPE_WARNING, "Broken tags in Mekanism recipes detected, please check server logs for details. You will be missing some recipes and machines may not accept expected inputs.");
         //Equipment
         add(MekanismLang.HEAD, "Head");
         add(MekanismLang.BODY, "Body");
@@ -1466,7 +1467,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         //Teleporter
         add(MekanismLang.TELEPORTER_READY, "Ready");
         add(MekanismLang.TELEPORTER_NO_FRAME, "No frame");
-        add(MekanismLang.TELEPORTER_NO_LINK, "No link");
+        add(MekanismLang.TELEPORTER_NO_DESTINATION, "No destination");
         add(MekanismLang.TELEPORTER_NEEDS_ENERGY, "Needs energy");
         //Matrix
         add(MekanismLang.MATRIX, "Induction Matrix");

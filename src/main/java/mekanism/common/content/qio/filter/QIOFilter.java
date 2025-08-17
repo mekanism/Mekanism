@@ -20,7 +20,7 @@ public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFi
 
     //Note: This method exists so that if we add any qio filter specific stuff, we can easily add support for it here
     protected static <FILTER extends QIOFilter<FILTER>> StreamCodec<ByteBuf, FILTER> baseQIOStreamCodec(Supplier<FILTER> constructor) {
-        return BaseFilter.baseStreamCodec(constructor);
+        return baseStreamCodec(constructor);
     }
 
     protected QIOFilter() {

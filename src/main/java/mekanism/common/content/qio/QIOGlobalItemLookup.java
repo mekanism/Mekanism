@@ -140,9 +140,9 @@ public class QIOGlobalItemLookup {
                     //TODO: Eventually we may want to keep the NBT so that if the mod gets added back it exists again
                     SerializedHashedItem item = new SerializedHashedItem(stack);
                     try {
-                        QIOGlobalItemLookup.INSTANCE.itemCache.put(uuid, item);
+                        INSTANCE.itemCache.put(uuid, item);
                     } catch (IllegalArgumentException e) {
-                        UUID winningId = QIOGlobalItemLookup.INSTANCE.itemCache.inverse().get(item);
+                        UUID winningId = INSTANCE.itemCache.inverse().get(item);
                         if (winningId == null) {
                             Mekanism.logger.error("Failed to resolve conflict for UUID ({}) for item {} with components: {}. Skipping", uuid, stack.getItem(),
                                   stack.getComponentsPatch());
@@ -150,10 +150,10 @@ public class QIOGlobalItemLookup {
                             Mekanism.logger.warn("Adding alias between UUID ({}) to ({}) for item {} with components: {}", uuid, winningId, stack.getItem(),
                                   stack.getComponentsPatch());
                             //Try to add it as an alias
-                            if (QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
-                                QIOGlobalItemLookup.INSTANCE.mergedIds = new HashMap<>();
+                            if (INSTANCE.mergedIds.isEmpty()) {
+                                INSTANCE.mergedIds = new HashMap<>();
                             }
-                            QIOGlobalItemLookup.INSTANCE.mergedIds.put(uuid, winningId);
+                            INSTANCE.mergedIds.put(uuid, winningId);
                         }
                     }
                 }
@@ -161,15 +161,15 @@ public class QIOGlobalItemLookup {
         }
 
         private void loadAliases(CompoundTag tag) {
-            if (!tag.isEmpty() && QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
-                QIOGlobalItemLookup.INSTANCE.mergedIds = new HashMap<>();
+            if (!tag.isEmpty() && INSTANCE.mergedIds.isEmpty()) {
+                INSTANCE.mergedIds = new HashMap<>();
             }
             for (String key : tag.getAllKeys()) {
                 try {
                     //Note: Either of these might throw an IllegalArgumentException
                     UUID uuid = UUID.fromString(key);
                     UUID winningId = tag.getUUID(key);
-                    QIOGlobalItemLookup.INSTANCE.mergedIds.put(uuid, winningId);
+                    INSTANCE.mergedIds.put(uuid, winningId);
                 } catch (IllegalArgumentException e) {
                     Mekanism.logger.warn("Invalid alias UUID ({}) or winningId UUID stored in {} saved data.", key, DATA_HANDLER_NAME);
                 }
@@ -179,17 +179,17 @@ public class QIOGlobalItemLookup {
         @NotNull
         @Override
         public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            if (!QIOGlobalItemLookup.INSTANCE.mergedIds.isEmpty()) {
+            if (!INSTANCE.mergedIds.isEmpty()) {
                 //Ensure we persist and aliases, as we don't want someone losing data if their chunks weren't loaded
                 CompoundTag aliases = new CompoundTag();
-                for (Map.Entry<UUID, UUID> entry : QIOGlobalItemLookup.INSTANCE.mergedIds.entrySet()) {
+                for (Map.Entry<UUID, UUID> entry : INSTANCE.mergedIds.entrySet()) {
                     aliases.putUUID(entry.getKey().toString(), entry.getValue());
                 }
                 nbt.put(SerializationConstants.ALIASES, aliases);
             }
-            if (!QIOGlobalItemLookup.INSTANCE.itemCache.isEmpty()) {
+            if (!INSTANCE.itemCache.isEmpty()) {
                 CompoundTag items = new CompoundTag();
-                for (Map.Entry<UUID, HashedItem> entry : QIOGlobalItemLookup.INSTANCE.itemCache.entrySet()) {
+                for (Map.Entry<UUID, HashedItem> entry : INSTANCE.itemCache.entrySet()) {
                     items.put(entry.getKey().toString(), ((SerializedHashedItem) entry.getValue()).getNbtRepresentation(provider));
                 }
                 nbt.put(SerializationConstants.ITEMS, items);

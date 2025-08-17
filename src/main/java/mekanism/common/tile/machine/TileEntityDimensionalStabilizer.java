@@ -38,6 +38,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Redstone;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
@@ -182,7 +183,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     @Override
     public int getRedstoneLevel() {
-        return getActive() ? 15 : 0;
+        return getActive() ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
 
     @Override

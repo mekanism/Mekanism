@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -30,14 +31,25 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
         return getRecipeType().getInputCache();
     }
 
+    /** Use only when you have no way of getting a Level or RecipeManager */
+    @NotNull
+    default List<RecipeHolder<RECIPE>> getRecipes() {
+        return getRecipeType().getRecipes((Level) null);
+    }
+
     @NotNull
     default List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         return getRecipeType().getRecipes(world);
     }
 
     @NotNull
-    default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager, @Nullable Level world) {
-        return getRecipeType().getRecipes(recipeManager, world);
+    default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager) {
+        return getRecipeType().getRecipes(recipeManager);
+    }
+
+    @NotNull
+    default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+        return getRecipeType().getRecipes(recipeManager, registryAccess);
     }
 
     default Stream<RecipeHolder<RECIPE>> stream(@Nullable Level world) {

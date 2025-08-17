@@ -57,8 +57,6 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     @Override

@@ -158,7 +158,7 @@ import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.lib.FieldReflectionHelper;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
@@ -223,7 +223,7 @@ import net.neoforged.neoforge.client.model.SeparateTransformsModel;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class ClientRegistration {
 
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
@@ -281,7 +281,7 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
-                    return RadiationManager.get().getClientScale().ordinal();
+                    return ClientRadiation.getClientScale().ordinal();
                 }
                 return 0;
             });
@@ -316,7 +316,7 @@ public class ClientRegistration {
         event.registerAbove(VanillaGuiLayers.ARMOR_LEVEL, Mekanism.rl("energy_level"), MekaSuitEnergyLevel.INSTANCE);
         //Render status overlay after item name rather than action bar (record_overlay) so that things like the sleep fade will render in front of our overlay
         event.registerAbove(VanillaGuiLayers.SELECTED_ITEM_NAME, Mekanism.rl("status_overlay"), MekanismStatusOverlay.INSTANCE);
-        event.registerAbove(VanillaGuiLayers.HOTBAR, Mekanism.rl("hud"), MekanismHUD.INSTANCE);
+        event.registerAbove(VanillaGuiLayers.SUBTITLE_OVERLAY, Mekanism.rl("hud"), MekanismHUD.INSTANCE);
     }
 
     @SubscribeEvent

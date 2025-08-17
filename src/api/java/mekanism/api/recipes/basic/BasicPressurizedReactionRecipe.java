@@ -127,11 +127,16 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
 
     @Override
     public int hashCode() {
-        int hash = Objects.hash(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputChemical);
+        int result = inputSolid.hashCode();
+        result = 31 * result + inputFluid.hashCode();
+        result = 31 * result + inputChemical.hashCode();
+        result = 31 * result + Long.hashCode(energyRequired);
+        result = 31 * result + duration;
+        result = 31 * result + outputChemical.hashCode();
         if (!outputItem.isEmpty()) {
-            hash = 31 * hash + ItemStack.hashItemAndComponents(outputItem);
-            hash = 31 * hash + outputItem.getCount();
+            result = 31 * result + ItemStack.hashItemAndComponents(outputItem);
+            result = 31 * result + outputItem.getCount();
         }
-        return hash;
+        return result;
     }
 }

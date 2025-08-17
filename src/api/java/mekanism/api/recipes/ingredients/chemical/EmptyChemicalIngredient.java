@@ -42,6 +42,11 @@ public final class EmptyChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
+    public void logMissingTags() {
+        MekanismAPI.logger.warn("Empty chemical ingredient used");
+    }
+
+    @Override
     public int hashCode() {
         return 0;
     }

@@ -112,8 +112,7 @@ public class MekFakePlayer extends FakePlayer {
      * @return the return value of fakePlayerConsumer
      */
     public static <R> R withFakePlayer(ServerLevel world, double x, double y, double z, Function<MekFakePlayer, R> fakePlayerConsumer) {
-        MekFakePlayer player = setupFakePlayer(world);
-        player.setPosRaw(x, y, z);
+        MekFakePlayer player = setupFakePlayer(world, x, y, z);
         R result = fakePlayerConsumer.apply(player);
         player.cleanupFakePlayer(world);
         return result;

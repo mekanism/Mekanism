@@ -3,11 +3,15 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -88,6 +92,18 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     @Override
     public boolean hasNoMatchingInstances() {
         return ingredient.ingredient().hasNoFluids();
+    }
+
+    @Override
+    public void logMissingTags() {
+        if (hasNoMatchingInstances()) {
+            FluidIngredient fluidIngredient = ingredient.ingredient();
+            if (fluidIngredient instanceof TagFluidIngredient tagged) {
+                MekanismAPI.logger.error("Empty tag: {}", tagged.tag());
+            } else {
+                MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
+            }
+        }
     }
 
     @Override

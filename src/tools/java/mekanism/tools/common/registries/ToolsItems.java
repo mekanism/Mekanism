@@ -2,6 +2,7 @@ package mekanism.tools.common.registries;
 
 import java.util.function.BiFunction;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registration.impl.ItemDeferredRegister.StrictProperties;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.config.MekanismToolsConfig;
@@ -138,10 +139,13 @@ public class ToolsItems {
     }
 
     private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(VanillaPaxelMaterialCreator material) {
-        if (material.getVanillaTier() == Tiers.NETHERITE) {
-            return ITEMS.registerUnburnable(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
-        }
-        return ITEMS.registerItem(material.getRegistryPrefix() + "_paxel", properties -> new ItemMekanismPaxel(material, properties));
+        return ITEMS.register(material.getRegistryPrefix() + "_paxel", () -> {
+            Item.Properties properties = new StrictProperties();
+            if (material.getVanillaTier() == Tiers.NETHERITE) {
+                properties.fireResistant();
+            }
+            return new ItemMekanismPaxel(material, properties);
+        });
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(Holder<ArmorMaterial> armorMaterial, MaterialCreator material, ArmorItem.Type armorType) {
@@ -159,7 +163,7 @@ public class ToolsItems {
     }
 
     private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
-        Item.Properties properties = new Item.Properties();
+        Item.Properties properties = new StrictProperties();
         if (!material.burnsInFire()) {
             properties = properties.fireResistant();
         }

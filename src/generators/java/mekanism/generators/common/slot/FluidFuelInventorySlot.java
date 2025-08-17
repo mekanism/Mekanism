@@ -29,7 +29,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        Predicate<ItemStack> fillPredicate = FluidInventorySlot.getFillPredicate(fluidTank);
+        Predicate<ItemStack> fillPredicate = getFillPredicate(fluidTank);
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
             IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
             if (fluidHandlerItem != null) {

@@ -3,10 +3,15 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Ingredient.TagValue;
+import net.minecraft.world.item.crafting.Ingredient.Value;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -88,6 +93,28 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     @Override
     public boolean hasNoMatchingInstances() {
         return ingredient.ingredient().hasNoItems();
+    }
+
+    @Override
+    public void logMissingTags() {
+        if (hasNoMatchingInstances()) {
+            Ingredient unsized = ingredient.ingredient();
+            if (unsized.isSimple()) {
+                if (unsized.isEmpty()) {
+                    MekanismAPI.logger.error("Empty ingredient: {}", unsized);
+                } else {
+                    for (Value ingredientValue : unsized.getValues()) {
+                        if (ingredientValue instanceof TagValue tagValue) {
+                            MekanismAPI.logger.error("Empty tag: {}", tagValue);
+                        } else {
+                            MekanismAPI.logger.warn("Unknown value: {}", ingredientValue);
+                        }
+                    }
+                }
+            } else {
+                MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
+            }
+        }
     }
 
     @Override

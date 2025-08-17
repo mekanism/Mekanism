@@ -2,9 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:free_runners"
-    },
+    "#": [
+      {
+        "item": "mekanism:free_runners"
+      },
+      {
+        "item": "mekanism:free_runners_armored"
+      }
+    ],
     "A": {
       "tag": "c:alloys/elite"
     },

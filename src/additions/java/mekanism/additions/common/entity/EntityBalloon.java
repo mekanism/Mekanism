@@ -163,11 +163,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             if (tickCount == 1) {
                 byte isLatched;
                 if (latched != null) {
-                    isLatched = (byte) 1;
+                    isLatched = 1;
                 } else if (latchedEntity != null) {
-                    isLatched = (byte) 2;
+                    isLatched = 2;
                 } else {
-                    isLatched = (byte) 0;
+                    isLatched = 0;
                 }
                 entityData.set(IS_LATCHED, isLatched);
                 entityData.set(LATCHED_X, latched == null ? 0 : latched.getX());

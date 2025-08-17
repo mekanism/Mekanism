@@ -40,7 +40,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     protected static <FILTER extends SorterFilter<FILTER>> StreamCodec<ByteBuf, FILTER> baseSorterStreamCodec(Supplier<FILTER> constructor) {
         return StreamCodec.composite(
-              BaseFilter.baseStreamCodec(constructor), Function.identity(),
+              baseStreamCodec(constructor), Function.identity(),
               ByteBufCodecs.BOOL, filter -> filter.allowDefault,
               ByteBufCodecs.BOOL, filter -> filter.sizeMode,
               ByteBufCodecs.VAR_INT, filter -> filter.min,
@@ -101,7 +101,13 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), color, allowDefault, sizeMode, min, max);
+        int result = super.hashCode();
+        result = 31 * result + Objects.hashCode(color);
+        result = 31 * result + Boolean.hashCode(allowDefault);
+        result = 31 * result + Boolean.hashCode(sizeMode);
+        result = 31 * result + min;
+        result = 31 * result + max;
+        return result;
     }
 
     @Override

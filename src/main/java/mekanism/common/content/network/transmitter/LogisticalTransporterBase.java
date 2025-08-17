@@ -346,15 +346,15 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
         updateTag = super.getReducedUpdateTag(provider, updateTag);
-        ListTag stacks = new ListTag();
-        for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
-            Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();
-            CompoundTag tagCompound = new CompoundTag();
-            tagCompound.putInt(SerializationConstants.INDEX, entry.getIntKey());
-            entry.getValue().writeToUpdateTag(provider, this, tagCompound);
-            stacks.add(tagCompound);
-        }
-        if (!stacks.isEmpty()) {
+        if (!transit.isEmpty()) {
+            ListTag stacks = new ListTag(transit.size());
+            for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
+                Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();
+                CompoundTag tagCompound = new CompoundTag();
+                tagCompound.putInt(SerializationConstants.INDEX, entry.getIntKey());
+                entry.getValue().writeToUpdateTag(provider, this, tagCompound);
+                stacks.add(tagCompound);
+            }
             updateTag.put(SerializationConstants.ITEMS, stacks);
         }
         return updateTag;
@@ -401,7 +401,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         Collection<TransporterStack> transit = getTransit();
         if (!transit.isEmpty()) {
-            ListTag stacks = new ListTag();
+            ListTag stacks = new ListTag(transit.size());
             for (TransporterStack stack : transit) {
                 CompoundTag tagCompound = new CompoundTag();
                 stack.write(provider, tagCompound);
@@ -449,13 +449,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse insertMaybeRR(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
         if (outputter != null && outputter.getRoundRobin()) {
-            return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculateRRPath);
+            return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculateRRPath);
         }
         return insert(outputter, outputterPos, request, color, doEmit, min);
     }
 
     public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculatePath);
+        return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculatePath);
     }
 
     private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,

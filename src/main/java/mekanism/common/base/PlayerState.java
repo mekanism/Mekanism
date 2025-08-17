@@ -10,7 +10,7 @@ import mekanism.client.sound.SoundHandler;
 import mekanism.common.CommonPlayerTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.player_data.PacketResetPlayerClient;
 import mekanism.common.network.to_server.PacketGearStateUpdate;
@@ -57,7 +57,7 @@ public class PlayerState {
                 SoundHandler.radiationSoundMap.clear();
             }
         }
-        RadiationManager.get().resetPlayer(uuid);
+        PlayerExposure.resetPlayer(uuid);
         if (!isRemote) {
             PacketDistributor.sendToAllPlayers(new PacketResetPlayerClient(uuid));
         }

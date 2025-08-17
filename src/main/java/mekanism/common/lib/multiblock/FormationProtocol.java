@@ -16,10 +16,10 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.RejectContents;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -117,7 +117,7 @@ public class FormationProtocol<T extends MultiblockData> {
                         world.addFreshEntity(new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, rejectedItem));
                     }
                 }
-                if (!rejectContents.rejectedChemicals.isEmpty() && IRadiationManager.INSTANCE.isRadiationEnabled()) {
+                if (!rejectContents.rejectedChemicals.isEmpty() && RadiationManager.isGlobalRadiationEnabled()) {
                     //Dump any rejected gases, if they are radioactive vent them into the atmosphere
                     // we are able to skip this if radiation is disabled as it will just NO-OP further down the line
                     double radiation = 0;
@@ -126,8 +126,7 @@ public class FormationProtocol<T extends MultiblockData> {
                         radiation += rejectedChemical.getRadioactivity();
                     }
                     if (radiation > 0) {
-                        GlobalPos dumpLocation = GlobalPos.of(world.dimension(), structureFound.getBounds().getCenter());
-                        IRadiationManager.INSTANCE.radiate(dumpLocation, radiation);
+                        IRadiationManager.INSTANCE.radiate(world, structureFound.getBounds().getCenter(), radiation);
                     }
                 }
             }

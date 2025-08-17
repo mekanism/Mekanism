@@ -223,6 +223,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag nbt = super.serializeNBT(provider);
+        //TODO - 1.21: These two states don't get persisted anymore when breaking blocks that have fluid inventory slots
         if (isDraining) {
             nbt.putBoolean(SerializationConstants.DRAINING, true);
         }

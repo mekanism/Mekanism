@@ -2,10 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:tuff_brick_stairs"
+    "item": "minecraft:tuff_stairs"
   },
   "output": {
     "count": 1,
-    "id": "minecraft:tuff_stairs"
+    "id": "minecraft:tuff_brick_stairs"
   }
 }

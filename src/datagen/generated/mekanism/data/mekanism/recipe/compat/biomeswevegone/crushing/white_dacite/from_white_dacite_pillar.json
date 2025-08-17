@@ -1,0 +1,18 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "mekanism:mod_version_loaded",
+      "modid": "biomeswevegone",
+      "version": "2.4.0"
+    }
+  ],
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "item": "biomeswevegone:white_dacite_pillar"
+  },
+  "output": {
+    "count": 2,
+    "id": "biomeswevegone:white_dacite"
+  }
+}

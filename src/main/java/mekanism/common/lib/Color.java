@@ -1,6 +1,5 @@
 package mekanism.common.lib;
 
-import java.util.Objects;
 import mekanism.common.util.StatUtils;
 
 public class Color {
@@ -247,7 +246,11 @@ public class Color {
 
     @Override
     public int hashCode() {
-        return Objects.hash(r, g, b, a);
+        int result = Double.hashCode(r);
+        result = 31 * result + Double.hashCode(g);
+        result = 31 * result + Double.hashCode(b);
+        result = 31 * result + Double.hashCode(a);
+        return result;
     }
 
     @Override
@@ -257,7 +260,7 @@ public class Color {
 
     public interface ColorFunction {
 
-        ColorFunction HEAT = level -> Color.rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
+        ColorFunction HEAT = level -> rgbai((int) Math.min(200, 400 * level), (int) Math.max(0, 200 - Math.max(0, -200 + 400 * level)), 0, 255);
 
         static ColorFunction scale(Color from, Color to) {
             return level -> from.blend(to, level);

@@ -24,7 +24,7 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import org.jetbrains.annotations.NotNull;
 
-@EventBusSubscriber(modid = MekanismTools.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = MekanismTools.MODID, value = Dist.CLIENT)
 public class ToolsClientRegistration {
 
     private ToolsClientRegistration() {

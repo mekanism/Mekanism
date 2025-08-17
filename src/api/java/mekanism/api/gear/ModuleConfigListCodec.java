@@ -21,10 +21,12 @@ import mekanism.api.gear.config.ModuleConfig;
 class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
 
     private final List<Codec<ModuleConfig<?>>> codecs;
+    private final List<ModuleConfig<?>> configs;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    ModuleConfigListCodec(List<Codec<? extends ModuleConfig<?>>> codecs) {
+    ModuleConfigListCodec(List<Codec<? extends ModuleConfig<?>>> codecs, List<ModuleConfig<?>> configs) {
         this.codecs = (List) codecs;
+        this.configs = configs;
     }
 
     @Override
@@ -81,6 +83,11 @@ class ModuleConfigListCodec implements Codec<List<ModuleConfig<?>>> {
         }
 
         public DataResult<Pair<List<ModuleConfig<?>>, T>> build() {
+            //If we loaded fewer values than we expected, initialize the remaining ones as their default values
+            //TODO: Figure out if this is the correct way to handle it if it is providing a partial result due to there being some errors in earlier elements
+            while (index < codecs.size()) {
+                elements.add(configs.get(index++));
+            }
             final T errors = ops.createList(failed.build());
             final Pair<List<ModuleConfig<?>>, T> pair = Pair.of(List.copyOf(elements), errors);
             return result.map(ignored -> pair).setPartial(pair);

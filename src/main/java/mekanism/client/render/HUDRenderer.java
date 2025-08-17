@@ -23,6 +23,7 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.components.SubtitleOverlay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -46,6 +47,8 @@ public class HUDRenderer {
 
     private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 
+    private int lastSubtitleGuiTick = -1;
+    private int lastSubtitleWidth = 0;
     private long lastTick = -1;
     private float prevRotationYaw;
     private float prevRotationPitch;
@@ -62,12 +65,13 @@ public class HUDRenderer {
         float yawJitter = -absSqrt(player.yHeadRot - prevRotationYaw);
         float pitchJitter = -absSqrt(player.getXRot() - prevRotationPitch);
         pose.translate(yawJitter, pitchJitter, 0);
+        int audibleSubtitlesWidth = MekanismConfig.client.hudAvoidSoundSubtitleOverlay.get() ? getAudibleSubtitlesWidth(minecraft, font) : 0;
         if (MekanismConfig.client.hudCompassEnabled.get()) {
-            renderCompass(player, font, guiGraphics, delayedDraws, delta, screenWidth, screenHeight, maxTextHeight, reverseHud);
+            renderCompass(player, font, guiGraphics, delayedDraws, delta, screenWidth, screenHeight, maxTextHeight, reverseHud, audibleSubtitlesWidth);
         }
 
         renderMekaSuitEnergyIcons(player, font, guiGraphics, delayedDraws);
-        renderMekaSuitModuleIcons(player, font, guiGraphics, delayedDraws, screenWidth, screenHeight, reverseHud);
+        renderMekaSuitModuleIcons(player, font, guiGraphics, delayedDraws, screenWidth, screenHeight, reverseHud, audibleSubtitlesWidth);
 
         pose.popPose();
     }
@@ -120,7 +124,7 @@ public class HUDRenderer {
     }
 
     private void renderMekaSuitModuleIcons(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws, int screenWidth, int screenHeight,
-          boolean reverseHud) {
+          boolean reverseHud, int subtitlesWidth) {
         int startX = screenWidth - 10;
         int curY = screenHeight - 10;
         Matrix4f matrix = new Matrix4f(guiGraphics.pose().last().pose());
@@ -136,12 +140,36 @@ public class HUDRenderer {
                         renderHUDElement(font, guiGraphics, matrix, delayedDraws, 10, curY, element, false);
                     } else {
                         //Align the mekasuit module icons to the right of the screen
-                        int elementWidth = 24 + font.width(element.getText());
+                        int elementWidth = subtitlesWidth + 24 + font.width(element.getText());
                         renderHUDElement(font, guiGraphics, matrix, delayedDraws, startX - elementWidth, curY, element, true);
                     }
                 }
             }
         }
+    }
+
+    /**
+     * Based on how {@link SubtitleOverlay#render(GuiGraphics)} calculates the width
+     */
+    private int getAudibleSubtitlesWidth(Minecraft minecraft, Font font) {
+        if (!minecraft.options.showSubtitles().get() || minecraft.gui.subtitleOverlay.audibleSubtitles.isEmpty()) {
+            //Subtitles are disabled or none are currently showing, don't bother calculating a width
+            return 0;
+        }
+        if (lastSubtitleGuiTick != minecraft.gui.getGuiTicks()) {
+            lastSubtitleGuiTick = minecraft.gui.getGuiTicks();
+            int maxWidth = 0;
+            for (SubtitleOverlay.Subtitle subtitle : minecraft.gui.subtitleOverlay.audibleSubtitles) {
+                //Note: We know all subtitles here are still active, so we can skip checking
+                maxWidth = Math.max(maxWidth, font.width(subtitle.getText()));
+            }
+            //Note: This mirrors vanilla having them as separate pieces for calculating the width instead of just doing font.width("< > ")
+            // Presumably this is because Font#width returns Math#ceil, so the below has a chance of being larger than doing it as a single calculation
+            maxWidth += font.width("<") + font.width(" ") + font.width(">") + font.width(" ");
+
+            lastSubtitleWidth = maxWidth;
+        }
+        return lastSubtitleWidth;
     }
 
     private void renderHUDElement(Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
@@ -156,10 +184,10 @@ public class HUDRenderer {
     }
 
     private void renderCompass(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws, DeltaTracker delta, int screenWidth,
-          int screenHeight, int maxTextHeight, boolean reverseHud) {
+          int screenHeight, int maxTextHeight, boolean reverseHud, int audibleSubtitlesWidth) {
         int color = HUDColor.REGULAR.getColorARGB();
         //Reversed hud causes the compass to render on the right side of the screen
-        int posX = reverseHud ? screenWidth - 125 : 25;
+        int posX = reverseHud ? screenWidth - 125 - audibleSubtitlesWidth : 25;
         //Pin the compass above the bottom of the screen and also above the text hud that may render below it
         int posY = Math.min(screenHeight - 20, maxTextHeight) - 80;
         PoseStack pose = guiGraphics.pose();

@@ -110,6 +110,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.NeoForge;
@@ -979,7 +980,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         if (offset.equals(new Vec3i(right.getStepX(), 0, right.getStepZ()))) {
             return getCurrentRedstoneLevel();
         }
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     @Override

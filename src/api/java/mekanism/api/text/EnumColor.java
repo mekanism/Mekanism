@@ -171,8 +171,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote This method is mostly for <strong>INTERNAL</strong> usage.
      */
     @Override
@@ -188,8 +186,6 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote Modifying the returned array will result in this color object changing the color it represents, and should not be done.
      */
     @Override

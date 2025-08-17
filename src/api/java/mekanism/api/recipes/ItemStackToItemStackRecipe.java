@@ -88,6 +88,11 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
     }
 
     @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<ItemStackToItemStackRecipe> getType() {
         return this.recipeType;
     }

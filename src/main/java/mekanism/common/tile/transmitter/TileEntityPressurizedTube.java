@@ -10,7 +10,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
-import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
@@ -22,6 +21,7 @@ import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.integration.computer.IComputerTile;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.ITileRadioactive;
@@ -111,22 +111,23 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     @Override
     public float getRadiationScale() {
-        if (IRadiationManager.INSTANCE.isRadiationEnabled()) {
-            PressurizedTube tube = getTransmitter();
-            if (isRemote()) {
-                if (tube.hasTransmitterNetwork()) {
-                    ChemicalNetwork network = tube.getTransmitterNetwork();
-                    if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
-                        //Note: This may act as full when the network isn't actually full if there is radioactive stuff
-                        // going through it, but it shouldn't matter too much
-                        return network.currentScale;
-                    }
+        if (!RadiationManager.isGlobalRadiationEnabled()) {
+            return 0;
+        }
+        PressurizedTube tube = getTransmitter();
+        if (isRemote()) {
+            if (tube.hasTransmitterNetwork()) {
+                ChemicalNetwork network = tube.getTransmitterNetwork();
+                if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
+                    //Note: This may act as full when the network isn't actually full if there is radioactive stuff
+                    // going through it, but it shouldn't matter too much
+                    return network.currentScale;
                 }
-            } else {
-                IChemicalTank gasTank = tube.getChemicalTank();
-                if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
-                    return gasTank.getStored() / (float) gasTank.getCapacity();
-                }
+            }
+        } else {
+            IChemicalTank gasTank = tube.getChemicalTank();
+            if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
+                return gasTank.getStored() / (float) gasTank.getCapacity();
             }
         }
         return 0;

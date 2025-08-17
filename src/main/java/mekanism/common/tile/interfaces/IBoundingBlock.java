@@ -6,6 +6,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -21,7 +22,7 @@ public interface IBoundingBlock extends IComparatorSupport, IOffsetCapability, I
     }
 
     default int getBoundingComparatorSignal(Vec3i offset) {
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     default boolean triggerBoundingEvent(Vec3i offset, int id, int param) {

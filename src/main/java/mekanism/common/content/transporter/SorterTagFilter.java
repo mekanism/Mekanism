@@ -52,7 +52,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tagName);
+        return 31 * super.hashCode() + tagName.hashCode();
     }
 
     @Override

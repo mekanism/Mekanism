@@ -70,6 +70,11 @@ public non-sealed class CompoundChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
+    public void logMissingTags() {
+        children.forEach(ChemicalIngredient::logMissingTags);
+    }
+
+    @Override
     public int hashCode() {
         return children.hashCode();
     }

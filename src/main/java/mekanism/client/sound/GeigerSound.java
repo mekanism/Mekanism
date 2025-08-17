@@ -1,8 +1,8 @@
 package mekanism.client.sound;
 
 import java.util.Objects;
-import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.ClientRadiation;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.world.entity.player.Player;
@@ -32,7 +32,7 @@ public class GeigerSound extends PlayerSound {
 
     @Override
     public boolean shouldPlaySound(@NotNull Player player) {
-        return scale == RadiationManager.get().getClientScale();
+        return scale == ClientRadiation.getClientScale();
     }
 
     @Override

@@ -27,7 +27,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
         super(attachedTo, slotIndex);
         this.inverseConductionCoefficient = inverseConductionCoefficient;
         this.inverseInsulationCoefficient = inverseInsulationCoefficient;
-        this.defaultData = new HeatCapacitorData(0.0, defaultHeatCapacity);
+        this.defaultData = new HeatCapacitorData(defaultHeatCapacity);
     }
 
     @Override
@@ -55,8 +55,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @apiNote Try to minimize the number of calls to this method so that we don't have to look up the data component multiple times.
      */
     protected HeatCapacitorData getData() {
@@ -65,8 +63,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     public double getTemperature() {
-        HeatCapacitorData data = getData();
-        return data.heat() / data.capacity();
+        return getData().temperature();
     }
 
     @Override
@@ -86,7 +83,7 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     public double getHeat() {
-        return getData().heat();
+        return getData().heatOrAmbient();
     }
 
     @Override
@@ -106,16 +103,23 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
             AttachedHeat attachedHeat = getAttached();
             if (!attachedHeat.isEmpty()) {
                 HeatCapacitorData stored = getContents(attachedHeat);
-                setContents(attachedHeat, new HeatCapacitorData(stored.heat() + transfer, stored.capacity()));
+                setContents(attachedHeat, stored.withHeat(stored.heatOrAmbient() + transfer));
             }
         }
+    }
+
+    @Override
+    public boolean isAmbientTemperature() {
+        return getData().heat().isEmpty();
     }
 
     @Override
     public CompoundTag serializeNBT(Provider provider) {
         CompoundTag nbt = new CompoundTag();
         HeatCapacitorData data = getData();
-        nbt.putDouble(SerializationConstants.STORED, data.heat());
+        if (data.heat().isPresent()) {
+            nbt.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
+        }
         nbt.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
         return nbt;
     }
@@ -123,11 +127,17 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     @Override
     public void deserializeNBT(Provider provider, CompoundTag nbt) {
         double capacity;
+        HeatCapacitorData data;
         if (nbt.contains(SerializationConstants.HEAT_CAPACITY, Tag.TAG_DOUBLE)) {
             capacity = nbt.getDouble(SerializationConstants.HEAT_CAPACITY);
         } else {
             capacity = defaultData.capacity();
         }
-        setContents(getAttached(), new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity));
+        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_DOUBLE)) {
+            data = new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity);
+        } else {
+            data = new HeatCapacitorData(capacity);
+        }
+        setContents(getAttached(), data);
     }
 }

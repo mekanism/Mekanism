@@ -280,6 +280,10 @@ public final class SerializationConstants {
     @Deprecated(forRemoval = true, since = "10.7.0")
     public static final String PIGMENT_TANKS = "pigment_tanks";
     public static final String PLASMA_TEMP = "plasma_temp";
+    /**
+     * @since 10.7.15
+     */
+    public static final String POS = "pos";
     public static final String POSITION = "position";
     public static final String PREVIOUS = "previous";
     public static final String PROCESSED = "processed";
@@ -294,6 +298,7 @@ public final class SerializationConstants {
     public static final String RADIOACTIVITY = "radioactivity";
     public static final String RADIUS = "radius";
     public static final String REACTOR_DAMAGE = "reactor_damage";
+    @Deprecated(forRemoval = true, since = "10.7.15")
     public static final String RECEIVED_COORDS = "received_coords";
     public static final String RECURRING_NODES = "recurring_nodes";
     public static final String REDSTONE = "redstone";

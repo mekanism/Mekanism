@@ -3,7 +3,6 @@ package mekanism.common.content.miner;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.common.base.TagCache;
@@ -57,7 +56,7 @@ public class MinerTagFilter extends MinerFilter<MinerTagFilter> implements ITagF
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), tagName);
+        return 31 * super.hashCode() + tagName.hashCode();
     }
 
     @Override

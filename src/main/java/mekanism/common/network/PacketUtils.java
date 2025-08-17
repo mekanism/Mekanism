@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.OptionalDouble;
 import java.util.Set;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
@@ -43,6 +44,7 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class PacketUtils {
@@ -62,6 +64,23 @@ public class PacketUtils {
           ByteBufCodecs.DOUBLE, Vec3::z,
           Vec3::new
     );
+    public static final StreamCodec<ByteBuf, OptionalDouble> OPTIONAL_DOUBLE_STREAM_CODEC = new StreamCodec<>() {
+        @NotNull
+        @Override
+        public OptionalDouble decode(@NotNull ByteBuf buffer) {
+            return buffer.readBoolean() ? OptionalDouble.of(buffer.readDouble()) : OptionalDouble.empty();
+        }
+
+        @Override
+        public void encode(@NotNull ByteBuf buffer, @NotNull OptionalDouble value) {
+            if (value.isPresent()) {
+                buffer.writeBoolean(true);
+                buffer.writeDouble(value.getAsDouble());
+            } else {
+                buffer.writeBoolean(false);
+            }
+        }
+    };
 
     //Similar to NeoForgeStreamCodecs#enumCodec but allows for keeping it as a ByteBuf and wrapping the value
     public static <V extends Enum<V>> StreamCodec<ByteBuf, V> enumCodec(Class<V> enumClass) {

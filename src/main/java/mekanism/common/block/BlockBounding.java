@@ -1,6 +1,8 @@
 package mekanism.common.block;
 
 import java.util.function.BiConsumer;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.IStateFluidLoggable;
@@ -33,8 +35,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraft.world.phys.HitResult.Type;
+import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -47,7 +52,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Nullable
     public static BlockPos getMainBlockPos(BlockGetter world, BlockPos thisPos) {
         TileEntityBoundingBlock te = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, thisPos);
-        if (te != null && te.hasReceivedCoords() && !thisPos.equals(te.getMainPos())) {
+        if (te != null && te.canRedirectFrom(thisPos)) {
             return te.getMainPos();
         }
         return null;
@@ -78,6 +83,15 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
+    protected boolean canBeReplaced(@NotNull BlockState state, @NotNull BlockPlaceContext context) {
+        Level level = context.getLevel();
+        BlockPos mainPos = getMainBlockPos(level, context.getClickedPos());
+        //Allow replacing the bounding block if it doesn't have a main pos or the block at the main position doesn't have any bounding blocks,
+        // so this one is likely left over from someone manually removing or placing something with commands
+        return mainPos == null || !Attribute.has(level.getBlockState(mainPos), AttributeHasBounding.class);
+    }
+
+    @Override
     protected boolean canBeReplaced(@NotNull BlockState state, @NotNull Fluid fluid) {
         return false;
     }
@@ -90,8 +104,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return InteractionResult.FAIL;
         }
         BlockState mainState = world.getBlockState(mainPos);
-        //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return mainState.useWithoutItem(world, player, hit.withPosition(mainPos));
+        return mainState.useWithoutItem(world, player, withHitResultForMain(hit, mainPos));
     }
 
     @NotNull
@@ -103,8 +116,16 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             return ItemInteractionResult.FAIL;
         }
         BlockState mainState = world.getBlockState(mainPos);
-        //TODO: Use proper ray trace result, currently is using the one we got but we probably should make one with correct position information
-        return mainState.useItemOn(stack, world, player, hand, hit.withPosition(mainPos));
+        return mainState.useItemOn(stack, world, player, hand, withHitResultForMain(hit, mainPos));
+    }
+
+    private BlockHitResult withHitResultForMain(BlockHitResult hit, BlockPos mainPos) {
+        Vec3 location = mainPos.getCenter().relative(hit.getDirection(), 0.5);
+        if (hit.getType() == Type.MISS) {
+            //I don't know if this ever can be the case, but if it is, just return a proper one for it
+            return BlockHitResult.miss(location, hit.getDirection(), mainPos);
+        }
+        return new BlockHitResult(location, hit.getDirection(), mainPos, hit.isInside());
     }
 
     @Override
@@ -217,7 +238,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         if (!world.isClientSide) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
-                tile.onNeighborChange(neighborBlock, neighborPos);
+                tile.onNeighborChange(world, neighborBlock, neighborPos);
             }
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
@@ -240,7 +261,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                 return tile.getComparatorSignal();
             }
         }
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     @Override

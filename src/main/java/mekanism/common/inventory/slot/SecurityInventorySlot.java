@@ -38,12 +38,12 @@ public class SecurityInventorySlot extends BasicInventorySlot {
         super(canExtract, canInsert, VALIDATOR, listener, x, y);
     }
 
-    public void unlock(UUID ownerUUID) {
+    public void unlock(@NotNull UUID ownerUUID) {
         if (!isEmpty()) {
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
-                if (stackOwner != null && stackOwner.equals(ownerUUID)) {
+                if (ownerUUID.equals(stackOwner)) {
                     ownerObject.setOwnerUUID(null);
                     ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(current);
                     if (securityObject != null) {

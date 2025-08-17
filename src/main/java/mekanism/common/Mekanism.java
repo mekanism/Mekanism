@@ -64,6 +64,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketHandler;
@@ -178,7 +179,7 @@ public class Mekanism {
     /**
      * The GameProfile used by the dummy Mekanism player
      */
-    public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes(StandardCharsets.UTF_8)), Mekanism.LOG_TAG);
+    public static final GameProfile gameProfile = new GameProfile(UUID.nameUUIDFromBytes("mekanism.common".getBytes(StandardCharsets.UTF_8)), LOG_TAG);
     public static final KeySync keyMap = new KeySync();
     public static final Set<GlobalPos> activeVibrators = new ObjectOpenHashSet<>();
 
@@ -203,6 +204,8 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
         NeoForge.EVENT_BUS.addListener(this::onDataMapsUpdated);
         NeoForge.EVENT_BUS.addListener(MekanismPermissions::registerPermissionNodes);
+        NeoForge.EVENT_BUS.register(IncompleteRecipeScanner.class);
+        modEventBus.addListener(EventPriority.HIGH, Capabilities::registerProxyableCapabilities);
         modEventBus.addListener(Capabilities::registerCapabilities);
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(this::registerChunkTicketControllers);
@@ -272,7 +275,7 @@ public class Mekanism {
     }
 
     public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, path);
+        return ResourceLocation.fromNamespaceAndPath(MODID, path);
     }
 
     private void setRecipeCacheManager(ReloadListener manager) {
@@ -321,7 +324,7 @@ public class Mekanism {
 
         //Reset consistent managers
         QIOGlobalItemLookup.INSTANCE.reset();
-        RadiationManager.get().reset();
+        PlayerExposure.clear();
         MultiblockManager.reset();
         FrequencyManager.reset();
         TransporterManager.reset();
@@ -380,7 +383,7 @@ public class Mekanism {
         //Register player tracker
         NeoForge.EVENT_BUS.register(new CommonPlayerTracker());
         NeoForge.EVENT_BUS.register(new CommonPlayerTickHandler());
-        NeoForge.EVENT_BUS.register(Mekanism.worldTickHandler);
+        NeoForge.EVENT_BUS.register(worldTickHandler);
 
         NeoForge.EVENT_BUS.register(RadiationManager.get());
 

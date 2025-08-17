@@ -87,6 +87,9 @@ public abstract class BasicChemicalChemicalToChemicalRecipe extends ChemicalChem
 
     @Override
     public int hashCode() {
-        return Objects.hash(leftInput, rightInput, output);
+        int result = leftInput.hashCode();
+        result = 31 * result + rightInput.hashCode();
+        result = 31 * result + output.hashCode();
+        return result;
     }
 }

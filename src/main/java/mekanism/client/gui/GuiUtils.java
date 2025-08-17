@@ -380,14 +380,14 @@ public class GuiUtils {
     }
 
     private static void blit(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, float pUOffset, float pVOffset, int pWidth, int pHeight, int pTextureWidth, int pTextureHeight) {
-        bufferbuilder.addVertex(matrix4f, (float) pX, (float) pY, (float) 0)
-              .setUv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight);
-        bufferbuilder.addVertex(matrix4f, (float) pX, (float) (pY + pHeight), (float) 0)
-              .setUv((pUOffset + 0.0F) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight);
-        bufferbuilder.addVertex(matrix4f, (float) (pX + pWidth), (float) (pY + pHeight), (float) 0)
-              .setUv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + (float) pHeight) / (float) pTextureHeight);
-        bufferbuilder.addVertex(matrix4f, (float) (pX + pWidth), (float) pY, (float) 0)
-              .setUv((pUOffset + (float) pWidth) / (float) pTextureWidth, (pVOffset + 0.0F) / (float) pTextureHeight);
+        bufferbuilder.addVertex(matrix4f, pX, pY, 0)
+              .setUv(pUOffset / pTextureWidth, pVOffset / pTextureHeight);
+        bufferbuilder.addVertex(matrix4f, pX, pY + pHeight, 0)
+              .setUv(pUOffset / pTextureWidth, (pVOffset + pHeight) / pTextureHeight);
+        bufferbuilder.addVertex(matrix4f, pX + pWidth, pY + pHeight, 0)
+              .setUv((pUOffset + pWidth) / pTextureWidth, (pVOffset + pHeight) / pTextureHeight);
+        bufferbuilder.addVertex(matrix4f, pX + pWidth, pY, 0)
+              .setUv((pUOffset + pWidth) / pTextureWidth, pVOffset / pTextureHeight);
     }
 
     private static void blitRepeating(BufferBuilder bufferbuilder, Matrix4f matrix4f, int pX, int pY, int pWidth, int pHeight, int pUOffset, int pVOffset, int pSourceWidth, int pSourceHeight, int textureWidth, int textureHeight) {
@@ -410,7 +410,6 @@ public class GuiUtils {
 
     /**
      * Returns an iterator for dividing a value into slices of a specified size.
-     * <p>
      *
      * @param pTarget the value to be divided.
      * @param pTotal  the size of each slice.

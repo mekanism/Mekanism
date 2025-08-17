@@ -227,7 +227,7 @@ public class UnitDisplayUtils {
 
         public static EnergyUnit getConfigured() {
             EnergyUnit type = MekanismConfig.common.energyUnit.get();
-            return type.isEnabled() ? type : EnergyUnit.JOULES;
+            return type.isEnabled() ? type : JOULES;
         }
     }
 

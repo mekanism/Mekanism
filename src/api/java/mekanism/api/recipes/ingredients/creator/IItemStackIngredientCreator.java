@@ -23,8 +23,6 @@ import net.neoforged.neoforge.common.crafting.SizedIngredient;
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.
      */
     @Override
@@ -165,6 +163,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     default ItemStackIngredient fromHolders(int amount, Holder<Item>... items) {
         if (items.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ItemStackIngredient with no items.");

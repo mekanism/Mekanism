@@ -2,7 +2,8 @@ package mekanism.client.render.hud;
 
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.DeltaTracker;
@@ -30,7 +31,7 @@ public class RadiationOverlay implements LayeredDraw.Layer {
     public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         Player player = minecraft.player;
-        if (player != null && IRadiationManager.INSTANCE.isRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
+        if (player != null && RadiationManager.isGlobalRadiationEnabled() && MekanismUtils.isPlayingMode(player)) {
             double radiation = player.getData(MekanismAttachmentTypes.RADIATION);
             double severity = RadiationScale.getScaledDoseSeverity(radiation) * 0.8;
             //Only update the previous radiation level at most once a tick

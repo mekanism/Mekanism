@@ -11,6 +11,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.recipe.RecipeProviderUtil;
+import mekanism.common.recipe.condition.ModVersionLoadedCondition;
 import mekanism.common.recipe.impl.PigmentExtractingRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.EnumUtils;
@@ -31,14 +32,18 @@ import net.potionstudios.biomeswevegone.world.level.block.BWGBlocks;
 import net.potionstudios.biomeswevegone.world.level.block.sand.BWGSandSet;
 import net.potionstudios.biomeswevegone.world.level.block.set.BWGBlockSet;
 import net.potionstudios.biomeswevegone.world.level.block.wood.BWGWoodSet;
+import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
 public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private static final FieldReflectionHelper<BWGWoodSet, String> WOOD_SET_NAME = new FieldReflectionHelper<>(BWGWoodSet.class, "name", () -> null);
+    private final ICondition villageUpdate;
 
     public BWGRecipeProvider(String modid) {
         super(modid);
+        //TODO - 1.21.8: Replace this with just the mod loaded condition
+        villageUpdate = new ModVersionLoadedCondition(modid, "2.4.0");
     }
 
     @Override
@@ -105,6 +110,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void addCrushingRecipes(RecipeOutput consumer, String basePath) {
         addCrusherDaciteRecipes(consumer, basePath + "dacite/");
+        addCrusherWhiteDaciteRecipes(consumer, basePath + "white_dacite/");
         addCrusherRedRockRecipes(consumer, basePath + "red_rock/");
     }
 
@@ -112,49 +118,82 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         //Dacite -> Dacite Cobblestone
         crushing(consumer, basePath, BWGBlocks.DACITE_SET, BWGBlocks.DACITE_COBBLESTONE_SET);
         //Dacite Cobblestone -> Dacite Tile
-        crushing(consumer, basePath, BWGBlocks.DACITE_COBBLESTONE_SET, BWGBlocks.DACITE_TILE_SET);
-        //Dacite Tile -> Dacite Bricks
-        crushing(consumer, basePath, BWGBlocks.DACITE_TILE_SET, BWGBlocks.DACITE_BRICKS_SET);
+        crushing(consumer, basePath, BWGBlocks.DACITE_COBBLESTONE_SET, BWGBlocks.DACITE_TILES_SET, villageUpdate);
+        //Dacite Tile -> Chiseled Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.DACITE_TILES_SET, BWGBlocks.CHISELED_DACITE_BRICKS_SET, villageUpdate);
+        //Chiseled Dacite Bricks -> Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.CHISELED_DACITE_BRICKS_SET, BWGBlocks.DACITE_BRICKS_SET, villageUpdate);
+        //Dacite Bricks -> Cracked Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.CRACKED_DACITE_BRICKS_SET, villageUpdate);
         //Dacite Bricks -> Dacite
-        crushing(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_SET);
+        crushing(consumer, basePath, BWGBlocks.CRACKED_DACITE_BRICKS_SET, BWGBlocks.DACITE_SET, villageUpdate);
         //Dacite Pillar -> Dacite
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
                     new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)
-              ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "from_pillar"));
+              ).addCondition(villageUpdate)
+              .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
+    }
+
+    private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
+        //White Dacite -> White Dacite Cobblestone
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_SET, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, villageUpdate);
+        //White Dacite Cobblestone -> White Dacite Tile
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, BWGBlocks.WHITE_DACITE_TILES_SET, villageUpdate);
+        //White Dacite Tile -> Chiseled White Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_TILES_SET, BWGBlocks.CHISELED_WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //Chiseled White Dacite Bricks -> White Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.CHISELED_WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //White Dacite Bricks -> Cracked White Dacite Bricks
+        crushing(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.CRACKED_WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //White Dacite Bricks -> White Dacite
+        crushing(consumer, basePath, BWGBlocks.CRACKED_WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_SET, villageUpdate);
+        ItemStackToItemStackRecipeBuilder.crushing(
+                    IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
+                    new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)
+              ).addCondition(villageUpdate)
+              .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
+        //Red Rock Tile -> Chiseled Red Rock Bricks
+        crushing(consumer, basePath, BWGBlocks.RED_ROCK_TILES_SET, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET, villageUpdate);
         //Chiseled Red Rock -> Red Rock Bricks
         crushing(consumer, basePath, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_BRICKS_SET);
         //Red Rock Bricks -> Cracked Red Rock Bricks
         crushing(consumer, basePath, BWGBlocks.RED_ROCK_BRICKS_SET, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET);
-        //Cracked Red Rock Bricks -> Red Rock
-        crushing(consumer, basePath, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_SET);
-        //Red Rock -> Chiseled Red Rock Bricks
-        crushing(consumer, basePath, BWGBlocks.RED_ROCK_SET, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET);
+        //Cracked Red Rock Bricks -> Polished Red Rock
+        crushing(consumer, basePath, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET, BWGBlocks.POLISHED_RED_ROCK_SET, villageUpdate);
+        //Polished Red Rock -> Red Rock
+        crushing(consumer, basePath, BWGBlocks.POLISHED_RED_ROCK_SET, BWGBlocks.RED_ROCK_SET, villageUpdate);
+        //Red Rock -> Red Rock Tiles
+        crushing(consumer, basePath, BWGBlocks.RED_ROCK_SET, BWGBlocks.RED_ROCK_TILES_SET);
     }
 
     private void crushing(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {
-        String name = RegistryUtils.getPath(from.getBase());
-        crushing(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name);
-        crushing(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name);
-        crushing(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name);
-        crushing(consumer, from.getWall(), to.getWall(), basePath + "walls_conversion_" + name);
+        crushing(consumer, basePath, from, to, null);
     }
 
-    private void crushing(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
+    private void crushing(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to, @Nullable ICondition condition) {
+        String name = RegistryUtils.getPath(from.getBase());
+        crushing(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name, condition);
+        crushing(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name, condition);
+        crushing(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name, condition);
+        crushing(consumer, from.getWall(), to.getWall(), basePath + "walls_conversion_" + name, condition);
+    }
+
+    private void crushing(RecipeOutput consumer, ItemLike input, ItemLike output, String path, @Nullable ICondition condition) {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
-              ).addCondition(modLoaded)
+              ).addCondition(condition == null ? modLoaded : condition)
               .build(consumer, Mekanism.rl(path));
     }
 
     private void addEnrichingRecipes(RecipeOutput consumer, String basePath) {
         addMossyStoneEnrichingRecipes(consumer, basePath + "mossy_stone/");
         addDaciteEnrichingRecipes(consumer, basePath + "dacite/");
+        addWhiteDaciteEnrichingRecipes(consumer, basePath + "white_dacite/");
         addRedRockEnrichingRecipes(consumer, basePath + "red_rock/");
     }
 
@@ -170,40 +209,72 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void addDaciteEnrichingRecipes(RecipeOutput consumer, String basePath) {
         //Dacite Cobble -> Dacite
         enriching(consumer, basePath, BWGBlocks.DACITE_COBBLESTONE_SET, BWGBlocks.DACITE_SET);
-        //Dacite -> Dacite Bricks
-        enriching(consumer, basePath, BWGBlocks.DACITE_SET, BWGBlocks.DACITE_BRICKS_SET);
-        //Dacite Bricks -> Dacite Tile
-        enriching(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.DACITE_TILE_SET);
+        //Dacite -> Cracked Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.DACITE_SET, BWGBlocks.CRACKED_DACITE_BRICKS_SET, villageUpdate);
+        //Cracked Dacite Bricks -> Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.CRACKED_DACITE_BRICKS_SET, BWGBlocks.DACITE_BRICKS_SET, villageUpdate);
+        //Dacite Bricks -> Chiseled Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.DACITE_BRICKS_SET, BWGBlocks.CHISELED_DACITE_BRICKS_SET, villageUpdate);
+        //Chiseled Dacite Bricks -> Dacite Tile
+        enriching(consumer, basePath, BWGBlocks.CHISELED_DACITE_BRICKS_SET, BWGBlocks.DACITE_TILES_SET, villageUpdate);
         //Dacite Tile -> Dacite Cobble
-        enriching(consumer, basePath, BWGBlocks.DACITE_TILE_SET, BWGBlocks.DACITE_COBBLESTONE_SET);
+        enriching(consumer, basePath, BWGBlocks.DACITE_TILES_SET, BWGBlocks.DACITE_COBBLESTONE_SET, villageUpdate);
+    }
+
+    private void addWhiteDaciteEnrichingRecipes(RecipeOutput consumer, String basePath) {
+        //White Dacite Cobble -> White Dacite
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, BWGBlocks.WHITE_DACITE_SET, villageUpdate);
+        //White Dacite -> White Cracked Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_SET, BWGBlocks.CRACKED_WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //Cracked White Dacite Bricks -> White Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.CRACKED_WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //White Dacite Bricks -> Chiseled White Dacite Bricks
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_BRICKS_SET, BWGBlocks.CHISELED_WHITE_DACITE_BRICKS_SET, villageUpdate);
+        //Chiseled White Dacite Bricks -> White Dacite Tile
+        enriching(consumer, basePath, BWGBlocks.CHISELED_WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_TILES_SET, villageUpdate);
+        //White Dacite Tile -> White Dacite Cobble
+        enriching(consumer, basePath, BWGBlocks.WHITE_DACITE_TILES_SET, BWGBlocks.WHITE_DACITE_COBBLESTONE_SET, villageUpdate);
     }
 
     private void addRedRockEnrichingRecipes(RecipeOutput consumer, String basePath) {
-        //Red Rock -> Cracked Red Rock Bricks
-        enriching(consumer, basePath, BWGBlocks.RED_ROCK_SET, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET);
+        //Red Rock -> Polished Red Rock
+        enriching(consumer, basePath, BWGBlocks.RED_ROCK_SET, BWGBlocks.POLISHED_RED_ROCK_SET, villageUpdate);
+        //Polished Red Rock -> Cracked Red Rock
+        enriching(consumer, basePath, BWGBlocks.POLISHED_RED_ROCK_SET, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET, villageUpdate);
         //Cracked Red Rock Bricks -> Red Rock Bricks
         enriching(consumer, basePath, BWGBlocks.CRACKED_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_BRICKS_SET);
         //Red Rock Bricks -> Chiseled Red Rock
         enriching(consumer, basePath, BWGBlocks.RED_ROCK_BRICKS_SET, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET);
-        //Chiseled Red Rock -> Red Rock
-        enriching(consumer, basePath, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_SET);
+        //Chiseled Red Rock -> Red Rock Tiles
+        enriching(consumer, basePath, BWGBlocks.CHISELED_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_TILES_SET, villageUpdate);
+        //Red Rock Tiles -> Red Rock
+        enriching(consumer, basePath, BWGBlocks.RED_ROCK_TILES_SET, BWGBlocks.RED_ROCK_SET, villageUpdate);
+
         //Mossy Red Rock Bricks -> Red Rock Bricks
         enriching(consumer, basePath, BWGBlocks.MOSSY_RED_ROCK_BRICKS_SET, BWGBlocks.RED_ROCK_BRICKS_SET);
     }
 
     private void enriching(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to) {
+        enriching(consumer, basePath, from, to, null);
+    }
+
+    private void enriching(RecipeOutput consumer, String basePath, BWGBlockSet from, BWGBlockSet to, @Nullable ICondition condition) {
         String name = RegistryUtils.getPath(from.getBase());
-        enriching(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name);
-        enriching(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name);
-        enriching(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name);
-        enriching(consumer, from.getWall(), to.getWall(), basePath + "walls_conversion_" + name);
+        enriching(consumer, from.getBase(), to.getBase(), basePath + "conversion_" + name, condition);
+        enriching(consumer, from.getSlab(), to.getSlab(), basePath + "slabs_conversion_" + name, condition);
+        enriching(consumer, from.getStairs(), to.getStairs(), basePath + "stairs_conversion_" + name, condition);
+        enriching(consumer, from.getWall(), to.getWall(), basePath + "walls_conversion_" + name, condition);
     }
 
     private void enriching(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
+        enriching(consumer, input, output, path, null);
+    }
+
+    private void enriching(RecipeOutput consumer, ItemLike input, ItemLike output, String path, @Nullable ICondition condition) {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
-              ).addCondition(modLoaded)
+              ).addCondition(condition == null ? modLoaded : condition)
               .build(consumer, Mekanism.rl(path));
     }
 

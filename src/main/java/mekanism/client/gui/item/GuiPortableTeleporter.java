@@ -15,7 +15,9 @@ import mekanism.client.gui.element.custom.GuiTeleporterStatus;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.item.PortableTeleporterContainer;
+import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -41,22 +43,23 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
         super.addGuiElements();
         status = addRenderableWidget(new GuiTeleporterStatus(this, () -> getFrequency() != null, menu::getStatus));
         addRenderableWidget(new GuiVerticalPowerBar(this, new IBarInfoHandler() {
-            @Override
-            public Component getTooltip() {
-                IEnergyContainer container = menu.getEnergyContainer();
-                return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
-            }
+                  @Override
+                  public Component getTooltip() {
+                      IEnergyContainer container = menu.getEnergyContainer();
+                      return container == null ? EnergyDisplay.ZERO.getTextComponent() : EnergyDisplay.of(container).getTextComponent();
+                  }
 
-            @Override
-            public double getLevel() {
-                IEnergyContainer container = menu.getEnergyContainer();
-                return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
-            }
-        }, 158, 26));
+                  @Override
+                  public double getLevel() {
+                      IEnergyContainer container = menu.getEnergyContainer();
+                      return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
+                  }
+              }, 158, 26)
+        ).warning(WarningType.NOT_ENOUGH_ENERGY, () -> menu.getStatus() == TeleporterStatus.NOT_ENOUGH_ENERGY);
         teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, (element, mouseX, mouseY) -> {
             GuiPortableTeleporter gui = (GuiPortableTeleporter) element.gui();
             TeleporterFrequency frequency = gui.getFrequency();
-            if (frequency != null && gui.menu.getStatus() == 1) {
+            if (frequency != null && gui.menu.getStatus().isReady()) {
                 //This should always be true if the teleport button is active, but validate it just in case
                 Player player = Minecraft.getInstance().player;
                 if (player == null) {
@@ -77,7 +80,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
 
     @Override
     public void buttonsUpdated() {
-        teleportButton.active = menu.getStatus() == 1 && getFrequency() != null;
+        teleportButton.active = menu.getStatus().isReady() && getFrequency() != null;
     }
 
     @Override

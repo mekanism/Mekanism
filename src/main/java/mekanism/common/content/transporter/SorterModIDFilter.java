@@ -52,7 +52,7 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modID);
+        return 31 * super.hashCode() + modID.hashCode();
     }
 
     @Override

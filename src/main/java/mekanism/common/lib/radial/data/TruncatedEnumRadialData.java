@@ -78,6 +78,8 @@ public class TruncatedEnumRadialData<MODE extends Enum<MODE> & IRadialMode> exte
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), modes.size());
+        int result = super.hashCode();
+        result = 31 * result + modes.size();
+        return result;
     }
 }

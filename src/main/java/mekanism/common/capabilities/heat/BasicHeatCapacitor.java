@@ -9,6 +9,7 @@ import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -93,6 +94,11 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
     @Override
     public void handleHeat(double transfer) {
         heatToHandle += transfer;
+    }
+
+    @Override
+    public boolean isAmbientTemperature() {
+        return Mth.equal(getTemperature(), getAmbientTemperature());
     }
 
     public void update() {

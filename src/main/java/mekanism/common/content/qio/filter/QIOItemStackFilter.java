@@ -3,7 +3,6 @@ package mekanism.common.content.qio.filter;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
@@ -57,7 +56,10 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), itemType.getItem(), fuzzyMode);
+        int result = super.hashCode();
+        result = 31 * result + itemType.getItem().hashCode();
+        result = 31 * result + Boolean.hashCode(fuzzyMode);
+        return result;
     }
 
     @Override

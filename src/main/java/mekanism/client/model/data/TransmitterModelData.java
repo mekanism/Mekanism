@@ -2,7 +2,6 @@ package mekanism.client.model.data;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.Objects;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
@@ -55,7 +54,9 @@ public sealed class TransmitterModelData permits Diversion {
 
     @Override
     public int hashCode() {
-        return Objects.hash(connections, hasColor);
+        int result = connections.hashCode();
+        result = 31 * result + Boolean.hashCode(hasColor);
+        return result;
     }
 
     public static final class Diversion extends TransmitterModelData {

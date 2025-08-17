@@ -12,7 +12,7 @@ import mekanism.api.Upgrade;
 import mekanism.client.sound.PlayerSound.SoundType;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import mekanism.common.tile.interfaces.ITileSound;
 import mekanism.common.tile.interfaces.IUpgradeTile;
@@ -59,7 +59,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @apiNote Only used by client
  */
-@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class SoundHandler {
 
     private SoundHandler() {
@@ -315,6 +315,10 @@ public class SoundHandler {
         public void tick() {
             // Every configured interval, see if we need to adjust muffling
             Level level = Minecraft.getInstance().level;
+            if (level == null) {
+                this.stop();
+                return;
+            }
             if (!MekanismUtils.isTickingNormally(level)) {
                 //Mute it similar to how the minecart sound handling is
                 volume = 0;

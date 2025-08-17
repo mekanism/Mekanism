@@ -5,6 +5,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.client.render.ModelRenderer;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
@@ -39,11 +40,15 @@ public abstract class RenderData {
 
     @Override
     public int hashCode() {
-        return Objects.hash(height, length, width);
+        int result = location.hashCode();
+        result = 31 * result + height;
+        result = 31 * result + length;
+        result = 31 * result + width;
+        return result;
     }
 
     @Override
-    public boolean equals(Object object) {
+    public boolean equals(@Nullable Object object) {
         return object instanceof RenderData data && data.height == height && data.length == length && data.width == width;
     }
 
@@ -120,5 +125,32 @@ public abstract class RenderData {
             //noinspection unchecked
             return (DATA_TYPE) data;
         }
+
+        public ScaledRenderData buildScaled(float scale) {
+            if (location == null) {
+                throw new IllegalStateException("Incomplete render data builder, no render location set.");
+            }
+            ScaledRenderData data;
+            if (!fluid.isEmpty()) {
+                data = new FluidRenderData.Scaled(location, width, height, length, fluid, scale);
+            } else if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                data = new ChemicalRenderData.Scaled(location, width, height, length, chemical, scale);
+            } else {
+                throw new IllegalStateException("Incomplete render data builder, missing or unknown chemical or fluid.");
+            }
+            return data;
+        }
+    }
+
+    public interface ScaledRenderData {
+
+        default RenderData asRenderData() {
+            return (RenderData) this;
+        }
+
+        /**
+         * @return the scale to use on {@link ModelRenderer#getModel(RenderData, double)}
+         */
+        float scale();
     }
 }

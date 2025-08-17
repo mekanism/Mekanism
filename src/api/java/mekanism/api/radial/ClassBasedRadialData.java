@@ -51,6 +51,6 @@ public abstract class ClassBasedRadialData<MODE extends IRadialMode> extends Rad
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), clazz);
+        return 31 * super.hashCode() + clazz.hashCode();
     }
 }

@@ -73,4 +73,9 @@ public abstract class FluidChemicalToChemicalRecipe extends MekanismRecipe<Singl
         return getFluidInput().hasNoMatchingInstances() || getChemicalInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public void logMissingTags() {
+        getFluidInput().logMissingTags();
+        getChemicalInput().logMissingTags();
+    }
 }

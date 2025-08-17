@@ -159,7 +159,7 @@ public class FormatSplitter {
 
     /**
      * Represents information about a MessageFormat formatting code. Valid MessageFormat styles:
-     * <p><ul>
+     * <ul>
      * <li> { ArgumentIndex }
      * <li> { ArgumentIndex, FormatType }
      * <li> { ArgumentIndex, FormatType, FormatStyle }

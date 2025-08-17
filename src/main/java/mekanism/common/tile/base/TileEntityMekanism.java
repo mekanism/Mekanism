@@ -45,6 +45,7 @@ import mekanism.common.attachments.containers.heat.HeatCapacitorData;
 import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
+import mekanism.common.block.attribute.AttributeHasBounding;
 import mekanism.common.block.attribute.AttributeSound;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.block.attribute.AttributeStateFacing;
@@ -95,6 +96,7 @@ import mekanism.common.lib.LastEnergyTracker;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.lib.frequency.TileComponentFrequency;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.security.BlockSecurityUtils;
 import mekanism.common.lib.security.ISecurityTile;
 import mekanism.common.registries.MekanismDataComponents;
@@ -143,6 +145,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -174,6 +177,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private boolean isDirectional;
     private boolean isActivatable;
     private AttributeStateActive activeAttribute;
+    private boolean hasBounding;
     private boolean hasSecurity;
     private boolean hasSound;
     private boolean hasGui;
@@ -184,6 +188,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     private Component customName;
     @Nullable
     private String containerDescription;
+
+    private boolean syncMasterToBounding;
 
     //Methods for implementing ITileDirectional
     @Nullable
@@ -224,18 +230,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Variables for handling IMekanismChemicalHandler
     @Nullable
-    private final ChemicalHandlerManager chemicalHandlerManager;
+    protected final ChemicalHandlerManager chemicalHandlerManager;
     private float radiationScale;
     //End variables IMekanismChemicalHandler
 
     //Variables for handling IMekanismFluidHandler
     @Nullable
-    private final FluidHandlerManager fluidHandlerManager;
+    protected final FluidHandlerManager fluidHandlerManager;
     //End variables IMekanismFluidHandler
 
     //Variables for handling IMekanismStrictEnergyHandler
     @Nullable
-    private final EnergyHandlerManager energyHandlerManager;
+    protected final EnergyHandlerManager energyHandlerManager;
     private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
 
@@ -340,6 +346,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         supportsRedstone = Attribute.has(block, AttributeRedstone.class);
         hasSound = Attribute.has(block, AttributeSound.class);
         hasGui = Attribute.has(block, AttributeGui.class);
+        hasBounding = Attribute.has(block, AttributeHasBounding.class);
         hasSecurity = Attribute.has(block, AttributeSecurity.class);
         activeAttribute = Attribute.get(block, AttributeStateActive.class);
         isActivatable = hasSound || activeAttribute != null;
@@ -527,7 +534,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     protected WrenchResult tryWrenchDismantle(BlockState state, Player player, ItemStack stack) {
         if (player.isShiftKeyDown()) {
-            if (IRadiationManager.INSTANCE.isRadiationEnabled() && getRadiationScale() > 0) {
+            if (RadiationManager.isGlobalRadiationEnabled() && getRadiationScale() > 0) {
                 //Don't allow dismantling radioactive blocks
                 return WrenchResult.RADIOACTIVE;
             }
@@ -620,6 +627,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     public static void tickServer(Level level, BlockPos pos, BlockState state, TileEntityMekanism tile) {
+        if (tile.hasBounding && tile.syncMasterToBounding) {
+            //TODO: Evaluate checking every x ticks to make sure we have bounding blocks (at least if we haven't already checked) in case we are missing them
+            // for example if someone set the main block by using a command
+            tile.syncMasterToBounding = false;
+            AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+            if (hasBounding != null) {
+                //Note: In theory we only ever set syncMasterToBounding if we know this has bounding blocks, but validate it
+                hasBounding.syncMasterPosition(level, pos, state);
+            }
+        }
         tile.frequencyComponent.tickServer(level, pos);
         if (tile.supportsUpgrades()) {
             tile.upgradeComponent.tickServer();
@@ -692,10 +709,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.removed();
         }
-        if (!isRemote() && IRadiationManager.INSTANCE.isRadiationEnabled() && shouldDumpRadiation()) {
+        if (!isRemote() && RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            IRadiationManager.INSTANCE.dumpRadiation(getTileGlobalPos(), getChemicalTanks(null), false);
+            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(null), false);
         }
     }
 
@@ -712,6 +729,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      */
     protected boolean onUpdateServer() {
         return false;
+    }
+
+    public void resyncMasterToBounding() {
+        if (hasBounding) {
+            syncMasterToBounding = true;
+        }
     }
 
     @Override
@@ -1120,7 +1143,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
             //TODO: Do we want some other defaults as well?
         }
-        return 0;
+        return Redstone.SIGNAL_NONE;
     }
 
     /**
@@ -1252,7 +1275,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public float getRadiationScale() {
-        return IRadiationManager.INSTANCE.isRadiationEnabled() ? radiationScale : 0;
+        return RadiationManager.isGlobalRadiationEnabled() ? radiationScale : 0;
     }
 
     @Nullable
@@ -1281,7 +1304,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         //Skip tiles that have no gas tanks and skip the creative chemical tank
         boolean hasNonEmpty = false;
         List<ChemicalStack> stacks = new ArrayList<>(tanks.size());
-        boolean skipRadioactive = IRadiationManager.INSTANCE.isRadiationEnabled() && shouldDumpRadiation();
+        boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation();
         for (IChemicalTank tank : tanks) {
             if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
@@ -1457,7 +1480,9 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             for (int i = 0; i < size; i++) {
                 IHeatCapacitor capacitor = capacitors.get(i);
                 HeatCapacitorData data = stored.get(i);
-                capacitor.setHeat(data.heat());
+                if (data.heat().isPresent()) {
+                    capacitor.setHeat(data.heat().getAsDouble());
+                }
                 if (capacitor instanceof BasicHeatCapacitor basic) {
                     basic.setHeatCapacity(data.capacity(), false);
                 }
@@ -1469,7 +1494,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public AttachedHeat collectHeatCapacitors(DataComponentMap.Builder builder, List<IHeatCapacitor> capacitors) {
         List<HeatCapacitorData> stored = new ArrayList<>(capacitors.size());
         for (IHeatCapacitor capacitor : capacitors) {
-            stored.add(new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity()));
+            if (capacitor.isAmbientTemperature()) {
+                stored.add(new HeatCapacitorData(capacitor.getHeatCapacity()));
+            } else {
+                stored.add(new HeatCapacitorData(capacitor.getHeat(), capacitor.getHeatCapacity()));
+            }
         }
         return new AttachedHeat(stored);
     }

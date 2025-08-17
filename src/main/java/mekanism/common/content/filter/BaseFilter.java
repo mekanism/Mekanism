@@ -5,7 +5,6 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Instance;
 import com.mojang.serialization.codecs.RecordCodecBuilder.Mu;
 import io.netty.buffer.ByteBuf;
-import java.util.Objects;
 import java.util.function.Supplier;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.miner.MinerItemStackFilter;
@@ -64,7 +63,7 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     public int hashCode() {
         //Hash the filter type to ensure things like material and item filters don't collide on their hash if everything
         // else except their type is equal
-        return Objects.hash(getFilterType(), enabled);
+        return 31 * getFilterType().hashCode() + Boolean.hashCode(enabled);
     }
 
     @Override

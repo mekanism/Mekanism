@@ -34,12 +34,12 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
-import mekanism.common.block.BlockBounding;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.gear.ItemAtomicDisassembler.DisassemblerMode;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -130,7 +130,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
 
     public static boolean canVeinBlock(BlockState state) {
         //Even though we now handle breaking bounding blocks properly, don't allow vein mining them
-        return !(state.getBlock() instanceof BlockBounding);
+        return !state.is(MekanismBlocks.BOUNDING_BLOCK);
     }
 
     public static Object2IntMap<BlockPos> findPositions(Level world, Map<BlockPos, BlockState> initial, int extendedRange, Reference2BooleanMap<Block> oreTracker) {
@@ -165,7 +165,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
                             frontier.put(nextPos.immutable(), nextState.get());
                             //Note: We do this for all blocks we find/attempt to mine, not just ones we do mine, as it is a bit simpler
                             // and also represents those blocks getting checked by the vein mining for potentially being able to be mined
-                            PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, Objects.hash(blockPos, nextPos),
+                            PacketUtils.sendToAllTracking(new PacketLightningRender(LightningPreset.TOOL_AOE, 31 * blockPos.hashCode() + nextPos.hashCode(),
                                   blockPos.getCenter(), nextPos.getCenter(), 10), world, blockPos);
                         }
                     }

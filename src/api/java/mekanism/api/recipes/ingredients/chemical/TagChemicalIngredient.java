@@ -1,6 +1,7 @@
 package mekanism.api.recipes.ingredients.chemical;
 
 import com.mojang.serialization.MapCodec;
+import java.util.Optional;
 import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
@@ -8,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.Named;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,6 +49,14 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
               .stream()
               .flatMap(HolderSet::stream)
               .distinct();//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
+    }
+
+    @Override
+    public void logMissingTags() {
+        Optional<Named<Chemical>> registryTag = MekanismAPI.CHEMICAL_REGISTRY.getTag(tag());
+        if (registryTag.isEmpty() || registryTag.get().size() == 0) {
+            MekanismAPI.logger.error("Empty tag: {}", tag);
+        }
     }
 
     @Override

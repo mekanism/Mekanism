@@ -45,6 +45,8 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      */
     boolean hasNoMatchingInstances();
 
+    void logMissingTags();
+
     /**
      * Primarily for JEI, a list of valid instances of the type
      *

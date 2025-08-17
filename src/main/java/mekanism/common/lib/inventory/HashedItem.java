@@ -1,7 +1,6 @@
 package mekanism.common.lib.inventory;
 
 import com.mojang.serialization.Codec;
-import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
@@ -131,13 +130,13 @@ public class HashedItem implements IHashedItem {
         public UUIDAwareHashedItem(ItemStack stack, @NotNull UUID uuid) {
             super(stack.copyWithCount(1));
             this.uuid = uuid;
-            this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
+            this.uuidBasedHash = 31 * super.hashCode() + this.uuid.hashCode();
         }
 
         public UUIDAwareHashedItem(HashedItem other, @NotNull UUID uuid) {
             super(other);
             this.uuid = uuid;
-            this.uuidBasedHash = Objects.hash(super.hashCode(), this.uuid);
+            this.uuidBasedHash = 31 * super.hashCode() + this.uuid.hashCode();
         }
 
         @NotNull

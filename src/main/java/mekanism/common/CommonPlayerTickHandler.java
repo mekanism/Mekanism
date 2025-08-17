@@ -4,7 +4,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.LongSupplier;
-import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
@@ -20,14 +19,13 @@ import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
 import mekanism.common.content.gear.mekasuit.ModuleHydraulicPropulsionUnit;
 import mekanism.common.content.gear.mekasuit.ModuleLocomotiveBoostingUnit;
-import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.item.gear.ItemFreeRunners;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaMask;
 import mekanism.common.item.gear.ItemScubaTank;
+import mekanism.common.item.interfaces.IFreeRunnerItem;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
@@ -57,12 +55,9 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
-
-    private static final Predicate<ItemStack> FREE_RUNNERS_PREDICATE = itemStack -> itemStack.getItem() instanceof ItemFreeRunners boots && boots.getMode(itemStack).preventsFallDamage();
 
     public static boolean isOnGroundOrSleeping(Player player) {
         return player.onGround() || player.isSleeping() || player.getAbilities().flying;
@@ -81,11 +76,16 @@ public class CommonPlayerTickHandler {
         ItemStack stack = player.getItemBySlot(EquipmentSlot.FEET);
         if (stack.isEmpty()) {
             return 0;
-        } else if (stack.getItem() instanceof ItemFreeRunners freeRunners && freeRunners.getMode(stack).providesStepBoost()) {
-            return 0.5F;
         }
         IModule<ModuleHydraulicPropulsionUnit> hydraulic = IModuleHelper.INSTANCE.getIfEnabled(stack, MekanismModules.HYDRAULIC_PROPULSION_UNIT);
-        return hydraulic != null ? hydraulic.getCustomInstance().getStepHeight() : 0F;
+        if (hydraulic != null) {
+            return hydraulic.getCustomInstance().getStepHeight();
+        }
+        ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(player);
+        if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).providesStepBoost()) {
+            return 0.5F;
+        }
+        return 0;
     }
 
     @SubscribeEvent
@@ -99,7 +99,7 @@ public class CommonPlayerTickHandler {
     private void tickEnd(Player player) {
         Mekanism.playerState.updateStepAssist(player);
         if (player instanceof ServerPlayer serverPlayer) {
-            RadiationManager.get().tickServer(serverPlayer);
+            PlayerExposure.tickServer(serverPlayer);
         }
 
         ItemStack jetpack = IJetpackItem.getActiveJetpack(player);
@@ -206,6 +206,8 @@ public class CommonPlayerTickHandler {
             // Is that fine? Maybe it is better, or maybe it is worse from a balance standpoint
             float ratioAbsorbed = ItemMekaSuitArmor.getDamageAbsorbed(player, damageContainer.getSource(), damage);
             if (ratioAbsorbed > 0) {
+                //TODO - 1.21: What should we set this to, and how does it behave if we also cancel the event
+                //damageContainer.setPostAttackInvulnerabilityTicks();
                 float damageRemaining = damage * Math.max(0, 1 - ratioAbsorbed);
                 if (damageRemaining <= 0) {
                     event.setCanceled(true);
@@ -295,26 +297,19 @@ public class CommonPlayerTickHandler {
     @Nullable
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
-        if (!feetStack.isEmpty()) {
-            if (FREE_RUNNERS_PREDICATE.test(feetStack)) {
-                return freeRunnerFallInfo(feetStack);
-            } else if (feetStack.getItem() instanceof ItemMekaSuitArmor) {
-                return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
-                      MekanismConfig.gear.mekaSuitEnergyUsageFall);
-            }
+        if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemMekaSuitArmor) {
+            return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
+                  MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
-        if (Mekanism.hooks.curios.isLoaded()) {
-            ItemStack curio = CuriosIntegration.findFirstCurio(base, FREE_RUNNERS_PREDICATE);
-            if (!curio.isEmpty()) {
-                return freeRunnerFallInfo(curio);
+        ItemStack freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
+        if (!freeRunners.isEmpty()) {
+            ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
+            if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).preventsFallDamage()) {
+                return new FallEnergyInfo(((IFreeRunnerItem) freeRunners.getItem()).getRunnerEnergyContainer(freeRunners), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                      MekanismConfig.gear.freeRunnerFallEnergyCost);
             }
         }
         return null;
-    }
-
-    private static @NotNull FallEnergyInfo freeRunnerFallInfo(ItemStack feetStack) {
-        return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.freeRunnerFallDamageRatio,
-              MekanismConfig.gear.freeRunnerFallEnergyCost);
     }
 
     private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, LongSupplier energyCost) {

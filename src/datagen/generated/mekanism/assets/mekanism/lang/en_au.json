@@ -30,6 +30,7 @@
   "configuration.mekanism.client.hud.color.tooltip": "Colour (RGB) of HUD used by MekaSuit.",
   "configuration.mekanism.client.hud.color.warning": "Warning Colour",
   "configuration.mekanism.client.hud.color.warning.tooltip": "Colour (RGB) of warning HUD elements used by MekaSuit.",
+  "configuration.mekanism.client.hud.mekasuit.energy_bar.tooltip": "Enables rendering an energy bar above the armour bar that displays the total energy of the currently equipped MekaSuit.",
   "configuration.mekanism.client.last_window_positions.color": "Colour Window Position",
   "configuration.mekanism.client.last_window_positions.color.button": "Edit Colour Position",
   "configuration.mekanism.client.last_window_positions.color.tooltip": "The last position the Colour window was in when it was closed.",

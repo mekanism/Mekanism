@@ -123,7 +123,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void addWarningTab(IWarningTracker warningTracker) {
-        addRenderableWidget(new GuiWarningTab(this, warningTracker, 109));
+        addRenderableWidget(new GuiWarningTab(this, warningTracker, true));
     }
 
     /**
@@ -271,10 +271,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         ComponentPath componentPath = handleNavigation.apply(handlerWithWindows, navigation);
         if (componentPath == null) {
             return null;
-        } else if (componentPath instanceof ComponentPath.Path path) {
-            if (path.component() == handlerWithWindows) {
+        } else if (componentPath instanceof ComponentPath.Path(ContainerEventHandler component, ComponentPath childPath)) {
+            if (component == handlerWithWindows) {
                 //Replace the root of the path with ourselves rather than our fake wrapper
-                return ComponentPath.path(this, path.childPath());
+                return ComponentPath.path(this, childPath);
             }
         }
         return componentPath;

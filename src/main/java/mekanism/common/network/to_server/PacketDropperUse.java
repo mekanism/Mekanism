@@ -25,7 +25,6 @@ import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,6 +32,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -65,7 +65,7 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
                     if (tile instanceof TileEntityMultiblock<?> multiblock) {
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
-                            handleTankType(structure, player, stack, GlobalPos.of(player.level().dimension(), structure.getBounds().getCenter()));
+                            handleTankType(structure, player, stack, player.level(), structure.getBounds().getCenter());
                         }
                     } else {
                         if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -76,14 +76,14 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
                                 return;
                             }
                         }
-                        handleTankType(tile, player, stack, tile.getTileGlobalPos());
+                        handleTankType(tile, player, stack, tile.getLevel(), tile.getBlockPos());
                     }
                 }
             }
         }
     }
 
-    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemStack stack, GlobalPos pos) {
+    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemStack stack, Level level, BlockPos pos) {
         if (tankType == TankType.FLUID_TANK) {
             IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
@@ -92,17 +92,17 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         } else if (tankType == TankType.CHEMICAL_TANK) {
             IChemicalTank chemicalTank = handler.getChemicalTank(tankId, null);
             if (chemicalTank != null) {
-                handleChemicalTank(player, stack, chemicalTank, pos);
+                handleChemicalTank(player, stack, chemicalTank, level, pos);
             }
         }
     }
 
-    private void handleChemicalTank(ServerPlayer player, ItemStack stack, IChemicalTank tank, GlobalPos pos) {
+    private void handleChemicalTank(ServerPlayer player, ItemStack stack, IChemicalTank tank, Level level, BlockPos pos) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
                 //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(pos, tank.getStack());
+                IRadiationManager.INSTANCE.dumpRadiation(level, pos, tank.getStack());
                 tank.setEmpty();
                 MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             }

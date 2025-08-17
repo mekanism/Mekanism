@@ -11,7 +11,8 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.ClientRadiation;
+import mekanism.common.lib.radiation.RadiationUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
@@ -30,12 +31,12 @@ public class ModuleGeigerUnit implements ICustomModule<ModuleGeigerUnit> {
     @Override
     public void addHUDElements(IModule<ModuleGeigerUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            double magnitude = RadiationManager.get().getClientEnvironmentalRadiation();
+            double magnitude = ClientRadiation.getClientEnvironmentalRadiation();
             Component text = UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SV, 2);
             if (MekanismConfig.common.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
-                double maxMagnitude = RadiationManager.get().getClientMaxMagnitude();
+                double maxMagnitude = ClientRadiation.getClientMaxMagnitude();
                 text = MekanismLang.GENERIC_WITH_PARENTHESIS.translate(text, TextUtils.getHoursMinutes(player.level(),
-                      RadiationManager.get().getDecayTime(maxMagnitude, true)));
+                      RadiationUtil.getDecayTime(maxMagnitude, true)));
             }
             HUDColor color;
             if (magnitude <= IRadiationManager.INSTANCE.baselineRadiation()) {

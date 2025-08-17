@@ -77,6 +77,6 @@ public class BooleanRadialData extends RadialData<IRadialMode> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), rawModes);
+        return 31 * super.hashCode() + rawModes.hashCode();
     }
 }

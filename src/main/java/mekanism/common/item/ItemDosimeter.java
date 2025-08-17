@@ -6,7 +6,8 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationScale;
+import mekanism.common.lib.radiation.RadiationUtil;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
@@ -57,12 +58,12 @@ public class ItemDosimeter extends Item {
     }
 
     private void sendDosimeterLevel(LivingEntity entity, Player player, ILangEntry doseLangEntry) {
-        double radiation = IRadiationManager.INSTANCE.isRadiationEnabled() ? entity.getData(MekanismAttachmentTypes.RADIATION) : 0;
+        double radiation = RadiationManager.isGlobalRadiationEnabled() ? entity.getData(MekanismAttachmentTypes.RADIATION) : 0;
         EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
         player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
         if (MekanismConfig.common.enableDecayTimers.get() && radiation > IRadiationManager.INSTANCE.minRadiationMagnitude()) {
             player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
-                  TextUtils.getHoursMinutes(player.level(), RadiationManager.get().getDecayTime(radiation, false))));
+                  TextUtils.getHoursMinutes(player.level(), RadiationUtil.getDecayTime(radiation, false))));
         }
     }
 }

@@ -1,17 +1,20 @@
 package mekanism.generators.client.render;
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
-import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
+import mekanism.client.render.data.RenderData.ScaledRenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.generators.common.GeneratorsProfilerConstants;
@@ -30,6 +33,7 @@ import net.minecraft.util.profiling.ProfilerFiller;
 public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing> {
 
     private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
+    private static final Cache<ScaledRenderData, Model3D> cachedCoolantModels = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(5, TimeUnit.MINUTES).build();
     private static final int GLOW_ARGB = MekanismRenderer.getColorARGB(0x76E0EC, 0.6F);
     //TODO: Replace using a model here for the glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
@@ -41,6 +45,15 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
           .zBounds(0.05F, 0.95F)
           .setSideRender(direction -> direction.getAxis().isHorizontal())
     );
+
+    private static Model3D getCoolantModel(ScaledRenderData renderData) {
+        Model3D model = cachedCoolantModels.getIfPresent(renderData);
+        if (model == null) {
+            model = ModelRenderer.getModel(renderData.asRenderData(), renderData.scale());
+            cachedCoolantModels.put(renderData, model);
+        }
+        return model;
+    }
 
     public static void resetCachedModels() {
         cachedHeatedCoolantModels.clear();
@@ -76,8 +89,16 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             if (buffer == null) {
                 buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
             }
-            FluidRenderData data = RenderData.Builder.create(multiblock.coolantTank.getFluidTank().getFluid()).of(multiblock).build();
-            renderObject(data, multiblock.valves, pos, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
+            ScaledRenderData data = RenderData.Builder.create(multiblock.coolantTank.getFluidTank().getFluid()).of(multiblock).buildScaled(multiblock.prevCoolantScale);
+            Model3D model = getCoolantModel(data);
+            renderObject(data.asRenderData(), pos, model, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
+        } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
+            if (buffer == null) {
+                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            }
+            ScaledRenderData data = RenderData.Builder.create(multiblock.coolantTank.getChemicalTank().getStack()).of(multiblock).buildScaled(multiblock.prevCoolantScale);
+            Model3D model = getCoolantModel(data);
+            renderObject(data.asRenderData(), pos, model, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
             if (buffer == null) {

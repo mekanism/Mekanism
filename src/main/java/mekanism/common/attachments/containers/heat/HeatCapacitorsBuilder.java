@@ -52,7 +52,7 @@ public class HeatCapacitorsBuilder {
         public AttachedHeat initStorage(int containers) {
             List<HeatCapacitorData> capacitors = new ArrayList<>(containers);
             for (int capacitor = 0; capacitor < containers; capacitor++) {
-                capacitors.add(new HeatCapacitorData(0.0, defaultHeatCapacities.getDouble(capacitor)));
+                capacitors.add(new HeatCapacitorData(defaultHeatCapacities.getDouble(capacitor)));
             }
             return new AttachedHeat(capacitors);
         }

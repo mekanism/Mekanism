@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-12T12:16:50.5574131	Tags: mekanism
+// 1.21.1	2025-08-15T17:45:13.9032188	Tags: mekanism
 8a89da3b810e00ad44b7ee4d062a88db6298c8fe data/create/tags/fluid/no_infinite_draining.json
 b881c0bb158879ac88758c2b0562b422271e6397 data/c/tags/block/barrels.json
 adb3ecfd3180c123cdc984320eab5ce930bdc5be data/c/tags/block/barrels/personal.json
@@ -206,6 +206,7 @@ f549715bfd65ed54ca643077696fcff45e31cb72 data/mekanism/tags/block/farming_overri
 8d24a88a42174bf87467809538b59296a4deeb8d data/mekanism/tags/block/personal_storage.json
 10324698ef50d9ab1c367abd0d46152a26bf5ed5 data/mekanism/tags/damage_type/is_preventable_magic.json
 bf457102006e4f901e6858ec33bb241e55c4724c data/mekanism/tags/damage_type/mekasuit_always_supported.json
+ad8a22bdd734eacac93d6c193969fa6981ea3a9e data/mekanism/tags/data_component_type/config/clearable.json
 4b67fc6179cbe96b6cb9674c9d5a9ee562b63b59 data/mekanism/tags/entity_type/radiation_immune.json
 8e31f21fe2a9c86403af7a98e3d163b5513a83a1 data/mekanism/tags/entity_type/valid_sps_experiment.json
 ab7a3106f18b6b47d54a87a099ddd43adfa77368 data/mekanism/tags/item/alloys.json
@@ -246,7 +247,7 @@ c0fa4c502fa4977bb024aa5c59ab99d00fb853ff data/mekanism/tags/item/unit.json
 e5e1cb4e8e915c4c78c3ad064d3ba7219c029355 data/mekanism/tags/mekanism/chemical/diamond.json
 61af0ea7c8d297d714e770d36434a317500d15e9 data/mekanism/tags/mekanism/chemical/dirty.json
 5c914c224222cfa7a0f313dba526f184fa6edea9 data/mekanism/tags/mekanism/chemical/fungi.json
-9997959b37122ce728beccbe0b0fddf3299a6337 data/mekanism/tags/mekanism/chemical/gaseous.json
+db78a3864703bf7e8f23cd5f1c77ef740b837f41 data/mekanism/tags/mekanism/chemical/gaseous.json
 36354cb6d883774cf407b601fa7054686fb647d1 data/mekanism/tags/mekanism/chemical/gold.json
 af8ca69893bd56125e9204b0bdd702767d9db9ab data/mekanism/tags/mekanism/chemical/redstone.json
 b52afb060e54f9fa521b82346af5cb3cd4378697 data/mekanism/tags/mekanism/chemical/refined_obsidian.json

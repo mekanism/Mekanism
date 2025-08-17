@@ -21,8 +21,8 @@ import org.joml.Vector3f;
 
 public class LaserParticle extends TextureSheetParticle {
 
-    private static final float RADIAN_45 = (float) Math.toRadians(45);
-    private static final float RADIAN_90 = (float) Math.toRadians(90);
+    private static final float RADIAN_45 = 45 * Mth.DEG_TO_RAD;
+    private static final float RADIAN_90 = 90 * Mth.DEG_TO_RAD;
 
     private final Direction direction;
     private final float halfLength;

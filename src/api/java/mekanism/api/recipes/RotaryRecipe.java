@@ -137,6 +137,16 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     }
 
     @Override
+    public void logMissingTags() {
+        if (hasFluidToChemical()) {
+            getFluidInput().logMissingTags();
+        }
+        if (hasChemicalToFluid()) {
+            getChemicalInput().logMissingTags();
+        }
+    }
+
+    @Override
     public final RecipeType<RotaryRecipe> getType() {
         return MekanismRecipeTypes.TYPE_ROTARY.value();
     }

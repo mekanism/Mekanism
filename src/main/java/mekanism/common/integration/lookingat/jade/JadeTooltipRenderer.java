@@ -83,11 +83,11 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
                     continue;
                 }
                 ILookingAtElement element = lookingAtElement.get();
-                if (element instanceof TextElement textElement) {
+                if (element instanceof TextElement(Component text)) {
                     if (lastText != null) {//Fallback to printing the last text
                         tooltip.add(lastText);
                     }
-                    lastText = textElement.text();
+                    lastText = text;
                 } else {
                     ResourceLocation name = element.getID();
                     if (config.get(name)) {

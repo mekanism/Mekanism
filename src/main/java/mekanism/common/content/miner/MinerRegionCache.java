@@ -38,7 +38,7 @@ import org.slf4j.Logger;
  * Copy of PathNavigationRegion, but will force chunks to load as PathNavigationRegion won't do it (if anchor upgrade installed
  */
 @NothingNullByDefault
-public class MinerRegionCache implements BlockGetter, CollisionGetter {
+public class MinerRegionCache implements CollisionGetter {
     private static final Logger LOGGER = LogUtils.getLogger();
     protected final int centerX;
     protected final int centerZ;

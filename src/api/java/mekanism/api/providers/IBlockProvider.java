@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
-@SuppressWarnings({"removal"})
+@SuppressWarnings("removal")
 @MethodsReturnNonnullByDefault
 @Deprecated(forRemoval = true, since = "10.7.11")
 public interface IBlockProvider extends IItemProvider {

@@ -1,0 +1,7 @@
+{
+  "values": [
+    "mekanismgenerators:fission_logic",
+    "mekanismgenerators:fusion_logic",
+    "mekanismgenerators:active_cooled"
+  ]
+}

@@ -91,8 +91,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
-     * of the stack/stack size
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
+     * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
     protected long getInsertRate(@Nullable AutomationType automationType) {
@@ -106,8 +106,8 @@ public class BasicEnergyContainer implements IEnergyContainer {
      *
      * @return The rate this tank can insert/extract at.
      *
-     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting
-     * of the stack/stack size
+     * @implNote By default, this returns {@link Long#MAX_VALUE} to not actually limit the container's rate. By default, this is also ignored for direct setting of the
+     * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
     protected long getExtractRate(@Nullable AutomationType automationType) {
@@ -149,8 +149,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override
@@ -164,8 +162,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override

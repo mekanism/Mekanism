@@ -14,6 +14,7 @@ import net.minecraft.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -49,14 +50,17 @@ public class ItemMekanismPaxel extends DiggerItem {
     private final IPaxelMaterial material;
 
     public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.
-              attributes(createAttributes(material, material.getPaxelDamage(), material.getPaxelAtkSpeed())));
+        super(material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties
+              .durability(material.getPaxelDurability())
+              .attributes(createAttributes(material, material.getPaxelDamage(), material.getPaxelAtkSpeed())));
         this.material = material;
     }
 
     public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties.
-              attributes(createAttributes(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed())));
+        super(material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties
+              .durability(material.getPaxelDurability())
+              .component(DataComponents.TOOL, material.createToolProperties())
+              .attributes(createAttributes(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed())));
         this.material = material;
     }
 

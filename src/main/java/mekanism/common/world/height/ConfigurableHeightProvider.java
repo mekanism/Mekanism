@@ -44,7 +44,7 @@ public class ConfigurableHeightProvider extends HeightProvider {
             if (warnedFor == null) {
                 warnedFor = new LongOpenHashSet();
             }
-            if (warnedFor.add((long) min << 32 | (long) max)) {
+            if (warnedFor.add((long) min << 32 | max)) {
                 Mekanism.logger.warn("Empty height range: {}", this);
             }
             return min;

@@ -94,6 +94,10 @@ public class BasicChemicalDissolutionRecipe extends ChemicalDissolutionRecipe {
 
     @Override
     public int hashCode() {
-        return Objects.hash(itemInput, chemicalInput, output, perTickUsage);
+        int result = itemInput.hashCode();
+        result = 31 * result + chemicalInput.hashCode();
+        result = 31 * result + output.hashCode();
+        result = 31 * result + Boolean.hashCode(perTickUsage);
+        return result;
     }
 }

@@ -4,7 +4,7 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.util.MekanismUtils;

@@ -78,6 +78,6 @@ public class ModuleBooleanConfig extends ModuleConfig<Boolean> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(super.hashCode(), value);
+        return 31 * super.hashCode() + Boolean.hashCode(value);
     }
 }

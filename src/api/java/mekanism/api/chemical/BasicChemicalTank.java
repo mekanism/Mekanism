@@ -659,8 +659,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying, and can also
      * directly modify our stack instead of having to make a copy.
      */
@@ -688,8 +686,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that we can make this obey the rate limit our tank may have
      */
     @Override
@@ -711,8 +707,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
@@ -721,8 +715,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
@@ -731,8 +723,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
@@ -741,8 +731,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
@@ -751,8 +739,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
@@ -778,8 +764,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
     }
 
     /**
-     * {@inheritDoc}
-     *
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override

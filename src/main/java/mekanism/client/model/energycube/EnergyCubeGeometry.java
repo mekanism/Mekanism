@@ -77,7 +77,6 @@ public class EnergyCubeGeometry implements IUnbakedGeometry<EnergyCubeGeometry> 
             for (Entry<Direction, BlockElementFace> faceEntry : element.faces.entrySet()) {
                 BlockElementFace face = faceEntry.getValue();
                 TextureAtlasSprite sprite = spriteGetter.apply(face.texture());
-                //noinspection ConstantConditions (can be null)
                 Direction direction = face.cullForDirection() == null ? null : modelState.getRotation().rotateTransform(face.cullForDirection());
                 data.addFace(direction, BlockModel.bakeFace(element, face, sprite, faceEntry.getKey(), modelState));
             }

@@ -3,6 +3,7 @@ package mekanism.common.integration.lookingat.jade;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.lookingat.LookingAtUtils;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
@@ -37,7 +38,7 @@ public class MekanismJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent((IComponentProvider<BlockAccessor>) JadeBuiltinRemover.INSTANCE, Block.class);
         registration.addRayTraceCallback((hitResult, accessor, originalAccessor) -> {
             //Redirect bounding blocks to the main tile for purposes of naming and the like
-            if (accessor instanceof BlockAccessor target && target.getBlockState().getBlock() instanceof BlockBounding) {
+            if (accessor instanceof BlockAccessor target && target.getBlockState().is(MekanismBlocks.BOUNDING_BLOCK)) {
                 Level level = target.getLevel();
                 BlockHitResult blockHitResult = target.getHitResult();
                 BlockPos mainPos = BlockBounding.getMainBlockPos(level, blockHitResult.getBlockPos());

@@ -3,7 +3,6 @@ package mekanism.api.recipes.ingredients.chemical;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
-import java.util.Objects;
 import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -65,8 +64,13 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
     }
 
     @Override
+    public void logMissingTags() {
+        children.forEach(ChemicalIngredient::logMissingTags);
+    }
+
+    @Override
     public int hashCode() {
-        return Objects.hash(children);
+        return children.hashCode();
     }
 
     @Override

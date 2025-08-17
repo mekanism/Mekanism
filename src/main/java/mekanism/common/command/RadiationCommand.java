@@ -11,7 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import net.minecraft.commands.CommandSourceStack;
@@ -21,7 +21,6 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.commands.arguments.coordinates.Coordinates;
 import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
@@ -221,10 +220,10 @@ public class RadiationCommand {
     }
 
     private static int addRadiation(CommandSourceStack source, Vec3 pos, Level world, double magnitude) {
-        GlobalPos location = GlobalPos.of(world.dimension(), BlockPos.containing(pos));
-        IRadiationManager.INSTANCE.radiate(location, magnitude);
+        BlockPos location = BlockPos.containing(pos);
+        IRadiationManager.INSTANCE.radiate(world, location, magnitude);
         source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_ADD.translateColored(EnumColor.GRAY, RadiationScale.getSeverityColor(magnitude),
-              UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO, world), true);
+              UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3), EnumColor.INDIGO, getPosition(location), EnumColor.INDIGO, world), true);
         return getReturnLevelFromRadiation(magnitude);
     }
 
@@ -233,9 +232,9 @@ public class RadiationCommand {
     }
 
     private static int getRadiationLevel(CommandSourceStack source, Vec3 pos, Level world) {
-        GlobalPos location = GlobalPos.of(world.dimension(), BlockPos.containing(pos));
-        double magnitude = IRadiationManager.INSTANCE.getRadiationLevel(location);
-        source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location.pos()), EnumColor.INDIGO,
+        BlockPos location = BlockPos.containing(pos);
+        double magnitude = IRadiationManager.INSTANCE.getRadiationLevel(world, location);
+        source.sendSuccess(() -> MekanismLang.COMMAND_RADIATION_GET.translateColored(EnumColor.GRAY, EnumColor.INDIGO, getPosition(location), EnumColor.INDIGO,
                     world, RadiationScale.getSeverityColor(magnitude), UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)),
               true);
         return getReturnLevelFromRadiation(magnitude);

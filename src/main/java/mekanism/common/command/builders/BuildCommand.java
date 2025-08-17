@@ -105,7 +105,7 @@ public class BuildCommand {
             BlockPos ptr = openSet.poll();
             if (isMekanismBlock(world, chunkMap, ptr)) {
                 Clearable.tryClear(WorldUtils.getTileEntity(world, chunkMap, ptr));
-                world.setBlock(pos, world.getFluidState(pos).createLegacyBlock(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
+                world.setBlock(ptr, world.getFluidState(ptr).createLegacyBlock(), Block.UPDATE_ALL | Block.UPDATE_SUPPRESS_DROPS);
                 for (Direction side : EnumUtils.DIRECTIONS) {
                     BlockPos offset = ptr.relative(side);
                     if (traversed.add(offset)) {

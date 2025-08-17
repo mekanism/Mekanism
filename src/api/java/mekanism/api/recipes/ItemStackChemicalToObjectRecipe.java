@@ -80,4 +80,9 @@ public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends MekanismRe
         return getItemInput().hasNoMatchingInstances() || getChemicalInput().hasNoMatchingInstances();
     }
 
+    @Override
+    public void logMissingTags() {
+        getItemInput().logMissingTags();
+        getChemicalInput().logMissingTags();
+    }
 }

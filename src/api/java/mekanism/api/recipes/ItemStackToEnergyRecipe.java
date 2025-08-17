@@ -69,6 +69,11 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     }
 
     @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<ItemStackToEnergyRecipe> getType() {
         return MekanismRecipeTypes.TYPE_ENERGY_CONVERSION.value();
     }

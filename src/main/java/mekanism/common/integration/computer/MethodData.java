@@ -45,8 +45,18 @@ public record MethodData<T>(String name, MethodRestriction restriction, String[]
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, restriction, Arrays.hashCode(requiredMods), threadSafe, Arrays.hashCode(argumentNames), Arrays.hashCode(argClasses), returnType,
-              Arrays.hashCode(returnExtra), handler, methodDescription, requiresPublicSecurity);
+        int result = name.hashCode();
+        result = 31 * result + restriction.hashCode();
+        result = 31 * result + Arrays.hashCode(requiredMods);
+        result = 31 * result + Boolean.hashCode(threadSafe);
+        result = 31 * result + Arrays.hashCode(argumentNames);
+        result = 31 * result + Arrays.hashCode(argClasses);
+        result = 31 * result + returnType.hashCode();
+        result = 31 * result + Arrays.hashCode(returnExtra);
+        result = 31 * result + handler.hashCode();
+        result = 31 * result + Objects.hashCode(methodDescription);
+        result = 31 * result + Boolean.hashCode(requiresPublicSecurity);
+        return result;
     }
 
     public static <T> Builder<T> builder(String methodName, ComputerFunctionCaller<T> handler) {

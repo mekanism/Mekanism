@@ -3,7 +3,6 @@ package mekanism.common.lib.inventory;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -255,7 +254,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
         @Override
         public int hashCode() {
-            return Objects.hash(getItemType(), getTotalCount());
+            return 31 * getItemType().hashCode() + getTotalCount();
         }
     }
 

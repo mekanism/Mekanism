@@ -131,6 +131,7 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
                     SecurityFrequency frequency = getFreq();
                     if (frequency != null) {
                         Optional<GameProfile> gameProfile = profileCache.get(name);
+                        //noinspection OptionalIsPresent - Capturing lambda
                         if (gameProfile.isPresent()) {
                             GameProfile profile = gameProfile.get();
                             frequency.addTrusted(profile.getId(), profile.getName());

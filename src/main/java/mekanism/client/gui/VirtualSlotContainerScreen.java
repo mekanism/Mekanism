@@ -66,7 +66,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                 //Use an instance equality check to see if we are rendering the returning stack (used in touch screens)
                 // if we are and the slot we are returning to is a virtual one, so the position may be changing
                 // then recalculate where the stack actually is/should be to send it to the correct position
-                float f = (float) (Util.getMillis() - this.snapbackTime) / 100.0F;
+                float f = (Util.getMillis() - this.snapbackTime) / 100.0F;
                 if (f >= 1.0F) {
                     //I don't think this should ever happen given we validated it isn't the case before entering
                     // drawItemStack, but just in case it is, update the returningStack and exit
@@ -148,7 +148,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {
                         ClickType clicktype = ClickType.PICKUP;
-                        if (Screen.hasShiftDown()) {
+                        if (hasShiftDown()) {
                             this.lastQuickMoved = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
                             clicktype = ClickType.QUICK_MOVE;
                         }

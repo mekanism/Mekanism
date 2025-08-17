@@ -10,7 +10,7 @@ public record AttributeCustomShape(VoxelShape[] bounds) implements Attribute {
         if (this == o) {
             return true;
         }
-        return o instanceof AttributeCustomShape other && Arrays.equals(bounds, other.bounds);
+        return o instanceof AttributeCustomShape(VoxelShape[] otherBounds) && Arrays.equals(bounds, otherBounds);
     }
 
     @Override

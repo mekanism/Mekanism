@@ -49,7 +49,7 @@ public class VoiceInput extends Thread {
                         }
                     }
                     try {
-                        Thread.sleep(200L);
+                        sleep(200L);
                     } catch (InterruptedException ignored) {
                     }
                     doFlush = true;
@@ -61,7 +61,7 @@ public class VoiceInput extends Thread {
                     doFlush = false;
                 }
                 try {
-                    Thread.sleep(20L);
+                    sleep(20L);
                 } catch (InterruptedException ignored) {
                 }
             }

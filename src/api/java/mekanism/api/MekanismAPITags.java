@@ -10,6 +10,7 @@ import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.dimension.DimensionType;
 import net.minecraft.world.level.levelgen.structure.Structure;
 
@@ -33,7 +34,7 @@ public class MekanismAPITags {
     /**
      * @since 10.6.4
      */
-    public static class Biomes {
+    public static class Biomes {//TODO - 1.21.8: Re-evaluate changing the syntax of these blacklist tags to be blacklist/<type>
 
         private Biomes() {
         }
@@ -65,6 +66,24 @@ public class MekanismAPITags {
 
         private static TagKey<Biome> additionsTag(String name) {
             return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("mekanismadditions", name));
+        }
+    }
+
+    /**
+     * @since 10.7.15
+     */
+    public static class Blocks {
+
+        private Blocks() {
+        }
+
+        /**
+         * Represents any blocks that normally would have tier installers work on them, that should deny functionality.
+         */
+        public static final TagKey<Block> BLACKLIST_INSTALLER_UPGRADEABLE = tag("blacklist/installer_upgradeable");
+
+        private static TagKey<Block> tag(String name) {
+            return TagKey.create(Registries.BLOCK, rl(name));
         }
     }
 

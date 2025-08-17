@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * @apiNote Only reference this class from the client side. It is in the common package to allow for keeping holidays package private
  */
-@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.MOD)
+@EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public final class ClientHolidayInfo {
 
     private ClientHolidayInfo() {

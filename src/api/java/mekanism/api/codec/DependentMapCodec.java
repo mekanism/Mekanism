@@ -68,7 +68,11 @@ public class DependentMapCodec<ELEMENT, DEPENDENCY> extends MapCodec<ELEMENT> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(fieldName, elementCodecGetter, dependencyMapCodec, dependencyGetter);
+        int result = fieldName.hashCode();
+        result = 31 * result + elementCodecGetter.hashCode();
+        result = 31 * result + dependencyMapCodec.hashCode();
+        result = 31 * result + dependencyGetter.hashCode();
+        return result;
     }
 
     @Override

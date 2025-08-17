@@ -31,8 +31,8 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
-import mekanism.common.lib.radiation.RadiationManager;
-import mekanism.common.lib.radiation.RadiationManager.RadiationScale;
+import mekanism.common.lib.radiation.ClientRadiation;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketModeChange;
 import mekanism.common.network.to_server.PacketPortableTeleporterTeleport;
@@ -178,7 +178,7 @@ public class ClientTickHandler {
         SoundHandler.restartSounds();
 
         if (tickingNormally) {
-            RadiationManager.get().tickClient(minecraft.player);
+            ClientRadiation.tickClient(minecraft.player);
         }
 
         UUID playerUUID = minecraft.player.getUUID();
@@ -255,7 +255,7 @@ public class ClientTickHandler {
         }
 
         if (tickingNormally && MekanismConfig.client.enablePlayerSounds.get()) {
-            RadiationScale scale = RadiationManager.get().getClientScale();
+            RadiationScale scale = ClientRadiation.getClientScale();
             if (scale != RadiationScale.NONE && !SoundHandler.radiationSoundMap.containsKey(scale)) {
                 GeigerSound sound = GeigerSound.create(minecraft.player, scale);
                 SoundHandler.radiationSoundMap.put(scale, sound);

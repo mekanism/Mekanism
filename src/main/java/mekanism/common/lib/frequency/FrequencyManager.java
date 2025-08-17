@@ -237,7 +237,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             }
             Codec<FREQ> codec = frequencyType.codec();
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-            ListTag list = new ListTag();
+            ListTag list = new ListTag(frequencies.size());
             for (FREQ freq : frequencies.values()) {
                 DataResult<Tag> encoded = codec.encodeStart(registryOps, freq);
                 encoded.ifSuccess(list::add);

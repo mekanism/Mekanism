@@ -1,10 +1,16 @@
 package mekanism.tools.common.material;
 
+import java.util.List;
+import mekanism.tools.common.ToolsTags;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 @MethodsReturnNonnullByDefault
 public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
@@ -84,4 +90,10 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
     int getDefense(ArmorItem.Type type);
 
     int getDurabilityForType(ArmorItem.Type type);
+
+    @Override
+    default Tool createToolProperties(@NotNull TagKey<Block> block) {
+        float speed = block == ToolsTags.Blocks.MINEABLE_WITH_PAXEL ? getPaxelEfficiency() : getSpeed();
+        return new Tool(List.of(Tool.Rule.deniesDrops(this.getIncorrectBlocksForDrops()), Tool.Rule.minesAndDrops(block, speed)), 1.0F, 1);
+    }
 }

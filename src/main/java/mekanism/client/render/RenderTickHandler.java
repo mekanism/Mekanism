@@ -37,8 +37,8 @@ import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tile.TileEntityBoundingBlock;
 import mekanism.common.tile.component.TileComponentConfig;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
@@ -313,7 +313,7 @@ public class RenderTickHandler {
         } else {
             float f = p.getSwimAmount(partialTicks);
             if (p.isFallFlying()) {
-                float f1 = (float) p.getFallFlyingTicks() + partialTicks;
+                float f1 = p.getFallFlyingTicks() + partialTicks;
                 float f2 = Mth.clamp(f1 * f1 / 100.0F, 0.0F, 1.0F);
                 xRot = f2 * (-90.0F - p.getXRot());
             } else {
@@ -418,10 +418,10 @@ public class RenderTickHandler {
             if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
                 BlockPos actualPos = pos;
                 BlockState actualState = blockState;
-                if (blockState.getBlock() instanceof BlockBounding) {
-                    TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
-                    if (tile != null && tile.hasReceivedCoords()) {
-                        actualPos = tile.getMainPos();
+                if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
+                    BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
+                    if (mainPos != null) {
+                        actualPos = mainPos;
                         actualState = world.getBlockState(actualPos);
                     }
                 }
@@ -558,7 +558,7 @@ public class RenderTickHandler {
         return model;
     }
 
-    public static abstract class LazyRender {
+    public abstract static class LazyRender {
 
         public double distance;
 

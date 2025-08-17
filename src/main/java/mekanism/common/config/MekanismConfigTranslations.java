@@ -38,12 +38,12 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Play sounds for when any player is using a Jetpack, Scuba Mask, Flamethrower, or Gravitational Modulating Unit. This also affects playing the Radiation clicking sound."),
     CLIENT_MACHINE_SOUNDS_ENABLED("client.sounds.machine.enable", "Enable Machine Sounds", "Play sounds for active machines."),
 
-    CLIENT_RENDERING("client.rendering", "Rendering Settings", "Settings for adjusting how Mekanism render's certain blocks and how many particles Mekanism adds.", true),
+    CLIENT_RENDERING("client.rendering", "Rendering Settings", "Settings for adjusting how Mekanism renders certain blocks and how many particles Mekanism adds.", true),
     CLIENT_OPAQUE_TRANSMITTERS("client.transmitters.opaque", "Opaque Transmitters",
           "If true, renders sides for Universal Cables, Mechanical Pipes, Pressurized Tubes, Logistical Transporters, and Thermodynamic Conductors instead of "
           + "rendering their contents. If transmitters are causing you fps issues, this should hopefully help."),
     CLIENT_BE_RENDER_RANGE("client.render_range.block_entity", "BE Render Range",
-          "Range at which Block Entity Renderer's added by Mekanism can render at, for example the contents of multiblocks. Vanilla defaults the rendering range for "
+          "Range at which Block Entity Renderers added by Mekanism can render at, for example the contents of multiblocks. Vanilla defaults the rendering range for "
           + "BERs to 64 for most blocks (for example chests), but uses a range of 256 for blocks like beacons and end gateways. Lowering this will likely increase "
           + "your performance, at the cost of multiblock contents and wind generators 'popping' in"),
 
@@ -73,6 +73,9 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     CLIENT_HUD_JITTER("client.hud.jitter", "Jitter", "Visual jitter of the MekaSuit HUD, seen when moving the player's head. Higher values increases the "
                                                      + "amount of jitter."),
     CLIENT_HUD_COMPASS("client.hud.compass", "Compass", "Display a fancy compass when the MekaSuit Helmet is worn."),
+    CLIENT_HUD_SUBTITLE_AVOID("client.hud.avoid_subtitles", "Avoid Subtitle Overlap", "Shift the HUD elements when sound subtitles are being displayed to avoid overlap"),
+    CLIENT_HUD_MEKASUIT_ENERGY_BAR("client.hud.mekasuit.energy_bar", "MekaSuit Energy Bar",
+          "Enables rendering an energy bar above the armor bar that displays the total energy of the currently equipped MekaSuit."),
 
     CLIENT_QIO("client.qio", "QIO Settings", "Settings for configuring Mekanism's QIO", true),
     CLIENT_QIO_SORT_TYPE("client.qio.sort.type", "Sort Type", "Sorting strategy when viewing items in a QIO Dashboard."),
@@ -102,7 +105,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Determines whether machine configuration data is copied when using middle click. If this is set to false no data will be copied and the default instance "
           + "of the stack will be returned."),
     COMMON_HOLIDAYS("common.holidays", "Holidays",
-          "Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. Also controls whether Robit's with "
+          "Should holiday greetings and easter eggs play for holidays (ex: Christmas and New Years) on the client. Also controls whether Robits with "
           + "the default skin should have their skin randomized on the server."),
 
     //General Config
@@ -127,7 +130,7 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
     GENERAL_HEATER("general.heater", "Heater Settings", "Settings for configuring heaters", true),
     GENERAL_FUELWOOD_HEAT("general.heater.fuelwood.heat", "Fuelwood Heat per Tick", "Amount of heat produced per fuel tick of a fuel's burn time in the Fuelwood Heater."),
     GENERAL_FUELWOOD_DURATION("general.heater.fuelwood.duration", "Fuelwood Burn Duration",
-          "Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heater's burn faster but produce the same amount of heat per item."),
+          "Number of ticks to burn an item at in a Fuelwood Heater. Use this config option to effectively make Fuelwood Heaters burn faster but produce the same amount of heat per item."),
     GENERAL_RESISTIVE_EFFICIENCY("general.heater.resistive.efficiency", "Resistive Heater Efficiency",
           "How much heat energy is created from one Joule of regular energy in the Resistive Heater."),
 

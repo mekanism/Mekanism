@@ -62,4 +62,9 @@ public abstract class ItemStackToFluidRecipe extends MekanismRecipe<SingleRecipe
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
     }
+
+    @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
+    }
 }

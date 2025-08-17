@@ -8,7 +8,7 @@ import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
-import mekanism.common.lib.radiation.RadiationManager;
+import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketUtils;
@@ -59,7 +59,7 @@ public class MekanismClient {
     public static void resetDimensionChange() {
         Mekanism.playerState.clear(true);
         Mekanism.activeVibrators.clear();
-        RadiationManager.get().resetClient();
+        ClientRadiation.resetClient();
         RenderSPS.clearBoltRenderers();
         TransmitterNetworkRegistry.clearClientNetworks();
         RenderTickHandler.clearQueued();

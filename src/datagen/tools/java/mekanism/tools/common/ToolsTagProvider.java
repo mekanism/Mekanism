@@ -90,6 +90,9 @@ public class ToolsTagProvider extends BaseTagProvider {
         getBuilder(ItemTags.MINING_LOOT_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ItemTags.DURABILITY_ENCHANTABLE).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(Tags.Items.TOOLS).add(ToolsTags.Items.TOOLS_PAXEL);
+        getBuilder(ItemTags.PICKAXES).add(ToolsTags.Items.TOOLS_PAXEL);
+        getBuilder(ItemTags.AXES).add(ToolsTags.Items.TOOLS_PAXEL);
+        getBuilder(ItemTags.SHOVELS).add(ToolsTags.Items.TOOLS_PAXEL);
         getBuilder(ToolsTags.Items.TOOLS_PAXEL).add(
               //Vanilla Paxels
               ToolsItems.WOOD_PAXEL,

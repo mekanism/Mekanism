@@ -74,6 +74,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
      *
      * @return {@code true} if the stack matches the input.
      */
+    @Override
     public abstract boolean test(ChemicalStack stack);
 
     /**
@@ -94,6 +95,11 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
     @Override
     public boolean isIncomplete() {
         return getInput().hasNoMatchingInstances();
+    }
+
+    @Override
+    public void logMissingTags() {
+        getInput().logMissingTags();
     }
 
     @Override

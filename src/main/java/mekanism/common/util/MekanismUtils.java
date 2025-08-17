@@ -78,6 +78,7 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -485,7 +486,7 @@ public final class MekanismUtils {
                 tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
                 UUID ownerUUID = frequencyAware.getOwner();
                 if (ownerUUID != null) {
-                    String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), frequencyAware.getOwner(), null);
+                    String owner = OwnerDisplay.getOwnerName(tryGetClientPlayer(), frequencyAware.getOwner(), null);
                     if (owner != null) {
                         tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
                     }
@@ -690,7 +691,7 @@ public final class MekanismUtils {
      */
     public static int redstoneLevelFromContents(long amount, long capacity) {
         double fractionFull = capacity == 0 ? 0 : ((double) amount / capacity);
-        return Mth.floor(fractionFull * 14.0D) + (fractionFull > 0 ? 1 : 0);
+        return Mth.lerpDiscrete((float) fractionFull, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
     }
 
     /**

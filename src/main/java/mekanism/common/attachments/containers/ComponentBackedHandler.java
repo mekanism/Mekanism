@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER>
-      implements IContentsListener, Iterable<CONTAINER> {
+      implements IContentsListener {
 
     protected final ItemStack attachedTo;
     private final int totalContainers;
@@ -73,6 +73,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends INBTSeriali
         return container == null ? initializeContainer(index) : container;
     }
 
+    @Override
     public int size() {
         return totalContainers;
     }

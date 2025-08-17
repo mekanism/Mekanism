@@ -105,6 +105,13 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     }
 
     @Override
+    public void logMissingTags() {
+        getInputSolid().logMissingTags();
+        getInputFluid().logMissingTags();
+        getInputChemical().logMissingTags();
+    }
+
+    @Override
     public final RecipeType<?> getType() {
         return MekanismRecipeTypes.TYPE_REACTION.value();
     }

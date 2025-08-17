@@ -80,6 +80,8 @@ public abstract class BasicChemicalToChemicalRecipe extends ChemicalToChemicalRe
 
     @Override
     public int hashCode() {
-        return Objects.hash(output, input);
+        int result = output.hashCode();
+        result = 31 * result + input.hashCode();
+        return result;
     }
 }

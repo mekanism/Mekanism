@@ -190,6 +190,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         if (hasTransmitterNetwork()) {
             EnergyNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite != 0L) {
+                //Clamp the value so that we can't error if the network's energy is less than the amount we are saving
+                lastWrite = Math.min(transmitterNetwork.energyContainer.getEnergy(), lastWrite);
                 transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.getEnergy() - lastWrite);
                 buffer.setEnergy(lastWrite);
             }

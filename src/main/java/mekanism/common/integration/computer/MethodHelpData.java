@@ -155,7 +155,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
                 }
                 return new Returns(getHumanType(data.returnType(), data.returnExtra()), data.returnType(), data.returnExtra(), enumConstantNames);
             }
-            return Returns.NOTHING;
+            return NOTHING;
         }
 
         @Override
@@ -171,7 +171,11 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
         @Override
         public int hashCode() {
-            return Objects.hash(javaType, type, Arrays.hashCode(javaExtra), values);
+            int result = javaType.hashCode();
+            result = 31 * result + type.hashCode();
+            result = 31 * result + Arrays.hashCode(javaExtra);
+            result = 31 * result + Objects.hashCode(values);
+            return result;
         }
     }
 

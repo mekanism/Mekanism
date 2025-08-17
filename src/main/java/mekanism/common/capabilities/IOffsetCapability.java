@@ -16,8 +16,8 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
     /**
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>
-     * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</il>
-     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</il>
+     * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</li>
+     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</li>
      * <li>The return value <strong>CAN</strong> be the same for multiple faces.</li>
      * </ul>
      *
@@ -57,8 +57,8 @@ public interface IOffsetCapability {//TODO: Eventually we may want to give offse
      * <p>
      * Retrieves the handler for the capability requested on the specific side with a given offset.
      * <ul>
-     * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</il>
-     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</il>
+     * <li>The return value <strong>CAN</strong> be null if the object does not support the capability.</li>
+     * <li>The return value <strong>MUST</strong> be null if {@link #isOffsetCapabilityDisabled(BlockCapability, Direction, Vec3i)} is true.</li>
      * <li>The return value <strong>CAN</strong> be the same for multiple faces.</li>
      * </ul>
      *

@@ -59,6 +59,13 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {
     }
 
     @Override
+    public void logMissingTags() {
+        if (!chemical.isBound()) {
+            MekanismAPI.logger.error("Unbound chemical: {}", chemical.getRegisteredName());
+        }
+    }
+
+    @Override
     public int hashCode() {
         return chemical.value().hashCode();
     }

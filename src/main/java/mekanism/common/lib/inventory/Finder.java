@@ -6,7 +6,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 
 @FunctionalInterface
 public interface Finder extends Predicate<ItemStack> {

@@ -3,12 +3,12 @@ package mekanism.common.tile.interfaces;
 import java.util.List;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
-import mekanism.api.radiation.IRadiationManager;
+import mekanism.common.lib.radiation.RadiationManager;
 
 public interface ITileRadioactive {
 
     static float calculateRadiationScale(List<IChemicalTank> tanks) {
-        if (IRadiationManager.INSTANCE.isRadiationEnabled() && !tanks.isEmpty()) {
+        if (RadiationManager.isGlobalRadiationEnabled() && !tanks.isEmpty()) {
             if (tanks.size() == 1) {
                 IChemicalTank tank = tanks.getFirst();
                 if (!tank.isEmpty() && tank.getStack().isRadioactive()) {

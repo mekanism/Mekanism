@@ -85,7 +85,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
         addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, 13, 135)).setRenderAboveSlots().setRenderHover(true)
               .stored(() -> new ItemStack(tile.getInverseReplaceTarget())).click((element, mouseX, mouseY) -> {
                   GuiDigitalMinerConfig gui = (GuiDigitalMinerConfig) element.gui();
-                  if (Screen.hasShiftDown()) {
+                  if (hasShiftDown()) {
                       gui.updateInverseReplaceTarget(Items.AIR);
                       return true;
                   } else {

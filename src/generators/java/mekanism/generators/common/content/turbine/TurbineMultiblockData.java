@@ -181,7 +181,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
         float newRotation = (float) flowRate;
 
-        if (Math.abs(newRotation - clientRotation) > TurbineMultiblockData.ROTATION_THRESHOLD) {
+        if (Math.abs(newRotation - clientRotation) > ROTATION_THRESHOLD) {
             clientRotation = newRotation;
             needsPacket = true;
         }

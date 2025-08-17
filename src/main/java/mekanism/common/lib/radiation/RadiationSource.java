@@ -1,32 +1,40 @@
 package mekanism.common.lib.radiation;
 
-import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.nbt.NbtUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
+@NothingNullByDefault
 public class RadiationSource implements IRadiationSource {
 
-    private final GlobalPos pos;
+    private final BlockPos pos;
     /** In Sv/h */
     private double magnitude;
 
-    public RadiationSource(GlobalPos pos, double magnitude) {
+    public RadiationSource(BlockPos pos, double magnitude) {
         this.pos = pos;
         this.magnitude = magnitude;
     }
 
     @NotNull
     @Override
-    public GlobalPos getPos() {
+    public BlockPos getPosition() {
         return pos;
+    }
+
+    @SuppressWarnings("removal")//backcompat
+    @Override
+    public GlobalPos getPos() {
+        throw new UnsupportedOperationException();
     }
 
     @Override
@@ -45,22 +53,6 @@ public class RadiationSource implements IRadiationSource {
         return magnitude < IRadiationManager.INSTANCE.minRadiationMagnitude();
     }
 
-    public static Optional<RadiationSource> load(RegistryOps<Tag> registryOps, CompoundTag tag) {
-        Optional<GlobalPos> result = GlobalPos.CODEC.parse(registryOps, tag).result();
-        //noinspection OptionalIsPresent - Capturing lambda
-        if (result.isPresent()) {
-            return Optional.of(new RadiationSource(result.get(), tag.getDouble(SerializationConstants.RADIATION)));
-        }
-        return Optional.empty();
-    }
-
-    public CompoundTag write(RegistryOps<Tag> registryOps) {
-        CompoundTag tag = (CompoundTag) GlobalPos.CODEC.encodeStart(registryOps, pos).result()
-              .orElseGet(CompoundTag::new);
-        tag.putDouble(SerializationConstants.RADIATION, magnitude);
-        return tag;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this) {
@@ -74,6 +66,24 @@ public class RadiationSource implements IRadiationSource {
 
     @Override
     public int hashCode() {
-        return Objects.hash(pos, magnitude);
+        int result = pos.hashCode();
+        result = 31 * result + Double.hashCode(magnitude);
+        return result;
+    }
+
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        tag.put(SerializationConstants.POS, NbtUtils.writeBlockPos(pos));
+        tag.putDouble(SerializationConstants.RADIATION, magnitude);
+        return tag;
+    }
+
+    @Nullable
+    public static RadiationSource deserializeNBT(CompoundTag nbt) {
+        Optional<BlockPos> blockPos = NbtUtils.readBlockPos(nbt, SerializationConstants.POS);
+        if (blockPos.isEmpty()) {
+            return null;
+        }
+        return new RadiationSource(blockPos.get(), nbt.getDouble(SerializationConstants.RADIATION));
     }
 }
