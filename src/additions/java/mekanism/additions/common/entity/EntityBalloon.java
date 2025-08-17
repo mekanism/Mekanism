@@ -34,6 +34,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -133,7 +135,8 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         yo = getY();
         zo = getZ();
 
-        if (getY() >= level().getMaxBuildHeight()) {
+        //TODO - 1.21.8: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
+        if (getY() >= level().getMaxY() + 1) {
             pop();
             return;
         }
@@ -246,7 +249,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         BlockPos.MutableBlockPos posi = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
         CollisionContext collisionContext = CollisionContext.of(entity);
         for (; posi.getY() > 0; posi.move(Direction.DOWN)) {
-            if (posi.getY() < level().getMaxBuildHeight()) {
+            if (posi.getY() < level().getMaxY() + 1) {
                 BlockState state = level().getBlockState(posi);
                 if (!state.isAir()) {
                     double stateOffset = state.getCollisionShape(level(), posi, collisionContext).max(Axis.Y);
@@ -304,7 +307,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
+    public void readAdditionalSaveData(@NotNull ValueInput input) {
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
         NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.LATCHED, pos -> latched = pos);
         NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> {
@@ -314,7 +317,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
+    protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
         if (latched != null) {
             nbtTags.put(SerializationConstants.LATCHED, NbtUtils.writeBlockPos(latched));

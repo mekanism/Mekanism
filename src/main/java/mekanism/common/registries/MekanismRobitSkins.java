@@ -47,7 +47,7 @@ public class MekanismRobitSkins {
     }
 
     public static SkinLookup lookup(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
-        Registry<RobitSkin> robitSkins = registryAccess.registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        Registry<RobitSkin> robitSkins = registryAccess.lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         Optional<RobitSkin> skin = robitSkins.getOptional(key);
         //noinspection OptionalIsPresent - Capturing lambda
         if (skin.isEmpty()) {

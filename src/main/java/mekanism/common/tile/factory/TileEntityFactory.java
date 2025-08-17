@@ -59,6 +59,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -67,6 +68,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ItemStackMap;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -382,8 +385,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         if (nbt.contains(SerializationConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
             int[] savedProgress = nbt.getIntArray(SerializationConstants.PROGRESS);
             if (tier.processes != savedProgress.length) {
@@ -396,8 +399,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putIntArray(SerializationConstants.PROGRESS, Arrays.copyOf(progress, progress.length));
     }
 
@@ -420,7 +423,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         sorting = input.getOrDefault(MekanismDataComponents.SORTING, sorting);
     }

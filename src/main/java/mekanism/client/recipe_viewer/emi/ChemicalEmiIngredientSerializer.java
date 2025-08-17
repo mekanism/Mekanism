@@ -16,7 +16,7 @@ public class ChemicalEmiIngredientSerializer implements EmiStackSerializer<Chemi
 
     @Override
     public EmiStack create(ResourceLocation id, DataComponentPatch ignored, long amount) {
-        Optional<Holder.Reference<Chemical>> chemical = MekanismAPI.CHEMICAL_REGISTRY.getHolder(id).filter(c -> !c.is(MekanismAPI.EMPTY_CHEMICAL_KEY));
+        Optional<Holder.Reference<Chemical>> chemical = MekanismAPI.CHEMICAL_REGISTRY.get(id).filter(c -> !c.is(MekanismAPI.EMPTY_CHEMICAL_KEY));
         if (chemical.isPresent()) {
             return new ChemicalEmiStack(chemical.get(), amount);
         }

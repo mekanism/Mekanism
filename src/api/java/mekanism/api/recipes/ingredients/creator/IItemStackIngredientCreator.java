@@ -1,13 +1,14 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -45,15 +46,13 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         if (stack.isEmpty()) {
             throw new IllegalArgumentException("ItemStackIngredients cannot be created using the empty stack.");
         }
-        //Copy the stack to ensure it doesn't get modified afterward
-        stack = stack.copy();
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
-        DataComponentPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
+        DataComponentExactPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
         if (predicate != null) {
             return from(DataComponentIngredient.of(false, predicate, stack.getItemHolder()), amount);
         }
-        return from(Ingredient.of(stack), amount);
+        return from(Ingredient.of(stack.getItem()), amount);
     }
 
     /**
@@ -169,7 +168,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         if (items.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ItemStackIngredient with no items.");
         }
-        return from(Ingredient.of(Arrays.stream(items).map(ItemStack::new)), amount);
+        return from(Ingredient.of(HolderSet.direct(List.of(items))), amount);
     }
 
     /**
@@ -177,30 +176,14 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param tag Tag to match.
      */
-    default ItemStackIngredient from(TagKey<Item> tag) {
-        return from(tag, 1);
+    default ItemStackIngredient from(HolderGetter<Item> holderGetter, TagKey<Item> tag) {
+        return from(holderGetter, tag, 1);
     }
 
     @Override
-    default ItemStackIngredient from(TagKey<Item> tag, int amount) {
+    default ItemStackIngredient from(HolderGetter<Item> holderGetter, TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
-        return from(Ingredient.of(tag), amount);
-    }
-
-    /**
-     * Creates an Item Stack Ingredient that matches any of the given Item tags.
-     *
-     * @param tags Tag to match.
-     *
-     * @throws NullPointerException     if the list of tags is null.
-     * @throws IllegalArgumentException if the list of tags is empty.
-     * @since 10.7.11
-     */
-    default ItemStackIngredient from(int amount, List<TagKey<Item>> tags) {
-        if (tags.isEmpty()) {
-            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
-        }
-        return from(Ingredient.fromValues(tags.stream().map(Ingredient.TagValue::new)), amount);
+        return from(Ingredient.of(holderGetter.getOrThrow(tag)), amount);
     }
 
     /**

@@ -110,7 +110,7 @@ public class CrTChemicalStackIngredient {
     public static ChemicalStackIngredient from(KnownTag<Chemical> chemicalTag, long amount) {
         assertValidAmount(amount);
         TagKey<Chemical> tag = CrTUtils.validateTagAndGet(chemicalTag);
-        return IngredientCreatorAccess.chemicalStack().from(tag, amount);
+        return IngredientCreatorAccess.chemicalStack().from(MekanismAPI.CHEMICAL_REGISTRY, tag, amount);
     }
 
     /**

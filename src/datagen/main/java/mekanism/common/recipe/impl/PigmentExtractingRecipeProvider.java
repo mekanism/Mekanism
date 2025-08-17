@@ -68,7 +68,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.ROSE_BUSH),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).asStack(largeFlowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "large_red"));
+        ).save(consumer, Mekanism.rl(basePath + "large_red"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
                     Items.BEETROOT,
@@ -76,17 +76,17 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.RED_TULIP
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "small_red"));
+        ).save(consumer, Mekanism.rl(basePath + "small_red"));
         //Cyan
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.PITCHER_PLANT),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_AQUA).asStack(largeFlowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "large_cyan"));
+        ).save(consumer, Mekanism.rl(basePath + "large_cyan"));
         //Green
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.CACTUS),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_GREEN).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "green"));
+        ).save(consumer, Mekanism.rl(basePath + "green"));
         //Light gray
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -95,47 +95,47 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.WHITE_TULIP
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.GRAY).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "light_gray"));
+        ).save(consumer, Mekanism.rl(basePath + "light_gray"));
         //Pink
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.PEONY),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).asStack(largeFlowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "large_pink"));
+        ).save(consumer, Mekanism.rl(basePath + "large_pink"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
                     Items.PINK_TULIP,
                     Items.PINK_PETALS
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_PINK).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "small_pink"));
+        ).save(consumer, Mekanism.rl(basePath + "small_pink"));
         //Lime
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.SEA_PICKLE),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BRIGHT_GREEN).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "lime"));
+        ).save(consumer, Mekanism.rl(basePath + "lime"));
         //Yellow
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.SUNFLOWER),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).asStack(largeFlowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "large_yellow"));
+        ).save(consumer, Mekanism.rl(basePath + "large_yellow"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.DANDELION),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.YELLOW).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "small_yellow"));
+        ).save(consumer, Mekanism.rl(basePath + "small_yellow"));
         //Light blue
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.BLUE_ORCHID),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.INDIGO).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "light_blue"));
+        ).save(consumer, Mekanism.rl(basePath + "light_blue"));
         //Magenta
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.LILAC),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).asStack(largeFlowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "large_magenta"));
+        ).save(consumer, Mekanism.rl(basePath + "large_magenta"));
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.ALLIUM),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.PINK).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "small_magenta"));
+        ).save(consumer, Mekanism.rl(basePath + "small_magenta"));
         //Orange
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -143,7 +143,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.TORCHFLOWER
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.ORANGE).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "orange"));
+        ).save(consumer, Mekanism.rl(basePath + "orange"));
         //Blue
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -151,12 +151,12 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.LAPIS_LAZULI
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_BLUE).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "blue"));
+        ).save(consumer, Mekanism.rl(basePath + "blue"));
         //Brown
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(Items.COCOA_BEANS),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BROWN).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "brown"));
+        ).save(consumer, Mekanism.rl(basePath + "brown"));
         //Black
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -164,7 +164,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.WITHER_ROSE
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.BLACK).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "black"));
+        ).save(consumer, Mekanism.rl(basePath + "black"));
         //White
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(
@@ -172,7 +172,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Items.LILY_OF_THE_VALLEY
               ),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.WHITE).asStack(flowerRate)
-        ).build(consumer, Mekanism.rl(basePath + "white"));
+        ).save(consumer, Mekanism.rl(basePath + "white"));
     }
 
     private static void addExtractionRecipes(RecipeOutput consumer, String basePath) {
@@ -182,14 +182,14 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-                      IngredientCreatorAccess.item().from(dye.getTag()),
+                      IngredientCreatorAccess.item().from(, dye.getTag()),
                       pigment.asStack(DYE_RATE)
-                ).build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+                ).save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
                 //TODO: Eventually we may want to consider taking patterns into account
                 ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                       IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
                       pigment.asStack(BANNER_RATE)
-                ).build(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
+                ).save(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");
@@ -209,6 +209,6 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                     Ingredient.of(DYED_TAGS.get(color))
               )),
               new ChemicalStack(pigment, rate)
-        ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
+        ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 }

@@ -76,7 +76,7 @@ public class TextComponentUtil {
                 case ClickEvent event -> cachedStyle = cachedStyle.withClickEvent(event);
                 case HoverEvent event -> cachedStyle = cachedStyle.withHoverEvent(event);
                 case Block block -> current = block.getName().copy();
-                case Item item -> current = item.getDescription().copy();
+                case Item item -> current = item.getName().copy();
                 case ItemStack stack -> current = stack.getHoverName().copy();
                 case IHashedItem item -> current = item.getInternalStack().getHoverName().copy();
                 case FluidStack stack -> current = stack.getHoverName().copy();
@@ -209,7 +209,7 @@ public class TextComponentUtil {
             } else if (component instanceof Block block) {
                 current = block.getName().copy();
             } else if (component instanceof Item item) {
-                current = item.getDescription().copy();
+                current = item.getName().copy();
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
             } else if (component instanceof IHashedItem item) {

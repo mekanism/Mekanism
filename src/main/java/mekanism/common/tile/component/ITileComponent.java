@@ -4,10 +4,10 @@ import java.util.List;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 public interface ITileComponent {
@@ -29,7 +29,7 @@ public interface ITileComponent {
 
     CompoundTag serialize(HolderLookup.Provider provider);
 
-    default void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    default void applyImplicitComponents(@NotNull DataComponentGetter input) {
     }
 
     default void collectImplicitComponents(DataComponentMap.Builder builder) {

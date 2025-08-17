@@ -29,14 +29,12 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 @NothingNullByDefault
 public class AdditionsRecipeProvider extends BaseRecipeProvider {
@@ -55,12 +53,12 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
           TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
 
-    public AdditionsRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(output, provider, existingFileHelper);
+    public AdditionsRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider);
     }
 
     @Override
-    protected void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
+    protected void addRecipes(HolderLookup.Provider registries) {
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsItems.WALKIE_TALKIE)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
@@ -69,7 +67,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .build(consumer);
+              .save(output);
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
@@ -78,9 +76,9 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIANS_NORMAL)
               .key(TNT_CHAR, Items.TNT)
               .category(RecipeCategory.REDSTONE)
-              .build(consumer);
-        registerBalloons(consumer);
-        registerGlowPanels(consumer);
+              .save(output);
+        registerBalloons();
+        registerGlowPanels();
     }
 
     @Override
@@ -94,7 +92,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
         );
     }
 
-    private void registerBalloons(RecipeOutput consumer) {
+    private void registerBalloons() {
         final String basePath = "balloon/";
         for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : AdditionsItems.BALLOONS.entrySet()) {
             EnumColor color = entry.getKey();
@@ -108,23 +106,23 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .addIngredient(Tags.Items.STRINGS)
                       .addIngredient(dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
-                      .build(consumer, MekanismAdditions.rl(basePath + colorString));
+                      .save(output, MekanismAdditions.rl(basePath + colorString));
                 ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon)
                       .addIngredient(recolorInput)
                       .addIngredient(dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
-                      .build(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
+                      .save(output, MekanismAdditions.rl(basePath + "recolor/" + colorString));
             }
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
                   new ItemStack(balloon),
                   false
-            ).build(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
+            ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
         }
     }
 
-    private void registerGlowPanels(RecipeOutput consumer) {
+    private void registerGlowPanels() {
         final String basePath = "glow_panel/";
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.GLOW_PANELS.entrySet()) {
             EnumColor color = entry.getKey();
@@ -138,9 +136,9 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
                       .key(Pattern.DYE, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
-                      .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+                      .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            PlasticBlockRecipeProvider.registerRecolor(consumer, glowPanel, AdditionsTags.Items.GLOW_PANELS, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(output, glowPanel, AdditionsTags.Items.GLOW_PANELS, color, basePath);
         }
     }
 }

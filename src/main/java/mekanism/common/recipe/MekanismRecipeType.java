@@ -54,6 +54,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -322,17 +323,17 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
           Level level) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return level.getRecipeManager().getRecipeFor(recipeType, input, level)
+        return level.recipeAccess().getRecipeFor(recipeType, input, level)
               .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static Optional<RecipeHolder<?>> byKey(Level level, ResourceLocation id) {
+    public static Optional<RecipeHolder<?>> byKey(ServerLevel level, ResourceLocation id) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return level.getRecipeManager().byKey(id)
+        return level.recipeAccess().byKey(id)
               .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 }

@@ -22,8 +22,8 @@ class EnergyConversionRecipeProvider implements ISubRecipeProvider {
 
     private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, long output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
-              IngredientCreatorAccess.item().from(inputTag),
+              IngredientCreatorAccess.item().from(, inputTag),
               output
-        ).build(consumer, Mekanism.rl(basePath + name));
+        ).save(consumer, Mekanism.rl(basePath + name));
     }
 }

@@ -12,7 +12,7 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -93,7 +93,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     }
 
     @Override
-    protected void validate(ResourceLocation id) {
+    protected void ensureValid(ResourceKey<Recipe<?>> id) {
         if (pattern.isEmpty()) {
             throw new IllegalStateException("No pattern is defined for shaped recipe " + id + "!");
         }

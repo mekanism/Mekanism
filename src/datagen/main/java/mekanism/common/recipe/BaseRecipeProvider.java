@@ -34,39 +34,22 @@ import org.jetbrains.annotations.Nullable;
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
     private final CompletableFuture<HolderLookup.Provider> registriesFuture;
-    private final ExistingFileHelper existingFileHelper;
 
-    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture, ExistingFileHelper existingFileHelper) {
+    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
         super(output, registriesFuture);
         this.registriesFuture = registriesFuture;
-        this.existingFileHelper = existingFileHelper;
-    }
-
-    private record WrapperRecipeOutput(RecipeOutput parent, ExistingFileHelper existingFileHelper) implements RecipeOutput {
-
-        @Override
-        public void accept(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancementHolder, ICondition... conditions) {
-            parent.accept(recipeId, recipe, advancementHolder, conditions);
-            existingFileHelper.trackGenerated(recipeId, PackType.SERVER_DATA, ".json", "recipes");
-        }
-
-        @Override
-        public Builder advancement() {
-            return parent.advancement();
-        }
     }
 
     @Override
-    protected final void buildRecipes(RecipeOutput output) {
+    protected final void buildRecipes() {
         HolderLookup.Provider registries = registriesFuture.resultNow();
-        WrapperRecipeOutput trackingConsumer = new WrapperRecipeOutput(output, existingFileHelper);
-        addRecipes(trackingConsumer, registries);
+        addRecipes(registries);
         for (ISubRecipeProvider subRecipeProvider : getSubRecipeProviders()) {
-            subRecipeProvider.addRecipes(trackingConsumer, registries);
+            subRecipeProvider.addRecipes(output, registries);
         }
     }
 
-    protected abstract void addRecipes(RecipeOutput output, HolderLookup.Provider registries);
+    protected abstract void addRecipes(HolderLookup.Provider registries);
 
     /**
      * Gets all the sub/offloaded recipe providers that this recipe provider has.

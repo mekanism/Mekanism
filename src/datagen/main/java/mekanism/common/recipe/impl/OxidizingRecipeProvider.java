@@ -16,18 +16,18 @@ class OxidizingRecipeProvider implements ISubRecipeProvider {
         String basePath = "oxidizing/";
         //Brine
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SALT),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_SALT),
               MekanismChemicals.BRINE.asStack(15)
-        ).build(consumer, Mekanism.rl(basePath + "brine"));
+        ).save(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_LITHIUM),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_LITHIUM),
               MekanismChemicals.LITHIUM.asStack(100)
-        ).build(consumer, Mekanism.rl(basePath + "lithium"));
+        ).save(consumer, Mekanism.rl(basePath + "lithium"));
         //Sulfur dioxide
         ItemStackToChemicalRecipeBuilder.oxidizing(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SULFUR),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_SULFUR),
               MekanismChemicals.SULFUR_DIOXIDE.asStack(100)
-        ).build(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
+        ).save(consumer, Mekanism.rl(basePath + "sulfur_dioxide"));
     }
 }

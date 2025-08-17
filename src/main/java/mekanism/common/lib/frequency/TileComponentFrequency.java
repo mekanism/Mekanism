@@ -31,6 +31,7 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
@@ -257,7 +258,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
         if (!tile.isRemote()) {
             for (FrequencyType<?> key : nonSecurityFrequencies.keySet()) {
                 setFrequencyFromComponent(input, key);
@@ -265,7 +266,7 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    private <FREQ extends Frequency> void setFrequencyFromComponent(BlockEntity.DataComponentInput input, FrequencyType<FREQ> type) {
+    private <FREQ extends Frequency> void setFrequencyFromComponent(DataComponentGetter input, FrequencyType<FREQ> type) {
         DataComponentType<FrequencyAware<FREQ>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(type);
         if (frequencyComponent != null) {
             FrequencyAware<?> frequencyAware = input.get(frequencyComponent);

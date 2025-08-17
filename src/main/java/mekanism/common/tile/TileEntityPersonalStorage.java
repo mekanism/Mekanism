@@ -18,6 +18,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
@@ -114,7 +115,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         if (!isRemote()) {
             UUID owner = input.get(MekanismDataComponents.OWNER);

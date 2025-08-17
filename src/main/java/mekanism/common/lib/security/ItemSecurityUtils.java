@@ -16,6 +16,7 @@ import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +70,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         }
     }
 
-    public InteractionResultHolder<ItemStack> claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
+    public InteractionResult claimOrOpenGui(Level level, Player player, InteractionHand hand, TriConsumer<ServerPlayer, InteractionHand, ItemStack> openGui) {
         ItemStack stack = player.getItemInHand(hand);
         if (!tryClaimItem(level, player, stack)) {
             if (!INSTANCE.canAccessOrDisplayError(player, stack)) {

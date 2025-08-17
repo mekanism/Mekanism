@@ -91,13 +91,13 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         }
         TagKey<Item> makesDyeTag = tag("dye/makes_" + makeTarget + "_dye");
         ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition(makesDyeTag));
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(makesDyeTag);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(, makesDyeTag);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
                     new ItemStack(output, large ? 4 : 2)
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
-              .build(consumer, Mekanism.rl(basePath + "dye/" + name));
+              .save(consumer, Mekanism.rl(basePath + "dye/" + name));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
@@ -105,7 +105,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(large ? 2 * flowerRate : flowerRate)
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
-              .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
+              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + name));
     }
 
     private void addCrushingRecipes(RecipeOutput consumer, String basePath) {
@@ -132,7 +132,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
                     new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)
               ).addCondition(villageUpdate)
-              .build(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
+              .save(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
     }
 
     private void addCrusherWhiteDaciteRecipes(RecipeOutput consumer, String basePath) {
@@ -152,7 +152,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
                     new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)
               ).addCondition(villageUpdate)
-              .build(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
+              .save(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
 
     private void addCrusherRedRockRecipes(RecipeOutput consumer, String basePath) {
@@ -187,7 +187,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
               ).addCondition(condition == null ? modLoaded : condition)
-              .build(consumer, Mekanism.rl(path));
+              .save(consumer, Mekanism.rl(path));
     }
 
     private void addEnrichingRecipes(RecipeOutput consumer, String basePath) {
@@ -275,7 +275,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(input),
                     new ItemStack(output)
               ).addCondition(condition == null ? modLoaded : condition)
-              .build(consumer, Mekanism.rl(path));
+              .save(consumer, Mekanism.rl(path));
     }
 
     private void addMetallurgicInfusingRecipes(RecipeOutput consumer, String basePath) {
@@ -303,10 +303,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void infuseMoss(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
                     IngredientCreatorAccess.item().from(input),
-                    IngredientCreatorAccess.chemicalStack().from(MekanismAPITags.Chemicals.BIO, 10),
+                    IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.BIO, 10),
                     new ItemStack(output),
                     false
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(path));
+              .save(consumer, Mekanism.rl(path));
     }
 }

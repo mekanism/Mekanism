@@ -49,7 +49,7 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
               .pattern(PLASTIC_STAIRS)
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
-              .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         if (transparent) {
             PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, result, blockType, color, basePath);
         } else {

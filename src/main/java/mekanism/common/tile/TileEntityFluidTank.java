@@ -48,6 +48,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -65,6 +66,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -235,7 +238,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         editMode = input.getOrDefault(MekanismDataComponents.EDIT_MODE, editMode);
     }
@@ -338,14 +341,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         NBTUtils.setIntIfPresent(nbt, SerializationConstants.DELAY, value -> lightUpdateDelay = value);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putInt(SerializationConstants.DELAY, lightUpdateDelay);
     }
 
@@ -390,8 +393,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> fluidTank.setStack(fluid));
         //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {

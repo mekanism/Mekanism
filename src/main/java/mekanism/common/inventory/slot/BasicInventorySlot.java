@@ -16,10 +16,10 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -316,18 +316,16 @@ public class BasicInventorySlot implements IInventorySlot {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, current));
+            output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, current);
         }
-        return nbt;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
         // crashing due to the stack not being valid
-        setStackUnchecked(SerializerHelper.parseOversizedOptional(provider, nbt.getCompound(SerializationConstants.ITEM)));
+        setStackUnchecked(input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY));
     }
 }

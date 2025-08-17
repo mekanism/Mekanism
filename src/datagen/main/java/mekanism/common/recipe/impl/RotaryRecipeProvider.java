@@ -44,10 +44,10 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
 
     private void addRotaryCondensentratorRecipe(RecipeOutput consumer, String basePath, DeferredChemical<Chemical> gas, Holder<Fluid> fluidOutput, TagKey<Fluid> fluidInput) {
         RotaryRecipeBuilder.rotary(
-              IngredientCreatorAccess.fluid().from(fluidInput, 1),
+              IngredientCreatorAccess.fluid().from(, fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
               gas.asStack(1),
               new FluidStack(fluidOutput, 1)
-        ).build(consumer, Mekanism.rl(basePath + gas.getName()));
+        ).save(consumer, Mekanism.rl(basePath + gas.getName()));
     }
 }

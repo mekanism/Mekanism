@@ -29,11 +29,6 @@ public class BasicMetallurgicInfuserRecipe extends BasicItemStackChemicalToItemS
     }
 
     @Override
-    public String getGroup() {
-        return "metallurgic_infuser";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(METALLURGIC_INFUSER);
     }

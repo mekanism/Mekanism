@@ -53,6 +53,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -194,14 +196,14 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 

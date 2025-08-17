@@ -133,7 +133,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
               new ItemStack(dye),
               false
-        ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
+        ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
     private static void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Function<DyeColor, ItemLike> output, String basePath) {
@@ -157,6 +157,6 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
               new ItemStack(result),
               false
-        ).build(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
+        ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 }

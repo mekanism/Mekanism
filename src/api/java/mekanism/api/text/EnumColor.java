@@ -11,8 +11,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.util.FastColor;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.level.material.MapColor;
@@ -176,7 +176,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     @Override
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
-        this.argb = FastColor.ARGB32.color(rgbCode[0], rgbCode[1], rgbCode[2]);
+        this.argb = ARGB.color(rgbCode[0], rgbCode[1], rgbCode[2]);
         this.color = TextColor.fromRgb(this.argb);
     }
 

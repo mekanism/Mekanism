@@ -15,6 +15,8 @@ import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -221,7 +223,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         CompoundTag nbt = super.serializeNBT(provider);
         //TODO - 1.21: These two states don't get persisted anymore when breaking blocks that have fluid inventory slots
         if (isDraining) {
@@ -234,10 +236,10 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         //Grab the booleans regardless if they are present as if they aren't that means they are false
         isDraining = nbt.getBoolean(SerializationConstants.DRAINING);
         isFilling = nbt.getBoolean(SerializationConstants.FILLING);
-        super.deserializeNBT(provider, nbt);
+        super.deserialize(input);
     }
 }

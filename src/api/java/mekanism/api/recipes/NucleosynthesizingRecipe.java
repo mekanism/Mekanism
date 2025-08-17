@@ -35,11 +35,6 @@ public abstract class NucleosynthesizingRecipe extends ItemStackChemicalToItemSt
     public abstract int getDuration();
 
     @Override
-    public String getGroup() {
-        return "antiprotonic_nucleosynthesizer";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ANTIPROTONIC_NUCLEOSYNTHESIZER);
     }

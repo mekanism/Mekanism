@@ -15,20 +15,20 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -74,7 +74,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    public void applyInventorySlots(BlockEntity.DataComponentInput input, List<IInventorySlot> slots, AttachedItems attachedItems) {
+    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
         List<ItemStack> stacks = attachedItems.containers();
         int size = stacks.size();
         if (size == slots.size()) {
@@ -164,7 +164,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         insertIntoFrequency = input.getOrDefault(MekanismDataComponents.INSERT_INTO_FREQUENCY, insertIntoFrequency);
     }

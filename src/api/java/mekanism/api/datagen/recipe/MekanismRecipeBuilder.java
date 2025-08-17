@@ -12,25 +12,35 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base recipe builder that declares various common methods between our different builders.
  */
 @NothingNullByDefault
 @SuppressWarnings("UnusedReturnValue")
-public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> {
+public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> implements RecipeBuilder {
 
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
+    @Nullable
+    protected String group;
 
     protected MekanismRecipeBuilder() {
         //TODO: We may also want to validate inputs, currently we are not validating our input ingredients as being valid, and are just validating the other parameters
+    }
+
+    @SuppressWarnings("unchecked")
+    private BUILDER self() {
+        return (BUILDER) this;
     }
 
     /**
@@ -48,10 +58,16 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param name      Name of the criterion.
      * @param criterion Criterion to add.
      */
-    @SuppressWarnings("unchecked")
+    @Override
     public BUILDER unlockedBy(String name, Criterion<?> criterion) {
         criteria.put(name, criterion);
-        return (BUILDER) this;
+        return self();
+    }
+
+    @Override
+    public BUILDER group(@Nullable String group) {
+        this.group = group;
+        return self();
     }
 
     /**
@@ -59,10 +75,9 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      *
      * @param condition Condition to add.
      */
-    @SuppressWarnings("unchecked")
     public BUILDER addCondition(ICondition condition) {
         conditions.add(condition);
-        return (BUILDER) this;
+        return self();
     }
 
     /**
@@ -70,12 +85,20 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      */
     protected abstract Recipe<?> asRecipe();
 
+    @Override
+    public Item getResult() {
+        //TODO - 1.21.8: Re-evaluate this method and decide if we want it to fail more gracefully
+        throw new UnsupportedOperationException("Not implemented yet");
+    }
+
     /**
      * Performs any extra validation.
      *
      * @param id ID of the recipe validation is being performed on.
+     * @since 10.8.0
      */
-    protected void validate(ResourceLocation id) {
+    protected void ensureValid(ResourceKey<Recipe<?>> id) {
+        //TODO - 1.21.8: Re-evaluate implementations, as it seems that vanilla changed what they are validating
     }
 
     /**
@@ -84,8 +107,24 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param recipeOutput Finished Recipe Consumer.
      * @param id           Name of the recipe being built.
      */
-    public void build(RecipeOutput recipeOutput, ResourceLocation id) {
-        validate(id);
+    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+        ResourceLocation defaultId = RecipeBuilder.getDefaultRecipeId(getResult());
+        if (id.equals(defaultId)) {
+            throw new IllegalStateException("Recipe " + id + " should remove its 'save' argument as it is equal to default one");
+        } else {
+            save(recipeOutput, ResourceKey.create(Registries.RECIPE, id));
+        }
+    }
+
+    /**
+     * Builds this recipe.
+     *
+     * @param recipeOutput Finished Recipe Consumer.
+     * @param id           Name of the recipe being built.
+     */
+    @Override
+    public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
+        ensureValid(id);
         AdvancementHolder advancementHolder = null;
         if (!this.criteria.isEmpty()) {
             Advancement.Builder advancementBuilder = recipeOutput.advancement()
@@ -94,7 +133,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
                   .requirements(AdvancementRequirements.Strategy.OR);
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             this.criteria.forEach(advancementBuilder::addCriterion);
-            advancementHolder = advancementBuilder.build(id.withPrefix("recipes/"));
+            advancementHolder = advancementBuilder.build(id.location().withPrefix("recipes/"));
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }
@@ -106,11 +145,11 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param output       Output to base the recipe name off of.
      * @since 10.7.11
      */
-    protected void build(RecipeOutput recipeOutput, Holder<Item> output) {
+    protected void save(RecipeOutput recipeOutput, Holder<Item> output) {
         ResourceKey<Item> key = output.getKey();
         if (key == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }
-        build(recipeOutput, key.location());
+        save(recipeOutput, key.location());
     }
 }

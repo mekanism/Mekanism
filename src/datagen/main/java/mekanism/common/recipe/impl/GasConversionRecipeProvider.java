@@ -21,26 +21,26 @@ class GasConversionRecipeProvider implements ISubRecipeProvider {
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
               IngredientCreatorAccess.item().from(Items.FLINT),
               MekanismChemicals.OXYGEN.asStack(10)
-        ).build(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
+        ).save(consumer, Mekanism.rl(basePath + "flint_to_oxygen"));
         //Osmium block -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.PROCESSED_RESOURCE_BLOCKS.get(PrimaryResource.OSMIUM)),
               MekanismChemicals.OSMIUM.asStack(1_800)
-        ).build(consumer, Mekanism.rl(basePath + "osmium_from_block"));
+        ).save(consumer, Mekanism.rl(basePath + "osmium_from_block"));
         //Osmium ingot -> osmium
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)),
               MekanismChemicals.OSMIUM.asStack(200)
-        ).build(consumer, Mekanism.rl(basePath + "osmium_from_ingot"));
+        ).save(consumer, Mekanism.rl(basePath + "osmium_from_ingot"));
         //Salt -> hydrogen chloride
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SALT),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_SALT),
               MekanismChemicals.HYDROGEN_CHLORIDE.asStack(2)
-        ).build(consumer, Mekanism.rl(basePath + "salt_to_hydrogen_chloride"));
+        ).save(consumer, Mekanism.rl(basePath + "salt_to_hydrogen_chloride"));
         //Sulfur -> sulfuric acid
         ItemStackToChemicalRecipeBuilder.chemicalConversion(
-              IngredientCreatorAccess.item().from(MekanismTags.Items.DUSTS_SULFUR),
+              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_SULFUR),
               MekanismChemicals.SULFURIC_ACID.asStack(2)
-        ).build(consumer, Mekanism.rl(basePath + "sulfur_to_sulfuric_acid"));
+        ).save(consumer, Mekanism.rl(basePath + "sulfur_to_sulfuric_acid"));
     }
 }

@@ -64,11 +64,6 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
         return !isIncomplete() && input.size() == 2 && test(input.getItem(0), input.getItem(1));
     }
 
-    @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height > 1;
-    }
-
     /**
      * Gets a new output based on the given inputs.
      *
@@ -109,11 +104,6 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
     @Override
     public final RecipeType<CombinerRecipe> getType() {
         return MekanismRecipeTypes.TYPE_COMBINING.value();
-    }
-
-    @Override
-    public String getGroup() {
-        return "combiner";
     }
 
     @Override

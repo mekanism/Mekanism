@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei;
 
 import com.google.common.base.Preconditions;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
@@ -16,7 +15,6 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
-import mezz.jei.api.gui.builder.ITooltipBuilder;
 import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
@@ -70,27 +68,8 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "JEI version 19.5.4")
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
-        Holder<Chemical> chemical = stack.getChemicalHolder();
-        if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            return Collections.emptyList();
-        }
         List<Component> tooltips = new ArrayList<>();
-        collectTooltips(stack, tooltips, tooltipFlag);
-        return tooltips;
-    }
-
-    @Override
-    public void getTooltip(ITooltipBuilder builder, ChemicalStack stack, TooltipFlag tooltipFlag) {
-        //TODO - 1.22: Flatten the collectTooltips into this method
-        List<Component> tooltips = new ArrayList<>();
-        collectTooltips(stack, tooltips, tooltipFlag);
-        builder.addAll(tooltips);
-    }
-
-    private void collectTooltips(ChemicalStack stack, List<Component> tooltips, TooltipFlag tooltipFlag) {
         Holder<Chemical> chemical = stack.getChemicalHolder();
         if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             tooltips.add(TextComponentUtil.build(chemical));
@@ -101,6 +80,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             }
             stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, tooltipFlag);
         }
+        return tooltips;
     }
 
     @Override

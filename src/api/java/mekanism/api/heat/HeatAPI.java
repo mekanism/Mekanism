@@ -58,7 +58,7 @@ public class HeatAPI {
         if (world == null) {
             return AMBIENT_TEMP;
         }
-        return getAmbientTemp(world.getBiome(pos).value().getTemperature(pos));
+        return getAmbientTemp(world.getBiome(pos).value().getTemperature(pos, world.getSeaLevel()));
     }
 
     /**

@@ -10,6 +10,8 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @NothingNullByDefault
 public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatCapacitorData, AttachedHeat> implements IHeatCapacitor {
@@ -114,18 +116,16 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    public CompoundTag serializeNBT(Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         HeatCapacitorData data = getData();
         if (data.heat().isPresent()) {
-            nbt.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
+            output.putDouble(SerializationConstants.STORED, data.heat().getAsDouble());
         }
-        nbt.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
-        return nbt;
+        output.putDouble(SerializationConstants.HEAT_CAPACITY, data.capacity());
     }
 
     @Override
-    public void deserializeNBT(Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         double capacity;
         HeatCapacitorData data;
         if (nbt.contains(SerializationConstants.HEAT_CAPACITY, Tag.TAG_DOUBLE)) {

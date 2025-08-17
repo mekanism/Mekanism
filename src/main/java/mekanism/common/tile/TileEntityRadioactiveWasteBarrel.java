@@ -36,6 +36,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -153,8 +154,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.CHEMICAL, nbt -> chemicalTank.deserializeNBT(provider, nbt));
         NBTUtils.setIntIfPresent(tag, SerializationConstants.PROGRESS, val -> processTicks = val);
     }

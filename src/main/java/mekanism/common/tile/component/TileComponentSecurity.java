@@ -16,6 +16,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
@@ -84,7 +85,7 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
         securityMode = input.getOrDefault(MekanismDataComponents.SECURITY, securityMode);
         setOwnerUUID(input.getOrDefault(MekanismDataComponents.OWNER, ownerUUID));
     }

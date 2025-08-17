@@ -31,11 +31,6 @@ public class BasicPigmentMixingRecipe extends BasicChemicalChemicalToChemicalRec
     }
 
     @Override
-    public String getGroup() {
-        return "pigment_mixer";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PIGMENT_MIXER);
     }

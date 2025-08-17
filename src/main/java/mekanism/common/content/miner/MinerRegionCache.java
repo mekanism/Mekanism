@@ -49,7 +49,7 @@ public class MinerRegionCache implements CollisionGetter {
 
     public MinerRegionCache(ServerLevel level, BlockPos centerPos, BlockPos offsetPos, boolean hasAnchor) {
         this.level = level;
-        this.plains = Suppliers.memoize(() -> level.registryAccess().registryOrThrow(Registries.BIOME).getHolderOrThrow(Biomes.PLAINS));
+        this.plains = Suppliers.memoize(() -> level.registryAccess().lookupOrThrow(Registries.BIOME).getOrThrow(Biomes.PLAINS));
         this.centerX = SectionPos.blockToSectionCoord(centerPos.getX());
         this.centerZ = SectionPos.blockToSectionCoord(centerPos.getZ());
         int i = SectionPos.blockToSectionCoord(offsetPos.getX());
@@ -146,8 +146,8 @@ public class MinerRegionCache implements CollisionGetter {
     }
 
     @Override
-    public int getMinBuildHeight() {
-        return this.level.getMinBuildHeight();
+    public int getMinY() {
+        return this.level.getMinY();
     }
 
     @Override

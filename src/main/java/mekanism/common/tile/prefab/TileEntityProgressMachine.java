@@ -17,6 +17,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>> extends TileEntityRecipeMachine<RECIPE> {
@@ -56,14 +58,14 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
     }
 

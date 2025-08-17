@@ -55,6 +55,7 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -246,8 +247,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> fluidTank.deserializeNBT(provider, nbt));
         NBTUtils.setItemStackOrEmpty(provider, tag, SerializationConstants.ITEM, stack -> lastPasteItem = stack.isEmpty() ? null : HashedItem.raw(stack));
     }

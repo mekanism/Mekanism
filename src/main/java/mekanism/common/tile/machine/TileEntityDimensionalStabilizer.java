@@ -33,6 +33,7 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.ChunkPos;
@@ -254,7 +255,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         //TODO - 1.20.4: Deduplicate this and the from nbt
         boolean changed = false;

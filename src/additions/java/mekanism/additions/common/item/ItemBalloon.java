@@ -44,7 +44,7 @@ public class ItemBalloon extends Item {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
             boolean rightHand = MekanismUtils.isRightArm(player, hand);

@@ -22,11 +22,6 @@ public abstract class ChemicalDissolutionRecipe extends ItemStackChemicalToObjec
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_dissolution_chamber";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_DISSOLUTION_CHAMBER);
     }

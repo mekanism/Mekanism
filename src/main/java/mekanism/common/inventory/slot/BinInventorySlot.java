@@ -20,6 +20,8 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,7 +156,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         //Note: While we are able to store this extra data for saving and stuff, when converting to an item we need to have
         // the tile copy the lock stack as a component
         CompoundTag nbt = super.serializeNBT(provider);
@@ -165,8 +167,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
-        super.deserializeNBT(provider, nbt);
+        super.deserialize(input);
     }
 }

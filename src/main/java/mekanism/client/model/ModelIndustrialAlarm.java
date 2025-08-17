@@ -15,7 +15,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -64,7 +64,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel {
         setRotation(aura, 0, yRot, 0);
         setRotation(bulb, 0, yRot, 0);
         float bulbAlpha = 0.3F + (Math.abs(((rotation * 2) % 360) - 180F) / 180F) * 0.7F;
-        int bulbColor = FastColor.ARGB32.color(FastColor.as8BitChannel(bulbAlpha), color);
+        int bulbColor = ARGB.color(ARGB.as8BitChannel(bulbAlpha), color);
         bulb.render(matrix, vertexBuilder, light, overlayLight, bulbColor);
         lightBox.render(matrix, vertexBuilder, light, overlayLight, color);
         aura.render(matrix, vertexBuilder, light, overlayLight, bulbColor);

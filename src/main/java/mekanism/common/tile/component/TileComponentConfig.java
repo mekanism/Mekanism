@@ -42,6 +42,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -255,7 +256,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
         AttachedSideConfig sideConfig = input.get(MekanismDataComponents.SIDE_CONFIG);
         if (sideConfig != null) {
             for (Entry<TransmissionType, LightConfigInfo> entry : sideConfig.configInfo().entrySet()) {

@@ -29,13 +29,7 @@ public class BasicCompressingRecipe extends BasicItemStackChemicalToItemStackRec
     }
 
     @Override
-    public String getGroup() {
-        return "osmium_compressor";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(OSMIUM_COMPRESSOR);
     }
-
 }

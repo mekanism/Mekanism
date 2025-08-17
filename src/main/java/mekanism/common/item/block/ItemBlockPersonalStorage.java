@@ -16,7 +16,6 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +38,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
             if (!world.isClientSide()) {
                 PersonalStorageManager.getInventoryFor(s);

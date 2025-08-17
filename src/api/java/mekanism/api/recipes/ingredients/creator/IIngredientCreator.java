@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
@@ -54,7 +55,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(TagKey<TYPE> tag, int amount);
+    INGREDIENT from(HolderGetter<TYPE> holderGetter, TagKey<TYPE> tag, int amount);
 
     /**
      * Retrieve a codec which can (de)encode a single or multi ingredient of this type.

@@ -14,8 +14,8 @@ import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @NothingNullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
@@ -204,14 +204,12 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         //Note: We don't actually have any specific serialization
-        return new CompoundTag();
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-
+    public void deserialize(ValueInput input) {
     }
 
     private long getRemainingInput() {

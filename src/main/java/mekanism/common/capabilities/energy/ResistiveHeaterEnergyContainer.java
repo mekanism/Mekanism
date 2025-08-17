@@ -12,6 +12,8 @@ import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,14 +43,12 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
-        return nbt;
+    public void serialize(ValueOutput output) {
+        output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }

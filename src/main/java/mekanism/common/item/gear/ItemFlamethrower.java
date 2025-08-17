@@ -91,7 +91,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (hasChemical(stack)) {
             player.awardStat(Stats.ITEM_USED.get(this));

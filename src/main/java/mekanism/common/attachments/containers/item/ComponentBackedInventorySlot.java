@@ -10,11 +10,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -193,20 +192,18 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?
         // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
-        CompoundTag nbt = new CompoundTag();
         ItemStack current = getStack();
         if (!current.isEmpty()) {
-            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, current));
+            output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, current);
         }
-        return nbt;
     }
 
     @Override
-    public void deserializeNBT(Provider provider, CompoundTag nbt) {
-        setStack(SerializerHelper.parseOversizedOptional(provider, nbt.getCompound(SerializationConstants.ITEM)));
+    public void deserialize(ValueInput input) {
+        setStack(input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY));
     }
 }

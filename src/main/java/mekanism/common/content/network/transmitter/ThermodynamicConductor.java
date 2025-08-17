@@ -29,6 +29,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,15 +107,15 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
 
     @NotNull
     @Override
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag tag) {
-        super.write(provider, tag);
+    public CompoundTag write(@NotNull ValueOutput output) {
+        super.write(output);
         ContainerType.HEAT.saveTo(provider, tag, getHeatCapacitors(null));
         return tag;
     }
 
     @Override
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag tag) {
-        super.read(provider, tag);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
         ContainerType.HEAT.readFrom(provider, tag, getHeatCapacitors(null));
     }
 
@@ -126,8 +128,8 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        boolean refreshModelData= super.handleUpdateTag(tag, provider);
+    public boolean handleUpdateTag(@NotNull ValueInput input) {
+        boolean refreshModelData = super.handleUpdateTag(input);
         NBTUtils.setDoubleIfPresent(tag, SerializationConstants.TEMPERATURE, buffer::setHeat);
         return refreshModelData;
     }

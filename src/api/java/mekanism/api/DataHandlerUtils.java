@@ -2,10 +2,12 @@ package mekanism.api;
 
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueInput.ValueInputList;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 @NothingNullByDefault
 public class DataHandlerUtils {
@@ -16,13 +18,13 @@ public class DataHandlerUtils {
     /**
      * Helper to read and load a list of handler contents from a {@link ListTag}
      */
-    public static void readContents(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> contents, ListTag storedContents, String key) {
+    public static void readContents(ValueInputList storedContents, String key, List<? extends ValueIOSerializable> contents) {
+        //TODO - 1.21.8: Test these read/write methods work properly
         int size = contents.size();
-        for (int tagCount = 0; tagCount < storedContents.size(); tagCount++) {
-            CompoundTag tagCompound = storedContents.getCompound(tagCount);
-            byte id = tagCompound.getByte(key);
+        for (ValueInput storedContent : storedContents) {
+            byte id = storedContent.getByteOr(key, (byte) -1);
             if (id >= 0 && id < size) {
-                contents.get(id).deserializeNBT(provider, tagCompound);
+                contents.get(id).deserialize(storedContent);
             }
         }
     }
@@ -30,15 +32,15 @@ public class DataHandlerUtils {
     /**
      * Helper to read and load a list of handler contents to a {@link ListTag}
      */
-    public static ListTag writeContents(HolderLookup.Provider provider, List<? extends INBTSerializable<CompoundTag>> contents, String key) {
-        ListTag storedContents = new ListTag();
+    public static void writeContents(ValueOutputList outputList, String key, List<? extends ValueIOSerializable> contents) {
         for (int tank = 0; tank < contents.size(); tank++) {
-            CompoundTag tagCompound = contents.get(tank).serializeNBT(provider);
-            if (!tagCompound.isEmpty()) {
-                tagCompound.putByte(key, (byte) tank);
-                storedContents.add(tagCompound);
+            ValueOutput output = outputList.addChild();
+            contents.get(tank).serialize(output);
+            if (!output.isEmpty()) {
+                output.putByte(key, (byte) tank);
+            } else {
+                outputList.discardLast();
             }
         }
-        return storedContents;
     }
 }

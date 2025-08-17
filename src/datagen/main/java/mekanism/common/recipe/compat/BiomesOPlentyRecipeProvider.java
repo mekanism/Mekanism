@@ -123,14 +123,14 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     inputIngredient,
                     new ItemStack(output, 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
+              .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long flowerRate = 3 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
                     MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(flowerRate)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
+              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
 
     private void largeDye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
@@ -139,13 +139,13 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
                     inputIngredient,
                     new ItemStack(output, 4)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
+              .save(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
         long largeFlowerRate = 6 * PigmentExtractingRecipeProvider.DYE_RATE;
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
                     inputIngredient,
                     MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color).asStack(largeFlowerRate)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
+              .save(consumer, Mekanism.rl(basePath + "pigment_extracting/large_" + color.getRegistryPrefix()));
     }
 }

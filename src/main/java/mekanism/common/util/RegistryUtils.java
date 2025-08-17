@@ -32,7 +32,7 @@ public class RegistryUtils {
         if (nbt != null && nbt.contains(SerializationConstants.ID, Tag.TAG_STRING)) {
             ResourceLocation name = ResourceLocation.tryParse(nbt.getString(SerializationConstants.ID));
             if (name != null) {
-                return registry.getHolder(name);
+                return registry.get(name);
             }
         }
         return Optional.empty();

@@ -361,7 +361,8 @@ neoForge {
             programArguments.addAll('--quickPlaySingleplayer', 'GameTestWorld')
         }
         dataGameTest {
-            data()
+            //See https://neoforged.net/news/21.4release/ for why we only use clientData instead of splitting and having clientData and serverData
+            clientData()
             gameDirectory.value(runsFolder.dir('gameTestServer'))
             programArguments.addAll('--all', '--output', file('src/gameTest/generated/').absolutePath,
                     '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath,
@@ -374,7 +375,7 @@ neoForge {
             loadedMods.add(mods.mekanismtests)
         }
         data {
-            data()
+            clientData()
             gameDirectory.value(runsFolder.dir('data'))
             programArguments.addAll('--all', '--output', file('src/datagen/generated/').absolutePath,
                     '--mod', 'mekanism', '--existing', file('src/main/resources/').absolutePath)
@@ -470,8 +471,8 @@ dependencies {
         localRuntime("mezz.jei:jei-${minecraft_version}-neoforge:${jei_version}")
     }
 
-    compileOnly("dev.emi:emi-neoforge:${emi_version}+${minecraft_version}:api")
-    def emi = "dev.emi:emi-neoforge:${emi_version}+${minecraft_version}"
+    compileOnly("dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}:api")
+    def emi = "dev.emi:emi-neoforge:${emi_version}+${previous_minecraft_version}"
     //TODO: Re-evaluate (https://github.com/emilyploszaj/emi/issues/537) might allow us to not have to do this
     //Compile against full emi in datagen
     datagenMainCompileOnly(emi)
@@ -479,28 +480,32 @@ dependencies {
         localRuntime(emi)
     } else {
         //We still need it to load in datagen regardless of if we are using emi or a different viewer so that we can access EMI related objects
-        datagenMainRuntimeOnly(emi)
+        //TODO - 1.21.8: Re-enable when it updates
+        //datagenMainRuntimeOnly(emi)
     }
 
-    localRuntime("team.chisel.ctm:CTM:${previous_minor_minecraft_version}-${ctm_version}")
+    //TODO - 1.21.8: Re-enable when it updates
+    //localRuntime("team.chisel.ctm:CTM:${major_minecraft_version}-${ctm_version}")
 
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
-    localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
+    //TODO - 1.21.8: Re-enable when it updates
+    //localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
     compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
     localRuntime("curse.maven:jade-324717:${jade_id}")
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
     //localRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
     //localRuntime('lol.bai:badpackets:neo-0.8.1')
 
-    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${minecraft_version}:${crafttweaker_version}"
+    def crt = "com.blamejared.crafttweaker:CraftTweaker-neoforge-${previous_minecraft_version}:${crafttweaker_version}"
     compileOnly(crt)
-    localRuntime(crt)
+    //TODO - 1.21.8: Re-enable when it updates
+    //localRuntime(crt)
     def jeiTweaker = "com.blamejared.jeitweaker:JeiTweaker-forge-1.20.1:${jeitweaker_version}"
     compileOnly(jeiTweaker)
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${previous_minor_minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -509,13 +514,14 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    compileOnly("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge-api:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${major_minecraft_version}-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
 
     //Dependencies for data generators for mod compat reference
-    datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    //TODO - 1.21.8: Switch this back to datagenMainImplementation
+    datagenMainCompileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${minecraft_version}-${glitchcore_version}")
     datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${minecraft_version}-${terrablender_version}")
     datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${minecraft_version}-${biomesoplenty_version}")
@@ -523,8 +529,10 @@ dependencies {
     datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")
     datagenMainRuntimeOnly("curse.maven:oh-the-trees-youll-grow-962544:${ohthetreesyoullgrow_id}")
     datagenMainImplementation("curse.maven:oh-the-biomes-weve-gone-1070751:${biomeswevegone_id}")
-    datagenMainImplementation("curse.maven:farmers-delight-398521:${farmers_delight_id}")
-    datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
+    //TODO - 1.21.8: Switch this back to datagenMainImplementation
+    datagenMainCompileOnly("curse.maven:farmers-delight-398521:${farmers_delight_id}")
+    //TODO - 1.21.8: Re-enable once this updates
+    //datagenMainRuntimeOnly("curse.maven:projecte-226410:${projecte_id}")
 
     //Note: Even though yaml ops defines a FMLModType we have to pretend FML doesn't know how to handle it due to a lib yaml ops bundles not defining it
     datagenNonMod("com.thiakil:yaml-ops:${yamlops_version}")

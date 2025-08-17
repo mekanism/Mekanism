@@ -4,10 +4,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeCategory;
-import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDER>> extends MekanismRecipeBuilder<BUILDER> {
@@ -15,8 +13,6 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     private final Holder<Item> result;
     private final int count;
     protected RecipeCategory category = RecipeCategory.MISC;
-    @Nullable
-    protected String group;
 
     protected BaseRecipeBuilder(Holder<Item> result, int count) {
         this.result = result;
@@ -24,25 +20,17 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
     }
 
     @SuppressWarnings("unchecked")
-    private BUILDER self() {
+    public BUILDER category(RecipeCategory category) {
+        this.category = category;
         return (BUILDER) this;
     }
 
-    public BUILDER group(String group) {
-        this.group = group;
-        return self();
-    }
-
-    public BUILDER category(RecipeCategory category) {
-        this.category = category;
-        return self();
-    }
-
-    public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, result);
+    @Override
+    public Item getResult() {
+        return result.value();
     }
 
     protected ItemStack resultStack() {
-        return new ItemStack(result.value(), count);
+        return new ItemStack(result, count);
     }
 }

@@ -33,12 +33,13 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
@@ -172,8 +173,8 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SOUND_SCALE, value -> soundScale = value);
     }
 
@@ -185,7 +186,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         //Apply the usage before processing the stored data as it changes the buffer of the energy container
         energyContainer.updateEnergyUsage(input.getOrDefault(MekanismDataComponents.ENERGY_USAGE, BASE_USAGE));
         super.applyImplicitComponents(input);

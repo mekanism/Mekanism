@@ -10,9 +10,8 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import org.jetbrains.annotations.NotNull;
@@ -197,13 +196,11 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     @Override
-    public CompoundTag serializeNBT(Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         FluidStack stored = getFluid();
         if (!stored.isEmpty()) {
-            nbt.put(SerializationConstants.STORED, stored.save(provider));
+            output.store(SerializationConstants.STORED, FluidStack.CODEC, stored);
         }
-        return nbt;
     }
 
     @Override

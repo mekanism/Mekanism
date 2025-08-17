@@ -79,11 +79,6 @@ public abstract class ItemStackToEnergyRecipe extends MekanismRecipe<SingleRecip
     }
 
     @Override
-    public String getGroup() {
-        return "energy_conversion";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ENERGY_TABLET);
     }

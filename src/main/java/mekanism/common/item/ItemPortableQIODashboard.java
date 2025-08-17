@@ -9,13 +9,13 @@ import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
+import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
@@ -27,7 +27,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -69,7 +69,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 

@@ -370,7 +370,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide()) {
             IModule<ModuleTeleportationUnit> module = getEnabledModule(stack, MekanismModules.TELEPORTATION_UNIT);

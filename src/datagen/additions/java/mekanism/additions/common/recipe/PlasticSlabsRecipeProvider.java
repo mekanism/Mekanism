@@ -47,7 +47,7 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               .pattern(PLASTIC_SLAB)
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
-              .build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         if (transparent) {
             PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, slab, blockType, color, basePath);
         } else {
@@ -57,6 +57,6 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
               .pattern(PLASTIC_RECOMBINATION)
               .key(Pattern.CONSTANT, slab)
               .category(RecipeCategory.BUILDING_BLOCKS)
-              .build(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
+              .save(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
     }
 }

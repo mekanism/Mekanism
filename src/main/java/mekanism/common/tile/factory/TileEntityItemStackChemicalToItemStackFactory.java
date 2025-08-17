@@ -60,6 +60,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -247,8 +249,8 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         if (nbt.contains(SerializationConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
             long[] savedUsed = nbt.getLongArray(SerializationConstants.USED_SO_FAR);
             if (tier.processes != savedUsed.length) {
@@ -263,8 +265,8 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putLongArray(SerializationConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
     }
 

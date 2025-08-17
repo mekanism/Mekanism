@@ -47,7 +47,7 @@ public class CrTBracketDumpers {
     private static Collection<String> getDump(ResourceKey<? extends Registry<?>> registryKey, String bracket) {
         Optional<Registry<Object>> optionalRegistry = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registry(registryKey);
+              .lookup(registryKey);
         if (optionalRegistry.isEmpty()) {
             return Collections.emptyList();
         }

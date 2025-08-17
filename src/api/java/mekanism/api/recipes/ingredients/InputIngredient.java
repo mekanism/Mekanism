@@ -3,6 +3,7 @@ package mekanism.api.recipes.ingredients;
 import java.util.List;
 import java.util.function.Predicate;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -54,5 +55,5 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @apiNote Do not modify any of the values returned by the representations
      */
-    List<TYPE> getRepresentations();
+    List<TYPE> getRepresentations(ContextMap context);
 }

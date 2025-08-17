@@ -7,15 +7,14 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsListener {
+public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
 
     /**
      * Returns the {@link ChemicalStack} in this tank.
@@ -324,18 +323,14 @@ public interface IChemicalTank extends INBTSerializable<CompoundTag>, IContentsL
     }
 
     @Override
-    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    default void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.STORED, getStack().save(provider));
+            output.store(SerializationConstants.STORED, ChemicalStack.CODEC, getStack());
         }
-        return nbt;
     }
 
     @Override
-    default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_COMPOUND)) {
-            setStackUnchecked(ChemicalStack.parseOptional(provider, nbt.getCompound(SerializationConstants.STORED)));
-        }
+    default void deserialize(ValueInput input) {
+        setStackUnchecked(input.read(SerializationConstants.STORED, ChemicalStack.CODEC).orElse(ChemicalStack.EMPTY));
     }
 }

@@ -28,13 +28,7 @@ public class BasicCrushingRecipe extends BasicItemStackToItemStackRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return "crusher";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CRUSHER);
     }
-
 }

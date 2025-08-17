@@ -47,6 +47,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -114,24 +116,24 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
-        if (getTransmitter().handleUpdateTag(tag, provider)) {
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
+        if (getTransmitter().handleUpdateTag(input)) {
             //Only update the model data if something got updated that caused the model data to change
             updateModelData();
         }
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
-        getTransmitter().read(provider, nbt);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
+        getTransmitter().read(input);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
-        getTransmitter().write(provider, nbtTags);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
+        getTransmitter().write(output);
     }
 
     public void onNeighborBlockChange(Direction side) {

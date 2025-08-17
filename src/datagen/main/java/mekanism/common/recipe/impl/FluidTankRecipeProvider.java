@@ -35,7 +35,7 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.INGOT, Pattern.ALLOY))
               ).key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
-              .build(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.BASIC_FLUID_TANK, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
         addTieredFluidTank(consumer, basePath, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
@@ -48,6 +48,6 @@ class FluidTankRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.INGOT, Tags.Items.INGOTS_IRON)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

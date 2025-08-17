@@ -28,13 +28,7 @@ public class BasicSmeltingRecipe extends BasicItemStackToItemStackRecipe impleme
     }
 
     @Override
-    public String getGroup() {
-        return "energized_smelter";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ENERGIZED_SMELTER);
     }
-
 }

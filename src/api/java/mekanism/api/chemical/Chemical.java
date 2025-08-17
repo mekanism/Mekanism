@@ -69,7 +69,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         if (tag.isEmpty()) {
             return MekanismAPI.EMPTY_CHEMICAL_HOLDER;
         }
-        Optional<RegistryLookup<Chemical>> chemicalLookup = lookupProvider.lookup(MekanismAPI.CHEMICAL_REGISTRY_NAME);
+        Optional<? extends RegistryLookup<Chemical>> chemicalLookup = lookupProvider.lookup(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         if (chemicalLookup.isPresent()) {
             ResourceLocation rl = ResourceLocation.tryParse(tag);
             if (rl != null) {

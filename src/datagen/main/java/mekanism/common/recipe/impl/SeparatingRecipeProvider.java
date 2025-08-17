@@ -17,15 +17,15 @@ class SeparatingRecipeProvider implements ISubRecipeProvider {
         String basePath = "separator/";
         //Brine
         ElectrolysisRecipeBuilder.separating(
-              IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.BRINE, 10),
+              IngredientCreatorAccess.fluid().from(, MekanismTags.Fluids.BRINE, 10),
               MekanismChemicals.SODIUM.asStack(1),
               MekanismChemicals.CHLORINE.asStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "brine"));
+        ).save(consumer, Mekanism.rl(basePath + "brine"));
         //Water
         ElectrolysisRecipeBuilder.separating(
-              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 2),
+              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 2),
               MekanismChemicals.HYDROGEN.asStack(2),
               MekanismChemicals.OXYGEN.asStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "water"));
+        ).save(consumer, Mekanism.rl(basePath + "water"));
     }
 }

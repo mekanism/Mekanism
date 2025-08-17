@@ -12,9 +12,9 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -209,12 +209,10 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
     }
 
     @Override
-    public CompoundTag serializeNBT(Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         ChemicalStack stored = getStack();
         if (!stored.isEmpty()) {
-            nbt.put(SerializationConstants.STORED, stored.save(provider));
+            output.store(SerializationConstants.STORED, ChemicalStack.CODEC, stored);
         }
-        return nbt;
     }
 }

@@ -5,17 +5,16 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 
 @NothingNullByDefault
-public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<CompoundTag>, IContentsListener {
+public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, IContentsListener {
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.
@@ -243,19 +242,15 @@ public interface IExtendedFluidTank extends IFluidTank, INBTSerializable<Compoun
     }
 
     @Override
-    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    default void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.STORED, getFluid().save(provider));
+            output.store(SerializationConstants.STORED, FluidStack.CODEC, getFluid());
         }
-        return nbt;
     }
 
     @Override
-    default void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_COMPOUND)) {
-            setStackUnchecked(FluidStack.parseOptional(provider, nbt.getCompound(SerializationConstants.STORED)));
-        }
+    default void deserialize(ValueInput input) {
+        setStackUnchecked(input.read(SerializationConstants.STORED, FluidStack.CODEC).orElse(FluidStack.EMPTY));
     }
 
     /**

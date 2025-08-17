@@ -40,7 +40,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY)))
               .key(Pattern.CONSTANT, ItemTags.WOOL)
               .key(Pattern.INGOT, MekanismTags.Items.MUFFLING_CENTER)
-              .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.MUFFLING_UPGRADE)));
+              .save(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.MUFFLING_UPGRADE)));
         addUpgradeRecipe(consumer, MekanismItems.SPEED_UPGRADE, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM), basePath);
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STONE_GENERATOR_UPGRADE)
               .pattern(RecipePattern.createPattern(
@@ -51,7 +51,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CONSTANT, Tags.Items.BUCKETS_WATER)
               .key(Pattern.BUCKET, Tags.Items.BUCKETS_LAVA)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
-              .build(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.STONE_GENERATOR_UPGRADE)));
+              .save(consumer, Mekanism.rl(basePath + getSaveName(MekanismItems.STONE_GENERATOR_UPGRADE)));
     }
 
     private void addUpgradeRecipe(RecipeOutput consumer, ItemRegistryObject<ItemUpgrade> upgrade, TagKey<Item> dustTag, String basePath) {
@@ -60,7 +60,7 @@ class UpgradeRecipeProvider implements ISubRecipeProvider {
               .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_BLOCKS_CHEAP)
               .key(Pattern.CONSTANT, dustTag)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_INFUSED)
-              .build(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));
+              .save(consumer, Mekanism.rl(basePath + getSaveName(upgrade)));
     }
 
     private String getSaveName(ItemRegistryObject<ItemUpgrade> upgrade) {

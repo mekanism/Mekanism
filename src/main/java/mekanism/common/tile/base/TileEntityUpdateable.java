@@ -23,6 +23,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,10 +128,10 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    public void handleUpdateTag(@NotNull ValueInput input) {
         //We don't want to do a full read from NBT so simply call the super's read method to let Neo do whatever
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
-        super.loadAdditional(tag, provider);
+        super.loadAdditional(input);
         //Copy of logic from BlockEntity#loadWithComponents which we can't just call directly as we don't want to call sub-implementations of loadAdditional
         BlockEntity.ComponentHelper.COMPONENTS_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag)
               .resultOrPartial(p_337987_ -> Mekanism.logger.warn("Failed to load components: {}", p_337987_))
@@ -184,8 +185,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         updateCoord();
     }
 

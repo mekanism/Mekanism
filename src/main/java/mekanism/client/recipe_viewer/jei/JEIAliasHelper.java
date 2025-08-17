@@ -78,7 +78,7 @@ public class JEIAliasHelper implements RVAliasHelper<ItemStack, FluidStack, Chem
     }
 
     private <TYPE, STACK> List<STACK> tagContents(Registry<TYPE> registry, TagKey<TYPE> tag, Function<Holder<TYPE>, STACK> stackFunction) {
-        return registry.getTag(tag)
+        return registry.get(tag)
               .stream()
               .flatMap(HolderSet::stream)
               .map(stackFunction)

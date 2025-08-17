@@ -47,6 +47,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -361,8 +363,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        boolean refreshModelData = super.handleUpdateTag(tag, provider);
+    public boolean handleUpdateTag(@NotNull ValueInput input) {
+        boolean refreshModelData = super.handleUpdateTag(input);
         transit.clear();
         if (tag.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
             ListTag tagList = tag.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
@@ -376,8 +378,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Override
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
         readFromNBT(provider, nbtTags);
     }
 
@@ -392,8 +394,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @NotNull
     @Override
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
+    public CompoundTag write(@NotNull ValueOutput output) {
+        super.write(output);
         writeToNBT(provider, nbtTags);
         return nbtTags;
     }

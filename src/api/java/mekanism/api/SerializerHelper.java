@@ -23,6 +23,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -89,7 +90,7 @@ public class SerializerHelper {
      * @since 10.6.1
      */
     public static final Codec<ItemStack> OVERSIZED_ITEM_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-          ItemStack.ITEM_NON_AIR_CODEC.fieldOf(SerializationConstants.ID).forGetter(ItemStack::getItemHolder),
+          Item.CODEC.fieldOf(SerializationConstants.ID).forGetter(ItemStack::getItemHolder),
           ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.COUNT).orElse(1).forGetter(ItemStack::getCount),
           DataComponentPatch.CODEC.optionalFieldOf(SerializationConstants.COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(instance, ItemStack::new)));
@@ -116,7 +117,7 @@ public class SerializerHelper {
      *
      * @since 10.6.1
      */
-    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {
+    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {//TODO - 1.21.8: Re-evaluate I am guessing we can/should remove these save/parse methods
         if (stack.isEmpty()) {
             throw new IllegalStateException("Cannot encode empty ItemStack");
         }

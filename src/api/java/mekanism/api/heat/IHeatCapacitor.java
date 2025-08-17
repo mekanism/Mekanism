@@ -3,13 +3,12 @@ package mekanism.api.heat;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
 @NothingNullByDefault
-public interface IHeatCapacitor extends INBTSerializable<CompoundTag>, IContentsListener {
+public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
 
     /**
      * Returns the temperature of this capacitor.
@@ -83,9 +82,7 @@ public interface IHeatCapacitor extends INBTSerializable<CompoundTag>, IContents
     }
 
     @Override
-    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
-        nbt.putDouble(SerializationConstants.STORED, getHeat());
-        return nbt;
+    default void serialize(ValueOutput output) {
+        output.putDouble(SerializationConstants.STORED, getHeat());
     }
 }

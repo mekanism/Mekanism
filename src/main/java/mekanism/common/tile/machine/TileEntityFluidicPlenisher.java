@@ -52,6 +52,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -233,8 +235,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
         nbtTags.putBoolean(SerializationConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
@@ -246,8 +248,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
         finishedCalc = nbt.getBoolean(SerializationConstants.FINISHED);
         NBTUtils.readBlockPositions(nbt, SerializationConstants.ACTIVE_NODES, activeNodes);

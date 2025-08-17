@@ -28,13 +28,7 @@ public class BasicEnrichingRecipe extends BasicItemStackToItemStackRecipe implem
     }
 
     @Override
-    public String getGroup() {
-        return "enrichment_chamber";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ENRICHMENT_CHAMBER);
     }
-
 }

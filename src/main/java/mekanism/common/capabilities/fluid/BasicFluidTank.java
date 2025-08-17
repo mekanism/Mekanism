@@ -10,8 +10,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -317,11 +316,9 @@ public class BasicFluidTank implements IExtendedFluidTank {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getFluid()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.STORED, stored.save(provider));
+            output.store(SerializationConstants.STORED, FluidStack.CODEC, stored);
         }
-        return nbt;
     }
 }

@@ -15,6 +15,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -151,7 +152,8 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     }
 
     @Override
-    public List<ChemicalStack> getRepresentations() {
+    public List<ChemicalStack> getRepresentations(ContextMap context) {
+        //TODO - 1.21.8: Refactor this to be based off the display
         if (this.representations == null) {
             this.representations = ingredient.getChemicalHolders().stream()
                   .map(chemical -> new ChemicalStack(chemical, amount))

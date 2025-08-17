@@ -33,7 +33,7 @@ public class ItemDosimeter extends Item {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {

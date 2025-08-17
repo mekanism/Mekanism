@@ -44,6 +44,6 @@ public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 1.22:
      * Looks up the contents of the solid representation tag.
      */
     public Optional<HolderSet.Named<Item>> lookupTag() {
-        return BuiltInRegistries.ITEM.getTag(solidRepresentation);
+        return BuiltInRegistries.ITEM.get(solidRepresentation);
     }
 }

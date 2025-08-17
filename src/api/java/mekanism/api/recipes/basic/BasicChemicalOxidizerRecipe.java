@@ -29,13 +29,7 @@ public class BasicChemicalOxidizerRecipe extends BasicItemStackToChemicalRecipe 
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_oxidizer";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_OXIDIZER);
     }
-
 }

@@ -9,8 +9,8 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
@@ -137,12 +137,12 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        return internal.serializeNBT(provider);
+    public void serialize(ValueOutput output) {
+        internal.serialize(output);
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        internal.deserializeNBT(provider, nbt);
+    public void deserialize(ValueInput input) {
+        internal.deserialize(input);
     }
 }

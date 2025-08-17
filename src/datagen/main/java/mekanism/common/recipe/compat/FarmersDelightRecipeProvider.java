@@ -28,24 +28,24 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     IngredientCreatorAccess.item().from(Items.BEEF),
                     new ItemStack(ModItems.MINCED_BEEF.get(), 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "minced_beef"));
+              .save(consumer, Mekanism.rl(basePath + "minced_beef"));
         //Pork
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.PORKCHOP),
                     new ItemStack(ModItems.BACON.get(), 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "raw_bacon"));
+              .save(consumer, Mekanism.rl(basePath + "raw_bacon"));
         //Mutton
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.MUTTON),
                     new ItemStack(ModItems.MUTTON_CHOPS.get(), 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "raw_mutton_chops"));
+              .save(consumer, Mekanism.rl(basePath + "raw_mutton_chops"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.COOKED_MUTTON),
                     new ItemStack(ModItems.COOKED_MUTTON_CHOPS.get(), 2)
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "mutton_chops"));
+              .save(consumer, Mekanism.rl(basePath + "mutton_chops"));
         //Ham
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(ModItems.HAM.get()),
@@ -53,14 +53,14 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStack(Items.BONE),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "ham_processing"));
+              .save(consumer, Mekanism.rl(basePath + "ham_processing"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(ModItems.SMOKED_HAM.get()),
                     new ItemStack(Items.COOKED_PORKCHOP, 2),
                     new ItemStack(Items.BONE),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "smoked_ham_processing"));
+              .save(consumer, Mekanism.rl(basePath + "smoked_ham_processing"));
         //Chicken
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.CHICKEN),
@@ -68,14 +68,14 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "raw_chicken_cuts"));
+              .save(consumer, Mekanism.rl(basePath + "raw_chicken_cuts"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.COOKED_CHICKEN),
                     new ItemStack(ModItems.COOKED_CHICKEN_CUTS.get(), 2),
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "chicken_cuts"));
+              .save(consumer, Mekanism.rl(basePath + "chicken_cuts"));
         //Salmon
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.SALMON),
@@ -83,14 +83,14 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "raw_salmon_slice"));
+              .save(consumer, Mekanism.rl(basePath + "raw_salmon_slice"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.COOKED_SALMON),
                     new ItemStack(ModItems.COOKED_SALMON_SLICE.get(), 2),
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "salmon_slice"));
+              .save(consumer, Mekanism.rl(basePath + "salmon_slice"));
         //Cod
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.COD),
@@ -98,13 +98,13 @@ public class FarmersDelightRecipeProvider extends CompatRecipeProvider {
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "raw_cod_slice"));
+              .save(consumer, Mekanism.rl(basePath + "raw_cod_slice"));
         SawmillRecipeBuilder.sawing(
                     IngredientCreatorAccess.item().from(Items.COOKED_COD),
                     new ItemStack(ModItems.COOKED_COD_SLICE.get(), 2),
                     new ItemStack(Items.BONE_MEAL),
                     1
               ).addCondition(modLoaded)
-              .build(consumer, Mekanism.rl(basePath + "cod_slice"));
+              .save(consumer, Mekanism.rl(basePath + "cod_slice"));
     }
 }

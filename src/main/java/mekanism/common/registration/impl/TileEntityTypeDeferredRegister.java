@@ -172,7 +172,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
         @SuppressWarnings("ConstantConditions")
         public TileEntityTypeRegistryObject<BE> build() {
             //Note: There is no data fixer type as forge does not currently have a way exposing data fixers to mods yet
-            TileEntityTypeRegistryObject<BE> holder = registerMek(block.getId().getPath(), () -> BlockEntityType.Builder.<BE>of(factory, block.value()).build(null));
+            TileEntityTypeRegistryObject<BE> holder = registerMek(block.getId().getPath(), () -> new BlockEntityType<>(factory, block.value()));
             holder.tickers(clientTicker, serverTicker);
             holder.capabilities(capabilityProviders.isEmpty() ? null : capabilityProviders);
             return holder;

@@ -39,7 +39,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
     private void addNuggetRecipe(RecipeOutput consumer, Holder<Item> nugget, Holder<Item> ingot, String basePath, String name) {
         ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
               .addIngredient(ingot)
-              .build(consumer, Mekanism.rl(basePath + name));
+              .save(consumer, Mekanism.rl(basePath + name));
     }
 
     private void addStorageBlockRecipes(RecipeOutput consumer) {
@@ -55,14 +55,14 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CHARCOAL_BLOCK)
               .pattern(MekanismRecipeProvider.STORAGE_PATTERN)
               .key(Pattern.CONSTANT, Items.CHARCOAL)
-              .build(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
+              .save(consumer, Mekanism.rl(basePath + BlockResourceInfo.CHARCOAL.getRegistrySuffix()));
         //Salt
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.SALT_BLOCK)
               .pattern(RecipePattern.createPattern(
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_SALT)
-              .build(consumer, Mekanism.rl(basePath + "salt"));
+              .save(consumer, Mekanism.rl(basePath + "salt"));
     }
 
     private void addStorageBlockRecipe(RecipeOutput consumer, BlockRegistryObject<BlockResource, ?> block, Holder<Item> ingot, TagKey<Item> ingotTag,
@@ -76,6 +76,6 @@ class StorageRecipeProvider implements ISubRecipeProvider {
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, ingot)
               .key(Pattern.CONSTANT, ingotTag)
-              .build(consumer, Mekanism.rl(basePath + suffix));
+              .save(consumer, Mekanism.rl(basePath + suffix));
     }
 }

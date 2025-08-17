@@ -22,6 +22,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -219,8 +220,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         hasFormedMultiblock = tag.getBoolean(SerializationConstants.FORMED);
         canAccessGui = tag.getBoolean(SerializationConstants.GUI);
     }

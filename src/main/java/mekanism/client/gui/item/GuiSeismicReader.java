@@ -56,7 +56,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
         imageHeight = 182;
         Player player = inv.player;
         Level level = player.level();
-        this.minHeight = level.getMinBuildHeight();
+        this.minHeight = level.getMinY();
         BlockPos pos = player.blockPosition();
         //Calculate all the blocks in the column
         for (BlockPos p : BlockPos.betweenClosed(new BlockPos(pos.getX(), minHeight, pos.getZ()), pos)) {

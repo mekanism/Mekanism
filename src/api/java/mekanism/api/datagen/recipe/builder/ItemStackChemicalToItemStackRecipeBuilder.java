@@ -122,7 +122,7 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, output.getItemHolder());
+        save(recipeOutput, output.getItemHolder());
     }
 
     @FunctionalInterface

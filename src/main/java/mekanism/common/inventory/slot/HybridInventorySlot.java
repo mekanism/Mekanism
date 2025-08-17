@@ -15,6 +15,8 @@ import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,9 +106,8 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
         isFilling = filling;
     }
 
-    @NotNull
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         CompoundTag nbt = super.serializeNBT(provider);
         if (isDraining) {
             nbt.putBoolean(SerializationConstants.DRAINING, true);
@@ -118,11 +119,11 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         //Grab the booleans regardless if they are present as if they aren't that means they are false
         isDraining = nbt.getBoolean(SerializationConstants.DRAINING);
         isFilling = nbt.getBoolean(SerializationConstants.FILLING);
-        super.deserializeNBT(provider, nbt);
+        super.deserialize(input);
     }
 
     public void drainChemicalTank() {

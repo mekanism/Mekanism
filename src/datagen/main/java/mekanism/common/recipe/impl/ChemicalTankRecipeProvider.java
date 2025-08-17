@@ -37,7 +37,7 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
               ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
-              .build(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_ATOMIC);
@@ -50,6 +50,6 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.PREVIOUS, previousTank)
               .key(Pattern.OSMIUM, Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

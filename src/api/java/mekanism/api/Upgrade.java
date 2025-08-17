@@ -7,6 +7,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
@@ -15,7 +16,6 @@ import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -77,19 +77,29 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
      * @implNote Unmodifiable if empty.
      */
     public static Map<Upgrade, Integer> buildMap(@Nullable CompoundTag nbtTags) {
+        if (nbtTags == null) {
+            return Collections.emptyMap();
+        }
         Map<Upgrade, Integer> upgrades = null;
-        if (nbtTags != null && nbtTags.contains(SerializationConstants.UPGRADES, Tag.TAG_LIST)) {
-            ListTag list = nbtTags.getList(SerializationConstants.UPGRADES, Tag.TAG_COMPOUND);
-            for (int tagCount = 0; tagCount < list.size(); tagCount++) {
-                CompoundTag compound = list.getCompound(tagCount);
-                Upgrade upgrade = BY_ID.apply(compound.getInt(SerializationConstants.TYPE));
-                //Validate the nbt isn't malformed with a negative or zero amount
-                int installed = Math.max(compound.getInt(SerializationConstants.AMOUNT), 0);
-                if (installed > 0) {
-                    if (upgrades == null) {
-                        upgrades = new EnumMap<>(Upgrade.class);
+        Optional<ListTag> list = nbtTags.getList(SerializationConstants.UPGRADES);
+        if (list.isPresent()) {
+            ListTag listTag = list.get();
+            for (int tagCount = 0; tagCount < listTag.size(); tagCount++) {
+                Optional<CompoundTag> compound = listTag.getCompound(tagCount);
+                if (compound.isPresent()) {
+                    CompoundTag compoundTag = compound.get();
+                    Optional<Integer> type = compoundTag.getInt(SerializationConstants.TYPE);
+                    if (type.isPresent()) {
+                        Upgrade upgrade = BY_ID.apply(type.get());
+                        //Validate the nbt isn't malformed with a negative or zero amount
+                        int installed = Math.max(compoundTag.getIntOr(SerializationConstants.AMOUNT, 0), 0);
+                        if (installed > 0) {
+                            if (upgrades == null) {
+                                upgrades = new EnumMap<>(Upgrade.class);
+                            }
+                            upgrades.put(upgrade, installed);
+                        }
                     }
-                    upgrades.put(upgrade, installed);
                 }
             }
         }

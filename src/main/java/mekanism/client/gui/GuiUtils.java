@@ -22,7 +22,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
@@ -81,7 +81,7 @@ public class GuiUtils {
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
             int argb = 0xFFFFFF | alpha << 24;
-            guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, FastColor.ARGB32.multiply(backgroundColor, argb));
+            guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
     }
 

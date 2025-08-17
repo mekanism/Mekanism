@@ -73,7 +73,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        build(recipeOutput, output.getItemHolder());
+        save(recipeOutput, output.getItemHolder());
     }
 
     @FunctionalInterface

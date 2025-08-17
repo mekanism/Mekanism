@@ -3,15 +3,18 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Ingredient.TagValue;
-import net.minecraft.world.item.crafting.Ingredient.Value;
+import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +35,7 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
      *
      * @since 10.6.0
      */
-    public static final Codec<ItemStackIngredient> CODEC = SizedIngredient.FLAT_CODEC.xmap(ItemStackIngredient::new, ItemStackIngredient::ingredient);
+    public static final Codec<ItemStackIngredient> CODEC = SizedIngredient.NESTED_CODEC.xmap(ItemStackIngredient::new, ItemStackIngredient::ingredient);
     /**
      * A stream codec which can be used to encode and decode item stack ingredients over the network.
      *
@@ -92,37 +95,32 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
 
     @Override
     public boolean hasNoMatchingInstances() {
-        return ingredient.ingredient().hasNoItems();
+        //TODO - 1.21.8: Figure out if this is the proper way to reimplement this, as there used to be a difference between isEmpty and has NoItems
+        return ingredient.ingredient().isEmpty();
     }
 
     @Override
     public void logMissingTags() {
+        //TODO - 1.21.8: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             Ingredient unsized = ingredient.ingredient();
-            if (unsized.isSimple()) {
-                if (unsized.isEmpty()) {
-                    MekanismAPI.logger.error("Empty ingredient: {}", unsized);
-                } else {
-                    for (Value ingredientValue : unsized.getValues()) {
-                        if (ingredientValue instanceof TagValue tagValue) {
-                            MekanismAPI.logger.error("Empty tag: {}", tagValue);
-                        } else {
-                            MekanismAPI.logger.warn("Unknown value: {}", ingredientValue);
-                        }
-                    }
-                }
-            } else {
+            if (unsized.isCustom()) {
                 MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
+            } else {
+                Optional<TagKey<Item>> fluidTagKey = unsized.getValues().unwrapKey();
+                if (fluidTagKey.isPresent()) {
+                    MekanismAPI.logger.error("Empty tag: {}", fluidTagKey.get());
+                } else {
+                    MekanismAPI.logger.error("Empty ItemStackIngredient: {}", SerializerHelper.stringify(Ingredient.CODEC, unsized));
+                }
             }
         }
     }
 
     @Override
-    public List<@NotNull ItemStack> getRepresentations() {
+    public List<@NotNull ItemStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            //TODO: See if quark or whatever mods used to occasionally have empty stacks in their ingredients still do
-            // if so we probably should filter them out of this
-            this.representations = List.of(ingredient.getItems());
+            this.representations = ingredient.ingredient().display().resolve(context, (ForStacks<ItemStack>) stack -> stack.copyWithCount(ingredient.count())).toList();
         }
         return representations;
     }

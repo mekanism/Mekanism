@@ -41,6 +41,7 @@ import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
@@ -51,18 +52,20 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.common.util.Lazy;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<?, ATTACHED>,
+public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>,
       HANDLER extends ComponentBackedHandler<?, CONTAINER, ATTACHED>> {
 
     private static final List<ContainerType<?, ?, ?>> TYPES_INTERNAL = new ArrayList<>();
@@ -276,39 +279,35 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         return false;
     }
 
-    private ListTag save(HolderLookup.Provider provider, List<CONTAINER> containers) {
-        return DataHandlerUtils.writeContents(provider, containers, containerKey);
+    private ValueOutputList save(HolderLookup.Provider provider, List<CONTAINER> containers) {
+        return DataHandlerUtils.writeContents(provider, containerKey, containers);
     }
 
-    protected void read(HolderLookup.Provider provider, List<CONTAINER> containers, @Nullable ListTag storedContainers) {
-        if (storedContainers != null) {
-            DataHandlerUtils.readContents(provider, containers, storedContainers, containerKey);
+    public void saveTo(ValueOutput output, TileEntityMekanism tile) {
+        saveTo(output, getContainers(tile));
+    }
+
+    public void saveTo(ValueOutput output, List<CONTAINER> containers) {
+        ValueOutputList storedContainers = output.childrenList(containerTag);
+        DataHandlerUtils.writeContents(storedContainers, containerKey, containers);
+        if (storedContainers.isEmpty()) {
+            output.discard(containerTag);
         }
     }
 
-    public void saveTo(HolderLookup.Provider provider, CompoundTag tag, TileEntityMekanism tile) {
-        saveTo(provider, tag, getContainers(tile));
+    public void readFrom(ValueInput input, TileEntityMekanism tile) {
+        readFrom(input, getContainers(tile));
     }
 
-    public void saveTo(HolderLookup.Provider provider, CompoundTag tag, List<CONTAINER> containers) {
-        ListTag serialized = save(provider, containers);
-        if (!serialized.isEmpty()) {
-            tag.put(containerTag, serialized);
-        }
-    }
-
-    public void readFrom(HolderLookup.Provider provider, CompoundTag tag, TileEntityMekanism tile) {
-        readFrom(provider, tag, getContainers(tile));
-    }
-
-    public void readFrom(HolderLookup.Provider provider, CompoundTag tag, List<CONTAINER> containers) {
-        read(provider, containers, tag.getList(containerTag, Tag.TAG_COMPOUND));
+    public void readFrom(ValueInput input, List<CONTAINER> containers) {
+        //TODO - 1.21.8: Should this not be orEmpty?
+        DataHandlerUtils.readContents(input.childrenListOrEmpty(containerTag), containerKey, containers);
     }
 
     public void copyToStack(HolderLookup.Provider provider, List<CONTAINER> containers, ItemStack stack) {
         HANDLER handler = createHandler(stack);
         if (handler != null) {
-            read(provider, handler.getContainers(), save(provider, containers));
+            DataHandlerUtils.readContents(save(provider, containers), containerKey, handler.getContainers());
             //TODO - 1.21: FIX the getattached here?
             stack.set(component, handler.getAttached());
             if (stack.getCount() > 1) {
@@ -317,7 +316,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
         }
     }
 
-    public void copyToTile(TileEntityMekanism tile, BlockEntity.DataComponentInput input) {
+    public void copyToTile(TileEntityMekanism tile, DataComponentGetter input) {
         ATTACHED attachedData = input.get(component);
         if (attachedData != null) {
             copyToTile.copy(tile, input, getContainers(tile), attachedData);
@@ -327,7 +326,7 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     public void copyFromStack(HolderLookup.Provider provider, ItemStack stack, List<CONTAINER> containers) {
         HANDLER handler = createHandler(stack);
         if (handler != null) {
-            read(provider, containers, save(provider, handler.getContainers()));
+            DataHandlerUtils.readContents(save(provider, handler.getContainers()), containerKey, containers);
         }
     }
 
@@ -356,13 +355,13 @@ public class ContainerType<CONTAINER extends INBTSerializable<CompoundTag>, ATTA
     }
 
     @FunctionalInterface
-    public interface CopyToTile<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
+    public interface CopyToTile<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
 
-        void copy(TileEntityMekanism tile, BlockEntity.DataComponentInput input, List<CONTAINER> containers, ATTACHED attachedData);
+        void copy(TileEntityMekanism tile, DataComponentGetter input, List<CONTAINER> containers, ATTACHED attachedData);
     }
 
     @FunctionalInterface
-    public interface CopyFromTile<CONTAINER extends INBTSerializable<CompoundTag>, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
+    public interface CopyFromTile<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>> {
 
         @Nullable
         ATTACHED copy(TileEntityMekanism tile, DataComponentMap.Builder builder, List<CONTAINER> containers);

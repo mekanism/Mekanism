@@ -29,6 +29,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -106,8 +107,8 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> bioFuelTank.deserializeNBT(provider, nbt));
     }
 

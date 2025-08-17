@@ -30,13 +30,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import org.jetbrains.annotations.NotNull;
@@ -189,7 +189,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         updateMinThreshold(input.getOrDefault(MekanismDataComponents.MIN_THRESHOLD, minThreshold));
         updateMaxThreshold(input.getOrDefault(MekanismDataComponents.MAX_THRESHOLD, maxThreshold));

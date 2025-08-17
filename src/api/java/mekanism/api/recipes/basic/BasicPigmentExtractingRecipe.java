@@ -28,11 +28,6 @@ public class BasicPigmentExtractingRecipe extends BasicItemStackToChemicalRecipe
     }
 
     @Override
-    public String getGroup() {
-        return "pigment_extractor";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PIGMENT_EXTRACTOR);
     }

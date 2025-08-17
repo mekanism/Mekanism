@@ -25,6 +25,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +84,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    private void readModes(@NotNull CompoundTag tag) {
+    private void readModes(@NotNull ValueInput input) {
         if (tag.contains(SerializationConstants.MODE, Tag.TAG_INT_ARRAY)) {
             int[] modeIndices = tag.getIntArray(SerializationConstants.MODE);
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
@@ -92,7 +94,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @NotNull
-    private CompoundTag writeModes(@NotNull CompoundTag nbtTags) {
+    private CompoundTag writeModes(@NotNull ValueOutput output) {
         int[] modeIndices = new int[modes.length];
         for (int i = 0; i < modes.length; i++) {
             modeIndices[i] = modes[i].ordinal();
@@ -102,15 +104,16 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
-        readModes(nbtTags);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
+        readModes(input);
     }
 
     @NotNull
     @Override
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        return writeModes(super.write(provider, nbtTags));
+    public CompoundTag write(@NotNull ValueOutput output) {
+        super.write(output);
+        return writeModes(output);
     }
 
     @NotNull
@@ -120,9 +123,9 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        boolean refreshModelData = super.handleUpdateTag(tag, provider);
-        readModes(tag);
+    public boolean handleUpdateTag(@NotNull ValueInput input) {
+        boolean refreshModelData = super.handleUpdateTag(input);
+        readModes(input);
         return refreshModelData;
     }
 

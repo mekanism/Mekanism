@@ -39,7 +39,7 @@ public class MainRobitContainer extends RobitContainer implements ISpecificConta
             // from the skin and into the handler system
             //Note: We can cache a reference to the specific registry so that we don't have to lookup the robit skin registry each time
             Registry<RobitSkin> registry = getLevel().registryAccess()
-                  .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+                  .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
             data = SyncableResourceKeyList.create(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, () -> registry.entrySet().stream()
                         .filter(entry -> entry.getValue().isUnlocked(inv.player))
                         .map(Entry::getKey)

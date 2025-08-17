@@ -151,7 +151,7 @@ public class Pos3D extends Vec3 {
      * Performs the same operation as translate(x, y, z), but by a set amount in a Direction
      */
     public Pos3D translate(Direction direction, double amount) {
-        return translate(direction.getNormal().getX() * amount, direction.getNormal().getY() * amount, direction.getNormal().getZ() * amount);
+        return translate(direction.getStepX() * amount, direction.getStepY() * amount, direction.getStepZ() * amount);
     }
 
     /**

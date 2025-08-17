@@ -63,7 +63,7 @@ public class CrTBracketValidators {
         }
         Optional<Registry<Object>> registry = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registry(registryKey);
+              .lookup(registryKey);
         if (registry.isEmpty() || registry.get().containsKey(registryName)) {
             return true;
         }

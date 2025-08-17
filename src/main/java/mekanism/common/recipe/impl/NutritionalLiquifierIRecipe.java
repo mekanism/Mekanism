@@ -1,9 +1,11 @@
 package mekanism.common.recipe.impl;
 
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -29,11 +31,6 @@ public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidOptionalIt
     @Override
     public RecipeSerializer<ItemStackToFluidRecipe> getSerializer() {
         return null;
-    }
-
-    @Override
-    public String getGroup() {
-        return "nutritional_liquifier";
     }
 
     @Override

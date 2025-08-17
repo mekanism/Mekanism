@@ -58,6 +58,6 @@ public class PigmentExtractingPlasticRecipeProvider implements ISubRecipeProvide
         ItemStackToChemicalRecipeBuilder.pigmentExtracting(
               IngredientCreatorAccess.item().from(input.get(color)),
               new ChemicalStack(pigment, rate)
-        ).build(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+        ).save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
     }
 }

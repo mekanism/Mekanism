@@ -10,7 +10,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.FastColor.ARGB32;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -146,14 +146,14 @@ public class RenderResizableCuboid {
         int colorNorth = colors[Direction.NORTH.ordinal()];
         int colorSouth = colors[Direction.SOUTH.ordinal()];
 
-        int redNorth = ARGB32.red(colorNorth);
-        int greenNorth = ARGB32.green(colorNorth);
-        int blueNorth = ARGB32.blue(colorNorth);
-        int alphaNorth = ARGB32.alpha(colorNorth);
-        int redSouth = ARGB32.red(colorSouth);
-        int greenSouth = ARGB32.green(colorSouth);
-        int blueSouth = ARGB32.blue(colorSouth);
-        int alphaSouth = ARGB32.alpha(colorSouth);
+        int redNorth = ARGB.red(colorNorth);
+        int greenNorth = ARGB.green(colorNorth);
+        int blueNorth = ARGB.blue(colorNorth);
+        int alphaNorth = ARGB.alpha(colorNorth);
+        int redSouth = ARGB.red(colorSouth);
+        int greenSouth = ARGB.green(colorSouth);
+        int blueSouth = ARGB.blue(colorSouth);
+        int alphaSouth = ARGB.alpha(colorSouth);
 
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
@@ -249,14 +249,14 @@ public class RenderResizableCuboid {
 
         int westColor = colors[Direction.WEST.ordinal()];
         int eastColor = colors[Direction.EAST.ordinal()];
-        int redWest = ARGB32.red(westColor);
-        int greenWest = ARGB32.green(westColor);
-        int blueWest = ARGB32.blue(westColor);
-        int alphaWest = ARGB32.alpha(westColor);
-        int redEast = ARGB32.red(eastColor);
-        int greenEast = ARGB32.green(eastColor);
-        int blueEast = ARGB32.blue(eastColor);
-        int alphaEast = ARGB32.alpha(eastColor);
+        int redWest = ARGB.red(westColor);
+        int greenWest = ARGB.green(westColor);
+        int blueWest = ARGB.blue(westColor);
+        int alphaWest = ARGB.alpha(westColor);
+        int redEast = ARGB.red(eastColor);
+        int greenEast = ARGB.green(eastColor);
+        int blueEast = ARGB.blue(eastColor);
+        int alphaEast = ARGB.alpha(eastColor);
 
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
@@ -347,14 +347,14 @@ public class RenderResizableCuboid {
 
         int downColor = colors[Direction.DOWN.ordinal()];
         int upColor = colors[Direction.UP.ordinal()];
-        int redUp = ARGB32.red(upColor);
-        int greenUp = ARGB32.green(upColor);
-        int blueUp = ARGB32.blue(upColor);
-        int alphaUp = ARGB32.alpha(upColor);
-        int redDown = ARGB32.red(downColor);
-        int greenDown = ARGB32.green(downColor);
-        int blueDown = ARGB32.blue(downColor);
-        int alphaDown = ARGB32.alpha(downColor);
+        int redUp = ARGB.red(upColor);
+        int greenUp = ARGB.green(upColor);
+        int blueUp = ARGB.blue(upColor);
+        int alphaUp = ARGB.alpha(upColor);
+        int redDown = ARGB.red(downColor);
+        int greenDown = ARGB.green(downColor);
+        int blueDown = ARGB.blue(downColor);
+        int alphaDown = ARGB.alpha(downColor);
 
         // render each side
         for (int z = 0; z <= zDelta; z += 1) {

@@ -40,10 +40,10 @@ public class Quad {
     }
 
     public Quad(BakedQuad quad) {
-        side = quad.getDirection();
-        sprite = quad.getSprite();
-        tintIndex = quad.getTintIndex();
-        shade = quad.isShade();
+        side = quad.direction();
+        sprite = quad.sprite();
+        tintIndex = quad.tintIndex();
+        shade = quad.shade();
         hasAmbientOcclusion = quad.hasAmbientOcclusion();
         BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
         unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);

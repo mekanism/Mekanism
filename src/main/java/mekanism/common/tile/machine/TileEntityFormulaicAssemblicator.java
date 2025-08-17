@@ -69,6 +69,8 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -686,8 +688,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         autoMode = nbt.getBoolean(SerializationConstants.AUTO);
         operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
         pulseOperations = nbt.getInt(SerializationConstants.PULSE);
@@ -695,8 +697,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putBoolean(SerializationConstants.AUTO, autoMode);
         nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
         nbtTags.putInt(SerializationConstants.PULSE, pulseOperations);

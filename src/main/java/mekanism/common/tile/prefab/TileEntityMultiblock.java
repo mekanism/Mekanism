@@ -43,6 +43,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -273,8 +275,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> isMaster = value);
         T multiblock = getMultiblock();
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HAS_STRUCTURE, multiblock::setFormedForce);
@@ -310,16 +312,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         if (!getMultiblock().isFormed()) {
             NBTUtils.setUUIDIfPresent(nbt, SerializationConstants.INVENTORY_ID, id -> cachedID = id);
         }
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         if (cachedID != null) {
             //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
             // at which point it will gracefully handle multiblock tiles with stale ids and clear them

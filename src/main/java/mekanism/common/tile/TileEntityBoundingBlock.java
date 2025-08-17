@@ -23,6 +23,8 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
@@ -130,15 +132,15 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         NBTUtils.setBlockPosIfPresent(nbt, SerializationConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = nbt.getInt(SerializationConstants.REDSTONE);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         if (mainPos != null) {
             nbtTags.put(SerializationConstants.MAIN, NbtUtils.writeBlockPos(mainPos));
         }
@@ -157,8 +159,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.MAIN, pos -> mainPos = pos);
         currentRedstoneLevel = tag.getInt(SerializationConstants.REDSTONE);
     }

@@ -13,6 +13,8 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -165,16 +167,14 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.putLong(SerializationConstants.STORED, stored);
+            output.putLong(SerializationConstants.STORED, stored);
         }
-        return nbt;
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         NBTUtils.setLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
     }
 }

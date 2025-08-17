@@ -1,17 +1,35 @@
 package mekanism.api.recipes;
 
 import mekanism.api.MekanismAPI;
+import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * Base class for helping wrap our recipes into IRecipes.
  */
+@NothingNullByDefault
 public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
     //TODO: Should we make implementations override equals and hashcode?
+
+    private final String group;
+
+    protected MekanismRecipe() {
+        this("");//TODO - 1.21.8: Remove this constructor and force usage of groups
+    }
+
+    protected MekanismRecipe(String group) {
+        this.group = group;
+    }
+
+    @Override
+    public final String group() {
+        return group;
+    }
 
     @Override
     public boolean isSpecial() {
@@ -21,28 +39,38 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     }
 
     //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
-    @Override
-    public abstract boolean isIncomplete();
+    //@Override//TODO - 1.21.8: Re-evaluate this, we might want to keep some form of it?
+    public abstract boolean isIncomplete();//TODO - 1.21.8: This is now part of PlacementInfo#isImpossibleToPlace ??
 
     //todo 1.21.5 or 1.22: make this abstract
     public void logMissingTags() {
         MekanismAPI.logger.error("Please implement logMissingTags(): {}", this);
     }
 
-    @NotNull
     @Override
-    public ItemStack assemble(@NotNull INPUT input, @NotNull HolderLookup.Provider provider) {
+    public ItemStack assemble(INPUT input, HolderLookup.Provider provider) {
+        return ItemStack.EMPTY;
+    }
+
+    //@Override
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
+        //TODO - 1.21.8: This and get Toast symbol are replaced by List<RecipeDisplay> display()
+        return ItemStack.EMPTY;
+    }
+
+    public ItemStack getToastSymbol() {//TODO - 1.21.8: Remove this after removing the things that use it
         return ItemStack.EMPTY;
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return true;
+    public PlacementInfo placementInfo() {
+        //TODO - 1.21.8: Implement this
+        throw new UnsupportedOperationException();
     }
 
-    @NotNull
     @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return ItemStack.EMPTY;
+    public RecipeBookCategory recipeBookCategory() {
+        //TODO - 1.21.8: Implement this
+        throw new UnsupportedOperationException();
     }
 }

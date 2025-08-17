@@ -26,7 +26,7 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.INGOT, Tags.Items.INGOTS_COPPER)
-              .build(consumer, Mekanism.rl(basePath + "block"));
+              .save(consumer, Mekanism.rl(basePath + "block"));
         //Controller
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER)
               .pattern(RecipePattern.createPattern(
@@ -37,7 +37,7 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.BUCKET, Items.BUCKET)
               .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_PANES)
-              .build(consumer, Mekanism.rl(basePath + "controller"));
+              .save(consumer, Mekanism.rl(basePath + "controller"));
         //Valve
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.THERMAL_EVAPORATION_VALVE)
               .pattern(RecipePattern.createPattern(
@@ -46,6 +46,6 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.THERMAL_EVAPORATION_BLOCK)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
-              .build(consumer, Mekanism.rl(basePath + "valve"));
+              .save(consumer, Mekanism.rl(basePath + "valve"));
     }
 }

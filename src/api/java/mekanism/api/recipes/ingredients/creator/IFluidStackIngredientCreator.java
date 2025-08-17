@@ -1,15 +1,16 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponentPredicate;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -28,7 +29,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         if (fluids.length == 0) {
             throw new IllegalArgumentException("Attempted to create a FluidStackIngredient with no fluids.");
         }
-        return from(CompoundFluidIngredient.of(Arrays.stream(fluids).map(FluidIngredient::single)), amount);
+        return from(FluidIngredient.of(HolderSet.direct(List.of(fluids))), amount);
     }
 
     /**
@@ -37,7 +38,7 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
      */
     @Override
     default FluidStackIngredient fromHolder(Holder<Fluid> instance, int amount) {
-        return from(FluidIngredient.single(instance), amount);
+        return from(FluidIngredient.of(instance.value()), amount);
     }
 
     /**
@@ -53,17 +54,17 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         instance = instance.copy();
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
-        DataComponentPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(instance.getComponentsPatch());
+        DataComponentExactPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(instance.getComponentsPatch());
         if (predicate != null) {
             return from(DataComponentFluidIngredient.of(false, predicate, instance.getFluidHolder()), instance.getAmount());
         }
-        return from(SizedFluidIngredient.of(instance));
+        return from(SizedFluidIngredient.of(instance.getFluid(), instance.getAmount()));
     }
 
     @Override
-    default FluidStackIngredient from(TagKey<Fluid> tag, int amount) {
+    default FluidStackIngredient from(HolderGetter<Fluid> holderGetter, TagKey<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
-        return from(SizedFluidIngredient.of(tag, amount));
+        return from(new SizedFluidIngredient(FluidIngredient.of(holderGetter.getOrThrow(tag)), amount));
     }
 
     /**

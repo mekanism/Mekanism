@@ -89,8 +89,8 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             }
         }
         Level level = stabilizer.getLevel();
-        int minY = level.getMinBuildHeight();
-        int height = level.getMaxBuildHeight() - minY;
+        int minY = level.getMinY();
+        int height = level.getMaxY() - minY + 1;
         BlockPos pos = stabilizer.getBlockPos();
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
@@ -172,10 +172,10 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             );
             return new AABB(
                   minChunk.getMinBlockX(),
-                  level.getMinBuildHeight(),
+                  level.getMinY(),
                   minChunk.getMinBlockZ(),
                   maxChunk.getMaxBlockX() + 1,
-                  level.getMaxBuildHeight(),
+                  level.getMaxY() + 1,
                   maxChunk.getMaxBlockZ() + 1
             );
         }

@@ -49,7 +49,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -152,19 +152,19 @@ public class MekanismRenderer {
     }
 
     public static float getRed(int color) {
-        return FastColor.ARGB32.red(color) / 255.0F;
+        return ARGB.red(color) / 255.0F;
     }
 
     public static float getGreen(int color) {
-        return FastColor.ARGB32.green(color) / 255.0F;
+        return ARGB.green(color) / 255.0F;
     }
 
     public static float getBlue(int color) {
-        return FastColor.ARGB32.blue(color) / 255.0F;
+        return ARGB.blue(color) / 255.0F;
     }
 
     public static float getAlpha(int color) {
-        return FastColor.ARGB32.alpha(color) / 255.0F;
+        return ARGB.alpha(color) / 255.0F;
     }
 
     public static void color(GuiGraphics guiGraphics, int color) {
@@ -239,16 +239,16 @@ public class MekanismRenderer {
         } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
             return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
-        return FastColor.ARGB32.opaque(getTint(chemical));
+        return ARGB.opaque(getTint(chemical));
     }
 
     public static int getColorARGB(int rgb, float alpha) {
         if (alpha >= 1) {
-            return FastColor.ARGB32.opaque(rgb);
+            return ARGB.opaque(rgb);
         } else if (alpha < 0) {
             alpha = 0;
         }
-        return FastColor.ARGB32.color(FastColor.as8BitChannel(alpha), rgb);
+        return ARGB.color(ARGB.as8BitChannel(alpha), rgb);
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {

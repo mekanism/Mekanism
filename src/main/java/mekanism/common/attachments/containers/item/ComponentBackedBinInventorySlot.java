@@ -16,6 +16,8 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -101,7 +103,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+    public void serialize(ValueOutput output) {
         CompoundTag nbt = super.serializeNBT(provider);
         ItemStack lockStack = getLockStack();
         if (!lockStack.isEmpty()) {
@@ -111,8 +113,8 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, this::setLockStack);
-        super.deserializeNBT(provider, nbt);
+        super.deserialize(input);
     }
 }

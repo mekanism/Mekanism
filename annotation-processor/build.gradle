@@ -23,6 +23,6 @@ repositories {
 dependencies {
     implementation('org.openzen.zencode:JavaAnnotations:0.3.8')
     //Version of GSON used by vanilla (and thus packed and already downloaded)
-    implementation('com.google.code.gson:gson:2.10.1')
+    implementation('com.google.code.gson:gson:2.11.0')
     implementation('com.palantir.javapoet:javapoet:0.7.0')
 }

@@ -18,6 +18,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,8 +111,8 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        boolean refreshModelData = super.handleUpdateTag(tag, provider);
+    public boolean handleUpdateTag(@NotNull ValueInput input) {
+        boolean refreshModelData = super.handleUpdateTag(input);
         EnumColor color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (this.color != color) {
             setColor(color);

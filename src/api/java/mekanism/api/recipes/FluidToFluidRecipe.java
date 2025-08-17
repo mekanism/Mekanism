@@ -81,11 +81,6 @@ public abstract class FluidToFluidRecipe extends MekanismRecipe<SingleFluidRecip
     }
 
     @Override
-    public String getGroup() {
-        return "thermal_evaporation_controller";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(THERMAL_EVAPORATION_CONTROLLER);
     }

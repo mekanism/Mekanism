@@ -97,7 +97,7 @@ public class ItemConfigurationCard extends Item {
 
     @Override
     @NotNull
-    public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
+    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack configCard = player.getItemInHand(usedHand);
             if (!level.isClientSide()) {

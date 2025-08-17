@@ -73,7 +73,7 @@ public class MekanismDataMapTypes implements IMekanismDataMapTypes {
             //Reference holders can query data map values
             return holder.getData(type);
         }
-        Optional<Registry<TYPE>> registry = registryAccess.registry(registryName);
+        Optional<Registry<TYPE>> registry = registryAccess.lookup(registryName);
         //noinspection OptionalIsPresent - Capturing lambda
         if (registry.isPresent()) {
             return registry.get().wrapAsHolder(holder.value()).getData(type);

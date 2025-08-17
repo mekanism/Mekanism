@@ -8,14 +8,14 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.ItemUtils;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -36,13 +36,13 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
 
     @NotNull
     @Override
-    public UseAnim getUseAnimation(@NotNull ItemStack stack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(@NotNull ItemStack stack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand hand) {
         if (MekanismUtils.isPlayingMode(player)) {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), FluidType.BUCKET_VOLUME / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {

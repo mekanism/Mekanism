@@ -49,6 +49,8 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
@@ -413,14 +415,14 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         NBTUtils.setLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putLong(SerializationConstants.LAST_FIRED, lastFired);
     }
 
@@ -440,8 +442,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setLongIfPresent(tag, SerializationConstants.LAST_FIRED, fired -> lastFired = fired);
     }
 

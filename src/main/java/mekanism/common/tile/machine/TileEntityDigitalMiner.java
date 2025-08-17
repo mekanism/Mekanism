@@ -89,6 +89,7 @@ import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -111,6 +112,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.NeoForge;
@@ -410,7 +413,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public void setMinYFromPacket(int newMinY) {
         if (level != null) {
-            setMinY(Mth.clamp(newMinY, level.getMinBuildHeight(), getMaxY()));
+            setMinY(Mth.clamp(newMinY, level.getMinY(), getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -429,7 +432,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     public void setMaxYFromPacket(int newMaxY) {
         if (level != null) {
-            setMaxY(Mth.clamp(newMaxY, getMinY(), level.getMaxBuildHeight() - 1));
+            setMaxY(Mth.clamp(newMaxY, getMinY(), level.getMaxY()));
             //Send a packet to update the visual renderer
             //TODO: Only do this if the renderer is actually active
             sendUpdatePacket();
@@ -863,8 +866,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         running = nbt.getBoolean(SerializationConstants.RUNNING);
         delay = nbt.getInt(SerializationConstants.DELAY);
         numPowering = nbt.getInt(SerializationConstants.NUM_POWERING);
@@ -899,8 +902,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putBoolean(SerializationConstants.RUNNING, running);
         nbtTags.putInt(SerializationConstants.DELAY, delay);
         nbtTags.putInt(SerializationConstants.NUM_POWERING, numPowering);
@@ -1031,14 +1034,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         setRadius(Math.min(dataMap.getInt(SerializationConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MIN, newMinY -> {
             if (hasLevel() && !isRemote()) {
-                setMinY(Math.max(newMinY, level.getMinBuildHeight()));
+                setMinY(Math.max(newMinY, level.getMinY()));
             } else {
                 setMinY(newMinY);
             }
         });
         NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MAX, newMaxY -> {
             if (hasLevel() && !isRemote()) {
-                setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
+                setMaxY(Math.min(newMaxY, level.getMaxY()));
             } else {
                 setMaxY(newMaxY);
             }
@@ -1084,14 +1087,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         setRadius(Math.min(input.getOrDefault(MekanismDataComponents.RADIUS, radius), MekanismConfig.general.minerMaxRadius.get()));
         int newMinY = input.getOrDefault(MekanismDataComponents.MIN_Y, minY);
         int newMaxY = input.getOrDefault(MekanismDataComponents.MAX_Y, minY);
         if (level != null && !isRemote()) {
-            setMinY(Math.max(newMinY, level.getMinBuildHeight()));
-            setMaxY(Math.min(newMaxY, level.getMaxBuildHeight() - 1));
+            setMinY(Math.max(newMinY, level.getMinY()));
+            setMaxY(Math.min(newMaxY, level.getMaxY()));
         } else {
             setMinY(newMinY);
             setMaxY(newMaxY);
@@ -1289,8 +1292,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
         NBTUtils.setIntIfPresent(tag, SerializationConstants.MIN, this::setMinY);
         NBTUtils.setIntIfPresent(tag, SerializationConstants.MAX, this::setMaxY);
@@ -1407,7 +1410,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     void computerSetMinY(int minY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
-            int min = level.getMinBuildHeight();
+            int min = level.getMinY();
             if (minY < min || minY > getMaxY()) {
                 //Validate dimensions even though we can clamp
                 throw new ComputerException("Min Y '%d' is out of range must be between %d and %d. (Inclusive)", minY, min, getMaxY());
@@ -1420,7 +1423,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     void computerSetMaxY(int maxY) throws ComputerException {
         validateCanChangeConfiguration();
         if (level != null) {
-            int max = level.getMaxBuildHeight() - 1;
+            int max = level.getMaxY();
             if (maxY < getMinY() || maxY > max) {
                 //Validate dimensions even though we can clamp
                 throw new ComputerException("Max Y '%d' is out of range must be between %d and %d. (Inclusive)", maxY, getMinY(), max);

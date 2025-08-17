@@ -13,6 +13,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -174,16 +176,16 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         blades = nbt.getInt(SerializationConstants.BLADES);
         position = nbt.getInt(SerializationConstants.POSITION);
         updateRadius();
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putInt(SerializationConstants.BLADES, getHousedBlades());
         nbtTags.putInt(SerializationConstants.POSITION, getPosition());
     }
@@ -198,8 +200,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         int prevBlades = blades;
         int prevPosition = position;
         NBTUtils.setIntIfPresent(tag, SerializationConstants.BLADES, value -> blades = value);

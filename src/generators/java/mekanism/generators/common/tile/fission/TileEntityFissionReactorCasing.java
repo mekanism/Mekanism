@@ -16,6 +16,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
@@ -98,11 +99,11 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    public void handleUpdateTag(@NotNull ValueInput input) {
         FissionReactorMultiblockData multiblock = getMultiblock();
         //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
         //UUID previousID = multiblock.inventoryID;
-        super.handleUpdateTag(tag, provider);
+        super.handleUpdateTag(input);
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HANDLE_SOUND, value -> handleSound = value);
         //boolean formedMaster = false;
         //boolean wasBurning = false;

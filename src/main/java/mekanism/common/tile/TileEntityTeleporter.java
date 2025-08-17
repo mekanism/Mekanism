@@ -87,6 +87,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.level.portal.DimensionTransition.PostDimensionTransition;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -684,8 +685,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> shouldRender = value);
         color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
     }

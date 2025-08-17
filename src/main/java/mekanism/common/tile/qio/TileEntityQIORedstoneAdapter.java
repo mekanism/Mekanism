@@ -17,6 +17,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -26,6 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -148,8 +150,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         boolean emitting = tag.getBoolean(SerializationConstants.EMITTING);
         if (isEmitting != emitting) {
             isEmitting = emitting;
@@ -167,9 +169,9 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
-        itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, Optional.empty()).orElse(null);
+        itemType = input.getOrDefault(MekanismDataComponents.ITEM_TARGET, Optional.<HashedItem>empty()).orElse(null);
         count = input.getOrDefault(MekanismDataComponents.LONG_AMOUNT, count);
         fuzzy = input.getOrDefault(MekanismDataComponents.FUZZY, fuzzy);
         inverted = input.getOrDefault(MekanismDataComponents.INVERSE, inverted);

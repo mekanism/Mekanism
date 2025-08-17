@@ -28,6 +28,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,16 +126,16 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
         lastWrite = nbtTags.getLong(SerializationConstants.ENERGY);
         buffer.setEnergy(lastWrite);
     }
 
     @NotNull
     @Override
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
+    public CompoundTag write(@NotNull ValueOutput output) {
+        super.write(output);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
         }

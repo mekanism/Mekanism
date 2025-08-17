@@ -26,7 +26,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,10 +42,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public void apply(HolderLookup.Provider provider, T data) {
-        for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            List<? extends INBTSerializable<CompoundTag>> containers = type.getContainerList(data);
+        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+            List<? extends ValueIOSerializable> containers = type.getContainerList(data);
             if (containers != null) {
-                List<? extends INBTSerializable<CompoundTag>> cacheContainers = type.getContainerList(this);
+                List<? extends ValueIOSerializable> cacheContainers = type.getContainerList(this);
                 for (int i = 0; i < cacheContainers.size(); i++) {
                     if (i < containers.size()) {
                         //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
@@ -56,10 +57,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void sync(T data) {
-        for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            List<? extends INBTSerializable<CompoundTag>> containersToCopy = type.getContainerList(data);
+        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+            List<? extends ValueIOSerializable> containersToCopy = type.getContainerList(data);
             if (containersToCopy != null) {
-                List<? extends INBTSerializable<CompoundTag>> cacheContainers = type.getContainerList(this);
+                List<? extends ValueIOSerializable> cacheContainers = type.getContainerList(this);
                 if (cacheContainers.isEmpty()) {
                     type.prefab(this, containersToCopy.size());
                 }
@@ -71,20 +72,20 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.readFrom(provider, nbtTags, this);
         }
     }
 
-    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
-            type.saveTo(provider, nbtTags, this);
+    public void save(ValueOutput output) {
+        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+            type.saveTo(output, this);
         }
     }
 
     public void merge(MultiblockCache<T> mergeCache, RejectContents rejectContents) {
         // prefab enough containers for each substance type to support the merge cache
-        for (CacheSubstance<?, INBTSerializable<CompoundTag>> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.preHandleMerge(this, mergeCache);
         }
 
@@ -141,7 +142,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
     }
 
-    public abstract static class CacheSubstance<HANDLER, ELEMENT extends INBTSerializable<CompoundTag>> {
+    public abstract static class CacheSubstance<HANDLER, ELEMENT extends ValueIOSerializable> {
 
         public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(ContainerType.ITEM) {
             @Override
@@ -232,7 +233,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         };
 
         @SuppressWarnings("unchecked")
-        public static final CacheSubstance<?, INBTSerializable<CompoundTag>>[] VALUES = new CacheSubstance[]{
+        public static final CacheSubstance<?, ValueIOSerializable>[] VALUES = new CacheSubstance[]{
               CHEMICAL,
               ITEMS,
               FLUID,
@@ -281,13 +282,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         }
 
-        public void saveTo(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> holder) {
+        public void saveTo(ValueOutput output, MultiblockCache<?> holder) {
             List<ELEMENT> containers = getContainerList(holder);
             if (!containers.isEmpty()) {
                 //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
                 // because getInt will default to 0 for keys that aren't present
                 tag.putInt(getStoredTagKey(), containers.size());
-                containerType.saveTo(provider, tag, getContainerList(holder));
+                containerType.saveTo(output, getContainerList(holder));
             }
         }
     }

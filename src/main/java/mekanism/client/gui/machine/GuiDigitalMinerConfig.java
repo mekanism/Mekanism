@@ -42,7 +42,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.YesNo;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,7 +64,7 @@ public class GuiDigitalMinerConfig extends GuiFilterHolder<MinerFilter<?>, TileE
     public GuiDigitalMinerConfig(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
         super(container, inv, title);
         Level level = inv.player.level();
-        maxHeightLength = Math.max(Integer.toString(level.getMinBuildHeight()).length(), Integer.toString(level.getMaxBuildHeight() - 1).length());
+        maxHeightLength = Math.max(Integer.toString(level.getMinY()).length(), Integer.toString(level.getMaxY()).length());
     }
 
     @Override

@@ -16,7 +16,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelEnergyCore extends MekanismJavaModel {
@@ -47,7 +47,7 @@ public class ModelEnergyCore extends MekanismJavaModel {
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull VertexConsumer buffer, int light, int overlayLight, SupportsColorMap color, float energyPercentage) {
-        renderToBuffer(matrix, buffer, light, overlayLight, color.getPackedColor(FastColor.as8BitChannel(energyPercentage)));
+        renderToBuffer(matrix, buffer, light, overlayLight, color.getPackedColor(ARGB.as8BitChannel(energyPercentage)));
     }
 
     @Override

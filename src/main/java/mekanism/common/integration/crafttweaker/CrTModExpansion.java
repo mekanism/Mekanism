@@ -53,7 +53,7 @@ public class CrTModExpansion {
     public static Collection<RobitSkin> getRobitSkins(Mod _this) {
         return getModSpecific(_this, CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
               .entrySet());
     }
 

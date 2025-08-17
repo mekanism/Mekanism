@@ -91,7 +91,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     public void flushCachedTag() {
         //If the filter doesn't exist (because we loaded a tag that is no longer valid), then just set the filter to being empty
-        filterTag = filterLocation == null ? null : getRegistry().getTag(filterLocation).orElse(null);
+        filterTag = filterLocation == null ? null : getRegistry().get(filterLocation).orElse(null);
         if (filterTag == null) {
             setSelectedOutput(getFallbackElement());
         } else if (!filterTag.contains(selectedOutput)) {
@@ -112,7 +112,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     }
 
     public void checkValidity() {
-        if (filterLocation != null && getRegistry().getTag(filterLocation).isPresent()) {
+        if (filterLocation != null && getRegistry().get(filterLocation).isPresent()) {
             for (String filter : getValidValuesConfig().get().getOrDefault(filterLocation.location().getNamespace(), Collections.emptyList())) {
                 if (filterLocation.location().getPath().startsWith(filter)) {
                     isValid = true;
@@ -164,7 +164,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
 
     private void setSelectedOrFallback(@NotNull ResourceLocation resourceLocation) {
         Registry<TYPE> registry = getRegistry();
-        registry.getHolder(ResourceKey.create(registry.key(), resourceLocation))
+        registry.get(ResourceKey.create(registry.key(), resourceLocation))
               .ifPresentOrElse(this::setSelectedOutput, this::setToFallback);
     }
 

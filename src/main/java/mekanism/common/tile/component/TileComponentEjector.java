@@ -56,6 +56,7 @@ import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -400,7 +401,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
         AttachedEjector ejector = input.get(MekanismDataComponents.EJECTOR);
         if (ejector != null) {
             for (int i = 0; i < inputColors.length; i++) {

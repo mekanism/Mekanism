@@ -52,11 +52,6 @@ public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_washer";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_WASHER);
     }

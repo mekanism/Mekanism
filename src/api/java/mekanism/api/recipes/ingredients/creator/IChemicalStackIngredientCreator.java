@@ -7,6 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.tags.TagKey;
 
 @NothingNullByDefault
@@ -63,8 +64,8 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
-    default ChemicalStackIngredient from(TagKey<Chemical> tag, int amount) {
-        return from(tag, (long) amount);
+    default ChemicalStackIngredient from(HolderGetter<Chemical> holderGetter, TagKey<Chemical> tag, int amount) {
+        return from(holderGetter, tag, (long) amount);
     }
 
     /**
@@ -76,8 +77,9 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    default ChemicalStackIngredient from(TagKey<Chemical> tag, long amount) {
+    default ChemicalStackIngredient from(HolderGetter<Chemical> holderGetter, TagKey<Chemical> tag, long amount) {
         Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
+        //TODO - 1.21.8: Make use of this holder getter
         return from(IngredientCreatorAccess.chemical().tag(tag), amount);
     }
 

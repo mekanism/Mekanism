@@ -41,7 +41,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .build(consumer, Mekanism.rl(basePath + "casing"));
+              .save(consumer, Mekanism.rl(basePath + "casing"));
         //Port
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.INDUCTION_PORT, 2)
               .pattern(RecipePattern.createPattern(
@@ -50,7 +50,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.INDUCTION_CASING)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ELITE)
-              .build(consumer, Mekanism.rl(basePath + "port"));
+              .save(consumer, Mekanism.rl(basePath + "port"));
     }
 
     private void addInductionCellRecipes(RecipeOutput consumer, String basePath) {
@@ -63,7 +63,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               ).key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.LITHIUM, MekanismTags.Items.DUSTS_LITHIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
-              .build(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.BASIC_INDUCTION_CELL, MekanismBlocks.ADVANCED_ENERGY_CUBE);
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ADVANCED_INDUCTION_CELL, MekanismBlocks.ELITE_ENERGY_CUBE);
         addTieredInductionCellRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_CELL, MekanismBlocks.ELITE_INDUCTION_CELL, MekanismBlocks.ULTIMATE_ENERGY_CUBE);
@@ -77,7 +77,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.PREVIOUS, previousCell)
               .key(Pattern.CONSTANT, energyCube)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 
     private void addInductionProviderRecipes(RecipeOutput consumer, String basePath) {
@@ -90,7 +90,7 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               ).key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.LITHIUM, MekanismTags.Items.DUSTS_LITHIUM)
               .key(Pattern.CONSTANT, MekanismBlocks.BASIC_ENERGY_CUBE)
-              .build(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.BASIC_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ADVANCED);
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ELITE);
         addTieredInductionProviderRecipe(consumer, basePath, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, MekanismBlocks.ELITE_INDUCTION_PROVIDER, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismTags.Items.CIRCUITS_ULTIMATE);
@@ -104,6 +104,6 @@ class InductionRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.PREVIOUS, previousProvider)
               .key(Pattern.CONSTANT, energyCube)
               .key(Pattern.CIRCUIT, circuitTag)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

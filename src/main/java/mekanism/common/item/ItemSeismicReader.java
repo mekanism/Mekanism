@@ -17,6 +17,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -47,7 +48,7 @@ public class ItemSeismicReader extends ItemEnergized {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (world.isClientSide()) {
             return InteractionResultHolder.success(stack);

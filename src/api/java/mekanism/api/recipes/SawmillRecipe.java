@@ -96,11 +96,6 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
     }
 
     @Override
-    public String getGroup() {
-        return "precision_sawmill";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PRECISION_SAWMILL);
     }

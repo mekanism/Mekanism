@@ -69,6 +69,6 @@ class PigmentMixingRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(leftInput), leftInputAmount),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(rightInput), rightInputAmount),
               MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(output).asStack(leftInputAmount + rightInputAmount)
-        ).build(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
+        ).save(consumer, Mekanism.rl(basePath + leftInput.getRegistryPrefix() + "_" + rightInput.getRegistryPrefix() + "_to_" + output.getRegistryPrefix()));
     }
 }

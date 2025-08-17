@@ -66,7 +66,7 @@ public class CrTBracketHandlers {
         }
         Registry<V> registry = CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registryOrThrow(registryKey);
+              .lookupOrThrow(registryKey);
         if (registry.containsKey(registryName)) {
             return registry.get(registryName);
         }

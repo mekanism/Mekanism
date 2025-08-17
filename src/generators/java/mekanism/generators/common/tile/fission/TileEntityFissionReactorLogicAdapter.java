@@ -28,6 +28,7 @@ import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdap
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -174,7 +175,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     }
 
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         logicType = input.getOrDefault(GeneratorsDataComponents.FISSION_LOGIC_TYPE, logicType);
     }

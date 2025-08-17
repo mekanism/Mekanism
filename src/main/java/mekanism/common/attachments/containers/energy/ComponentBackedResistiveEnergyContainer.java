@@ -15,6 +15,8 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -60,14 +62,12 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = super.serializeNBT(provider);
-        nbt.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
-        return nbt;
+    public void serialize(ValueOutput output) {
+        output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(ValueInput input) {
         NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }

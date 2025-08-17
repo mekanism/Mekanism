@@ -29,11 +29,6 @@ public class BasicActivatingRecipe extends BasicChemicalToChemicalRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return "solar_neutron_activator";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(SOLAR_NEUTRON_ACTIVATOR);
     }

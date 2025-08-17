@@ -27,6 +27,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.client.model.data.ModelData;
 import net.neoforged.neoforge.client.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
@@ -98,13 +100,13 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
+    public void saveAdditional(@NotNull ValueOutput output) {
         QIOFrequency freq = getQIOFrequency();
         if (freq != null) {
             // save all item data before we save
             freq.saveAll();
         }
-        super.saveAdditional(nbtTags, provider);
+        super.saveAdditional(output);
     }
 
     @NotNull
@@ -122,8 +124,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         byte[] status = tag.getByteArray(SerializationConstants.DRIVES);
         if (!Arrays.equals(status, driveStatus)) {
             driveStatus = status;

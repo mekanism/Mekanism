@@ -42,7 +42,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
     public FluidStackIngredient waterInput() {
-        return IngredientCreatorAccess.fluid().from(FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
+        return IngredientCreatorAccess.fluid().from(, FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {
@@ -64,7 +64,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
             long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
             recipes.add(new FissionRecipeViewerRecipe(
                   RecipeViewerUtils.synthetic(key.location(), "fission", MekanismGenerators.MODID),
-                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getHolderOrThrow(key), amount),
+                  IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
                   coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
             ));

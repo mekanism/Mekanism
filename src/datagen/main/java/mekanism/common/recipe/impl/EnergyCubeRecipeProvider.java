@@ -44,6 +44,6 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
               .key(Pattern.INGOT, ingotTag)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

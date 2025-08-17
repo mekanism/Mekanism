@@ -135,7 +135,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     public static boolean isValidTarget(ResourceLocation tag) {
-        if (BuiltInRegistries.ITEM.getTag(TagKey.create(Registries.ITEM, tag)).isPresent()) {
+        if (BuiltInRegistries.ITEM.get(TagKey.create(Registries.ITEM, tag)).isPresent()) {
             for (String filter : MekanismConfig.general.validOredictionificatorFilters.get().getOrDefault(tag.getNamespace(), Collections.emptyList())) {
                 if (tag.getPath().startsWith(filter)) {
                     return true;

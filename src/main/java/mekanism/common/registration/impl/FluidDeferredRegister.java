@@ -14,7 +14,7 @@ import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -140,16 +140,16 @@ public class FluidDeferredRegister {
         if (tint == 0xFFFFFFFF) {
             return MapColor.NONE;
         }
-        int red = FastColor.ARGB32.red(tint);
-        int green = FastColor.ARGB32.green(tint);
-        int blue = FastColor.ARGB32.blue(tint);
+        int red = ARGB.red(tint);
+        int green = ARGB.green(tint);
+        int blue = ARGB.blue(tint);
         MapColor color = MapColor.NONE;
         double minDistance = Double.MAX_VALUE;
         for (MapColor toTest : MapColor.MATERIAL_COLORS) {
             if (toTest != null && toTest != MapColor.NONE) {
-                int testRed = FastColor.ARGB32.red(toTest.col);
-                int testGreen = FastColor.ARGB32.green(toTest.col);
-                int testBlue = FastColor.ARGB32.blue(toTest.col);
+                int testRed = ARGB.red(toTest.col);
+                int testGreen = ARGB.green(toTest.col);
+                int testBlue = ARGB.blue(toTest.col);
                 double distanceSquare = perceptualColorDistanceSquared(red, green, blue, testRed, testGreen, testBlue);
                 if (distanceSquare < minDistance) {
                     minDistance = distanceSquare;

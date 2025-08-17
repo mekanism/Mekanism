@@ -152,11 +152,6 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
     }
 
     @Override
-    public String getGroup() {
-        return "rotary_condensentrator";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ROTARY_CONDENSENTRATOR);
     }

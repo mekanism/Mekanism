@@ -10,7 +10,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiElementHolder extends GuiScalableElement {
@@ -42,7 +42,7 @@ public class GuiElementHolder extends GuiScalableElement {
         try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER);
              NativeImage image = NativeImage.read(stream)) {
             int argb = Color.argbToFromABGR(image.getPixelRGBA(HOLDER_SIZE + 1, HOLDER_SIZE + 1));
-            if (FastColor.ARGB32.alpha(argb) == 0) {
+            if (ARGB.alpha(argb) == 0) {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color
                 argb = 0xFF787878;

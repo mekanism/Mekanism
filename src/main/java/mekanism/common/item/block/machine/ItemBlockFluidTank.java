@@ -150,7 +150,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (getMode(stack)) {
             if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {

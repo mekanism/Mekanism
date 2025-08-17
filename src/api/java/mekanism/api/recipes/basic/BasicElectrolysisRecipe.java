@@ -3,6 +3,7 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ElectrolysisRecipe;
@@ -67,11 +68,6 @@ public class BasicElectrolysisRecipe extends ElectrolysisRecipe {
     @Override
     public long getEnergyMultiplier() {
         return energyMultiplier;
-    }
-
-    @Override
-    public String getGroup() {
-        return "electrolytic_separator";
     }
 
     public ChemicalStack getLeftChemicalOutput() {

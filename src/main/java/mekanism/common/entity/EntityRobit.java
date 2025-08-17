@@ -118,6 +118,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.client.model.data.ModelData;
@@ -488,9 +490,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public void addAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        super.addAdditionalSaveData(nbtTags);
-        HolderLookup.Provider provider = registryAccess();
+    public void addAdditionalSaveData(@NotNull ValueOutput output) {
+        super.addAdditionalSaveData(output);
         nbtTags.putUUID(SerializationConstants.OWNER_UUID, getOwnerUUID());
         NBTUtils.writeEnum(nbtTags, SerializationConstants.SECURITY_MODE, getSecurityMode());
         nbtTags.putBoolean(SerializationConstants.FOLLOW, getFollowing());
@@ -502,23 +503,23 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 nbtTags.put(SerializationConstants.HOME_LOCATION, result.get());
             }
         }
-        ContainerType.ITEM.saveTo(provider, nbtTags, getInventorySlots(null));
-        ContainerType.ENERGY.saveTo(provider, nbtTags, getEnergyContainers(null));
+        ContainerType.ITEM.saveTo(output, getInventorySlots(null));
+        ContainerType.ENERGY.saveTo(output, getEnergyContainers(null));
         nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         NBTUtils.writeResourceKey(nbtTags, SerializationConstants.SKIN, getSkin());
     }
 
     @Override
-    public void readAdditionalSaveData(@NotNull CompoundTag nbtTags) {
-        super.readAdditionalSaveData(nbtTags);
+    public void readAdditionalSaveData(@NotNull ValueInput input) {
+        super.readAdditionalSaveData(input);
         HolderLookup.Provider provider = registryAccess();
         NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, this::setOwnerUUID);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
         setFollowing(nbtTags.getBoolean(SerializationConstants.FOLLOW));
         setDropPickup(nbtTags.getBoolean(SerializationConstants.PICKUP_DROPS));
         NBTUtils.setCompoundIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), home).result().orElse(null));
-        ContainerType.ITEM.readFrom(provider, nbtTags, getInventorySlots(null));
-        ContainerType.ENERGY.readFrom(provider, nbtTags, getEnergyContainers(null));
+        ContainerType.ITEM.readFrom(input, getInventorySlots(null));
+        ContainerType.ENERGY.readFrom(input, getEnergyContainers(null));
         progress = nbtTags.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setResourceKeyIfPresentElse(nbtTags, SerializationConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
               () -> setSkin(MekanismRobitSkins.BASE, null));
@@ -788,7 +789,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
      * @apiNote Only call on the client.
      */
     private ResourceLocation getModelTexture() {
-        Registry<RobitSkin> robitSkins = level().registryAccess().registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
+        Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkin();
         Optional<RobitSkin> optionalSkin = robitSkins.getOptional(skinKey);
         RobitSkin skin;

@@ -13,7 +13,7 @@ import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -43,7 +43,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, getContainerType()::tryOpenGui);
     }
 

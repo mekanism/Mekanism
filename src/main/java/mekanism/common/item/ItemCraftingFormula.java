@@ -13,6 +13,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -41,7 +42,7 @@ public class ItemCraftingFormula extends Item {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {

@@ -6,10 +6,11 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.data.recipes.RecipeBuilder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 
 @NothingNullByDefault
@@ -73,7 +74,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     }
 
     @Override
-    protected void validate(ResourceLocation id) {
+    protected void ensureValid(ResourceKey<Recipe<?>> id) {
         if (ingredients.isEmpty()) {
             throw new IllegalStateException("Shapeless recipe '" + id + "' must have at least one ingredient!");
         }

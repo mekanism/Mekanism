@@ -4,8 +4,8 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.LevelAndMaxMagnitude;
+import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.lib.radiation.RadiationUtil;
 import mekanism.common.util.UnitDisplayUtils;
@@ -14,6 +14,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -30,7 +31,7 @@ public class ItemGeigerCounter extends Item {
 
     @NotNull
     @Override
-    public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
+    public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
             if (!world.isClientSide()) {

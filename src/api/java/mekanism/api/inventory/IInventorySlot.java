@@ -6,18 +6,17 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContentsListener {
+public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.
@@ -294,11 +293,9 @@ public interface IInventorySlot extends INBTSerializable<CompoundTag>, IContents
     }
 
     @Override
-    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    default void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, getStack()));
+            output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, getStack());
         }
-        return nbt;
     }
 }

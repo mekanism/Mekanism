@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.critereon.DataComponentMatchers;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger;
 import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
 import net.minecraft.advancements.critereon.ItemPredicate;
@@ -20,7 +21,6 @@ import net.minecraft.advancements.critereon.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentPredicate;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -91,7 +91,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     @SafeVarargs
     protected static ItemPredicate predicate(Holder<Item>... items) {
         //return ItemPredicate.Builder.item().of(items).build();
-        return new ItemPredicate(Optional.of(HolderSet.direct(items)), MinMaxBounds.Ints.ANY, DataComponentPredicate.EMPTY, Collections.emptyMap());
+        return new ItemPredicate(Optional.of(HolderSet.direct(items)), MinMaxBounds.Ints.ANY, DataComponentMatchers.ANY);
     }
 
     @SafeVarargs

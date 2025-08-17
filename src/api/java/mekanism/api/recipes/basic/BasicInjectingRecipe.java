@@ -29,13 +29,7 @@ public class BasicInjectingRecipe extends BasicItemStackChemicalToItemStackRecip
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_injection_chamber";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_INJECTION_CHAMBER);
     }
-
 }

@@ -43,7 +43,7 @@ class BinRecipeProvider implements ISubRecipeProvider {
               ).key(Pattern.COBBLESTONE, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
               .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
               .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
-              .build(consumer, Mekanism.rl(basePath + "basic"));
+              .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredBin(consumer, basePath, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.BASIC_BIN, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredBin(consumer, basePath, MekanismBlocks.ELITE_BIN, MekanismBlocks.ADVANCED_BIN, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_REINFORCED);
         addTieredBin(consumer, basePath, MekanismBlocks.ULTIMATE_BIN, MekanismBlocks.ELITE_BIN, MekanismTags.Items.CIRCUITS_ULTIMATE, MekanismTags.Items.ALLOYS_ATOMIC);
@@ -58,6 +58,6 @@ class BinRecipeProvider implements ISubRecipeProvider {
               .key(Pattern.COBBLESTONE, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
               .key(Pattern.CIRCUIT, circuitTag)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + tierName));
+              .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

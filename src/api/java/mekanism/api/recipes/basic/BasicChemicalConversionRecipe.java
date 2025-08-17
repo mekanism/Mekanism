@@ -29,11 +29,6 @@ public class BasicChemicalConversionRecipe extends BasicItemStackToChemicalRecip
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_conversion";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CREATIVE_CHEMICAL_TANK);
     }

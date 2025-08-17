@@ -42,13 +42,6 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
-    @SuppressWarnings("removal")
-    @Deprecated(forRemoval = true, since = "JEI version 19.9.0")
-    public String getUniqueId(ChemicalStack ingredient, UidContext context) {
-        return "chemical:" + ingredient.getChemical();
-    }
-
-    @Override
     public Object getUid(ChemicalStack ingredient, UidContext context) {
         //Note: We just return the registry element itself as we have no component data
         return ingredient.getChemical();
@@ -117,7 +110,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             return Optional.empty();
         }
         for (TagKey<Chemical> tagKey : values.getFirst().tags().toList()) {
-            Optional<Named<Chemical>> optionalTag = MekanismAPI.CHEMICAL_REGISTRY.getTag(tagKey);
+            Optional<Named<Chemical>> optionalTag = MekanismAPI.CHEMICAL_REGISTRY.get(tagKey);
             if (optionalTag.isPresent()) {
                 Named<Chemical> tag = optionalTag.get();
                 if (tag.size() == expected && values.stream().allMatch(tag::contains)) {

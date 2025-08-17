@@ -27,10 +27,10 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
@@ -193,7 +193,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    public void applyImplicitComponents(@NotNull DataComponentGetter input) {
         UpgradeAware upgradeAware = input.get(MekanismDataComponents.UPGRADES);
         if (upgradeAware != null) {
             upgrades.clear();

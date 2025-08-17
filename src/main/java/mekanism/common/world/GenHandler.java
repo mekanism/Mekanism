@@ -100,7 +100,7 @@ public class GenHandler {
             return cachedFeatures;
         }
         cachedFeatures = new ArrayList<>();
-        Registry<PlacedFeature> placedFeatures = registryAccess.registryOrThrow(Registries.PLACED_FEATURE);
+        Registry<PlacedFeature> placedFeatures = registryAccess.lookupOrThrow(Registries.PLACED_FEATURE);
         for (OreType type : EnumUtils.ORE_TYPES) {
             for (int vein = 0, features = type.getBaseConfigs().size(); vein < features; vein++) {
                 OreVeinType oreVeinType = new OreVeinType(type, vein);
@@ -121,14 +121,14 @@ public class GenHandler {
 
         @Nullable
         public static MekFeature create(Registry<PlacedFeature> placedFeatures, ResourceLocation name) {
-            Optional<Reference<PlacedFeature>> placedFeature = placedFeatures.getHolder(ResourceKey.create(Registries.PLACED_FEATURE, name));
+            Optional<Reference<PlacedFeature>> placedFeature = placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, name));
             if (placedFeature.isEmpty()) {
                 Mekanism.logger.error("Failed to retrieve placed feature ({}).", name);
                 return null;
             }
             ResourceLocation retrogenName = name.withSuffix("_retrogen");
             ResourceKey<PlacedFeature> retrogenKey = ResourceKey.create(Registries.PLACED_FEATURE, retrogenName);
-            Optional<Reference<PlacedFeature>> retrogenFeature = placedFeatures.getHolder(retrogenKey);
+            Optional<Reference<PlacedFeature>> retrogenFeature = placedFeatures.get(retrogenKey);
             if (retrogenFeature.isEmpty()) {
                 Mekanism.logger.error("Failed to retrieve retrogen placed feature ({}).", retrogenName);
                 return null;

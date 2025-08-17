@@ -5,15 +5,14 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IContentsListener {
+public interface IEnergyContainer extends ValueIOSerializable, IContentsListener {
 
     /**
      * Returns the energy in this container.
@@ -128,11 +127,9 @@ public interface IEnergyContainer extends INBTSerializable<CompoundTag>, IConten
     }
 
     @Override
-    default CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    default void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.putLong(SerializationConstants.STORED, getEnergy());
+            output.putLong(SerializationConstants.STORED, getEnergy());
         }
-        return nbt;
     }
 }

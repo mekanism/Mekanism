@@ -50,162 +50,162 @@ class SawingRecipeProvider implements ISubRecipeProvider {
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.BARREL),
               new ItemStack(Items.OAK_PLANKS, 7)
-        ).build(consumer, Mekanism.rl(basePath + "barrel"));
+        ).save(consumer, Mekanism.rl(basePath + "barrel"));
         //Bookshelf
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(Tags.Items.BOOKSHELVES),
+              IngredientCreatorAccess.item().from(, Tags.Items.BOOKSHELVES),
               new ItemStack(Items.OAK_PLANKS, 6),
               new ItemStack(Items.BOOK, 3),
               1
-        ).build(consumer, Mekanism.rl(basePath + "bookshelf"));
+        ).save(consumer, Mekanism.rl(basePath + "bookshelf"));
         //Chiseled Bookshelf
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.CHISELED_BOOKSHELF),
               new ItemStack(Items.OAK_PLANKS, 6),
               new ItemStack(Items.OAK_SLAB, 3),
               1
-        ).build(consumer, Mekanism.rl(basePath + "chiseled_bookshelf"));
+        ).save(consumer, Mekanism.rl(basePath + "chiseled_bookshelf"));
         //Chest
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.CHEST),
               new ItemStack(Items.OAK_PLANKS, 8)
-        ).build(consumer, Mekanism.rl(basePath + "chest"));
+        ).save(consumer, Mekanism.rl(basePath + "chest"));
         //Composter
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.COMPOSTER),
               new ItemStack(Items.OAK_SLAB, 7)
-        ).build(consumer, Mekanism.rl(basePath + "composter"));
+        ).save(consumer, Mekanism.rl(basePath + "composter"));
         //Crafting table
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.CRAFTING_TABLE),
               new ItemStack(Items.OAK_PLANKS, 4)
-        ).build(consumer, Mekanism.rl(basePath + "crafting_table"));
+        ).save(consumer, Mekanism.rl(basePath + "crafting_table"));
         //Fences
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(Tags.Items.FENCES_WOODEN),
+              IngredientCreatorAccess.item().from(, Tags.Items.FENCES_WOODEN),
               new ItemStack(Items.STICK, 3)
-        ).build(consumer, Mekanism.rl(basePath + "fences"));
+        ).save(consumer, Mekanism.rl(basePath + "fences"));
         //Item Frame
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.ITEM_FRAME),
               new ItemStack(Items.STICK, 8),
               new ItemStack(Items.LEATHER),
               1
-        ).build(consumer, Mekanism.rl(basePath + "item_frame"));
+        ).save(consumer, Mekanism.rl(basePath + "item_frame"));
         //Jukebox
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.JUKEBOX),
               new ItemStack(Items.OAK_PLANKS, 8),
               new ItemStack(Items.DIAMOND),
               1
-        ).build(consumer, Mekanism.rl(basePath + "jukebox"));
+        ).save(consumer, Mekanism.rl(basePath + "jukebox"));
         //Ladder
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.LADDER, 3),
               new ItemStack(Items.STICK, 7)
-        ).build(consumer, Mekanism.rl(basePath + "ladder"));
+        ).save(consumer, Mekanism.rl(basePath + "ladder"));
         //Lectern
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.LECTERN),
               new ItemStack(Items.OAK_PLANKS, 8),
               new ItemStack(Items.BOOK, 3),
               1
-        ).build(consumer, Mekanism.rl(basePath + "lectern"));
+        ).save(consumer, Mekanism.rl(basePath + "lectern"));
         //Note block
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.NOTE_BLOCK),
               new ItemStack(Items.OAK_PLANKS, 8),
               new ItemStack(Items.REDSTONE),
               1
-        ).build(consumer, Mekanism.rl(basePath + "note_block"));
+        ).save(consumer, Mekanism.rl(basePath + "note_block"));
         //Melons
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.MELON),
               new ItemStack(Items.MELON_SLICE, 9)
-        ).build(consumer, Mekanism.rl(basePath + "melon"));
+        ).save(consumer, Mekanism.rl(basePath + "melon"));
         //Planks
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(ItemTags.PLANKS),
+              IngredientCreatorAccess.item().from(, ItemTags.PLANKS),
               new ItemStack(Items.STICK, 6),
               MekanismItems.SAWDUST.asStack(),
               0.25
-        ).build(consumer, Mekanism.rl(basePath + "planks"));
+        ).save(consumer, Mekanism.rl(basePath + "planks"));
         //Pumpkin
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.PUMPKIN),
               new ItemStack(Items.CARVED_PUMPKIN, 1),
               new ItemStack(Items.PUMPKIN_SEEDS, 4),
               1
-        ).build(consumer, Mekanism.rl(basePath + "pumpkin"));
+        ).save(consumer, Mekanism.rl(basePath + "pumpkin"));
         //Redstone torch
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.REDSTONE_TORCH),
               new ItemStack(Items.STICK),
               new ItemStack(Items.REDSTONE),
               1
-        ).build(consumer, Mekanism.rl(basePath + "redstone_torch"));
+        ).save(consumer, Mekanism.rl(basePath + "redstone_torch"));
         //Slabs
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(ItemTags.WOODEN_SLABS),
+              IngredientCreatorAccess.item().from(, ItemTags.WOODEN_SLABS),
               new ItemStack(Items.STICK, 3),
               MekanismItems.SAWDUST.asStack(),
               0.125
-        ).build(consumer, Mekanism.rl(basePath + "slabs"));
+        ).save(consumer, Mekanism.rl(basePath + "slabs"));
         //Stairs
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(ItemTags.WOODEN_STAIRS),
+              IngredientCreatorAccess.item().from(, ItemTags.WOODEN_STAIRS),
               new ItemStack(Items.STICK, 9),
               MekanismItems.SAWDUST.asStack(),
               0.375
-        ).build(consumer, Mekanism.rl(basePath + "stairs"));
+        ).save(consumer, Mekanism.rl(basePath + "stairs"));
         //Stick
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(Tags.Items.RODS_WOODEN),
+              IngredientCreatorAccess.item().from(, Tags.Items.RODS_WOODEN),
               MekanismItems.SAWDUST.asStack()
-        ).build(consumer, Mekanism.rl(basePath + "stick"));
+        ).save(consumer, Mekanism.rl(basePath + "stick"));
         //Buttons
         SawmillRecipeBuilder.sawing(
-              IngredientCreatorAccess.item().from(ItemTags.WOODEN_BUTTONS),
+              IngredientCreatorAccess.item().from(, ItemTags.WOODEN_BUTTONS),
               MekanismItems.SAWDUST.asStack(),
               MekanismItems.SAWDUST.asStack(),
               0.25
-        ).build(consumer, Mekanism.rl(basePath + "button"));
+        ).save(consumer, Mekanism.rl(basePath + "button"));
         //Signs
         SawmillRecipeBuilder.sawing(
               //Note: We use the signs tag as vanilla only adds wood signs to it and also adds a burn time for things in this tag
               // as the only usage of the item tag, so it seems safe to assume any added ones are likely to be burnable
-              IngredientCreatorAccess.item().from(ItemTags.SIGNS),
+              IngredientCreatorAccess.item().from(, ItemTags.SIGNS),
               new ItemStack(Items.STICK, 3),
               MekanismItems.SAWDUST.asStack(),
               0.25
-        ).build(consumer, Mekanism.rl(basePath + "sign"));
+        ).save(consumer, Mekanism.rl(basePath + "sign"));
         //Torch
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.TORCH, 4),
               new ItemStack(Items.STICK),
               new ItemStack(Items.COAL),
               1
-        ).build(consumer, Mekanism.rl(basePath + "torch"));
+        ).save(consumer, Mekanism.rl(basePath + "torch"));
         //Soul Torch
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.SOUL_TORCH, 4),
               new ItemStack(Items.TORCH, 4),
               new ItemStack(Items.SOUL_SOIL),
               1
-        ).build(consumer, Mekanism.rl(basePath + "soul_torch"));
+        ).save(consumer, Mekanism.rl(basePath + "soul_torch"));
         //Trapped chest
         SawmillRecipeBuilder.sawing(
               IngredientCreatorAccess.item().from(Items.TRAPPED_CHEST),
               new ItemStack(Items.OAK_PLANKS, 8),
               new ItemStack(Items.TRIPWIRE_HOOK),
               0.75
-        ).build(consumer, Mekanism.rl(basePath + "trapped_chest"));
+        ).save(consumer, Mekanism.rl(basePath + "trapped_chest"));
         //Bamboo block
         SawmillRecipeBuilder.sawing(
               //Note: We don't use the tag as turning stripped bamboo back into regular bamboo makes no sense
               IngredientCreatorAccess.item().from(Items.BAMBOO_BLOCK),
               new ItemStack(Items.BAMBOO, 9)
-        ).build(consumer, Mekanism.rl(basePath + "bamboo_block"));
+        ).save(consumer, Mekanism.rl(basePath + "bamboo_block"));
     }
 
     private void addPrecisionSawmillBedRecipes(RecipeOutput consumer, String basePath) {

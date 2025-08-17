@@ -29,11 +29,6 @@ public class BasicPaintingRecipe extends BasicItemStackChemicalToItemStackRecipe
     }
 
     @Override
-    public String getGroup() {
-        return "painting_machine";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PAINTING_MACHINE);
     }

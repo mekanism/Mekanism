@@ -65,6 +65,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -311,8 +313,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
             nbtTags.put(SerializationConstants.FLUID, activeType.save(provider));
@@ -323,8 +325,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
         NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.FLUID, fluid -> activeType = fluid);
         NBTUtils.readBlockPositions(nbt, SerializationConstants.RECURRING_NODES, recurringNodes);

@@ -11,8 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -490,12 +489,10 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
      */
     @Override
-    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
-        CompoundTag nbt = new CompoundTag();
+    public void serialize(ValueOutput output) {
         if (!isEmpty()) {
-            nbt.put(SerializationConstants.STORED, stored.save(provider));
+            output.store(SerializationConstants.STORED, ChemicalStack.CODEC, stored);
         }
-        return nbt;
     }
 
     @Override

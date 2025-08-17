@@ -29,11 +29,6 @@ public class BasicPurifyingRecipe extends BasicItemStackChemicalToItemStackRecip
     }
 
     @Override
-    public String getGroup() {
-        return "purification_chamber";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(PURIFICATION_CHAMBER);
     }

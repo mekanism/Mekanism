@@ -3,15 +3,20 @@ package mekanism.api.recipes.ingredients;
 import com.mojang.serialization.Codec;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
-import net.neoforged.neoforge.fluids.crafting.TagFluidIngredient;
+import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +36,7 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
      *
      * @since 10.6.0
      */
-    public static final Codec<FluidStackIngredient> CODEC = SizedFluidIngredient.FLAT_CODEC.xmap(FluidStackIngredient::new, FluidStackIngredient::ingredient);
+    public static final Codec<FluidStackIngredient> CODEC = SizedFluidIngredient.CODEC.xmap(FluidStackIngredient::new, FluidStackIngredient::ingredient);
     /**
      * A stream codec which can be used to encode and decode fluid stack ingredients over the network.
      *
@@ -53,9 +58,10 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
      */
     public static FluidStackIngredient of(SizedFluidIngredient ingredient) {
         Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null ingredient.");
-        if (ingredient.ingredient().isEmpty()) {
+        //TODO - 1.21.8: Figure out how to validate against empty fluid ingredients?
+        /*if (ingredient.ingredient().isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty ingredient.");
-        }
+        }*/
         return new FluidStackIngredient(ingredient);
     }
 
@@ -91,15 +97,23 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
 
     @Override
     public boolean hasNoMatchingInstances() {
-        return ingredient.ingredient().hasNoFluids();
+        //TODO - 1.21.8: Figure out how to reimplement this, or if the entire concept should go away
+        //return ingredient.ingredient().hasNoFluids();
+        return false;
     }
 
     @Override
     public void logMissingTags() {
+        //TODO - 1.21.8: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             FluidIngredient fluidIngredient = ingredient.ingredient();
-            if (fluidIngredient instanceof TagFluidIngredient tagged) {
-                MekanismAPI.logger.error("Empty tag: {}", tagged.tag());
+            if (fluidIngredient instanceof SimpleFluidIngredient simple) {
+                Optional<TagKey<Fluid>> fluidTagKey = simple.fluidSet().unwrapKey();
+                if (fluidTagKey.isPresent()) {
+                    MekanismAPI.logger.error("Empty tag: {}", fluidTagKey.get());
+                } else {
+                    MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
+                }
             } else {
                 MekanismAPI.logger.error("Empty FluidStackIngredient: {}", SerializerHelper.stringify(FluidIngredient.CODEC, fluidIngredient));
             }
@@ -107,9 +121,9 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     }
 
     @Override
-    public List<@NotNull FluidStack> getRepresentations() {
+    public List<@NotNull FluidStack> getRepresentations(ContextMap context) {
         if (this.representations == null) {
-            this.representations = List.of(ingredient.getFluids());
+            this.representations = ingredient.ingredient().display().resolve(context, (ForFluidStacks<FluidStack>) stack -> stack.copyWithAmount(ingredient.amount())).toList();
         }
         return representations;
     }

@@ -31,11 +31,6 @@ public class BasicChemicalInfuserRecipe extends BasicChemicalChemicalToChemicalR
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_infuser";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_INFUSER);
     }

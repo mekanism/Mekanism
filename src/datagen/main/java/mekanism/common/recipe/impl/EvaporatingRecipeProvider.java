@@ -17,13 +17,13 @@ class EvaporatingRecipeProvider implements ISubRecipeProvider {
         String basePath = "evaporating/";
         //Brine
         FluidToFluidRecipeBuilder.evaporating(
-              IngredientCreatorAccess.fluid().from(FluidTags.WATER, 10),
+              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 10),
               MekanismFluids.BRINE.asStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "brine"));
+        ).save(consumer, Mekanism.rl(basePath + "brine"));
         //Lithium
         FluidToFluidRecipeBuilder.evaporating(
-              IngredientCreatorAccess.fluid().from(MekanismTags.Fluids.BRINE, 10),
+              IngredientCreatorAccess.fluid().from(, MekanismTags.Fluids.BRINE, 10),
               MekanismFluids.LITHIUM.asStack(1)
-        ).build(consumer, Mekanism.rl(basePath + "lithium"));
+        ).save(consumer, Mekanism.rl(basePath + "lithium"));
     }
 }

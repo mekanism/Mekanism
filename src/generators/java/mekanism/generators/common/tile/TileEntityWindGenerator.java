@@ -91,9 +91,9 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             return SPEED * height / 384F;
         }
         //Shift so that a wind generator at the min build height acts as if it was at a height of zero
-        int minBuildHeight = level.getMinBuildHeight();
+        int minBuildHeight = level.getMinY();
         height -= minBuildHeight;
-        return SPEED * height / (level.getMaxBuildHeight() - minBuildHeight);
+        return SPEED * height / (level.getMaxY() + 1 - minBuildHeight);
     }
 
     /**
@@ -105,10 +105,10 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             //Validate it isn't fluid logged to help try and prevent https://github.com/mekanism/Mekanism/issues/7344
             //Clamp the height limits as the logical bounds of the world
             if (level.getFluidState(top).isEmpty() && level.canSeeSky(top)) {
-                int minBuildHeight = level.getMinBuildHeight();
+                int minBuildHeight = level.getMinY();
                 //Based off of how PortalForcer#createPortal calculates
                 // The minus one is to handle that the max level height is treated as exclusive
-                int maxLevelHeight = Math.min(level.getMaxBuildHeight(), minBuildHeight + level.dimensionType().logicalHeight()) - 1;
+                int maxLevelHeight = Math.min(level.getMaxY() + 1, minBuildHeight + level.dimensionType().logicalHeight()) - 1;
                 int minY = Math.max(MekanismGeneratorsConfig.generators.windGenerationMinY.get(), minBuildHeight);
                 int maxY = Math.min(MekanismGeneratorsConfig.generators.windGenerationMaxY.get(), maxLevelHeight);
                 int clampedY = Math.min(maxY, Math.max(minY, top.getY()));

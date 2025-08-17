@@ -10,7 +10,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.Nullable;
 
 public class ColorAtlas {
@@ -61,7 +61,7 @@ public class ColorAtlas {
              NativeImage image = NativeImage.read(input)) {
             for (int i = 0; i < count; i++) {
                 int argb = Color.argbToFromABGR(image.getPixelRGBA(i % ATLAS_SIZE, i / ATLAS_SIZE));
-                if (FastColor.ARGB32.alpha(argb) == 0) {
+                if (ARGB.alpha(argb) == 0) {
                     //Don't allow fully transparent colors, fallback to default color.
                     // Mark as null for now so that it can default to the proper color
                     ret.add(null);

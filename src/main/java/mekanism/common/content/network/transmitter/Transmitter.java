@@ -31,6 +31,8 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -449,7 +451,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     /**
      * @return true if the model data was changed by this update
      */
-    public boolean handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    public boolean handleUpdateTag(@NotNull ValueInput input) {
         boolean refreshModelData = false;
         ConnectionType[] oldConnectionData = new ConnectionType[EnumUtils.DIRECTIONS.length];
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -499,7 +501,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
     }
 
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+    public void read(@NotNull ValueInput input) {
         redstoneReactive = nbtTags.getBoolean(SerializationConstants.REDSTONE);
         NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
         NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
@@ -507,7 +509,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     @NotNull
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
+    public CompoundTag write(@NotNull ValueOutput output) {
         nbtTags.putBoolean(SerializationConstants.REDSTONE, redstoneReactive);
         nbtTags.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         nbtTags.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);

@@ -33,6 +33,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
@@ -132,16 +134,16 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public void read(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.read(provider, nbtTags);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
         saveShare = FluidStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.FLUID));
         buffer.setStack(saveShare);
     }
 
     @NotNull
     @Override
-    public CompoundTag write(HolderLookup.Provider provider, @NotNull CompoundTag nbtTags) {
-        super.write(provider, nbtTags);
+    public CompoundTag write(@NotNull ValueOutput output) {
+        super.write(output);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
         }

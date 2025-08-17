@@ -133,7 +133,7 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     BlockState getBlockAt(int chunkRelativeX, int y, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         if (level.isOutsideBuildHeight(y)) {
-            throw new ComputerException("Y '%d' is out of range must be between %d and %d. (Inclusive)", y, level.getMinBuildHeight(), level.getMaxBuildHeight() - 1);
+            throw new ComputerException("Y '%d' is out of range must be between %d and %d. (Inclusive)", y, level.getMinY(), level.getMaxY());
         }
         BlockPos targetPos = getVerticalPos(chunkRelativeX, y, chunkRelativeZ);
         return level.getBlockState(targetPos);
@@ -143,8 +143,8 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     Map<Integer, BlockState> getColumnAt(int chunkRelativeX, int chunkRelativeZ) throws ComputerException {
         validateVibrating();
         Int2ObjectMap<BlockState> blocks = new Int2ObjectOpenHashMap<>();
-        BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinBuildHeight(), chunkRelativeZ);
-        for (BlockPos pos : BlockPos.betweenClosed(minPos, new BlockPos(minPos.getX(), level.getMaxBuildHeight(), minPos.getZ()))) {
+        BlockPos minPos = getVerticalPos(chunkRelativeX, level.getMinY(), chunkRelativeZ);
+        for (BlockPos pos : BlockPos.betweenClosed(minPos, new BlockPos(minPos.getX(), level.getMaxY() + 1, minPos.getZ()))) {
             blocks.put(pos.getY(), level.getBlockState(pos));
         }
         return blocks;

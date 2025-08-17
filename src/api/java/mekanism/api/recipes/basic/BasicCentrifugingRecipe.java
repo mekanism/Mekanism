@@ -29,11 +29,6 @@ public class BasicCentrifugingRecipe extends BasicChemicalToChemicalRecipe {
     }
 
     @Override
-    public String getGroup() {
-        return "isotopic_centrifuge";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(ISOTOPIC_CENTRIFUGE);
     }

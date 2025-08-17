@@ -112,13 +112,8 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     }
 
     @Override
-    public final RecipeType<?> getType() {
+    public final RecipeType<? extends PressurizedReactionRecipe> getType() {
         return MekanismRecipeTypes.TYPE_REACTION.value();
-    }
-
-    @Override
-    public String getGroup() {
-        return "pressurized_reaction_chamber";
     }
 
     @Override

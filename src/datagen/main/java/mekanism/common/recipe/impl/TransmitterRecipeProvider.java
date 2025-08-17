@@ -42,13 +42,13 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, Items.IRON_BARS)
-              .build(consumer, Mekanism.rl(basePath + "diversion_transporter"));
+              .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, Items.IRON_BARS)
-              .build(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
+              .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
 
     private void addLogisticalTransporterRecipes(RecipeOutput consumer, String basePath) {
@@ -91,7 +91,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, itemTag)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
+              .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
     private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, Item item) {
@@ -99,7 +99,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .pattern(BASIC_TRANSMITTER_PATTERN)
               .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
+              .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
     private void addTransmitterUpgradeRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, BlockRegistryObject<?, ?> previousTransmitter,
@@ -108,6 +108,6 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
               .key(Pattern.ALLOY, alloyTag)
-              .build(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
+              .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 }

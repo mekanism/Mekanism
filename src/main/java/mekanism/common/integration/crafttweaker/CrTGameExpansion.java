@@ -41,7 +41,7 @@ public class CrTGameExpansion {
     public static Collection<RobitSkin> getRobitSkins(Game _this) {
         return CraftTweakerAPI.getAccessibleElementsProvider()
               .registryAccess()
-              .registryOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
+              .lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME)
               .stream()
               .toList();
     }

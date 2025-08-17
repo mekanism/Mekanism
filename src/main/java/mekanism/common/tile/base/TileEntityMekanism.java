@@ -127,6 +127,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
@@ -146,6 +147,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -752,8 +755,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        super.loadAdditional(nbt, provider);
+    public void loadAdditional(@NotNull ValueInput input) {
+        super.loadAdditional(input);
         NBTUtils.setBooleanIfPresent(nbt, SerializationConstants.REDSTONE, value -> redstone = value);
         for (ITileComponent component : components) {
             component.read(nbt, provider);
@@ -780,8 +783,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void saveAdditional(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-        super.saveAdditional(nbtTags, provider);
+    public void saveAdditional(@NotNull ValueOutput output) {
+        super.saveAdditional(output);
         nbtTags.putBoolean(SerializationConstants.REDSTONE, redstone);
         for (ITileComponent component : components) {
             component.write(nbtTags, provider);
@@ -824,7 +827,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // We previously had issues in readSustainedData regarding frequencies when on the client side so that is why the frequency data has this check
     // but there is a good chance a lot of this stuff has no real reason to need to be set on the client side at all
     @Override
-    protected void applyImplicitComponents(@NotNull BlockEntity.DataComponentInput input) {
+    protected void applyImplicitComponents(@NotNull DataComponentGetter input) {
         super.applyImplicitComponents(input);
         // Check if the stack has a custom name, and if the tile supports naming, name it
         if (isNameable()) {
@@ -987,8 +990,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void handleUpdateTag(@NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleUpdateTag(tag, provider);
+    public void handleUpdateTag(@NotNull ValueInput input) {
+        super.handleUpdateTag(input);
         for (ITileComponent component : components) {
             component.readFromUpdateTag(tag);
         }
@@ -1224,7 +1227,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setChanged();
     }
 
-    public void applyInventorySlots(BlockEntity.DataComponentInput input, List<IInventorySlot> slots, AttachedItems attachedItems) {
+    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
         List<ItemStack> stacks = attachedItems.containers();
         int size = stacks.size();
         if (size == slots.size()) {
@@ -1289,7 +1292,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
     }
 
-    public void applyChemicalTanks(BlockEntity.DataComponentInput input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {
+    public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {
         List<ChemicalStack> stacks = attachedChemicals.containers();
         int size = stacks.size();
         if (size == tanks.size()) {
@@ -1330,7 +1333,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    public void applyFluidTanks(BlockEntity.DataComponentInput input, List<IExtendedFluidTank> tanks, AttachedFluids attachedFluids) {
+    public void applyFluidTanks(DataComponentGetter input, List<IExtendedFluidTank> tanks, AttachedFluids attachedFluids) {
         List<FluidStack> stacks = attachedFluids.containers();
         int size = stacks.size();
         if (size == tanks.size()) {
@@ -1389,7 +1392,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return lastEnergyTracker.getLastEnergyReceived();
     }
 
-    public void applyEnergyContainers(BlockEntity.DataComponentInput input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
+    public void applyEnergyContainers(DataComponentGetter input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
         List<Long> stored = attachedEnergy.containers();
         int size = stored.size();
         if (size == containers.size()) {
@@ -1452,7 +1455,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return heatHandlerManager != null ? heatHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    public void applyHeatCapacitors(BlockEntity.DataComponentInput input, List<IHeatCapacitor> capacitors, AttachedHeat attachedHeat) {
+    public void applyHeatCapacitors(DataComponentGetter input, List<IHeatCapacitor> capacitors, AttachedHeat attachedHeat) {
         List<HeatCapacitorData> stored = attachedHeat.containers();
         int size = stored.size();
         if (size == capacitors.size()) {

@@ -1,6 +1,6 @@
 package mekanism.api;
 
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 
 /**
  * @since 10.4.0
@@ -28,7 +28,7 @@ public interface SupportsColorMap {
      * @since 10.6.0
      */
     default int getPackedColor(int alpha) {
-        return FastColor.ARGB32.color(alpha, getPackedColor());
+        return ARGB.color(alpha, getPackedColor());
     }
 
     /**

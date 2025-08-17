@@ -45,7 +45,7 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
 
     @Override
     public final Stream<Holder<Chemical>> generateChemicals() {
-        return MekanismAPI.CHEMICAL_REGISTRY.getTag(tag())
+        return MekanismAPI.CHEMICAL_REGISTRY.get(tag())
               .stream()
               .flatMap(HolderSet::stream)
               .distinct();//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
@@ -53,7 +53,7 @@ public non-sealed class TagChemicalIngredient extends ChemicalIngredient {
 
     @Override
     public void logMissingTags() {
-        Optional<Named<Chemical>> registryTag = MekanismAPI.CHEMICAL_REGISTRY.getTag(tag());
+        Optional<Named<Chemical>> registryTag = MekanismAPI.CHEMICAL_REGISTRY.get(tag());
         if (registryTag.isEmpty() || registryTag.get().size() == 0) {
             MekanismAPI.logger.error("Empty tag: {}", tag);
         }

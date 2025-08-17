@@ -108,11 +108,6 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
     }
 
     @Override
-    public String getGroup() {
-        return "chemical_crystallizer";
-    }
-
-    @Override
     public ItemStack getToastSymbol() {
         return new ItemStack(CHEMICAL_CRYSTALLIZER);
     }

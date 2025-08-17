@@ -13,10 +13,10 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
-import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
+import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -29,11 +29,10 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,7 +89,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     }
 
     @Nullable
-    private static <CONTAINER extends INBTSerializable<CompoundTag>, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack,
+    private static <CONTAINER extends ValueIOSerializable, TYPE extends RecipeUpgradeData<TYPE>> TYPE getContainerUpgradeData(@NotNull ItemStack stack,
           ContainerType<CONTAINER, ?, ?> containerType, Function<List<CONTAINER>, TYPE> creator) {
         List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
         return containers.isEmpty() ? null : creator.apply(containers);
