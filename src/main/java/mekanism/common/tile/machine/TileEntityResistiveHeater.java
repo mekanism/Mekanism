@@ -152,7 +152,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
         super.setConfigurationData(provider, player, data);
-        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
+        NBTUtils.setLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
     }
 
     @Override

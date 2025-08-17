@@ -173,32 +173,6 @@ public class NBTUtils {
         }
     }
 
-    //TODO - 1.22: Replace with using setLongIfPresent
-    public static void setLegacyEnergyIfPresent(CompoundTag nbt, String key, LongConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_LONG)) {
-            setter.accept(nbt.getLong(key));
-        } else if (nbt.contains(key, Tag.TAG_STRING)) {
-            try {
-                //Copy of legacy logic from floating long parsing
-                String string = nbt.getString(key);
-                long value;
-                int index = string.indexOf('.');
-                if (index == -1) {
-                    value = Long.parseUnsignedLong(string);
-                } else {
-                    value = Long.parseUnsignedLong(string.substring(0, index));
-                }
-                if (value < 0) {
-                    //Clamp unsigned to signed
-                    value = Long.MAX_VALUE;
-                }
-                setter.accept(value);
-            } catch (NumberFormatException e) {
-                setter.accept(0);
-            }
-        }
-    }
-
     public static void setItemStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
             setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));

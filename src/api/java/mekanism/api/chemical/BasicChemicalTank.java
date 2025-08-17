@@ -73,7 +73,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      * @since 10.7.11
      */
     public static IChemicalTank create(long capacity, Predicate<ChemicalStack> canExtract, Predicate<ChemicalStack> canInsert, @Nullable IContentsListener listener) {
-        //TODO - 1.22: Rename this back to create and remove the deprecated version
         return create(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
 

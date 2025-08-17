@@ -52,7 +52,7 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.PROGRESS, val -> progress = val);
         NBTUtils.setIntIfPresent(nbtTags, SerializationConstants.PROCESSED, val -> inputProcessed = val);
         NBTUtils.setBooleanIfPresent(nbtTags, SerializationConstants.COULD_OPERATE, val -> couldOperate = val);
-        NBTUtils.setLegacyEnergyIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
+        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.ENERGY_USAGE, val -> receivedEnergy = val);
         NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.LAST_PROCESSED, val -> lastProcessed = val);
     }
 

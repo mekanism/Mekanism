@@ -91,13 +91,6 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    static {//TODO - 1.22: remove backcompat
-        DATA_COMPONENTS.addAlias(Mekanism.rl("gases"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
-        DATA_COMPONENTS.addAlias(Mekanism.rl("infuse_types"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
-        DATA_COMPONENTS.addAlias(Mekanism.rl("pigments"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
-        DATA_COMPONENTS.addAlias(Mekanism.rl("slurries"), Mekanism.rl(ATTACHED_CHEMICALS.getName()));
-    }
-
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)
                 .networkSynchronized(AttachedHeat.STREAM_CODEC)

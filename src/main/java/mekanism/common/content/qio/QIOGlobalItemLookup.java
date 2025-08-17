@@ -108,15 +108,11 @@ public class QIOGlobalItemLookup {
 
         @Override
         public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            boolean hasAliases = nbt.contains(SerializationConstants.ALIASES, Tag.TAG_COMPOUND);
-            if (hasAliases) {
+            if (nbt.contains(SerializationConstants.ALIASES, Tag.TAG_COMPOUND)) {
                 loadAliases(nbt.getCompound(SerializationConstants.ALIASES));
             }
             if (nbt.contains(SerializationConstants.ITEMS, Tag.TAG_COMPOUND)) {
                 loadItemData(nbt.getCompound(SerializationConstants.ITEMS), provider);
-            } else if (!hasAliases) {
-                //TODO - 1.22: Remove this legacy way of falling back to assuming the entire nbt is the item data
-                loadItemData(nbt, provider);
             }
         }
 

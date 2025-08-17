@@ -175,6 +175,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
+        NBTUtils.setLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
     }
 }

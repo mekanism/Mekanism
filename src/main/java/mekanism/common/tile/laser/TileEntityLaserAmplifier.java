@@ -173,8 +173,8 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
         super.readSustainedData(provider, data);
-        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
-        NBTUtils.setLegacyEnergyIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
+        NBTUtils.setLongIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
+        NBTUtils.setLongIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
         NBTUtils.setIntIfPresent(data, SerializationConstants.TIME, value -> delay = value);
         NBTUtils.setEnumIfPresent(data, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }

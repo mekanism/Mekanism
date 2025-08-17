@@ -415,7 +415,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void loadAdditional(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
         super.loadAdditional(nbt, provider);
-        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
+        NBTUtils.setLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
     }
 
     @Override

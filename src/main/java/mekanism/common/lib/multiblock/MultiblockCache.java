@@ -192,24 +192,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             public void sync(IChemicalTank cache, IChemicalTank data) {
                 cache.setStack(data.getStack());
             }
-
-            @Override//TODO - 1.22: remove backcompat
-            public void readFrom(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> cache) {
-                int stored = Math.max(
-                      tag.getInt("gas_tanks_stored"),
-                      Math.max(
-                            tag.getInt("infusion_tanks_stored"),
-                            Math.max(
-                                  tag.getInt("pigment_tanks_stored"),
-                                  tag.getInt("slurry_tanks_stored")
-                            )
-                      )
-                );
-                if (stored > 0) {
-                    tag.putInt(getStoredTagKey(), Math.max(stored, tag.getInt(getStoredTagKey())));
-                }
-                super.readFrom(provider, tag, cache);
-            }
         };
 
         public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {

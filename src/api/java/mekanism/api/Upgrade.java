@@ -7,7 +7,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.function.Function;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
@@ -39,15 +38,7 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
      *
      * @since 10.6.0
      */
-    public static final Codec<Upgrade> CODEC;
-
-    //TODO - 1.22 remove backcompat and inline back to StringRepresentable.fromEnum
-    static {
-        Upgrade[] values = values();
-        Function<String, Upgrade> nameLookup = StringRepresentable.createNameLookup(values, Function.identity());
-        Function<String, Upgrade> remapper = it -> "gas".equals(it) ? CHEMICAL : nameLookup.apply(it);
-        CODEC = new EnumCodec<>(values, remapper);
-    }
+    public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
 
     /**
      * Gets an upgrade by index, wrapping for out of bounds indices.

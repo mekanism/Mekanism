@@ -237,10 +237,6 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemUpgrade> MUFFLING_UPGRADE = registerUpgrade(Upgrade.MUFFLING);
     public static final ItemRegistryObject<ItemUpgrade> CHEMICAL_UPGRADE = registerUpgrade(Upgrade.CHEMICAL);
 
-    static {//TODO - 1.22: remove backcompat
-        ITEMS.addAlias(Mekanism.rl("upgrade_gas"), CHEMICAL_UPGRADE.getId());
-    }
-
     public static final ItemRegistryObject<ItemUpgrade> ANCHOR_UPGRADE = registerUpgrade(Upgrade.ANCHOR);
     public static final ItemRegistryObject<ItemUpgrade> STONE_GENERATOR_UPGRADE = registerUpgrade(Upgrade.STONE_GENERATOR);
 

@@ -10,7 +10,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import org.jetbrains.annotations.NotNull;
@@ -50,7 +49,7 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

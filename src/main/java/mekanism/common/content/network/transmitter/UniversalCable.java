@@ -216,7 +216,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
         super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setLegacyEnergyIfPresent(tag, SerializationConstants.ENERGY, network.energyContainer::setEnergy);
+        NBTUtils.setLongIfPresent(tag, SerializationConstants.ENERGY, network.energyContainer::setEnergy);
         NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
     }
 }

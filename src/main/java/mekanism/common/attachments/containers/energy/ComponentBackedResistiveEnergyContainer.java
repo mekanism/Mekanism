@@ -68,7 +68,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        NBTUtils.setLegacyEnergyIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
+        NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
         super.deserializeNBT(provider, nbt);
     }
 }

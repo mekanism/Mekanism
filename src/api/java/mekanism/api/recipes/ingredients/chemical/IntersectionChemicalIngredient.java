@@ -52,8 +52,7 @@ public non-sealed class IntersectionChemicalIngredient extends ChemicalIngredien
         return children.stream()
               .flatMap(ChemicalIngredient::generateChemicals)
               .distinct()//Ensure we don't include the same chemical multiple times. Holder overrides #equals at least within same kind of holder
-              .filter(this::test);
-              //.filter(this);//TODO - 1.22: Use this to filter
+              .filter(this);
     }
 
     /**

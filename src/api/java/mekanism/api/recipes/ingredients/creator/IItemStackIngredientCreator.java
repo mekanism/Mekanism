@@ -140,7 +140,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @throws NullPointerException     if the given instance is null.
      * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
      */
-    default ItemStackIngredient from(Item item, int amount) {//TODO - 1.22: Ensure we don't end up removing this when we remove super
+    default ItemStackIngredient from(Item item, int amount) {
         return from(Ingredient.of(item), amount);
     }
 
