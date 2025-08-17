@@ -42,7 +42,7 @@ public class CommonPlayerTracker {
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
         Player player = event.getEntity();
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             /*if (MekanismConfig.general.enableAlphaWarning.getAsBoolean()) {
                 player.sendSystemMessage(ALPHA_WARNING);
             }*/

@@ -138,7 +138,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             return;
         }
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             if (entityData.get(IS_LATCHED) == 1) {
                 latched = new BlockPos(entityData.get(LATCHED_X), entityData.get(LATCHED_Y), entityData.get(LATCHED_Z));
             } else {
@@ -177,7 +177,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             }
         }
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (latched != null) {
                 Optional<BlockState> blockState = WorldUtils.getBlockState(level(), latched);
                 if (blockState.isPresent() && blockState.get().isAir()) {
@@ -265,7 +265,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     private void pop() {
         playSound(AdditionsSounds.POP.get(), 1, 1);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));
             DustParticleOptions redstoneParticleData = new DustParticleOptions(col, 1.0F);
             Vec3 center = getBoundingBox().getCenter();
@@ -396,7 +396,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     public boolean isLatched() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return entityData.get(IS_LATCHED) > 0;
         }
         return latched != null || latchedEntity != null;

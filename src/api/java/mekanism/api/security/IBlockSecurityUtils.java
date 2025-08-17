@@ -467,7 +467,7 @@ public interface IBlockSecurityUtils {
     default boolean canAccessOrDisplayError(Player player, Level level, BlockPos pos, @Nullable BlockState state, @Nullable BlockEntity blockEntity) {
         if (canAccess(player, level, pos, state, blockEntity)) {
             return true;
-        } else if (!level.isClientSide) {
+        } else if (!level.isClientSide()) {
             //Display no access from server side
             ISecurityUtils.INSTANCE.displayNoAccess(player);
         }

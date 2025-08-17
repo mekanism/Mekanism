@@ -255,7 +255,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (currentSlot == null || !currentSlot.hasItem()) {
             return ItemStack.EMPTY;
         }
-        SelectedWindowData selectedWindow = player.level().isClientSide ? getSelectedWindow() : getSelectedWindow(player.getUUID());
+        SelectedWindowData selectedWindow = player.level().isClientSide() ? getSelectedWindow() : getSelectedWindow(player.getUUID());
         if (currentSlot instanceof IInsertableSlot insertableSlot && !insertableSlot.exists(selectedWindow)) {
             return ItemStack.EMPTY;
         }

@@ -195,7 +195,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         if (modifiedState == null) {
             //Skip modifying the blocks if the one we clicked cannot be modified
             return InteractionResult.PASS;
-        } else if (world.isClientSide) {
+        } else if (world.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
         ServerPlayer player = null;

@@ -160,7 +160,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             long energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
             energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
             //Vein mining handling
-            if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN &&
+            if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN &&
                 energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL) == energyRequired) {
                 // Only allow mining things that are considered an ore
                 if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {

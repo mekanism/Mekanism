@@ -65,7 +65,7 @@ public class AdditionsEntityTypes {
     );
 
     public static void setupBabyModifiers(LivingEntity entity) {
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             AttributeInstance attributeInstance = entity.getAttribute(Attributes.MOVEMENT_SPEED);
             if (attributeInstance != null) {
                 attributeInstance.addPermanentModifier(BABY_SPEED_NERF_MODIFIER);

@@ -135,7 +135,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
             //Note: We don't handle checking if it is radioactive here, as the assumption is it doesn't have a tile so won't have that information
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 WorldUtils.dismantleBlock(state, world, pos, player, stack);
             }
             return ItemInteractionResult.SUCCESS;

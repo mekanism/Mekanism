@@ -41,7 +41,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @Override
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 PersonalStorageManager.getInventoryFor(s);
             }
             getContainerType().tryOpenGui(p, h, s);
@@ -75,7 +75,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @Override
     public void onDestroyed(@NotNull ItemEntity item, @NotNull DamageSource damageSource) {
         super.onDestroyed(item, damageSource);
-        if (!item.level().isClientSide) {
+        if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();
             AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack).orElse(null);
             if (inventory != null && inventory.isInventoryEmpty()) {

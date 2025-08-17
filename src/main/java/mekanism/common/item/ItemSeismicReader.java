@@ -49,7 +49,7 @@ public class ItemSeismicReader extends ItemEnergized {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (world.isClientSide) {
+        if (world.isClientSide()) {
             return InteractionResultHolder.success(stack);
         }
         if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level())) {

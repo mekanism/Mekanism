@@ -160,7 +160,7 @@ public abstract class BlockMekanism extends Block {
             if (tile instanceof ISecurityTile securityTile && securityTile.getOwnerUUID() == null && placer != null) {
                 //There was no stored owner that got set, use the placer's id
                 securityTile.setOwnerUUID(placer.getUUID());
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     //If the machine doesn't already have an owner, make sure we portray this
                     PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(placer.getUUID()));
                 }
@@ -170,7 +170,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     public void onBlockExploded(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             AttributeMultiblock multiblockAttribute = Attribute.get(state, AttributeMultiblock.class);
             if (multiblockAttribute != null && explosion instanceof MeltdownExplosion meltdown) {
                 MultiblockData multiblock = multiblockAttribute.getMultiblock(world, pos, meltdown.getMultiblockID());

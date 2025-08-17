@@ -45,7 +45,7 @@ public class ItemGeigerCounter extends Item {
                 }
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         return InteractionResultHolder.pass(stack);
     }

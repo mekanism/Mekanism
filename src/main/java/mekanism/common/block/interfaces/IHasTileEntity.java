@@ -25,7 +25,7 @@ public interface IHasTileEntity<TILE extends BlockEntity> extends EntityBlock {
     @Override
     default <T extends BlockEntity> BlockEntityTicker<T> getTicker(@NotNull Level level, @NotNull BlockState state, @NotNull BlockEntityType<T> blockEntityType) {
         TileEntityTypeRegistryObject<? extends TILE> type = getTileType();
-        return blockEntityType == type.get() ? (BlockEntityTicker<T>) type.getTicker(level.isClientSide) : null;
+        return blockEntityType == type.get() ? (BlockEntityTicker<T>) type.getTicker(level.isClientSide()) : null;
     }
 
     default boolean triggerBlockEntityEvent(@NotNull BlockState state, Level level, BlockPos pos, int id, int param) {

@@ -125,7 +125,7 @@ public class QIOCraftingWindow implements IContentsListener {
         } else {
             //If we are not currently crafting, recalculate the contents for the output slot
             Level world = holder.getLevel();
-            if (world != null && !world.isClientSide) {
+            if (world != null && !world.isClientSide()) {
                 updateOutputSlot(world);
             }
         }
@@ -138,7 +138,7 @@ public class QIOCraftingWindow implements IContentsListener {
             outputSlot.setEmpty();
         }
         Level world = holder.getLevel();
-        if (world != null && !world.isClientSide) {
+        if (world != null && !world.isClientSide()) {
             //And recheck the recipe
             updateOutputSlot(world);
         }

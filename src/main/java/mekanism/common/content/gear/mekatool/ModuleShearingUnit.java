@@ -100,7 +100,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 if (cost > 0) {
                     energyContainer.extract(cost, Action.EXECUTE, AutomationType.MANUAL);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             }
         }
         return InteractionResult.PASS;
@@ -134,7 +134,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     private boolean shearEntity(@Nullable IEnergyContainer energyContainer, LivingEntity entity, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
         IShearable target = (IShearable) entity;
         if (target.isShearable(player, stack, world, pos)) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 for (ItemStack drop : target.onSheared(player, stack, world, pos)) {
                     target.spawnShearedDrop(world, pos, drop);
                 }

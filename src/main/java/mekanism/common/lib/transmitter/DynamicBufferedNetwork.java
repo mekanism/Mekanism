@@ -168,7 +168,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     }
 
     public void markDirty() {
-        if (world != null && !world.isClientSide && world.getGameTime() != lastMarkDirtyTime) {
+        if (world != null && !world.isClientSide() && world.getGameTime() != lastMarkDirtyTime) {
             lastMarkDirtyTime = world.getGameTime();
             for (LongIterator iterator = chunks.iterator(); iterator.hasNext(); ) {
                 long chunk = iterator.nextLong();

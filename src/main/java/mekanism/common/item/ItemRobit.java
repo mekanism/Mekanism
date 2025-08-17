@@ -83,7 +83,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         BlockPos pos = context.getClickedPos();
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null && !chargepad.getActive()) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 ItemStack stack = context.getItemInHand();
                 EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                 if (robit == null) {
@@ -118,7 +118,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                 stack.shrink(1);
                 CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer) player, robit);
             }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -132,7 +132,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slot, isSelected);
-        if (!level.isClientSide && HolidayManager.hasRobitSkinsToday() && !stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)) {
+        if (!level.isClientSide() && HolidayManager.hasRobitSkinsToday() && !stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)) {
             ResourceKey<RobitSkin> skin = stack.get(MekanismDataComponents.ROBIT_SKIN);
             if (skin == null || skin == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin

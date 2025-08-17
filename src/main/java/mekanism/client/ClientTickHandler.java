@@ -144,7 +144,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onStartTracking(EntityJoinLevelEvent event) {
-        if (event.getLevel().isClientSide && event.getEntity() instanceof Player player && MekanismConfig.client.enablePlayerSounds.get()) {
+        if (event.getLevel().isClientSide() && event.getEntity() instanceof Player player && MekanismConfig.client.enablePlayerSounds.get()) {
             SoundHandler.startFlamethrowerSound(player);
         }
     }

@@ -67,7 +67,7 @@ public class ItemGaugeDropper extends Item {
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
                 if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
                     for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -81,7 +81,7 @@ public class ItemGaugeDropper extends Item {
                     }
                 }
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         return InteractionResultHolder.pass(stack);
     }

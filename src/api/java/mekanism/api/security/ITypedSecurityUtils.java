@@ -156,7 +156,7 @@ public interface ITypedSecurityUtils<PROVIDER> {
     default boolean canAccessOrDisplayError(Player player, @Nullable PROVIDER provider) {
         if (canAccess(player, provider)) {
             return true;
-        } else if (!player.level().isClientSide) {
+        } else if (!player.level().isClientSide()) {
             //Display no access from server side
             ISecurityUtils.INSTANCE.displayNoAccess(player);
         }

@@ -315,7 +315,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean elytraFlightTick(ItemStack stack, LivingEntity entity, int flightTicks) {
         //Note: As canElytraFly is checked just before this we don't bother validating ahead of time we have the energy
         // or that we are the correct slot
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             int nextFlightTicks = flightTicks + 1;
             if (nextFlightTicks % MekanismUtils.TICKS_PER_HALF_SECOND == 0) {
                 if (nextFlightTicks % SharedConstants.TICKS_PER_SECOND == 0) {

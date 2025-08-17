@@ -81,14 +81,14 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @Override
     public void onCaughtFire(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
-        if (!world.isClientSide && createAndAddEntity(world, pos, igniter)) {
+        if (!world.isClientSide() && createAndAddEntity(world, pos, igniter)) {
             world.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
         }
     }
 
     @Override
     public void wasExploded(Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             if (tnt != null) {
                 tnt.setFuse((short) (world.random.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));

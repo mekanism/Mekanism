@@ -31,7 +31,7 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
     @Override
     public void setPlacedBy(@NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState state, @Nullable LivingEntity placer, @NotNull ItemStack stack) {
         super.setPlacedBy(world, pos, state, placer, stack);
-        if (!world.isClientSide && stack.getCount() == 1 && (!(placer instanceof Player player) || !player.getAbilities().instabuild)) {
+        if (!world.isClientSide() && stack.getCount() == 1 && (!(placer instanceof Player player) || !player.getAbilities().instabuild)) {
             //itemstack will be deleted, remove the stored inventory
             PersonalStorageManager.deleteInventory(stack);
         }

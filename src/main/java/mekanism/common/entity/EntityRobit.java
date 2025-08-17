@@ -101,7 +101,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -290,7 +289,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public void onRemovedFromLevel() {
-        if (level() != null && !level().isClientSide && getFollowing() && getOwner() != null) {
+        if (level() != null && !level().isClientSide() && getFollowing() && getOwner() != null) {
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
@@ -302,7 +301,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void tick() {
         Level level = level();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (homeLocation == null) {
                 discard();
                 return;
@@ -328,7 +327,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public void baseTick() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (getFollowing()) {
                 Player owner = getOwner();
                 if (owner != null && distanceToSqr(owner) > 4 && !getNavigation().isDone() && !energyContainer.isEmpty()) {
@@ -339,7 +338,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
         super.baseTick();
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (getDropPickup()) {
                 collectItems();
             }
@@ -429,7 +428,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         } else if (player.isShiftKeyDown()) {
             ItemStack stack = player.getItemInHand(hand);
             if (!stack.isEmpty() && stack.getItem() instanceof ItemConfigurator) {
-                if (!level().isClientSide) {
+                if (!level().isClientSide()) {
                     drop();
                 }
                 discard();
@@ -437,7 +436,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 return InteractionResult.SUCCESS;
             }
             return InteractionResult.PASS;
-        } else if (!level().isClientSide) {
+        } else if (!level().isClientSide()) {
             MenuProvider provider = MekanismContainerTypes.MAIN_ROBIT.getProvider(MekanismLang.ROBIT, this, true);
             if (provider != null) {
                 gameEvent(GameEvent.ENTITY_INTERACT, player);
@@ -445,7 +444,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 player.openMenu(provider, buf -> buf.writeVarInt(getId()));
             }
         }
-        return InteractionResult.sidedSuccess(level().isClientSide);
+        return InteractionResult.sidedSuccess(level().isClientSide());
     }
 
     private ItemStack getItemVariant() {
@@ -584,7 +583,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @Override
     public void onSecurityChanged(@NotNull SecurityMode old, @NotNull SecurityMode mode) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             EntitySecurityUtils.get().securityChanged(playersUsing, this, old, mode);
         }
     }
@@ -717,7 +716,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public ContainerLevelAccess getWorldPosCallable() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             //Note: Mojang just uses a null level access for containers on the client side. We mirror this here so that
             // we don't play multiple sounds when taking items out of the robit's repair screen
             return ContainerLevelAccess.NULL;

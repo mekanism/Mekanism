@@ -632,13 +632,13 @@ public final class MekanismUtils {
      */
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
-        if (reapply && !entity.level().isClientSide) {
+        if (reapply && !entity.level().isClientSide()) {
             MobEffect effect = effectInstance.getEffect().value();
             effect.removeAttributeModifiers(entity.getAttributes());
             effect.addAttributeModifiers(entity.getAttributes(), effectInstance.getAmplifier());
             entity.refreshDirtyAttributes();
         }
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             entity.sendEffectToPassengers(effectInstance);
         }
         if (entity instanceof ServerPlayer player) {

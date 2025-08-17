@@ -53,7 +53,7 @@ public class ItemNetworkReader extends ItemEnergized {
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level world = context.getLevel();
-        if (!world.isClientSide && player != null) {
+        if (!world.isClientSide() && player != null) {
             BlockPos pos = context.getClickedPos();
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             if (tile != null) {

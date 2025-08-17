@@ -33,7 +33,7 @@ public class EntityBabyCreeper extends Creeper {
      */
     @Override
     protected void explodeCreeper() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             float f = isPowered() ? 1 : 0.5F;
             dead = true;
             level().explode(this, getX(), getY(), getZ(), explosionRadius * f, Level.ExplosionInteraction.MOB);

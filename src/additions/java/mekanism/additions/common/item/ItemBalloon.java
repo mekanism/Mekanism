@@ -46,7 +46,7 @@ public class ItemBalloon extends Item {
     @Override
     public InteractionResultHolder<ItemStack> use(Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             boolean rightHand = MekanismUtils.isRightArm(player, hand);
             Vec3 pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
@@ -97,7 +97,7 @@ public class ItemBalloon extends Item {
             if (WorldUtils.isValidReplaceableBlock(world, null, pos.above()) && WorldUtils.isValidReplaceableBlock(world, null, pos.above(2))) {
                 world.removeBlock(pos.above(), false);
                 world.removeBlock(pos.above(2), false);
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     EntityBalloon balloon = EntityBalloon.create(world, pos, color);
                     if (balloon == null) {
                         return InteractionResult.FAIL;
@@ -118,7 +118,7 @@ public class ItemBalloon extends Item {
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (player.isShiftKeyDown()) {
             Level level = player.level();
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 AABB bound = new AABB(entity.getX() - 0.2, entity.getY() - 0.5, entity.getZ() - 0.2,
                       entity.getX() + 0.2, entity.getY() + entity.getBbHeight() + 4, entity.getZ() + 0.2);
                 List<EntityBalloon> balloonsNear = level.getEntitiesOfClass(EntityBalloon.class, bound);
@@ -185,7 +185,7 @@ public class ItemBalloon extends Item {
                     case WEST -> pos = pos.add(-0.5, -1, 0);
                     case EAST -> pos = pos.add(0.5, -1, 0);
                 }
-                if (!source.level().isClientSide) {
+                if (!source.level().isClientSide()) {
                     EntityBalloon balloon = EntityBalloon.create(source.level(), pos.x, pos.y, pos.z, color);
                     if (balloon != null) {
                         source.level().addFreshEntity(balloon);

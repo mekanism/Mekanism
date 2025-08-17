@@ -54,7 +54,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
-        } else if (world.isClientSide) {
+        } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
         ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();

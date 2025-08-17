@@ -77,17 +77,17 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
             } else if (stack.getCount() > 1) {
                 //If the item is currently stacked, don't allow opening the GUI
                 return InteractionResultHolder.pass(stack);
-            } else if (!level.isClientSide) {
+            } else if (!level.isClientSide()) {
                 openGui.accept((ServerPlayer) player, hand, stack);
             }
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide);
+        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
     }
 
     public boolean tryClaimItem(Level level, Player player, ItemStack stack) {
         IOwnerObject ownerObject = ownerCapability(stack);
         if (ownerObject != null && ownerObject.getOwnerUUID() == null) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 ownerObject.setOwnerUUID(player.getUUID());
                 PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
                 player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));

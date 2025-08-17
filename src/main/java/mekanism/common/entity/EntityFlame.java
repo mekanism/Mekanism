@@ -154,7 +154,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         Direction hitSide = blockRayTrace.getDirection();
         BlockState hitState = level().getBlockState(hitPos);
         boolean hitFluid = !hitState.getFluidState().isEmpty();
-        if (!level().isClientSide && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
+        if (!level().isClientSide() && MekanismConfig.general.aestheticWorldDamage.get() && !hitFluid) {
             FlamethrowerMode mode = getData(MekanismAttachmentTypes.FLAMETHROWER_MODE);
             if (mode == FlamethrowerMode.HEAT) {
                 Entity owner = getOwner();
@@ -245,7 +245,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             return;
         }
         if (recipe.isPresent()) {
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
                     //We can't break the block exit
                     return;

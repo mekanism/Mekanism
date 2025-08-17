@@ -62,7 +62,7 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
                     CriteriaTriggers.CONSUME_ITEM.trigger(serverPlayer, stack);
                     serverPlayer.awardStat(Stats.ITEM_USED.get(this));
                 }
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 }
                 stack.shrink(1);

@@ -31,10 +31,10 @@ public class ItemAlloy extends Item {
             BlockPos pos = context.getClickedPos();
             IAlloyInteraction alloyInteraction = WorldUtils.getCapability(world, Capabilities.ALLOY_INTERACTION, pos, context.getClickedFace());
             if (alloyInteraction != null) {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     alloyInteraction.onAlloyInteraction(player, context.getItemInHand(), tier);
                 }
-                return InteractionResult.sidedSuccess(world.isClientSide);
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
         return InteractionResult.PASS;

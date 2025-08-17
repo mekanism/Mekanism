@@ -89,7 +89,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                     // don't allow them to pick it up with a cardboard box
                     return InteractionResult.FAIL;
                 }
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     BlockData data = new BlockData(world.registryAccess(), state, tile);
                     if (!player.isCreative()) {
                         stack.shrink(1);

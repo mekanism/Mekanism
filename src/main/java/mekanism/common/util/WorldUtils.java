@@ -104,7 +104,7 @@ public class WorldUtils {
         if (world == null) {
             return false;
         } else if (world instanceof LevelAccessor accessor) {
-            if (!(accessor instanceof Level level) || !level.isClientSide) {
+            if (!(accessor instanceof Level level) || !level.isClientSide()) {
                 return accessor.hasChunk(chunkX, chunkZ);
             }
             //Don't allow the client level to just return true for all cases, as we actually care if it is present

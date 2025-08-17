@@ -59,7 +59,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
-        } else if (world.isClientSide) {
+        } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
         return tile.tryWrench(state, player, stack).getInteractionResult();
@@ -71,7 +71,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             return InteractionResult.PASS;
-        } else if (world.isClientSide) {
+        } else if (world.isClientSide()) {
             return Attribute.has(this, AttributeGui.class) ? InteractionResult.SUCCESS : InteractionResult.PASS;
         }
         return tile.openGui(player);
@@ -104,7 +104,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     @Override
     protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
             if (tile != null) {
                 tile.onNeighborChange(neighborBlock, neighborPos);

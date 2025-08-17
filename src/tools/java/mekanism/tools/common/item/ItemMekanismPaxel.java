@@ -101,7 +101,7 @@ public class ItemMekanismPaxel extends DiggerItem {
             } else {
                 resultToSet = blockstate.getToolModifiedState(context, ItemAbilities.SHOVEL_DOUSE, false);
                 //We can use the paxel as a shovel to extinguish a campfire
-                if (resultToSet != null && !world.isClientSide) {
+                if (resultToSet != null && !world.isClientSide()) {
                     world.levelEvent(null, LevelEvent.SOUND_EXTINGUISH_FIRE, blockpos, 0);
                 }
             }
@@ -109,7 +109,7 @@ public class ItemMekanismPaxel extends DiggerItem {
                 return InteractionResult.PASS;
             }
         }
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             ItemStack stack = context.getItemInHand();
             if (player instanceof ServerPlayer serverPlayer) {
                 CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockpos, stack);
@@ -120,7 +120,7 @@ public class ItemMekanismPaxel extends DiggerItem {
                 stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
     @Nullable

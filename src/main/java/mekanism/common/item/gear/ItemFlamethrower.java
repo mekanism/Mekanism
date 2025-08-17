@@ -107,7 +107,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         if (remainingDuration >= 0 && entity instanceof Player player) {
             //If the flamethrower has gas, add the entity if we are on the server and use gas if we aren't creative
             if (hasChemical(stack)) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     EntityFlame flame = EntityFlame.create(level, entity, entity.getUsedItemHand(), getMode(stack));
                     if (flame != null) {
                         if (flame.isAlive()) {

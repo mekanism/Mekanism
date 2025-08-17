@@ -36,7 +36,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
 
     @Override
     protected void attack(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
             if (bin != null) {
                 BlockHitResult mop = MekanismUtils.rayTrace(player);
@@ -86,8 +86,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
         if (stack.isEmpty() && player.isShiftKeyDown()) {
-            return bin.toggleLock() ? ItemInteractionResult.sidedSuccess(world.isClientSide) : ItemInteractionResult.FAIL;
-        } else if (!world.isClientSide) {
+            return bin.toggleLock() ? ItemInteractionResult.sidedSuccess(world.isClientSide()) : ItemInteractionResult.FAIL;
+        } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
             ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();
             int binMaxSize = binSlot.getLimit(storedStack);
@@ -119,6 +119,6 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 }
             }
         }
-        return ItemInteractionResult.sidedSuccess(world.isClientSide);
+        return ItemInteractionResult.sidedSuccess(world.isClientSide());
     }
 }

@@ -119,7 +119,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
         Level world = context.getLevel();
-        if (!world.isClientSide && player != null) {
+        if (!world.isClientSide() && player != null) {
             BlockPos pos = context.getClickedPos();
             Direction side = context.getClickedFace();
             ItemStack stack = context.getItemInHand();

@@ -74,7 +74,7 @@ public class OwnerDisplay implements IHasTextComponent {
         //Allows for the name to be overridden by a passed value
         if (ownerName != null) {
             return ownerName;
-        } else if (player != null && !player.level().isClientSide || player == null && EffectiveSide.get().isServer()) {
+        } else if (player != null && !player.level().isClientSide() || player == null && EffectiveSide.get().isServer()) {
             return MekanismUtils.getLastKnownUsername(ownerUUID);
         }
         String name = MekanismClient.clientUUIDMap.get(ownerUUID);

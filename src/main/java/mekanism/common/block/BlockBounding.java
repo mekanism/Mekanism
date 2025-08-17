@@ -235,7 +235,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     @Override
     protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
                 tile.onNeighborChange(world, neighborBlock, neighborPos);
@@ -255,7 +255,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @Override
     protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
                 return tile.getComparatorSignal();

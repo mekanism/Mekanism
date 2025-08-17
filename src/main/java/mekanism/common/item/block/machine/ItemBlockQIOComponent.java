@@ -34,7 +34,7 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     @Override
     public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (!level.isClientSide && level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
+        if (!level.isClientSide() && level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             syncColorWithFrequency(stack);
         }
     }

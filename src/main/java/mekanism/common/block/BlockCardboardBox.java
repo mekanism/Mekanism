@@ -42,7 +42,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
         } else if (!canReplace(world, player, pos, state)) {
             return InteractionResult.FAIL;
         }
-        if (!world.isClientSide) {
+        if (!world.isClientSide()) {
             Optional<BlockData> blockData = Optional.ofNullable(WorldUtils.getTileEntity(TileEntityCardboardBox.class, world, pos))
                   .map(box -> box.components().get(MekanismDataComponents.BLOCK_DATA.value()));
             if (blockData.isPresent()) {
@@ -54,7 +54,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.value().trigger((ServerPlayer) player);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide);
+        return InteractionResult.sidedSuccess(world.isClientSide());
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, BlockState state) {

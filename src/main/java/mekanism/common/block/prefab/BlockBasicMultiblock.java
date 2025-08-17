@@ -35,7 +35,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
         TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
-        } else if (world.isClientSide) {
+        } else if (world.isClientSide()) {
             if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
                     //If the block doesn't have a gui (frames of things like the evaporation plant), or the multiblock is not formed then pass

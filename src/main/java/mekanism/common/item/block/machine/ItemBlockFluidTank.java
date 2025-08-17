@@ -114,7 +114,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
             if (ItemSecurityUtils.get().tryClaimItem(level, player, stack)) {
-                return InteractionResult.sidedSuccess(level.isClientSide);
+                return InteractionResult.sidedSuccess(level.isClientSide());
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResult.FAIL;
             } else if (stack.getCount() > 1) {
@@ -132,7 +132,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 //Try to insert the fluid
                 if (fluidTank.insert(milk, Action.EXECUTE, AutomationType.MANUAL).getAmount() < FluidType.BUCKET_VOLUME) {
                     player.playSound(entity instanceof Cow ? SoundEvents.COW_MILK : SoundEvents.GOAT_MILK, 1.0F, 1.0F);
-                    return InteractionResult.sidedSuccess(level.isClientSide);
+                    return InteractionResult.sidedSuccess(level.isClientSide());
                 }
                 //Fail if we can't insert any
                 return InteractionResult.FAIL;
@@ -154,7 +154,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         ItemStack stack = player.getItemInHand(hand);
         if (getMode(stack)) {
             if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
-                return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+                return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResultHolder.fail(stack);
             } else if (stack.getCount() > 1) {
@@ -386,7 +386,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 FluidStack fluidStack = fluidTank.getFluid();
                 BlockState endState = getState(fluidStack);
                 if (endState != null && fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() >= FluidType.BUCKET_VOLUME) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         if (!player.isCreative()) {
                             //Manually shrink in case bucket volume is greater than tank input/output rate limit
                             MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidType.BUCKET_VOLUME, Action.EXECUTE), FluidType.BUCKET_VOLUME);
@@ -400,7 +400,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                         }
                         level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
                     }
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
                 return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
             }
@@ -460,7 +460,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             FluidStack remainder = fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL);
             if (remainder.isEmpty()) {
                 //We can fit all the fluid we would be removing
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     if (!player.isCreative()) {
                         ((ItemBlockFluidTank) stack.getItem()).uncheckedGrow(fluidTank, fluidStack);
                     }
@@ -473,7 +473,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     }
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                return ItemInteractionResult.sidedSuccess(level.isClientSide());
             }
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }

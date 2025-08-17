@@ -69,7 +69,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     @Nullable
     @Override
     public QIOFrequency getFrequency() {
-        if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory && inventory.getLevel() != null && inventory.getLevel().isClientSide) {
+        if (craftingWindowHolder instanceof PortableQIODashboardInventory inventory && inventory.getLevel() != null && inventory.getLevel().isClientSide()) {
             //If we are on the client side, use our local stored frequency
             return freq;
         }

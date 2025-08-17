@@ -62,7 +62,7 @@ public class ItemDictionary extends Item {
             if (tile != null || !player.isShiftKeyDown()) {
                 //If there is a tile at the position or the player is not sneaking
                 // grab the tags of the block and the tile
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     BlockState blockState = world.getBlockState(pos);
                     FluidState fluidState = blockState.getFluidState();
                     Stream<TagKey<BlockEntityType<?>>> tileTags = tile == null ? Stream.empty() : RegistryUtils.getBEHolder(tile.getType()).tags();
@@ -75,7 +75,7 @@ public class ItemDictionary extends Item {
                         player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
                     }
                 }
-                return InteractionResult.sidedSuccess(world.isClientSide);
+                return InteractionResult.sidedSuccess(world.isClientSide());
             }
         }
         return InteractionResult.PASS;
@@ -85,10 +85,10 @@ public class ItemDictionary extends Item {
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
         return InteractionResult.PASS;
     }
@@ -101,7 +101,7 @@ public class ItemDictionary extends Item {
             if (!world.isClientSide()) {
                 MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         } else {
             BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
@@ -110,7 +110,7 @@ public class ItemDictionary extends Item {
                     if (!world.isClientSide()) {
                         sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags());
                     }
-                    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+                    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
                 }
             }
         }

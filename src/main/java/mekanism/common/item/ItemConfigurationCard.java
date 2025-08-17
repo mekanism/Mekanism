@@ -63,7 +63,7 @@ public class ItemConfigurationCard extends Item {
             }
             ItemStack stack = context.getItemInHand();
             if (player.isShiftKeyDown()) {
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     String translationKey = configCardAccess.getConfigCardName();
                     CompoundTag data = configCardAccess.getConfigurationData(world.registryAccess(), player);
                     data.putString(SerializationConstants.DATA_NAME, translationKey);
@@ -78,7 +78,7 @@ public class ItemConfigurationCard extends Item {
                 if (storedType == null) {
                     return InteractionResult.PASS;
                 }
-                if (!world.isClientSide) {
+                if (!world.isClientSide()) {
                     if (configCardAccess.isConfigurationDataCompatible(storedType)) {
                         configCardAccess.setConfigurationData(world.registryAccess(), player, data);
                         configCardAccess.configurationDataSet();
@@ -90,7 +90,7 @@ public class ItemConfigurationCard extends Item {
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(world.isClientSide);
+            return InteractionResult.sidedSuccess(world.isClientSide());
         }
         return InteractionResult.SUCCESS;
     }
@@ -100,11 +100,11 @@ public class ItemConfigurationCard extends Item {
     public InteractionResultHolder<ItemStack> use(@NotNull Level level, @NotNull Player player, @NotNull InteractionHand usedHand) {
         if (player.isShiftKeyDown()) {
             ItemStack configCard = player.getItemInHand(usedHand);
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
                 player.displayClientMessage(MekanismLang.CONFIG_CARD_CLEARED.translate(), true);
             }
-            return InteractionResultHolder.sidedSuccess(configCard, level.isClientSide);
+            return InteractionResultHolder.sidedSuccess(configCard, level.isClientSide());
         }
         return super.use(level, player, usedHand);
     }

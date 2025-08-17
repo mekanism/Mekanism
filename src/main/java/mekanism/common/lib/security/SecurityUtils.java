@@ -47,12 +47,12 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public boolean canAccess(Player player, Supplier<@Nullable ISecurityObject> securityProvider, Supplier<@Nullable IOwnerObject> ownerProvider) {
         //If the player is an op allow bypassing any restrictions
-        return isOp(player) || canAccess(player.getUUID(), securityProvider, ownerProvider, player.level().isClientSide);
+        return isOp(player) || canAccess(player.getUUID(), securityProvider, ownerProvider, player.level().isClientSide());
     }
 
     @Override
     public <PROVIDER> boolean canAccess(Player player, PROVIDER provider, Function<PROVIDER, @Nullable ISecurityObject> securityProvider, Function<PROVIDER, @Nullable IOwnerObject> ownerProvider) {
-        return isOp(player) || canAccess(player.getUUID(), provider, securityProvider, ownerProvider, player.level().isClientSide);
+        return isOp(player) || canAccess(player.getUUID(), provider, securityProvider, ownerProvider, player.level().isClientSide());
     }
 
     @Override
@@ -103,7 +103,7 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public boolean canAccessObject(Player player, ISecurityObject security) {
         //If the player is an op allow bypassing any restrictions
-        return isOp(player) || canAccessObject(player.getUUID(), security, player.level().isClientSide);
+        return isOp(player) || canAccessObject(player.getUUID(), security, player.level().isClientSide());
     }
 
     @Override

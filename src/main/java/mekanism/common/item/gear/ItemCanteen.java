@@ -62,7 +62,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     @NotNull
     @Override
     public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving) {
-        if (!world.isClientSide && entityLiving instanceof Player player) {
+        if (!world.isClientSide() && entityLiving instanceof Player player) {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());

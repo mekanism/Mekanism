@@ -47,7 +47,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         if (player.isShiftKeyDown()) {
             WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
             stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(data.channel(), !data.running()));
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         return InteractionResultHolder.pass(stack);
     }

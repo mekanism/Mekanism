@@ -36,11 +36,11 @@ public class ItemDosimeter extends Item {
     public InteractionResultHolder<ItemStack> use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
-            if (!world.isClientSide) {
+            if (!world.isClientSide()) {
                 sendDosimeterLevel(player, player, MekanismLang.RADIATION_EXPOSURE);
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide);
+            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
         return InteractionResultHolder.pass(stack);
     }
@@ -49,10 +49,10 @@ public class ItemDosimeter extends Item {
     @Override
     public InteractionResult interactLivingEntity(@NotNull ItemStack stack, @NotNull Player player, @NotNull LivingEntity entity, @NotNull InteractionHand hand) {
         if (!player.isShiftKeyDown()) {
-            if (!player.level().isClientSide) {
+            if (!player.level().isClientSide()) {
                 sendDosimeterLevel(entity, player, MekanismLang.RADIATION_EXPOSURE_ENTITY);
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide);
+            return InteractionResult.sidedSuccess(player.level().isClientSide());
         }
         return InteractionResult.PASS;
     }

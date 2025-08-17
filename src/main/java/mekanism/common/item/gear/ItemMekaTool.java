@@ -256,7 +256,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             long energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
             energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
             //AOE/vein mining handling
-            if (!world.isClientSide && entity instanceof ServerPlayer player && !player.isCreative() &&
+            if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() &&
                 energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL) >= energyRequired) {
                 Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
                 blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
