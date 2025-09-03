@@ -4,9 +4,11 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
+import mekanism.common.lib.multiblock.IMultiblockBase;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -63,16 +65,18 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         super.onNeighborChange(block, neighborPos);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         //Note: We handle when an internal multiblock is removed that isn't touching anything in BlockMekanism#onRemove
-        if (!isRemote() && multiblock != null) {
-            //If the neighbor change happened to a block inside a multiblock, and it isn't a block that is part of the multiblock
-            if (level.isEmptyBlock(neighborPos) || !multiblock.isKnownLocation(neighborPos)) {
-                //And we are not already an internal part of the structure, or we are changing an internal part to air
-                // then we mark the structure as needing to be re-validated
-                //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
-                // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
-                multiblock.recheckStructure = true;
-            }
-        }
+        if (level == null || multiblock == null || isRemote()) return;
+        //If the neighbor change happened to a block inside a multiblock, and it isn't a block that is part of the multiblock
+        if (!level.isEmptyBlock(neighborPos) && multiblock.isKnownLocation(neighborPos)) return;
+        //If the neighbor change happened to a block outside a multiblock, and it isn't a block that could be part of the multiblock
+        //Note: This is necessary to eliminate unnecessary structure recheck
+        // caused by redstone optimization mods like Alternate Current reporting the different neighborPos from Vanilla implementation.
+        if (!(WorldUtils.getTileEntity(level, neighborPos) instanceof IMultiblockBase)) return;
+        //And we are not already an internal part of the structure, or we are changing an internal part to air
+        // then we mark the structure as needing to be re-validated
+        //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
+        // it won't know to invalidate it but oh well. (See java docs on internalLocations for more caveats)
+        multiblock.recheckStructure = true;
     }
 
     @Override
