@@ -4,11 +4,9 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.IInternalMultiblock;
-import mekanism.common.lib.multiblock.IMultiblockBase;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -71,7 +69,10 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         //If the neighbor change happened to a block outside a multiblock, and it isn't a block that could be part of the multiblock
         //Note: This is necessary to eliminate unnecessary structure recheck
         // caused by redstone optimization mods like Alternate Current reporting the different neighborPos from Vanilla implementation.
-        if (!(WorldUtils.getTileEntity(level, neighborPos) instanceof IMultiblockBase)) return;
+        long dX = Math.abs((long)neighborPos.getX() - worldPosition.getX());
+        long dY = Math.abs((long)neighborPos.getY() - worldPosition.getY());
+        long dZ = Math.abs((long)neighborPos.getZ() - worldPosition.getZ());
+        if (Math.max(Math.max(dX, dY), dZ) > 1) return;
         //And we are not already an internal part of the structure, or we are changing an internal part to air
         // then we mark the structure as needing to be re-validated
         //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
