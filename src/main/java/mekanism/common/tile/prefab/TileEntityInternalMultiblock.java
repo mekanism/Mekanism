@@ -72,7 +72,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         int dX = Math.abs(neighborPos.getX() - worldPosition.getX());
         int dY = Math.abs(neighborPos.getY() - worldPosition.getY());
         int dZ = Math.abs(neighborPos.getZ() - worldPosition.getZ());
-        if (Math.max(Math.max(dX, dY), dZ) > 1) return;
+        if (((dX | dY | dZ) >>> 1) > 0) return;
         //And we are not already an internal part of the structure, or we are changing an internal part to air
         // then we mark the structure as needing to be re-validated
         //Note: This isn't a super accurate check as if a node gets replaced by command or mod with say dirt
