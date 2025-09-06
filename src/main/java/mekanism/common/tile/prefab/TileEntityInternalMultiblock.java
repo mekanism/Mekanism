@@ -64,10 +64,10 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         //Check if the neighborPos is really a neighbor of this block
         //Note: This is necessary to eliminate unnecessary structure recheck
         // caused by redstone optimization mods like Alternate Current reporting the different neighborPos from Vanilla implementation.
-        boolean fX = Integer.toUnsignedLong(Math.abs(neighborPos.getX() - worldPosition.getX())) > 1;
-        boolean fY = Integer.toUnsignedLong(Math.abs(neighborPos.getY() - worldPosition.getY())) > 1;
-        boolean fZ = Integer.toUnsignedLong(Math.abs(neighborPos.getZ() - worldPosition.getZ())) > 1;
-        if (fX | fY | fZ) return;
+        long dX = Integer.toUnsignedLong(Math.abs(neighborPos.getX() - worldPosition.getX()));
+        long dY = Integer.toUnsignedLong(Math.abs(neighborPos.getY() - worldPosition.getY()));
+        long dZ = Integer.toUnsignedLong(Math.abs(neighborPos.getZ() - worldPosition.getZ()));
+        if ((dX + dY + dZ) > 1) return;
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         //Note: We handle when an internal multiblock is removed that isn't touching anything in BlockMekanism#onRemove
         if (level != null && multiblock != null && !isRemote()) {
