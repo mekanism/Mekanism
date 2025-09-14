@@ -848,7 +848,7 @@
   "configuration.mekanism.client.sounds.player.enable.tooltip": "プレイヤーがジェットパック・スキューバマスク・火炎放射器・重力変調ユニットを使用するときの効果音を発するようにします。また、放射線エフェクトの効果音にも関わります。",
   "configuration.mekanism.client.sounds.tooltip": "Mekanismのサウンドの設定",
   "configuration.mekanism.client.transmitters.opaque": "各種導管の不透化",
-  "configuration.mekanism.client.transmitters.opaque.tooltip": "値がtrueの場合、内容を表示せずユニバーサルケーブル・メカニカルパイプ・加圧チューブ・物流トランスポーターの表面だけを表示します。これらの導管がご利用の環境のFPSに問題を及ぼしている場合、改善する可能性があります",
+  "configuration.mekanism.client.transmitters.opaque.tooltip": "値がtrueの場合、内容を表示せずユニバーサルケーブル・メカニカルパイプ・加圧チューブ・物流トランスポーターの表面だけを表示します。これらの導管がご利用の環境のFPSに問題を及ぼしている場合、改善する可能性があります。\n",
   "configuration.mekanism.common.copy_block_data": "ブロックデータのコピー",
   "configuration.mekanism.common.copy_block_data.tooltip": "中ボタンクリックによる機械の構成データをコピーするかどうかを設定します。falseの場合はデータはコピーされず、対象の機械のデフォルト状態を取得します。",
   "configuration.mekanism.common.decay_timers": "減衰タイマー",
