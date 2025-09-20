@@ -1,5 +1,7 @@
 package mekanism.client.render.data;
 
+import org.jetbrains.annotations.Nullable;
+
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
@@ -30,8 +32,16 @@ public class ValveRenderData extends FluidRenderData {
     }
 
     @Override
-    public boolean equals(Object data) {
-        return data instanceof ValveRenderData other && super.equals(data) && side == other.side && valveFluidHeight == other.valveFluidHeight;
+    public boolean equals(@Nullable Object data) {
+        if (data == this) {
+            return true;
+        } else if (data == null) {
+            return false;
+        }
+        return data.getClass() == getClass() &&
+            super.equals(data) &&
+            side == ((ValveRenderData) data).side &&
+            valveFluidHeight == ((ValveRenderData) data).valveFluidHeight;
     }
 
     @Override

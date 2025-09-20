@@ -55,7 +55,7 @@ public class FluidRenderData extends RenderData {
         } else if (data == null) {
             return false;
         }
-        return data.getClass() == FluidRenderData.class && equalsCommonFluid(data);
+        return data.getClass() == getClass() && equalsCommonFluid(data);
     }
 
     protected boolean equalsCommonFluid(Object data) {
