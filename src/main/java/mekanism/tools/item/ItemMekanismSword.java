@@ -18,12 +18,6 @@ public class ItemMekanismSword extends ItemSword
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
-	{
-		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-	}
-
-	@Override
 	public void registerIcons(IIconRegister register)
 	{
 		itemIcon = register.registerIcon("mekanism:" + getUnlocalizedName().replace("item.", ""));
