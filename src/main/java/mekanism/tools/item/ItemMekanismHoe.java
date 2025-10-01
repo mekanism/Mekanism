@@ -82,12 +82,6 @@ public class ItemMekanismHoe extends ItemMekanism
 	}
 
 	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
-	{
-		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-	}
-
-	@Override
 	@SideOnly(Side.CLIENT)
 	public boolean isFull3D()
 	{

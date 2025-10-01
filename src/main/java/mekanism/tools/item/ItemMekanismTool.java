@@ -23,12 +23,6 @@ public class ItemMekanismTool extends ItemTool
 		super(mobBoost, toolMaterial, new HashSet<Block>(Arrays.asList(effectiveBlocks)));
 		setCreativeTab(Mekanism.tabMekanism);
 	}
-
-	@Override
-	public void addInformation(ItemStack itemstack, EntityPlayer entityplayer, List list, boolean flag)
-	{
-		list.add(LangUtils.localize("tooltip.hp") + ": " + (itemstack.getMaxDamage() - itemstack.getItemDamage()));
-	}
 	
 	@Override
     public boolean getIsRepairable(ItemStack stack1, ItemStack stack2)
