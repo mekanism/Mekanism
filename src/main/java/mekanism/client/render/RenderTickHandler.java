@@ -91,7 +91,6 @@ import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
@@ -399,12 +398,11 @@ public class RenderTickHandler {
                         outliningArea = true;
                         Vec3 renderView = info.getPosition();
                         LevelRenderer levelRenderer = event.getLevelRenderer();
-                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
                         for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
                             // simulate ray tracing results for all block positions
                             if (!pos.equals(blastingTarget) && !ClientHooks.onDrawHighlight(levelRenderer, info, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
-                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                                levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderType.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
                         outliningArea = false;
