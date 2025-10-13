@@ -363,11 +363,10 @@ public class RenderTickHandler {
                         outliningArea = true;
                         Vec3 renderView = info.getPosition();
                         LevelRenderer levelRenderer = event.getLevelRenderer();
-                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
                         for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
                             if (!pos.equals(blastingTarget) && !ForgeHooksClient.onDrawHighlight(levelRenderer, info, rayTraceResult, event.getPartialTick(), matrix, renderer)) {
-                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                                levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderType.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
                         outliningArea = false;
