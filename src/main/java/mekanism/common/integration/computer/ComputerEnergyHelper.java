@@ -6,6 +6,11 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 
 public class ComputerEnergyHelper {
 
+    @ComputerMethod(methodDescription = "Return the Current Configured Energy Unit")
+    public static String getEnergyUnit() {
+        return EnergyUnit.getConfigured().getTabName(); //used tab name as it is constant between languages
+    }
+
     @ComputerMethod(methodDescription = "Convert Mekanism Joules to Forge Energy")
     public static long joulesToFE(long joules) throws ComputerException {
         return convert(EnergyUnit.FORGE_ENERGY, joules, true);
