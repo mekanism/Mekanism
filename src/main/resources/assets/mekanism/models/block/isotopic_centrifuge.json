@@ -330,7 +330,7 @@
 					}
 				},
 				{
-					"name": "port",
+					"name": "port_front",
 					"from": [4, 4, 0],
 					"to": [12, 12, 1],
 					"faces": {
@@ -343,7 +343,7 @@
 					}
 				},
 				{
-					"name": "port_led",
+					"name": "port_led_front",
 					"from": [4, 4, 0],
 					"to": [12, 12, 0],
 					"faces": {
@@ -355,7 +355,7 @@
 					}
 				},
 				{
-					"name": "port_connector",
+					"name": "port_connector_front",
 					"from": [5, 5, 1],
 					"to": [11, 11, 3],
 					"faces": {
@@ -363,6 +363,42 @@
 						"west": {"uv": [9, 1, 11, 7], "texture": "#1"},
 						"up": {"uv": [9, 1, 15, 3], "texture": "#1"},
 						"down": {"uv": [9, 1, 15, 3], "texture": "#1"}
+					}
+				},
+				{
+					"name": "port_back",
+					"from": [4, 4, 15],
+					"to": [12, 12, 16],
+					"faces": {
+						"north": {"uv": [0, 8, 8, 16], "texture": "#1"},
+						"east": {"uv": [7, 0, 8, 8], "texture": "#1"},
+						"south": {"uv": [0, 0, 8, 8], "texture": "#1", "cullface": "south"},
+						"west": {"uv": [0, 0, 1, 8], "texture": "#1"},
+						"up": {"uv": [0, 0, 8, 1], "rotation": 180, "texture": "#1"},
+						"down": {"uv": [0, 7, 8, 8], "rotation": 180, "texture": "#1"}
+					}
+				},
+				{
+					"name": "port_led_back",
+					"from": [4, 4, 16],
+					"to": [12, 12, 16],
+					"faces": {
+						"south": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "south"}
+					},
+					"neoforge_data": {
+						"block_light": 15,
+						"sky_light": 15
+					}
+				},
+				{
+					"name": "port_connector_back",
+					"from": [5, 5, 13],
+					"to": [11, 11, 15],
+					"faces": {
+						"east": {"uv": [9, 1, 11, 7], "texture": "#1"},
+						"west": {"uv": [13, 1, 15, 7], "texture": "#1"},
+						"up": {"uv": [9, 1, 15, 3], "rotation": 180, "texture": "#1"},
+						"down": {"uv": [9, 1, 15, 3], "rotation": 180, "texture": "#1"}
 					}
 				},
 				{
