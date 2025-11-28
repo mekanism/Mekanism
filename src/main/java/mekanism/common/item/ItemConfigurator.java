@@ -127,7 +127,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
             ConfiguratorMode mode = getMode(stack);
             if (mode.isConfigurating()) { //Configurate
                 TransmissionType transmissionType = Objects.requireNonNull(mode.getTransmission(), "Configurating state requires transmission type");
-                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType)) {
+                if (tile instanceof ISideConfiguration config && config.getConfig().supports(transmissionType) && config.needConfig()) {
                     ConfigInfo info = config.getConfig().getConfig(transmissionType);
                     if (info != null) {
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);

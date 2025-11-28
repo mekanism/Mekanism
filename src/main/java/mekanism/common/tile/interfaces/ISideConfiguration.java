@@ -1,6 +1,7 @@
 package mekanism.common.tile.interfaces;
 
 import java.util.List;
+
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -40,6 +41,13 @@ public interface ISideConfiguration {
      * @return this machine's ejector
      */
     TileComponentEjector getEjector();
+
+    /**
+     * Determine whether the machine needs to be adjusted by the Configurator
+     */
+    default boolean needConfig() {
+        return true;
+    }
 
     @Nullable
     default DataType getActiveDataType(Object container) {

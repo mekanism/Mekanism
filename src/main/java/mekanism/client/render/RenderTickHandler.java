@@ -475,7 +475,7 @@ public class RenderTickHandler {
             if (state.isConfigurating()) {
                 TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
                 BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (tile instanceof ISideConfiguration configurable) {
+                if (tile instanceof ISideConfiguration configurable && configurable.needConfig()) {
                     TileComponentConfig config = configurable.getConfig();
                     if (config.supports(type)) {
                         Direction face = rayTraceResult.getDirection();
