@@ -49,6 +49,6 @@ public class ModelTransporterBox extends MekanismJavaModel {
 
     @Override
     public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer vertexBuilder, int light, int overlayLight, int color) {
-        box.render(matrix, vertexBuilder, light, overlayLight, 0xFFFFFFFF);
+        box.render(matrix, vertexBuilder, light, overlayLight, color);
     }
 }
