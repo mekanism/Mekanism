@@ -724,7 +724,7 @@
   "config.jade.plugin_mekanism.entity_data_provider": "玉（Jade）模组 实体数据提供选项",
   "config.jade.plugin_mekanism.fluid": "流体",
   "config.jade.plugin_mekanism.remove_builtin": "移除重写的内置渲染器",
-  "config.jade.plugin_mekanism.tooltip_renderer": "玉（Jade）模组 工具提示渲染器",
+  "config.jade.plugin_mekanism.tooltip_renderer": "玉（Jade）模组 提示框渲染器",
   "configuration.mekanism..gear.meka_suit.toughness": "盔甲韧性",
   "configuration.mekanism..gear.meka_suit.toughness.tooltip": "MekaSuit 的盔甲韧性值。",
   "configuration.mekanism.client.accessibility": "辅助功能设置",
