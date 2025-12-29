@@ -2,32 +2,34 @@ package mekanism.common.tile.component;
 
 import java.util.List;
 import mekanism.common.inventory.container.MekanismContainer;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public interface ITileComponent {
 
     String getComponentKey();
 
-    default void read(CompoundTag nbtTags, HolderLookup.Provider provider) {
-        NBTUtils.setCompoundIfPresent(nbtTags, getComponentKey(), tag -> deserialize(tag, provider));
+    default void read(@NotNull ValueInput input) {
+        input.child(getComponentKey()).ifPresent(this::deserialize);
     }
 
-    default void write(CompoundTag nbtTags, HolderLookup.Provider provider) {
-        CompoundTag componentTag = serialize(provider);
-        if (!componentTag.isEmpty()) {
-            nbtTags.put(getComponentKey(), componentTag);
+    default void write(@NotNull ValueOutput output) {
+        String key = getComponentKey();
+        ValueOutput child = output.child(key);
+        serialize(child);
+        if (child.isEmpty()) {
+            output.discard(key);
         }
     }
 
-    void deserialize(CompoundTag componentTag, HolderLookup.Provider provider);
+    void deserialize(@NotNull ValueInput input);
 
-    CompoundTag serialize(HolderLookup.Provider provider);
+    void serialize(@NotNull ValueOutput output);
 
     default void applyImplicitComponents(@NotNull DataComponentGetter input) {
     }
@@ -56,6 +58,6 @@ public interface ITileComponent {
     default void addToUpdateTag(CompoundTag updateTag) {
     }
 
-    default void readFromUpdateTag(CompoundTag updateTag) {
+    default void readFromUpdateTag(@NotNull ValueInput input) {
     }
 }

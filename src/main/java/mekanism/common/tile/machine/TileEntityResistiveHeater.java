@@ -175,7 +175,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SOUND_SCALE, value -> soundScale = value);
+        soundScale = input.getFloatOr(SerializationConstants.SOUND_SCALE, soundScale);
     }
 
     @Override

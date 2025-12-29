@@ -249,7 +249,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> fluidTank.deserializeNBT(provider, nbt));
+        input.child(SerializationConstants.FLUID).ifPresent(fluidTank::deserialize);
         NBTUtils.setItemStackOrEmpty(provider, tag, SerializationConstants.ITEM, stack -> lastPasteItem = stack.isEmpty() ? null : HashedItem.raw(stack));
     }
 

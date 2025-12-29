@@ -116,7 +116,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void deserialize(ValueInput input) {
-        NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.STORED, heat -> storedHeat = heat);
+        storedHeat = input.getDoubleOr(SerializationConstants.STORED, storedHeat);
         NBTUtils.setDoubleIfPresent(nbt, SerializationConstants.HEAT_CAPACITY, capacity -> setHeatCapacity(capacity, false));
     }
 

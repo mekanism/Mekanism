@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.text;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.UnaryOperator;
@@ -22,6 +21,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.glfw.GLFW;
 
 /**
@@ -207,21 +207,21 @@ public class GuiTextField extends GuiElement {
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         backgroundType.render(this, guiGraphics);
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
         //Translate to the top left before attempting to render the text field as vanilla renders widgets from the top left
-        pose.translate(-getGuiLeft(), -getGuiTop(), 0);
+        matrix.translate(-getGuiLeft(), -getGuiTop());
         if (textScale == 1F) {
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         } else {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 - textScale) / textScale;
-            pose.scale(textScale, textScale, textScale);
+            matrix.scale(textScale, textScale);
             //Note: We use 4 instead of half line height (4.5) as text fields use 8 for calculating text positioning
-            pose.translate(textField.getX() * reverse, (textField.getY() + 4) * reverse, 0);
+            matrix.translate(textField.getX() * reverse, (textField.getY() + 4) * reverse);
             textField.render(guiGraphics, mouseX, mouseY, partialTicks);
         }
-        pose.popPose();
+        matrix.popMatrix();
         if (iconType != null) {
             guiGraphics.blit(iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - Mth.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }

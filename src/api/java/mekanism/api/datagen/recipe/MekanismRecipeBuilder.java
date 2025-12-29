@@ -87,7 +87,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
 
     @Override
     public Item getResult() {
-        //TODO - 1.21.8: Re-evaluate this method and decide if we want it to fail more gracefully
+        //TODO - 1.21.11: Re-evaluate this method and decide if we want it to fail more gracefully
         throw new UnsupportedOperationException("Not implemented yet");
     }
 
@@ -98,7 +98,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @since 10.8.0
      */
     protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        //TODO - 1.21.8: Re-evaluate implementations, as it seems that vanilla changed what they are validating
+        //TODO - 1.21.11: Re-evaluate implementations, as it seems that vanilla changed what they are validating
     }
 
     /**

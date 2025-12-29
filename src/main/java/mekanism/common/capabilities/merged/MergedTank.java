@@ -9,6 +9,8 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.world.level.storage.ValueInput;
+import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class MergedTank {
@@ -47,7 +49,7 @@ public class MergedTank {
         updateTag.put(SerializationConstants.CHEMICAL, chemicalTank.getStack().saveOptional(provider));
     }
 
-    public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag tag) {
+    public void readFromUpdateTag(@NotNull ValueInput input) {
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluidTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, chemicalTank::setStack);
 

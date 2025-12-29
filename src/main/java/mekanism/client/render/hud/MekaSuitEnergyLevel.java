@@ -12,12 +12,12 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import org.jetbrains.annotations.NotNull;
 
-public class MekaSuitEnergyLevel implements LayeredDraw.Layer {
+public class MekaSuitEnergyLevel implements GuiLayer {
 
     public static final MekaSuitEnergyLevel INSTANCE = new MekaSuitEnergyLevel();
     private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");

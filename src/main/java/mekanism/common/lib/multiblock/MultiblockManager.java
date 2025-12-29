@@ -17,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -214,14 +215,14 @@ public class MultiblockManager<T extends MultiblockData> {
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
+        public CompoundTag save(@NotNull ValueOutput output) {
             ListTag cachesNbt = new ListTag(caches.size());
             for (Map.Entry<UUID, MultiblockCache<T>> entry : caches.entrySet()) {
                 CompoundTag cacheTags = new CompoundTag();
                 //Note: We can just store the inventory id in the same compound tag as the rest of the cache data
                 // as none of the caches save anything to this tag
                 cacheTags.putUUID(SerializationConstants.INVENTORY_ID, entry.getKey());
-                entry.getValue().save(provider, cacheTags);
+                entry.getValue().save(output);
                 cachesNbt.add(cacheTags);
             }
             nbt.put(SerializationConstants.CACHE, cachesNbt);

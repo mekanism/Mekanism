@@ -19,7 +19,7 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     private final String group;
 
     protected MekanismRecipe() {
-        this("");//TODO - 1.21.8: Remove this constructor and force usage of groups
+        this("");//TODO - 1.21.11: Remove this constructor and force usage of groups
     }
 
     protected MekanismRecipe(String group) {
@@ -39,8 +39,8 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     }
 
     //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
-    //@Override//TODO - 1.21.8: Re-evaluate this, we might want to keep some form of it?
-    public abstract boolean isIncomplete();//TODO - 1.21.8: This is now part of PlacementInfo#isImpossibleToPlace ??
+    //@Override//TODO - 1.21.11: Re-evaluate this, we might want to keep some form of it?
+    public abstract boolean isIncomplete();//TODO - 1.21.11: This is now part of PlacementInfo#isImpossibleToPlace ??
 
     //todo 1.21.5 or 1.22: make this abstract
     public void logMissingTags() {
@@ -54,23 +54,23 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
 
     //@Override
     public ItemStack getResultItem(HolderLookup.Provider provider) {
-        //TODO - 1.21.8: This and get Toast symbol are replaced by List<RecipeDisplay> display()
+        //TODO - 1.21.11: This and get Toast symbol are replaced by List<RecipeDisplay> display()
         return ItemStack.EMPTY;
     }
 
-    public ItemStack getToastSymbol() {//TODO - 1.21.8: Remove this after removing the things that use it
+    public ItemStack getToastSymbol() {//TODO - 1.21.11: Remove this after removing the things that use it
         return ItemStack.EMPTY;
     }
 
     @Override
     public PlacementInfo placementInfo() {
-        //TODO - 1.21.8: Implement this
+        //TODO - 1.21.11: Implement this
         throw new UnsupportedOperationException();
     }
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        //TODO - 1.21.8: Implement this
+        //TODO - 1.21.11: Implement this
         throw new UnsupportedOperationException();
     }
 }

@@ -9,17 +9,17 @@ import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem, ICustomCreativeTabContents {
 
-    protected ItemChemicalArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
+    protected ItemChemicalArmor(Holder<ArmorMaterial> material, ArmorType armorType, Item.Properties properties) {
         super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 

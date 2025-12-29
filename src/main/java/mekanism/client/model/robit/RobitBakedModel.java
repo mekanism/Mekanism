@@ -25,7 +25,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -92,8 +92,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
                 }
                 ResourceKey<RobitSkin> skinKey = stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE);
                 SkinLookup skinLookup = MekanismRobitSkins.lookup(registryAccess, skinKey);
-                RobitSkin skin = skinLookup.skin();
-                if (skin.customModel() != null) {
+                if (skinLookup.customModel() != null) {
                     //If the skin has a custom model look it up and if it isn't the model we are currently resolving for
                     // (to avoid stack overflow and recursion), then lookup the overrides of that model
                     BakedModel customModel = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
@@ -101,7 +100,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
                         return customModel.getOverrides().resolve(customModel, stack, world, entity, seed);
                     }
                 }
-                List<ResourceLocation> textures = skin.textures();
+                List<ResourceLocation> textures = skinLookup.textures();
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
                     ModelData modelData = ModelData.of(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.getFirst());

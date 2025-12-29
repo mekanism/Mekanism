@@ -11,9 +11,6 @@ import mekanism.common.capabilities.energy.ResistiveHeaterEnergyContainer;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -68,7 +65,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     @Override
     public void deserialize(ValueInput input) {
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.ENERGY_USAGE, this::updateEnergyUsage);
-        super.deserializeNBT(provider, nbt);
+        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
+        super.deserialize(input);
     }
 }

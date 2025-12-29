@@ -9,7 +9,6 @@ import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
-import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
@@ -68,9 +67,9 @@ public class PrideRobitTextureProvider implements DataProvider {
                                         default -> stripeIndex;
                                         case 3 -> stripeIndex + 6;
                                     };
-                                    int abgr = abgr(stripeIndex, chainIndex, rotationIndex, skinData);
-                                    writableImage.setPixelRGBA(x, y, abgr);
-                                    writableImage.setPixelRGBA(x, y + 1, abgr);
+                                    int abgr = argb(stripeIndex, chainIndex, rotationIndex, skinData);
+                                    writableImage.setPixel(x, y, abgr);
+                                    writableImage.setPixel(x, y + 1, abgr);
                                 }
                             }
                             //Save the image
@@ -98,7 +97,7 @@ public class PrideRobitTextureProvider implements DataProvider {
      *
      * @return Color at that position
      */
-    private int abgr(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
+    private int argb(int stripeIndex, int chainIndex, int rotationIndex, RobitPrideSkinData data) {
         //offset it by 12, so the pride flag always starts at the top by default
         int index = stripeIndex + rotationIndex + 12;
         if (chainIndex > 2) {
@@ -111,7 +110,7 @@ public class PrideRobitTextureProvider implements DataProvider {
             index += 9;
         }
         int[] colors = data.getColor();
-        return Color.argbToFromABGR(colors[index % colors.length]);
+        return data.getColor()[index % colors.length];
     }
 
     @NotNull

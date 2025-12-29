@@ -60,8 +60,10 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FissionReactorMultiblockData extends MultiblockData implements IValveHandler {
@@ -255,18 +257,18 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag, Provider provider) {
-        super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevCoolantScale = scale);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT, scale -> prevFuelScale = scale);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_2, scale -> prevHeatedCoolantScale = scale);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT_3, scale -> prevWasteScale = scale);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        super.readUpdateTag(input);
+        prevCoolantScale = input.getFloatOr(SerializationConstants.SCALE, prevCoolantScale);
+        prevFuelScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevFuelScale);
+        prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
+        prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
+        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, coolantTank.getFluidTank()::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, fuelTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank::setStack);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank::setStack);
-        readValves(tag);
+        readValves(input);
         assemblies.clear();
         if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
             ListTag list = tag.getList(SerializationConstants.ASSEMBLIES, Tag.TAG_COMPOUND);

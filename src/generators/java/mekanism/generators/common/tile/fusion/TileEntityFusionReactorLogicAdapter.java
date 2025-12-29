@@ -25,10 +25,8 @@ import mekanism.generators.common.registries.GeneratorsDataComponents;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorLogicAdapter.FusionReactorLogic;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,8 +35,9 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -101,17 +100,17 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag nbt) {
-        super.readSustainedData(provider, nbt);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
         NBTUtils.setEnumIfPresent(nbt, SerializationConstants.LOGIC_TYPE, FusionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
-        activeCooled = nbt.getBoolean(SerializationConstants.ACTIVE_COOLED);
+        activeCooled = input.getBooleanOr(SerializationConstants.ACTIVE_COOLED, activeCooled);
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.writeSustainedData(provider, nbtTags);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
         NBTUtils.writeEnum(nbtTags, SerializationConstants.LOGIC_TYPE, logicType);
-        nbtTags.putBoolean(SerializationConstants.ACTIVE_COOLED, activeCooled);
+        output.putBoolean(SerializationConstants.ACTIVE_COOLED, activeCooled);
     }
 
     @Override

@@ -300,7 +300,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     public void readFrom(ValueInput input, List<CONTAINER> containers) {
-        //TODO - 1.21.8: Should this not be orEmpty?
+        //TODO - 1.21.11: Should this not be orEmpty?
         DataHandlerUtils.readContents(input.childrenListOrEmpty(containerTag), containerKey, containers);
     }
 

@@ -1,5 +1,6 @@
 package mekanism.common.entity;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -83,7 +84,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -122,10 +123,10 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,6 +138,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
+    private static final Codec<ResourceKey<RobitSkin>> SKIN_KEY_CODEC = ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
 
     private static <T> EntityDataAccessor<T> define(EntityDataSerializer<T> dataSerializer) {
         return SynchedEntityData.defineId(EntityRobit.class, dataSerializer);
@@ -492,37 +494,29 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @Override
     public void addAdditionalSaveData(@NotNull ValueOutput output) {
         super.addAdditionalSaveData(output);
-        nbtTags.putUUID(SerializationConstants.OWNER_UUID, getOwnerUUID());
+        output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, getOwnerUUID());
         NBTUtils.writeEnum(nbtTags, SerializationConstants.SECURITY_MODE, getSecurityMode());
-        nbtTags.putBoolean(SerializationConstants.FOLLOW, getFollowing());
-        nbtTags.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
-        if (homeLocation != null) {
-            Optional<Tag> result = GlobalPos.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), homeLocation).result();
-            //noinspection OptionalIsPresent - Capturing lambda
-            if (result.isPresent()) {
-                nbtTags.put(SerializationConstants.HOME_LOCATION, result.get());
-            }
-        }
+        output.putBoolean(SerializationConstants.FOLLOW, getFollowing());
+        output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
+        output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
         ContainerType.ITEM.saveTo(output, getInventorySlots(null));
         ContainerType.ENERGY.saveTo(output, getEnergyContainers(null));
-        nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
-        NBTUtils.writeResourceKey(nbtTags, SerializationConstants.SKIN, getSkin());
+        output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
+        output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkin());
     }
 
     @Override
     public void readAdditionalSaveData(@NotNull ValueInput input) {
         super.readAdditionalSaveData(input);
-        HolderLookup.Provider provider = registryAccess();
-        NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, this::setOwnerUUID);
+        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(this::setOwnerUUID);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
-        setFollowing(nbtTags.getBoolean(SerializationConstants.FOLLOW));
-        setDropPickup(nbtTags.getBoolean(SerializationConstants.PICKUP_DROPS));
-        NBTUtils.setCompoundIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, home -> homeLocation = GlobalPos.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), home).result().orElse(null));
+        setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
+        setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
+        homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
         ContainerType.ITEM.readFrom(input, getInventorySlots(null));
         ContainerType.ENERGY.readFrom(input, getEnergyContainers(null));
-        progress = nbtTags.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setResourceKeyIfPresentElse(nbtTags, SerializationConstants.SKIN, MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, skin -> setSkin(skin, null),
-              () -> setSkin(MekanismRobitSkins.BASE, null));
+        progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
+        setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
     }
 
     @Override

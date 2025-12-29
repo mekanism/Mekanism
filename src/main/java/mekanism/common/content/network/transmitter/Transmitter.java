@@ -458,8 +458,8 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
             oldConnectionData[side.ordinal()] = getConnectionType(side);
         }
 
-        NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
-        NBTUtils.setByteIfPresent(tag, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
+        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         readRawConnections(tag);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
@@ -482,7 +482,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
                 NETWORK network = createEmptyNetworkWithID(networkID);
                 network.register();
                 setTransmitterNetwork(network);
-                handleContentsUpdateTag(network, tag, provider);
+                handleContentsUpdateTag(network, input);
             } else {
                 //TODO: Validate network type?
                 updateClientNetwork((NETWORK) clientNetwork);
@@ -498,23 +498,21 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         setTransmitterNetwork(network);
     }
 
-    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
     }
 
     public void read(@NotNull ValueInput input) {
         redstoneReactive = nbtTags.getBoolean(SerializationConstants.REDSTONE);
-        NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_CONNECTIONS, connections -> currentTransmitterConnections = connections);
-        NBTUtils.setByteIfPresent(nbtTags, SerializationConstants.CURRENT_ACCEPTORS, acceptors -> acceptorCache.currentAcceptorConnections = acceptors);
+        currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
         readRawConnections(nbtTags);
     }
 
-    @NotNull
-    public CompoundTag write(@NotNull ValueOutput output) {
-        nbtTags.putBoolean(SerializationConstants.REDSTONE, redstoneReactive);
-        nbtTags.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        nbtTags.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        nbtTags.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
-        return nbtTags;
+    public void write(@NotNull ValueOutput output) {
+        output.putBoolean(SerializationConstants.REDSTONE, redstoneReactive);
+        output.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        output.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        output.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
     }
 
     private int[] getRawConnections() {

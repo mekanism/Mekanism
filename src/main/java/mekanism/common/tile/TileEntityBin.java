@@ -186,7 +186,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.ITEM, nbt -> binSlot.deserializeNBT(provider, nbt));
+        input.child(SerializationConstants.ITEM).ifPresent(binSlot::deserialize);
     }
 
     @Override

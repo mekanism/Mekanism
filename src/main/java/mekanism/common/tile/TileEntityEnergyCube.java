@@ -34,8 +34,8 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
-import net.neoforged.neoforge.client.model.data.ModelData;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
@@ -166,7 +166,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             }
         }
         super.handleUpdateTag(input);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
+        prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         if (config != null) {
             for (RelativeSide side : EnumUtils.SIDES) {
                 if (currentConfig[side.ordinal()] != config.getDataType(side)) {

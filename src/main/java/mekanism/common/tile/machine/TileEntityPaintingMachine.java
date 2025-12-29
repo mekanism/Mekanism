@@ -204,7 +204,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     //Methods relating to IComputerTile

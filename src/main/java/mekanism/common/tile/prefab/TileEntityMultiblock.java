@@ -34,6 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -277,12 +278,12 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> isMaster = value);
+        isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
         T multiblock = getMultiblock();
         NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HAS_STRUCTURE, multiblock::setFormedForce);
         if (isMaster()) {
             if (multiblock.isFormed()) {
-                multiblock.readUpdateTag(tag, provider);
+                multiblock.readUpdateTag(input);
                 doMultiblockSparkle(multiblock);
             } else {
                 // this will consecutively be set on the server
@@ -315,18 +316,16 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         if (!getMultiblock().isFormed()) {
-            NBTUtils.setUUIDIfPresent(nbt, SerializationConstants.INVENTORY_ID, id -> cachedID = id);
+            input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresent(id -> cachedID = id);
         }
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        if (cachedID != null) {
-            //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
-            // at which point it will gracefully handle multiblock tiles with stale ids and clear them
-            nbtTags.putUUID(SerializationConstants.INVENTORY_ID, cachedID);
-        }
+        //Note: We don't bother validating here the cache still exists as it is irrelevant and unused until attempting to form the multiblock
+        // at which point it will gracefully handle multiblock tiles with stale ids and clear them
+        output.storeNullable(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC, cachedID);
     }
 
     @Override

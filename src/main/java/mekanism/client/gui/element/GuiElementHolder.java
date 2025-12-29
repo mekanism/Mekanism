@@ -4,7 +4,6 @@ import com.mojang.blaze3d.platform.NativeImage;
 import java.io.InputStream;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.Color;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
@@ -41,7 +40,7 @@ public class GuiElementHolder extends GuiScalableElement {
         // get it from the texture
         try (InputStream stream = Minecraft.getInstance().getResourceManager().open(HOLDER);
              NativeImage image = NativeImage.read(stream)) {
-            int argb = Color.argbToFromABGR(image.getPixelRGBA(HOLDER_SIZE + 1, HOLDER_SIZE + 1));
+            int argb = image.getPixel(HOLDER_SIZE + 1, HOLDER_SIZE + 1);
             if (ARGB.alpha(argb) == 0) {
                 //Don't allow fully transparent colors, fallback to default color.
                 // Mark as null for now so that it can default to the proper color

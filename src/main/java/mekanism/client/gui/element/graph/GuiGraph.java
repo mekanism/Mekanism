@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.graph;
 
-import com.mojang.blaze3d.platform.GlStateManager.DestFactor;
-import com.mojang.blaze3d.platform.GlStateManager.SourceFactor;
+import com.mojang.blaze3d.platform.DestFactor;
+import com.mojang.blaze3d.platform.SourceFactor;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collection;
 import mekanism.client.gui.IGuiWrapper;

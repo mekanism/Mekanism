@@ -9,8 +9,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
@@ -57,7 +57,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDurabilityForType(@NotNull ArmorItem.Type armorType) {
+    public int getDurabilityForType(@NotNull ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 390;
             case LEGGINGS -> 450;
@@ -67,7 +67,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getDefense(@NotNull ArmorItem.Type armorType) {
+    public int getDefense(@NotNull ArmorType armorType) {
         return switch (armorType) {
             case BOOTS -> 3;
             case LEGGINGS -> 6;

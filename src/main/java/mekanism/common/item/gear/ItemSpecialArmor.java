@@ -1,16 +1,17 @@
 package mekanism.common.item.gear;
 
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class ItemSpecialArmor extends ArmorItem {
+public abstract class ItemSpecialArmor extends Item {
 
-    protected ItemSpecialArmor(Holder<ArmorMaterial> material, ArmorItem.Type armorType, Properties properties) {
-        super(material, armorType, properties);
+    protected ItemSpecialArmor(Holder<ArmorMaterial> material, ArmorType armorType, Item.Properties properties) {
+        super(properties.humanoidArmor(material.value(), armorType));
     }
 
     @Override

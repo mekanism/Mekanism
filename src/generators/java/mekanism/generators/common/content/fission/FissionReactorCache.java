@@ -2,11 +2,12 @@ package mekanism.generators.common.content.fission;
 
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
-import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.NotNull;
 
 public class FissionReactorCache extends MultiblockCache<FissionReactorMultiblockData> {
 
@@ -64,24 +65,25 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.load(provider, nbtTags);
-        reactorDamage = nbtTags.getDouble(SerializationConstants.REACTOR_DAMAGE);
-        NBTUtils.setDoubleIfPresent(nbtTags, SerializationConstants.INJECTION_RATE, value -> rateLimit = value);
-        burnRemaining = nbtTags.getDouble(SerializationConstants.BURN_TIME);
-        partialWaste = nbtTags.getDouble(SerializationConstants.PARTIAL_WASTE);
-        forceDisable = nbtTags.getBoolean(SerializationConstants.DISABLED);
-        active = nbtTags.getBoolean(SerializationConstants.ACTIVE);
+    public void load(@NotNull ValueInput input) {
+        super.load(input);
+        //TODO - 1.21.11: These (except injection rate) used to just get instead of only getting if present, should the fallback be zero or the existing value?
+        reactorDamage = input.getDoubleOr(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
+        rateLimit = input.getDoubleOr(SerializationConstants.INJECTION_RATE, rateLimit);
+        burnRemaining = input.getDoubleOr(SerializationConstants.BURN_TIME, burnRemaining);
+        partialWaste = input.getDoubleOr(SerializationConstants.PARTIAL_WASTE, partialWaste);
+        forceDisable = input.getBooleanOr(SerializationConstants.DISABLED, forceDisable);
+        active = input.getBooleanOr(SerializationConstants.ACTIVE, active);
     }
 
     @Override
-    public void save(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.save(provider, nbtTags);
-        nbtTags.putDouble(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
-        nbtTags.putDouble(SerializationConstants.INJECTION_RATE, getRateLimit());
-        nbtTags.putDouble(SerializationConstants.BURN_TIME, burnRemaining);
-        nbtTags.putDouble(SerializationConstants.PARTIAL_WASTE, partialWaste);
-        nbtTags.putBoolean(SerializationConstants.DISABLED, forceDisable);
-        nbtTags.putBoolean(SerializationConstants.ACTIVE, active);
+    public void save(@NotNull ValueOutput output) {
+        super.save(output);
+        output.putDouble(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
+        output.putDouble(SerializationConstants.INJECTION_RATE, getRateLimit());
+        output.putDouble(SerializationConstants.BURN_TIME, burnRemaining);
+        output.putDouble(SerializationConstants.PARTIAL_WASTE, partialWaste);
+        output.putBoolean(SerializationConstants.DISABLED, forceDisable);
+        output.putBoolean(SerializationConstants.ACTIVE, active);
     }
 }

@@ -9,8 +9,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import mekanism.api.SerializationConstants;
 import mekanism.api.RelativeSide;
+import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -41,12 +41,12 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -285,8 +285,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void deserialize(CompoundTag configNBT, HolderLookup.Provider provider) {
-        read(configNBT, configInfo, (type, side) -> {
+    public void deserialize(@NotNull ValueInput configInput) {
+        read(configInput, configInfo, (type, side) -> {
             if (tile.hasLevel()) {//If we aren't already loaded yet don't do any updates
                 Direction direction = side.getDirection(tile.getDirection());
                 sideChangedBasic(type, direction);
@@ -299,7 +299,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         });
     }
 
-    public static void read(CompoundTag configNBT, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
+    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
         //TODO -  1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
         boolean isLegacyData = configNBT.contains(LEGACY_ITEM_CONFIG_KEY) || configNBT.contains(LEGACY_ITEM_EJECT_KEY);
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
@@ -334,8 +334,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        return write(configInfo, true);
+    public void serialize(@NotNull ValueOutput configOutput) {
+        //TODO - 1.21.11: WRITE THIS TO CONFIG OUTPUT
+        write(configInfo, true);
     }
 
     public static CompoundTag write(Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
@@ -368,8 +369,8 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     @Override
-    public void readFromUpdateTag(CompoundTag updateTag) {
-        NBTUtils.setCompoundIfPresent(updateTag, getComponentKey(), configNBT -> read(configNBT, configInfo));
+    public void readFromUpdateTag(@NotNull ValueInput input) {
+        input.child(getComponentKey()).ifPresent(configInput -> read(configInput, configInfo));
     }
 
     @Override

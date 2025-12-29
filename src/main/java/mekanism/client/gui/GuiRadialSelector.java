@@ -38,6 +38,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 //TODO: Do we Automatically want to go through nested things if there is only one option and potentially not even allow opening it?
@@ -93,9 +94,9 @@ public class GuiRadialSelector extends Screen {
         }
         float angleSize = 360F / activeModes;
 
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(centerX, centerY, 0);
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
+        matrix.translate(centerX, centerY);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
 
@@ -180,21 +181,21 @@ public class GuiRadialSelector extends Screen {
             // Labels (has to be separate from icons or the icons occasionally will get extra artifacts for some reason and also then we can't batch them)
             boolean whiteRadialText = MekanismConfig.client.whiteRadialText.get();
             for (PositionedText toDraw : textToDraw) {
-                pose.pushPose();
-                pose.translate(toDraw.x, toDraw.y, 0);
-                pose.scale(0.6F, 0.6F, 0.6F);
+                matrix.pushMatrix();
+                matrix.translate(toDraw.x, toDraw.y);
+                matrix.scale(0.6F, 0.6F);
                 Component text = toDraw.text;
                 if (whiteRadialText) {
                     text = text.copy().withStyle(ChatFormatting.RESET);
                 }
                 GuiUtils.drawStringNoFlush(guiGraphics, font, text, -font.width(text) / 2F, 8, 0xCCFFFFFF, true);
-                pose.popPose();
+                matrix.popMatrix();
             }
             //Flush and actually render out the labels
             guiGraphics.flush();
         }
 
-        pose.popPose();
+        matrix.popMatrix();
     }
 
     @Override

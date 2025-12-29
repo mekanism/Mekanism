@@ -105,18 +105,16 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         buffer.setHeat(data.heat);
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
-        ContainerType.HEAT.saveTo(provider, tag, getHeatCapacitors(null));
-        return tag;
+        ContainerType.HEAT.saveTo(output, getHeatCapacitors(null));
     }
 
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        ContainerType.HEAT.readFrom(provider, tag, getHeatCapacitors(null));
+        ContainerType.HEAT.readFrom(input, getHeatCapacitors(null));
     }
 
     @NotNull

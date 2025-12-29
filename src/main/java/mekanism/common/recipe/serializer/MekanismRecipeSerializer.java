@@ -54,7 +54,6 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
 public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE> codec, StreamCodec<RegistryFriendlyByteBuf, RECIPE> streamCodec)
       implements RecipeSerializer<RECIPE> {
@@ -211,7 +210,7 @@ public record MekanismRecipeSerializer<RECIPE extends Recipe<?>>(MapCodec<RECIPE
                 return DataResult.error(() -> "No output specified, must have at least an Item or Chemical output");
             }
             return DataResult.success(result);
-        }), NeoForgeStreamCodecs.composite(
+        }), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputSolid,
               FluidStackIngredient.STREAM_CODEC, PressurizedReactionRecipe::getInputFluid,
               IngredientCreatorAccess.chemicalStack().streamCodec(), PressurizedReactionRecipe::getInputChemical,

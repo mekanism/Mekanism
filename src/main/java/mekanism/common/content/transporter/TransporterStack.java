@@ -19,6 +19,7 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
@@ -31,6 +32,8 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +42,7 @@ import org.jetbrains.annotations.Nullable;
 public class TransporterStack {
 
     //Make sure to call updateForPos before calling this method
-    public static StreamCodec<RegistryFriendlyByteBuf, TransporterStack> STREAM_CODEC = NeoForgeStreamCodecs.composite(
+    public static StreamCodec<RegistryFriendlyByteBuf, TransporterStack> STREAM_CODEC = StreamCodec.composite(
           EnumColor.OPTIONAL_STREAM_CODEC, stack -> Optional.ofNullable(stack.color),
           ByteBufCodecs.VAR_INT, stack -> stack.progress,
           ByteBufCodecs.VAR_LONG, stack -> stack.originalLocation,
@@ -81,15 +84,15 @@ public class TransporterStack {
     private Path pathType;
     private LongList pathToTarget = new LongArrayList();
 
-    public static TransporterStack readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
+    public static TransporterStack readFromNBT(@NotNull ValueInput input) {
         TransporterStack stack = new TransporterStack();
-        stack.read(provider, nbtTags);
+        stack.read(input);
         return stack;
     }
 
-    public static TransporterStack readFromUpdate(HolderLookup.Provider provider, CompoundTag nbtTags) {
+    public static TransporterStack readFromUpdate(@NotNull ValueInput input) {
         TransporterStack stack = new TransporterStack();
-        stack.readFromUpdateTag(provider, nbtTags);
+        stack.readFromUpdateTag(input);
         return stack;
     }
 
@@ -113,19 +116,19 @@ public class TransporterStack {
         }
     }
 
-    public void readFromUpdateTag(HolderLookup.Provider provider, CompoundTag updateTag) {
+    public void readFromUpdateTag(@NotNull ValueInput input) {
         this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, EnumColor.BY_ID);
         progress = updateTag.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
         NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
 
-        //todo is backcompat needed?
+        //TODO - 1.21.11: is backcompat needed?
         clientNext = Long.MAX_VALUE;
-        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.NEXT, coord -> clientNext = coord.asLong());
+        input.getLong(SerializationConstants.NEXT).ifPresent(coord -> clientNext = coord);
+        input.read(SerializationConstants.NEXT, BlockPos.CODEC).ifPresent(coord -> clientNext = coord.asLong());
         clientPrev = Long.MAX_VALUE;
-        NBTUtils.setLongIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord);
-        NBTUtils.setBlockPosIfPresent(updateTag, SerializationConstants.PREVIOUS, coord -> clientPrev = coord.asLong());
+        input.getLong(SerializationConstants.PREVIOUS).ifPresent(coord -> clientPrev = coord);
+        input.read(SerializationConstants.PREVIOUS, BlockPos.CODEC).ifPresent(coord -> clientPrev = coord.asLong());
 
         Tag itemTag = updateTag.get(SerializationConstants.ITEM);
         if (itemTag != null) {
@@ -155,12 +158,12 @@ public class TransporterStack {
         }
     }
 
-    public void read(HolderLookup.Provider provider, CompoundTag nbtTags) {
+    public void read(@NotNull ValueInput input) {
         this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
-        progress = nbtTags.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.ORIGINAL_LOCATION, coord -> originalLocation = coord);
+        progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
+        originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
-        NBTUtils.setLongIfPresent(nbtTags, SerializationConstants.HOME_LOCATION, coord -> homeLocation = coord);
+        homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, homeLocation);
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
         Tag oversizedTag = nbtTags.get(SerializationConstants.ITEM_OVERSIZED);
         if (oversizedTag != null) {

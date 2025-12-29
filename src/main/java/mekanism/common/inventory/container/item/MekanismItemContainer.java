@@ -59,7 +59,7 @@ public abstract class MekanismItemContainer extends MekanismContainer {
             }
             //And we need to sync the other hotbar slots as well, so that their durability bars update if they are based on things like energy
             for (int i = 0; i < Inventory.getSelectionSize(); i++) {
-                if (i != inv.selected || hand != InteractionHand.MAIN_HAND) {
+                if (i != inv.getSelectedSlot() || hand != InteractionHand.MAIN_HAND) {
                     int index = i;
                     track(SyncableItemStack.create(() -> inv.getItem(index), item -> inv.setItem(index, item)));
                 }

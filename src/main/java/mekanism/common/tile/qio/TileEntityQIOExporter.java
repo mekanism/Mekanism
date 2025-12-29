@@ -51,7 +51,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
@@ -59,7 +58,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -201,23 +199,24 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(SerializationConstants.ROUND_ROBIN_TARGET);
+    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(SerializationConstants.ROUND_ROBIN_TARGET);
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
-        super.writeSustainedData(provider, dataMap);
-        dataMap.putBoolean(SerializationConstants.AUTO, exportWithoutFilter);
-        dataMap.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
+        output.putBoolean(SerializationConstants.AUTO, exportWithoutFilter);
+        output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
-        super.readSustainedData(provider, dataMap);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.AUTO, value -> exportWithoutFilter = value);
-        roundRobin = dataMap.getBoolean(SerializationConstants.ROUND_ROBIN);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
+        exportWithoutFilter = input.getBooleanOr(SerializationConstants.AUTO, exportWithoutFilter);
+        //TODO - 1.21.11: Should the default value be the current round robin value?
+        roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, false);
     }
 
     @Override

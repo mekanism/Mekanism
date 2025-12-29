@@ -47,6 +47,8 @@ import net.minecraft.nbt.NbtUtils;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
@@ -237,16 +239,16 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevWaterScale = scale);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE_ALT, scale -> prevSteamScale = scale);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setWaterVolume);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, this::setSteamVolume);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        super.readUpdateTag(input);
+        prevWaterScale = input.getFloatOr(SerializationConstants.SCALE, prevWaterScale);
+        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevSteamScale);
+        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
+        input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> waterTank.setStack(value));
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, value -> steamTank.setStack(value));
-        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.RENDER_Y, value -> upperRenderLocation = value);
-        readValves(tag);
+        input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);
+        readValves(input);
     }
 
     @Override

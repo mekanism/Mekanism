@@ -2,6 +2,7 @@ package mekanism.common.content.network.transmitter;
 
 import io.netty.buffer.ByteBuf;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.SerializationConstants;
@@ -85,8 +86,9 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     private void readModes(@NotNull ValueInput input) {
-        if (tag.contains(SerializationConstants.MODE, Tag.TAG_INT_ARRAY)) {
-            int[] modeIndices = tag.getIntArray(SerializationConstants.MODE);
+        Optional<int[]> optionalModes = input.getIntArray(SerializationConstants.MODE);
+        if (optionalModes.isPresent()) {
+            int[] modeIndices = optionalModes.get();
             for (int i = 0; i < modeIndices.length && i < modes.length; i++) {
                 modes[i] = DiversionControl.BY_ID.apply(modeIndices[i]);
             }
@@ -99,7 +101,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         for (int i = 0; i < modes.length; i++) {
             modeIndices[i] = modes[i].ordinal();
         }
-        nbtTags.putIntArray(SerializationConstants.MODE, modeIndices);
+        output.putIntArray(SerializationConstants.MODE, modeIndices);
         return nbtTags;
     }
 
@@ -109,11 +111,10 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         readModes(input);
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
-        return writeModes(output);
+        writeModes(output);
     }
 
     @NotNull

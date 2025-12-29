@@ -203,13 +203,6 @@ public class Color {
         };
     }
 
-    //Works both directions
-    public static int argbToFromABGR(int argb) {
-        int red = argb >> 16 & 0xFF;
-        int blue = argb & 0xFF;
-        return argb & 0xFF00FF00 | blue << 16 | red;
-    }
-
     public double[] hsvArray() {
         double min = StatUtils.min(r, g, b), max = StatUtils.max(r, g, b);
         double delta = max - min;

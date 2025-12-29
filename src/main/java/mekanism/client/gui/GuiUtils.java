@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.pipeline.RenderPipeline;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.BufferUploader;
@@ -24,6 +25,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -60,9 +62,9 @@ public class GuiUtils {
         }
     }
 
-    public static void fill(GuiGraphics guiGraphics, RenderType renderType, int x, int y, int width, int height, int color) {
+    public static void fill(GuiGraphics guiGraphics, RenderPipeline pipeline, int x, int y, int width, int height, int color) {
         if (width != 0 && height != 0) {
-            guiGraphics.fill(renderType, x, y, x + width, y + height, color);
+            guiGraphics.fill(pipeline, x, y, x + width, y + height, color);
         }
     }
 
@@ -327,7 +329,7 @@ public class GuiUtils {
 
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
     public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
-        ProfilerFiller profiler = Minecraft.getInstance().getProfiler();
+        ProfilerFiller profiler = Profiler.get();
         profiler.push("blit setup");
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);

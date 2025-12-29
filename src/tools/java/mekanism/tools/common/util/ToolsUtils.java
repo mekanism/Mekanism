@@ -1,6 +1,6 @@
 package mekanism.tools.common.util;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.tools.common.ToolsLang;
 import mekanism.tools.common.config.MekanismToolsConfig;
 import net.minecraft.network.chat.Component;
@@ -14,9 +14,9 @@ public class ToolsUtils {
      *
      * @apiNote Only call on client
      */
-    public static void addDurability(@NotNull List<Component> tooltip, @NotNull ItemStack stack) {
+    public static void addDurability(@NotNull Consumer<Component> tooltipAdder, @NotNull ItemStack stack) {
         if (MekanismToolsConfig.toolsClient.displayDurabilityTooltips.get()) {
-            tooltip.add(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamageValue()));
+            tooltipAdder.accept(ToolsLang.HP.translate(stack.getMaxDamage() - stack.getDamageValue()));
         }
     }
 }

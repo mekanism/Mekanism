@@ -32,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 //TODO - 1.20: Decide if we want font rendering in this to support GuiUtils#drawBackdrop and if so how to best go about it
@@ -60,11 +61,11 @@ public class HUDRenderer {
         if (MekanismConfig.client.hudOpacity.get() < 0.05F) {
             return;
         }
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
         float yawJitter = -absSqrt(player.yHeadRot - prevRotationYaw);
         float pitchJitter = -absSqrt(player.getXRot() - prevRotationPitch);
-        pose.translate(yawJitter, pitchJitter, 0);
+        matrix.translate(yawJitter, pitchJitter);
         int audibleSubtitlesWidth = MekanismConfig.client.hudAvoidSoundSubtitleOverlay.get() ? getAudibleSubtitlesWidth(minecraft, font) : 0;
         if (MekanismConfig.client.hudCompassEnabled.get()) {
             renderCompass(player, font, guiGraphics, delayedDraws, delta, screenWidth, screenHeight, maxTextHeight, reverseHud, audibleSubtitlesWidth);
@@ -73,7 +74,7 @@ public class HUDRenderer {
         renderMekaSuitEnergyIcons(player, font, guiGraphics, delayedDraws);
         renderMekaSuitModuleIcons(player, font, guiGraphics, delayedDraws, screenWidth, screenHeight, reverseHud, audibleSubtitlesWidth);
 
-        pose.popPose();
+        matrix.popMatrix();
     }
 
     private void update(Level level, Player player) {
@@ -96,9 +97,9 @@ public class HUDRenderer {
     }
 
     private void renderMekaSuitEnergyIcons(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(10, 10, 0);
+        Matrix3x2fStack pose = guiGraphics.pose();
+        pose.pushMatrix();
+        pose.translate(10, 10);
         Matrix4f matrix = new Matrix4f(pose.last().pose());
         int posX = 0;
         Predicate<Item> showArmorPercent = item -> item instanceof ItemMekaSuitArmor;
@@ -109,7 +110,7 @@ public class HUDRenderer {
         for (EquipmentSlot hand : EnumUtils.HAND_SLOTS) {
             posX += renderEnergyIcon(player, font, guiGraphics, matrix, delayedDraws, posX, TOOL_ICON, hand, showToolPercent);
         }
-        pose.popPose();
+        pose.popMatrix();
     }
 
     private int renderEnergyIcon(Player player, Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, ResourceLocation icon,

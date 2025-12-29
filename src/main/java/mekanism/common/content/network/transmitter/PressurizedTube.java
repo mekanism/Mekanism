@@ -165,9 +165,8 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         tank.setStack(stack);
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
@@ -177,7 +176,6 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         } else {
             nbtTags.put(SerializationConstants.BOXED_CHEMICAL, saveShare.save(provider));
         }
-        return nbtTags;
     }
 
     @Override
@@ -297,9 +295,9 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
+    protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull ValueInput input) {
+        super.handleContentsUpdateTag(network, input);
+        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
         if (tag.contains(SerializationConstants.CHEMICAL, Tag.TAG_STRING)) {
             network.setLastChemical(Chemical.parseOptionalHolder(provider, tag.getString(SerializationConstants.CHEMICAL)));
         } else {

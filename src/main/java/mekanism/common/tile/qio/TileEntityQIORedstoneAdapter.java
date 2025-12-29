@@ -25,10 +25,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -113,23 +113,21 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
-        super.writeSustainedData(provider, dataMap);
-        if (itemType != null) {
-            dataMap.put(SerializationConstants.SINGLE_ITEM, itemType.internalToNBT(provider));
-        }
-        dataMap.putLong(SerializationConstants.AMOUNT, count);
-        dataMap.putBoolean(SerializationConstants.FUZZY, fuzzy);
-        dataMap.putBoolean(SerializationConstants.INVERSE, inverted);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
+        output.storeNullable(SerializationConstants.SINGLE_ITEM, HashedItem.CODEC, itemType);
+        output.putLong(SerializationConstants.AMOUNT, count);
+        output.putBoolean(SerializationConstants.FUZZY, fuzzy);
+        output.putBoolean(SerializationConstants.INVERSE, inverted);
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
-        super.readSustainedData(provider, dataMap);
-        NBTUtils.setItemStackIfPresent(provider, dataMap, SerializationConstants.SINGLE_ITEM, item -> itemType = HashedItem.create(item));
-        NBTUtils.setLongIfPresent(dataMap, SerializationConstants.AMOUNT, value -> count = value);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.FUZZY, value -> fuzzy = value);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, value -> inverted = value);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
+        input.read(SerializationConstants.SINGLE_ITEM, HashedItem.CODEC).ifPresent(item -> itemType = item);
+        count = input.getLongOr(SerializationConstants.AMOUNT, count);
+        fuzzy = input.getBooleanOr(SerializationConstants.FUZZY, fuzzy);
+        inverted = input.getBooleanOr(SerializationConstants.INVERSE, inverted);
     }
 
     @NotNull
@@ -152,7 +150,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        boolean emitting = tag.getBoolean(SerializationConstants.EMITTING);
+        boolean emitting = input.getBooleanOr(SerializationConstants.EMITTING, isEmitting);
         if (isEmitting != emitting) {
             isEmitting = emitting;
             updateModelData();

@@ -26,11 +26,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
@@ -210,25 +211,23 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(CompoundTag upgradeNBT, HolderLookup.Provider provider) {
+    public void deserialize(@NotNull ValueInput upgradeInput) {
         upgrades.clear();
-        upgrades.putAll(Upgrade.buildMap(upgradeNBT));
+        upgrades.putAll(Upgrade.buildMap(upgradeInput));
         for (Upgrade upgrade : getSupportedTypes()) {
             tile.recalculateUpgrades(upgrade);
         }
         //Load the inventory
-        ContainerType.ITEM.readFrom(provider, upgradeNBT, getSlots());
+        ContainerType.ITEM.readFrom(upgradeInput, getSlots());
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        CompoundTag upgradeNBT = new CompoundTag();
+    public void serialize(@NotNull ValueOutput upgradeOutput) {
         if (!upgrades.isEmpty()) {
             Upgrade.saveMap(upgrades, upgradeNBT);
         }
         //Save the inventory
-        ContainerType.ITEM.saveTo(provider, upgradeNBT, getSlots());
-        return upgradeNBT;
+        ContainerType.ITEM.saveTo(upgradeOutput, getSlots());
     }
 
     @Override
@@ -240,9 +239,9 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void readFromUpdateTag(CompoundTag updateTag) {
+    public void readFromUpdateTag(@NotNull ValueInput input) {
         if (supports(Upgrade.MUFFLING)) {
-            NBTUtils.setIntIfPresent(updateTag, SerializationConstants.MUFFLING_COUNT, amount -> {
+            input.getInt(SerializationConstants.MUFFLING_COUNT).ifPresent(amount -> {
                 if (amount == 0) {
                     upgrades.remove(Upgrade.MUFFLING);
                 } else {

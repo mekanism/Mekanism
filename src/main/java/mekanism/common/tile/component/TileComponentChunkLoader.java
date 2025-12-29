@@ -16,13 +16,13 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.world.chunk.LoadingValidationCallback;
 import net.neoforged.neoforge.common.world.chunk.TicketController;
 import net.neoforged.neoforge.common.world.chunk.TicketHelper;
@@ -210,16 +210,15 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void deserialize(CompoundTag componentTag, HolderLookup.Provider provider) {
+    public void deserialize(@NotNull ValueInput chunkLoaderInput) {
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        return new CompoundTag();
+    public void serialize(@NotNull ValueOutput chunkLoaderOutput) {
     }
 
     @Override
-    public void read(CompoundTag nbtTags, HolderLookup.Provider provider) {
+    public void read(@NotNull ValueInput input) {
         if (!chunkSet.isEmpty()) {
             //If we currently have any chunks loaded, remove their tickets and clear them
             if (tile.hasLevel() && !tile.isRemote() && hasRegistered && prevWorld != null && prevPos != null) {
@@ -237,7 +236,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
     }
 
     @Override
-    public void write(CompoundTag nbtTags, HolderLookup.Provider provider) {
+    public void write(@NotNull ValueOutput output) {
         if (!chunkSet.isEmpty()) {
             nbtTags.putLongArray(SerializationConstants.CHUNK_SET, chunkSet.toLongArray());
         }

@@ -134,17 +134,15 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        NBTUtils.setBlockPosIfPresent(nbt, SerializationConstants.MAIN, pos -> mainPos = pos);
-        currentRedstoneLevel = nbt.getInt(SerializationConstants.REDSTONE);
+        input.read(SerializationConstants.MAIN, BlockPos.CODEC).ifPresent(pos -> mainPos = pos);
+        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        if (mainPos != null) {
-            nbtTags.put(SerializationConstants.MAIN, NbtUtils.writeBlockPos(mainPos));
-        }
-        nbtTags.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
+        output.storeNullable(SerializationConstants.MAIN, BlockPos.CODEC, mainPos);
+        output.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @NotNull
@@ -161,8 +159,8 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.MAIN, pos -> mainPos = pos);
-        currentRedstoneLevel = tag.getInt(SerializationConstants.REDSTONE);
+        input.read(SerializationConstants.MAIN, BlockPos.CODEC).ifPresent(pos -> mainPos = pos);
+        currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override

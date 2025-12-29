@@ -11,6 +11,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import org.joml.Matrix3x2fStack;
 
 @NothingNullByDefault
 public class MekanismEmiWidget extends Widget {
@@ -32,18 +33,18 @@ public class MekanismEmiWidget extends Widget {
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack pose = guiGraphics.pose();
+        pose.pushMatrix();
         pose.translate(element.getGuiLeft(), element.getGuiTop(), 0);
         element.renderShifted(guiGraphics, mouseX, mouseY, 0);
         element.onDrawBackground(guiGraphics, mouseX, mouseY, 0);
         //Note: We don't care that onRenderForeground updates the maxZOffset in the mekanism gui as that is just used for rendering windows
         // and as our categories don't support windows we don't need to worry about that
         int zOffset = 200;
-        pose.pushPose();
+        pose.popMatrix();
         element.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
-        pose.popPose();
-        pose.popPose();
+        pose.popMatrix();
+        pose.popMatrix();
     }
 
     @Override

@@ -5,20 +5,21 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.registries.MekanismArmorMaterials;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemHazmatSuitArmor extends ArmorItem implements ICapabilityAware {
+public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
 
-    public ItemHazmatSuitArmor(Type armorType, Properties properties) {
-        super(MekanismArmorMaterials.HAZMAT, armorType, properties.rarity(Rarity.UNCOMMON).stacksTo(1));
+    public ItemHazmatSuitArmor(ArmorType armorType, Item.Properties properties) {
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).humanoidArmor(MekanismArmorMaterials.HAZMAT.value(), armorType));
     }
 
-    public static double getShieldingByArmor(Type type) {
+    public static double getShieldingByArmor(ArmorType type) {
         return switch (type) {
             case HELMET -> 0.25;
             case CHESTPLATE -> 0.4;

@@ -34,7 +34,7 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -193,7 +193,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
-        List<ResourceLocation> textures = skinLookup.skin().textures();
+        List<ResourceLocation> textures = skinLookup.textures();
         if (textures.isEmpty()) {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.location());
             return;

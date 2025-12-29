@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.custom.module;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -28,6 +27,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 //TODO: Eventually try to add support for defining ways to render custom config types
 public class GuiModuleScreen extends GuiScrollableElement {
@@ -222,10 +222,10 @@ public class GuiModuleScreen extends GuiScrollableElement {
     private void scissorScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
         //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
         guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getBottom() - 1);
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
         int shift = getCurrentSelection();
-        pose.translate(0, -shift, 0);
+        matrix.translate(0, -shift);
         //Shift the mouse y by the proper amount
         mouseY += shift;
 
@@ -243,7 +243,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
             startY += element.getNeededHeight() + ELEMENT_SPACER;
         }
 
-        pose.popPose();
+        matrix.popMatrix();
         guiGraphics.disableScissor();
     }
 

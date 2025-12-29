@@ -7,9 +7,9 @@ import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -28,14 +28,14 @@ public class MekanismArmorMaterials {
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> SCUBA_GEAR = registerBaseSpecial("scuba_gear");
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> FREE_RUNNERS = registerBaseSpecial("free_runners");
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMORED_FREE_RUNNERS = ARMOR_MATERIALS.register("armored_free_runners", () -> new ArmorMaterial(
-          Map.of(ArmorItem.Type.BOOTS, MekanismConfig.startup.armoredFreeRunnerArmor.get()),
+          Map.of(ArmorType.BOOTS, MekanismConfig.startup.armoredFreeRunnerArmor.get()),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
           MekanismConfig.startup.armoredFreeRunnerToughness.get(),
           MekanismConfig.startup.armoredFreeRunnerKnockbackResistance.get()
     ));
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JETPACK = registerBaseSpecial("jetpack");
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMORED_JETPACK = ARMOR_MATERIALS.register("armored_jetpack", () -> new ArmorMaterial(
-          Map.of(ArmorItem.Type.CHESTPLATE, MekanismConfig.startup.armoredJetpackArmor.get()),
+          Map.of(ArmorType.CHESTPLATE, MekanismConfig.startup.armoredJetpackArmor.get()),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
           MekanismConfig.startup.armoredJetpackToughness.get(),
           MekanismConfig.startup.armoredJetpackKnockbackResistance.get()
@@ -43,10 +43,10 @@ public class MekanismArmorMaterials {
     // This is unused for the most part; toughness / damage reduction is handled manually, though it can fall back to netherite values
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> MEKASUIT = ARMOR_MATERIALS.register("mekasuit", () -> new ArmorMaterial(
           Map.of(
-                ArmorItem.Type.BOOTS, MekanismConfig.startup.mekaSuitBootsArmor.get(),
-                ArmorItem.Type.LEGGINGS, MekanismConfig.startup.mekaSuitPantsArmor.get(),
-                ArmorItem.Type.CHESTPLATE, MekanismConfig.startup.mekaSuitBodyArmorArmor.get(),
-                ArmorItem.Type.HELMET, MekanismConfig.startup.mekaSuitHelmetArmor.get()
+                ArmorType.BOOTS, MekanismConfig.startup.mekaSuitBootsArmor.get(),
+                ArmorType.LEGGINGS, MekanismConfig.startup.mekaSuitPantsArmor.get(),
+                ArmorType.CHESTPLATE, MekanismConfig.startup.mekaSuitBodyArmorArmor.get(),
+                ArmorType.HELMET, MekanismConfig.startup.mekaSuitHelmetArmor.get()
           ),
           0, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, Collections.emptyList(),
           MekanismConfig.startup.mekaSuitToughness.get(),

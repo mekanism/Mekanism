@@ -270,7 +270,8 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        return Minecraft.getInstance().getTimer().getGameTimeDeltaPartialTick(false);
+        //TODO - 1.21.11: Re-evaluate callers and see if any have access to the delta tracker through non static means
+        return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
 
     public static void rotate(PoseStack matrix, Direction facing, float north, float south, float west, float east) {

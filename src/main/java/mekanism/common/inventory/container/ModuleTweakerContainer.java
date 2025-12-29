@@ -68,7 +68,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
 
     public static boolean hasTweakableItem(Player player) {
         for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
-            if (isTweakableItem(player.getInventory().items.get(slot))) {
+            if (isTweakableItem(player.getInventory().getItem(slot))) {
                 return true;
             }
         }

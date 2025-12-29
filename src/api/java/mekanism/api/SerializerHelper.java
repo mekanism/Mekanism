@@ -117,7 +117,7 @@ public class SerializerHelper {
      *
      * @since 10.6.1
      */
-    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {//TODO - 1.21.8: Re-evaluate I am guessing we can/should remove these save/parse methods
+    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {//TODO - 1.21.11: Re-evaluate I am guessing we can/should remove these save/parse methods
         if (stack.isEmpty()) {
             throw new IllegalStateException("Cannot encode empty ItemStack");
         }

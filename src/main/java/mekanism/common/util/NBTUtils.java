@@ -35,7 +35,7 @@ public class NBTUtils {
     private NBTUtils() {
     }
 
-    public static IntArrayTag writeBlockPositions(Collection<BlockPos> positions) {
+    public static int[] writeBlockPositions(Collection<BlockPos> positions) {
         int[] list = new int[3 * positions.size()];
         int i = 0;
         for (BlockPos pos : positions) {
@@ -43,7 +43,7 @@ public class NBTUtils {
             list[i++] = pos.getY();
             list[i++] = pos.getZ();
         }
-        return new IntArrayTag(list);
+        return list;
     }
 
     public static void readBlockPositions(CompoundTag nbt, String key, Collection<BlockPos> positions) {
@@ -57,35 +57,9 @@ public class NBTUtils {
         }
     }
 
-    public static void setByteIfPresent(CompoundTag nbt, String key, ByteConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_BYTE)) {
-            setter.accept(nbt.getByte(key));
-        }
-    }
-
     public static void setBooleanIfPresent(CompoundTag nbt, String key, BooleanConsumer setter) {
         if (nbt.contains(key, Tag.TAG_BYTE)) {
             setter.accept(nbt.getBoolean(key));
-        }
-    }
-
-    public static void setBooleanIfPresentElse(CompoundTag nbt, String key, boolean fallback, BooleanConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_BYTE)) {
-            setter.accept(nbt.getBoolean(key));
-        } else {
-            setter.accept(fallback);
-        }
-    }
-
-    public static void setShortIfPresent(CompoundTag nbt, String key, ShortConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_SHORT)) {
-            setter.accept(nbt.getShort(key));
-        }
-    }
-
-    public static void setIntIfPresent(CompoundTag nbt, String key, IntConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_INT)) {
-            setter.accept(nbt.getInt(key));
         }
     }
 
@@ -107,39 +81,9 @@ public class NBTUtils {
         }
     }
 
-    public static void setByteArrayIfPresent(CompoundTag nbt, String key, Consumer<byte[]> setter) {
-        if (nbt.contains(key, Tag.TAG_BYTE_ARRAY)) {
-            setter.accept(nbt.getByteArray(key));
-        }
-    }
-
-    public static void setStringIfPresent(CompoundTag nbt, String key, Consumer<String> setter) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
-            setter.accept(nbt.getString(key));
-        }
-    }
-
     public static void setListIfPresent(CompoundTag nbt, String key, int type, Consumer<ListTag> setter) {
         if (nbt.contains(key, Tag.TAG_LIST)) {
             setter.accept(nbt.getList(key, type));
-        }
-    }
-
-    public static void setCompoundIfPresent(CompoundTag nbt, String key, Consumer<CompoundTag> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(nbt.getCompound(key));
-        }
-    }
-
-    public static void setIntArrayIfPresent(CompoundTag nbt, String key, Consumer<int[]> setter) {
-        if (nbt.contains(key, Tag.TAG_INT_ARRAY)) {
-            setter.accept(nbt.getIntArray(key));
-        }
-    }
-
-    public static void setLongArrayIfPresent(CompoundTag nbt, String key, Consumer<long[]> setter) {
-        if (nbt.contains(key, Tag.TAG_LONG_ARRAY)) {
-            setter.accept(nbt.getLongArray(key));
         }
     }
 
@@ -147,18 +91,6 @@ public class NBTUtils {
         if (nbt.hasUUID(key)) {
             setter.accept(nbt.getUUID(key));
         }
-    }
-
-    public static void setUUIDIfPresentElse(CompoundTag nbt, String key, Consumer<UUID> setter, Runnable notPresent) {
-        if (nbt.hasUUID(key)) {
-            setter.accept(nbt.getUUID(key));
-        } else {
-            notPresent.run();
-        }
-    }
-
-    public static void setBlockPosIfPresent(CompoundTag nbt, String key, Consumer<BlockPos> setter) {
-        NbtUtils.readBlockPos(nbt, key).ifPresent(setter);
     }
 
     public static void setFluidStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<FluidStack> setter) {
@@ -173,54 +105,12 @@ public class NBTUtils {
         }
     }
 
-    public static void setItemStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
     public static void setItemStackOrEmpty(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
         if (nbt.contains(key, Tag.TAG_COMPOUND)) {
             setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));
         } else {
             setter.accept(ItemStack.EMPTY);
         }
-    }
-
-    public static void setResourceLocationIfPresent(CompoundTag nbt, String key, Consumer<ResourceLocation> setter) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
-            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
-            if (value != null) {
-                setter.accept(value);
-            }
-        }
-    }
-
-    public static void setResourceLocationIfPresentElse(CompoundTag nbt, String key, Consumer<ResourceLocation> setter, Runnable notPresent) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
-            ResourceLocation value = ResourceLocation.tryParse(nbt.getString(key));
-            if (value == null) {
-                notPresent.run();
-            } else {
-                setter.accept(value);
-            }
-        }
-    }
-
-    public static <REG> void setRegistryEntryIfPresentElse(CompoundTag nbt, String key, Registry<REG> registry, Consumer<REG> setter, Runnable notPresent) {
-        setResourceLocationIfPresentElse(nbt, key, rl -> {
-            Optional<REG> reg = registry.getOptional(rl);
-            if (reg.isEmpty()) {
-                notPresent.run();
-            } else {
-                setter.accept(reg.get());
-            }
-        }, notPresent);
-    }
-
-    public static <REG> void setResourceKeyIfPresentElse(CompoundTag nbt, String key, ResourceKey<? extends Registry<REG>> registryName, Consumer<ResourceKey<REG>> setter,
-          Runnable notPresent) {
-        setResourceLocationIfPresentElse(nbt, key, rl -> setter.accept(ResourceKey.create(registryName, rl)), notPresent);
     }
 
     @Nullable
@@ -241,29 +131,10 @@ public class NBTUtils {
         nbt.putInt(key, e.ordinal());
     }
 
-    public static <V> V readRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, V fallback) {
-        if (nbt.contains(key, Tag.TAG_STRING)) {
-            ResourceLocation rl = ResourceLocation.tryParse(nbt.getString(key));
-            if (rl != null) {
-                //Bypass it falling back to the default by using getOptional instead of get
-                return registry.getOptional(rl).orElse(fallback);
-            }
-        }
-        return fallback;
-    }
-
-    public static <V> void writeRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, Holder<V> entry) {
-        writeRegistryEntry(nbt, key, registry, entry.value());
-    }
-
     public static <V> void writeRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, V entry) {
         ResourceLocation registryName = registry.getKeyOrNull(entry);
         if (registryName != null) {//We expect the registry to have the entry, but if it doesn't then don't add it
             nbt.putString(key, registryName.toString());
         }
-    }
-
-    public static void writeResourceKey(CompoundTag nbt, String key, ResourceKey<?> entry) {
-        nbt.putString(key, entry.location().toString());
     }
 }

@@ -315,12 +315,12 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        output.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
             nbtTags.put(SerializationConstants.FLUID, activeType.save(provider));
         }
         if (!recurringNodes.isEmpty()) {
-            nbtTags.put(SerializationConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
+            output.putIntArray(SerializationConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
         }
     }
 
@@ -334,9 +334,9 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(SerializationConstants.RECURRING_NODES);
+    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(SerializationConstants.RECURRING_NODES);
     }
 
     @Override

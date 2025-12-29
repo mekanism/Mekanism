@@ -2,17 +2,18 @@ package mekanism.common.item.gear;
 
 import mekanism.common.registries.MekanismArmorMaterials;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemScubaMask extends ItemSpecialArmor {
 
-    public ItemScubaMask(Properties properties) {
-        super(MekanismArmorMaterials.SCUBA_MASK, ArmorItem.Type.HELMET, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
+    public ItemScubaMask(Item.Properties properties) {
+        super(MekanismArmorMaterials.SCUBA_MASK, ArmorType.HELMET, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
     }
 
     @Override

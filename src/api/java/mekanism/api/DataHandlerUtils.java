@@ -19,7 +19,7 @@ public class DataHandlerUtils {
      * Helper to read and load a list of handler contents from a {@link ListTag}
      */
     public static void readContents(ValueInputList storedContents, String key, List<? extends ValueIOSerializable> contents) {
-        //TODO - 1.21.8: Test these read/write methods work properly
+        //TODO - 1.21.11: Test these read/write methods work properly
         int size = contents.size();
         for (ValueInput storedContent : storedContents) {
             byte id = storedContent.getByteOr(key, (byte) -1);

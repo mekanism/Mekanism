@@ -226,7 +226,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             }
                         }
                         //Note: We add the laser damage type to bypass cooldown via tags so this will go off regardless of invulnerability timer
-                        boolean damaged = entity.hurt(MekanismDamageTypes.LASER.source(level), damage);
+                        boolean damaged = entity.hurtServer(level, MekanismDamageTypes.LASER.source(level), damage);
                         if (damaged) {
                             //If we damaged it
                             if (entity instanceof LivingEntity livingEntity) {
@@ -417,20 +417,20 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.LAST_FIRED, value -> lastFired = value);
+        lastFired = input.getLongOr(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putLong(SerializationConstants.LAST_FIRED, lastFired);
+        output.putLong(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(SerializationConstants.LAST_FIRED);
+    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(SerializationConstants.LAST_FIRED);
     }
 
     @NotNull
@@ -444,7 +444,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setLongIfPresent(tag, SerializationConstants.LAST_FIRED, fired -> lastFired = fired);
+        lastFired = input.getLongOr(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     public LaserEnergyContainer getEnergyContainer() {

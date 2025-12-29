@@ -44,11 +44,13 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -270,15 +272,15 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
     public void meltdownHappened(Level world) {
     }
 
-    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
-        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.RENDER_LOCATION, value -> renderLocation = value);
-        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, SerializationConstants.MIN);
-        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, SerializationConstants.MAX);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
+        input.read(SerializationConstants.RENDER_LOCATION, BlockPos.CODEC).ifPresent(value -> renderLocation = value);
+        Optional<BlockPos> minPos = input.read(SerializationConstants.MIN, BlockPos.CODEC);
+        Optional<BlockPos> maxPos = input.read(SerializationConstants.MAX, BlockPos.CODEC);
         if (minPos.isPresent() && maxPos.isPresent()) {
             bounds = new VoxelCuboid(minPos.get(), maxPos.get());
         }
-        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.INVENTORY_ID, value -> inventoryID = value, () -> inventoryID = null);
+        inventoryID = input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).orElse(null);
     }
 
     public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {

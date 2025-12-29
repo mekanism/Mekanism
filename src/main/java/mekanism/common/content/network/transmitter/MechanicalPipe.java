@@ -140,9 +140,8 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         buffer.setStack(saveShare);
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
@@ -152,7 +151,6 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         } else {
             nbtTags.put(SerializationConstants.FLUID, saveShare.save(provider));
         }
-        return nbtTags;
     }
 
     @Override
@@ -264,9 +262,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleContentsUpdateTag(network, tag, provider);
+    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull ValueInput input) {
+        super.handleContentsUpdateTag(network, input);
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, network::setLastFluid);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
+        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

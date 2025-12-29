@@ -5,7 +5,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -104,13 +103,13 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         //boolean prevFormedMaster = isMaster() && multiblock.isFormed();
         //UUID previousID = multiblock.inventoryID;
         super.handleUpdateTag(input);
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HANDLE_SOUND, value -> handleSound = value);
+        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, handleSound);
         //boolean formedMaster = false;
         //boolean wasBurning = false;
         if (multiblock.isFormed()) {
             //formedMaster = isMaster();
             //wasBurning = multiblock.isBurning();
-            NBTUtils.setDoubleIfPresent(tag, SerializationConstants.BURNING, value -> multiblock.lastBurnRate = value);
+            multiblock.lastBurnRate = input.getDoubleOr(SerializationConstants.BURNING, multiblock.lastBurnRate);
         }
         //TODO: At some point make use of this if we are able to use the FuelAssemblyBakedModel?
         /*boolean sameID = Objects.equals(previousID, multiblock.inventoryID);

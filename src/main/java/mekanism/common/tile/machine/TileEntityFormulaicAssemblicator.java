@@ -699,10 +699,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putBoolean(SerializationConstants.AUTO, autoMode);
-        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
-        nbtTags.putInt(SerializationConstants.PULSE, pulseOperations);
-        nbtTags.putBoolean(SerializationConstants.STOCK_CONTROL, stockControl);
+        output.putBoolean(SerializationConstants.AUTO, autoMode);
+        output.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        output.putInt(SerializationConstants.PULSE, pulseOperations);
+        output.putBoolean(SerializationConstants.STOCK_CONTROL, stockControl);
     }
 
     @Override

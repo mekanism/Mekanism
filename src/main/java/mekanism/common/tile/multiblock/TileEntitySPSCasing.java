@@ -9,7 +9,6 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.particle.SPSOrbitEffect;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -96,6 +95,6 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HANDLE_SOUND, value -> handleSound = value);
+        handleSound = input.getBooleanOr(SerializationConstants.HANDLE_SOUND, handleSound);
     }
 }

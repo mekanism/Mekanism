@@ -63,7 +63,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
@@ -220,14 +219,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
-        super.writeSustainedData(provider, data);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
         NBTUtils.writeEnum(data, SerializationConstants.EDIT_MODE, editMode);
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
-        super.readSustainedData(provider, data);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
         NBTUtils.setEnumIfPresent(data, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
@@ -343,13 +342,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        NBTUtils.setIntIfPresent(nbt, SerializationConstants.DELAY, value -> lightUpdateDelay = value);
+        lightUpdateDelay = input.getIntOr(SerializationConstants.DELAY, lightUpdateDelay);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.DELAY, lightUpdateDelay);
+        output.putInt(SerializationConstants.DELAY, lightUpdateDelay);
     }
 
     @NotNull

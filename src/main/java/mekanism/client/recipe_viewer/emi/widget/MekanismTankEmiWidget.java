@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.emi.widget;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
@@ -21,6 +20,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 public class MekanismTankEmiWidget extends SlotWidget {
 
@@ -78,11 +78,11 @@ public class MekanismTankEmiWidget extends SlotWidget {
             MekanismRenderer.resetColor(graphics);
         }
         if (this.gauge != null) {
-            PoseStack pose = graphics.pose();
-            pose.pushPose();
-            pose.translate(this.gauge.getGuiLeft(), this.gauge.getGuiTop(), 0);
+            Matrix3x2fStack matrix = graphics.pose();
+            matrix.pushMatrix();
+            matrix.translate(this.gauge.getGuiLeft(), this.gauge.getGuiTop());
             this.gauge.drawBarOverlay(graphics);
-            pose.popPose();
+            matrix.popMatrix();
         }
     }
 }

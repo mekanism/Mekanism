@@ -43,10 +43,12 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TurbineMultiblockData extends MultiblockData {
@@ -217,15 +219,15 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevSteamScale = scale);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.VOLUME, this::setVolume);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.LOWER_VOLUME, value -> lowerVolume = value);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        super.readUpdateTag(input);
+        prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
+        input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
+        lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
         NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, value -> chemicalTank.setStack(value));
         NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, ventTank::setStack);
-        NBTUtils.setBlockPosIfPresent(tag, SerializationConstants.COMPLEX, value -> complex = value);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.ROTATION, value -> clientRotation = value);
+        input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
+        clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
         clientRotationMap.put(inventoryID, clientRotation);
     }
 

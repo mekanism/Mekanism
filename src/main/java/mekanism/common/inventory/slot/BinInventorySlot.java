@@ -159,11 +159,10 @@ public class BinInventorySlot extends BasicInventorySlot {
     public void serialize(ValueOutput output) {
         //Note: While we are able to store this extra data for saving and stuff, when converting to an item we need to have
         // the tile copy the lock stack as a component
-        CompoundTag nbt = super.serializeNBT(provider);
+        super.serialize(output);
         if (isLocked()) {
             nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
-        return nbt;
     }
 
     @Override

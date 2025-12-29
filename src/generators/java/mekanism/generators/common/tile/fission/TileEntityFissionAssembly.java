@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.client.model.data.ModelProperty;
+import net.neoforged.neoforge.model.data.ModelProperty;
 
 //TODO: Eventually make use of the commented out code in this class which is required to get model data working properly for use of the FuelAssemblyBakedModel
 public class TileEntityFissionAssembly extends TileEntityInternalMultiblock {

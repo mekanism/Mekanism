@@ -6,9 +6,9 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
@@ -87,9 +87,9 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
 
     Holder<SoundEvent> equipSound();
 
-    int getDefense(ArmorItem.Type type);
+    int getDefense(ArmorType type);
 
-    int getDurabilityForType(ArmorItem.Type type);
+    int getDurabilityForType(ArmorType type);
 
     @Override
     default Tool createToolProperties(@NotNull TagKey<Block> block) {

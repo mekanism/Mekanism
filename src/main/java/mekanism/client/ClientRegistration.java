@@ -185,9 +185,10 @@ import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
-import net.minecraft.client.renderer.entity.layers.ElytraLayer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.layers.WingsLayer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.resources.PlayerSkin;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Holder;
@@ -205,12 +206,12 @@ import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import net.neoforged.neoforge.client.event.ModelEvent.ModifyBakingResult;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
 import net.neoforged.neoforge.client.event.ModelEvent.RegisterGeometryLoaders;
-import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
@@ -374,9 +375,9 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event) {
+    public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
         //Robit Texture Atlas
-        event.registerReloadListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
+        event.addListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
         ClientRegistrationUtil.registerClientReloadListeners(event,
               //ISTERs
               RenderEnergyCubeItem.RENDERER, RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER, RenderFreeRunners.RENDERER,
@@ -626,24 +627,24 @@ public class ClientRegistration {
         //Add our own custom armor and elytra layer to the various player renderers
         for (PlayerSkin.Model skin : event.getSkins()) {
             //Note: We expect this to always be an instanceof PlayerRenderer, but we just bother checking if it is a LivingEntityRenderer
-            if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?> renderer) {
+            if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
                 addCustomLayers(EntityType.PLAYER, renderer, event.getContext());
             }
         }
         //Add our own custom armor and elytra layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's HumanoidArmorLayer or ElytraLayer added to them
         for (EntityType<?> entityType : event.getEntityTypes()) {
-            if (event.getRenderer(entityType) instanceof LivingEntityRenderer<?, ?> renderer) {
+            if (event.getRenderer(entityType) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
                 addCustomLayers(entityType, renderer, event.getContext());
             }
         }
     }
 
-    private static <LIVING extends LivingEntity, MODEL extends EntityModel<LIVING>> void addCustomLayers(@NotNull EntityType<?> type,
-          @NotNull LivingEntityRenderer<LIVING, MODEL> renderer, @NotNull EntityRendererProvider.Context context) {
+    private static <STATE extends LivingEntityRenderState, MODEL extends EntityModel<? super STATE>> void addCustomLayers(@NotNull EntityType<?> type,
+          @NotNull LivingEntityRenderer<?, STATE, MODEL> renderer, @NotNull EntityRendererProvider.Context context) {
         int layerTypes = 2;
-        Map<String, RenderLayer<LIVING, MODEL>> layersToAdd = new HashMap<>(layerTypes);
-        for (RenderLayer<LIVING, MODEL> layerRenderer : renderer.layers) {
+        Map<String, RenderLayer<STATE, MODEL>> layersToAdd = new HashMap<>(layerTypes);
+        for (RenderLayer<STATE, MODEL> layerRenderer : renderer.layers) {
             //Validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
             if (layerRenderer != null) {
                 //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor or elytra layer
@@ -651,12 +652,12 @@ public class ClientRegistration {
                 if (layerClass == HumanoidArmorLayer.class) {
                     //Note: We know that the MODEL is actually an instance of HumanoidModel, or there wouldn't be a
                     //noinspection unchecked,rawtypes
-                    layersToAdd.put("Armor", new MekanismArmorLayer(renderer, (HumanoidArmorLayer<LIVING, ?, ?>) layerRenderer, context.getModelManager()));
+                    layersToAdd.put("Armor", new MekanismArmorLayer(renderer, (HumanoidArmorLayer<?, ?, ?>) layerRenderer, context.getEquipmentRenderer()));
                     if (layersToAdd.size() == layerTypes) {
                         break;
                     }
-                } else if (layerClass == ElytraLayer.class) {
-                    layersToAdd.put("Elytra", new MekanismElytraLayer<>(renderer, context.getModelSet()));
+                } else if (layerClass == WingsLayer.class) {
+                    layersToAdd.put("Elytra", new MekanismElytraLayer<>(renderer, context.getModelSet(), context.getEquipmentRenderer()));
                     if (layersToAdd.size() == layerTypes) {
                         break;
                     }
@@ -665,7 +666,7 @@ public class ClientRegistration {
         }
         if (!layersToAdd.isEmpty()) {
             String entityName = Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, type);
-            for (Map.Entry<String, RenderLayer<LIVING, MODEL>> entry : layersToAdd.entrySet()) {
+            for (Map.Entry<String, RenderLayer<STATE, MODEL>> entry : layersToAdd.entrySet()) {
                 renderer.addLayer(entry.getValue());
                 Mekanism.logger.debug("Added Mekanism {} Layer to entity of type: {}", entry.getKey(), entityName);
             }

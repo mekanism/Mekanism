@@ -58,7 +58,7 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
      */
     public static FluidStackIngredient of(SizedFluidIngredient ingredient) {
         Objects.requireNonNull(ingredient, "FluidStackIngredients cannot be created from a null ingredient.");
-        //TODO - 1.21.8: Figure out how to validate against empty fluid ingredients?
+        //TODO - 1.21.11: Figure out how to validate against empty fluid ingredients?
         /*if (ingredient.ingredient().isEmpty()) {
             throw new IllegalArgumentException("FluidStackIngredients cannot be created using the empty ingredient.");
         }*/
@@ -97,14 +97,14 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
 
     @Override
     public boolean hasNoMatchingInstances() {
-        //TODO - 1.21.8: Figure out how to reimplement this, or if the entire concept should go away
+        //TODO - 1.21.11: Figure out how to reimplement this, or if the entire concept should go away
         //return ingredient.ingredient().hasNoFluids();
         return false;
     }
 
     @Override
     public void logMissingTags() {
-        //TODO - 1.21.8: Re-evaluate this implementation
+        //TODO - 1.21.11: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             FluidIngredient fluidIngredient = ingredient.ingredient();
             if (fluidIngredient instanceof SimpleFluidIngredient simple) {

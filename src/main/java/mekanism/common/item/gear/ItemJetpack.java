@@ -20,21 +20,21 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
 
-    public ItemJetpack(Properties properties) {
+    public ItemJetpack(Item.Properties properties) {
         this(MekanismArmorMaterials.JETPACK, properties);
     }
 
-    public ItemJetpack(Holder<ArmorMaterial> material, Properties properties) {
-        super(material, ArmorItem.Type.CHESTPLATE, properties.setNoRepair().component(MekanismDataComponents.JETPACK_MODE, JetpackMode.NORMAL));
+    public ItemJetpack(Holder<ArmorMaterial> material, Item.Properties properties) {
+        super(material, ArmorType.CHESTPLATE, properties.setNoRepair().component(MekanismDataComponents.JETPACK_MODE, JetpackMode.NORMAL));
     }
 
     @Override

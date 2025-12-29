@@ -10,9 +10,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -175,6 +172,6 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void deserialize(ValueInput input) {
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
+        input.getInt(SerializationConstants.STORED).ifPresent(this::setEnergy);
     }
 }

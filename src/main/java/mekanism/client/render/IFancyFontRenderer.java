@@ -13,6 +13,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 //TODO - 1.21: Document this class
@@ -156,9 +157,9 @@ public interface IFancyFontRenderer {
         } else {
             targetX = alignment.getTarget(font, minX, maxX, textWidth);
         }
-        PoseStack pose = prepTextScale(graphics, font, targetX, targetY, scale);
+        Matrix3x2fStack matrix = prepTextScale(graphics, font, targetX, targetY, scale);
         graphics.drawString(font, text, 0, 0, color, shadow);
-        pose.popPose();
+        matrix.popMatrix();
         if (isScrolling) {
             graphics.disableScissor();
         }
@@ -210,14 +211,14 @@ public interface IFancyFontRenderer {
     }
 
     //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
-    private static PoseStack prepTextScale(GuiGraphics graphics, Font font, float x, float y, float scale) {
-        PoseStack pose = graphics.pose();
-        pose.pushPose();
+    private static Matrix3x2fStack prepTextScale(GuiGraphics graphics, Font font, float x, float y, float scale) {
+        Matrix3x2fStack matrix = graphics.pose();
+        matrix.pushMatrix();
         float halfLineHeight = font.lineHeight / 2F;
         float yAdd = halfLineHeight - halfLineHeight * scale;
-        pose.translate(x, y + yAdd, 0);
-        pose.scale(scale, scale, scale);
-        return pose;
+        matrix.translate(x, y + yAdd);
+        matrix.scale(scale, scale);
+        return matrix;
     }
 
     enum TextAlignment {
@@ -259,9 +260,9 @@ public interface IFancyFontRenderer {
         }
 
         public int renderWithScale(GuiGraphics graphics, int x, int y, TextAlignment alignment, int color, int maxLength, float scale) {
-            PoseStack pose = prepTextScale(graphics, fontRenderer.font(), x, y, scale);
+            Matrix3x2fStack matrix = prepTextScale(graphics, fontRenderer.font(), x, y, scale);
             render(graphics, 0, 0, maxLength, alignment, color, scale);
-            pose.popPose();
+            matrix.popMatrix();
             return linesToDraw.size();
         }
 

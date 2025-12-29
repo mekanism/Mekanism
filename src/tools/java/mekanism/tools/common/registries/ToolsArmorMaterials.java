@@ -9,8 +9,8 @@ import mekanism.tools.common.config.MekanismToolsConfig;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -29,8 +29,8 @@ public class ToolsArmorMaterials {
     public static final DeferredHolder<ArmorMaterial, ArmorMaterial> STEEL = ARMOR_MATERIALS.register("steel", name -> createMaterial(name, MekanismToolsConfig.materials.steel));
 
     private static ArmorMaterial createMaterial(ResourceLocation name, BaseMekanismMaterial material) {
-        EnumMap<ArmorItem.Type, Integer> defense = new EnumMap<>(ArmorItem.Type.class);
-        for (ArmorItem.Type type : EnumUtils.ARMOR_TYPES) {
+        EnumMap<ArmorType, Integer> defense = new EnumMap<>(ArmorType.class);
+        for (ArmorType type : EnumUtils.ARMOR_TYPES) {
             int providedDefense = material.getDefense(type);
             if (providedDefense > 0) {
                 defense.put(type, providedDefense);

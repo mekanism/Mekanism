@@ -46,8 +46,10 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
+import org.jetbrains.annotations.NotNull;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -155,8 +157,8 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.readUpdateTag(tag, provider);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        super.readUpdateTag(input);
         coilData.read(tag);
         lastReceivedEnergy = tag.getLong(SerializationConstants.ENERGY_USAGE);
         lastProcessed = tag.getDouble(SerializationConstants.LAST_PROCESSED);

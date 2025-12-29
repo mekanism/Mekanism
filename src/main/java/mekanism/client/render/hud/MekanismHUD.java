@@ -16,17 +16,18 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
-public class MekanismHUD implements LayeredDraw.Layer {
+public class MekanismHUD implements GuiLayer {
 
     public static final MekanismHUD INSTANCE = new MekanismHUD();
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS,
@@ -91,9 +92,9 @@ public class MekanismHUD implements LayeredDraw.Layer {
                 int start = (renderStrings.size() * 2) + (count * 9);
                 int y = yScale - start;
                 maxTextHeight = (int) (y * hudScale);
-                PoseStack pose = graphics.pose();
-                pose.pushPose();
-                pose.scale(hudScale, hudScale, hudScale);
+                Matrix3x2fStack pose = graphics.pose();
+                pose.pushMatrix();
+                pose.scale(hudScale, hudScale);
 
                 int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
                 if (backgroundColor != 0) {
@@ -124,7 +125,7 @@ public class MekanismHUD implements LayeredDraw.Layer {
                     }
                     y += 2;
                 }
-                pose.popPose();
+                pose.popMatrix();
             }
 
             if (player.getItemBySlot(EquipmentSlot.HEAD).is(MekanismTags.Items.MEKASUIT_HUD_RENDERER)) {

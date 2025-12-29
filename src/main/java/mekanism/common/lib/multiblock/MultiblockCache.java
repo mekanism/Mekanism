@@ -26,6 +26,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -71,13 +72,13 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
     }
 
-    public void load(HolderLookup.Provider provider, CompoundTag nbtTags) {
+    public void load(@NotNull ValueInput input) {
         for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.readFrom(provider, nbtTags, this);
         }
     }
 
-    public void save(ValueOutput output) {
+    public void save(@NotNull ValueOutput output) {
         for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.saveTo(output, this);
         }

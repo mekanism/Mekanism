@@ -45,6 +45,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -129,9 +130,9 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerClientReloadListeners(RegisterClientReloadListenersEvent event, PreparableReloadListener... listeners) {
+    public static void registerClientReloadListeners(AddClientReloadListenersEvent event, PreparableReloadListener... listeners) {
         for (PreparableReloadListener listener : listeners) {
-            event.registerReloadListener(listener);
+            event.addListener(listener);
         }
     }
 

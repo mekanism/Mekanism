@@ -151,7 +151,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        output.putInt(SerializationConstants.PROGRESS, operatingTicks);
     }
 
     @Override

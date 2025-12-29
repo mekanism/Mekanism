@@ -34,7 +34,7 @@ public class MekanismAPITags {
     /**
      * @since 10.6.4
      */
-    public static class Biomes {//TODO - 1.21.8: Re-evaluate changing the syntax of these blacklist tags to be blacklist/<type>
+    public static class Biomes {//TODO - 1.21.11: Re-evaluate changing the syntax of these blacklist tags to be blacklist/<type>
 
         private Biomes() {
         }

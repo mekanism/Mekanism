@@ -218,7 +218,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @NotNull

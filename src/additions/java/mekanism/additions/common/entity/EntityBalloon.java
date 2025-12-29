@@ -14,8 +14,9 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -135,7 +136,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         yo = getY();
         zo = getZ();
 
-        //TODO - 1.21.8: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
+        //TODO - 1.21.11: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
         if (getY() >= level().getMaxY() + 1) {
             pop();
             return;
@@ -309,8 +310,8 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     @Override
     public void readAdditionalSaveData(@NotNull ValueInput input) {
         NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
-        NBTUtils.setBlockPosIfPresent(nbtTags, SerializationConstants.LATCHED, pos -> latched = pos);
-        NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> {
+        input.read(SerializationConstants.LATCHED, BlockPos.CODEC).ifPresent(pos -> latched = pos);
+        input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> {
             hasCachedEntity = true;
             cachedEntityUUID = uuid;
         });
@@ -319,11 +320,9 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     @Override
     protected void addAdditionalSaveData(@NotNull ValueOutput output) {
         NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
-        if (latched != null) {
-            nbtTags.put(SerializationConstants.LATCHED, NbtUtils.writeBlockPos(latched));
-        }
+        output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latched);
         if (latchedEntity != null) {
-            nbtTags.putUUID(SerializationConstants.OWNER_UUID, latchedEntity.getUUID());
+            output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, latchedEntity.getUUID());
         }
     }
 

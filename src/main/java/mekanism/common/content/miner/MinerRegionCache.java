@@ -13,7 +13,6 @@ import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
@@ -153,9 +152,5 @@ public class MinerRegionCache implements CollisionGetter {
     @Override
     public int getHeight() {
         return this.level.getHeight();
-    }
-
-    public ProfilerFiller getProfiler() {
-        return this.level.getProfiler();
     }
 }

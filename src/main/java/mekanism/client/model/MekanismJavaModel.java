@@ -102,10 +102,10 @@ public abstract class MekanismJavaModel extends Model {
         Set<Line> lines = new HashSet<>();
         for (Cube cube : cubes) {
             for (ModelPart.Polygon quad : cube.polygons) {
-                quad.vertices[0].pos.div(16, v0);
-                quad.vertices[1].pos.div(16, v1);
-                quad.vertices[2].pos.div(16, v2);
-                quad.vertices[3].pos.div(16, v3);
+                quad.vertices()[0].pos().div(16, v0);
+                quad.vertices()[1].pos().div(16, v1);
+                quad.vertices()[2].pos().div(16, v2);
+                quad.vertices()[3].pos().div(16, v3);
                 lines.add(Line.from(v0, v1));
                 lines.add(Line.from(v1, v2));
                 lines.add(Line.from(v2, v3));

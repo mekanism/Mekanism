@@ -27,11 +27,12 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
 
@@ -93,11 +94,11 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void readUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.readUpdateTag(tag, provider);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> prevScale = scale);
-        mergedTank.readFromUpdateTag(provider, tag);
-        readValves(tag);
+    public void readUpdateTag(@NotNull ValueInput input) {
+        super.readUpdateTag(input);
+        prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        mergedTank.readFromUpdateTag(input);
+        readValves(input);
     }
 
     @Override

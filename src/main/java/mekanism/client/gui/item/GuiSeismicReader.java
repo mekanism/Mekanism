@@ -39,6 +39,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
@@ -169,17 +170,17 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 if (i == 4) {
                     info.render(guiGraphics, renderX, renderY);
                 } else {
-                    PoseStack pose = guiGraphics.pose();
-                    pose.pushPose();
-                    pose.translate(renderX, renderY, 0);
+                    Matrix3x2fStack pose = guiGraphics.pose();
+                    pose.pushMatrix();
+                    pose.translate(renderX, renderY);
                     if (i < 4) {
-                        pose.translate(1.7F, 2.5F, 0);
+                        pose.translate(1.7F, 2.5F);
                     } else {
-                        pose.translate(1.5F, 0, 0);
+                        pose.translate(1.5F, 0);
                     }
-                    pose.scale(0.8F, 0.8F, 0.8F);
+                    pose.scale(0.8F, 0.8F);
                     info.render(guiGraphics, 0, 0);
-                    pose.popPose();
+                    pose.popMatrix();
                 }
             }
         }

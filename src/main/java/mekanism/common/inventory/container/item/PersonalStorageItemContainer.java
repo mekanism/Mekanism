@@ -56,7 +56,7 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     @Override
     protected HotBarSlot createHotBarSlot(@NotNull Inventory inv, int index, int x, int y) {
         // special handling to prevent removing the personal chest from the player's inventory slot
-        if (index == inv.selected && hand == InteractionHand.MAIN_HAND) {
+        if (index == inv.getSelectedSlot() && hand == InteractionHand.MAIN_HAND) {
             return new HotBarSlot(inv, index, x, y) {
                 @Override
                 public boolean mayPickup(@NotNull Player player) {

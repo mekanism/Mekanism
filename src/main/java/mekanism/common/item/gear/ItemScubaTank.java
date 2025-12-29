@@ -19,16 +19,16 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider, IAttachmentBasedModeItem<Boolean> {
 
-    public ItemScubaTank(Properties properties) {
-        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorItem.Type.CHESTPLATE, properties.component(MekanismDataComponents.SCUBA_TANK_MODE, false));
+    public ItemScubaTank(Item.Properties properties) {
+        super(MekanismArmorMaterials.SCUBA_GEAR, ArmorType.CHESTPLATE, properties.component(MekanismDataComponents.SCUBA_TANK_MODE, false));
     }
 
     @Override

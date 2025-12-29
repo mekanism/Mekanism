@@ -67,13 +67,13 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
@@ -94,7 +94,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     private final double laserDissipation;
     private final double laserRefraction;
 
-    public ItemMekaSuitArmor(ArmorItem.Type armorType, Properties properties) {
+    public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
         super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
               properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
         ));
@@ -164,12 +164,12 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean isEnderMask(@NotNull ItemStack stack, @NotNull Player player, @NotNull EnderMan enderman) {
-        return type == ArmorItem.Type.HELMET;
+        return type == ArmorType.HELMET;
     }
 
     @Override
     public boolean canWalkOnPowderedSnow(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
-        return type == ArmorItem.Type.BOOTS;
+        return type == ArmorType.BOOTS;
     }
 
     @Override
@@ -294,7 +294,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
-        if (getType() == ArmorItem.Type.CHESTPLATE && !entity.isShiftKeyDown()) {
+        if (getType() == ArmorType.CHESTPLATE && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
             IModuleContainer container = moduleContainer(stack);
             if (container != null) {
@@ -332,7 +332,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        if (type == ArmorItem.Type.CHESTPLATE) {
+        if (type == ArmorType.CHESTPLATE) {
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
                 return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
             }

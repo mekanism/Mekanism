@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.Chunk3D;
+import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -14,9 +15,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
@@ -133,9 +134,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
         super.loadAdditional(input);
         //Copy of logic from BlockEntity#loadWithComponents which we can't just call directly as we don't want to call sub-implementations of loadAdditional
-        BlockEntity.ComponentHelper.COMPONENTS_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), tag)
-              .resultOrPartial(p_337987_ -> Mekanism.logger.warn("Failed to load components: {}", p_337987_))
-              .ifPresent(this::setComponents);
+        setComponents(input.read(SerializationConstants.COMPONENTS, DataComponentMap.CODEC).orElse(DataComponentMap.EMPTY));
     }
 
     @NotNull
@@ -154,12 +153,12 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     }
 
     @Override
-    public void onDataPacket(@NotNull Connection net, @NotNull ClientboundBlockEntityDataPacket pkt, @NotNull HolderLookup.Provider provider) {
+    public void onDataPacket(@NotNull Connection net, @NotNull ValueInput input) {
         //Handle the update tag when we are on the client
-        CompoundTag tag = pkt.getTag();
-        if (!tag.isEmpty()) {
-            handleUpdateTag(tag, provider);
-        }
+        //TODO - 1.21.11: Do we need to check if it is empty in any way?
+        /*CompoundTag tag = pkt.getTag();
+        if (!tag.isEmpty()) {*/
+            handleUpdateTag(input);
     }
 
     public void sendUpdatePacket() {

@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
@@ -49,7 +50,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     @Override
     public void render(TILE tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight) {
         if (tile.getLevel() != null) {
-            ProfilerFiller profiler = tile.getLevel().getProfiler();
+            ProfilerFiller profiler = Profiler.get();
             profiler.push(getProfilerSection());
             render(tile, partialTick, matrix, renderer, light, overlayLight, profiler);
             profiler.pop();

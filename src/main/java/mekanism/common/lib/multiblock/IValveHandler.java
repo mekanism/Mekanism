@@ -1,6 +1,7 @@
 package mekanism.common.lib.multiblock;
 
 import java.util.Collection;
+import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -11,6 +12,9 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueInput.ValueInputList;
+import org.jetbrains.annotations.NotNull;
 
 public interface IValveHandler {
 
@@ -27,18 +31,18 @@ public interface IValveHandler {
         updateTag.put(SerializationConstants.VALVE, valves);
     }
 
-    default void readValves(CompoundTag updateTag) {
-        getValveData().clear();
-        if (updateTag.contains(SerializationConstants.VALVE, Tag.TAG_LIST)) {
-            ListTag valves = updateTag.getList(SerializationConstants.VALVE, Tag.TAG_COMPOUND);
-            for (int i = 0; i < valves.size(); i++) {
-                CompoundTag valveNBT = valves.getCompound(i);
-                NBTUtils.setBlockPosIfPresent(valveNBT, SerializationConstants.POSITION, pos -> {
-                    Direction side = Direction.from3DDataValue(valveNBT.getInt(SerializationConstants.SIDE));
-                    getValveData().add(new ValveData(pos, side));
-                });
-            }
-        }
+    default void readValves(@NotNull ValueInput input) {
+        Collection<ValveData> valveData = getValveData();
+        valveData.clear();
+        input.childrenList(SerializationConstants.VALVE).ifPresent(valueInputs ->
+              valueInputs.forEach(valveInput ->
+                    valveInput.read(SerializationConstants.POSITION, BlockPos.CODEC).ifPresent(pos -> {
+                        //TODO - 1.21.11: Re-evaluate how we get the side, do we want to just store the side itself?
+                        Direction side = Direction.from3DDataValue(valveInput.getIntOr(SerializationConstants.SIDE, 0));
+                        valveData.add(new ValveData(pos, side));
+                    })
+              )
+        );
     }
 
     default void triggerValveTransfer(IMultiblock<?> multiblock) {

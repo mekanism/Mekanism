@@ -66,7 +66,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
+        output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
     }
 
     @Override

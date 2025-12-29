@@ -8,6 +8,7 @@ import java.util.EnumSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntSupplier;
@@ -55,13 +56,13 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -418,12 +419,13 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void deserialize(CompoundTag ejectorNBT, HolderLookup.Provider provider) {
-        strictInput = ejectorNBT.getBoolean(SerializationConstants.STRICT_INPUT);
+    public void deserialize(@NotNull ValueInput ejectorInput) {
+        strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
         outputColor = NBTUtils.getEnum(ejectorNBT, SerializationConstants.COLOR, EnumColor.BY_ID);
         //Input colors
-        if (ejectorNBT.contains(SerializationConstants.INPUT_COLOR, Tag.TAG_INT_ARRAY)) {
-            int[] colors = ejectorNBT.getIntArray(SerializationConstants.INPUT_COLOR);
+        Optional<int[]> optionalColors = ejectorInput.getIntArray(SerializationConstants.INPUT_COLOR);
+        if (optionalColors.isPresent()) {
+            int[] colors = optionalColors.get();
             for (int i = 0; i < colors.length && i < inputColors.length; i++) {
                 inputColors[i] = TransporterUtils.readColor(colors[i]);
             }
@@ -433,10 +435,9 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
-        CompoundTag ejectorNBT = new CompoundTag();
+    public void serialize(@NotNull ValueOutput ejectorOutput) {
         if (strictInput) {
-            ejectorNBT.putBoolean(SerializationConstants.STRICT_INPUT, true);
+            ejectorOutput.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
         if (outputColor != null) {
             NBTUtils.writeEnum(ejectorNBT, SerializationConstants.COLOR, outputColor);
@@ -452,9 +453,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             }
         }
         if (hasColor) {
-            ejectorNBT.putIntArray(SerializationConstants.INPUT_COLOR, colors);
+            ejectorOutput.putIntArray(SerializationConstants.INPUT_COLOR, colors);
         }
-        return ejectorNBT;
     }
 
     @Override

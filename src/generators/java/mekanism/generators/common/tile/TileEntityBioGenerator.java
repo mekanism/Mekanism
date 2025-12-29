@@ -109,7 +109,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.FLUID, nbt -> bioFuelTank.deserializeNBT(provider, nbt));
+        input.child(SerializationConstants.FLUID).ifPresent(bioFuelTank::deserialize);
     }
 
     @Override

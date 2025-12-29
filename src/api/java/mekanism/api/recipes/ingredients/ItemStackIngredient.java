@@ -95,13 +95,13 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
 
     @Override
     public boolean hasNoMatchingInstances() {
-        //TODO - 1.21.8: Figure out if this is the proper way to reimplement this, as there used to be a difference between isEmpty and has NoItems
+        //TODO - 1.21.11: Figure out if this is the proper way to reimplement this, as there used to be a difference between isEmpty and has NoItems
         return ingredient.ingredient().isEmpty();
     }
 
     @Override
     public void logMissingTags() {
-        //TODO - 1.21.8: Re-evaluate this implementation
+        //TODO - 1.21.11: Re-evaluate this implementation
         if (hasNoMatchingInstances()) {
             Ingredient unsized = ingredient.ingredient();
             if (unsized.isCustom()) {

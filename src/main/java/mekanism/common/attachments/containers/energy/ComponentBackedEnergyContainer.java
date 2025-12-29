@@ -9,9 +9,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -144,6 +141,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     public void deserialize(ValueInput input) {
-        NBTUtils.setLongIfPresent(nbt, SerializationConstants.STORED, this::setEnergy);
+        input.getLong(SerializationConstants.STORED).ifPresent(this::setEnergy);
     }
 }

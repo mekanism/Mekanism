@@ -37,6 +37,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
+import org.joml.Matrix3x2fStack;
 
 public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorCasing, MekanismTileContainer<TileEntityFissionReactorCasing>> {
 
@@ -92,13 +93,13 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                     //Temporarily set active to true, so we can easily check if the mouse is over the button
                     // Note: We can't just use the delayed tooltip rendering as it doesn't work for inactive buttons
                     if (isMouseOverCheckWindows(mouseX, mouseY)) {
-                        PoseStack pose = guiGraphics.pose();
-                        pose.pushPose();
+                        Matrix3x2fStack matrix = guiGraphics.pose();
+                        matrix.pushMatrix();
                         //Offset to fix rendering position
-                        pose.translate(-getGuiLeft(), -getGuiTop(), 0);
+                        matrix.translate(-getGuiLeft(), -getGuiTop());
                         //Tooltip.MAX_WIDTH = 170
                         guiGraphics.renderTooltip(font, font.split(GeneratorsLang.FISSION_FORCE_DISABLED.translate(), 170), mouseX, mouseY);
-                        pose.popPose();
+                        matrix.popMatrix();
                     }
                     active = false;
                 }

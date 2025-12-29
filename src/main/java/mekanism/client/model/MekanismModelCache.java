@@ -75,7 +75,7 @@ public class MekanismModelCache extends BaseModelCache {
         if (ROBIT_SKINS.containsKey(skinName)) {
             data = ROBIT_SKINS.get(skinName);
         } else {
-            ResourceLocation customModel = skinLookup.skin().customModel();
+            ResourceLocation customModel = skinLookup.customModel();
             if (customModel != null) {
                 //If multiple skins make use of the same custom model, have them all point at the same model data object
                 data = CUSTOM_ROBIT_MODELS.computeIfAbsent(customModel, this::registerJSONAndBake);

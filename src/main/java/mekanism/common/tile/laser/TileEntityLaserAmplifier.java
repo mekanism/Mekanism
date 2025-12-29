@@ -29,16 +29,16 @@ import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements IHasMode {
@@ -171,20 +171,21 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag data) {
-        super.readSustainedData(provider, data);
-        NBTUtils.setLongIfPresent(data, SerializationConstants.MIN, this::updateMinThreshold);
-        NBTUtils.setLongIfPresent(data, SerializationConstants.MAX, this::updateMaxThreshold);
-        NBTUtils.setIntIfPresent(data, SerializationConstants.TIME, value -> delay = value);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
+        input.getLong(SerializationConstants.MIN).ifPresent(this::updateMinThreshold);
+        input.getLong(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
+        //TODO - 1.21.11: Re-evaluate all the cases we have an or that support optional if we should just use the optional
+        delay = input.getIntOr(SerializationConstants.TIME, delay);
         NBTUtils.setEnumIfPresent(data, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag data) {
-        super.writeSustainedData(provider, data);
-        data.putLong(SerializationConstants.MIN, minThreshold);
-        data.putLong(SerializationConstants.MAX, maxThreshold);
-        data.putInt(SerializationConstants.TIME, delay);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
+        output.putLong(SerializationConstants.MIN, minThreshold);
+        output.putLong(SerializationConstants.MAX, maxThreshold);
+        output.putInt(SerializationConstants.TIME, delay);
         NBTUtils.writeEnum(data, SerializationConstants.OUTPUT_MODE, outputMode);
     }
 

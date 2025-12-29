@@ -10,6 +10,7 @@ import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -99,6 +100,7 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setUUIDIfPresentElse(tag, SerializationConstants.INVENTORY_ID, this::setMultiblock, () -> multiblockUUID = null);
+        //TODO - 1.21.11: Re-evaluate uses of Optional#ifPresentOrElse, and for optionals returned from ValueInput if we can make any of the ifPresent cases not be capturing that currently might be
+        input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).ifPresentOrElse(this::setMultiblock, () -> multiblockUUID = null);
     }
 }

@@ -40,7 +40,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -314,7 +315,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public void deserialize(CompoundTag frequencyNBT, HolderLookup.Provider provider) {
+    public void deserialize(@NotNull ValueInput frequencyInput) {
         if (securityFrequency != null) {
             deserializeFrequency(provider, frequencyNBT, FrequencyType.SECURITY, securityFrequency);
         }
@@ -331,16 +332,14 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     @Override
-    public CompoundTag serialize(HolderLookup.Provider provider) {
+    public void serialize(@NotNull ValueOutput frequencyOutput) {
         DynamicOps<Tag> ops = provider.createSerializationContext(NbtOps.INSTANCE);
-        CompoundTag frequencyNBT = new CompoundTag();
         if (securityFrequency != null) {
             serializeFrequency(ops, FrequencyType.SECURITY, securityFrequency, frequencyNBT);
         }
         for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             serializeFrequency(ops, entry.getKey(), entry.getValue(), frequencyNBT);
         }
-        return frequencyNBT;
     }
 
     private static void serializeFrequency(DynamicOps<Tag> ops, FrequencyType<?> type, FrequencyData frequencyData, CompoundTag frequencyNBT) {

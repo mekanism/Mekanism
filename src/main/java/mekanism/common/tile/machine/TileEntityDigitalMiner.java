@@ -108,7 +108,6 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.redstone.Redstone;
@@ -888,10 +887,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(SerializationConstants.NUM_POWERING);
-        tag.remove(SerializationConstants.STATE);
+    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(SerializationConstants.NUM_POWERING);
+        output.discard(SerializationConstants.STATE);
     }
 
     @Override
@@ -904,9 +903,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putBoolean(SerializationConstants.RUNNING, running);
-        nbtTags.putInt(SerializationConstants.DELAY, delay);
-        nbtTags.putInt(SerializationConstants.NUM_POWERING, numPowering);
+        output.putBoolean(SerializationConstants.RUNNING, running);
+        output.putInt(SerializationConstants.DELAY, delay);
+        output.putInt(SerializationConstants.NUM_POWERING, numPowering);
         NBTUtils.writeEnum(nbtTags, SerializationConstants.STATE, searcher.state);
         if (!overflow.isEmpty()) {
             //Persist any items that are stored as overflow
@@ -1012,54 +1011,54 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     @Override
-    public void writeSustainedData(HolderLookup.Provider provider, CompoundTag dataMap) {
-        super.writeSustainedData(provider, dataMap);
-        dataMap.putInt(SerializationConstants.RADIUS, getRadius());
-        dataMap.putInt(SerializationConstants.MIN, getMinY());
-        dataMap.putInt(SerializationConstants.MAX, getMaxY());
-        dataMap.putBoolean(SerializationConstants.EJECT, doEject);
-        dataMap.putBoolean(SerializationConstants.PULL, doPull);
-        dataMap.putBoolean(SerializationConstants.SILK_TOUCH, getSilkTouch());
-        dataMap.putBoolean(SerializationConstants.INVERSE, inverse);
+    public void writeSustainedData(@NotNull ValueOutput output) {
+        super.writeSustainedData(output);
+        output.putInt(SerializationConstants.RADIUS, getRadius());
+        output.putInt(SerializationConstants.MIN, getMinY());
+        output.putInt(SerializationConstants.MAX, getMaxY());
+        output.putBoolean(SerializationConstants.EJECT, doEject);
+        output.putBoolean(SerializationConstants.PULL, doPull);
+        output.putBoolean(SerializationConstants.SILK_TOUCH, getSilkTouch());
+        output.putBoolean(SerializationConstants.INVERSE, inverse);
         if (inverseReplaceTarget != Items.AIR) {
-            NBTUtils.writeRegistryEntry(dataMap, SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM, inverseReplaceTarget);
+            output.store(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec(), inverseReplaceTarget);
         }
-        dataMap.putBoolean(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        filterManager.writeToNBT(provider, dataMap);
+        output.putBoolean(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        filterManager.writeToNBT(output, dataMap);
     }
 
     @Override
-    public void readSustainedData(HolderLookup.Provider provider, @NotNull CompoundTag dataMap) {
-        super.readSustainedData(provider, dataMap);
+    public void readSustainedData(@NotNull ValueInput input) {
+        super.readSustainedData(input);
         setRadius(Math.min(dataMap.getInt(SerializationConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
-        NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MIN, newMinY -> {
+        input.getInt(SerializationConstants.MIN).ifPresent(newMinY -> {
             if (hasLevel() && !isRemote()) {
                 setMinY(Math.max(newMinY, level.getMinY()));
             } else {
                 setMinY(newMinY);
             }
         });
-        NBTUtils.setIntIfPresent(dataMap, SerializationConstants.MAX, newMaxY -> {
+        input.getInt(SerializationConstants.MAX).ifPresent(newMaxY -> {
             if (hasLevel() && !isRemote()) {
                 setMaxY(Math.min(newMaxY, level.getMaxY()));
             } else {
                 setMaxY(newMaxY);
             }
         });
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.EJECT, eject -> doEject = eject);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.PULL, pull -> doPull = pull);
+        doEject = input.getBooleanOr(SerializationConstants.EJECT, doEject);
+        doPull = input.getBooleanOr(SerializationConstants.PULL, doPull);
         NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.SILK_TOUCH, this::setSilkTouch);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE, inverse -> this.inverse = inverse);
-        inverseReplaceTarget = NBTUtils.readRegistryEntry(dataMap, SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM, Items.AIR);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.INVERSE_REQUIRES_REPLACE, requiresReplace -> inverseRequiresReplacement = requiresReplace);
-        filterManager.readFromNBT(provider, dataMap);
+        inverse = input.getBooleanOr(SerializationConstants.INVERSE, inverse);
+        inverseReplaceTarget = input.read(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec()).orElse(Items.AIR);
+        inverseRequiresReplacement = input.getBooleanOr(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
+        filterManager.readFromNBT(input, dataMap);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
         // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
         // as opposed to the writeSustainedData method to ensure that configuration cards do not copy overflow data from one miner to another
         NBTUtils.setListIfPresent(dataMap, SerializationConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
-            DataResult<Object2IntMap<HashedItem>> decoded = OverflowAware.CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), overflowTag)
+            DataResult<Object2IntMap<HashedItem>> decoded = OverflowAware.CODEC.parse(input.createSerializationContext(NbtOps.INSTANCE), overflowTag)
                   .map(OverflowAware::overflow);
             decoded.ifSuccess(overflow::putAll);
             decoded.ifError(error -> Mekanism.logger.warn("Failed to decode overflowed items: {}", error.message()));
@@ -1294,9 +1293,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.RADIUS, this::setRadius);//the client is allowed to use whatever server sends
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.MIN, this::setMinY);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.MAX, this::setMaxY);
+        input.getInt(SerializationConstants.RADIUS).ifPresent(this::setRadius);//the client is allowed to use whatever server sends
+        input.getInt(SerializationConstants.MIN).ifPresent(this::setMinY);
+        input.getInt(SerializationConstants.MAX).ifPresent(this::setMaxY);
     }
 
     private List<ItemStack> getDrops(ServerLevel level, BlockState state, BlockPos pos) {

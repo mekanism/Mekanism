@@ -14,13 +14,15 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
 import mekanism.common.lib.Color;
 import mekanism.common.registries.MekanismModules;
+import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 import org.jetbrains.annotations.Nullable;
 
 class ColorSelection extends MiniElement<Integer> {
@@ -82,10 +84,11 @@ class ColorSelection extends MiniElement<Integer> {
             IModule<?> currentModule = parent.getCurrentModule();
             if (armorPreview != null && data.name().equals(ModuleColorModulationUnit.COLOR) && currentModule != null) {
                 ItemStack stack = parent.getContainerStack().copy();
-                if (stack.getItem() instanceof ArmorItem armorItem) {
+                Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+                if (StackUtils.isRenderableArmor(equippable)) {
                     //Ensure the preview has been initialized
                     armorPreview.get();
-                    EquipmentSlot slot = armorItem.getEquipmentSlot();
+                    EquipmentSlot slot = equippable.slot();
                     //Replace the current preview with our copy
                     armorPreview.updatePreview(slot, stack);
                     updatePreviewColor = c -> {

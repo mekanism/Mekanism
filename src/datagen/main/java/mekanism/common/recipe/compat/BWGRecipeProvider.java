@@ -42,7 +42,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     public BWGRecipeProvider(String modid) {
         super(modid);
-        //TODO - 1.21.8: Replace this with just the mod loaded condition
+        //TODO - 1.21.11: Replace this with just the mod loaded condition
         villageUpdate = new ModVersionLoadedCondition(modid, "2.4.0");
     }
 

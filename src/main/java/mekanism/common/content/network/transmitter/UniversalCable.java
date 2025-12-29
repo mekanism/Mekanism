@@ -132,9 +132,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         buffer.setEnergy(lastWrite);
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
         if (hasTransmitterNetwork()) {
             getTransmitterNetwork().validateSaveShares(this);
@@ -142,9 +141,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
         if (lastWrite == 0L) {
             nbtTags.remove(SerializationConstants.ENERGY);
         } else {
-            nbtTags.putLong(SerializationConstants.ENERGY, lastWrite);
+            output.putLong(SerializationConstants.ENERGY, lastWrite);
         }
-        return nbtTags;
     }
 
     @Override
@@ -216,9 +214,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @Override
-    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull CompoundTag tag, @NotNull HolderLookup.Provider provider) {
-        super.handleContentsUpdateTag(network, tag, provider);
-        NBTUtils.setLongIfPresent(tag, SerializationConstants.ENERGY, network.energyContainer::setEnergy);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> network.currentScale = scale);
+    protected void handleContentsUpdateTag(@NotNull EnergyNetwork network, @NotNull ValueInput input) {
+        super.handleContentsUpdateTag(network, input);
+        input.getLong(SerializationConstants.ENERGY).ifPresent(network.energyContainer::setEnergy);
+        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

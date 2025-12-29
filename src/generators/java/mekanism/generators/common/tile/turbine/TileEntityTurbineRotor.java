@@ -186,8 +186,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.BLADES, getHousedBlades());
-        nbtTags.putInt(SerializationConstants.POSITION, getPosition());
+        output.putInt(SerializationConstants.BLADES, getHousedBlades());
+        output.putInt(SerializationConstants.POSITION, getPosition());
     }
 
     @NotNull
@@ -204,11 +204,11 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         super.handleUpdateTag(input);
         int prevBlades = blades;
         int prevPosition = position;
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.BLADES, value -> blades = value);
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.POSITION, value -> {
-            position = value;
+        blades = input.getIntOr(SerializationConstants.BLADES, blades);
+        position = input.getIntOr(SerializationConstants.POSITION, position);
+        if (position != prevPosition) {
             updateRadius();
-        });
+        }
         if (prevBlades != blades || prevPosition != prevBlades) {
             rotationLower = 0;
             rotationUpper = 0;

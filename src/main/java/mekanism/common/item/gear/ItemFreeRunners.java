@@ -26,12 +26,12 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier.Operation;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.equipment.ArmorMaterial;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -41,12 +41,12 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     private static final AttributeModifier MOVEMENT_EFFICIENCY = new AttributeModifier(Mekanism.rl("free_runners"), 1, Operation.ADD_VALUE);
 
-    public ItemFreeRunners(Properties properties) {
+    public ItemFreeRunners(Item.Properties properties) {
         this(MekanismArmorMaterials.FREE_RUNNERS, properties);
     }
 
-    public ItemFreeRunners(Holder<ArmorMaterial> material, Properties properties) {
-        super(material, ArmorItem.Type.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
+    public ItemFreeRunners(Holder<ArmorMaterial> material, Item.Properties properties) {
+        super(material, ArmorType.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
               .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
         );
     }

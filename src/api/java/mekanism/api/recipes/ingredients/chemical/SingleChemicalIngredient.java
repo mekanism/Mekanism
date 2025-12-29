@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.6.0
  */
 @NothingNullByDefault
-public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 1.21.8: Refactor this to be more like SimpleFluidIngredient
+public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//TODO - 1.21.11: Refactor this to be more like SimpleFluidIngredient
 
     public static final MapCodec<SingleChemicalIngredient> CODEC = ChemicalStack.CHEMICAL_NON_EMPTY_CODEC.xmap(SingleChemicalIngredient::new, SingleChemicalIngredient::chemical)
           .fieldOf(SerializationConstants.CHEMICAL);

@@ -44,6 +44,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 //Note: We don't just extend AbstractContainerWidget as we want to be able to reference default implementations of AbstractWidget
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
@@ -595,12 +596,12 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
         if (visible) {
-            PoseStack pose = guiGraphics.pose();
-            pose.pushPose();
+            Matrix3x2fStack matrix = guiGraphics.pose();
+            matrix.pushMatrix();
             // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
-            pose.translate(getGuiLeft(), getGuiTop(), 0);
+            matrix.translate(getGuiLeft(), getGuiTop());
             renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
-            pose.popPose();
+            matrix.popMatrix();
         }
     }
 

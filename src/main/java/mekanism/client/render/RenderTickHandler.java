@@ -65,6 +65,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
@@ -90,7 +91,7 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -179,39 +180,42 @@ public class RenderTickHandler {
     }
 
     @SubscribeEvent
-    public void renderWorld(RenderLevelStageEvent event) {
-        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_TRANSLUCENT_BLOCKS) {
-            //Only do matrix transforms and mess with buffers if we actually have any renders to render
-            if (!transparentRenderers.isEmpty()) {
-                Camera camera = event.getCamera();
-                MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-                PoseStack poseStack = event.getPoseStack();
-                int renderTick = event.getRenderTick();
-                float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-                ProfilerFiller profiler = minecraft.getProfiler();
-                profiler.push(ProfilerConstants.DELAYED);
-                if (transparentRenderers.size() == 1) {
-                    //If we only have one render type we don't need to bother calculating any distances
-                    LazyRender lazyRender = transparentRenderers.getFirst();
-                    doTransparentRender(lazyRender.getRenderType(), lazyRender, camera, renderer, poseStack, renderTick, partialTick, profiler);
-                } else {
+    public void renderWorldAfterTranslucentBlocks(RenderLevelStageEvent.AfterTranslucentBlocks event) {
+        //Only do matrix transforms and mess with buffers if we actually have any renders to render
+        if (!transparentRenderers.isEmpty()) {
+            Camera camera = event.getCamera();
+            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+            PoseStack poseStack = event.getPoseStack();
+            int renderTick = event.getRenderTick();
+            float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
+            ProfilerFiller profiler = Profiler.get();
+            profiler.push(ProfilerConstants.DELAYED);
+            if (transparentRenderers.size() == 1) {
+                //If we only have one render type we don't need to bother calculating any distances
+                LazyRender lazyRender = transparentRenderers.getFirst();
+                doTransparentRender(lazyRender.getRenderType(), lazyRender, camera, renderer, poseStack, renderTick, partialTick, profiler);
+            } else {
 
-                    for (LazyRender render : transparentRenderers) {
-                        Vec3 renderPos = render.getCenterPos(partialTick);
-                        //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
-                        render.distance = camera.getPosition().distanceToSqr(renderPos);
-                    }
-                    //Sort in the order of furthest to closest (reverse of by closest)
-                    transparentRenderers.sort(Comparator.comparingDouble(info -> -info.distance));
-                    for (LazyRender render : transparentRenderers) {
-                        doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
-                    }
+                for (LazyRender render : transparentRenderers) {
+                    Vec3 renderPos = render.getCenterPos(partialTick);
+                    //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
+                    render.distance = camera.getPosition().distanceToSqr(renderPos);
                 }
-                renderer.endBatch();
-                transparentRenderers.clear();
-                profiler.pop();
+                //Sort in the order of furthest to closest (reverse of by closest)
+                transparentRenderers.sort(Comparator.comparingDouble(info -> -info.distance));
+                for (LazyRender render : transparentRenderers) {
+                    doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
+                }
             }
-        } else if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_PARTICLES && boltRenderer.hasBoltsToRender()) {
+            renderer.endBatch();
+            transparentRenderers.clear();
+            profiler.pop();
+        }
+    }
+
+    @SubscribeEvent
+    public void renderWorldAfterParticles(RenderLevelStageEvent.AfterParticles event) {
+        if (boltRenderer.hasBoltsToRender()) {
             MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             boltRenderer.render(event.getPartialTick().getGameTimeDeltaPartialTick(false), event.getPoseStack(), renderer, event.getCamera().getPosition());
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
@@ -233,7 +237,7 @@ public class RenderTickHandler {
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).gearModel();
             PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
-            PlayerModel<AbstractClientPlayer> model = renderer.getModel();
+            PlayerModel model = renderer.getModel();
             model.setAllVisible(true);
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
             boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
@@ -258,7 +262,7 @@ public class RenderTickHandler {
         Level world;
         //noinspection ConstantValue
         if (minecraft.player != null && (world = minecraft.player.level()) != null && minecraft.gameMode != null && MekanismRenderer.isRunningNormally()) {
-            float partialTicks = minecraft.getTimer().getGameTimeDeltaPartialTick(false);
+            float partialTicks = minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false);
             for (Player p : world.players()) {
                 //Traverse active jetpacks and do animations
                 if (Mekanism.playerState.isJetpackOn(p)) {
@@ -348,7 +352,7 @@ public class RenderTickHandler {
         boolean rightHanded = MekanismUtils.isRightArm(player, hand);
         if (minecraft.player == player && minecraft.options.getCameraType().isFirstPerson()) {
             flameVec = new Pos3D(1, 1, 1)
-                  .multiply(player.getViewVector(minecraft.getTimer().getGameTimeDeltaPartialTick(false)))
+                  .multiply(player.getViewVector(minecraft.getDeltaTracker().getGameTimeDeltaPartialTick(false)))
                   .yRot(rightHanded ? 15 : -15)
                   .translate(0, player.getEyeHeight() - 0.1, 0);
         } else {
@@ -386,7 +390,7 @@ public class RenderTickHandler {
             MultiBufferSource renderer = event.getMultiBufferSource();
             Camera info = event.getCamera();
             PoseStack matrix = event.getPoseStack();
-            ProfilerFiller profiler = world.getProfiler();
+            ProfilerFiller profiler = Profiler.get();
             BlockState blockState = world.getBlockState(pos);
 
             profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);

@@ -156,8 +156,8 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setCompoundIfPresent(tag, SerializationConstants.CHEMICAL, nbt -> chemicalTank.deserializeNBT(provider, nbt));
-        NBTUtils.setIntIfPresent(tag, SerializationConstants.PROGRESS, val -> processTicks = val);
+        input.child(SerializationConstants.CHEMICAL).ifPresent(chemicalTank::deserialize);
+        processTicks = input.getIntOr(SerializationConstants.PROGRESS, processTicks);
     }
 
     @Override

@@ -687,7 +687,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.RENDERING, value -> shouldRender = value);
+        shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, shouldRender);
         color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
@@ -765,7 +765,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     String getStatus() {
         if (hasFrequency()) {
-            //TODO - 1.21.8: Evaluate making it so that these cases get handled automatically with it just being an enum?
+            //TODO - 1.21.11: Evaluate making it so that these cases get handled automatically with it just being an enum?
             return switch (status) {
                 case READY -> "ready";
                 case NO_FRAME -> "no frame";

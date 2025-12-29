@@ -2,6 +2,7 @@ package mekanism.common.registries;
 
 import java.util.Collections;
 import java.util.EnumMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
@@ -14,11 +15,13 @@ import mekanism.common.registration.DatapackDeferredRegister;
 import mekanism.common.registration.DeferredMapCodecHolder;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.Util;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
+import org.jetbrains.annotations.Nullable;
 
 public class MekanismRobitSkins {
 
@@ -48,7 +51,7 @@ public class MekanismRobitSkins {
 
     public static SkinLookup lookup(RegistryAccess registryAccess, ResourceKey<RobitSkin> key) {
         Registry<RobitSkin> robitSkins = registryAccess.lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
-        Optional<RobitSkin> skin = robitSkins.getOptional(key);
+        Optional<Holder.Reference<RobitSkin>> skin = robitSkins.get(key);
         //noinspection OptionalIsPresent - Capturing lambda
         if (skin.isEmpty()) {
             return new SkinLookup(BASE, robitSkins.getOrThrow(BASE));
@@ -56,10 +59,24 @@ public class MekanismRobitSkins {
         return new SkinLookup(key, skin.get());
     }
 
-    public record SkinLookup(ResourceKey<RobitSkin> name, RobitSkin skin) {
+    public record SkinLookup(ResourceKey<RobitSkin> name, Holder.Reference<RobitSkin> skinHolder) {
 
         public ResourceLocation location() {
             return name.location();
+        }
+
+        //TODO - 1.21.11: Re-evaluate exposing this method
+        public RobitSkin skin() {
+            return skinHolder.value();
+        }
+
+        @Nullable
+        public ResourceLocation customModel() {
+            return skin().customModel();
+        }
+
+        public List<ResourceLocation> textures() {
+            return skin().textures();
         }
     }
 }

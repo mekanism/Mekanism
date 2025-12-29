@@ -1,6 +1,5 @@
 package mekanism.client.recipe_viewer.jei;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.Codec;
 import java.util.ArrayList;
 import java.util.EnumMap;
@@ -50,6 +49,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 
 //TODO: Re-evaluate this extending AbstractContainerEventHandler
 public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventHandler implements IRecipeCategory<RECIPE>, IGuiWrapper {
@@ -182,15 +182,15 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         //Translate back by our offset so that we are effectively rendering the foreground starting at 0, 0
         // This is needed to make sure that we render things like crystallizer text in the correct spot
         // If this ends up causing issues elsewhere we will need to look into it further
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(getGuiLeft(), getGuiTop(), 0);
+        Matrix3x2fStack matrix = guiGraphics.pose();
+        matrix.pushMatrix();
+        matrix.translate(getGuiLeft(), getGuiTop());
         renderElements(recipe, recipeSlotsView, guiGraphics, (int) mouseX, (int) mouseY);
-        pose.popPose();
+        matrix.popMatrix();
     }
 
     protected void renderElements(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
-        PoseStack pose = guiGraphics.pose();
+        Matrix3x2fStack matrix = guiGraphics.pose();
         for (GuiElement guiElement : guiElements) {
             guiElement.renderShifted(guiGraphics, x, y, 0);
         }
@@ -203,9 +203,9 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         // When using 200 the crystallizer screen's ore type slot ends up rendering in front of JEI's item rendering, so for now we are just setting this to zero
         int zOffset = 0;//200;
         for (GuiElement element : guiElements) {
-            pose.pushPose();
+            matrix.pushMatrix();
             element.onRenderForeground(guiGraphics, x, y, zOffset, zOffset);
-            pose.popPose();
+            matrix.popMatrix();
         }
     }
 

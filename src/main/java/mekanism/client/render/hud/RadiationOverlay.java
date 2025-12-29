@@ -9,11 +9,11 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.world.entity.player.Player;
+import net.neoforged.neoforge.client.gui.GuiLayer;
 import org.jetbrains.annotations.NotNull;
 
-public class RadiationOverlay implements LayeredDraw.Layer {
+public class RadiationOverlay implements GuiLayer {
 
     public static final RadiationOverlay INSTANCE = new RadiationOverlay();
 

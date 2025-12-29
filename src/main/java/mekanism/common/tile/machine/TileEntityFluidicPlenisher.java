@@ -237,13 +237,13 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putInt(SerializationConstants.PROGRESS, operatingTicks);
-        nbtTags.putBoolean(SerializationConstants.FINISHED, finishedCalc);
+        output.putInt(SerializationConstants.PROGRESS, operatingTicks);
+        output.putBoolean(SerializationConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
-            nbtTags.put(SerializationConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
+            output.putIntArray(SerializationConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
         }
         if (!usedNodes.isEmpty()) {
-            nbtTags.put(SerializationConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
+            output.putIntArray(SerializationConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
         }
     }
 
@@ -258,11 +258,11 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     @Deprecated
-    public void removeComponentsFromTag(@NotNull CompoundTag tag) {
-        super.removeComponentsFromTag(tag);
-        tag.remove(SerializationConstants.ACTIVE_NODES);
-        tag.remove(SerializationConstants.USED_NODES);
-        tag.remove(SerializationConstants.FINISHED);
+    public void removeComponentsFromTag(@NotNull ValueOutput output) {
+        super.removeComponentsFromTag(output);
+        output.discard(SerializationConstants.ACTIVE_NODES);
+        output.discard(SerializationConstants.USED_NODES);
+        output.discard(SerializationConstants.FINISHED);
     }
 
     public void reset() {

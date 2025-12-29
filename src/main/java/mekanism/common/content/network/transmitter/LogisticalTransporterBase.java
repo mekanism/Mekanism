@@ -392,12 +392,10 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         }
     }
 
-    @NotNull
     @Override
-    public CompoundTag write(@NotNull ValueOutput output) {
+    public void write(@NotNull ValueOutput output) {
         super.write(output);
         writeToNBT(provider, nbtTags);
-        return nbtTags;
     }
 
     public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {

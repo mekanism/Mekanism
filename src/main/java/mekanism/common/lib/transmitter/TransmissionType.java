@@ -29,6 +29,8 @@ public enum TransmissionType implements IHasEnumNameTranslationKey, StringRepres
     private final String name;
     private final String transmission;
     private final ILangEntry langEntry;
+    //TODO - 1.21.11: Remove this
+    @Deprecated(forRemoval = true)
     private final int legacyOrdinal;
 
     TransmissionType(String name, String transmission, ILangEntry langEntry, int legacyOrdinal) {
