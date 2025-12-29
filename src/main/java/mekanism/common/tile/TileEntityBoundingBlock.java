@@ -74,7 +74,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         if (tile != null && !(tile instanceof IBoundingBlock)) {
             // On the off chance that another block got placed there (which seems only likely with corruption, go ahead and log what we found.)
             Mekanism.logger.error("Found tile {} instead of an IBoundingBlock, at {} in {}. Multiblock cannot function", tile, getMainPos(),
-                  level == null ? "null" : level.dimension().location());
+                  level == null ? "null" : level.dimension().identifier());
             return null;
         }
         return (IBoundingBlock) tile;

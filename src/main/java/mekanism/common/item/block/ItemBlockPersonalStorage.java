@@ -12,7 +12,7 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,9 +29,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
 
-    private final ResourceLocation openStat;
+    private final Identifier openStat;
 
-    public ItemBlockPersonalStorage(BLOCK block, Item.Properties properties, ResourceLocation openStat) {
+    public ItemBlockPersonalStorage(BLOCK block, Item.Properties properties, Identifier openStat) {
         super(block, true, properties);
         this.openStat = openStat;
     }

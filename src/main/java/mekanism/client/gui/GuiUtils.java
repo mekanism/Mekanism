@@ -17,12 +17,13 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
@@ -40,7 +41,7 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    public static void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
+    public static void renderExtendedTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
         blitNineSlicedSized(guiGraphics, resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
@@ -48,7 +49,7 @@ public class GuiUtils {
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
     // small textures will tank FPS due to tiling
-    public static void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int texSideWidth, int texSideHeight, int left, int top, int width,
+    public static void renderBackgroundTexture(GuiGraphics guiGraphics, Identifier resource, int texSideWidth, int texSideHeight, int left, int top, int width,
           int height, int textureWidth, int textureHeight) {
         blitNineSlicedSized(guiGraphics, resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
     }
@@ -203,10 +204,10 @@ public class GuiUtils {
     }
 
     @Nullable
-    public static <CHILD extends GuiEventListener> CHILD findChild(List<? extends CHILD> children, double mouseX, double mouseY, int button, MouseClickedPredicate<CHILD> checker) {
+    public static <CHILD extends GuiEventListener> CHILD findChild(List<? extends CHILD> children, MouseButtonEvent event, boolean isDoubleClick, MouseClickedPredicate<CHILD> checker) {
         for (int i = children.size() - 1; i >= 0; i--) {
             CHILD child = children.get(i);
-            if (checker.test(child, mouseX, mouseY, button)) {
+            if (checker.test(child, event, isDoubleClick)) {
                 return child;
             }
         }
@@ -240,7 +241,7 @@ public class GuiUtils {
 
     public interface MouseClickedPredicate<ELEMENT> {
 
-        boolean test(ELEMENT element, double mouseX, double mouseY, int button);
+        boolean test(ELEMENT element, MouseButtonEvent event, boolean isDoubleClick);
     }
 
     public interface KeyPressedPredicate<ELEMENT> {
@@ -328,7 +329,7 @@ public class GuiUtils {
     }
 
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
-    public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+    public static void blitNineSlicedSized(GuiGraphics guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         ProfilerFiller profiler = Profiler.get();
         profiler.push("blit setup");
         RenderSystem.setShaderTexture(0, texture);
@@ -377,7 +378,7 @@ public class GuiUtils {
         profiler.pop();
     }
 
-    public static void blitNineSlicedSized(GuiGraphics guiGraphics, ResourceLocation texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+    public static void blitNineSlicedSized(GuiGraphics guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         blitNineSlicedSized(guiGraphics, texture, x, y, width, height, sliceSize, sliceSize, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
     }
 

@@ -4,8 +4,8 @@ import javax.annotation.Nullable;
 import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageEffects;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
@@ -20,8 +20,8 @@ public record MekanismDamageType(ResourceKey<DamageType> key, float exhaustion, 
         return new DamageType(registryName().toLanguageKey(), exhaustion, effects);
     }
 
-    public ResourceLocation registryName() {
-        return key.location();
+    public Identifier registryName() {
+        return key.identifier();
     }
 
     @NotNull

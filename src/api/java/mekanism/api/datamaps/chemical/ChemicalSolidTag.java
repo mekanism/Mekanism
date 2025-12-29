@@ -8,7 +8,7 @@ import mekanism.api.SerializationConstants;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -26,7 +26,7 @@ public record ChemicalSolidTag(TagKey<Item> solidRepresentation) {//TODO - 1.22:
      *
      * @see mekanism.api.datamaps.IMekanismDataMapTypes#chemicalSolidTag()
      */
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_solid_tag");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_solid_tag");
 
     private static final Codec<TagKey<Item>> TAG_CODEC = TagKey.codec(Registries.ITEM);
     /**

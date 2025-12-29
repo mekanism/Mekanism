@@ -21,7 +21,7 @@ import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.Chem
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -49,7 +49,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
     }
 
     @Override
-    public ResourceLocation getID() {
+    public Identifier getID() {
         return Mekanism.rl("data");
     }
 

@@ -24,12 +24,12 @@ import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -179,7 +179,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
      * @since 10.6.0
      */
     @Nullable
-    public final ModuleConfig<?> getNamedConfig(int installed, ResourceLocation name) {
+    public final ModuleConfig<?> getNamedConfig(int installed, Identifier name) {
         for (ModuleConfig<?> config : getConfigData(installed).configs()) {
             if (config.name().equals(name)) {
                 return config;
@@ -271,7 +271,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
                               List<StreamCodec<? super RegistryFriendlyByteBuf, ? extends ModuleConfig<?>>> streamCodecs) {
 
         private ConstructedConfigData construct() {
-            Set<ResourceLocation> uniqueNames = new HashSet<>(configs.size());
+            Set<Identifier> uniqueNames = new HashSet<>(configs.size());
             for (ModuleConfig<?> config : configs) {
                 if (!uniqueNames.add(config.name())) {
                     throw new IllegalStateException("Duplicate module config name " + config.name());

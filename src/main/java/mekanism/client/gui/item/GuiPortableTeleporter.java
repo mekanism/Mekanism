@@ -56,7 +56,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
                   }
               }, 158, 26)
         ).warning(WarningType.NOT_ENOUGH_ENERGY, () -> menu.getStatus() == TeleporterStatus.NOT_ENOUGH_ENERGY);
-        teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, (element, mouseX, mouseY) -> {
+        teleportButton = addRenderableWidget(new TranslationButton(this, 42, 147, 92, 20, MekanismLang.BUTTON_TELEPORT, (element, event, isDoubleClick) -> {
             GuiPortableTeleporter gui = (GuiPortableTeleporter) element.gui();
             TeleporterFrequency frequency = gui.getFrequency();
             if (frequency != null && gui.menu.getStatus().isReady()) {

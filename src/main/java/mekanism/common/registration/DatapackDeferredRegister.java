@@ -8,7 +8,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.robit.RobitSkin;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.StructureModifier;
@@ -63,6 +63,6 @@ public class DatapackDeferredRegister<T> extends DeferredMapCodecRegister<T> {
     }
 
     public ResourceKey<T> dataKey(String name) {
-        return ResourceKey.create(datapackRegistryName, ResourceLocation.fromNamespaceAndPath(getNamespace(), name));
+        return ResourceKey.create(datapackRegistryName, Identifier.fromNamespaceAndPath(getNamespace(), name));
     }
 }

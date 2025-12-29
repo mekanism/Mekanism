@@ -14,7 +14,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +43,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
     @Override
     protected void init() {
         super.init();
-        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (element, mouseX, mouseY) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 3, relativeY + 38, 12, getButtonLocation("left"), (element, event, isDoubleClick) -> {
             if (filter.hasFilter()) {
                 filter.previous();
                 slotDisplay.updateStackList();
@@ -51,7 +51,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             }
             return false;
         })).setTooltip(MekanismLang.LAST_ITEM);
-        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (element, mouseX, mouseY) -> {
+        addChild(new MekanismImageButton(gui(), relativeX + 16, relativeY + 38, 12, getButtonLocation("right"), (element, event, isDoubleClick) -> {
             if (filter.hasFilter()) {
                 filter.next();
                 slotDisplay.updateStackList();
@@ -93,7 +93,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
             filterSaveFailed(MekanismLang.OREDICTIONIFICATOR_FILTER_INVALID_PATH);
             return false;
         }
-        ResourceLocation filterLocation = ResourceLocation.fromNamespaceAndPath(modid, newFilter);
+        Identifier filterLocation = Identifier.fromNamespaceAndPath(modid, newFilter);
         if (filter.hasFilter() && filter.filterMatches(filterLocation)) {
             filterSaveFailed(MekanismLang.TAG_FILTER_SAME_TAG);
         } else if (TileEntityOredictionificator.isValidTarget(filterLocation)) {

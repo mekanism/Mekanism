@@ -8,13 +8,13 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class ItemStackToFluidEmiRecipe extends MekanismEmiRecipe<ItemStackToFluidRecipe> {
 
     private final int processTime;
 
-    public ItemStackToFluidEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, ItemStackToFluidRecipe recipe, int processTime) {
+    public ItemStackToFluidEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, ItemStackToFluidRecipe recipe, int processTime) {
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());

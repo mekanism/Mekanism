@@ -14,7 +14,7 @@ import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,8 +40,8 @@ public class MekanismModelCache extends BaseModelCache {
     public final JSONModelData VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
     public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[EnumUtils.DRIVE_STATUSES.length];
-    private final Map<ResourceLocation, JSONModelData> CUSTOM_ROBIT_MODELS = new HashMap<>();
-    private final Map<ResourceLocation, JSONModelData> ROBIT_SKINS = new HashMap<>();
+    private final Map<Identifier, JSONModelData> CUSTOM_ROBIT_MODELS = new HashMap<>();
+    private final Map<Identifier, JSONModelData> ROBIT_SKINS = new HashMap<>();
     private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
@@ -70,12 +70,12 @@ public class MekanismModelCache extends BaseModelCache {
 
     @Nullable
     public BakedModel getRobitSkin(@NotNull SkinLookup skinLookup) {
-        ResourceLocation skinName = skinLookup.location();
+        Identifier skinName = skinLookup.identifier();
         JSONModelData data;
         if (ROBIT_SKINS.containsKey(skinName)) {
             data = ROBIT_SKINS.get(skinName);
         } else {
-            ResourceLocation customModel = skinLookup.customModel();
+            Identifier customModel = skinLookup.customModel();
             if (customModel != null) {
                 //If multiple skins make use of the same custom model, have them all point at the same model data object
                 data = CUSTOM_ROBIT_MODELS.computeIfAbsent(customModel, this::registerJSONAndBake);
@@ -88,9 +88,9 @@ public class MekanismModelCache extends BaseModelCache {
     }
 
     /**
-     * Call via {@link IModuleHelper#addMekaSuitModuleModels(ResourceLocation)}.
+     * Call via {@link IModuleHelper#addMekaSuitModuleModels(Identifier)}.
      */
-    public ModuleOBJModelData registerMekaSuitModuleModel(ResourceLocation rl) {
+    public ModuleOBJModelData registerMekaSuitModuleModel(Identifier rl) {
         ModuleOBJModelData data = register(rl, ModuleOBJModelData::new);
         mekaSuitModules.add(data);
         return data;

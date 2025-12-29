@@ -1,8 +1,8 @@
 package mekanism.tools.common.material;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface IPaxelMaterial {
 
     float getPaxelDamage();

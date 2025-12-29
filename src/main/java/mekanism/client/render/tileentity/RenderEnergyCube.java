@@ -14,7 +14,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
@@ -41,7 +41,7 @@ public class RenderEnergyCube extends ModelTileEntityRenderer<TileEntityEnergyCu
                 float ticks = renderTick + partialTick;
                 float scaledTicks = 4 * ticks;
                 poseStack.pushPose();
-                Vec3 offset = renderPos.subtract(camera.getPosition());
+                Vec3 offset = renderPos.subtract(camera.position());
                 poseStack.translate(offset.x, offset.y, offset.z);
                 poseStack.scale(0.4F, 0.4F, 0.4F);
                 poseStack.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);

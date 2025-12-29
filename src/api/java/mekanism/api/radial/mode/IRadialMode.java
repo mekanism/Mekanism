@@ -2,7 +2,7 @@ package mekanism.api.radial.mode;
 
 import mekanism.api.text.EnumColor;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +23,7 @@ public interface IRadialMode {
      * @return Asset location of the icon to draw in this mode's slice of the radial menu.
      */
     @NotNull
-    ResourceLocation icon();
+    Identifier icon();
 
     /**
      * Gets the color to that is used for rendering this mode's slice of the radial menu when this mode is currently selected.

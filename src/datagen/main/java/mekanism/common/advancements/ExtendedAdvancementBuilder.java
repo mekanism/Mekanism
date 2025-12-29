@@ -12,9 +12,9 @@ import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
@@ -38,12 +38,12 @@ public class ExtendedAdvancementBuilder {
         return new ExtendedAdvancementBuilder(advancement, existingFileHelper);
     }
 
-    public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable ResourceLocation background, AdvancementType type, boolean showToast, boolean announceToChat,
+    public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
         return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background), type, showToast, announceToChat, hidden));
     }
 
-    public ExtendedAdvancementBuilder display(ItemLike item, @Nullable ResourceLocation background, AdvancementType type, boolean showToast, boolean announceToChat,
+    public ExtendedAdvancementBuilder display(ItemLike item, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
         return display(new ItemStack(item), background, type, showToast, announceToChat, hidden);
     }

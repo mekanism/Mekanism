@@ -27,6 +27,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
@@ -40,8 +41,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.ShapedRecipe;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import org.jetbrains.annotations.Contract;
@@ -210,7 +211,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }*/
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
-        return lastRecipe.value().isSpecial() || !player.level().getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
+        return lastRecipe.value().isSpecial() || !player.level().getGameRules().get(GameRules.LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
     }
 
     @Contract("null, _, _ -> false")
@@ -223,7 +224,7 @@ public class QIOCraftingWindow implements IContentsListener {
         if (lastRecipe != null) {
             player.triggerRecipeCrafted(lastRecipe, craftingInput.items());
             if (!lastRecipe.value().isSpecial()) {
-                if (player instanceof ServerPlayer serverPlayer && world.getGameRules().getBoolean(GameRules.RULE_LIMITED_CRAFTING) &&
+                if (player instanceof ServerPlayer serverPlayer && world instanceof ServerLevel level && level.getGameRules().get(GameRules.LIMITED_CRAFTING) &&
                     !serverPlayer.getRecipeBook().contains(lastRecipe)) {
                     //If the player cannot use the recipe, don't allow crafting
                     return false;

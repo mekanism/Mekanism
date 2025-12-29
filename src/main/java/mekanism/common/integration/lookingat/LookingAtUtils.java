@@ -39,7 +39,7 @@ import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -55,9 +55,9 @@ import org.jetbrains.annotations.Nullable;
  */
 public class LookingAtUtils {
 
-    public static final ResourceLocation ENERGY = Mekanism.rl("energy");
-    public static final ResourceLocation FLUID = Mekanism.rl("fluid");
-    public static final ResourceLocation CHEMICAL = Mekanism.rl("chemical");
+    public static final Identifier ENERGY = Mekanism.rl("energy");
+    public static final Identifier FLUID = Mekanism.rl("fluid");
+    public static final Identifier CHEMICAL = Mekanism.rl("chemical");
 
     private LookingAtUtils() {
     }

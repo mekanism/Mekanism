@@ -23,7 +23,6 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.Item;
 
 public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisticalSorter>, IFancyFontRenderer, ContainerEventHandler {
@@ -41,16 +40,16 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         int slotX = relativeX + 7;
         int colorSlotY = relativeY + slotOffset + 25;
         childAdder.apply(new GuiSlot(SlotType.NORMAL, gui, slotX, colorSlotY));
-        childAdder.apply(new ColorButton(gui, slotX + 1, colorSlotY + 1, 16, 16, () -> getFilter().color, (element, mouseX, mouseY) -> {
+        childAdder.apply(new ColorButton(gui, slotX + 1, colorSlotY + 1, 16, 16, () -> getFilter().color, (element, event, isDoubleClick) -> {
             SorterFilter<?> filter = getFilter();
-            filter.color = Screen.hasShiftDown() ? null : TransporterUtils.increment(filter.color);
+            filter.color = event.hasShiftDown() ? null : TransporterUtils.increment(filter.color);
             return true;
-        }, (element, mouseX, mouseY) -> {
+        }, (element, event, isDoubleClick) -> {
             SorterFilter<?> filter = getFilter();
             filter.color = TransporterUtils.decrement(filter.color);
             return true;
         }));
-        childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), (element, mouseX, mouseY) -> {
+        childAdder.apply(new MekanismImageButton(gui, relativeX + 148, relativeY + 18, 11, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "default.png"), (element, event, isDoubleClick) -> {
             SorterFilter<?> filter = getFilter();
             filter.allowDefault = !filter.allowDefault;
             return true;
@@ -68,7 +67,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         childAdder.apply(maxField);
         rangeSetter.accept(minField, maxField);
         childAdder.apply(new TooltipToggleButton(gui, relativeX + 148, relativeY + 56, 11, 14, MekanismUtils.getResource(ResourceType.GUI_BUTTON, "silk_touch.png"),
-              () -> isSingleItem() && getFilter().isEnabled(), (element, mouseX, mouseY) -> {
+              () -> isSingleItem() && getFilter().isEnabled(), (element, event, isDoubleClick) -> {
                   SorterFilter<?> filter = getFilter();
                   filter.sizeMode = !filter.sizeMode;
                   return true;

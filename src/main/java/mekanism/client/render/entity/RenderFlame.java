@@ -11,7 +11,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
@@ -66,7 +66,7 @@ public class RenderFlame extends EntityRenderer<EntityFlame> {
 
     @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityFlame entity) {
+    public Identifier getTextureLocation(@NotNull EntityFlame entity) {
         return MekanismUtils.getResource(ResourceType.RENDER, "flame.png");
     }
 }

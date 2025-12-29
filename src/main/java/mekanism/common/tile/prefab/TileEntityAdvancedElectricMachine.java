@@ -49,7 +49,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -232,7 +231,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
+        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override

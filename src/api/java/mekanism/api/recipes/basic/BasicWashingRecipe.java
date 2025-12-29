@@ -13,7 +13,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Contract;
 @NothingNullByDefault
 public class BasicWashingRecipe extends FluidChemicalToChemicalRecipe {
 
-    private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
+    private static final Holder<Item> CHEMICAL_WASHER = DeferredHolder.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_washer"));
 
     protected final FluidStackIngredient fluidInput;
     protected final ChemicalStackIngredient chemicalInput;

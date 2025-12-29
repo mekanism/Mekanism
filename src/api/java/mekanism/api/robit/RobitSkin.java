@@ -5,10 +5,10 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import org.jetbrains.annotations.NotNull;
@@ -41,7 +41,7 @@ public interface RobitSkin {
      * @apiNote This is mostly untested currently so if you run into issues please report them.
      */
     @Nullable
-    default ResourceLocation customModel() {
+    default Identifier customModel() {
         return null;
     }
 
@@ -56,7 +56,7 @@ public interface RobitSkin {
      *
      * @return Unmodifiable list of textures for this skin.
      */
-    List<ResourceLocation> textures();
+    List<Identifier> textures();
 
     /**
      * Checks if the given player has access to select this skin.
@@ -80,7 +80,7 @@ public interface RobitSkin {
      * @since 10.4.0
      */
     static String getTranslationKey(ResourceKey<? extends RobitSkin> key) {
-        return Util.makeDescriptionId("robit_skin", key.location());
+        return Util.makeDescriptionId("robit_skin", key.identifier());
     }
 
     /**

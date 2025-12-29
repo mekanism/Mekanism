@@ -18,11 +18,11 @@ import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SPSEmiRecipe extends MekanismEmiRecipe<SPSRecipeViewerRecipe> {
 
-    public SPSEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, SPSRecipeViewerRecipe recipe) {
+    public SPSEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, SPSRecipeViewerRecipe recipe) {
         super(category, id, recipe);
         addInputDefinition(recipe.input());
         addChemicalOutputDefinition(List.of(recipe.output()));

@@ -12,7 +12,7 @@ import mekanism.common.tile.TileEntityIndustrialAlarm;
 import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
@@ -36,7 +36,7 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
                 float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
                 Vec3 renderPos = Vec3.atBottomCenterOf(tile.getBlockPos());
                 poseStack.pushPose();
-                Vec3 offset = renderPos.subtract(camera.getPosition());
+                Vec3 offset = renderPos.subtract(camera.position());
                 poseStack.translate(offset.x, offset.y, offset.z);
                 switch (tile.getDirection()) {
                     case DOWN -> {

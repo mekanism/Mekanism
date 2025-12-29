@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.IRadialDataHelper.BooleanRadialModes;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -16,7 +16,7 @@ public class BooleanRadialData extends RadialData<IRadialMode> {
     private final BooleanRadialModes rawModes;
     private final boolean defaultMode;
 
-    BooleanRadialData(ResourceLocation identifier, BooleanRadialModes modes, boolean defaultMode) {
+    BooleanRadialData(Identifier identifier, BooleanRadialModes modes, boolean defaultMode) {
         super(identifier);
         this.rawModes = Objects.requireNonNull(modes, "Boolean modes cannot be null.");
         this.modes = List.of(this.rawModes.falseMode(), this.rawModes.trueMode());

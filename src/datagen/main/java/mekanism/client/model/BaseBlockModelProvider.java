@@ -1,7 +1,7 @@
 package mekanism.client.model;
 
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
 import net.neoforged.neoforge.client.model.generators.BlockModelProvider;
@@ -20,14 +20,14 @@ public abstract class BaseBlockModelProvider extends BlockModelProvider {
         return "Block model provider: " + modid;
     }
 
-    public BlockModelBuilder sideBottomTop(String name, ResourceLocation parent, ResourceLocation texture) {
+    public BlockModelBuilder sideBottomTop(String name, Identifier parent, Identifier texture) {
         return withExistingParent(name, parent)
               .texture("side", texture)
               .texture("bottom", texture)
               .texture("top", texture);
     }
 
-    public boolean textureExists(ResourceLocation texture) {
+    public boolean textureExists(Identifier texture) {
         return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
 }

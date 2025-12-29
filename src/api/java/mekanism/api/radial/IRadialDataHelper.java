@@ -4,7 +4,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Helper class for creating builtin implementations of {@link RadialData}.
@@ -31,7 +31,7 @@ public interface IRadialDataHelper {
      *
      * @return Enum based Radial Data implementation.
      */
-    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(ResourceLocation identifier, MODE defaultMode);
+    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(Identifier identifier, MODE defaultMode);
 
     /**
      * Creates an Enum based Radial Data implementation with a default mode of the first element in the given enum.
@@ -42,7 +42,7 @@ public interface IRadialDataHelper {
      *
      * @return Enum based Radial Data implementation.
      */
-    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(ResourceLocation identifier, Class<MODE> enumClass);
+    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(Identifier identifier, Class<MODE> enumClass);
 
     /**
      * Creates a Truncated Enum based Radial Data implementation out of the first accessibleValues in the enum of the default mode's type.
@@ -56,7 +56,7 @@ public interface IRadialDataHelper {
      *
      * @apiNote Does not currently support {@link mekanism.api.IDisableableEnum}.
      */
-    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForTruncated(ResourceLocation identifier, int accessibleValues, MODE defaultMode);
+    <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForTruncated(Identifier identifier, int accessibleValues, MODE defaultMode);
 
     /**
      * Creates a Boolean based Radial Data implementation with a default mode corresponding to {@link BooleanRadialModes#falseMode}.
@@ -66,9 +66,9 @@ public interface IRadialDataHelper {
      *
      * @return Boolean based Radial Data implementation.
      *
-     * @see #booleanBasedData(ResourceLocation, BooleanRadialModes, boolean)
+     * @see #booleanBasedData(Identifier, BooleanRadialModes, boolean)
      */
-    default RadialData<IRadialMode> booleanBasedData(ResourceLocation identifier, BooleanRadialModes modes) {
+    default RadialData<IRadialMode> booleanBasedData(Identifier identifier, BooleanRadialModes modes) {
         return booleanBasedData(identifier, modes, false);
     }
 
@@ -81,9 +81,9 @@ public interface IRadialDataHelper {
      *
      * @return Boolean based Radial Data implementation.
      *
-     * @see #booleanBasedData(ResourceLocation, BooleanRadialModes)
+     * @see #booleanBasedData(Identifier, BooleanRadialModes)
      */
-    RadialData<IRadialMode> booleanBasedData(ResourceLocation identifier, BooleanRadialModes modes, boolean defaultValue);
+    RadialData<IRadialMode> booleanBasedData(Identifier identifier, BooleanRadialModes modes, boolean defaultValue);
 
     /**
      * Record representing a boolean based pairing of two radial modes.

@@ -4,20 +4,21 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScrollList extends GuiScrollableElement {
 
-    public static final ResourceLocation SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
+    public static final Identifier SCROLL_LIST = MekanismUtils.getResource(ResourceType.GUI, "scroll_list.png");
     public static final int TEXTURE_WIDTH = 6;
     public static final int TEXTURE_HEIGHT = 6;
 
-    private final ResourceLocation background;
+    private final Identifier background;
     private final int backgroundSideSize;
     protected final int elementHeight;
 
-    protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, ResourceLocation background, int backgroundSideSize) {
+    protected GuiScrollList(IGuiWrapper gui, int x, int y, int width, int height, int elementHeight, Identifier background, int backgroundSideSize) {
         super(SCROLL_LIST, gui, x, y, width, height, width - 6, 2, 4, 4, height - 4);
         this.elementHeight = elementHeight;
         this.background = background;
@@ -49,15 +50,15 @@ public abstract class GuiScrollList extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
-        if (mouseX >= getX() + 1 && mouseX < getX() + barXShift - 1 && mouseY >= getY() + 1 && mouseY < getBottom() - 1) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
+        if (event.x() >= getX() + 1 && event.x() < getX() + barXShift - 1 && event.y() >= getY() + 1 && event.y() < getBottom() - 1) {
             int index = getCurrentSelection();
             int focused = getFocusedElements();
             int maxElements = getMaxElements();
             for (int i = 0; i < focused && index + i < maxElements; i++) {
                 int shiftedY = getY() + 1 + elementHeight * i;
-                if (mouseY >= shiftedY && mouseY <= shiftedY + elementHeight) {
+                if (event.y() >= shiftedY && event.y() <= shiftedY + elementHeight) {
                     setSelected(index + i);
                     return;
                 }

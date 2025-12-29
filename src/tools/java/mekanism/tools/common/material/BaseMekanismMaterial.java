@@ -1,8 +1,8 @@
 package mekanism.tools.common.material;
 
 import java.util.List;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.tools.common.ToolsTags;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
 
     int getShieldDurability();

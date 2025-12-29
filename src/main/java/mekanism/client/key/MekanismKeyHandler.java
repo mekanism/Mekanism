@@ -1,5 +1,6 @@
 package mekanism.client.key;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Optional;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.client.MekanismClient;
@@ -24,13 +25,12 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.KeyModifier;
-import org.lwjgl.glfw.GLFW;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.SlotResult;
 
 public class MekanismKeyHandler {
 
-    public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HAND_MODE).conflictInGame().keyCode(GLFW.GLFW_KEY_N)
+    public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HAND_MODE).conflictInGame().keyCode(InputConstants.KEY_N)
           .onKeyDown((kb, isRepeat) -> {
               Player player = Minecraft.getInstance().player;
               if (player != null) {
@@ -42,27 +42,28 @@ public class MekanismKeyHandler {
                   }
               }
           }).build();
-    public static final KeyMapping headModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HEAD_MODE).conflictInGame().keyCode(GLFW.GLFW_KEY_V)
+    public static final KeyMapping headModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HEAD_MODE).conflictInGame().keyCode(InputConstants.KEY_V)
           .onKeyDown((kb, isRepeat) -> handlePotentialModeItem(EquipmentSlot.HEAD)).build();
-    public static final KeyMapping chestModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_CHEST_MODE).conflictInGame().keyCode(GLFW.GLFW_KEY_G)
+    public static final KeyMapping chestModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_CHEST_MODE).conflictInGame().keyCode(InputConstants.KEY_G)
           .onKeyDown((kb, isRepeat) -> handlePotentialModeItem(EquipmentSlot.CHEST)).build();
-    public static final KeyMapping legsModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_LEGS_MODE).conflictInGame().keyCode(GLFW.GLFW_KEY_J)
+    public static final KeyMapping legsModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_LEGS_MODE).conflictInGame().keyCode(InputConstants.KEY_J)
           .onKeyDown((kb, isRepeat) -> handlePotentialModeItem(EquipmentSlot.LEGS)).build();
-    public static final KeyMapping feetModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_FEET_MODE).conflictInGame().keyCode(GLFW.GLFW_KEY_B)
+    public static final KeyMapping feetModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_FEET_MODE).conflictInGame().keyCode(InputConstants.KEY_B)
           .onKeyDown((kb, isRepeat) -> handlePotentialModeItem(EquipmentSlot.FEET)).build();
-    public static final KeyMapping detailsKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DETAILS_MODE).conflictInGui().keyCode(GLFW.GLFW_KEY_LEFT_SHIFT).build();
+    public static final KeyMapping detailsKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DETAILS_MODE).conflictInGui().keyCode(InputConstants.KEY_LSHIFT).build();
     public static final KeyMapping descriptionKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_DESCRIPTION_MODE).conflictInGui().modifier(KeyModifier.SHIFT)
-          .keyCode(GLFW.GLFW_KEY_N).build();
-    public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_MODULE_TWEAKER).conflictInGame().keyCode(GLFW.GLFW_KEY_BACKSLASH)
+          .keyCode(InputConstants.KEY_N).build();
+    public static final KeyMapping moduleTweakerKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_MODULE_TWEAKER).conflictInGame().keyCode(InputConstants.KEY_BACKSLASH)
           .onKeyDown((kb, isRepeat) -> {
               Player player = Minecraft.getInstance().player;
               if (player != null && ModuleTweakerContainer.hasTweakableItem(player)) {
                   PacketUtils.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
               }
           }).build();
-    public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(GLFW.GLFW_KEY_LEFT_CONTROL)
+    //TODO - 1.21.11: Evaluate control vs command for macs
+    public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(InputConstants.KEY_LCONTROL)
           .onKeyDown((kb, isRepeat) -> MekanismClient.updateKey(kb, KeySync.BOOST)).onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST)).build();
-    public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(GLFW.GLFW_KEY_H)
+    public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(InputConstants.KEY_H)
           .onKeyDown((kb, isRepeat) -> {
               MekanismConfig.client.enableHUD.set(!MekanismConfig.client.enableHUD.get());
               // save the updated config info

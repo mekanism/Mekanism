@@ -11,14 +11,14 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
 public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEnhancementUnit> {
 
-    private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");
+    private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "vision_enhancement_unit.png");
 
     @Override
     public void tickServer(IModule<ModuleVisionEnhancementUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {

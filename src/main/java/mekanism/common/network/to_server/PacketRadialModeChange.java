@@ -12,19 +12,19 @@ import mekanism.common.network.PacketUtils;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import org.jetbrains.annotations.NotNull;
 
-public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> path, int networkRepresentation) implements IMekanismPacket {
+public record PacketRadialModeChange(EquipmentSlot slot, List<Identifier> path, int networkRepresentation) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketRadialModeChange> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("radial_mode"));
     public static final StreamCodec<ByteBuf, PacketRadialModeChange> STREAM_CODEC = StreamCodec.composite(
           PacketUtils.EQUIPMENT_SLOT_STREAM_CODEC, PacketRadialModeChange::slot,
-          ResourceLocation.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketRadialModeChange::path,
+          Identifier.STREAM_CODEC.apply(ByteBufCodecs.list()), PacketRadialModeChange::path,
           ByteBufCodecs.VAR_INT, PacketRadialModeChange::networkRepresentation,
           PacketRadialModeChange::new
     );
@@ -43,7 +43,7 @@ public record PacketRadialModeChange(EquipmentSlot slot, List<ResourceLocation> 
         if (!stack.isEmpty() && stack.getItem() instanceof IGenericRadialModeItem radialModeItem) {
             RadialData<?> radialData = radialModeItem.getRadialData(stack);
             if (radialData != null) {
-                for (ResourceLocation path : path) {
+                for (Identifier path : path) {
                     INestedRadialMode nestedData = radialData.fromIdentifier(path);
                     if (nestedData == null || !nestedData.hasNestedData()) {
                         Mekanism.logger.warn("Could not find path ({}) in current radial data.", path);

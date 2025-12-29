@@ -5,14 +5,14 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.dispenser.BlockSource;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.item.BucketItem;
@@ -43,10 +43,10 @@ import org.jetbrains.annotations.NotNull;
 
 public class FluidDeferredRegister {
 
-    private static final ResourceLocation OVERLAY = ResourceLocation.withDefaultNamespace("block/water_overlay");
-    private static final ResourceLocation RENDER_OVERLAY = ResourceLocation.withDefaultNamespace("textures/misc/underwater.png");
-    private static final ResourceLocation LIQUID = Mekanism.rl("liquid/liquid");
-    private static final ResourceLocation LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
+    private static final Identifier OVERLAY = Identifier.withDefaultNamespace("block/water_overlay");
+    private static final Identifier RENDER_OVERLAY = Identifier.withDefaultNamespace("textures/misc/underwater.png");
+    private static final Identifier LIQUID = Mekanism.rl("liquid/liquid");
+    private static final Identifier LIQUID_FLOW = Mekanism.rl("liquid/liquid_flow");
     //Copy of/based off of vanilla's lava/water bucket dispense behavior
     private static final DispenseItemBehavior BUCKET_DISPENSE_BEHAVIOR = new DefaultDispenseItemBehavior() {
         @NotNull
@@ -118,7 +118,7 @@ public class FluidDeferredRegister {
         });
 
         //TODO: Ideally we wouldn't have to create holders for these suppliers and instead could just somehow use the actual registered ones
-        ResourceLocation baseKey = ResourceLocation.fromNamespaceAndPath(fluidRegister.getNamespace(), name);
+        Identifier baseKey = Identifier.fromNamespaceAndPath(fluidRegister.getNamespace(), name);
         BaseFlowingFluid.Properties fluidProperties = new BaseFlowingFluid.Properties(
               fluidType,
               DeferredHolder.create(Registries.FLUID, baseKey),
@@ -210,11 +210,11 @@ public class FluidDeferredRegister {
 
     public static class FluidTypeRenderProperties {
 
-        private ResourceLocation stillTexture = LIQUID;
-        private ResourceLocation flowingTexture = LIQUID_FLOW;
+        private Identifier stillTexture = LIQUID;
+        private Identifier flowingTexture = LIQUID_FLOW;
         //For now all our fluids use the same "overlay" for being against glass as vanilla water.
-        private ResourceLocation overlayTexture = OVERLAY;
-        private ResourceLocation renderOverlayTexture = RENDER_OVERLAY;
+        private Identifier overlayTexture = OVERLAY;
+        private Identifier renderOverlayTexture = RENDER_OVERLAY;
         private int color = 0xFFFFFFFF;
 
         private FluidTypeRenderProperties() {
@@ -224,20 +224,20 @@ public class FluidDeferredRegister {
             return new FluidTypeRenderProperties();
         }
 
-        public FluidTypeRenderProperties texture(ResourceLocation still, ResourceLocation flowing) {
+        public FluidTypeRenderProperties texture(Identifier still, Identifier flowing) {
             this.stillTexture = still;
             this.flowingTexture = flowing;
             return this;
         }
 
-        public FluidTypeRenderProperties texture(ResourceLocation still, ResourceLocation flowing, ResourceLocation overlay) {
+        public FluidTypeRenderProperties texture(Identifier still, Identifier flowing, Identifier overlay) {
             this.stillTexture = still;
             this.flowingTexture = flowing;
             this.overlayTexture = overlay;
             return this;
         }
 
-        public FluidTypeRenderProperties renderOverlay(ResourceLocation renderOverlay) {
+        public FluidTypeRenderProperties renderOverlay(Identifier renderOverlay) {
             this.renderOverlayTexture = renderOverlay;
             return this;
         }
@@ -250,10 +250,10 @@ public class FluidDeferredRegister {
 
     public static class MekanismFluidType extends FluidType {
 
-        public final ResourceLocation stillTexture;
-        public final ResourceLocation flowingTexture;
-        public final ResourceLocation overlayTexture;
-        public final ResourceLocation renderOverlayTexture;
+        public final Identifier stillTexture;
+        public final Identifier flowingTexture;
+        public final Identifier overlayTexture;
+        public final Identifier renderOverlayTexture;
         public final int color;
 
         public MekanismFluidType(FluidType.Properties properties, FluidTypeRenderProperties renderProperties) {

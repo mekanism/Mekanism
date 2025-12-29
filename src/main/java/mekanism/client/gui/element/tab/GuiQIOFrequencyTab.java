@@ -14,12 +14,14 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
 
-    private static final ResourceLocation FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "frequency.png");
+    private static final Identifier FREQUENCY = MekanismUtils.getResource(ResourceType.GUI, "frequency.png");
 
     private final InteractionHand currentHand;
     private boolean isItem;
@@ -42,7 +44,7 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (isItem) {
             PacketUtils.sendToServer(new PacketItemButtonPress(ClickedItemButton.QIO_FREQUENCY_SELECT, currentHand));
         } else {

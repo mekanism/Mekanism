@@ -6,12 +6,12 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiArrowSelection extends GuiTexturedElement {
 
-    private static final ResourceLocation ARROW = MekanismUtils.getResource(ResourceType.GUI, "arrow_selection.png");
+    private static final Identifier ARROW = MekanismUtils.getResource(ResourceType.GUI, "arrow_selection.png");
 
     private final Supplier<Component> targetText;
 

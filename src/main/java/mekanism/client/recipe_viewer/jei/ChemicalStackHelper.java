@@ -21,7 +21,7 @@ import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -48,7 +48,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
-    public ResourceLocation getResourceLocation(ChemicalStack ingredient) {
+    public Identifier getResourceLocation(ChemicalStack ingredient) {
         return RegistryUtils.getName(ingredient.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY);
     }
 
@@ -86,7 +86,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
-    public Stream<ResourceLocation> getTagStream(ChemicalStack ingredient) {
+    public Stream<Identifier> getTagStream(ChemicalStack ingredient) {
         return ingredient.getTags().map(TagKey::location);
     }
 

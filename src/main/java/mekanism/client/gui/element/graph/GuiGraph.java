@@ -16,7 +16,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -48,7 +48,7 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw Black and border
         renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
-        ResourceLocation texture = getResource();
+        Identifier texture = getResource();
         //Draw the graph
         int size = graphData.size();
         int x = relativeX + 1;

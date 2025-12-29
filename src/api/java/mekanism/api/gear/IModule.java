@@ -7,7 +7,7 @@ import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -53,7 +53,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @since 10.6.0
      */
     @Nullable
-    <TYPE> ModuleConfig<TYPE> getConfig(ResourceLocation name);
+    <TYPE> ModuleConfig<TYPE> getConfig(Identifier name);
 
     /**
      * Gets the value of a boolean config with the given name.
@@ -64,7 +64,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.6.0
      */
-    default boolean getBooleanConfigOrFalse(ResourceLocation name) {
+    default boolean getBooleanConfigOrFalse(Identifier name) {
         ModuleConfig<Boolean> config = getConfig(name);
         return config != null && config.get();
     }
@@ -77,7 +77,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @throws IllegalArgumentException If this module does not contain a config with the given name.
      * @since 10.6.0
      */
-    default <TYPE> ModuleConfig<TYPE> getConfigOrThrow(ResourceLocation name) {
+    default <TYPE> ModuleConfig<TYPE> getConfigOrThrow(Identifier name) {
         ModuleConfig<TYPE> config = getConfig(name);
         if (config == null) {
             throw new IllegalArgumentException("Expected module to contain a config with name " + name);

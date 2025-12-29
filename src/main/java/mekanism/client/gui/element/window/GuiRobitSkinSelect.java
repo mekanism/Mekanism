@@ -26,12 +26,12 @@ public class GuiRobitSkinSelect extends GuiWindow {
         this.robit = robit;
         selection = addChild(new GuiRobitSkinSelectScroll(gui(), relativeX + 6, relativeY + 18, this.robit, () -> gui.getMenu().getUnlockedSkins()));
         addChild(new TranslationButton(gui, relativeX + width / 2 - 61, relativeY + 165, 60, 20, MekanismLang.BUTTON_CANCEL, this::close));
-        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + 165, 60, 20, MekanismLang.BUTTON_CONFIRM, (element, mouseX, mouseY) -> {
+        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + 165, 60, 20, MekanismLang.BUTTON_CONFIRM, (element, event, isDoubleClick) -> {
             ResourceKey<RobitSkin> selectedSkin = selection.getSelectedSkin();
             if (selectedSkin != this.robit.getSkin()) {
                 PacketUtils.sendToServer(new PacketRobitSkin(this.robit, selectedSkin));
             }
-            return close(element, mouseX, mouseY);
+            return close(element, event, isDoubleClick);
         }));
         gui.getMenu().startTracking(MekanismContainer.SKIN_SELECT_WINDOW, gui.getMenu());
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.CONTAINER_TRACK_SKIN_SELECT, this.robit, MekanismContainer.SKIN_SELECT_WINDOW));

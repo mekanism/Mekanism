@@ -5,7 +5,7 @@ import mcjty.theoneprobe.api.IElementFactory;
 import mekanism.common.integration.lookingat.EnergyElement;
 import mekanism.common.integration.lookingat.LookingAtUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class TOPEnergyElement extends EnergyElement implements IElement {
 
@@ -26,7 +26,7 @@ public class TOPEnergyElement extends EnergyElement implements IElement {
         }
 
         @Override
-        public ResourceLocation getId() {
+        public Identifier getId() {
             return LookingAtUtils.ENERGY;
         }
     }

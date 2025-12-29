@@ -27,7 +27,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -184,22 +184,22 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     }
 
     @Override
-    public IHUDElement hudElementEnabled(ResourceLocation icon, boolean enabled) {
+    public IHUDElement hudElementEnabled(Identifier icon, boolean enabled) {
         return hudElement(icon, OnOff.caps(enabled, false).getTextComponent(), enabled ? HUDColor.REGULAR : HUDColor.FADED);
     }
 
     @Override
-    public IHUDElement hudElementPercent(ResourceLocation icon, double ratio) {
+    public IHUDElement hudElementPercent(Identifier icon, double ratio) {
         return hudElement(icon, TextUtils.getPercent(ratio), ratio > 0.2 ? HUDColor.REGULAR : (ratio > 0.1 ? HUDColor.WARNING : HUDColor.DANGER));
     }
 
     @Override
-    public IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color) {
+    public IHUDElement hudElement(Identifier icon, Component text, HUDColor color) {
         return HUDElement.of(icon, text, HUDElement.HUDColor.from(color));
     }
 
     @Override
-    public synchronized void addMekaSuitModuleModels(ResourceLocation location) {
+    public synchronized void addMekaSuitModuleModels(Identifier location) {
         MekanismModelCache.INSTANCE.registerMekaSuitModuleModel(location);
     }
 

@@ -16,7 +16,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +28,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
 
     @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityRobit robit) {
+    public Identifier getTextureLocation(@NotNull EntityRobit robit) {
         return RobitSpriteUploader.ATLAS_LOCATION;
     }
 
@@ -55,7 +55,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitModelWrapper> {
             BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
             if (model == null) {
                 //No model means we can't render (this shouldn't happen as we try to fall back to the default skin)
-                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skinLookup.location());
+                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", skinLookup.identifier());
             } else {
                 matrix.pushPose();
                 matrix.mulPose(Axis.XP.rotationDegrees(180));

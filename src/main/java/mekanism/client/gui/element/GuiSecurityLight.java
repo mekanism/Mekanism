@@ -5,12 +5,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSecurityLight extends GuiTexturedElement {
 
-    private static final ResourceLocation LIGHTS = MekanismUtils.getResource(ResourceType.GUI, "security_lights.png");
+    private static final Identifier LIGHTS = MekanismUtils.getResource(ResourceType.GUI, "security_lights.png");
     private final IntSupplier lightSupplier;
 
     public GuiSecurityLight(IGuiWrapper gui, int x, int y, IntSupplier lightSupplier) {

@@ -53,7 +53,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
@@ -414,7 +414,7 @@ public final class MekanismUtils {
      *
      * @return the corresponding ResourceLocation
      */
-    public static ResourceLocation getResource(ResourceType type, String name) {
+    public static Identifier getResource(ResourceType type, String name) {
         return Mekanism.rl(type.getPrefix() + name);
     }
 

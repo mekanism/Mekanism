@@ -5,7 +5,7 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mezz.jei.api.helpers.ICodecHelper;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -18,7 +18,7 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
 
     @NotNull
     @Override
-    public ResourceLocation getRegistryName(RecipeHolder<RECIPE> recipe) {
+    public Identifier getRegistryName(RecipeHolder<RECIPE> recipe) {
         return recipe.id();
     }
 

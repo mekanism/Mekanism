@@ -25,7 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +66,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName(@NotNull FissionRecipeViewerRecipe recipe) {
+    public Identifier getRegistryName(@NotNull FissionRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 

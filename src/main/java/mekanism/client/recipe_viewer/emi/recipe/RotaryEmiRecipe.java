@@ -11,7 +11,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.inventory.container.slot.SlotOverlay;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,7 +20,7 @@ public class RotaryEmiRecipe extends MekanismEmiRecipe<RotaryRecipe> {
     private final RecipeHolder<RotaryRecipe> recipeHolder;
     private final boolean condensentrating;
 
-    public RotaryEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, RecipeHolder<RotaryRecipe> recipeHolder, boolean condensentrating) {
+    public RotaryEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, RecipeHolder<RotaryRecipe> recipeHolder, boolean condensentrating) {
         super(category, id, recipeHolder.value());
         this.recipeHolder = recipeHolder;
         this.condensentrating = condensentrating;

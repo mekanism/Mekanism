@@ -3,7 +3,7 @@ package mekanism.additions.common.config;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.common.config.IConfigTranslation;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

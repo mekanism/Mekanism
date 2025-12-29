@@ -17,7 +17,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.core.BlockPos;
@@ -84,7 +84,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     }
 
     protected final boolean isInsideBounds(Camera camera, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
-        Vec3 projectedView = camera.getPosition();
+        Vec3 projectedView = camera.position();
         return minX <= projectedView.x && projectedView.x <= maxX &&
                minY <= projectedView.y && projectedView.y <= maxY &&
                minZ <= projectedView.z && projectedView.z <= maxZ;

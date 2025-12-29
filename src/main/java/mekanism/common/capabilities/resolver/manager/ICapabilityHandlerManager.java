@@ -1,12 +1,12 @@
 package mekanism.common.capabilities.resolver.manager;
 
 import java.util.List;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface ICapabilityHandlerManager<CONTAINER> extends ICapabilityResolver<@Nullable Direction> {
 
     /**

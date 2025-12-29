@@ -8,6 +8,8 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerContainer> {
 
@@ -30,7 +32,7 @@ public class GuiTargetDirectionTab extends GuiInsetToggleElement<QIOItemViewerCo
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         dataSource.toggleTargetDirection();
     }
 }

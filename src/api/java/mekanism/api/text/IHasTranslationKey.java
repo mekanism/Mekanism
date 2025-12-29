@@ -1,11 +1,11 @@
 package mekanism.api.text;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jetbrains.annotations.NotNull;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface IHasTranslationKey {
 
     /**

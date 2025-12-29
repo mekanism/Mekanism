@@ -12,7 +12,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -302,7 +302,7 @@ public interface IModuleHelper {
      *
      * @return A new HUD element.
      */
-    IHUDElement hudElement(ResourceLocation icon, Component text, HUDColor color);
+    IHUDElement hudElement(Identifier icon, Component text, HUDColor color);
 
     /**
      * Helper method to create a HUD element representing an enabled state with a given icon.
@@ -312,7 +312,7 @@ public interface IModuleHelper {
      *
      * @return A new HUD element.
      */
-    IHUDElement hudElementEnabled(ResourceLocation icon, boolean enabled);
+    IHUDElement hudElementEnabled(Identifier icon, boolean enabled);
 
     /**
      * Helper method to create a HUD element representing a ratio with a given icon.
@@ -323,17 +323,17 @@ public interface IModuleHelper {
      *
      * @return A new HUD element.
      */
-    IHUDElement hudElementPercent(ResourceLocation icon, double ratio);
+    IHUDElement hudElementPercent(Identifier icon, double ratio);
 
     /**
      * Adds a file that contains overrides and models for some custom modules.
      *
-     * @param location Asset location assumed to be for an obj file. The {@link ResourceLocation} for the modules Mekanism adds is
+     * @param location Asset location assumed to be for an obj file. The {@link Identifier} for the modules Mekanism adds is
      *                 {@code mekanism:models/entity/mekasuit_modules.obj}
      *
      * @apiNote Must only be called on the client side and from {@link FMLClientSetupEvent}.
      */
-    void addMekaSuitModuleModels(ResourceLocation location);
+    void addMekaSuitModuleModels(Identifier location);
 
     /**
      * Adds a model spec for a specific MekaSuit Module to allow it to render as part of the MekaSuit when installed and enabled. This method causes the "active" model to

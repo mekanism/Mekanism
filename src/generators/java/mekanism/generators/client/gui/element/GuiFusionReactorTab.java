@@ -17,7 +17,7 @@ import mekanism.generators.common.network.to_server.PacketGeneratorsTileButtonPr
 import mekanism.generators.common.network.to_server.PacketGeneratorsTileButtonPress.ClickedGeneratorsTileButton;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorController;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReactorController, FusionReactorTab> {
 
@@ -33,10 +33,10 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
         private final ClickedGeneratorsTileButton button;
         private final ColorRegistryObject colorRO;
         private final ILangEntry description;
-        private final ResourceLocation path;
+        private final Identifier path;
         private final int yPos;
 
-        FusionReactorTab(ResourceLocation path, ILangEntry description, int y, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
+        FusionReactorTab(Identifier path, ILangEntry description, int y, ClickedGeneratorsTileButton button, ColorRegistryObject colorRO) {
             this.path = path;
             this.description = description;
             this.yPos = y;
@@ -45,7 +45,7 @@ public class GuiFusionReactorTab extends GuiTabElementType<TileEntityFusionReact
         }
 
         @Override
-        public ResourceLocation getResource() {
+        public Identifier getResource() {
             return path;
         }
 

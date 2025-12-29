@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.function.UnaryOperator;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 import net.neoforged.neoforge.registries.datamaps.RegisterDataMapTypesEvent;
@@ -23,7 +23,7 @@ public final class DataMapTypeRegister {
 
     private final List<DataMapType<?, ?>> types = new ArrayList<>();
 
-    public <R, T> DataMapType<R, T> register(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, UnaryOperator<DataMapType.Builder<T, R>> builder) {
+    public <R, T> DataMapType<R, T> register(Identifier name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, UnaryOperator<DataMapType.Builder<T, R>> builder) {
         if (name.getNamespace().equals(namespace)) {
             final DataMapType<R, T> type = builder.apply(DataMapType.builder(name, registryKey, codec)).build();
             this.types.add(type);
@@ -33,15 +33,15 @@ public final class DataMapTypeRegister {
                                            name.getNamespace() + "'");
     }
 
-    public <R, T> DataMapType<R, T> registerSynced(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, Codec<T> networkCodec) {
+    public <R, T> DataMapType<R, T> registerSynced(Identifier name, ResourceKey<Registry<R>> registryKey, Codec<T> codec, Codec<T> networkCodec) {
         return register(name, registryKey, codec, builder -> builder.synced(networkCodec, true));
     }
 
-    public <R, T> DataMapType<R, T> registerSimpleSynced(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
+    public <R, T> DataMapType<R, T> registerSimpleSynced(Identifier name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
         return registerSynced(name, registryKey, codec, codec);
     }
 
-    public <R, T> DataMapType<R, T> registerSimple(ResourceLocation name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
+    public <R, T> DataMapType<R, T> registerSimple(Identifier name, ResourceKey<Registry<R>> registryKey, Codec<T> codec) {
         return register(name, registryKey, codec, UnaryOperator.identity());
     }
 

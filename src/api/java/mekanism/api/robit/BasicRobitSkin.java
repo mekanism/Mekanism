@@ -4,7 +4,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * @since 10.4.0
  */
 @NothingNullByDefault
-public record BasicRobitSkin(List<ResourceLocation> textures, @Nullable ResourceLocation customModel) implements RobitSkin {
+public record BasicRobitSkin(List<Identifier> textures, @Nullable Identifier customModel) implements RobitSkin {
 
     public BasicRobitSkin {
         Objects.requireNonNull(textures, "Textures cannot be null.");
@@ -31,7 +31,7 @@ public record BasicRobitSkin(List<ResourceLocation> textures, @Nullable Resource
      *
      * @param textures Textures to use for the skin.
      */
-    public BasicRobitSkin(List<ResourceLocation> textures) {
+    public BasicRobitSkin(List<Identifier> textures) {
         this(textures, null);
     }
 

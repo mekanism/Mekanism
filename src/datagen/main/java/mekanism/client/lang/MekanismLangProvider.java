@@ -76,7 +76,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
@@ -857,7 +857,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addJadeConfigTooltip(LookingAtUtils.CHEMICAL, "Chemical");
     }
 
-    private void addJadeConfigTooltip(ResourceLocation location, String value) {
+    private void addJadeConfigTooltip(Identifier location, String value) {
         add("config.jade.plugin_" + location.toLanguageKey(), value);
     }
 

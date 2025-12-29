@@ -12,7 +12,8 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.GuiLayer;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class MekaSuitEnergyLevel implements GuiLayer {
 
     public static final MekaSuitEnergyLevel INSTANCE = new MekaSuitEnergyLevel();
-    private static final ResourceLocation POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
+    private static final Identifier POWER_BAR = MekanismUtils.getResource(ResourceType.GUI_BAR, "horizontal_power_long.png");
 
     private MekaSuitEnergyLevel() {
     }
@@ -47,7 +48,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
             int y = graphics.guiHeight() - minecraft.gui.leftHeight + 2;
             int length = (int) Math.round(((double) stored / capacity) * 79);
             GuiUtils.renderExtendedTexture(graphics, GuiBar.BAR, 2, 2, x, y, 81, 6);
-            graphics.blit(POWER_BAR, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
+            graphics.blit(RenderPipelines.GUI_TEXTURED, POWER_BAR, x + 1, y + 1, length, 4, 0, 0, length, 4, 79, 4);
             minecraft.gui.leftHeight += 8;
         }
     }

@@ -5,16 +5,16 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.Color;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class HUDElement implements IHUDElement {
 
-    private final ResourceLocation icon;
+    private final Identifier icon;
     private final Component text;
     private final HUDColor color;
 
-    private HUDElement(ResourceLocation icon, Component text, HUDColor color) {
+    private HUDElement(Identifier icon, Component text, HUDColor color) {
         this.icon = icon;
         this.text = text;
         this.color = color;
@@ -22,7 +22,7 @@ public class HUDElement implements IHUDElement {
 
     @NotNull
     @Override
-    public ResourceLocation getIcon() {
+    public Identifier getIcon() {
         return icon;
     }
 
@@ -37,7 +37,7 @@ public class HUDElement implements IHUDElement {
         return color.getColorARGB();
     }
 
-    public static HUDElement of(ResourceLocation icon, Component text, HUDColor color) {
+    public static HUDElement of(Identifier icon, Component text, HUDColor color) {
         return new HUDElement(icon, text, color);
     }
 

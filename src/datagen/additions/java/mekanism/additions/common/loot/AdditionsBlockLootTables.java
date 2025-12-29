@@ -2,7 +2,7 @@ package mekanism.additions.common.loot;
 
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.common.loot.table.BaseBlockLootTables;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.storage.loot.LootPool;

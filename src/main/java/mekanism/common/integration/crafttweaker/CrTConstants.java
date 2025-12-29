@@ -2,7 +2,7 @@ package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.CraftTweakerAPI;
 import mekanism.common.Mekanism;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.apache.logging.log4j.Logger;
 
 /**
@@ -13,7 +13,7 @@ public class CrTConstants {
     public static final Logger CRT_LOGGER = CraftTweakerAPI.getLogger(Mekanism.MOD_NAME);
 
     public static final String CONTENT_LOADER = Mekanism.MODID + "content";
-    public static final ResourceLocation CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
+    public static final Identifier CONTENT_LOADER_SOURCE_ID = Mekanism.rl("content");
     public static final String JEI_PLUGIN_NAME = Mekanism.MODID + ":crt_jei";
 
     public static final String BRACKET_CHEMICAL = "chemical";

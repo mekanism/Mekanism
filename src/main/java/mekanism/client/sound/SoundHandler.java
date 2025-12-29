@@ -26,7 +26,7 @@ import net.minecraft.client.resources.sounds.Sound;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.client.sounds.SoundEngine;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -264,7 +264,7 @@ public class SoundHandler {
         }
 
         // Ignore any sound event outside this mod namespace
-        ResourceLocation soundLoc = event.getOriginalSound().getLocation();
+        Identifier soundLoc = event.getOriginalSound().getLocation();
         //If it is mekanism or one of the submodules let continue
         if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;

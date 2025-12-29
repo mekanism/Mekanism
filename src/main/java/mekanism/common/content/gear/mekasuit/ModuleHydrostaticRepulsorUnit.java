@@ -6,7 +6,7 @@ import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -18,8 +18,8 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 @ParametersAreNotNullByDefault
 public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICustomModule<ModuleHydrostaticRepulsorUnit> {
 
-    private static final ResourceLocation WATER_MOVEMENT = Mekanism.rl("water_movement");
-    public static final ResourceLocation SWIM_BOOST = Mekanism.rl("swim_boost");
+    private static final Identifier WATER_MOVEMENT = Mekanism.rl("water_movement");
+    public static final Identifier SWIM_BOOST = Mekanism.rl("swim_boost");
     private static final AttributeModifier SWIM_BOOST_MODIFIER = new AttributeModifier(SWIM_BOOST, 1, AttributeModifier.Operation.ADD_VALUE);
     public static final int BOOST_STACKS = 4;
 

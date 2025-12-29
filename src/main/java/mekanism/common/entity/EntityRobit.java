@@ -82,17 +82,14 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -137,7 +134,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
-    public static final ModelProperty<ResourceLocation> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
+    public static final ModelProperty<Identifier> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
     private static final Codec<ResourceKey<RobitSkin>> SKIN_KEY_CODEC = ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
 
     private static <T> EntityDataAccessor<T> define(EntityDataSerializer<T> dataSerializer) {
@@ -782,7 +779,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     /**
      * @apiNote Only call on the client.
      */
-    private ResourceLocation getModelTexture() {
+    private Identifier getModelTexture() {
         Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkin();
         Optional<RobitSkin> optionalSkin = robitSkins.getOptional(skinKey);
@@ -790,16 +787,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (optionalSkin.isPresent()) {
             skin = optionalSkin.get();
         } else {
-            Mekanism.logger.error("Unknown Robit Skin: {}; resetting skin to base.", skinKey.location());
+            Mekanism.logger.error("Unknown Robit Skin: {}; resetting skin to base.", skinKey.identifier());
             setSkin(skinKey = MekanismRobitSkins.BASE, null);
             skin = robitSkins.getOrThrow(skinKey);
         }
-        List<ResourceLocation> textures = skin.textures();
+        List<Identifier> textures = skin.textures();
         if (textures.isEmpty()) {
             //Note: Should not really happen but in case a custom impl has no textures handle it
             textureIndex = 0;
             if (skinKey != MekanismRobitSkins.BASE) {
-                Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skinKey.location());
+                Mekanism.logger.error("Robit Skin: {}, has no textures; resetting skin to base.", skinKey.identifier());
                 setSkin(skinKey = MekanismRobitSkins.BASE, null);
                 skin = robitSkins.getOrThrow(skinKey);
             }

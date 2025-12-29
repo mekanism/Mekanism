@@ -16,18 +16,18 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public abstract class MekanismJavaModel extends Model {
+public abstract class MekanismJavaModel extends Model.Simple {
 
-    public MekanismJavaModel(Function<ResourceLocation, RenderType> renderType) {
+    public MekanismJavaModel(Function<Identifier, RenderType> renderType) {
         super(renderType);
     }
 

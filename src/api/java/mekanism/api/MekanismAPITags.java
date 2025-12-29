@@ -3,7 +3,7 @@ package mekanism.api;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.effect.MobEffect;
@@ -22,13 +22,13 @@ import net.minecraft.world.level.levelgen.structure.Structure;
 @NothingNullByDefault
 public class MekanismAPITags {
 
-    private static final ResourceLocation HIDDEN_RL = ResourceLocation.fromNamespaceAndPath("c", "hidden_from_recipe_viewers");
+    private static final Identifier HIDDEN_RL = Identifier.fromNamespaceAndPath("c", "hidden_from_recipe_viewers");
 
     private MekanismAPITags() {
     }
 
-    private static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
+    private static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
     }
 
     /**
@@ -65,7 +65,7 @@ public class MekanismAPITags {
         public static final TagKey<Biome> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
 
         private static TagKey<Biome> additionsTag(String name) {
-            return TagKey.create(Registries.BIOME, ResourceLocation.fromNamespaceAndPath("mekanismadditions", name));
+            return TagKey.create(Registries.BIOME, Identifier.fromNamespaceAndPath("mekanismadditions", name));
         }
     }
 
@@ -198,7 +198,7 @@ public class MekanismAPITags {
         public static final TagKey<DimensionType> NO_WIND = commonTag("no_wind");
 
         private static TagKey<DimensionType> commonTag(String name) {
-            return TagKey.create(Registries.DIMENSION_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
+            return TagKey.create(Registries.DIMENSION_TYPE, Identifier.fromNamespaceAndPath("c", name));
         }
     }
 
@@ -220,7 +220,7 @@ public class MekanismAPITags {
         public static final TagKey<EntityType<?>> MEK_RADIATION_IMMUNE = tag("radiation_immune");
 
         private static TagKey<EntityType<?>> commonTag(String name) {
-            return TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("c", name));
+            return TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<EntityType<?>> tag(String name) {
@@ -296,7 +296,7 @@ public class MekanismAPITags {
         public static final TagKey<Structure> BLACKLIST_BABY_WITHER_SKELETONS = additionsTag("blacklist_baby_wither_skeletons");
 
         private static TagKey<Structure> additionsTag(String name) {
-            return TagKey.create(Registries.STRUCTURE, ResourceLocation.fromNamespaceAndPath("mekanismadditions", name));
+            return TagKey.create(Registries.STRUCTURE, Identifier.fromNamespaceAndPath("mekanismadditions", name));
         }
     }
 }

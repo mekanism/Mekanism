@@ -6,6 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -44,8 +45,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        onToggle.onClick(this, mouseX, mouseY);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        onToggle.onClick(this, event, isDoubleClick);
     }
 
     @Override

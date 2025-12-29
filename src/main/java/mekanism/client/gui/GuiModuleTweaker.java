@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
@@ -28,6 +29,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityType;
@@ -39,7 +41,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.equipment.Equippable;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
 
@@ -74,7 +75,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         addRenderableWidget(new GuiElementHolder(this, 30, 136, 120, 18));
         moduleScreen = addRenderableWidget(new GuiModuleScreen(this, 150, 20, itemSupplier, saveCallback, armorPreview));
         scrollList = addRenderableWidget(new GuiModuleScrollList(this, 30, 20, 116, itemSupplier, this::onModuleSelected));
-        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, mouseX, mouseY) -> {
+        optionsButton = addRenderableWidget(new TranslationButton(this, 31, 137, 118, 16, MekanismLang.BUTTON_OPTIONS, (element, event, isDoubleClick) -> {
             ((GuiModuleTweaker) element.gui()).openOptions();
             return true;
         }));
@@ -88,7 +89,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 select(index);
             }
             addRenderableWidget(new GuiSlot(SlotType.NORMAL, this, slot.x - 1, slot.y - 1)
-                  .click((e, x, y) -> select(index), 1.0F, MekanismSounds.BEEP_ON)
+                  .click((element, event, isDoubleClick) -> select(index), 1.0F, MekanismSounds.BEEP_ON)
                   .overlayColor(isValidItem(index) ? null : () -> 0xCC333333)
                   .with(() -> index == selected ? SlotOverlay.SELECT : null));
         }
@@ -131,18 +132,18 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     private boolean isPreviousButton(int key) {
-        return key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT;
+        return key == InputConstants.KEY_UP || key == InputConstants.KEY_LEFT;
     }
 
     private boolean isNextButton(int key) {
-        return key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT;
+        return key == InputConstants.KEY_DOWN || key == InputConstants.KEY_RIGHT;
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
         // make sure we get the release event
-        moduleScreen.onRelease(mouseX, mouseY);
-        return super.mouseReleased(mouseX, mouseY, button);
+        moduleScreen.onRelease(event);
+        return super.mouseReleased(event);
     }
 
     @Override

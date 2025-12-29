@@ -4,7 +4,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -23,14 +23,14 @@ public abstract class ClassBasedRadialData<MODE extends IRadialMode> extends Rad
      * @param identifier Identifier representing this radial data. Must be unique within the radial level if this is a nested radial element.
      * @param clazz      Class representing the type of data that this radial data knows how to handle.
      */
-    protected ClassBasedRadialData(ResourceLocation identifier, Class<MODE> clazz) {
+    protected ClassBasedRadialData(Identifier identifier, Class<MODE> clazz) {
         super(identifier);
         this.clazz = Objects.requireNonNull(clazz, "Radial mode class type cannot be null.");
     }
 
     @Nullable
     @Override
-    public INestedRadialMode fromIdentifier(ResourceLocation identifier) {
+    public INestedRadialMode fromIdentifier(Identifier identifier) {
         return INestedRadialMode.class.isAssignableFrom(clazz) ? super.fromIdentifier(identifier) : null;
     }
 

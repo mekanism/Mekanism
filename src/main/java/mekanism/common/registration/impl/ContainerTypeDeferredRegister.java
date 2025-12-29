@@ -14,7 +14,7 @@ import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.flag.FeatureFlags;
@@ -32,7 +32,7 @@ public class ContainerTypeDeferredRegister extends MekanismDeferredRegister<Menu
     }
 
     private <CONTAINER extends AbstractContainerMenu> ContainerTypeRegistryObject<CONTAINER> createHolder(String name) {
-        return new ContainerTypeRegistryObject<>(ResourceLocation.fromNamespaceAndPath(getNamespace(), name));
+        return new ContainerTypeRegistryObject<>(Identifier.fromNamespaceAndPath(getNamespace(), name));
     }
 
     public <TILE extends TileEntityMekanism> ContainerTypeRegistryObject<MekanismTileContainer<TILE>> register(INamedEntry nameProvider, Class<TILE> tileClass) {

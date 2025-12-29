@@ -1,5 +1,6 @@
 package mekanism.client.gui;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -30,7 +31,8 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.Util;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
@@ -39,20 +41,19 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
 
-    public static final ResourceLocation BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
-    public static final ResourceLocation SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
-    public static final ResourceLocation BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
+    public static final Identifier BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
+    public static final Identifier SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
+    public static final Identifier BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
     //TODO: Look into defaulting this to true
     protected boolean dynamicSlots;
     protected boolean initialFocusSet;
@@ -211,7 +212,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
     }
 
-    protected ResourceLocation getButtonLocation(String name) {
+    protected Identifier getButtonLocation(String name) {
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
@@ -472,7 +473,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         hasClicked = true;
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.peek();
@@ -483,7 +484,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
                     // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                     // run as we ran it when we pressed the button
                     setFocused(overlay);
-                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                         setDragging(true);
                     }
                     // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
@@ -499,10 +500,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
         // otherwise, we send it to the current element (this is the same as super.super [ContainerEventHandler#mouseClicked], but in reverse order)
         //TODO: Why do we do this in reverse order?
-        GuiEventListener clickedChild = GuiUtils.findChild(children(), mouseX, mouseY, button, GuiEventListener::mouseClicked);
+        GuiEventListener clickedChild = GuiUtils.findChild(children(), event, isDoubleClick, GuiEventListener::mouseClicked);
         if (clickedChild != null) {
             setFocused(clickedChild);
-            if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                 setDragging(true);
             }
             return true;
@@ -510,17 +511,17 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             //If we can't find a child, allow clearing whatever focus we currently have
             clearFocus();
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
         if (hasClicked) {
             // always pass mouse released events to windows for drag checks
             for (GuiWindow w : windows) {
-                w.onRelease(mouseX, mouseY);
+                w.onRelease(event);
             }
-            return super.mouseReleased(mouseX, mouseY, button);
+            return super.mouseReleased(event);
         }
         return false;
     }
@@ -552,7 +553,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Override
     public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
         super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getFocused() != null && isDragging() && button == GLFW.GLFW_MOUSE_BUTTON_LEFT && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+        return getFocused() != null && isDragging() && button == InputConstants.MOUSE_BUTTON_LEFT && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
     }
 
     @Nullable

@@ -33,12 +33,13 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent.ArrowNavigation;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.InitialFocus;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.TabNavigation;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.sounds.SoundManager;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
@@ -50,8 +51,8 @@ import org.joml.Matrix3x2fStack;
 public abstract class GuiElement extends AbstractWidget implements IFancyFontRenderer, ContainerEventHandler {
 
     private static final int BUTTON_TEX_X = 200, BUTTON_TEX_Y = 60, BUTTON_INDIVIDUAL_TEX_Y = BUTTON_TEX_Y / 3;
-    public static final ResourceLocation WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
-    public static final ResourceLocation WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
+    public static final Identifier WARNING_BACKGROUND_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning_background.png");
+    public static final Identifier WARNING_TEXTURE = MekanismUtils.getResource(ResourceType.GUI, "warning.png");
     protected static Supplier<SoundEvent> BUTTON_CLICK_SOUND = SoundEvents.UI_BUTTON_CLICK::value;
 
     public static final Minecraft minecraft = Minecraft.getInstance();
@@ -247,7 +248,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         children.forEach(GuiElement::onWindowClose);
     }
 
-    protected static ResourceLocation getButtonLocation(String name) {
+    protected static Identifier getButtonLocation(String name) {
         return MekanismUtils.getResource(ResourceType.GUI_BUTTON, name + ".png");
     }
 
@@ -422,8 +423,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     //TODO - 1.20: Do we want things like the merged bars/gauges to have setFocused also mark the "children" as focused?
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        GuiElement clickedChild = GuiUtils.findChild(children, mouseX, mouseY, button, GuiElement::mouseClicked);
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        GuiElement clickedChild = GuiUtils.findChild(children, event, isDoubleClick, GuiElement::mouseClicked);
         //Note: This setFocused call is outside the clickedChild find, so that if we couldn't find one
         // then we un-focus whatever child is currently focused
         if (clickedChild != null) {
@@ -433,7 +434,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             //If we can't find a child, but we do have some, allow clearing whatever focus we currently have
             clearFocus();
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
@@ -447,22 +448,22 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
+    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
         //TODO - 1.20.4: For this and onRelease etc do we want to somewhat do something like ContainerEventHandler does
         // where it only does the focused element?
         for (GuiElement element : children) {
-            element.onDrag(mouseX, mouseY, deltaX, deltaY);
+            element.onDrag(event, deltaX, deltaY);
         }
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+        super.onDrag(event, deltaX, deltaY);
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void onRelease(@NotNull MouseButtonEvent event) {
         setDragging(false);
         for (GuiElement element : children) {
-            element.onRelease(mouseX, mouseY);
+            element.onRelease(event);
         }
-        super.onRelease(mouseX, mouseY);
+        super.onRelease(event);
     }
 
     @Override
@@ -653,7 +654,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor(guiGraphics);
         }
-        ResourceLocation texture = buttonBackground.getTexture();
+        Identifier texture = buttonBackground.getTexture();
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
@@ -663,11 +664,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
               BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
     }
 
-    protected void renderExtendedTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight) {
+    protected void renderExtendedTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
         GuiUtils.renderExtendedTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
-    protected void renderBackgroundTexture(GuiGraphics guiGraphics, ResourceLocation resource, int sideWidth, int sideHeight) {
+    protected void renderBackgroundTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
         GuiUtils.renderBackgroundTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
     }
 
@@ -714,13 +715,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         DIGITAL(MekanismUtils.getResource(ResourceType.GUI, "button_digital.png")),
         NONE(null);
 
-        private final ResourceLocation texture;
+        private final Identifier texture;
 
-        ButtonBackground(ResourceLocation texture) {
+        ButtonBackground(Identifier texture) {
             this.texture = texture;
         }
 
-        public ResourceLocation getTexture() {
+        public Identifier getTexture() {
             return texture;
         }
     }
@@ -728,6 +729,6 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     @FunctionalInterface
     public interface IClickable {
 
-        boolean onClick(GuiElement element, double mouseX, double mouseY);
+        boolean onClick(GuiElement element, @NotNull MouseButtonEvent event, boolean isDoubleClick);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.bar;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -18,7 +19,8 @@ import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -26,7 +28,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> implements IRecipeViewerIngredientHelper {
 
@@ -90,7 +91,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         ItemStack stack = gui().getCarriedItem();
         if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
             TankType tankType = getType(getHandler().getStack());
@@ -98,9 +99,9 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                 int index = getHandler().getTankIndex();
                 if (index != -1) {
                     DropperAction action;
-                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-                        action = Screen.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
-                    } else { //GLFW.GLFW_MOUSE_BUTTON_RIGHT
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+                        action = event.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                    } else { //InputConstants.MOUSE_BUTTON_RIGHT
                         action = DropperAction.DRAIN_DROPPER;
                     }
                     PacketUtils.sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
@@ -110,8 +111,8 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     @Override

@@ -11,14 +11,14 @@ import mekanism.api.radial.mode.IRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
 import mekanism.common.lib.radial.IGenericRadialModeItem;
 import mekanism.common.lib.radial.data.NestingRadialData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public interface IRadialModuleContainerItem extends IModuleContainerItem, IGenericRadialModeItem {
 
-    ResourceLocation getRadialIdentifier();
+    Identifier getRadialIdentifier();
 
     @Nullable
     @Override

@@ -41,7 +41,7 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos, true);
             if (tile == null) {
                 Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
-                      world.dimension().location());
+                      world.dimension().identifier());
             } else {
                 tile.handleUpdateTag(updateTag, world.registryAccess());
             }

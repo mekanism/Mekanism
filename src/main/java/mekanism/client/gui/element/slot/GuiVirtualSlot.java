@@ -9,8 +9,8 @@ import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +53,7 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
                 int xPos = relativeX + 1;
                 int yPos = relativeY + 1;
                 if (virtualSlot.shouldDrawOverlay()) {
-                    guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+                    guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
                 }
                 gui().renderItemWithOverlay(guiGraphics, stack, xPos, yPos, 1, virtualSlot.getTooltipOverride());
             }
@@ -61,15 +61,15 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (mouseX >= getX() && mouseY >= getY() && mouseX < getRight() && mouseY < getBottom()) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.x() >= getX() && event.y() >= getY() && event.x() < getRight() && event.y() < getBottom()) {
             IGuiWrapper gui = gui();
             if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {
                 //Redirect to a copy of vanilla logic
-                return screen.slotClicked(virtualSlot.getSlot(), button);
+                return screen.slotClicked(virtualSlot.getSlot(), event.button());
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Override

@@ -35,7 +35,7 @@ public interface GuiMinerFilterHelper extends GuiFilterHelper<TileEntityDigitalM
                   Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
               }));
         childAdder.apply(new TooltipToggleButton(gui, getRelativeX() + 148, getRelativeY() + 45, 14, 16,
-              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> getFilter().requiresReplacement, (element, mouseX, mouseY) -> {
+              MekanismUtils.getResource(ResourceType.GUI_BUTTON, "exclamation.png"), () -> getFilter().requiresReplacement, (element, event, isDoubleClick) -> {
             MinerFilter<?> filter = getFilter();
             filter.requiresReplacement = !filter.requiresReplacement;
             return true;

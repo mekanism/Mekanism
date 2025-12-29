@@ -11,7 +11,7 @@ import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 
 public class ComputerFilterHelper {
@@ -59,14 +59,14 @@ public class ComputerFilterHelper {
     }
 
     @ComputerMethod(methodDescription = "Create an Oredictionificator filter from a tag, without specifying an output item")
-    public static OredictionificatorItemFilter createOredictionificatorItemFilter(ResourceLocation filterTag) throws ComputerException {
+    public static OredictionificatorItemFilter createOredictionificatorItemFilter(Identifier filterTag) throws ComputerException {
         OredictionificatorItemFilter filter = new OredictionificatorItemFilter();
         filter.computerSetFilter(filterTag);
         return filter;
     }
 
     @ComputerMethod(methodDescription = "Create an Oredictionificator filter from a tag and a selected output. The output is not validated.")
-    public static OredictionificatorItemFilter createOredictionificatorItemFilter(ResourceLocation filterTag, Item selectedOutput) throws ComputerException {
+    public static OredictionificatorItemFilter createOredictionificatorItemFilter(Identifier filterTag, Item selectedOutput) throws ComputerException {
         OredictionificatorItemFilter filter = new OredictionificatorItemFilter();
         filter.computerSetFilter(filterTag);
         filter.setSelectedOutput(selectedOutput.builtInRegistryHolder());

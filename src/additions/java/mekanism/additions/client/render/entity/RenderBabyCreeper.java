@@ -6,7 +6,7 @@ import mekanism.additions.client.render.entity.layer.BabyCreeperChargeLayer;
 import mekanism.additions.common.entity.baby.EntityBabyCreeper;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,7 +15,7 @@ import org.jetbrains.annotations.NotNull;
  */
 public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyCreeper> {
 
-    private static final ResourceLocation CREEPER_TEXTURES = ResourceLocation.withDefaultNamespace("textures/entity/creeper/creeper.png");
+    private static final Identifier CREEPER_TEXTURES = Identifier.withDefaultNamespace("textures/entity/creeper/creeper.png");
 
     public RenderBabyCreeper(EntityRendererProvider.Context context) {
         super(context, new ModelBabyCreeper(context.getModelSet().bakeLayer(ModelBabyCreeper.CREEPER_LAYER)), 0.5F);
@@ -42,7 +42,7 @@ public class RenderBabyCreeper extends MobRenderer<EntityBabyCreeper, ModelBabyC
 
     @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityBabyCreeper entity) {
+    public Identifier getTextureLocation(@NotNull EntityBabyCreeper entity) {
         return CREEPER_TEXTURES;
     }
 }

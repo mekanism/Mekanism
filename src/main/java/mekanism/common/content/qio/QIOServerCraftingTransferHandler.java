@@ -35,7 +35,7 @@ import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 public class QIOServerCraftingTransferHandler {
 
     private final QIOCraftingWindow craftingWindow;
-    private final ResourceLocation recipeID;
+    private final Identifier recipeID;
     private final Player player;
     @Nullable
     private final QIOFrequency frequency;
@@ -61,13 +61,13 @@ public class QIOServerCraftingTransferHandler {
     private final Map<UUID, FrequencySlotData> frequencyAvailableItems = new HashMap<>();
     private final NonNullList<ItemStack> recipeToTest = NonNullList.withSize(9, ItemStack.EMPTY);
 
-    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, ResourceLocation recipeID,
+    public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
           CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
         QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, rejectToInventory, player, recipeID);
         transferHandler.tryTransfer(recipe, sources);
     }
 
-    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, ResourceLocation recipeID) {
+    private QIOServerCraftingTransferHandler(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID) {
         this.player = player;
         this.recipeID = recipeID;
         this.frequency = container.getFrequency();

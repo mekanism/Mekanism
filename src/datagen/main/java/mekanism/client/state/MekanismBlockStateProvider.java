@@ -11,7 +11,7 @@ import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.resource.ore.OreType;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.neoforged.neoforge.client.model.generators.BlockModelBuilder;
@@ -31,7 +31,7 @@ public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismB
 
         for (Map.Entry<IResource, ? extends Holder<Block>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();
-            ResourceLocation texture = modLoc("block/block_" + registrySuffix);
+            Identifier texture = modLoc("block/block_" + registrySuffix);
             ModelFile file;
             if (models().textureExists(texture)) {
                 //If we have an override we can just use a basic cube that has no color tints in it

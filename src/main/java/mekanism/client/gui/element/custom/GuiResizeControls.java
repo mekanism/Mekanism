@@ -14,8 +14,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiResizeControls extends GuiSideHolder {
 
@@ -25,15 +26,15 @@ public class GuiResizeControls extends GuiSideHolder {
 
     private int tooltipTicks;
 
-    private static final ResourceLocation MINUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "minus.png");
-    private static final ResourceLocation PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
+    private static final Identifier MINUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "minus.png");
+    private static final Identifier PLUS = MekanismUtils.getResource(ResourceType.GUI_BUTTON, "plus.png");
 
     public <GUI extends IGuiWrapper & ResizeController> GuiResizeControls(GUI gui, int y) {
         super(gui, -26, y, 40, true, false);
         expandButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 5, 19, 9, 19, 9, PLUS,
-              (element, mouseX, mouseY) -> handleResize(ResizeType.EXPAND_Y, Screen.hasShiftDown())));
+              (element, event, isDoubleClick) -> handleResize(ResizeType.EXPAND_Y, event.hasShiftDown())));
         shrinkButton = addChild(new MekanismImageButton(gui, relativeX + 4, relativeY + 26, 19, 9, 19, 9, MINUS,
-              (element, mouseX, mouseY) -> handleResize(ResizeType.SHRINK_Y, Screen.hasShiftDown())));
+              (element, event, isDoubleClick) -> handleResize(ResizeType.SHRINK_Y, event.hasShiftDown())));
         updateButtonState();
         active = true;
     }
@@ -60,9 +61,9 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
-        if (!expandButton.active && mouseX >= expandButton.getX() && mouseX < expandButton.getRight() && mouseY >= expandButton.getY() && mouseY < expandButton.getBottom()) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
+        if (!expandButton.active && event.x() >= expandButton.getX() && event.x() < expandButton.getRight() && event.y() >= expandButton.getY() && event.y() < expandButton.getBottom()) {
             tooltipTicks = 5 * SharedConstants.TICKS_PER_SECOND;
         }
     }

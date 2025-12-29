@@ -52,7 +52,7 @@ import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -131,7 +131,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
 
     private static <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache>
     RecipeTypeRegistryObject<VANILLA_INPUT, RECIPE, INPUT_CACHE> register(
-          ResourceLocation name,
+          Identifier name,
           Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator
     ) {
         if (!Mekanism.MODID.equals(name.getNamespace())) {
@@ -163,10 +163,10 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     private List<RecipeHolder<RECIPE>> cachedRecipes = Collections.emptyList();
-    private final ResourceLocation registryName;
+    private final Identifier registryName;
     private final INPUT_CACHE inputCache;
 
-    private MekanismRecipeType(ResourceLocation name, Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
+    private MekanismRecipeType(Identifier name, Function<MekanismRecipeType<VANILLA_INPUT, RECIPE, INPUT_CACHE>, INPUT_CACHE> inputCacheCreator) {
         this.registryName = name;
         this.inputCache = inputCacheCreator.apply(this);
     }
@@ -177,7 +177,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     @Override
-    public ResourceLocation getRegistryName() {
+    public Identifier getRegistryName() {
         return registryName;
     }
 
@@ -330,7 +330,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static Optional<RecipeHolder<?>> byKey(ServerLevel level, ResourceLocation id) {
+    public static Optional<RecipeHolder<?>> byKey(ServerLevel level, Identifier id) {
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
         return level.recipeAccess().byKey(id)

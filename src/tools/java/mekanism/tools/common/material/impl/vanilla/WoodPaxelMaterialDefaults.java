@@ -1,10 +1,10 @@
 package mekanism.tools.common.material.impl.vanilla;
 
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.tools.common.material.VanillaPaxelMaterial;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Tiers;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public class WoodPaxelMaterialDefaults extends VanillaPaxelMaterial {
 
     @Override

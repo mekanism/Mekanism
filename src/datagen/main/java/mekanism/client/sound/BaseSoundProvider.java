@@ -4,7 +4,7 @@ import java.util.function.UnaryOperator;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
@@ -39,6 +39,6 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
 
     protected void addSoundEvent(SoundEventRegistryObject<?> soundEventRO, String path, UnaryOperator<SoundDefinition> definitionModifier,
           UnaryOperator<SoundDefinition.Sound> soundModifier) {
-        add(soundEventRO.get(), definitionModifier.apply(definition()).with(soundModifier.apply(sound(ResourceLocation.fromNamespaceAndPath(modid, path)))));
+        add(soundEventRO.get(), definitionModifier.apply(definition()).with(soundModifier.apply(sound(Identifier.fromNamespaceAndPath(modid, path)))));
     }
 }

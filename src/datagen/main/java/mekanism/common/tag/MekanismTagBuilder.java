@@ -7,21 +7,21 @@ import java.util.function.Function;
 import java.util.stream.Stream;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
 import net.minecraft.tags.TagKey;
 
 //Based off of TagsProvider.TagAppender but with a few shortcuts for things like holders and also a few more helpers and addition of SafeVarargs annotations
 public class MekanismTagBuilder<TYPE> {
 
-    private final Function<Holder<TYPE>, ResourceLocation> holderToName = holder -> Objects.requireNonNull(holder.getKey()).location();
-    private final Consumer<ResourceLocation> elementAdder;
-    private final Consumer<ResourceLocation> elementRemover;
-    private final Consumer<ResourceLocation> optionalElementAdder;
-    private final Consumer<ResourceLocation> tagAdder;
-    private final Consumer<ResourceLocation> tagRemover;
-    private final Consumer<ResourceLocation> optionalTagAdder;
+    private final Function<Holder<TYPE>, Identifier> holderToName = holder -> Objects.requireNonNull(holder.getKey()).identifier();
+    private final Consumer<Identifier> elementAdder;
+    private final Consumer<Identifier> elementRemover;
+    private final Consumer<Identifier> optionalElementAdder;
+    private final Consumer<Identifier> tagAdder;
+    private final Consumer<Identifier> tagRemover;
+    private final Consumer<Identifier> optionalTagAdder;
     private final TagBuilder builder;
 
     public MekanismTagBuilder(TagBuilder builder) {
@@ -71,7 +71,7 @@ public class MekanismTagBuilder<TYPE> {
         return this;
     }
 
-    public MekanismTagBuilder<TYPE> addOptional(ResourceLocation... locations) {
+    public MekanismTagBuilder<TYPE> addOptional(Identifier... locations) {
         return apply(optionalElementAdder, locations);
     }
 
@@ -80,7 +80,7 @@ public class MekanismTagBuilder<TYPE> {
         return apply(optionalTagAdder, TagKey::location, tags);
     }
 
-    public MekanismTagBuilder<TYPE> addOptionalTag(ResourceLocation... locations) {
+    public MekanismTagBuilder<TYPE> addOptionalTag(Identifier... locations) {
         return apply(optionalTagAdder, locations);
     }
 

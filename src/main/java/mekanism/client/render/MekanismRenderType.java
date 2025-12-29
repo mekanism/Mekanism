@@ -7,11 +7,11 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderStateShard;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 
 public class MekanismRenderType {
 
@@ -35,17 +35,17 @@ public class MekanismRenderType {
                 .createCompositeState(false)
     );
 
-    public static final Function<ResourceLocation, RenderType> STANDARD = Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> STANDARD = Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));
-    public static final Function<ResourceLocation, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> STANDARD_TRANSLUCENT_TARGET = Util.memoize(resourceLocation ->
           createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));
-    public static final Function<ResourceLocation, RenderType> ALARM = Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> ALARM = Util.memoize(resourceLocation ->
           createStandard("mek_alarm", resourceLocation, state -> state.setCullState(RenderType.NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));
     //Similar to mekStandard but blurs the texture
-    public static final Function<ResourceLocation, RenderType> JETPACK_GLASS = Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
+    public static final Function<Identifier, RenderType> JETPACK_GLASS = Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
           state -> state.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, true, false)), false));
 
-    private static RenderType createStandard(String name, ResourceLocation resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
+    private static RenderType createStandard(String name, Identifier resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
           boolean sortOnUpload) {
         RenderType.CompositeState state = stateModifier.apply(RenderType.CompositeState.builder()
               //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
@@ -57,7 +57,7 @@ public class MekanismRenderType {
         return RenderType.create(name, DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, sortOnUpload, state);
     }
 
-    public static final Function<ResourceLocation, RenderType> BLADE = Util.memoize(resourceLocation -> {
+    public static final Function<Identifier, RenderType> BLADE = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
               //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
               // things like blindness and darkness
@@ -68,7 +68,7 @@ public class MekanismRenderType {
         return RenderType.create("mek_blade", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, false, state);
     });
 
-    public static final Function<ResourceLocation, RenderType> FLAME = Util.memoize(resourceLocation -> {
+    public static final Function<Identifier, RenderType> FLAME = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
               .setShaderState(MekanismShaders.FLAME.shard)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))
@@ -95,7 +95,7 @@ public class MekanismRenderType {
                 .createCompositeState(true)
     );
 
-    public static final Function<ResourceLocation, RenderType> SPS = Util.memoize(resourceLocation -> {
+    public static final Function<Identifier, RenderType> SPS = Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
               .setShaderState(MekanismShaders.SPS.shard)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))

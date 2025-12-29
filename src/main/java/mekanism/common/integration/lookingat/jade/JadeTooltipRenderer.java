@@ -20,8 +20,8 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
@@ -63,7 +63,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
     static final Codec<ILookingAtElement> ELEMENT_CODEC = NeoForgeExtraCodecs.withAlternative(FLUID_OR_CHEMICAL_CODEC, ENERGY_OR_TEXT_CODEC).codec();
 
     @Override
-    public ResourceLocation getUid() {
+    public Identifier getUid() {
         return JadeConstants.TOOLTIP_RENDERER;
     }
 
@@ -89,7 +89,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
                     }
                     lastText = text;
                 } else {
-                    ResourceLocation name = element.getID();
+                    Identifier name = element.getID();
                     if (config.get(name)) {
                         tooltip.add(new MekElement(lastText, (LookingAtElement) element).tag(name));
                     }

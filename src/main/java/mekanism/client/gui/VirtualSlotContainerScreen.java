@@ -3,7 +3,7 @@ package mekanism.client.gui;
 import com.mojang.blaze3d.platform.InputConstants;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import net.minecraft.ChatFormatting;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -15,7 +15,6 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 //TODO - 1.22: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
@@ -131,14 +130,14 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         long time = Util.getMillis();
         this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
         this.skipNextRelease = false;
-        if (button != GLFW.GLFW_MOUSE_BUTTON_LEFT && button != GLFW.GLFW_MOUSE_BUTTON_RIGHT && !pickBlockButton) {
+        if (button != InputConstants.MOUSE_BUTTON_LEFT && button != InputConstants.MOUSE_BUTTON_RIGHT && !pickBlockButton) {
             checkHotbarMouseClicked(button);
         } else if (slot.index != -1) {
             if (minecraft.options.touchscreen().get()) {
                 if (slot.hasItem()) {
                     this.clickedSlot = slot;
                     this.draggingItem = ItemStack.EMPTY;
-                    this.isSplittingStack = button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+                    this.isSplittingStack = button == InputConstants.MOUSE_BUTTON_RIGHT;
                 } else {
                     this.clickedSlot = null;
                 }
@@ -159,9 +158,9 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                     this.isQuickCrafting = true;
                     this.quickCraftingButton = button;
                     this.quickCraftSlots.clear();
-                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                         this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CHARITABLE;
-                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+                    } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
                         this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_GREEDY;
                     } else { //pickBlockButton
                         this.quickCraftingType = AbstractContainerMenu.QUICKCRAFT_TYPE_CLONE;

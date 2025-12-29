@@ -22,26 +22,26 @@ import net.minecraft.client.renderer.block.model.ItemOverrides;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocation> {
+public class RobitBakedModel extends ExtensionOverrideBakedModel<Identifier> {
 
-    private static final BiPredicate<ResourceLocation, ResourceLocation> DATA_EQUALITY_CHECK = ResourceLocation::equals;
+    private static final BiPredicate<Identifier, Identifier> DATA_EQUALITY_CHECK = Identifier::equals;
 
     public RobitBakedModel(BakedModel original) {
         super(original, RobitItemOverrideList::new);
     }
 
     @Override
-    public List<BakedQuad> createQuads(QuadsKey<ResourceLocation> key) {
+    public List<BakedQuad> createQuads(QuadsKey<Identifier> key) {
         List<BakedQuad> quads = key.getQuads();
         if (RobitSpriteUploader.UPLOADER != null) {
-            ResourceLocation selectedTexture = key.getData();
+            Identifier selectedTexture = key.getData();
             //Only replace missing textures (which should in general be #robit in the actual json without a mapping to it)
             //TODO: This technically doesn't behave quite right for textures that are not replaced given the sprites on the
             // model likely are on a different atlas than the robit textures, so the render type will be wrong
@@ -54,8 +54,8 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
 
     @Nullable
     @Override
-    public QuadsKey<ResourceLocation> createKey(QuadsKey<ResourceLocation> key, ModelData data) {
-        ResourceLocation skinTexture = data.get(EntityRobit.SKIN_TEXTURE_PROPERTY);
+    public QuadsKey<Identifier> createKey(QuadsKey<Identifier> key, ModelData data) {
+        Identifier skinTexture = data.get(EntityRobit.SKIN_TEXTURE_PROPERTY);
         if (skinTexture == null) {
             return null;
         }
@@ -100,7 +100,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<ResourceLocatio
                         return customModel.getOverrides().resolve(customModel, stack, world, entity, seed);
                     }
                 }
-                List<ResourceLocation> textures = skinLookup.textures();
+                List<Identifier> textures = skinLookup.textures();
                 if (!textures.isEmpty()) {
                     //Assuming the skin actually has textures (it should), grab the first texture as the model data
                     ModelData modelData = ModelData.of(EntityRobit.SKIN_TEXTURE_PROPERTY, textures.getFirst());

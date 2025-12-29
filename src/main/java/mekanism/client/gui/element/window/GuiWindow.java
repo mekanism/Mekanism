@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.window;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -17,12 +18,13 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
-import net.minecraft.Util;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import org.lwjgl.glfw.GLFW;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
@@ -111,14 +113,14 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        boolean ret = super.mouseClicked(mouseX, mouseY, button);
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        boolean ret = super.mouseClicked(event, isDoubleClick);
         // drag 'safe area'
-        if (isMouseOver(mouseX, mouseY)) {
-            if (mouseY < getY() + 18) {
+        if (isMouseOver(event.x(), event.y())) {
+            if (event.y() < getY() + 18) {
                 setDragging(true);
-                dragX = mouseX;
-                dragY = mouseY;
+                dragX = event.x();
+                dragY = event.y();
                 prevDX = 0;
                 prevDY = 0;
             }
@@ -127,7 +129,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
                 AbstractContainerMenu c = gui.getMenu();
                 if (!(c instanceof IEmptyContainer)) {
                     // allow interaction with slots
-                    if (mouseX >= getGuiLeft() && mouseX < getGuiLeft() + getGuiWidth() && mouseY >= getGuiTop() + getGuiHeight() - 90) {
+                    if (event.x() >= getGuiLeft() && event.x() < getGuiLeft() + getGuiWidth() && event.y() >= getGuiTop() + getGuiHeight() - 90) {
                         return false;
                     }
                 }
@@ -138,10 +140,10 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+        super.onDrag(event, deltaX, deltaY);
         if (isDragging()) {
-            int newDX = (int) Math.round(mouseX - dragX), newDY = (int) Math.round(mouseY - dragY);
+            int newDX = (int) Math.round(event.x() - dragX), newDY = (int) Math.round(event.y() - dragY);
             int changeX = Mth.clamp(newDX - prevDX, -getX(), minecraft.getWindow().getGuiScaledWidth() - getRight());
             int changeY = Mth.clamp(newDY - prevDY, -getY(), minecraft.getWindow().getGuiScaledHeight() - getBottom());
             prevDX = newDX;
@@ -169,7 +171,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         if (super.keyPressed(keyCode, scanCode, modifiers)) {
             return true;
         }
-        if (keyCode == GLFW.GLFW_KEY_ESCAPE && !isPinned()) {
+        if (keyCode == InputConstants.KEY_ESCAPE && !isPinned()) {
             close();
             return true;
         }
@@ -203,7 +205,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         RenderSystem.enableDepthTest();
     }
 
-    public final boolean togglePinned(GuiElement toggler, double mouseX, double mouseY) {
+    public final boolean togglePinned(GuiElement toggler, MouseButtonEvent event, boolean isDoubleClick) {
         togglePinned();
         return true;
     }
@@ -216,7 +218,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         return pinned;
     }
 
-    public final boolean close(GuiElement closer, double mouseX, double mouseY) {
+    public final boolean close(GuiElement closer, MouseButtonEvent event, boolean isDoubleClick) {
         close();
         return true;
     }

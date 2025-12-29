@@ -40,12 +40,12 @@ public class MovableFilterButton extends FilterButton {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
         int arrowX = relativeX + this.width - 14;
         int halfHeight = this.height / 2;
-        upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (element, mouseX, mouseY) -> {
+        upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (element, event, isDoubleClick) -> {
             upButtonPress.accept(getActualIndex());
             return true;
         }));
         upButton.setTooltip(MOVE_UP);
-        downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (element, mouseX, mouseY) -> {
+        downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (element, event, isDoubleClick) -> {
             downButtonPress.accept(getActualIndex());
             return true;
         }));

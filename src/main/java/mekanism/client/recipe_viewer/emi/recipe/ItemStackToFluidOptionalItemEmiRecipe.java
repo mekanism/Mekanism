@@ -13,7 +13,7 @@ import mekanism.client.gui.element.progress.ProgressType;
 import mekanism.client.gui.element.slot.SlotType;
 import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -21,7 +21,7 @@ public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<Bas
 
     private final int processTime;
 
-    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, BasicItemStackToFluidOptionalItemRecipe recipe, int processTime) {
+    public ItemStackToFluidOptionalItemEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, BasicItemStackToFluidOptionalItemRecipe recipe, int processTime) {
         super(category, id, recipe);
         this.processTime = processTime;
         addInputDefinition(recipe.getInput());

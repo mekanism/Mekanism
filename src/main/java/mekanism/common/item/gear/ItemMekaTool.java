@@ -46,7 +46,7 @@ import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -85,7 +85,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ItemMekaTool extends ItemEnergized implements IRadialModuleContainerItem, IBlastingItem {
 
-    private static final ResourceLocation RADIAL_ID = Mekanism.rl("meka_tool");
+    private static final Identifier RADIAL_ID = Mekanism.rl("meka_tool");
 
     public ItemMekaTool(Properties properties) {
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
@@ -443,7 +443,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public ResourceLocation getRadialIdentifier() {
+    public Identifier getRadialIdentifier() {
         return RADIAL_ID;
     }
 }

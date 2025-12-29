@@ -29,7 +29,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -76,10 +76,10 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
+    public Identifier getRegistryName(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
         List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations();
         if (representations.size() == 1) {
-            ResourceLocation itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
+            Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
             if (itemId != null) {
                 return RecipeViewerUtils.synthetic(itemId, "liquification", Mekanism.MODID);
             }

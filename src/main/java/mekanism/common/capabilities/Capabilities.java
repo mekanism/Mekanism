@@ -22,7 +22,7 @@ import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.tile.TileEntityBoundingBlock;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -78,8 +78,8 @@ public class Capabilities {
 
     public static final EntityCapability<IRadiationEntity, Void> RADIATION_ENTITY = EntityCapability.createVoid(Mekanism.rl("radiation"), IRadiationEntity.class);
 
-    public static final ResourceLocation OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
-    public static final ResourceLocation SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
+    public static final Identifier OWNER_OBJECT_NAME = Mekanism.rl("owner_object");
+    public static final Identifier SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
     public static void registerProxyableCapabilities(RegisterCapabilitiesEvent event) {
         event.setProxyable(CHEMICAL.block());

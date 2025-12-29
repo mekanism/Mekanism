@@ -9,7 +9,7 @@ import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
@@ -37,7 +37,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
                 continue;
             }
             String name = getPath(holder);
-            ResourceLocation texture;
+            Identifier texture;
             if (isVanilla(holder, name)) {
                 texture = itemTexture(holder);
             } else {
@@ -56,7 +56,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
         return false;
     }
 
-    private void addShieldModel(INamedEntry shield, ResourceLocation particle) {
+    private void addShieldModel(INamedEntry shield, Identifier particle) {
         ItemModelBuilder blockingModel = getBuilder(shield.getName() + "_blocking")
               .parent(new ExistingModelFile(mcLoc(folder + "/shield_blocking"), existingFileHelper))
               .texture("particle", particle);

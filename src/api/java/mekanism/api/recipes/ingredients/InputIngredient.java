@@ -2,14 +2,14 @@ package mekanism.api.recipes.ingredients;
 
 import java.util.List;
 import java.util.function.Predicate;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.NotNull;
 
 /**
  * Interface describing the base methods common to all inputs of our recipes.
  */
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface InputIngredient<TYPE> extends Predicate<TYPE> {
 
     /**

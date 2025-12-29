@@ -85,7 +85,7 @@ public class Chunk3D extends ChunkPos {
     @NotNull
     @Override
     public String toString() {
-        return "[Chunk3D: " + x + ", " + z + ", dim=" + dimension.location() + "]";
+        return "[Chunk3D: " + x + ", " + z + ", dim=" + dimension.identifier() + "]";
     }
 
     @Override

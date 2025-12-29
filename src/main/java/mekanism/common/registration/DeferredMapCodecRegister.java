@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class DeferredMapCodecRegister<T> extends MekanismDeferredRegister<MapCodec<? extends T>> {
 
@@ -18,7 +18,7 @@ public class DeferredMapCodecRegister<T> extends MekanismDeferredRegister<MapCod
         super(registryKey, namespace, holderCreator);
     }
 
-    public <I extends T> DeferredMapCodecHolder<T, I> registerCodec(String name, Function<ResourceLocation, MapCodec<I>> func) {
+    public <I extends T> DeferredMapCodecHolder<T, I> registerCodec(String name, Function<Identifier, MapCodec<I>> func) {
         return (DeferredMapCodecHolder<T, I>) super.register(name, func);
     }
 

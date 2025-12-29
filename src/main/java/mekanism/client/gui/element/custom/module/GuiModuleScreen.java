@@ -20,10 +20,11 @@ import mekanism.client.gui.element.scroll.GuiScrollList;
 import mekanism.client.gui.element.scroll.GuiScrollableElement;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
-import net.minecraft.Util;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -40,7 +41,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
 
     @Nullable
     private Module<?> currentModule;
-    private Map<ResourceLocation, MiniElement<?>> miniElements = new LinkedHashMap<>();
+    private Map<Identifier, MiniElement<?>> miniElements = new LinkedHashMap<>();
     private int maxElements;
 
     public GuiModuleScreen(IGuiWrapper gui, int x, int y, Supplier<ItemStack> itemSupplier, Consumer<ModuleConfig<?>> saveCallback, ArmorPreview armorPreview) {
@@ -55,7 +56,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     public void setModule(@Nullable Module<?> module) {
-        Map<ResourceLocation, MiniElement<?>> newElements = new LinkedHashMap<>();
+        Map<Identifier, MiniElement<?>> newElements = new LinkedHashMap<>();
 
         if (module != null) {
             ModuleData<?> untypedData = module.getUntypedData();
@@ -66,7 +67,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
                     continue;
                 }
                 Component description = TextComponentUtil.translate(Util.makeDescriptionId("module", configItem.name()));
-                ResourceLocation name = configItem.name();
+                Identifier name = configItem.name();
                 MiniElement<?> element = switch (configItem) {
                     // Don't show the enabled option if this is enabled by default
                     case ModuleBooleanConfig config when !name.equals(ModuleConfig.ENABLED_KEY) || !untypedData.isNoDisable() ->
@@ -156,30 +157,31 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
         //Shift the mouse y by the proper amount so that we click the correct spots
-        mouseY += getCurrentSelection();
+        double mouseY = event.y() + getCurrentSelection();
         for (MiniElement<?> element : miniElements.values()) {
-            element.click(mouseX, mouseY);
+            element.click(event.x(), mouseY);
         }
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(@NotNull MouseButtonEvent event) {
+        super.onRelease(event);
         //Shift the mouse y by the proper amount so that we click the correct spots
-        mouseY += getCurrentSelection();
+        double mouseY = event.y() + getCurrentSelection();
         for (MiniElement<?> element : miniElements.values()) {
-            element.release(mouseX, mouseY);
+            element.release(event.x(), mouseY);
         }
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+        super.onDrag(event, deltaX, deltaY);
+        double mouseX = event.x();
         //Shift the mouse y by the proper amount so that we click the correct spots
-        mouseY += getCurrentSelection();
+        double mouseY = event.y() + getCurrentSelection();
         for (MiniElement<?> element : miniElements.values()) {
             element.onDrag(mouseX, mouseY, deltaX, deltaY);
         }

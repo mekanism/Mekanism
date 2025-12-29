@@ -16,7 +16,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -64,7 +64,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
     private void releaseChunkTickets(@NotNull ServerLevel world, @NotNull BlockPos pos) {
         int tickets = chunkSet.size();
-        LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().location());
+        LOGGER.debug("Attempting to remove {} chunk tickets. Pos: {} World: {}", tickets, pos, world.dimension().identifier());
         if (tickets > 0) {
             for (long chunkPos : chunkSet) {
                 boolean success = TICKET_CONTROLLER.forceChunk(world, pos, ChunkPos.getX(chunkPos), ChunkPos.getZ(chunkPos), false, forceTicks);
@@ -84,7 +84,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         prevWorld = world;
         Set<ChunkPos> chunks = tile.getChunkSet();
         int tickets = chunks.size();
-        LOGGER.debug("Attempting to add {} chunk tickets. Pos: {} World: {}", tickets, prevPos, world.dimension().location());
+        LOGGER.debug("Attempting to add {} chunk tickets. Pos: {} World: {}", tickets, prevPos, world.dimension().identifier());
         if (tickets > 0) {
             for (ChunkPos chunkPos : chunks) {
                 boolean success = TICKET_CONTROLLER.forceChunk(world, prevPos, chunkPos.x, chunkPos.z, true, forceTicks);
@@ -180,7 +180,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                             markDirty();
                         }
                         LOGGER.debug("refreshChunkTickets(): Removed {} no longer valid chunk tickets, and added {} newly valid chunk tickets. Pos: {} World: {}", removed, added, pos,
-                              world.dimension().location());
+                              world.dimension().identifier());
                         if (MekanismAPI.debug) {
                             LOGGER.debug("Current set: {}", chunkSet);
                             LOGGER.debug("Tile chunk: {}", ChunkPos.asLong(tile.getBlockPos()));
@@ -277,7 +277,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
 
         @Override
         public void validateTickets(@NotNull ServerLevel world, @NotNull TicketHelper ticketHelper) {
-            ResourceLocation worldName = world.dimension().location();
+            Identifier worldName = world.dimension().identifier();
             LOGGER.debug("Validating tickets for: {}. Blocks: {}, Entities: {}", worldName, ticketHelper.getBlockTickets().size(),
                   ticketHelper.getEntityTickets().size());
             for (Map.Entry<BlockPos, TicketSet> entry : ticketHelper.getBlockTickets().entrySet()) {
@@ -292,7 +292,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
             }
         }
 
-        private void validateTickets(ServerLevel world, ResourceLocation worldName, BlockPos pos, TicketHelper ticketHelper, LongSet forcedChunks, boolean ticking) {
+        private void validateTickets(ServerLevel world, Identifier worldName, BlockPos pos, TicketHelper ticketHelper, LongSet forcedChunks, boolean ticking) {
             int ticketCount = forcedChunks.size();
             if (ticketCount > 0) {
                 //We expect this always be the case but just in case it is empty don't bother looking up the tile

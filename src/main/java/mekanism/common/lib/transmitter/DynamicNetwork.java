@@ -245,7 +245,7 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
                     // - The old one unloads which causes this removedPositionedTransmitter call to take place
                     return;
                 }
-                Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().location());
+                Mekanism.logger.warn("Removed transmitter at position: {} in {} was different than expected.", pos, world == null ? null : world.dimension().identifier());
             }
             positionedTransmitters.remove(pos.asLong());
         }

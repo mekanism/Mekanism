@@ -22,11 +22,11 @@ import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
@@ -39,9 +39,9 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModule<ModuleBlastingUnit> {
 
-    public static final ResourceLocation BLAST_RADIUS = Mekanism.rl("blast_radius");
+    public static final Identifier BLAST_RADIUS = Mekanism.rl("blast_radius");
 
-    private static final ResourceLocation RADIAL_ID = Mekanism.rl("blasting_mode");
+    private static final Identifier RADIAL_ID = Mekanism.rl("blasting_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {
         int types = BlastRadius.values().length - 1;
         Int2ObjectMap<Lazy<NestedRadialMode>> map = new Int2ObjectArrayMap<>(types);
@@ -118,7 +118,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
         private final int radius;
         private final Component label;
         private final EnumColor color;
-        private final ResourceLocation icon;
+        private final Identifier icon;
         private final ILangEntry langEntry;
 
         BlastRadius(int radius, ILangEntry langEntry, EnumColor color, String texture) {
@@ -152,7 +152,7 @@ public record ModuleBlastingUnit(BlastRadius blastRadius) implements ICustomModu
 
         @NotNull
         @Override
-        public ResourceLocation icon() {
+        public Identifier icon() {
             return icon;
         }
 

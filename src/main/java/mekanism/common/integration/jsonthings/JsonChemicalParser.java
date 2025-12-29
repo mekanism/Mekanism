@@ -11,7 +11,7 @@ import java.util.function.IntConsumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.Mekanism;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
@@ -32,10 +32,10 @@ public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
     }
 
     @Override
-    protected JsonChemicalBuilder processThing(ResourceLocation key, JsonObject data, Consumer<JsonChemicalBuilder> builderModification) {
+    protected JsonChemicalBuilder processThing(Identifier key, JsonObject data, Consumer<JsonChemicalBuilder> builderModification) {
         JsonChemicalBuilder builder = new JsonChemicalBuilder(this, key);
         JParse.begin(data)
-              .ifKey("texture", val -> val.string().map(ResourceLocation::parse).handle(builder::texture))
+              .ifKey("texture", val -> val.string().map(Identifier::parse).handle(builder::texture))
               .ifKey("tint", val -> processColor(val, builder::tint))
               .ifKey("color_representation", val -> processColor(val, builder::colorRepresentation));
         builderModification.accept(builder);

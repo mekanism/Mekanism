@@ -333,16 +333,15 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Override
     public void serialize(@NotNull ValueOutput frequencyOutput) {
-        DynamicOps<Tag> ops = provider.createSerializationContext(NbtOps.INSTANCE);
         if (securityFrequency != null) {
-            serializeFrequency(ops, FrequencyType.SECURITY, securityFrequency, frequencyNBT);
+            serializeFrequency(frequencyOutput, FrequencyType.SECURITY, securityFrequency);
         }
         for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-            serializeFrequency(ops, entry.getKey(), entry.getValue(), frequencyNBT);
+            serializeFrequency(frequencyOutput, entry.getKey(), entry.getValue());
         }
     }
 
-    private static void serializeFrequency(DynamicOps<Tag> ops, FrequencyType<?> type, FrequencyData frequencyData, CompoundTag frequencyNBT) {
+    private static void serializeFrequency(ValueOutput frequencyOutput, FrequencyType<?> type, FrequencyData frequencyData) {
         Frequency frequency = frequencyData.selectedFrequency;
         if (frequency != null) {
             DataResult<Tag> encodedIdentity = type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity());

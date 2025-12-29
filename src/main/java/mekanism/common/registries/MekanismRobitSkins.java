@@ -14,12 +14,12 @@ import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registration.DatapackDeferredRegister;
 import mekanism.common.registration.DeferredMapCodecHolder;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,8 +61,8 @@ public class MekanismRobitSkins {
 
     public record SkinLookup(ResourceKey<RobitSkin> name, Holder.Reference<RobitSkin> skinHolder) {
 
-        public ResourceLocation location() {
-            return name.location();
+        public Identifier identifier() {
+            return name.identifier();
         }
 
         //TODO - 1.21.11: Re-evaluate exposing this method
@@ -71,11 +71,11 @@ public class MekanismRobitSkins {
         }
 
         @Nullable
-        public ResourceLocation customModel() {
+        public Identifier customModel() {
             return skin().customModel();
         }
 
-        public List<ResourceLocation> textures() {
+        public List<Identifier> textures() {
             return skin().textures();
         }
     }

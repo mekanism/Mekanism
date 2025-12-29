@@ -20,14 +20,14 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.UnitDisplayUtils.RadiationUnit;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 @ParametersAreNotNullByDefault
 public class ModuleDosimeterUnit implements ICustomModule<ModuleDosimeterUnit> {
 
-    private static final ResourceLocation icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
+    private static final Identifier icon = MekanismUtils.getResource(ResourceType.GUI_HUD, "dosimeter.png");
 
     @Override
     public void addHUDElements(IModule<ModuleDosimeterUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {

@@ -8,8 +8,8 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -35,9 +35,9 @@ public class ExpandEntityRobit {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("skinName")
-    public static ResourceLocation getSkinName(EntityRobit internal) {
+    public static Identifier getSkinName(EntityRobit internal) {
         //Note: We perform a lookup in case the skin is invalid and thus would fall back to being the base skin
-        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkin()).location();
+        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkin()).identifier();
     }
 
     /**
@@ -54,7 +54,7 @@ public class ExpandEntityRobit {
     @ZenCodeType.Method
     public static boolean setSkin(EntityRobit internal, RobitSkin skin, @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
-        ResourceLocation skinName = internal.level().registryAccess().lookupOrThrow(registryName).getKeyOrNull(skin);
+        Identifier skinName = internal.level().registryAccess().lookupOrThrow(registryName).getKeyOrNull(skin);
         if (skinName == null) {
             throw new IllegalArgumentException("Unregistered robit skin");
         }
@@ -73,7 +73,7 @@ public class ExpandEntityRobit {
      * @implNote This method only syncs changes from the server side, so in general should only be called from the server side except for uses internal to the Robit.
      */
     @ZenCodeType.Method
-    public static boolean setSkin(EntityRobit internal, ResourceLocation skin, @ZenCodeType.Nullable Player player) {
+    public static boolean setSkin(EntityRobit internal, Identifier skin, @ZenCodeType.Nullable Player player) {
         ResourceKey<Registry<RobitSkin>> registryName = MekanismAPI.ROBIT_SKIN_REGISTRY_NAME;
         ResourceKey<RobitSkin> skinKey = ResourceKey.create(registryName, skin);
         if (!internal.level().registryAccess().lookupOrThrow(registryName).containsKey(skinKey)) {

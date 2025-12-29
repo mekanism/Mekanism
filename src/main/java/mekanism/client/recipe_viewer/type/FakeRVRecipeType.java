@@ -8,28 +8,28 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public record FakeRVRecipeType<RECIPE>(
-      ResourceLocation id, @Nullable ResourceLocation icon, @Nullable ItemLike item, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
+      Identifier id, @Nullable Identifier icon, @Nullable ItemLike item, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
       int xOffset, int yOffset, int width, int height, List<ItemLike> workstations
 ) implements IRecipeViewerRecipeType<RECIPE> {
 
-    public FakeRVRecipeType(ResourceLocation id, @Nullable ResourceLocation icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
+    public FakeRVRecipeType(Identifier id, @Nullable Identifier icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
           int xOffset, int yOffset, int width, int height, ItemLike... altWorkstations) {
         this(id, icon, null, name, recipeClass, xOffset, yOffset, width, height, List.of(altWorkstations));
     }
 
-    public FakeRVRecipeType(ResourceLocation id, ItemLike icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
+    public FakeRVRecipeType(Identifier id, ItemLike icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
           int xOffset, int yOffset, int width, int height, ItemLike... altWorkstations) {
         this(id, icon, name, recipeClass, xOffset, yOffset, width, height, true, altWorkstations);
     }
 
-    public FakeRVRecipeType(ResourceLocation id, ItemLike icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
+    public FakeRVRecipeType(Identifier id, ItemLike icon, IHasTranslationKey name, Class<? extends RECIPE> recipeClass,
           int xOffset, int yOffset, int width, int height, boolean iconIsWorkstation, ItemLike... altWorkstations) {
         this(id, null, icon, name, recipeClass, xOffset, yOffset, width, height,
               iconIsWorkstation ? Stream.concat(Stream.of(icon), Arrays.stream(altWorkstations)).toList() : List.of(altWorkstations));

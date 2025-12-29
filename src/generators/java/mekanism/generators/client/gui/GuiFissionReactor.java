@@ -83,7 +83,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             return Collections.singletonList(MekanismLang.DISSIPATED_RATE.translate(environment));
         }));
         activateButton = addRenderableWidget(new TranslationButton(this, 6, 75, 81, 16, GeneratorsLang.FISSION_ACTIVATE,
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
                     ((GuiFissionReactor) element.gui()).tile, 1)), () -> EnumColor.DARK_GREEN) {
             @Override
             public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
@@ -106,7 +106,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
             }
         });
         scramButton = addRenderableWidget(new TranslationButton(this, 89, 75, 81, 16, GeneratorsLang.FISSION_SCRAM,
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
                     ((GuiFissionReactor) element.gui()).tile, 0)), () -> EnumColor.DARK_RED));
         addRenderableWidget(new GuiBigLight(this, 173, 76, tile.getMultiblock()::isActive));
         addRenderableWidget(new GuiDynamicHorizontalRateBar(this, new IBarInfoHandler() {

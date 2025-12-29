@@ -28,6 +28,7 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -102,8 +103,8 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (Screen.hasShiftDown()) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.hasShiftDown()) {
             if (target != null) {
                 setTargetSlot(null);
             }

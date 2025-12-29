@@ -8,13 +8,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiElementHolder extends GuiScalableElement {
 
-    public static final ResourceLocation HOLDER = MekanismUtils.getResource(ResourceType.GUI, "element_holder.png");
+    public static final Identifier HOLDER = MekanismUtils.getResource(ResourceType.GUI, "element_holder.png");
     public static final int HOLDER_SIZE = 32;
     private static int BACKGROUND_COLOR = 0xFF787878;
 

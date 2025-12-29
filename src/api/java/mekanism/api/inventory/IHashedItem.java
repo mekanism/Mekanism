@@ -1,6 +1,6 @@
 package mekanism.api.inventory;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -10,7 +10,7 @@ import net.minecraft.world.item.ItemStack;
  *
  * @since 10.3.6
  */
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface IHashedItem {
 
     /**

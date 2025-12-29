@@ -43,7 +43,7 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -57,7 +57,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     protected static IDrawable createIcon(IGuiHelper helper, IRecipeViewerRecipeType<?> recipeType) {
         ItemStack stack = recipeType.iconStack();
         if (stack.isEmpty()) {
-            ResourceLocation icon = recipeType.icon();
+            Identifier icon = recipeType.icon();
             if (icon == null) {
                 throw new IllegalStateException("Expected recipe type to have either an icon stack or an icon location");
             }
@@ -216,7 +216,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
     @Nullable
     @Override
-    public abstract ResourceLocation getRegistryName(RECIPE recipe);
+    public abstract Identifier getRegistryName(RECIPE recipe);
 
     @Override
     public abstract Codec<RECIPE> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager);

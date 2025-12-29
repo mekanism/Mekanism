@@ -23,7 +23,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -211,9 +211,9 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         public static final IntFunction<DriveStatus> BY_ID = ByIdMap.continuous(DriveStatus::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, DriveStatus> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, DriveStatus::ordinal);
 
-        private final ResourceLocation model;
+        private final Identifier model;
 
-        DriveStatus(ResourceLocation model) {
+        DriveStatus(Identifier model) {
             this.model = model;
         }
 
@@ -221,7 +221,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
             return ordinal() - READY.ordinal();
         }
 
-        public ResourceLocation getModel() {
+        public Identifier getModel() {
             return model;
         }
 

@@ -5,13 +5,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageEffects;
 
 public class DamageTypeRegister {
 
-    private final Map<ResourceLocation, MekanismDamageType> damageTypes = new HashMap<>();
+    private final Map<Identifier, MekanismDamageType> damageTypes = new HashMap<>();
     private final String modid;
 
     public DamageTypeRegister(String modid) {
@@ -27,7 +27,7 @@ public class DamageTypeRegister {
     }
 
     public MekanismDamageType create(String name, float exhaustion, DamageEffects effects) {
-        MekanismDamageType type = new MekanismDamageType(ResourceKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(modid, name)), exhaustion, effects);
+        MekanismDamageType type = new MekanismDamageType(ResourceKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(modid, name)), exhaustion, effects);
         damageTypes.put(type.registryName(), type);
         return type;
     }

@@ -1,6 +1,7 @@
 package mekanism.client.key;
 
 import com.mojang.blaze3d.platform.InputConstants;
+import com.mojang.blaze3d.platform.Window;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
@@ -29,12 +30,13 @@ public class MekKeyHandler {
         InputConstants.Key key = keyBinding.getKey();
         int keyCode = key.getValue();
         if (keyCode != InputConstants.UNKNOWN.getValue()) {
-            long windowHandle = Minecraft.getInstance().getWindow().getWindow();
+            Window window = Minecraft.getInstance().getWindow();
             try {
                 if (key.getType() == InputConstants.Type.KEYSYM) {
-                    return InputConstants.isKeyDown(windowHandle, keyCode);
+                    return InputConstants.isKeyDown(window, keyCode);
                 } else if (key.getType() == InputConstants.Type.MOUSE) {
-                    return GLFW.glfwGetMouseButton(windowHandle, keyCode) == GLFW.GLFW_PRESS;
+                    //TODO - 1.21.11: Figure out how to replace this so that it doesn't need to directly access GLFW
+                    return GLFW.glfwGetMouseButton(window.handle(), keyCode) == InputConstants.PRESS;
                 }
             } catch (Exception ignored) {
             }

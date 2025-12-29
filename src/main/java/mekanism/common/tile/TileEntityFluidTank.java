@@ -55,7 +55,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -367,7 +367,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             fluidData.putInt(SerializationConstants.AMOUNT, fluid.getAmount());
         }
         if (!fluid.isEmpty()) {
-            ResourceLocation key = RegistryUtils.getName(fluid.getFluidHolder());
+            Identifier key = RegistryUtils.getName(fluid.getFluidHolder());
             if (key == null) {
                 //Note: This should never be null as it returns a reference holder, but if it is, log an error
                 Mekanism.logger.error("Attempted to sync a fluid tank that is storing an unregistered fluid. This should not happen, and likely indicates a porting bug.");
@@ -413,7 +413,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             CompoundTag fluidData = tag.getCompound(SerializationConstants.FLUID);
             if (!fluidData.isEmpty()) {
                 String fluidId = fluidData.getString(SerializationConstants.ID);
-                Optional<Reference<Fluid>> holder = Optional.ofNullable(ResourceLocation.tryParse(fluidId)).flatMap(BuiltInRegistries.FLUID::getHolder);
+                Optional<Reference<Fluid>> holder = Optional.ofNullable(Identifier.tryParse(fluidId)).flatMap(BuiltInRegistries.FLUID::getHolder);
                 if (holder.isEmpty()) {
                     Mekanism.logger.info("Received update packet for a fluid tank for an unregistered fluid with expected id: {}", fluidId);
                 } else {

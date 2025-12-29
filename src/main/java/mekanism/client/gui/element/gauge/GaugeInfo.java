@@ -4,7 +4,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 public enum GaugeInfo {
@@ -19,7 +19,7 @@ public enum GaugeInfo {
     private final EnumColor color;
     private final int sideWidth;
     private final int sideHeight;
-    private final ResourceLocation resourceLocation;
+    private final Identifier resourceLocation;
 
     GaugeInfo(String texture, int sideWidth, int sideHeight, @Nullable EnumColor color) {
         this.resourceLocation = MekanismUtils.getResource(ResourceType.GUI_GAUGE, texture);
@@ -41,7 +41,7 @@ public enum GaugeInfo {
         return sideHeight;
     }
 
-    public ResourceLocation getResourceLocation() {
+    public Identifier getResourceLocation() {
         return resourceLocation;
     }
 

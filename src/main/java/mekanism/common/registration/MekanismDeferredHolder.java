@@ -4,13 +4,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class MekanismDeferredHolder<R, T extends R> extends DeferredHolder<R, T> implements INamedEntry {
 
-    public MekanismDeferredHolder(ResourceKey<? extends Registry<R>> registryKey, ResourceLocation valueName) {
+    public MekanismDeferredHolder(ResourceKey<? extends Registry<R>> registryKey, Identifier valueName) {
         this(ResourceKey.create(registryKey, valueName));
     }
 

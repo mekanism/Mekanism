@@ -1,10 +1,10 @@
 package mekanism.tools.common.material;
 
 import java.util.Locale;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.world.item.Tiers;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
 
     public abstract Tiers getVanillaTier();

@@ -14,7 +14,7 @@ import mekanism.additions.common.entity.baby.EntityBabyWitherSkeleton;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.EntityTypeDeferredRegister;
 import net.minecraft.SharedConstants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.EntityDimensions;
@@ -39,9 +39,9 @@ public class AdditionsEntityTypes {
     }
 
     //Opposite of Zombie SPEED_MODIFIER_BABY_ID and SPEED_MODIFIER_BABY
-    private static final AttributeModifier BABY_SPEED_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby"), -0.5D, Operation.ADD_MULTIPLIED_BASE);
-    private static final AttributeModifier BABY_HEALTH_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby_health"), -0.5D, Operation.ADD_MULTIPLIED_TOTAL);
-    private static final AttributeModifier BABY_ATTACK_NERF_MODIFIER = new AttributeModifier(ResourceLocation.withDefaultNamespace("baby_attack"), -0.75D, Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier BABY_SPEED_NERF_MODIFIER = new AttributeModifier(Identifier.withDefaultNamespace("baby"), -0.5D, Operation.ADD_MULTIPLIED_BASE);
+    private static final AttributeModifier BABY_HEALTH_NERF_MODIFIER = new AttributeModifier(Identifier.withDefaultNamespace("baby_health"), -0.5D, Operation.ADD_MULTIPLIED_TOTAL);
+    private static final AttributeModifier BABY_ATTACK_NERF_MODIFIER = new AttributeModifier(Identifier.withDefaultNamespace("baby_attack"), -0.75D, Operation.ADD_MULTIPLIED_TOTAL);
 
     public static final EntityTypeDeferredRegister ENTITY_TYPES = new EntityTypeDeferredRegister(MekanismAdditions.MODID);
 

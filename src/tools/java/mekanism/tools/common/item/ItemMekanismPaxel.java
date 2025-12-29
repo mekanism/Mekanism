@@ -11,7 +11,7 @@ import mekanism.tools.common.material.IPaxelMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

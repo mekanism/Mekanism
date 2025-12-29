@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -69,9 +69,9 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public static void onStitch(TextureAtlas map) {
         cachedOverlays.clear();
-        gunpowderIcon = map.getSprite(ResourceLocation.withDefaultNamespace("item/gunpowder"));
-        torchOffIcon = map.getSprite(ResourceLocation.withDefaultNamespace("block/redstone_torch_off"));
-        torchOnIcon = map.getSprite(ResourceLocation.withDefaultNamespace("block/redstone_torch"));
+        gunpowderIcon = map.getSprite(Identifier.withDefaultNamespace("item/gunpowder"));
+        torchOffIcon = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch_off"));
+        torchOnIcon = map.getSprite(Identifier.withDefaultNamespace("block/redstone_torch"));
     }
 
     @Override

@@ -33,8 +33,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -76,18 +76,18 @@ public class RecipeViewerUtils {
         };
     }
 
-    public static ResourceLocation synthetic(ResourceLocation id, String prefix, String namespace) {
-        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
+    public static Identifier synthetic(Identifier id, String prefix, String namespace) {
+        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.toString().replace(':', '_')), prefix);
     }
 
-    public static ResourceLocation synthetic(String id, String prefix, String namespace) {
+    public static Identifier synthetic(String id, String prefix, String namespace) {
         if (id.equals("[unregistered]")) {
-            return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
+            return synthetic(Identifier.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
         }
-        return synthetic(ResourceLocation.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
+        return synthetic(Identifier.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
     }
 
-    public static ResourceLocation synthetic(ResourceLocation id, String prefix) {
+    public static Identifier synthetic(Identifier id, String prefix) {
         return id.withPrefix("/" + prefix + "/");
     }
 
@@ -143,8 +143,8 @@ public class RecipeViewerUtils {
         return false;
     }
 
-    public static Map<ResourceLocation, BasicItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
-        Map<ResourceLocation, BasicItemStackToFluidOptionalItemRecipe> liquification = new HashMap<>();
+    public static Map<Identifier, BasicItemStackToFluidOptionalItemRecipe> getLiquificationRecipes() {
+        Map<Identifier, BasicItemStackToFluidOptionalItemRecipe> liquification = new HashMap<>();
         //TODO: Do we want to loop creative tabs or something instead?
         // In theory recipe loaders should init the creative tabs before we are called so we wouldn't need to call
         // CreativeModeTab#buildContents, and in theory we only need to care about things in search so could use:
@@ -153,7 +153,7 @@ public class RecipeViewerUtils {
         for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
             BasicItemStackToFluidOptionalItemRecipe recipe = TileEntityNutritionalLiquifier.getRecipe(entry.getValue().getDefaultInstance());
             if (recipe != null) {
-                liquification.put(synthetic(entry.getKey().location(), "liquification", Mekanism.MODID), recipe);
+                liquification.put(synthetic(entry.getKey().identifier(), "liquification", Mekanism.MODID), recipe);
             }
         }
         return liquification;

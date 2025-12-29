@@ -10,9 +10,11 @@ import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.lib.transmitter.TransmissionType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> extends GuiGauge<Void> implements IRecipeViewerIngredientHelper {
@@ -54,15 +56,15 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanis
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge == null) {
             //If all the tanks are currently empty, pass the click event to all of them;
             // if multiple types are somehow stored in the dropper, insertion checks should prevent them from being inserted at the same time
-            return fluidGauge.mouseClicked(mouseX, mouseY, button) | chemicalGauge.mouseClicked(mouseX, mouseY, button);
+            return fluidGauge.mouseClicked(event, isDoubleClick) | chemicalGauge.mouseClicked(event, isDoubleClick);
         }
         //Otherwise, just send the click event to the corresponding gauge
-        return currentGauge.mouseClicked(mouseX, mouseY, button);
+        return currentGauge.mouseClicked(event, isDoubleClick);
     }
 
     @Override

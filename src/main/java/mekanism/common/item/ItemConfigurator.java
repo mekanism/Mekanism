@@ -47,7 +47,7 @@ import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
@@ -264,9 +264,9 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
         private final TransmissionType transmissionType;
         private final EnumColor color;
         private final boolean configurating;
-        private final ResourceLocation icon;
+        private final Identifier icon;
 
-        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating, @Nullable ResourceLocation icon) {
+        ConfiguratorMode(ILangEntry langEntry, @Nullable TransmissionType transmissionType, EnumColor color, boolean configurating, @Nullable Identifier icon) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.transmissionType = transmissionType;
@@ -315,7 +315,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
 
         @NotNull
         @Override
-        public ResourceLocation icon() {
+        public Identifier icon() {
             return icon;
         }
 

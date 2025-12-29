@@ -3,7 +3,7 @@ package mekanism.client.gui.element.slot;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum SlotType {
     NORMAL("normal.png", 18, 18),
@@ -19,11 +19,11 @@ public enum SlotType {
     ORE("ore.png", 18, 18),
     INNER_HOLDER_SLOT("inner_holder_slot.png", 18, 18);
 
-    private static final ResourceLocation WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_warning.png");
-    private static final ResourceLocation WIDE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_wide_warning.png");
-    private static final ResourceLocation LARGE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_large_warning.png");
+    private static final Identifier WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_warning.png");
+    private static final Identifier WIDE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_wide_warning.png");
+    private static final Identifier LARGE_WARNING = MekanismUtils.getResource(ResourceType.GUI_SLOT, "output_large_warning.png");
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int width;
     private final int height;
 
@@ -33,7 +33,7 @@ public enum SlotType {
         this.height = height;
     }
 
-    public ResourceLocation getWarningTexture() {
+    public Identifier getWarningTexture() {
         return switch (this) {
             case OUTPUT_WIDE -> WIDE_WARNING;
             case OUTPUT_LARGE -> LARGE_WARNING;
@@ -41,7 +41,7 @@ public enum SlotType {
         };
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

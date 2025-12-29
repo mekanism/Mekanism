@@ -3,7 +3,7 @@ package mekanism.client.render.obj;
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.RenderTypeGroup;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
@@ -67,12 +67,12 @@ public class WrapperModelConfiguration implements IGeometryBakingContext {
 
     @Nullable
     @Override
-    public ResourceLocation getRenderTypeHint() {
+    public Identifier getRenderTypeHint() {
         return internal.getRenderTypeHint();
     }
 
     @Override
-    public RenderTypeGroup getRenderType(ResourceLocation name) {
+    public RenderTypeGroup getRenderType(Identifier name) {
         return internal.getRenderType(name);
     }
 }

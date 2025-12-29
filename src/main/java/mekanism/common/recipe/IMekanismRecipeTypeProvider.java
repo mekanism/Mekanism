@@ -6,7 +6,7 @@ import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -21,7 +21,7 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
      *
      * @return Registry name.
      */
-    default ResourceLocation getRegistryName() {
+    default Identifier getRegistryName() {
         return getRecipeType().getRegistryName();
     }
 

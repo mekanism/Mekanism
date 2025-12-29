@@ -2,7 +2,7 @@ package mekanism.client.gui.element;
 
 import mekanism.client.gui.IGuiWrapper;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScalableElement extends GuiTexturedElement {
@@ -10,7 +10,7 @@ public abstract class GuiScalableElement extends GuiTexturedElement {
     protected final int sideWidth;
     protected final int sideHeight;
 
-    protected GuiScalableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int sideWidth, int sideHeight) {
+    protected GuiScalableElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height, int sideWidth, int sideHeight) {
         super(resource, gui, x, y, width, height);
         active = false;
         this.sideWidth = sideWidth;

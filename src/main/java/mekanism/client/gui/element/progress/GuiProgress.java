@@ -17,7 +17,8 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -57,7 +58,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
-            ResourceLocation resource = getResource();
+            Identifier resource = getResource();
             guiGraphics.blit(resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             double progress = warning ? 1 : getProgress();
@@ -112,18 +113,18 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return recipeCategories;
     }
 
-    private void blit(GuiGraphics guiGraphics, ResourceLocation resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(GuiGraphics guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally
-            guiGraphics.blit(resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
         int colorFrom = colorDetails.getColorFrom();
         int colorTo = colorDetails.getColorTo();
         if (colorFrom == 0xFFFFFFFF && colorTo == 0xFFFFFFFF) {
             //No coloring needed, just use the normal blit method
-            guiGraphics.blit(resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
         //Merge of blit and fillGradient

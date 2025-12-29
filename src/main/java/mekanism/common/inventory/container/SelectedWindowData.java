@@ -13,7 +13,7 @@ import mekanism.common.config.value.CachedBooleanValue;
 import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;

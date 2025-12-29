@@ -8,7 +8,7 @@ import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiSideHolder extends GuiTexturedElement {
@@ -26,8 +26,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         };
     }
 
-    private static final ResourceLocation HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI, "holder_left.png");
-    private static final ResourceLocation HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI, "holder_right.png");
+    private static final Identifier HOLDER_LEFT = MekanismUtils.getResource(ResourceType.GUI, "holder_left.png");
+    private static final Identifier HOLDER_RIGHT = MekanismUtils.getResource(ResourceType.GUI, "holder_right.png");
     private static final int TEXTURE_WIDTH = 26;
     private static final int TEXTURE_HEIGHT = 9;
 

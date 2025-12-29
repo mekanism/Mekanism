@@ -41,14 +41,14 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.phys.Vec3;
@@ -83,7 +83,7 @@ public class MekanismRenderer {
      */
     public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
-        ResourceLocation spriteLocation;
+        Identifier spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture();
         } else {
@@ -94,7 +94,7 @@ public class MekanismRenderer {
 
     public static TextureAtlasSprite getFluidTexture(@NotNull FluidStack fluidStack, @NotNull FluidTextureType type) {
         IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-        ResourceLocation spriteLocation;
+        Identifier spriteLocation;
         if (type == FluidTextureType.STILL) {
             spriteLocation = properties.getStillTexture(fluidStack);
         } else {
@@ -111,7 +111,7 @@ public class MekanismRenderer {
         return getSprite(chemical.value().getIcon());
     }
 
-    public static TextureAtlasSprite getSprite(ResourceLocation spriteLocation) {
+    public static TextureAtlasSprite getSprite(Identifier spriteLocation) {
         if (spriteLocation == null) { // e.g. badly implemented fluids
             spriteLocation = MissingTextureAtlasSprite.getLocation();
         }
@@ -261,7 +261,8 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphics guiGraphics, int x, int y, int color) {
-        guiGraphics.fill(RenderType.guiOverlay(), x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
+        //TODO - 1.21.11: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
+        guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
     public static boolean isRunningNormally() {
@@ -283,7 +284,7 @@ public class MekanismRenderer {
         }
     }
 
-    private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(ResourceLocation rl, T[] elements) {
+    private static <T extends Enum<T> & SupportsColorMap> void parseColorAtlas(Identifier rl, T[] elements) {
         List<Color> parsed = ColorAtlas.load(rl, elements.length);
         if (parsed.size() < elements.length) {
             Mekanism.logger.error("Failed to parse color atlas: {}.", rl);

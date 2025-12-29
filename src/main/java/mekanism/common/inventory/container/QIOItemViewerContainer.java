@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
@@ -51,7 +52,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -63,7 +64,6 @@ import net.neoforged.neoforge.common.TranslatableEnum;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class QIOItemViewerContainer extends MekanismContainer implements ISlotClickHandler {
 
@@ -687,7 +687,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (slot != null) {
                 PacketUtils.sendToServer(new PacketQIOItemViewerSlotShiftTake(slot.itemUUID()));
             }
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT || button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+        } else if (button == InputConstants.MOUSE_BUTTON_LEFT || button == InputConstants.MOUSE_BUTTON_RIGHT || button == InputConstants.MOUSE_BUTTON_MIDDLE) {
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null && slot.count() > 0) {
@@ -695,9 +695,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     //Left click -> as much as possible, right click -> half of a stack, middle click -> 1
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
                     int toTake;
-                    if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
                         toTake = maxStackSize;
-                    } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+                    } else if (button == InputConstants.MOUSE_BUTTON_MIDDLE) {
                         toTake = 1;
                     } else {
                         toTake = Math.max(1, maxStackSize / 2);
@@ -707,11 +707,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             } else {
                 //middle click -> add to current stack if over slot and stackable, else normal storage functionality
                 IScrollableSlot slot;
-                if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && (slot = slotProvider.get()) != null && InventoryUtils.areItemsStackable(heldItem, slot.getInternalStack())) {
+                if (button == InputConstants.MOUSE_BUTTON_MIDDLE && (slot = slotProvider.get()) != null && InventoryUtils.areItemsStackable(heldItem, slot.getInternalStack())) {
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), 1));
                 } else {
                     //Left click -> all held, right click -> single item
-                    int toAdd = button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
+                    int toAdd = button == InputConstants.MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
                 }
             }
@@ -775,18 +775,18 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         ASCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_up.png"), MekanismLang.LIST_SORT_ASCENDING, MekanismLang.LIST_SORT_ASCENDING_DESC),
         DESCENDING(MekanismUtils.getResource(ResourceType.GUI, "arrow_down.png"), MekanismLang.LIST_SORT_DESCENDING, MekanismLang.LIST_SORT_DESCENDING_DESC);
 
-        private final ResourceLocation icon;
+        private final Identifier icon;
         private final ILangEntry name;
         private final ILangEntry tooltip;
 
-        SortDirection(ResourceLocation icon, ILangEntry name, ILangEntry tooltip) {
+        SortDirection(Identifier icon, ILangEntry name, ILangEntry tooltip) {
             this.icon = icon;
             this.name = name;
             this.tooltip = tooltip;
         }
 
         @Override
-        public ResourceLocation getIcon() {
+        public Identifier getIcon() {
             return icon;
         }
 
@@ -815,8 +815,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
               Comparator.comparing(IScrollableSlot::getModID).thenComparing(IScrollableSlot::getDisplayName),
               Comparator.comparing(IScrollableSlot::getModID).reversed().thenComparing(IScrollableSlot::getDisplayName)),
         REGISTRY_NAME(MekanismLang.LIST_SORT_REGISTRY_NAME, MekanismLang.LIST_SORT_REGISTRY_NAME_DESC, true,
-              Comparator.comparing(IScrollableSlot::getRegistryName, ResourceLocation::compareNamespaced).thenComparingLong(IScrollableSlot::count),
-              Comparator.comparing(IScrollableSlot::getRegistryName, ResourceLocation::compareNamespaced).reversed().thenComparingLong(IScrollableSlot::count));
+              Comparator.comparing(IScrollableSlot::getRegistryName, Identifier::compareNamespaced).thenComparingLong(IScrollableSlot::count),
+              Comparator.comparing(IScrollableSlot::getRegistryName, Identifier::compareNamespaced).reversed().thenComparingLong(IScrollableSlot::count));
 
         private final ILangEntry name;
         private final ILangEntry tooltip;

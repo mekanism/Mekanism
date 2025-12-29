@@ -25,14 +25,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +109,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(@NotNull GuiGraphics guiGraphics, int slotX, int slotY, ResourceLocation resource, int size) {
+    private static void renderSlotBackground(@NotNull GuiGraphics guiGraphics, int slotX, int slotY, Identifier resource, int size) {
         GuiUtils.renderBackgroundTexture(guiGraphics, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
     }
 
@@ -126,7 +127,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     // Note: Currently we have no other windows that could be in front of it
                     int slot = (slotY + scrollBar.getCurrentSelection()) * SLOT_COUNT + slotX;
                     if (checkWindows(mouseX, mouseY, slot < skins.size())) {
-                        guiGraphics.fill(RenderType.guiOverlay(), slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
+                        guiGraphics.fill(slotStartX, slotStartY, slotStartX + SLOT_DIMENSIONS, slotStartY + SLOT_DIMENSIONS, 0x70FFEA00);
                     }
                 }
             }
@@ -163,9 +164,9 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
-        ResourceKey<RobitSkin> skin = getSkin(mouseX, mouseY, false);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
+        ResourceKey<RobitSkin> skin = getSkin(event.x(), event.y(), false);
         if (skin != null) {
             selectedSkin = skin;
         }
@@ -193,14 +194,14 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
 
     private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
-        List<ResourceLocation> textures = skinLookup.textures();
+        List<Identifier> textures = skinLookup.textures();
         if (textures.isEmpty()) {
-            Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.location());
+            Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.identifier());
             return;
         }
         BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {
-            Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.location());
+            Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.identifier());
             return;
         }
         MultiBufferSource.BufferSource buffer = guiGraphics.bufferSource();

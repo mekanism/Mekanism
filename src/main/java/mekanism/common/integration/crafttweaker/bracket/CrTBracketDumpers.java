@@ -13,7 +13,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -53,7 +53,7 @@ public class CrTBracketDumpers {
         }
         Registry<?> registry = optionalRegistry.get();
         List<String> list = new ArrayList<>(registry.size());
-        for (ResourceLocation v : registry.keySet()) {
+        for (Identifier v : registry.keySet()) {
             list.add("<" + bracket + ":" + v + ">");
         }
         return list;

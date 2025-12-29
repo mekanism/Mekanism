@@ -22,8 +22,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +44,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
               baseStreamCodec(constructor), Function.identity(),
               //Realistically the filter location shouldn't be null except when the filter is first being created
               // but handle it being null just in case
-              ByteBufCodecs.optional(ResourceLocation.STREAM_CODEC), filter -> Optional.ofNullable(filter.filterLocation).map(TagKey::location),
+              ByteBufCodecs.optional(Identifier.STREAM_CODEC), filter -> Optional.ofNullable(filter.filterLocation).map(TagKey::location),
               ByteBufCodecs.holderRegistry(registry), filter -> filter.selectedOutput,
               ByteBufCodecs.BOOL, filter -> filter.isValid,
               (filter, filterLocation, selected, valid) -> {
@@ -131,14 +131,14 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
     /**
      * This method should only be called if the filter is valid or if it isn't the validity should be rechecked afterwards
      */
-    public final void setFilter(@Nullable ResourceLocation location) {
+    public final void setFilter(@Nullable Identifier location) {
         filterLocation = location == null ? null : TagKey.create(getRegistry().key(), location);
         flushCachedTag();
         isValid = true;
     }
 
     @ComputerMethod(nameOverride = "setFilter")
-    public void computerSetFilter(ResourceLocation tag) throws ComputerException {
+    public void computerSetFilter(Identifier tag) throws ComputerException {
         if (tag == null || !TileEntityOredictionificator.isValidTarget(tag)) {
             throw new ComputerException("Invalid tag");
         }
@@ -154,7 +154,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         cachedSelectedStack = null;
     }
 
-    public boolean filterMatches(ResourceLocation location) {
+    public boolean filterMatches(Identifier location) {
         return filterLocation != null && filterLocation.location().equals(location);
     }
 
@@ -162,7 +162,7 @@ public abstract class OredictionificatorFilter<TYPE, STACK, FILTER extends Oredi
         setSelectedOutput(getFallbackElement());
     }
 
-    private void setSelectedOrFallback(@NotNull ResourceLocation resourceLocation) {
+    private void setSelectedOrFallback(@NotNull Identifier resourceLocation) {
         Registry<TYPE> registry = getRegistry();
         registry.get(ResourceKey.create(registry.key(), resourceLocation))
               .ifPresentOrElse(this::setSelectedOutput, this::setToFallback);

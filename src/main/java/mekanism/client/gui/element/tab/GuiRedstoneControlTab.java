@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.EnumMap;
 import java.util.Map;
 import mekanism.client.SpecialColors;
@@ -16,15 +17,16 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
 
-    private static final ResourceLocation DISABLED = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
-    private static final ResourceLocation HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
-    private static final ResourceLocation LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
+    private static final Identifier DISABLED = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_disabled.png");
+    private static final Identifier HIGH = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_high.png");
+    private static final Identifier LOW = MekanismUtils.getResource(ResourceType.GUI, "redstone_control_low.png");
 
     private final Map<RedstoneControl, Tooltip> tooltips = new EnumMap<>(RedstoneControl.class);
 
@@ -38,18 +40,18 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        PacketUtils.sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_REDSTONE_CONTROL
-                                                                                             : GuiInteraction.PREVIOUS_REDSTONE_CONTROL, dataSource));
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        PacketUtils.sendToServer(new PacketGuiInteract(event.button() == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_REDSTONE_CONTROL
+                                                                                                          : GuiInteraction.PREVIOUS_REDSTONE_CONTROL, dataSource));
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     @Override
-    protected ResourceLocation getOverlay() {
+    protected Identifier getOverlay() {
         return switch (dataSource.getControlType()) {
             case HIGH -> HIGH;
             case LOW -> LOW;

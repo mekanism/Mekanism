@@ -20,7 +20,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -54,8 +54,8 @@ public interface IJetpackItem {
         private final String serializedName;
         private final ILangEntry langEntry;
         private final EnumColor color;
-        private final ResourceLocation hudIcon;
-        private final ResourceLocation modeIcon;
+        private final Identifier hudIcon;
+        private final Identifier modeIcon;
 
         JetpackMode(ILangEntry langEntry, EnumColor color, String icon) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
@@ -75,12 +75,12 @@ public interface IJetpackItem {
             return BY_ID.apply(index);
         }
 
-        public ResourceLocation getHUDIcon() {
+        public Identifier getHUDIcon() {
             return hudIcon;
         }
 
         @Override
-        public ResourceLocation getModeIcon() {
+        public Identifier getModeIcon() {
             return modeIcon;
         }
 

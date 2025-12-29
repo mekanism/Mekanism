@@ -1,18 +1,18 @@
 package mekanism.common.advancements;
 
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
-public record MekanismAdvancement(ResourceLocation name, String title, String description, @Nullable MekanismAdvancement parent) {
+public record MekanismAdvancement(Identifier name, String title, String description, @Nullable MekanismAdvancement parent) {
 
-    public MekanismAdvancement(@Nullable MekanismAdvancement parent, ResourceLocation name) {
+    public MekanismAdvancement(@Nullable MekanismAdvancement parent, Identifier name) {
         this(parent, name, getSubName(name.getPath()));
     }
 
-    private MekanismAdvancement(@Nullable MekanismAdvancement parent, ResourceLocation name, String subName) {
+    private MekanismAdvancement(@Nullable MekanismAdvancement parent, Identifier name, String subName) {
         this(name, subName, subName, parent);
     }
 

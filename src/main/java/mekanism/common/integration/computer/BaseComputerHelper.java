@@ -36,13 +36,13 @@ import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.integration.computer.TableType.Builder;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -135,8 +135,8 @@ public abstract class BaseComputerHelper {
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     @NotNull
-    public ResourceLocation getResourceLocation(int param) throws ComputerException {
-        return requireNonNull(param, ResourceLocation.tryParse(getString(param)));
+    public Identifier getResourceLocation(int param) throws ComputerException {
+        return requireNonNull(param, Identifier.tryParse(getString(param)));
     }
 
     /**
@@ -149,12 +149,12 @@ public abstract class BaseComputerHelper {
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     public Item getItem(int param) throws ComputerException {
-        ResourceLocation itemName = getResourceLocation(param);
+        Identifier itemName = getResourceLocation(param);
         return getItemFromResourceLocation(itemName);
     }
 
     @NotNull
-    private static Item getItemFromResourceLocation(ResourceLocation itemName) {
+    private static Item getItemFromResourceLocation(Identifier itemName) {
         if (itemName == null) {
             return Items.AIR;
         }
@@ -164,7 +164,7 @@ public abstract class BaseComputerHelper {
     public ItemStack getItemStack(int param) throws ComputerException {
         Map<?, ?> map = getMap(param);
         try {
-            Item item = getItemFromResourceLocation(ResourceLocation.tryParse((String) map.get(SerializationConstants.NAME)));
+            Item item = getItemFromResourceLocation(Identifier.tryParse((String) map.get(SerializationConstants.NAME)));
             int count = SpecialConverters.getIntFromRaw(map.get(SerializationConstants.COUNT));
             String components = (String) map.get(SerializationConstants.COMPONENTS);
             if (components != null) {
@@ -217,7 +217,7 @@ public abstract class BaseComputerHelper {
         return converted;
     }
 
-    public Object convert(@Nullable ResourceLocation rl) {
+    public Object convert(@Nullable Identifier rl) {
         return rl == null ? null : rl.toString();
     }
 
@@ -291,7 +291,7 @@ public abstract class BaseComputerHelper {
         wrapped.put(SerializationConstants.X, globalPos.pos().getX());
         wrapped.put(SerializationConstants.Y, globalPos.pos().getY());
         wrapped.put(SerializationConstants.Z, globalPos.pos().getZ());
-        wrapped.put(SerializationConstants.DIMENSION, convert(globalPos.dimension().location()));
+        wrapped.put(SerializationConstants.DIMENSION, convert(globalPos.dimension().identifier()));
         return wrapped;
     }
 
@@ -444,7 +444,7 @@ public abstract class BaseComputerHelper {
      * @return the converted type, or clazz if no conversion needed
      */
     public static Class<?> convertType(Class<?> clazz) {
-        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
+        if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || Enum.class.isAssignableFrom(clazz)) {
             return String.class;
         }
         if (clazz == Frequency.class || clazz == GlobalPos.class || clazz == Vec3i.class || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class) {
@@ -466,7 +466,7 @@ public abstract class BaseComputerHelper {
               .addField(SerializationConstants.X, int.class, "The x component")
               .addField(SerializationConstants.Y, int.class, "The y component")
               .addField(SerializationConstants.Z, int.class, "The z component")
-              .addField(SerializationConstants.DIMENSION, ResourceLocation.class, "The dimension component")
+              .addField(SerializationConstants.DIMENSION, Identifier.class, "The dimension component")
               .build(types);
 
         TableType.builder(BlockPos.class, "An xyz position")
@@ -482,7 +482,7 @@ public abstract class BaseComputerHelper {
               .build(types);
 
         TableType.builder(FluidStack.class, "An amount of fluid")
-              .addField(SerializationConstants.NAME, ResourceLocation.class, "The Fluid's registered name, e.g. minecraft:water")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Fluid's registered name, e.g. minecraft:water")
               .addField(SerializationConstants.AMOUNT, int.class, "The amount in mB")
               .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the fluid, in Command JSON format")
               .build(types);

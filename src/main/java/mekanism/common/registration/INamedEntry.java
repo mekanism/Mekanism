@@ -1,6 +1,6 @@
 package mekanism.common.registration;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface INamedEntry {
 
@@ -11,5 +11,5 @@ public interface INamedEntry {
         return getId().getPath();
     }
 
-    ResourceLocation getId();
+    Identifier getId();
 }

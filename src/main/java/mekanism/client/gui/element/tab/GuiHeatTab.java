@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -17,15 +18,16 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiHeatTab extends GuiTexturedElement {
 
-    private static final Map<TemperatureUnit, ResourceLocation> ICONS = new EnumMap<>(TemperatureUnit.class);
+    private static final Map<TemperatureUnit, Identifier> ICONS = new EnumMap<>(TemperatureUnit.class);
     private final IInfoHandler infoHandler;
 
     private List<Component> lastInfo = Collections.emptyList();
@@ -55,23 +57,24 @@ public class GuiHeatTab extends GuiTexturedElement {
     }
 
     @Override
-    protected ResourceLocation getResource() {
+    protected Identifier getResource() {
         return ICONS.computeIfAbsent(MekanismConfig.common.tempUnit.get(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
               "heat_info_" + type.getTabName() + ".png"));
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        int button = event.button();
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
             updateTemperatureUnit(IIncrementalEnum::getNext);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
             updateTemperatureUnit(IIncrementalEnum::getPrevious);
         }
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     private void updateTemperatureUnit(UnaryOperator<TemperatureUnit> converter) {

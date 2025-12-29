@@ -9,7 +9,7 @@ import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.MobCategory;

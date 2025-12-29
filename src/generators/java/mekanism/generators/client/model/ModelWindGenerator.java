@@ -13,15 +13,15 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelWindGenerator extends MekanismJavaModel {
 
     public static final ModelLayerLocation GENERATOR_LAYER = new ModelLayerLocation(MekanismGenerators.rl("wind_generator"), "main");
-    private static final ResourceLocation GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
+    private static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
 
     private static final ModelPartData HEAD = new ModelPartData("head", CubeListBuilder.create()
           .texOffs(20, 0)

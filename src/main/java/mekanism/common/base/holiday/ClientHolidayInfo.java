@@ -7,7 +7,7 @@ import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadTransformation.TextureFilteredTransformation;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -23,10 +23,10 @@ public final class ClientHolidayInfo {
     private ClientHolidayInfo() {
     }
 
-    private static final ResourceLocation MINER_SCREEN = Mekanism.rl("block/models/digital_miner_screen_");
-    private static final Predicate<ResourceLocation> IS_HELLO_SCREEN = s -> s.getPath().contains("screen_hello");
-    private static final Predicate<ResourceLocation> IS_CMD_SCREEN = s -> s.getPath().contains("screen_cmd");
-    private static final Predicate<ResourceLocation> IS_BLANK_SCREEN = s -> s.getPath().contains("screen_blank");
+    private static final Identifier MINER_SCREEN = Mekanism.rl("block/models/digital_miner_screen_");
+    private static final Predicate<Identifier> IS_HELLO_SCREEN = s -> s.getPath().contains("screen_hello");
+    private static final Predicate<Identifier> IS_CMD_SCREEN = s -> s.getPath().contains("screen_cmd");
+    private static final Predicate<Identifier> IS_BLANK_SCREEN = s -> s.getPath().contains("screen_blank");
     private static Map<Holiday, QuadTransformation> HOLIDAY_MINER_TRANSFORMS = Collections.emptyMap();
 
     @SubscribeEvent
@@ -48,7 +48,7 @@ public final class ClientHolidayInfo {
         return texture(atlas, MINER_SCREEN.withSuffix(screen));
     }
 
-    private static QuadTransformation texture(TextureAtlas atlas, ResourceLocation location) {
+    private static QuadTransformation texture(TextureAtlas atlas, Identifier location) {
         return QuadTransformation.texture(atlas.getSprite(location));
     }
 

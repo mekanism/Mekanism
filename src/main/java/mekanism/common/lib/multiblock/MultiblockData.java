@@ -186,9 +186,10 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         if (positions.length == 0) {
             throw new IllegalArgumentException("No positions given.");
         }
+        int seaLevel = world.getSeaLevel();
         double sum = 0;
         for (BlockPos pos : positions) {
-            sum += world.getBiome(pos).value().getTemperature(pos);
+            sum += world.getBiome(pos).value().getTemperature(pos, seaLevel);
         }
         return sum / positions.length;
     }

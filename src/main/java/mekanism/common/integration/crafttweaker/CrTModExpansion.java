@@ -64,7 +64,7 @@ public class CrTModExpansion {
     private static <TYPE> Collection<TYPE> getModSpecific(Mod mod, Set<Entry<ResourceKey<TYPE>, TYPE>> allElements) {
         List<TYPE> list = new ArrayList<>();
         for (Entry<ResourceKey<TYPE>, TYPE> entry : allElements) {
-            if (entry.getKey().location().getNamespace().equals(mod.id())) {
+            if (entry.getKey().identifier().getNamespace().equals(mod.id())) {
                 list.add(entry.getValue());
             }
         }

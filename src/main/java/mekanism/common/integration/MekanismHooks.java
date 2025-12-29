@@ -15,7 +15,7 @@ import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.MekanismNormalizedSimpleStacks;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
@@ -42,8 +42,8 @@ public final class MekanismHooks {
             InterModComms.sendTo(modid, method, toSend);
         }
 
-        public ResourceLocation rl(String path) {
-            return ResourceLocation.fromNamespaceAndPath(modid, path);
+        public Identifier rl(String path) {
+            return Identifier.fromNamespaceAndPath(modid, path);
         }
 
         public void assertLoaded() {

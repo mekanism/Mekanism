@@ -24,8 +24,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.SubtitleOverlay;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -40,13 +41,13 @@ public class HUDRenderer {
 
     private static final EquipmentSlot[] EQUIPMENT_ORDER = {EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS, EquipmentSlot.FEET, EquipmentSlot.MAINHAND,
                                                             EquipmentSlot.OFFHAND};
-    private static final ResourceLocation[] ARMOR_ICONS = {MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_helmet.png"),
-                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png"),
-                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png"),
-                                                           MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png")};
-    private static final ResourceLocation TOOL_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekatool.png");
+    private static final Identifier[] ARMOR_ICONS = {MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_helmet.png"),
+                                                     MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_chest.png"),
+                                                     MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_leggings.png"),
+                                                     MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekasuit_boots.png")};
+    private static final Identifier TOOL_ICON = MekanismUtils.getResource(ResourceType.GUI_HUD, "hud_mekatool.png");
 
-    private static final ResourceLocation COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
+    private static final Identifier COMPASS = MekanismUtils.getResource(ResourceType.GUI, "compass.png");
 
     private int lastSubtitleGuiTick = -1;
     private int lastSubtitleWidth = 0;
@@ -113,7 +114,7 @@ public class HUDRenderer {
         pose.popMatrix();
     }
 
-    private int renderEnergyIcon(Player player, Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, ResourceLocation icon,
+    private int renderEnergyIcon(Player player, Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, Identifier icon,
           EquipmentSlot slot, Predicate<Item> showPercent) {
         ItemStack stack = player.getItemBySlot(slot);
         if (showPercent.test(stack.getItem())) {
@@ -213,7 +214,7 @@ public class HUDRenderer {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         MekanismRenderer.color(guiGraphics, color);
-        guiGraphics.blit(COMPASS, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, COMPASS, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
         MekanismRenderer.resetColor(guiGraphics);
         pose.popPose();
         pose.popPose();

@@ -6,12 +6,12 @@ import mekanism.common.lib.effect.CustomEffect;
 import mekanism.common.lib.math.Quaternion;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 
 public class SPSOrbitEffect extends CustomEffect {
 
-    private static final ResourceLocation TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "sps_orbit_effect.png");
+    private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "sps_orbit_effect.png");
     private static final Color COLOR = Color.rgbai(102, 215, 237, 240);
 
     private final Vec3 center;

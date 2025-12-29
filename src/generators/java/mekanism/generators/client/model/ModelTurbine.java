@@ -14,14 +14,14 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelTurbine extends MekanismJavaModel {
 
     public static final ModelLayerLocation TURBINE_LAYER = new ModelLayerLocation(MekanismGenerators.rl("turbine"), "main");
-    private static final ResourceLocation TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
+    private static final Identifier TURBINE_TEXTURE = MekanismGenerators.rl("render/turbine.png");
     private static final float BLADE_ROTATE = 0.418879F;
 
     private static final ModelPartData EXTENSION_NORTH = new ModelPartData("extensionNorth", CubeListBuilder.create()

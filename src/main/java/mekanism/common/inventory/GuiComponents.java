@@ -1,7 +1,7 @@
 package mekanism.common.inventory;
 
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GuiComponents {
 
@@ -11,7 +11,7 @@ public class GuiComponents {
 
         Component getTooltip();
 
-        default ResourceLocation getIcon() {
+        default Identifier getIcon() {
             return null;
         }
     }
@@ -20,6 +20,6 @@ public class GuiComponents {
 
         Component getTooltip();
 
-        ResourceLocation getIcon();
+        Identifier getIcon();
     }
 }

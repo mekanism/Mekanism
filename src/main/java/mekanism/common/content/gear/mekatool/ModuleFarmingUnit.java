@@ -30,7 +30,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -59,7 +59,7 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomModule<ModuleFarmingUnit> {
 
-    public static final ResourceLocation FARMING_RADIUS = Mekanism.rl("farming_radius");
+    public static final Identifier FARMING_RADIUS = Mekanism.rl("farming_radius");
 
     public ModuleFarmingUnit(IModule<ModuleFarmingUnit> module) {
         this(module.<FarmingRadius>getConfigOrThrow(FARMING_RADIUS).get());

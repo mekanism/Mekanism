@@ -8,7 +8,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -24,7 +24,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
     @NotNull
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
-    default ResourceLocation getRegistryName() {
+    default Identifier getRegistryName() {
         return CrTChemical.getRegistryName(getChemical());
     }
 

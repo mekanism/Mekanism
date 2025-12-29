@@ -7,12 +7,12 @@ import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiScrollBar extends GuiScrollableElement {
 
-    private static final ResourceLocation BAR = MekanismUtils.getResource(ResourceType.GUI, "scroll_bar.png");
+    private static final Identifier BAR = MekanismUtils.getResource(ResourceType.GUI, "scroll_bar.png");
     private static final int TEXTURE_WIDTH = 24;
     private static final int TEXTURE_HEIGHT = 15;
 

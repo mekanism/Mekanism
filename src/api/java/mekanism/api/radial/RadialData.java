@@ -5,7 +5,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -18,19 +18,19 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public abstract class RadialData<MODE extends IRadialMode> {
 
-    private final ResourceLocation identifier;
+    private final Identifier identifier;
 
     /**
      * @param identifier Identifier representing this radial data. Must be unique within the radial level if this is a nested radial element.
      */
-    protected RadialData(ResourceLocation identifier) {
+    protected RadialData(Identifier identifier) {
         this.identifier = Objects.requireNonNull(identifier, "Identifier cannot be null.");
     }
 
     /**
      * Gets a "unique" identifier for this radial data for networking tree purposes.
      */
-    public final ResourceLocation getIdentifier() {
+    public final Identifier getIdentifier() {
         return identifier;
     }
 
@@ -42,7 +42,7 @@ public abstract class RadialData<MODE extends IRadialMode> {
      * @return Nested mode or {@code null} if this radial data doesn't support nested modes or there is no child with the matching name.
      */
     @Nullable
-    public INestedRadialMode fromIdentifier(ResourceLocation identifier) {
+    public INestedRadialMode fromIdentifier(Identifier identifier) {
         for (MODE mode : getModes()) {
             //noinspection ConstantConditions: not null, validated by hasNestedData
             if (mode instanceof INestedRadialMode nested && nested.hasNestedData() && identifier.equals(nested.nestedData().getIdentifier())) {

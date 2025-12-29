@@ -13,7 +13,7 @@ import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, BoilerTab> {
 
@@ -38,7 +38,7 @@ public class GuiBoilerTab extends GuiTabElementType<TileEntityBoilerCasing, Boil
         }
 
         @Override
-        public ResourceLocation getResource() {
+        public Identifier getResource() {
             return MekanismUtils.getResource(ResourceType.GUI, path);
         }
 

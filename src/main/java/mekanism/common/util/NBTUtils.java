@@ -1,30 +1,22 @@
 package mekanism.common.util;
 
 import it.unimi.dsi.fastutil.booleans.BooleanConsumer;
-import it.unimi.dsi.fastutil.bytes.ByteConsumer;
 import it.unimi.dsi.fastutil.floats.FloatConsumer;
-import it.unimi.dsi.fastutil.shorts.ShortConsumer;
 import java.util.Collection;
-import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.DoubleConsumer;
-import java.util.function.IntConsumer;
 import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.IntArrayTag;
 import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -132,7 +124,7 @@ public class NBTUtils {
     }
 
     public static <V> void writeRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, V entry) {
-        ResourceLocation registryName = registry.getKeyOrNull(entry);
+        Identifier registryName = registry.getKeyOrNull(entry);
         if (registryName != null) {//We expect the registry to have the entry, but if it doesn't then don't add it
             nbt.putString(key, registryName.toString());
         }

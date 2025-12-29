@@ -27,7 +27,6 @@ import mekanism.common.network.to_server.filter.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -68,12 +67,12 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         if (!isFocusOverlay()) {
             if (isNew && hasFilterSelect()) {
                 //If it is a new filter, and we have a filter select screen add a back button instead of a close button
-                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, mouseX, mouseY) -> {
+                addChild(new MekanismImageButton(gui, relativeX + 6, relativeY + 6, 11, 14, getButtonLocation("back"), (element, event, isDoubleClick) -> {
                     //Add the window for the filter select dialog to the parent gui
                     IGuiWrapper wrapper = element.gui();
                     wrapper.addWindow(getFilterSelect(wrapper, this.tile));
                     //And close the filter
-                    return close(element, mouseX, mouseY);
+                    return close(element, event, isDoubleClick);
                 })).setTooltip(TooltipUtils.BACK);
             } else {
                 super.addCloseButton();
@@ -125,13 +124,13 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
         int screenBottom = screenTop + getScreenHeight();
         addChild(new GuiInnerScreen(gui(), relativeX + 29, screenTop, getScreenWidth(), getScreenHeight(), this::getScreenText).clearFormat());
         addChild(new TranslationButton(gui(), getLeftButtonX(), screenBottom + 2, 60, 20,
-              isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, mouseX, mouseY) -> {
+              isNew ? MekanismLang.BUTTON_CANCEL : MekanismLang.BUTTON_DELETE, (element, event, isDoubleClick) -> {
             if (origFilter != null) {
                 PacketUtils.sendToServer(new PacketEditFilter<>(this.tile.getBlockPos(), origFilter, null));
             }
-            return close(element, mouseX, mouseY);
+            return close(element, event, isDoubleClick);
         }));
-        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (element, mouseX, mouseY) -> {
+        addChild(new TranslationButton(gui(), getLeftButtonX() + 62, screenBottom + 2, 60, 20, MekanismLang.BUTTON_SAVE, (element, event, isDoubleClick) -> {
             validateAndSave();
             return true;
         }));
@@ -234,8 +233,8 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract FILTER createNewFilter();
 
     public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
-        return (element, mouseX, mouseY) -> {
-            if (Screen.hasShiftDown()) {
+        return (element, event, isDoubleClick) -> {
+            if (event.hasShiftDown()) {
                 itemConsumer.accept(ItemStack.EMPTY);
             } else {
                 ItemStack stack = element.gui().getCarriedItem();

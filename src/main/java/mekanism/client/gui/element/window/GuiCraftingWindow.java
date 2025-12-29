@@ -15,7 +15,6 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOClearCraftingWindow;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 
 public class GuiCraftingWindow extends GuiWindow {
 
@@ -44,7 +43,7 @@ public class GuiCraftingWindow extends GuiWindow {
         slots.add(addChild(new GuiVirtualSlot(this, SlotType.NORMAL, gui, relativeX + 100, relativeY + 36,
               this.container.getCraftingWindowSlot(this.index, 9))));
         addChild(new MekanismImageButton(gui, relativeX + width - 20, relativeY + height - 20, 14, getButtonLocation("clear_sides"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, Screen.hasShiftDown()))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketQIOClearCraftingWindow(index, event.hasShiftDown()))))
               .setTooltip(MekanismLang.CRAFTING_WINDOW_CLEAR);
     }
 

@@ -6,7 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.TextComponentUtil;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
-      ResourceLocation id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<ItemLike> workstations
+      Identifier id, RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, ItemStack iconStack, List<ItemLike> workstations
 ) implements IRecipeViewerRecipeType<RECIPE> {
 
     public VanillaRVRecipeType(RecipeType<RECIPE> vanillaType, Class<? extends RECIPE> recipeClass, Item item, ItemLike... altWorkstations) {
@@ -36,7 +36,7 @@ public record VanillaRVRecipeType<RECIPE extends Recipe<?>>(
 
     @Nullable
     @Override
-    public ResourceLocation icon() {
+    public Identifier icon() {
         //Handled by the icon stack
         return null;
     }

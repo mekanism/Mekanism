@@ -16,7 +16,7 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -160,7 +160,7 @@ public class MekanismTags {
         public static final TagKey<Item> COLORABLE_BANNERS = tag("colorable/banners");
 
         private static TagKey<Item> commonTag(String name) {
-            return ItemTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return ItemTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Item> tag(String name) {
@@ -214,7 +214,7 @@ public class MekanismTags {
         public static final TagKey<Block> STORAGE_BLOCKS_FLUORITE = commonTag("storage_blocks/fluorite");
 
         private static TagKey<Block> commonTag(String name) {
-            return BlockTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return BlockTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<Block> tag(String name) {
@@ -243,14 +243,14 @@ public class MekanismTags {
         public static final TagKey<EntityType<?>> VALID_SPS_EXPERIMENT = tag("valid_sps_experiment");
 
         private static TagKey<EntityType<?>> commonTag(String name) {
-            return tag(ResourceLocation.fromNamespaceAndPath("c", name));
+            return tag(Identifier.fromNamespaceAndPath("c", name));
         }
 
         private static TagKey<EntityType<?>> tag(String name) {
             return tag(Mekanism.rl(name));
         }
 
-        private static TagKey<EntityType<?>> tag(ResourceLocation tag) {
+        private static TagKey<EntityType<?>> tag(Identifier tag) {
             return TagKey.create(Registries.ENTITY_TYPE, tag);
         }
     }
@@ -280,7 +280,7 @@ public class MekanismTags {
         public static final TagKey<Fluid> NUTRITIONAL_PASTE = commonTag("nutritional_paste");
 
         private static TagKey<Fluid> commonTag(String name) {
-            return FluidTags.create(ResourceLocation.fromNamespaceAndPath("c", name));
+            return FluidTags.create(Identifier.fromNamespaceAndPath("c", name));
         }
     }
 

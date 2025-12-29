@@ -7,7 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * A {@link MekanismAPI#CHEMICAL_REGISTRY chemical} data map that allows defining fuel values for a chemical.
@@ -27,7 +27,7 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      *
      * @see mekanism.api.datamaps.IMekanismDataMapTypes#cooledChemicalCoolant()
      */
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_cooled_coolant");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_cooled_coolant");
 
     /**
      * Codec for serializing and deserializing cooled coolants.

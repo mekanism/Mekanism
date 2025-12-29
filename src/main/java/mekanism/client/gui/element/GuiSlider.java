@@ -1,18 +1,20 @@
 package mekanism.client.gui.element;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.lwjgl.glfw.GLFW;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiSlider extends GuiElement {
 
-    private static final ResourceLocation SLIDER = MekanismUtils.getResource(ResourceType.GUI, "smooth_slider.png");
+    private static final Identifier SLIDER = MekanismUtils.getResource(ResourceType.GUI, "smooth_slider.png");
 
     private final DoubleConsumer callback;
 
@@ -40,17 +42,17 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
-        set(mouseX, mouseY);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
+        set(event.x());
         setDragging(true);
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+        super.onDrag(event, deltaX, deltaY);
         if (isDragging()) {
-            set(mouseX, mouseY);
+            set(event.x());
         }
     }
 
@@ -72,7 +74,7 @@ public class GuiSlider extends GuiElement {
         return true;
     }
 
-    private void set(double mouseX, double mouseY) {
+    private void set(double mouseX) {
         double oldValue = value;
         value = Mth.clamp(((mouseX - getX() - 2) / (width - 6)), 0, 1);
         if (!Mth.equal(value, oldValue)) {
@@ -81,10 +83,10 @@ public class GuiSlider extends GuiElement {
     }
 
     private boolean isPreviousButton(int key) {
-        return key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_LEFT;
+        return key == InputConstants.KEY_UP || key == InputConstants.KEY_LEFT;
     }
 
     private boolean isNextButton(int key) {
-        return key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_RIGHT;
+        return key == InputConstants.KEY_DOWN || key == InputConstants.KEY_RIGHT;
     }
 }

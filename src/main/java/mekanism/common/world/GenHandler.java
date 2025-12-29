@@ -17,7 +17,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.StructureManager;
@@ -120,13 +120,13 @@ public class GenHandler {
     private record MekFeature(Holder<PlacedFeature> feature, Holder<PlacedFeature> retrogen, String retrogenKey) {
 
         @Nullable
-        public static MekFeature create(Registry<PlacedFeature> placedFeatures, ResourceLocation name) {
+        public static MekFeature create(Registry<PlacedFeature> placedFeatures, Identifier name) {
             Optional<Reference<PlacedFeature>> placedFeature = placedFeatures.get(ResourceKey.create(Registries.PLACED_FEATURE, name));
             if (placedFeature.isEmpty()) {
                 Mekanism.logger.error("Failed to retrieve placed feature ({}).", name);
                 return null;
             }
-            ResourceLocation retrogenName = name.withSuffix("_retrogen");
+            Identifier retrogenName = name.withSuffix("_retrogen");
             ResourceKey<PlacedFeature> retrogenKey = ResourceKey.create(Registries.PLACED_FEATURE, retrogenName);
             Optional<Reference<PlacedFeature>> retrogenFeature = placedFeatures.get(retrogenKey);
             if (retrogenFeature.isEmpty()) {

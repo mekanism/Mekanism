@@ -26,7 +26,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +82,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName(@NotNull BoilerRecipeViewerRecipe recipe) {
+    public Identifier getRegistryName(@NotNull BoilerRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 

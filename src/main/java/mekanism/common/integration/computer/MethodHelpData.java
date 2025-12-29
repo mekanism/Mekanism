@@ -19,7 +19,7 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.MekCodecs;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Vec3i;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,7 +60,7 @@ public record MethodHelpData(String methodName, @Nullable List<Param> params, Re
 
     @NotNull
     public static String getHumanType(Class<?> clazz, Class<?>[] extraTypes) {
-        if (clazz == UUID.class || clazz == ResourceLocation.class || clazz == Item.class || clazz.isEnum()) {
+        if (clazz == UUID.class || clazz == Identifier.class || clazz == Item.class || clazz.isEnum()) {
             return "String (" + clazz.getSimpleName() + ")";
         }
         if (Frequency.class.isAssignableFrom(clazz) || clazz == GlobalPos.class || Vec3i.class.isAssignableFrom(clazz) || clazz == FluidStack.class || clazz == ItemStack.class || clazz == BlockState.class || ChemicalStack.class.isAssignableFrom(clazz) || IFilter.class.isAssignableFrom(clazz)) {

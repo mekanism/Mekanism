@@ -9,18 +9,18 @@ import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.BaseModelCache.JSONModelData;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
-    public static final ResourceLocation BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
+    public static final Identifier BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
 
     public RenderBalloon(EntityRendererProvider.Context context) {
         super(context);
@@ -28,7 +28,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon> {
 
     @NotNull
     @Override
-    public ResourceLocation getTextureLocation(@NotNull EntityBalloon entity) {
+    public Identifier getTextureLocation(@NotNull EntityBalloon entity) {
         return BALLOON_TEXTURE;
     }
 

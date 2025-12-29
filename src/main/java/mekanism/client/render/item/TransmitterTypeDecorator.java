@@ -6,7 +6,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
@@ -19,9 +19,9 @@ public class TransmitterTypeDecorator implements IItemDecorator {
         }
     }
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    private TransmitterTypeDecorator(ResourceLocation blockId) {
+    private TransmitterTypeDecorator(Identifier blockId) {
         this.texture = MekanismUtils.getResource(ResourceType.GUI_ICONS, blockId.getPath() + ".png");
     }
 

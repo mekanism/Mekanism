@@ -7,7 +7,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.util.RegistryUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 class JeiChemicalIngredientConverter implements JeiIngredientConverter<ChemicalStack, ICrTChemicalStack> {
 
@@ -42,7 +42,7 @@ class JeiChemicalIngredientConverter implements JeiIngredientConverter<ChemicalS
     }
 
     @Override
-    public ResourceLocation toRegistryNameFromJei(ChemicalStack jeiType) {
+    public Identifier toRegistryNameFromJei(ChemicalStack jeiType) {
         return RegistryUtils.getName(jeiType.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY);
     }
 }

@@ -2,7 +2,7 @@ package mekanism.client.gui.element.progress;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum ProgressType {
     BAR(25, 9, false, "bar.png"),
@@ -26,7 +26,7 @@ public enum ProgressType {
     private final int overlayY;
     private final int warningOverlayX;
     private final int warningOverlayY;
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final boolean vertical;
 
     ProgressType(int width, int height, boolean vertical, String texture) {
@@ -54,7 +54,7 @@ public enum ProgressType {
         this.texture = MekanismUtils.getResource(ResourceType.GUI_PROGRESS, texture);
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

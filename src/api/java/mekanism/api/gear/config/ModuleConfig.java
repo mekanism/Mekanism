@@ -9,7 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Immutable class representing a module config (name and value).
@@ -23,43 +23,43 @@ import net.minecraft.resources.ResourceLocation;
 @NothingNullByDefault
 public abstract class ModuleConfig<DATA> {
 
-    private static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
+    private static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path);
     }
 
     /**
      * Constant representing the module config for enabled state.
      */
-    public static final ResourceLocation ENABLED_KEY = rl("enabled");
+    public static final Identifier ENABLED_KEY = rl("enabled");
     /**
      * Constant representing the module config for if a handling of mode change state.
      */
-    public static final ResourceLocation HANDLES_MODE_CHANGE_KEY = rl("handle_mode_change");
+    public static final Identifier HANDLES_MODE_CHANGE_KEY = rl("handle_mode_change");
     /**
      * Constant representing the module config for whether the module should render on the HUD.
      */
-    public static final ResourceLocation RENDER_HUD_KEY = rl("render_hud");
+    public static final Identifier RENDER_HUD_KEY = rl("render_hud");
 
     /**
      * Helper method to get the base part of a codec that contains all the parts necessary by this parent class.
      */
-    protected static <DATA, CONFIG extends ModuleConfig<DATA>> P1<Mu<CONFIG>, ResourceLocation> baseCodec(Instance<CONFIG> instance) {
-        return instance.group(ResourceLocation.CODEC.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
+    protected static <DATA, CONFIG extends ModuleConfig<DATA>> P1<Mu<CONFIG>, Identifier> baseCodec(Instance<CONFIG> instance) {
+        return instance.group(Identifier.CODEC.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name));
     }
 
     //TODO: Do we want to make module configs be a registry or something rather than being named?
     // It probably won't make that much difference as it still would need to keep track of the
     // "config type" which would basically just be a named registry object
-    private final ResourceLocation name;
+    private final Identifier name;
 
-    protected ModuleConfig(ResourceLocation name) {
+    protected ModuleConfig(Identifier name) {
         this.name = Objects.requireNonNull(name, "Name cannot be null.");
     }
 
     /**
      * {@return the name of this config option, should be unique}
      */
-    public final ResourceLocation name() {
+    public final Identifier name() {
         return name;
     }
 
@@ -68,7 +68,7 @@ public abstract class ModuleConfig<DATA> {
      *
      * @param name Name to use during config decoding.
      */
-    public abstract StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<DATA>> namedStreamCodec(ResourceLocation name);
+    public abstract StreamCodec<? super RegistryFriendlyByteBuf, ModuleConfig<DATA>> namedStreamCodec(Identifier name);
 
     /**
      * {@return the value of this config option}
@@ -92,7 +92,7 @@ public abstract class ModuleConfig<DATA> {
      *
      * @return {@code false}, unless overridden to conditionally disable.
      *
-     * @apiNote When overriding, make sure to also override {@link #get()}, {@link #with(Object)}, {@link #namedStreamCodec(ResourceLocation)}, and use a custom codec and stream
+     * @apiNote When overriding, make sure to also override {@link #get()}, {@link #with(Object)}, {@link #namedStreamCodec(Identifier)}, and use a custom codec and stream
      * codec when adding the config to the module data.
      */
     public boolean isConfigDisabled() {

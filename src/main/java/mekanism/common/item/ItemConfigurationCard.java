@@ -18,7 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -124,7 +124,7 @@ public class ItemConfigurationCard extends Item {
         if (data == null || !data.contains(SerializationConstants.DATA_TYPE, Tag.TAG_STRING)) {
             return null;
         }
-        ResourceLocation blockRegistryName = ResourceLocation.tryParse(data.getString(SerializationConstants.DATA_TYPE));
+        Identifier blockRegistryName = Identifier.tryParse(data.getString(SerializationConstants.DATA_TYPE));
         return blockRegistryName == null ? null : BuiltInRegistries.BLOCK.get(blockRegistryName);
     }
 

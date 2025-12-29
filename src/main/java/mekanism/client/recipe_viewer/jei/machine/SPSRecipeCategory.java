@@ -25,7 +25,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +58,7 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
 
     @Nullable
     @Override
-    public ResourceLocation getRegistryName(@NotNull SPSRecipeViewerRecipe recipe) {
+    public Identifier getRegistryName(@NotNull SPSRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 

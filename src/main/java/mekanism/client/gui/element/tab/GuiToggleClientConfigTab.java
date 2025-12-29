@@ -8,8 +8,10 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedBooleanValue;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper> {
 
@@ -17,7 +19,7 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
     private final Tooltip trueTooltip;
     private final CachedBooleanValue config;
 
-    public GuiToggleClientConfigTab(IGuiWrapper gui, int y, boolean left, ResourceLocation overlay, ResourceLocation flipped, CachedBooleanValue config,
+    public GuiToggleClientConfigTab(IGuiWrapper gui, int y, boolean left, Identifier overlay, Identifier flipped, CachedBooleanValue config,
           Component trueTooltip, Component falseTooltip) {
         super(gui, gui, left ? -26 : gui.getXSize(), y, 26, 18, left, overlay, flipped, config);
         this.config = config;
@@ -36,7 +38,7 @@ public class GuiToggleClientConfigTab extends GuiInsetToggleElement<IGuiWrapper>
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         config.set(!config.get());
         MekanismConfig.client.save();
     }

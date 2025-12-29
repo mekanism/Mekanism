@@ -19,7 +19,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
@@ -28,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -102,7 +101,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
 
     protected abstract void onClose(@NotNull Level level, @NotNull BlockPos pos, @NotNull BlockState state);
 
-    protected abstract ResourceLocation getStat();
+    protected abstract Identifier getStat();
 
     @Override
     public InteractionResult openGui(Player player) {

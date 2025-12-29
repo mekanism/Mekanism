@@ -3,7 +3,7 @@ package mekanism.common.util.text;
 import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import mekanism.api.functions.CharPredicate;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class InputValidator {
 
@@ -17,9 +17,9 @@ public class InputValidator {
     public static final CharPredicate LETTER_OR_DIGIT = LETTER.or(DIGIT);
     //Note: This is stricter than StringUtil#isValidPlayerName, but follows what is valid based on mojang's support site
     public static final CharPredicate USERNAME = LETTER_OR_DIGIT.or(c -> c == '_');
-    public static final CharPredicate RL_NAMESPACE = ResourceLocation::validNamespaceChar;
-    public static final CharPredicate RL_PATH = ResourceLocation::validPathChar;
-    public static final CharPredicate RESOURCE_LOCATION = ResourceLocation::isAllowedInResourceLocation;
+    public static final CharPredicate RL_NAMESPACE = Identifier::validNamespaceChar;
+    public static final CharPredicate RL_PATH = Identifier::validPathChar;
+    public static final CharPredicate RESOURCE_LOCATION = Identifier::isAllowedInResourceLocation;
     public static final CharPredicate DECIMAL = DIGIT.or(from('.'));
     public static final CharPredicate SCI_NOTATION = DECIMAL.or(from('E'));
 

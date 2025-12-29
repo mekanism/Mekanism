@@ -8,7 +8,7 @@ import mekanism.common.base.holiday.HolidayManager.IRobitSkinRandomizerHoliday;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.player.Player;

@@ -7,7 +7,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.util.ChemicalUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import org.openzen.zencode.java.ZenCodeType;
 
@@ -61,7 +61,7 @@ public class CrTChemicalBuilder {
      *
      * @param registryName Registry name for the chemical.
      */
-    protected void build(ResourceLocation registryName) {
+    protected void build(Identifier registryName) {
         Chemical chemical = ChemicalUtil.chemical(builder, colorRepresentation);
         CrTContentUtils.queueChemicalForRegistration(registryName, chemical);
     }
@@ -69,7 +69,7 @@ public class CrTChemicalBuilder {
     /**
      * Creates a builder for registering a custom {@link Chemical}.
      *
-     * @param textureLocation If present the {@link ResourceLocation} representing the texture this {@link Chemical} will use, otherwise defaults to our default Gas texture.
+     * @param textureLocation If present the {@link Identifier} representing the texture this {@link Chemical} will use, otherwise defaults to our default Gas texture.
      *
      * @return A builder for creating a custom {@link Chemical}.
      *
@@ -77,7 +77,7 @@ public class CrTChemicalBuilder {
      * with {@link #tint(int)} due to the texture not needing tinting.
      */
     @ZenCodeType.Method
-    public static CrTChemicalBuilder builder(@ZenCodeType.Optional ResourceLocation textureLocation) {
+    public static CrTChemicalBuilder builder(@ZenCodeType.Optional Identifier textureLocation) {
         return new CrTChemicalBuilder(textureLocation == null ? ChemicalBuilder.builder() : ChemicalBuilder.builder(textureLocation));
     }
 

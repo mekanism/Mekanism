@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
@@ -36,7 +36,7 @@ public class TileEntityPersonalChest extends TileEntityPersonalStorage implement
     }
 
     @Override
-    protected ResourceLocation getStat() {
+    protected Identifier getStat() {
         return Stats.OPEN_CHEST;
     }
 

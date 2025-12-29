@@ -1,14 +1,14 @@
 package mekanism.common.lib.effect;
 
 import mekanism.common.lib.Color;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 
 public class CustomEffect {
 
     private final int GRID_SIZE;
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
     protected final RandomSource rand = RandomSource.create();
 
@@ -18,11 +18,11 @@ public class CustomEffect {
 
     protected int ticker;
 
-    public CustomEffect(ResourceLocation texture) {
+    public CustomEffect(Identifier texture) {
         this(texture, 4);
     }
 
-    public CustomEffect(ResourceLocation texture, int gridSize) {
+    public CustomEffect(Identifier texture, int gridSize) {
         this.texture = texture;
         this.GRID_SIZE = gridSize;
     }
@@ -60,7 +60,7 @@ public class CustomEffect {
         return scale;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

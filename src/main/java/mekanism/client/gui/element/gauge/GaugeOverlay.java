@@ -2,7 +2,7 @@ package mekanism.client.gui.element.gauge;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum GaugeOverlay {
     SMALL(16, 28, "small.png"),
@@ -13,7 +13,7 @@ public enum GaugeOverlay {
 
     private final int width;
     private final int height;
-    private final ResourceLocation barOverlay;
+    private final Identifier barOverlay;
 
     GaugeOverlay(int width, int height, String barOverlay) {
         this.width = width;
@@ -29,7 +29,7 @@ public enum GaugeOverlay {
         return height;
     }
 
-    public ResourceLocation getBarOverlay() {
+    public Identifier getBarOverlay() {
         return barOverlay;
     }
 }

@@ -10,13 +10,13 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
 import net.minecraft.advancements.AdvancementRewards;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.RecipeUnlockedTrigger;
+import net.minecraft.advancements.criterion.RecipeUnlockedTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -107,8 +107,8 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param recipeOutput Finished Recipe Consumer.
      * @param id           Name of the recipe being built.
      */
-    public void save(RecipeOutput recipeOutput, ResourceLocation id) {
-        ResourceLocation defaultId = RecipeBuilder.getDefaultRecipeId(getResult());
+    public void save(RecipeOutput recipeOutput, Identifier id) {
+        Identifier defaultId = RecipeBuilder.getDefaultRecipeId(getResult());
         if (id.equals(defaultId)) {
             throw new IllegalStateException("Recipe " + id + " should remove its 'save' argument as it is equal to default one");
         } else {
@@ -133,7 +133,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
                   .requirements(AdvancementRequirements.Strategy.OR);
             //If there is a way to "unlock" this recipe then add an advancement with the criteria
             this.criteria.forEach(advancementBuilder::addCriterion);
-            advancementHolder = advancementBuilder.build(id.location().withPrefix("recipes/"));
+            advancementHolder = advancementBuilder.build(id.identifier().withPrefix("recipes/"));
         }
         recipeOutput.accept(id, asRecipe(), advancementHolder, conditions.toArray(new ICondition[0]));
     }
@@ -150,6 +150,6 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         if (key == null) {
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }
-        save(recipeOutput, key.location());
+        save(recipeOutput, key.identifier());
     }
 }

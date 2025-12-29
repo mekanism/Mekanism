@@ -102,7 +102,7 @@ public class ItemTierInstaller extends Item {
                     IUpgradeData upgradeData = tierUpgradable.getUpgradeData(world.registryAccess());
                     if (upgradeData == null) {
                         if (tierUpgradable.canBeUpgraded()) {
-                            Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world.dimension().location());
+                            Mekanism.logger.warn("Got no upgrade data for block {} at position: {} in {} but it said it would be able to provide some.", block, pos, world.dimension().identifier());
                             return InteractionResult.FAIL;
                         }
                     } else {
@@ -128,7 +128,7 @@ public class ItemTierInstaller extends Item {
                         //Update the block
                         if (!world.setBlockAndUpdate(pos, upgradeState)) {
                             //Something went wrong, bail rather than trying to
-                            Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world.dimension().location());
+                            Mekanism.logger.warn("Error upgrading block at position: {} in {}.", pos, world.dimension().identifier());
                             return InteractionResult.FAIL;
                         }
                         //Place any bounding blocks the new state may have
@@ -137,7 +137,7 @@ public class ItemTierInstaller extends Item {
                         }
                         TileEntityMekanism upgradedTile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
                         if (upgradedTile == null) {
-                            Mekanism.logger.warn("Error upgrading block at position: {} in {}. Expected a mekanism block as the result.", pos, world.dimension().location());
+                            Mekanism.logger.warn("Error upgrading block at position: {} in {}. Expected a mekanism block as the result.", pos, world.dimension().identifier());
                             return InteractionResult.FAIL;
                         }
                         //TODO: Make it so it doesn't have to be a TileEntityMekanism in order to do these things?

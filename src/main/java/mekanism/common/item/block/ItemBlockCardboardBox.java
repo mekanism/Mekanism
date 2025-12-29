@@ -19,7 +19,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -78,7 +78,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST)) {
                     return InteractionResult.FAIL;
                 }
-                ResourceLocation stateName = RegistryUtils.getName(state.getBlockHolder());
+                Identifier stateName = RegistryUtils.getName(state.getBlockHolder());
                 if (stateName == null || MekanismConfig.general.cardboardModBlacklist.get().contains(stateName.getNamespace()) ||
                     !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
                     return InteractionResult.FAIL;

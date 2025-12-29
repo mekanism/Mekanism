@@ -10,12 +10,12 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class RadioButton extends MekanismButton {
 
-    public static final ResourceLocation RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
+    public static final Identifier RADIO = MekanismUtils.getResource(ResourceType.GUI, "radio_button.png");
     public static final int RADIO_SIZE = 8;
 
     private final Tooltip toggledComponent;

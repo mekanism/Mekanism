@@ -54,7 +54,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -62,7 +62,7 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
@@ -574,7 +574,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
         private final Map<ModuleModelSpec, SpecData> specParts = new Object2ObjectOpenHashMap<>();
 
-        public ModuleOBJModelData(ResourceLocation rl) {
+        public ModuleOBJModelData(Identifier rl) {
             super(rl);
         }
 
@@ -679,7 +679,7 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
 
         @Nullable
         @Override
-        public ResourceLocation getRenderTypeHint() {
+        public Identifier getRenderTypeHint() {
             return null;
         }
 

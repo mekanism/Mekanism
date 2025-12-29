@@ -22,7 +22,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.RenderTypeGroup;
 import net.neoforged.neoforge.client.model.SimpleModelState;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
@@ -46,7 +46,7 @@ public class EnergyCubeGeometry implements IUnbakedGeometry<EnergyCubeGeometry> 
           ItemOverrides overrides) {
         TextureAtlasSprite particle = spriteGetter.apply(context.getMaterial("particle"));
 
-        ResourceLocation renderTypeHint = context.getRenderTypeHint();
+        Identifier renderTypeHint = context.getRenderTypeHint();
         RenderTypeGroup renderTypes = renderTypeHint == null ? RenderTypeGroup.EMPTY : context.getRenderType(renderTypeHint);
 
         Transformation rootTransform = context.getRootTransform();

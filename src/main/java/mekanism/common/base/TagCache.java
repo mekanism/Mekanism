@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
@@ -112,8 +113,8 @@ public final class TagCache {
 
     private static <TYPE> Set<TYPE> collectTagStacks(Registry<TYPE> registry, String tagName, Predicate<TYPE> validElement) {
         return registry.getTags()
-              .filter(pair -> WildcardMatcher.matches(tagName, pair.getFirst()))
-              .flatMap(pair -> pair.getSecond().stream())
+              .filter(tag -> WildcardMatcher.matches(tagName, tag.key()))
+              .flatMap(ListBacked::stream)
               .map(Holder::value)
               .filter(validElement)
               .collect(Collectors.toSet());
@@ -150,7 +151,7 @@ public final class TagCache {
             Set<Block> blocks = new ReferenceOpenHashSet<>();
             for (Map.Entry<ResourceKey<Block>, Block> entry : BuiltInRegistries.BLOCK.entrySet()) {
                 //Ugly check to make sure we don't include our bounding block in render list. Eventually this should maybe just use getRenderShape() with a dummy BlockState
-                if (!MekanismBlocks.BOUNDING_BLOCK.is(entry.getKey()) && WildcardMatcher.matches(name, entry.getKey().location().getNamespace())) {
+                if (!MekanismBlocks.BOUNDING_BLOCK.is(entry.getKey()) && WildcardMatcher.matches(name, entry.getKey().identifier().getNamespace())) {
                     blocks.add(entry.getValue());
                 }
             }
@@ -163,16 +164,16 @@ public final class TagCache {
             return false;
         }
         return blockTagBlacklistedElements.computeIfAbsent(tag, (String t) -> BuiltInRegistries.BLOCK.getTags()
-              .anyMatch(pair -> WildcardMatcher.matches(t, pair.getFirst()) &&
-                                pair.getSecond().stream().anyMatch(element -> element.is(MekanismTags.Blocks.MINER_BLACKLIST))));
+              .anyMatch(blockTag -> WildcardMatcher.matches(t, blockTag.key()) &&
+                                    blockTag.stream().anyMatch(element -> element.is(MekanismTags.Blocks.MINER_BLACKLIST))));
     }
 
     public static boolean modIDHasMinerBlacklisted(@NotNull String modName) {
         if (MINER_BLACKLIST_LOOKUP.size() == 0) {
             return false;
         }
-        return modIDBlacklistedElements.computeIfAbsent(modName, (String name) -> BuiltInRegistries.BLOCK.holders()
-              .anyMatch(holder -> holder.is(MekanismTags.Blocks.MINER_BLACKLIST) && WildcardMatcher.matches(name, holder.key().location().getNamespace())));
+        return modIDBlacklistedElements.computeIfAbsent(modName, (String name) -> BuiltInRegistries.BLOCK.listElements()
+              .anyMatch(holder -> holder.is(MekanismTags.Blocks.MINER_BLACKLIST) && WildcardMatcher.matches(name, holder.key().identifier().getNamespace())));
     }
 
     /**

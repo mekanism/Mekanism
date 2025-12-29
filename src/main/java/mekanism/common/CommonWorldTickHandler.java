@@ -19,8 +19,8 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.world.GenHandler;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -48,8 +48,8 @@ public class CommonWorldTickHandler {
 
     //TODO: I believe this may be fine as is with just the load and save methods being synchronized
     // but there is a chance this is not the case in which case we should adjust how this is done
-    private Map<ResourceLocation, Object2IntMap<ChunkPos>> chunkVersions;
-    private Map<ResourceLocation, Queue<ChunkPos>> chunkRegenMap;
+    private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;
+    private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
     @Nullable
@@ -59,7 +59,7 @@ public class CommonWorldTickHandler {
         if (chunkRegenMap == null) {
             chunkRegenMap = new Object2ObjectArrayMap<>();
         }
-        ResourceLocation dimensionName = dimension.location();
+        Identifier dimensionName = dimension.identifier();
         if (!chunkRegenMap.containsKey(dimensionName)) {
             LinkedList<ChunkPos> list = new LinkedList<>();
             list.add(chunkCoord);
@@ -118,7 +118,7 @@ public class CommonWorldTickHandler {
         if (!world.isClientSide() && world instanceof Level level) {
             int chunkVersion = MekanismConfig.world.userGenVersion.get();
             if (chunkVersions != null) {
-                chunkVersion = chunkVersions.getOrDefault(level.dimension().location(), Object2IntMaps.emptyMap())
+                chunkVersion = chunkVersions.getOrDefault(level.dimension().identifier(), Object2IntMaps.emptyMap())
                       .getOrDefault(event.getChunk().getPos(), chunkVersion);
             }
             event.getData().putInt(SerializationConstants.WORLD_GEN_VERSION, chunkVersion);
@@ -138,7 +138,7 @@ public class CommonWorldTickHandler {
                 }
                 ChunkPos chunkCoord = event.getChunk().getPos();
                 ResourceKey<Level> dimension = level.dimension();
-                chunkVersions.computeIfAbsent(dimension.location(), dim -> new Object2IntOpenHashMap<>())
+                chunkVersions.computeIfAbsent(dimension.identifier(), dim -> new Object2IntOpenHashMap<>())
                       .put(chunkCoord, version);
                 if (MekanismConfig.world.enableRegeneration.get()) {
                     //If retrogen is enabled, then we also need to mark the chunk as needing retrogen
@@ -152,7 +152,7 @@ public class CommonWorldTickHandler {
     public void chunkUnloadEvent(ChunkEvent.Unload event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
             //When a chunk unloads, free up the memory tracking what version it has
-            chunkVersions.getOrDefault(level.dimension().location(), Object2IntMaps.emptyMap())
+            chunkVersions.getOrDefault(level.dimension().identifier(), Object2IntMaps.emptyMap())
                   .removeInt(event.getChunk().getPos());
         }
     }
@@ -162,7 +162,7 @@ public class CommonWorldTickHandler {
         LevelAccessor world = event.getLevel();
         if (!world.isClientSide() && world instanceof Level level && chunkVersions != null) {
             //When a world unloads, free up memory tracking the versions of the chunks in it
-            chunkVersions.remove(level.dimension().location());
+            chunkVersions.remove(level.dimension().identifier());
         }
     }
 
@@ -201,7 +201,7 @@ public class CommonWorldTickHandler {
             if (chunkRegenMap == null || !MekanismConfig.world.enableRegeneration.get()) {
                 return;
             }
-            ResourceLocation dimensionName = world.dimension().location();
+            Identifier dimensionName = world.dimension().identifier();
             //Credit to E. Beef
             if (chunkRegenMap.containsKey(dimensionName)) {
                 Queue<ChunkPos> chunksToGen = chunkRegenMap.get(dimensionName);

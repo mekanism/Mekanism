@@ -27,9 +27,9 @@ import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -151,7 +151,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     private void draw(@NotNull GuiGraphics guiGraphics) {
-        ResourceLocation texture;
+        Identifier texture;
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
             texture = slotType.getWarningTexture();
         } else {
@@ -190,12 +190,12 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         if (renderHover && hovered) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
+            guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, DEFAULT_HOVER_COLOR);
         }
         if (overlayColorSupplier != null) {
             int xPos = relativeX + 1;
             int yPos = relativeY + 1;
-            guiGraphics.fill(RenderType.guiOverlay(), xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
+            guiGraphics.fill(xPos, yPos, xPos + 16, yPos + 16, overlayColorSupplier.getAsInt());
         }
         if (hovered) {
             //TODO: Should it pass it the proper mouseX and mouseY. Probably, though buttons may have to be redone slightly then
@@ -232,17 +232,17 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (onClick != null && isValidClickButton(button)) {
-            if (mouseX >= getX() + borderSize() && mouseY >= getY() + borderSize() && mouseX < getRight() - borderSize() && mouseY < getBottom() - borderSize()) {
-                if (onClick.onClick(this, mouseX, mouseY)) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (onClick != null && isValidClickButton(event.buttonInfo())) {
+            if (event.x() >= getX() + borderSize() && event.y() >= getY() + borderSize() && event.x() < getRight() - borderSize() && event.y() < getBottom() - borderSize()) {
+                if (onClick.onClick(this, event, isDoubleClick)) {
                     playDownSound(minecraft.getSoundManager());
                     return true;
                 }
                 //If clicking the slot fails check super as maybe it has children that can handle clicks
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     @Nullable

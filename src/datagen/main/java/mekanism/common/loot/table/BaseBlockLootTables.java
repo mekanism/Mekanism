@@ -23,14 +23,14 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.base.TileEntityUpdateable;
-import net.minecraft.advancements.critereon.StatePropertiesPredicate;
+import net.minecraft.advancements.criterion.StatePropertiesPredicate;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -181,7 +181,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                     Set<DataComponentType<?>> skipTypes = ContainerType.TYPES.stream().map(type -> type.getComponentType().get()).collect(Collectors.toSet());
                     hasComponents = true;
                     //Sort the components so that the order is consistent when writing to json
-                    components.sort(Comparator.comparing(BuiltInRegistries.DATA_COMPONENT_TYPE::getKey, ResourceLocation::compareNamespaced));
+                    components.sort(Comparator.comparing(BuiltInRegistries.DATA_COMPONENT_TYPE::getKey, Identifier::compareNamespaced));
                     for (DataComponentType<?> remapEntry : components) {
                         //Allow containers to be handled below where we do extra validation that the stack actually supports it
                         if (!skipTypes.contains(remapEntry)) {

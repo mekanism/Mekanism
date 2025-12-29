@@ -48,20 +48,18 @@ import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
@@ -263,14 +261,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return false;
     }
 
-    private boolean shouldPump(Level level, Fluid sourceFluid) {
+    private boolean shouldPump(ServerLevel level, Fluid sourceFluid) {
         if (!MekanismConfig.general.pumpInfiniteFluidSources.get()) {
             if (sourceFluid == Fluids.WATER) {
                 //If we don't pump infinite sources, only pump it if water conversion is turned off
-                return !level.getGameRules().getBoolean(GameRules.RULE_WATER_SOURCE_CONVERSION);
+                return !level.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
             } else if (sourceFluid == Fluids.LAVA) {
                 //If we don't pump infinite sources, only pump it if lava conversion is turned off
-                return !level.getGameRules().getBoolean(GameRules.RULE_LAVA_SOURCE_CONVERSION);
+                return !level.getGameRules().get(GameRules.LAVA_SOURCE_CONVERSION);
             }
         }
         return true;

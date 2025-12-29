@@ -14,7 +14,9 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiConfigTypeTab extends GuiInsetElement<Void> {
 
@@ -28,7 +30,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
         transmission = type;
     }
 
-    private static ResourceLocation getResource(TransmissionType t) {
+    private static Identifier getResource(TransmissionType t) {
         return MekanismUtils.getResource(ResourceType.GUI, t.getTransmission() + ".png");
     }
 
@@ -53,7 +55,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         config.setCurrentType(transmission);
         config.updateTabs();
     }

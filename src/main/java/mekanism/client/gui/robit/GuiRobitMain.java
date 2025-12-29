@@ -70,42 +70,42 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
               MekanismLang.ROBIT_OWNER.translate(robit.getOwnerName())
         ))).clearFormat().clearSpacing().clearScale().padding(2);
         addRenderableWidget(new GuiHorizontalPowerBar(this, robit.getEnergyContainer(), 27, 74, 120));
-        addRenderableWidget(new MekanismImageButton(this, 6, 16, 18, getButtonLocation("home"), (element, mouseX, mouseY) -> {
+        addRenderableWidget(new MekanismImageButton(this, 6, 16, 18, getButtonLocation("home"), (element, event, isDoubleClick) -> {
             PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.GO_HOME, ((GuiRobitMain) element.gui()).robit));
             Minecraft.getInstance().setScreen(null);
             return true;
         })).setTooltip(MekanismLang.ROBIT_TELEPORT);
-        renameButton = addRenderableWidget(new MekanismImageButton(this, 6, 35, 18, getButtonLocation("rename"), (element, mouseX, mouseY) -> {
+        renameButton = addRenderableWidget(new MekanismImageButton(this, 6, 35, 18, getButtonLocation("rename"), (element, event, isDoubleClick) -> {
             GuiRobitMain gui = (GuiRobitMain) element.gui();
             gui.openWindow(new GuiRobitRename(gui, 27, 16, gui.robit), () -> renameButton);
             return true;
         })).setTooltip(MekanismLang.ROBIT_RENAME);
-        skinButton = addRenderableWidget(new MekanismImageButton(this, 6, 54, 18, getButtonLocation("skin"), (element, mouseX, mouseY) -> {
+        skinButton = addRenderableWidget(new MekanismImageButton(this, 6, 54, 18, getButtonLocation("skin"), (element, event, isDoubleClick) -> {
             GuiRobitMain gui = (GuiRobitMain) element.gui();
             gui.openWindow(new GuiRobitSkinSelect(gui, 4, -12, gui.robit), () -> skinButton);
             return true;
         })).setTooltip(MekanismLang.ROBIT_SKIN_SELECT);
         addRenderableWidget(new MekanismImageButton(this, 152, 35, 18, getButtonLocation("drop"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.PICKUP_DROPS, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.PICKUP_DROPS, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(MekanismLang.ROBIT_TOGGLE_PICKUP);
         addRenderableWidget(new MekanismImageButton(this, 152, 54, 18, getButtonLocation("follow"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.FOLLOW, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteractionEntity.FOLLOW, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(MekanismLang.ROBIT_TOGGLE_FOLLOW);
-        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 10, 18, getButtonLocation("main"), (element, mouseX, mouseY) -> {
+        addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 10, 18, getButtonLocation("main"), (element, event, isDoubleClick) -> {
             //Clicking main button doesn't do anything while already on the main GUI
             return true;
         })).setTooltip(ROBIT);
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 30, 18, getButtonLocation("crafting"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_CRAFTING, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_CRAFTING, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(ROBIT_CRAFTING);
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 50, 18, getButtonLocation("inventory"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_INVENTORY, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_INVENTORY, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(ROBIT_INVENTORY);
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 70, 18, getButtonLocation("smelting"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_SMELTING, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_SMELTING, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(ROBIT_SMELTING);
         addRenderableWidget(new MekanismImageButton(this, imageWidth + 3, 90, 18, getButtonLocation("repair"),
-              (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_REPAIR, ((GuiRobitMain) element.gui()).robit))))
+              (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEntityButtonPress(ClickedEntityButton.ROBIT_REPAIR, ((GuiRobitMain) element.gui()).robit))))
               .setTooltip(ROBIT_REPAIR);
     }
 

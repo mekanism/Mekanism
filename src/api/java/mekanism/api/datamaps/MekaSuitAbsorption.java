@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * A {@link net.minecraft.core.registries.Registries#DAMAGE_TYPE damage type} data map that allows changing how much damage of a given type the meka suit should absorb.
@@ -20,7 +20,7 @@ public record MekaSuitAbsorption(float absorption) {
      *
      * @see mekanism.api.datamaps.IMekanismDataMapTypes#mekaSuitAbsorption()
      */
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mekasuit_absorption");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mekasuit_absorption");
 
     private static final Codec<Float> ABSORPTION_CODEC = Codec.floatRange(0, 1);
     /**

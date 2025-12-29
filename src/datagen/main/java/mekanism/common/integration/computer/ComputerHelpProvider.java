@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.MekanismDataGenerator.IOConsumer;
@@ -49,20 +50,19 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.MekCodecs;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.CsvOutput;
 import net.minecraft.util.CsvOutput.Builder;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.yaml.snakeyaml.DumperOptions;
 import org.yaml.snakeyaml.nodes.Node;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 @ParametersAreNotNullByDefault
 public class ComputerHelpProvider implements DataProvider {
 
@@ -101,7 +101,7 @@ public class ComputerHelpProvider implements DataProvider {
 
     @NotNull
     private <DATA> CompletableFuture<?> makeJson(CachedOutput output, HolderLookup.Provider lookupProvider, DATA helpData, Codec<DATA> codec, String path) {
-        return DataProvider.saveStable(output, lookupProvider, codec, helpData, this.pathProvider.json(ResourceLocation.fromNamespaceAndPath(this.modid, path)));
+        return DataProvider.saveStable(output, lookupProvider, codec, helpData, this.pathProvider.json(Identifier.fromNamespaceAndPath(this.modid, path)));
     }
 
     @NotNull
@@ -115,13 +115,13 @@ public class ComputerHelpProvider implements DataProvider {
                     YamlHelper.dump(writer, frontMatterNode, YAML_OPTIONS);
                     writer.write("---\n");
                 }
-            }, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "jekyll"), "md")).join();
+            }, this.pathProvider.file(Identifier.fromNamespaceAndPath(this.modid, "jekyll"), "md")).join();
         });
     }
 
     @NotNull
     private CompletableFuture<?> makeMethodsCsv(CachedOutput pOutput, Map<Class<?>, List<MethodHelpData>> helpData) {
-        return saveCSV(pOutput, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
+        return saveCSV(pOutput, this.pathProvider.file(Identifier.fromNamespaceAndPath(this.modid, "methods"), "csv"), METHOD_CSV_HEADERS, output -> {
             //NB: list is used as the IOException will be captured in saveCSV
             List<Map.Entry<String, List<MethodHelpData>>> friendlyList = helpData.entrySet().stream()
                   .map(entry -> Map.entry(getFriendlyName(entry.getKey()), entry.getValue()))
@@ -147,7 +147,7 @@ public class ComputerHelpProvider implements DataProvider {
     @NotNull
     private CompletableFuture<?> makeEnumsCsv(CachedOutput pOutput, Map<Class<?>, List<String>> enumValues) {
         //gather the enums into a sorted map
-        return saveCSV(pOutput, this.pathProvider.file(ResourceLocation.fromNamespaceAndPath(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput -> {
+        return saveCSV(pOutput, this.pathProvider.file(Identifier.fromNamespaceAndPath(this.modid, "enums"), "csv"), ENUM_CSV_HEADERS, csvOutput -> {
             for (Entry<Class<?>, List<String>> entry : enumValues.entrySet()) {
                 Class<?> clazz = entry.getKey();
                 List<String> values = entry.getValue();

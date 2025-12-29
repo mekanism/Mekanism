@@ -4,8 +4,8 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.EnchantmentAwareModule;
 import mekanism.api.gear.IModule;
 import mekanism.common.Mekanism;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 @ParametersAreNotNullByDefault
 public class SoulSurferUnit implements EnchantmentAwareModule<SoulSurferUnit> {
 
-    private static final ResourceLocation MOVEMENT_EFFICIENCY = Mekanism.rl("movement_efficiency");
+    private static final Identifier MOVEMENT_EFFICIENCY = Mekanism.rl("movement_efficiency");
 
     @Override
     public void adjustAttributes(IModule<SoulSurferUnit> module, ItemAttributeModifierEvent event) {

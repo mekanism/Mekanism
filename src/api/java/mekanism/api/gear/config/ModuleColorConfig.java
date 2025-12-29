@@ -8,7 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * Immutable class representing a color based module config (name and int value).
@@ -28,7 +28,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      * Stream codec for encoding and decoding ARGB based color module configs over the network.
      */
     public static final StreamCodec<ByteBuf, ModuleColorConfig> ARGB_STREAM_CODEC = StreamCodec.composite(
-          ResourceLocation.STREAM_CODEC, ModuleConfig::name,
+          Identifier.STREAM_CODEC, ModuleConfig::name,
           //Note: We don't do var-int as we include alpha data
           ByteBufCodecs.INT, ModuleConfig::get,
           ModuleColorConfig::argb
@@ -44,7 +44,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      * Stream codec for encoding and decoding RGB based color module configs over the network.
      */
     public static final StreamCodec<ByteBuf, ModuleColorConfig> RGB_STREAM_CODEC = StreamCodec.composite(
-          ResourceLocation.STREAM_CODEC, ModuleConfig::name,
+          Identifier.STREAM_CODEC, ModuleConfig::name,
           //Note: We can use var int here and just not send the alpha data over the network
           ByteBufCodecs.VAR_INT, module -> module.get() & 0x00FFFFFF,
           ModuleColorConfig::rgb
@@ -55,7 +55,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      *
      * @implNote Color format is ARGB.
      */
-    public static ModuleColorConfig argb(ResourceLocation name) {
+    public static ModuleColorConfig argb(Identifier name) {
         return argb(name, 0xFFFFFFFF);
     }
 
@@ -66,7 +66,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      *
      * @implNote Color format is ARGB.
      */
-    public static ModuleColorConfig argb(ResourceLocation name, int defaultColor) {
+    public static ModuleColorConfig argb(Identifier name, int defaultColor) {
         return new ModuleColorConfig(name, true, defaultColor);
     }
 
@@ -75,7 +75,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      *
      * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
      */
-    public static ModuleColorConfig rgb(ResourceLocation name) {
+    public static ModuleColorConfig rgb(Identifier name) {
         return rgb(name, 0xFFFFFFFF);
     }
 
@@ -86,7 +86,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
      *
      * @implNote Color format is ARGB with the alpha component being locked to {@code 0xFF}.
      */
-    public static ModuleColorConfig rgb(ResourceLocation name, int defaultColor) {
+    public static ModuleColorConfig rgb(Identifier name, int defaultColor) {
         //If we don't handle alpha make sure we do have the alpha component present
         return new ModuleColorConfig(name, false, defaultColor);
     }
@@ -94,7 +94,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     private final boolean supportsAlpha;
     private final int value;
 
-    private ModuleColorConfig(ResourceLocation name, boolean supportsAlpha, int value) {
+    private ModuleColorConfig(Identifier name, boolean supportsAlpha, int value) {
         super(name);
         this.supportsAlpha = supportsAlpha;
         //If we don't handle alpha make sure we do have the alpha component present though
@@ -111,7 +111,7 @@ public class ModuleColorConfig extends ModuleConfig<Integer> {
     }
 
     @Override
-    public StreamCodec<ByteBuf, ModuleConfig<Integer>> namedStreamCodec(ResourceLocation name) {
+    public StreamCodec<ByteBuf, ModuleConfig<Integer>> namedStreamCodec(Identifier name) {
         if (supportsAlpha) {
             //Note: We don't do varint as we include alpha data
             return ByteBufCodecs.INT.map(val -> argb(name, val), ModuleConfig::get);

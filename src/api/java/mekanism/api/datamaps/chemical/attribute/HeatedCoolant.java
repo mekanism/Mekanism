@@ -12,7 +12,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -41,7 +41,7 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      *
      * @see mekanism.api.datamaps.IMekanismDataMapTypes#heatedChemicalCoolant()
      */
-    public static final ResourceLocation ID = ResourceLocation.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_heated_coolant");
+    public static final Identifier ID = Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "chemical_attribute_heated_coolant");
 
     /**
      * Codec for serializing and deserializing heated coolants.

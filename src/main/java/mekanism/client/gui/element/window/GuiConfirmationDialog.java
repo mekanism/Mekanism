@@ -21,9 +21,9 @@ public class GuiConfirmationDialog extends GuiWindow {
         active = true;
 
         addChild(new TranslationButton(gui, relativeX + width / 2 - 51, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CANCEL, this::close));
-        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, (element, mouseX, mouseY) -> {
+        addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + height - 24, 50, 18, MekanismLang.BUTTON_CONFIRM, (element, event, isDoubleClick) -> {
             onConfirm.run();
-            return close(element, mouseX, mouseY);
+            return close(element, event, isDoubleClick);
         }, type.getColorSupplier()));
     }
 

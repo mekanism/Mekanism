@@ -13,7 +13,7 @@ import mekanism.common.util.RegistryUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -48,7 +48,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public boolean canFilter(BlockState state) {
-        ResourceLocation name = RegistryUtils.getName(state.getBlockHolder());
+        Identifier name = RegistryUtils.getName(state.getBlockHolder());
         return name != null && WildcardMatcher.matches(modID, name.getNamespace());
     }
 

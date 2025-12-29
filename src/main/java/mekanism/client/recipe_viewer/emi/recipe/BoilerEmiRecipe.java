@@ -15,11 +15,11 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe> {
 
-    public BoilerEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, BoilerRecipeViewerRecipe recipe) {
+    public BoilerEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, BoilerRecipeViewerRecipe recipe) {
         super(category, id, recipe);
         addInputDefinition(recipe.water());
         addChemicalOutputDefinition(List.of(recipe.steam()));

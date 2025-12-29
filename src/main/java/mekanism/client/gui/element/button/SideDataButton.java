@@ -48,10 +48,10 @@ public class SideDataButton extends BasicColorButton {
         super(gui, x, y, 22, () -> {
             DataType dataType = dataTypeSupplier.get();
             return dataType == null ? null : colorSupplier.get();
-        }, (element, mouseX, mouseY) -> {
+        }, (element, event, isDoubleClick) -> {
             SideDataButton button = (SideDataButton) element;
-            return PacketUtils.sendToServer(button.packetCreator.create(button.tile.getBlockPos(), MekClickType.left(Screen.hasShiftDown()), button.slotPos));
-        }, (element, mouseX, mouseY) -> {
+            return PacketUtils.sendToServer(button.packetCreator.create(button.tile.getBlockPos(), MekClickType.left(event.hasShiftDown()), button.slotPos));
+        }, (element, event, isDoubleClick) -> {
             SideDataButton button = (SideDataButton) element;
             return PacketUtils.sendToServer(button.packetCreator.create(button.tile.getBlockPos(), MekClickType.RIGHT, button.slotPos));
         });

@@ -8,7 +8,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -18,12 +18,12 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
     protected final int innerWidth;
     protected final int innerHeight;
     protected final DATA_SOURCE dataSource;
-    protected final ResourceLocation overlay;
+    protected final Identifier overlay;
 
     @Nullable
     protected BooleanSupplier warningSupplier;
 
-    public GuiInsetElement(ResourceLocation overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left) {
+    public GuiInsetElement(Identifier overlay, IGuiWrapper gui, DATA_SOURCE dataSource, int x, int y, int height, int innerSize, boolean left) {
         super(gui, x, y, height, left, false);
         this.overlay = overlay;
         this.dataSource = dataSource;
@@ -67,7 +67,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
         return innerHeight;
     }
 
-    protected ResourceLocation getOverlay() {
+    protected Identifier getOverlay() {
         return overlay;
     }
 

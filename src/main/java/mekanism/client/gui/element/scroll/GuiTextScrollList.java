@@ -7,6 +7,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.RenderPipelines;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiTextScrollList extends GuiScrollList {
@@ -79,7 +80,7 @@ public class GuiTextScrollList extends GuiScrollList {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {
-            guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1 + (selected - scrollIndex) * elementHeight, barXShift - 2, elementHeight,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1 + (selected - scrollIndex) * elementHeight, barXShift - 2, elementHeight,
                   4, 2, 2, 2, TEXTURE_WIDTH, TEXTURE_HEIGHT);
         }
     }

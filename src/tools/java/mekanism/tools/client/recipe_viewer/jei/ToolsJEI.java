@@ -12,7 +12,7 @@ import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.TieredItem;
@@ -23,10 +23,10 @@ public class ToolsJEI implements IModPlugin {
 
     @NotNull
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         //Note: Can't use MekanismTools.rl, as JEI needs this in the constructor and the class may not be loaded yet.
         // we can still reference the modid though because of constant inlining
-        return ResourceLocation.fromNamespaceAndPath(MekanismTools.MODID, "jei_plugin");
+        return Identifier.fromNamespaceAndPath(MekanismTools.MODID, "jei_plugin");
     }
 
     @Override

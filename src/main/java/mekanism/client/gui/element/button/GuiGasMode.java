@@ -11,13 +11,13 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class GuiGasMode extends MekanismImageButton {
 
-    private static final ResourceLocation IDLE = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_idle.png");
-    private static final ResourceLocation EXCESS = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_excess.png");
-    private static final ResourceLocation DUMP = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_dump.png");
+    private static final Identifier IDLE = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_idle.png");
+    private static final Identifier EXCESS = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_excess.png");
+    private static final Identifier DUMP = MekanismUtils.getResource(ResourceType.GUI, "gas_mode_dump.png");
 
     private final Tooltip dumpExcess;
     private final Tooltip dump;
@@ -29,7 +29,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     public GuiGasMode(IGuiWrapper gui, int x, int y, boolean left, Supplier<GasMode> gasModeSupplier, BlockPos pos, int tank, Tooltip dumpExcess, Tooltip dump) {
-        super(gui, x, y, 10, IDLE, (element, mouseX, mouseY) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
+        super(gui, x, y, 10, IDLE, (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.GAS_MODE_BUTTON, pos, tank)));
         this.textSide = left ? TextAlignment.RIGHT : TextAlignment.LEFT;
         this.gasModeSupplier = gasModeSupplier;
         this.dumpExcess = dumpExcess;
@@ -37,7 +37,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     @Override
-    protected ResourceLocation getResource() {
+    protected Identifier getResource() {
         return switch (gasModeSupplier.get()) {
             case DUMPING_EXCESS -> EXCESS;
             case DUMPING -> DUMP;

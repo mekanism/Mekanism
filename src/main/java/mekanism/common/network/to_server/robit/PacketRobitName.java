@@ -15,7 +15,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.registries.MekanismRobitSkins;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;

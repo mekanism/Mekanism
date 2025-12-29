@@ -9,11 +9,12 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.Util;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,18 +48,18 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
         setDragging(true);
-        setOpen(!isOpen || mouseY > getY() + 11);
+        setOpen(!isOpen || event.y() > getY() + 11);
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
+    public void onRelease(@NotNull MouseButtonEvent event) {
         boolean wasDragging = isDragging();
-        super.onRelease(mouseX, mouseY);
-        if (wasDragging && isOpen && mouseY > getY() + 11) {
-            int hoveredIndex = getHoveredIndex(mouseX, mouseY);
+        super.onRelease(event);
+        if (wasDragging && isOpen && event.y() > getY() + 11) {
+            int hoveredIndex = getHoveredIndex(event.x(), event.y());
             if (hoveredIndex != -1) {
                 handler.accept(options[hoveredIndex]);
             }
@@ -101,7 +102,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
 
         if (isOpen) {
             for (int i = 0; i < options.length; i++) {
-                ResourceLocation icon = options[i].getIcon();
+                Identifier icon = options[i].getIcon();
                 if (icon != null) {
                     guiGraphics.blit(icon, relativeX + width - ICON_OFFSET, relativeY + ELEMENT_HEIGHT + 2 + 10 * i, 0, 0, ICON_SIZE, ICON_SIZE, ICON_SIZE, ICON_SIZE);
                 }

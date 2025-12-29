@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.slot;
 
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public enum SlotOverlay {
     MINUS("overlay_minus.png", 18, 18),
@@ -17,7 +17,7 @@ public enum SlotOverlay {
     SELECT("overlay_select.png", 18, 18),
     MODULE("overlay_module.png", 18, 18);
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int width;
     private final int height;
 
@@ -27,7 +27,7 @@ public enum SlotOverlay {
         this.height = height;
     }
 
-    public ResourceLocation getTexture() {
+    public Identifier getTexture() {
         return texture;
     }
 

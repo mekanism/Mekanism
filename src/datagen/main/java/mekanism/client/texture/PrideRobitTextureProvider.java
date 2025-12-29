@@ -11,7 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -41,7 +41,7 @@ public class PrideRobitTextureProvider implements DataProvider {
         return CompletableFuture.runAsync(() -> {
             PathProvider pathProvider = output.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
             try {
-                Resource resource = helper.getResource(MekanismRobitSkins.BASE.location(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
+                Resource resource = helper.getResource(MekanismRobitSkins.BASE.identifier(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
                 try (InputStream inputStream = resource.open();
                      NativeImage sourceImage = NativeImage.read(inputStream);
                      NativeImage writableImage = new NativeImage(sourceImage.format(), sourceImage.getWidth(), sourceImage.getHeight(), false)) {

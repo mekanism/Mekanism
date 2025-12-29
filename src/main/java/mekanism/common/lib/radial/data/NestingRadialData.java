@@ -1,12 +1,11 @@
 package mekanism.common.lib.radial.data;
 
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.INestedRadialMode;
 import mekanism.api.radial.mode.NestedRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -14,7 +13,7 @@ public class NestingRadialData extends RadialData<NestedRadialMode> {
 
     private final List<NestedRadialMode> modes;
 
-    public NestingRadialData(ResourceLocation identifier, List<NestedRadialMode> modes) {
+    public NestingRadialData(Identifier identifier, List<NestedRadialMode> modes) {
         super(identifier);
         this.modes = modes;
     }
@@ -32,7 +31,7 @@ public class NestingRadialData extends RadialData<NestedRadialMode> {
 
     @Nullable
     @Override
-    public INestedRadialMode fromIdentifier(ResourceLocation identifier) {
+    public INestedRadialMode fromIdentifier(Identifier identifier) {
         //Override to remove need for checking instanceof and if it has any nested data
         for (NestedRadialMode nested : getModes()) {
             if (identifier.equals(nested.nestedData().getIdentifier())) {

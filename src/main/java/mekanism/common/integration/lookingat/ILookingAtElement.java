@@ -1,8 +1,8 @@
 package mekanism.common.integration.lookingat;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public interface ILookingAtElement {
 
-    ResourceLocation getID();
+    Identifier getID();
 }

@@ -86,7 +86,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
         addRenderableWidget(new GuiElementHolder(this, 9, 30, 204, 68));
         //new filter button border
         addRenderableWidget(new GuiElementHolder(this, 9, 98, 204, 22));
-        addRenderableWidget(new TranslationButton(this, 10, 99, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, mouseX, mouseY) -> {
+        addRenderableWidget(new TranslationButton(this, 10, 99, 202, 20, MekanismLang.BUTTON_NEW_FILTER, (element, event, isDoubleClick) -> {
             GuiQIOFilterHandler<?> gui = (GuiQIOFilterHandler<?>) element.gui();
             gui.addWindow(new GuiQIOFilerSelect(gui, gui.tile));
             return true;

@@ -1,10 +1,11 @@
 package mekanism.common.tests;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import java.nio.file.Path;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
@@ -16,7 +17,6 @@ import net.neoforged.testframework.conf.FrameworkConfiguration;
 import net.neoforged.testframework.impl.MutableTestFramework;
 import net.neoforged.testframework.summary.GitHubActionsStepSummaryDumper;
 import net.neoforged.testframework.summary.JUnitSummaryDumper;
-import org.lwjgl.glfw.GLFW;
 
 @Mod(MekanismTests.MODID)
 public class MekanismTests {
@@ -27,8 +27,8 @@ public class MekanismTests {
         //More or less a copy of net.neoforged.neoforge.eventtest.internal.TestsMod but with a few tweaks
         final MutableTestFramework framework = FrameworkConfiguration.builder(rl("tests"))
               .clientConfiguration(() -> ClientConfiguration.builder()
-                    .toggleOverlayKey(GLFW.GLFW_KEY_O)
-                    .openManagerKey(GLFW.GLFW_KEY_M)
+                    .toggleOverlayKey(InputConstants.KEY_O)
+                    .openManagerKey(InputConstants.KEY_M)
                     .build())
               .enable(Feature.CLIENT_SYNC, Feature.TEST_STORE)
               //TODO: Figure out which dumpers we want to enable and how they work
@@ -44,7 +44,7 @@ public class MekanismTests {
         });
     }
 
-    public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 }

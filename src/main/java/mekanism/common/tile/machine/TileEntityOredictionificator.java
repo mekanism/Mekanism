@@ -31,7 +31,7 @@ import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -109,7 +109,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         MekanismConfig.general.validOredictionificatorFilters.removeInvalidationListener(validFiltersListener);
     }
 
-    private static List<ResourceLocation> getFilterableTags(ItemStack stack) {
+    private static List<Identifier> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
         //For each tag that matches a tag that is filterable, add it to the resulting list
         return stack.getTags()
@@ -122,7 +122,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return stack.getTags().anyMatch(tag -> isPossibleFilter(tag.location()));
     }
 
-    private static boolean isPossibleFilter(ResourceLocation resource) {
+    private static boolean isPossibleFilter(Identifier resource) {
         //Note: We get the possible filters inside the stream so that we don't have to capture it
         // as while we look it for every item, it is cached on the config value, so it becomes a simple getter
         Map<String, List<String>> possibleFilters = MekanismConfig.general.validOredictionificatorFilters.get();
@@ -134,7 +134,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return false;
     }
 
-    public static boolean isValidTarget(ResourceLocation tag) {
+    public static boolean isValidTarget(Identifier tag) {
         if (BuiltInRegistries.ITEM.get(TagKey.create(Registries.ITEM, tag)).isPresent()) {
             for (String filter : MekanismConfig.general.validOredictionificatorFilters.get().getOrDefault(tag.getNamespace(), Collections.emptyList())) {
                 if (tag.getPath().startsWith(filter)) {
@@ -151,7 +151,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     private static ItemStack getResult(List<OredictionificatorItemFilter> enabledFilters, ItemStack stack) {
         if (!enabledFilters.isEmpty()) {
-            for (ResourceLocation filterableTag : getFilterableTags(stack)) {
+            for (Identifier filterableTag : getFilterableTags(stack)) {
                 for (OredictionificatorItemFilter filter : enabledFilters) {
                     if (filter.filterMatches(filterableTag)) {
                         ItemStack result = filter.getResult();

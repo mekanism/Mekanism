@@ -16,7 +16,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,8 +55,8 @@ public class RotaryCondensentratorRecipeCategory extends HolderRecipeCategory<Ro
 
     @NotNull
     @Override
-    public ResourceLocation getRegistryName(@NotNull RecipeHolder<RotaryRecipe> recipe) {
-        ResourceLocation baseId = super.getRegistryName(recipe);
+    public Identifier getRegistryName(@NotNull RecipeHolder<RotaryRecipe> recipe) {
+        Identifier baseId = super.getRegistryName(recipe);
         if (condensentrating) {
             return RecipeViewerUtils.synthetic(baseId, "condensentrating");
         }

@@ -3,7 +3,7 @@ package mekanism.common.integration.framedblocks;
 import mekanism.common.Mekanism;
 import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.event.ModelEvent;
@@ -46,7 +46,7 @@ public final class FramedBlocksIntegration {
          * A dummy model used for generating a baked model from a given chemical's texture
          * when applying it as a camo to a framed block
          */
-        public static final ResourceLocation CHEMICAL_DUMMY_MODEL = Mekanism.rl("chemical/dummy");
+        public static final Identifier CHEMICAL_DUMMY_MODEL = Mekanism.rl("chemical/dummy");
     }
 
     static final class ClientEvents {

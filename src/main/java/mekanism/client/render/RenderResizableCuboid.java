@@ -54,7 +54,7 @@ public class RenderResizableCuboid {
         if (renderPos != null && faceDisplay != FaceDisplay.BOTH) {
             //If we know the position this model is based around in the world, and we aren't displaying both faces
             // then calculate to see if we can skip rendering any faces due to the camera not facing them
-            Vec3 camPos = camera.getPosition();
+            Vec3 camPos = camera.position();
             Vec3 minPos = renderPos.add(cube.minX, cube.minY, cube.minZ);
             Vec3 maxPos = renderPos.add(cube.maxX, cube.maxY, cube.maxZ);
             for (Direction direction : EnumUtils.DIRECTIONS) {

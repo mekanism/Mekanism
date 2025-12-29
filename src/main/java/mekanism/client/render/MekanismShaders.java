@@ -7,7 +7,7 @@ import java.util.function.Supplier;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.RenderStateShard.ShaderStateShard;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -29,7 +29,7 @@ public class MekanismShaders {
         registerShader(event, Mekanism.rl("rendertype_sps"), DefaultVertexFormat.POSITION_TEX_COLOR, SPS);
     }
 
-    private static void registerShader(RegisterShadersEvent event, ResourceLocation shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {
+    private static void registerShader(RegisterShadersEvent event, Identifier shaderLocation, VertexFormat vertexFormat, ShaderTracker tracker) throws IOException {
         event.registerShader(new ShaderInstance(event.getResourceProvider(), shaderLocation, vertexFormat), tracker::setInstance);
     }
 

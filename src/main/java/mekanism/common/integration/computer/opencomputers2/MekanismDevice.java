@@ -10,18 +10,18 @@ import li.cil.oc2.api.bus.device.rpc.RPCInvocation;
 import li.cil.oc2.api.bus.device.rpc.RPCMethod;
 import li.cil.oc2.api.bus.device.rpc.RPCMethodGroup;
 import li.cil.oc2.api.bus.device.rpc.RPCParameter;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.common.integration.computer.BaseComputerHelper;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.ComputerEnergyHelper;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.IComputerTile;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 @ParametersAreNotNullByDefault//TODO: reimplement RPCDevice if OC updates to NF
 public class MekanismDevice<TILE extends BlockEntity & IComputerTile> extends BoundMethodHolder /*implements RPCDevice*/ {
 

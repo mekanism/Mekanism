@@ -9,7 +9,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import mekanism.client.lang.FormatSplitter.Component;
 import mekanism.client.lang.FormatSplitter.FormatComponent;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.data.PackOutput;
 
 public class NonAmericanLanguageProvider extends ConvertibleLanguageProvider {

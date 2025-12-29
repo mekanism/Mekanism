@@ -4,7 +4,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
@@ -13,11 +12,10 @@ import java.util.function.Predicate;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.DataComponentMatchers;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger.TriggerInstance;
-import net.minecraft.advancements.critereon.ItemPredicate;
-import net.minecraft.advancements.critereon.MinMaxBounds;
+import net.minecraft.advancements.criterion.DataComponentMatchers;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
@@ -25,7 +23,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -60,7 +58,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return this.registries.thenCompose(lookupProvider -> {
             List<CompletableFuture<?>> futures = new ArrayList<>();
             registerAdvancements(advancement -> {
-                ResourceLocation id = advancement.id();
+                Identifier id = advancement.id();
                 if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", advancementFolder)) {
                     throw new IllegalStateException("Duplicate advancement " + id);
                 }
@@ -78,7 +76,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         return ExtendedAdvancementBuilder.advancement(advancement, existingFileHelper);
     }
 
-    public static Criterion<TriggerInstance> hasItems(ItemPredicate... predicates) {
+    public static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(ItemPredicate... predicates) {
         return InventoryChangeTrigger.TriggerInstance.hasItems(predicates);
     }
 
@@ -95,7 +93,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected static Criterion<TriggerInstance> hasItems(TagKey<Item>... tags) {
+    protected static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(TagKey<Item>... tags) {
         return hasItems(Arrays.stream(tags)
               .map(tag -> ItemPredicate.Builder.item().of(tag).build())
               .toArray(ItemPredicate[]::new));

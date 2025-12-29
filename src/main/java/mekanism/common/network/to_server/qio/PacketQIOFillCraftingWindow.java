@@ -20,7 +20,7 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 //Note: While our logic is not dependent on knowing about transferMultiple, we make use of it for encoding and decoding
 // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
 @NothingNullByDefault
-public record PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean transferMultiple, boolean rejectToInventory,
+public record PacketQIOFillCraftingWindow(Identifier recipeID, boolean transferMultiple, boolean rejectToInventory,
                                           Byte2ObjectMap<List<SingularHashedItemSource>> sources) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketQIOFillCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fill_qio"));
@@ -68,7 +68,7 @@ public record PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean tra
     }
 
     private void write(@NotNull ByteBuf buffer) {
-        ResourceLocation.STREAM_CODEC.encode(buffer, recipeID);
+        Identifier.STREAM_CODEC.encode(buffer, recipeID);
         buffer.writeBoolean(transferMultiple);
         buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
@@ -109,7 +109,7 @@ public record PacketQIOFillCraftingWindow(ResourceLocation recipeID, boolean tra
     }
 
     private static PacketQIOFillCraftingWindow decode(ByteBuf buffer) {
-        ResourceLocation recipeID = ResourceLocation.STREAM_CODEC.decode(buffer);
+        Identifier recipeID = Identifier.STREAM_CODEC.decode(buffer);
         boolean transferMultiple = buffer.readBoolean();
         boolean rejectToInventory = buffer.readBoolean();
         byte slotCount = buffer.readByte();

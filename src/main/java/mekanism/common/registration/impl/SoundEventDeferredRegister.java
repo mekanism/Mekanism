@@ -5,8 +5,8 @@ import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -23,7 +23,7 @@ public class SoundEventDeferredRegister extends DeferredRegister<SoundEvent> {
 
     @Override
     @SuppressWarnings("unchecked")
-    public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(String name, Function<ResourceLocation, ? extends SOUND> func) {
+    public <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> register(String name, Function<Identifier, ? extends SOUND> func) {
         return (SoundEventRegistryObject<SOUND>) super.register(name, func);
     }
 
@@ -34,7 +34,7 @@ public class SoundEventDeferredRegister extends DeferredRegister<SoundEvent> {
     }
 
     @Override
-    protected <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> createHolder(ResourceKey<? extends Registry<SoundEvent>> registryKey, ResourceLocation key) {
+    protected <SOUND extends SoundEvent> SoundEventRegistryObject<SOUND> createHolder(ResourceKey<? extends Registry<SoundEvent>> registryKey, Identifier key) {
         return new SoundEventRegistryObject<>(ResourceKey.create(registryKey, key));
     }
 }

@@ -18,7 +18,7 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -30,7 +30,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 @ParametersAreNotNullByDefault
 public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICustomModule<ModuleElectrolyticBreathingUnit> {
 
-    public static final ResourceLocation FILL_HELD = Mekanism.rl("breathing.held");
+    public static final Identifier FILL_HELD = Mekanism.rl("breathing.held");
 
     public ModuleElectrolyticBreathingUnit(IModule<ModuleElectrolyticBreathingUnit> module) {
         this(module.getBooleanConfigOrFalse(FILL_HELD));

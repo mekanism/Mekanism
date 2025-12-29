@@ -65,7 +65,7 @@ public class RecipeTestHelper extends MekGameTestHelper {
     public void checkForMissing(Collection<? extends ResourceKey<?>> missingRecipes) {
         if (!missingRecipes.isEmpty()) {
             fail("Missing recipe for " + missingRecipes.stream()
-                  .map(key -> key.location().toString())
+                  .map(key -> key.identifier().toString())
                   .collect(Collectors.joining(", "))
             );
         }

@@ -10,8 +10,8 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -232,7 +232,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      * @throws IllegalStateException if the item does not exist.
      * @since 10.6.7
      */
-    default ItemStackIngredient from(HolderLookup.Provider registries, ResourceLocation itemId) {
+    default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
 }

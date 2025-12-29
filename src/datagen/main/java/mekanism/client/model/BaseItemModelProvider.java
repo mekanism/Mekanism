@@ -9,7 +9,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.models.ItemModelGenerators;
 import net.minecraft.data.models.ItemModelGenerators.TrimModelData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.BucketItem;
@@ -33,7 +33,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return "Item model provider: " + modid;
     }
 
-    public boolean textureExists(ResourceLocation texture) {
+    public boolean textureExists(Identifier texture) {
         return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
     }
     
@@ -41,7 +41,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return RegistryUtils.getName(holder, BuiltInRegistries.ITEM).getPath();
     }
 
-    protected ResourceLocation itemTexture(Holder<Item> item) {
+    protected Identifier itemTexture(Holder<Item> item) {
         return modLoc("item/" + getPath(item));
     }
 
@@ -64,7 +64,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                withExistingParent(getPath(holder), ResourceLocation.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
+                withExistingParent(getPath(holder), Identifier.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
                       .fluid(bucket.content);
             }
@@ -75,7 +75,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return generated(item, itemTexture(item));
     }
 
-    protected ItemModelBuilder generated(Holder<Item> item, ResourceLocation texture) {
+    protected ItemModelBuilder generated(Holder<Item> item, Identifier texture) {
         return withExistingParent(getPath(item), "item/generated").texture("layer0", texture);
     }
 
@@ -83,7 +83,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         //TODO: Try to come up with a better solution to this. Currently we have an empty texture for layer zero so that we can set
         // the tint only on layer one so that we only end up having the tint show for this fallback texture
         ItemModelBuilder modelBuilder = generated(item, modLoc("item/empty")).texture("layer1", modLoc("item/" + type));
-        ResourceLocation overlay = modLoc("item/" + type + "_overlay");
+        Identifier overlay = modLoc("item/" + type + "_overlay");
         if (textureExists(overlay)) {
             //If we have an overlay type for that resource type then add that as another layer
             modelBuilder = modelBuilder.texture("layer2", overlay);
@@ -102,18 +102,18 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         return handheld(item, itemTexture(item));
     }
 
-    protected ItemModelBuilder handheld(Holder<Item> item, ResourceLocation texture) {
+    protected ItemModelBuilder handheld(Holder<Item> item, Identifier texture) {
         return withExistingParent(getPath(item), "item/handheld").texture("layer0", texture);
     }
 
-    protected ItemModelBuilder armorOrHandheld(Holder<Item> holder, ResourceLocation texture) {
+    protected ItemModelBuilder armorOrHandheld(Holder<Item> holder, Identifier texture) {
         if (holder.value() instanceof ArmorItem armorItem) {
             ItemModelBuilder builder = generated(holder, texture);
             for (TrimModelData trimModelData : ItemModelGenerators.GENERATED_TRIM_MODELS) {
                 String trimId = trimModelData.name(armorItem.getMaterial());
                 ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
                       .texture("layer0", texture)
-                      .texture("layer1", ResourceLocation.withDefaultNamespace("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
+                      .texture("layer1", Identifier.withDefaultNamespace("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
                 builder.override()
                       .predicate(ItemModelGenerators.TRIM_TYPE_PREDICATE_ID, trimModelData.itemModelIndex())
                       .model(override);

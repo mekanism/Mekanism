@@ -106,7 +106,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
@@ -121,7 +121,7 @@ import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.world.chunk.RegisterTicketControllersEvent;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
@@ -266,8 +266,8 @@ public class Mekanism {
         event.register(MekanismAPI.ROBIT_SKIN_SERIALIZER_REGISTRY);
     }
 
-    public static ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(MODID, path);
+    public static Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(MODID, path);
     }
 
     private void setRecipeCacheManager(ReloadListener manager) {
@@ -287,14 +287,15 @@ public class Mekanism {
     }
 
     private void onDataMapsUpdated(DataMapsUpdatedEvent event) {
-        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.holders().forEach(
+        event.ifRegistry(MekanismAPI.CHEMICAL_REGISTRY_NAME, registry -> registry.listElements().forEach(
               holder -> holder.value().updateFromDataMap(holder)
         ));
     }
 
-    private void addReloadListenersLowest(AddReloadListenerEvent event) {
+    private void addReloadListenersLowest(AddServerReloadListenersEvent event) {
         //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes or loot tables
-        event.addListener(getRecipeCacheManager());
+        //TODO - 1.21.11: Evaluate the dependency system and what we want the id of this to be
+        event.addListener(rl("recipe_cache_manager"), getRecipeCacheManager());
     }
 
     private void registerCommands(RegisterCommandsEvent event) {

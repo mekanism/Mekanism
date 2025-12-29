@@ -71,7 +71,7 @@ import mezz.jei.api.registration.IRecipeRegistration;
 import mezz.jei.api.registration.IRecipeTransferRegistration;
 import mezz.jei.api.registration.ISubtypeRegistration;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
@@ -124,10 +124,10 @@ public class MekanismJEI implements IModPlugin {
 
     @NotNull
     @Override
-    public ResourceLocation getPluginUid() {
+    public Identifier getPluginUid() {
         //Note: Can't use Mekanism.rl, as JEI needs this in the constructor and the class may not be loaded yet.
         // we can still reference the modid though because of constant inlining
-        return ResourceLocation.fromNamespaceAndPath(Mekanism.MODID, "jei_plugin");
+        return Identifier.fromNamespaceAndPath(Mekanism.MODID, "jei_plugin");
     }
 
     public static void registerItemSubtypes(ISubtypeRegistration registry, Collection<? extends Holder<Item>> items) {
@@ -151,7 +151,7 @@ public class MekanismJEI implements IModPlugin {
     @Override
     public void registerIngredients(IModIngredientRegistration registry) {
         //Note: We register the ingredient types regardless of if EMI is loaded so that we don't crash any addons that are trying to reference them
-        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.holders()
+        List<ChemicalStack> types = MekanismAPI.CHEMICAL_REGISTRY.listElements()
               //Don't add the empty type. We will allow JEI to filter out any that are hidden from recipe viewers
               .filter(chemical -> !chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
               .map(chemical -> new ChemicalStack(chemical, FluidType.BUCKET_VOLUME))

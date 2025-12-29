@@ -14,14 +14,14 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiWarningTab extends GuiTexturedElement {
 
-    private static final ResourceLocation WARNING_LEFT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_left.png");
-    private static final ResourceLocation WARNING_RIGHT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_right.png");
+    private static final Identifier WARNING_LEFT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_left.png");
+    private static final Identifier WARNING_RIGHT = MekanismUtils.getResource(ResourceType.GUI_TAB, "warning_info_right.png");
 
     private final IWarningTracker warningTracker;
     private List<Component> lastInfo = Collections.emptyList();

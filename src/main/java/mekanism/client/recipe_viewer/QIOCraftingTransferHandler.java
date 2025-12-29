@@ -39,7 +39,7 @@ import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +68,7 @@ public class QIOCraftingTransferHandler {
             return recipeHolder().value();
         }
 
-        default ResourceLocation id() {
+        default Identifier id() {
             return recipeHolder().id();
         }
 

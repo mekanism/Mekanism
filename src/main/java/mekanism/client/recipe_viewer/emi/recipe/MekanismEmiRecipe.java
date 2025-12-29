@@ -29,7 +29,7 @@ import mekanism.client.recipe_viewer.emi.widget.MekanismEmiWidget;
 import mekanism.client.recipe_viewer.emi.widget.MekanismTankEmiWidget;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -43,18 +43,18 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
     private final List<EmiStack> outputs = new ArrayList<>();
     private final List<EmiIngredient> renderOutputs = new ArrayList<>();
     private final EmiRecipeCategory category;
-    private final ResourceLocation id;
+    private final Identifier id;
     protected final RECIPE recipe;
     private final int xOffset;
     private final int yOffset;
     private final int width;
     private final int height;
 
-    public MekanismEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, RECIPE recipe) {
+    public MekanismEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, RECIPE recipe) {
         this(category, id, recipe, category.xOffset(), category.yOffset(), category.width(), category.height());
     }
 
-    public MekanismEmiRecipe(EmiRecipeCategory category, ResourceLocation id, RECIPE recipe, int xOffset, int yOffset, int width, int height) {
+    public MekanismEmiRecipe(EmiRecipeCategory category, Identifier id, RECIPE recipe, int xOffset, int yOffset, int width, int height) {
         this.category = category;
         this.recipe = recipe;
         this.id = id;
@@ -149,7 +149,7 @@ public abstract class MekanismEmiRecipe<RECIPE> extends AbstractContainerEventHa
 
     @Nullable
     @Override
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

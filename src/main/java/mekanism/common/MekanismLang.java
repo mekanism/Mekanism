@@ -2,7 +2,7 @@ package mekanism.common;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.EquipmentSlot;
 
 @NothingNullByDefault

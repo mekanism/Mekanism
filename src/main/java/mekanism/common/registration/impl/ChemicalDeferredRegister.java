@@ -10,7 +10,7 @@ import mekanism.common.base.IChemicalConstant;
 import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.ChemicalUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 @NothingNullByDefault//TODO - 1.20.2: Do we want to expose a basic form of this to the API
 public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical> {
@@ -35,7 +35,7 @@ public class ChemicalDeferredRegister extends MekanismDeferredRegister<Chemical>
         return register(name, () -> new Chemical(ChemicalBuilder.infuseType().tint(tint)));
     }
 
-    public DeferredChemical<Chemical> register(String name, ResourceLocation texture, int barColor) {
+    public DeferredChemical<Chemical> register(String name, Identifier texture, int barColor) {
         return register(name, () -> ChemicalUtil.chemical(ChemicalBuilder.builder(texture), barColor));
     }
 

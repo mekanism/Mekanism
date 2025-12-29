@@ -2,11 +2,11 @@ package mekanism.common.integration.crafttweaker.example.component;
 
 import java.util.Objects;
 import mekanism.common.integration.crafttweaker.recipe.manager.MekanismRecipeManager;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public abstract class CrTBaseExampleRecipeComponent implements ICrTExampleComponent {
 
-    protected final ResourceLocation recipeType;
+    protected final Identifier recipeType;
 
     public CrTBaseExampleRecipeComponent(MekanismRecipeManager<?, ?> recipeManager) {
         Objects.requireNonNull(recipeManager, "Recipe manager cannot be null.");

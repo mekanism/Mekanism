@@ -13,6 +13,6 @@ public record Range3D(int xMin, int zMin, int xMax, int zMax, ResourceKey<Level>
 
     @Override
     public String toString() {
-        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.location() + "]";
+        return "[Range3D: " + xMin + ", " + zMin + ", " + xMax + ", " + zMax + ", dim=" + dimension.identifier() + "]";
     }
 }

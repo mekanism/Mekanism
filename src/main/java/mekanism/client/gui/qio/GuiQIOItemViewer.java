@@ -31,13 +31,12 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer> extends GuiMekanism<CONTAINER> implements ResizeController {
 
@@ -208,7 +207,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == GLFW.GLFW_KEY_LEFT_SHIFT || keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {
+        if (keyCode == InputConstants.KEY_LSHIFT || keyCode == InputConstants.KEY_RSHIFT) {
             menu.pauseSorting(true);
         }
         return super.keyPressed(keyCode, scanCode, modifiers);
@@ -219,10 +218,10 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         //Note: We only want to unpause sorting if they aren't pressing shift. If they were pressing both shift keys and then released one
         // we want to make sure it stays paused. We just pass the value of if the other key is pressed and let the code that handles
         // pausing/unpausing on value change handle determining if we should stay paused
-        if (keyCode == GLFW.GLFW_KEY_LEFT_SHIFT) {
-            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_RIGHT_SHIFT));
-        } else if (keyCode == GLFW.GLFW_KEY_RIGHT_SHIFT) {
-            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow().getWindow(), GLFW.GLFW_KEY_LEFT_SHIFT));
+        if (keyCode == InputConstants.KEY_LSHIFT) {
+            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_RSHIFT));
+        } else if (keyCode == InputConstants.KEY_RSHIFT) {
+            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_LSHIFT));
         }
         return super.keyReleased(keyCode, scanCode, modifiers);
     }

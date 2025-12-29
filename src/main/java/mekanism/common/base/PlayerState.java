@@ -17,7 +17,7 @@ import mekanism.common.network.to_server.PacketGearStateUpdate;
 import mekanism.common.network.to_server.PacketGearStateUpdate.GearType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -29,7 +29,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 
 public class PlayerState {
 
-    private static final ResourceLocation STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
+    private static final Identifier STEP_ASSIST_MODIFIER_ID = Mekanism.rl("step_assist");
 
     //these are read from the render thread on client, so use a map which is more resilient to that (even if data is 'outdated')
     private final Set<UUID> activeJetpacks = Collections.newSetFromMap(new ConcurrentHashMap<>());
@@ -154,7 +154,7 @@ public class PlayerState {
     }
 
     //Note: The attributes that currently use this cannot be converted to just being attributes on the items, as they can be disabled based on the player state
-    private void updateAttribute(Player player, Holder<Attribute> attribute, ResourceLocation id, ToFloatFunction<Player> additionalSupplier) {
+    private void updateAttribute(Player player, Holder<Attribute> attribute, Identifier id, ToFloatFunction<Player> additionalSupplier) {
         AttributeInstance attributeInstance = player.getAttribute(attribute);
         if (attributeInstance != null) {
             AttributeModifier existing = attributeInstance.getModifier(id);

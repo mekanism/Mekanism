@@ -4,8 +4,11 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class GuiScrollableElement extends GuiTexturedElement {
 
@@ -18,7 +21,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected int barX;
     protected int barY;
 
-    protected GuiScrollableElement(ResourceLocation resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth,
+    protected GuiScrollableElement(Identifier resource, IGuiWrapper gui, int x, int y, int width, int height, int barXShift, int barYShift, int barWidth,
           int barHeight, int maxBarHeight) {
         super(resource, gui, x, y, width, height);
         this.barXShift = barXShift;
@@ -43,14 +46,14 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected abstract int getFocusedElements();
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        super.onClick(mouseX, mouseY, button);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        super.onClick(event, isDoubleClick);
         int scroll = getScroll();
         int x = getGuiLeft() + barX;
         int y = getGuiTop() + barY;
-        if (mouseX >= x && mouseX <= x + barWidth && mouseY >= y + scroll && mouseY <= y + scroll + barHeight) {
+        if (event.x() >= x && event.x() <= x + barWidth && event.y() >= y + scroll && event.y() <= y + scroll + barHeight) {
             if (needsScrollBars()) {
-                double yAxis = mouseY - getGuiTop();
+                double yAxis = event.y() - getGuiTop();
                 dragOffset = (int) (yAxis - (scroll + barY));
                 //Mark that we are dragging so that we can continue to "drag" even if our mouse goes off of being over the element
                 setDragging(true);
@@ -61,17 +64,17 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     @Override
-    public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-        super.onDrag(mouseX, mouseY, deltaX, deltaY);
+    protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+        super.onDrag(event, deltaX, deltaY);
         if (isDragging() && needsScrollBars()) {
-            double yAxis = mouseY - getGuiTop();
+            double yAxis = event.y() - getGuiTop();
             this.scroll = Mth.clamp((yAxis - barY - dragOffset) / getMax(), 0, 1);
         }
     }
 
     @Override
-    public void onRelease(double mouseX, double mouseY) {
-        super.onRelease(mouseX, mouseY);
+    public void onRelease(@NotNull MouseButtonEvent event) {
+        super.onRelease(event);
         dragOffset = 0;
     }
 
@@ -119,11 +122,11 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     }
 
     protected void drawScrollBar(GuiGraphics guiGraphics, int textureWidth, int textureHeight) {
-        ResourceLocation texture = getResource();
+        Identifier texture = getResource();
         //Top border
         guiGraphics.blit(texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Middle border
-        guiGraphics.blit(texture, barX - 1, barY, textureWidth, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY, textureWidth, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
         //Bottom border
         guiGraphics.blit(texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Scroll bar

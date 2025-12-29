@@ -13,7 +13,9 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
+import org.jetbrains.annotations.NotNull;
 
 public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
 
@@ -44,7 +46,7 @@ public class GuiVisualsTab extends GuiInsetElement<IHasVisualization> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         dataSource.toggleClientRendering();
     }
 }

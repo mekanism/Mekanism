@@ -75,7 +75,7 @@ import mekanism.common.tile.machine.TileEntityChemicalOxidizer;
 import mekanism.common.tile.machine.TileEntityNutritionalLiquifier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -295,9 +295,9 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     public static <RECIPE> void addCategoryAndRecipes(EmiRegistry registry, IRecipeViewerRecipeType<RECIPE> recipeType, BasicRecipeCreator<RECIPE> recipeCreator,
-          Map<ResourceLocation, RECIPE> recipes) {
+          Map<Identifier, RECIPE> recipes) {
         MekanismEmiRecipeCategory category = addCategory(registry, recipeType);
-        for (Map.Entry<ResourceLocation, RECIPE> entry : recipes.entrySet()) {
+        for (Map.Entry<Identifier, RECIPE> entry : recipes.entrySet()) {
             registry.addRecipe(recipeCreator.create(category, entry.getKey(), entry.getValue()));
         }
     }
@@ -334,6 +334,6 @@ public class MekanismEmi implements EmiPlugin {
 
     public interface BasicRecipeCreator<RECIPE> {
 
-        MekanismEmiRecipe<RECIPE> create(MekanismEmiRecipeCategory category, ResourceLocation id, RECIPE recipe);
+        MekanismEmiRecipe<RECIPE> create(MekanismEmiRecipeCategory category, Identifier id, RECIPE recipe);
     }
 }

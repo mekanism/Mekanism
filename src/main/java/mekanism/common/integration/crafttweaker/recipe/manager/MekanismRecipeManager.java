@@ -14,7 +14,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -45,7 +45,7 @@ public abstract class MekanismRecipeManager<INPUT extends RecipeInput, RECIPE ex
     }
 
     @Override
-    public ResourceLocation getBracketResourceLocation() {
+    public Identifier getBracketResourceLocation() {
         //Short circuit reverse lookup and just grab it from our recipe type
         return recipeType.getRegistryName();
     }

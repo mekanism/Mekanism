@@ -10,7 +10,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import mekanism.common.integration.crafttweaker.CrTUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -30,7 +30,7 @@ public class CrTChemical {
      */
     @ZenCodeType.Method
     @ZenCodeType.Getter("registryName")
-    public static ResourceLocation getRegistryName(Chemical _this) {
+    public static Identifier getRegistryName(Chemical _this) {
         return MekanismAPI.CHEMICAL_REGISTRY.getKey(_this);
     }
 

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.window;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -24,19 +25,19 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiColorWindow extends GuiWindow {
 
-    public static final ResourceLocation TRANSPARENCY_GRID = MekanismUtils.getResource(ResourceType.GUI, "transparency_grid.png");
-    private static final ResourceLocation HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
+    public static final Identifier TRANSPARENCY_GRID = MekanismUtils.getResource(ResourceType.GUI, "transparency_grid.png");
+    private static final Identifier HUE_PICKER = MekanismUtils.getResource(ResourceType.GUI, "color_picker.png");
     private static final int S_TILES = 10, V_TILES = 10;
 
     private final GuiTextField textField;
@@ -86,9 +87,9 @@ public class GuiColorWindow extends GuiWindow {
               .setPasteTransformer(text -> text.replace(" ", ""))
               .setBackground(BackgroundType.ELEMENT_HOLDER)
               .setMaxLength(this.handlesAlpha ? 15 : 11);
-        addChild(new TranslationButton(gui, relativeX + 98 + extraWidth, relativeY + height - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, (element, mouseX, mouseY) -> {
+        addChild(new TranslationButton(gui, relativeX + 98 + extraWidth, relativeY + height - 21, 54, 14, MekanismLang.BUTTON_CONFIRM, (element, event, isDoubleClick) -> {
             callback.accept(getColor());
-            return close(element, mouseX, mouseY);
+            return close(element, event, isDoubleClick);
         }));
 
         if (armorPreview != null) {
@@ -237,7 +238,7 @@ public class GuiColorWindow extends GuiWindow {
         boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
         if (textField.canWrite()) {
             //Update color if the key caused a change to the text contents
-            if (Screen.isPaste(keyCode) || Screen.isCut(keyCode) || keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE) {
+            if (Screen.isPaste(keyCode) || Screen.isCut(keyCode) || keyCode == InputConstants.KEY_BACKSPACE || keyCode == InputConstants.KEY_DELETE) {
                 updateColorFromText();
             }
         }
@@ -289,17 +290,17 @@ public class GuiColorWindow extends GuiWindow {
         protected abstract void set(double mouseX, double mouseY);
 
         @Override
-        public void onClick(double mouseX, double mouseY, int button) {
-            super.onClick(mouseX, mouseY, button);
-            set(mouseX, mouseY);
+        public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+            super.onClick(event, isDoubleClick);
+            set(event.x(), event.y());
             setDragging(true);
         }
 
         @Override
-        public void onDrag(double mouseX, double mouseY, double deltaX, double deltaY) {
-            super.onDrag(mouseX, mouseY, deltaX, deltaY);
+        protected void onDrag(@NotNull MouseButtonEvent event, double deltaX, double deltaY) {
+            super.onDrag(event, deltaX, deltaY);
             if (isDragging()) {
-                set(mouseX, mouseY);
+                set(event.x(), event.y());
             }
         }
     }

@@ -22,8 +22,8 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -41,8 +41,8 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseTagProvider implements DataProvider {
 
-    protected static final TagKey<EntityType<?>> PVI_COMPAT = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath("per-viam-invenire", "replace_vanilla_navigator"));
-    private static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(ResourceLocation.fromNamespaceAndPath("create", "no_infinite_draining"));
+    protected static final TagKey<EntityType<?>> PVI_COMPAT = TagKey.create(Registries.ENTITY_TYPE, Identifier.fromNamespaceAndPath("per-viam-invenire", "replace_vanilla_navigator"));
+    private static final TagKey<Fluid> CREATE_NO_INFINITE_FLUID = FluidTags.create(Identifier.fromNamespaceAndPath("create", "no_infinite_draining"));
     protected static final TagKey<Block> FRAMEABLE = BlockTags.create(Mekanism.hooks.framedBlocks.rl("frameable"));
     protected static final TagKey<Block> FB_BE_WHITELIST = BlockTags.create(Mekanism.hooks.framedBlocks.rl("blockentity_whitelisted"));
     protected static final TagKey<Block> PE_VEIN_SHOVEL = BlockTags.create(Mekanism.hooks.projecte.rl("vein/shovel"));
@@ -152,7 +152,7 @@ public abstract class BaseTagProvider implements DataProvider {
         getBuilder(CREATE_NO_INFINITE_FLUID).add(register.getFluidEntries());
         //Add bucket tags
         for (DeferredHolder<Item, ?> bucket : register.getBucketEntries()) {
-            ResourceLocation bucketTag = Tags.Items.BUCKETS.location().withSuffix("/" + bucket.getId().getPath().replaceAll("_bucket", ""));
+            Identifier bucketTag = Tags.Items.BUCKETS.location().withSuffix("/" + bucket.getId().getPath().replaceAll("_bucket", ""));
             getBuilder(ItemTags.create(bucketTag)).add(bucket);
         }
     }

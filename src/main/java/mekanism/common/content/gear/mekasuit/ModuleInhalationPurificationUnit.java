@@ -10,7 +10,7 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
@@ -23,9 +23,9 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
     private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
           MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
 
-    public static final ResourceLocation BENEFICIAL_EFFECTS = Mekanism.rl("purification.beneficial");
-    public static final ResourceLocation NEUTRAL_EFFECTS = Mekanism.rl("purification.neutral");
-    public static final ResourceLocation HARMFUL_EFFECTS = Mekanism.rl("purification.harmful");
+    public static final Identifier BENEFICIAL_EFFECTS = Mekanism.rl("purification.beneficial");
+    public static final Identifier NEUTRAL_EFFECTS = Mekanism.rl("purification.neutral");
+    public static final Identifier HARMFUL_EFFECTS = Mekanism.rl("purification.harmful");
 
     public ModuleInhalationPurificationUnit(IModule<ModuleInhalationPurificationUnit> module) {
         this(module.getBooleanConfigOrFalse(BENEFICIAL_EFFECTS), module.getBooleanConfigOrFalse(NEUTRAL_EFFECTS), module.getBooleanConfigOrFalse(HARMFUL_EFFECTS));

@@ -23,13 +23,13 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>> {
 
-    private static final ResourceLocation MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
+    private static final Identifier MODULE_SELECTION = MekanismUtils.getResource(ResourceType.GUI, "module_selection.png");
 
     private final Consumer<Module<?>> callback;
     private final List<ModuleData<?>> currentList = new ArrayList<>();

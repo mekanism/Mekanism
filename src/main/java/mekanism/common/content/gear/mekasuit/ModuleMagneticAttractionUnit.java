@@ -22,7 +22,7 @@ import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -34,7 +34,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 @ParametersAreNotNullByDefault
 public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule<ModuleMagneticAttractionUnit> {
 
-    public static final ResourceLocation RANGE = Mekanism.rl("range");
+    public static final Identifier RANGE = Mekanism.rl("range");
 
     public ModuleMagneticAttractionUnit(IModule<ModuleMagneticAttractionUnit> module) {
         this(module.<Range>getConfigOrThrow(RANGE).get());

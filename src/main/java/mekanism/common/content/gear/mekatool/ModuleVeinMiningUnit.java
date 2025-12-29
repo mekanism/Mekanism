@@ -47,7 +47,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
@@ -61,8 +61,8 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationRange) implements ICustomModule<ModuleVeinMiningUnit> {
 
-    public static final ResourceLocation EXTENDED_MODE = Mekanism.rl("extended_mode");
-    public static final ResourceLocation EXCAVATION_RANGE = Mekanism.rl("mining_range");
+    public static final Identifier EXTENDED_MODE = Mekanism.rl("extended_mode");
+    public static final Identifier EXCAVATION_RANGE = Mekanism.rl("mining_range");
 
     private static final BooleanRadialModes RADIAL_MODES = new BooleanRadialModes(
           new BasicRadialMode(MekanismLang.RADIAL_VEIN_NORMAL, DisassemblerMode.VEIN.icon(), EnumColor.AQUA),
@@ -252,21 +252,21 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
     public static class ModuleExtendedModeConfig extends ModuleBooleanConfig {
 
         public static final Codec<ModuleExtendedModeConfig> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              ResourceLocation.CODEC.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name),
+              Identifier.CODEC.fieldOf(SerializationConstants.NAME).forGetter(ModuleConfig::name),
               Codec.BOOL.fieldOf(SerializationConstants.VALUE).forGetter(ModuleConfig::get)
         ).apply(instance, ModuleExtendedModeConfig::new));
         public static final StreamCodec<ByteBuf, ModuleExtendedModeConfig> STREAM_CODEC = StreamCodec.composite(
-              ResourceLocation.STREAM_CODEC, ModuleConfig::name,
+              Identifier.STREAM_CODEC, ModuleConfig::name,
               ByteBufCodecs.BOOL, ModuleConfig::get,
               ModuleExtendedModeConfig::new
         );
 
-        public ModuleExtendedModeConfig(ResourceLocation name, boolean value) {
+        public ModuleExtendedModeConfig(Identifier name, boolean value) {
             super(name, value);
         }
 
         @Override
-        public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(ResourceLocation name) {
+        public StreamCodec<ByteBuf, ModuleConfig<Boolean>> namedStreamCodec(Identifier name) {
             return ByteBufCodecs.BOOL.map(val -> new ModuleExtendedModeConfig(name, val), ModuleConfig::get);
         }
 

@@ -9,7 +9,7 @@ import mekanism.common.lib.math.Quaternion;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -381,14 +381,14 @@ public interface QuadTransformation {
     class TextureFilteredTransformation implements QuadTransformation {
 
         private final QuadTransformation original;
-        private final Predicate<ResourceLocation> verifier;
+        private final Predicate<Identifier> verifier;
 
-        protected TextureFilteredTransformation(QuadTransformation original, Predicate<ResourceLocation> verifier) {
+        protected TextureFilteredTransformation(QuadTransformation original, Predicate<Identifier> verifier) {
             this.original = original;
             this.verifier = verifier;
         }
 
-        public static TextureFilteredTransformation of(QuadTransformation original, Predicate<ResourceLocation> verifier) {
+        public static TextureFilteredTransformation of(QuadTransformation original, Predicate<Identifier> verifier) {
             return new TextureFilteredTransformation(original, verifier);
         }
 

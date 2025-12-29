@@ -1,6 +1,6 @@
 package mekanism.api.text;
 
-import net.minecraft.MethodsReturnNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.TextColor;
@@ -8,7 +8,7 @@ import net.minecraft.network.chat.TextColor;
 /**
  * Helper interface for creating formatted translations in our lang enums
  */
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public interface ILangEntry extends IHasTranslationKey {
 
     /**

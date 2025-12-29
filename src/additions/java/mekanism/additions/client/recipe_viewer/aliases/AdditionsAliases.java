@@ -3,7 +3,7 @@ package mekanism.additions.client.recipe_viewer.aliases;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.alias.IAliasedTranslation;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 
 @NothingNullByDefault
 public enum AdditionsAliases implements IAliasedTranslation {

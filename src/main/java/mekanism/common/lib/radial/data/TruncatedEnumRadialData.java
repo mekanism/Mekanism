@@ -5,7 +5,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.ClassBasedRadialData;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -14,7 +14,7 @@ public class TruncatedEnumRadialData<MODE extends Enum<MODE> & IRadialMode> exte
     private final List<MODE> modes;
     private final MODE defaultMode;
 
-    TruncatedEnumRadialData(ResourceLocation identifier, int accessibleValues, MODE defaultMode) {
+    TruncatedEnumRadialData(Identifier identifier, int accessibleValues, MODE defaultMode) {
         super(identifier, Objects.requireNonNull(defaultMode, "Default mode cannot be null.").getDeclaringClass());
         if (accessibleValues <= 0) {
             throw new IllegalArgumentException("Invalid accessibleValues, there must be at least one mode that is accessible.");

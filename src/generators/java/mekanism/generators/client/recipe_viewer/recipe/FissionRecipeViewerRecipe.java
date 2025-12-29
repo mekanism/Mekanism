@@ -22,18 +22,18 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.Nullable;
 
 //If null -> coolant is water
-public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStack outputCoolant,
+public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStack outputCoolant,
                                         ChemicalStack waste)
       implements INamedRVRecipe {
 
     public static final Codec<FissionRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          ResourceLocation.CODEC.fieldOf(SerializationConstants.ID).forGetter(FissionRecipeViewerRecipe::id),
+          Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(FissionRecipeViewerRecipe::id),
           ChemicalStackIngredient.CODEC.optionalFieldOf(SerializationConstants.EXTRA_INPUT).forGetter(recipe -> Optional.ofNullable(recipe.inputCoolant())),
           ChemicalStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(FissionRecipeViewerRecipe::fuel),
           ChemicalStack.CODEC.fieldOf(SerializationConstants.SECONDARY_OUTPUT).forGetter(FissionRecipeViewerRecipe::outputCoolant),
@@ -63,7 +63,7 @@ public record FissionRecipeViewerRecipe(ResourceLocation id, @Nullable ChemicalS
             CooledCoolant coolant = entry.getValue();
             long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
             recipes.add(new FissionRecipeViewerRecipe(
-                  RecipeViewerUtils.synthetic(key.location(), "fission", MekanismGenerators.MODID),
+                  RecipeViewerUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
                   coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)

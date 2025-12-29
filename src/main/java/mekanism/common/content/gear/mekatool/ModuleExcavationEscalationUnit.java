@@ -24,11 +24,11 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
@@ -41,9 +41,9 @@ import org.jetbrains.annotations.Nullable;
 @ParametersAreNotNullByDefault
 public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) implements ICustomModule<ModuleExcavationEscalationUnit> {
 
-    public static final ResourceLocation EXCAVATION_MODE = Mekanism.rl("efficiency");
+    public static final Identifier EXCAVATION_MODE = Mekanism.rl("efficiency");
 
-    private static final ResourceLocation RADIAL_ID = Mekanism.rl("excavation_mode");
+    private static final Identifier RADIAL_ID = Mekanism.rl("excavation_mode");
     private static final Int2ObjectMap<Lazy<NestedRadialMode>> RADIAL_DATAS = Util.make(() -> {
         int types = ExcavationMode.values().length - 2;
         Int2ObjectMap<Lazy<NestedRadialMode>> map = new Int2ObjectArrayMap<>(types);
@@ -133,7 +133,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
         public static final StreamCodec<ByteBuf, ExcavationMode> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ExcavationMode::ordinal);
 
         private final String serializedName;
-        private final ResourceLocation icon;
+        private final Identifier icon;
         private final ILangEntry langEntry;
         private final Component label;
         private final EnumColor color;
@@ -175,7 +175,7 @@ public record ModuleExcavationEscalationUnit(ExcavationMode excavationMode) impl
 
         @NotNull
         @Override
-        public ResourceLocation icon() {
+        public Identifier icon() {
             return icon;
         }
 

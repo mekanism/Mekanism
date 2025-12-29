@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -21,15 +22,16 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiEnergyTab extends GuiTexturedElement {
 
-    private static final Map<EnergyUnit, ResourceLocation> ICONS = new EnumMap<>(EnergyUnit.class);
+    private static final Map<EnergyUnit, Identifier> ICONS = new EnumMap<>(EnergyUnit.class);
     private final IInfoHandler infoHandler;
 
     private List<Component> lastInfo = Collections.emptyList();
@@ -76,23 +78,24 @@ public class GuiEnergyTab extends GuiTexturedElement {
     }
 
     @Override
-    protected ResourceLocation getResource() {
+    protected Identifier getResource() {
         return ICONS.computeIfAbsent(EnergyUnit.getConfigured(), type -> MekanismUtils.getResource(ResourceType.GUI_TAB,
               "energy_info_" + type.getTabName() + ".png"));
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        int button = event.button();
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
             updateEnergyUnit(IIncrementalEnum::getNext);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
             updateEnergyUnit(IIncrementalEnum::getPrevious);
         }
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     private void updateEnergyUnit(UnaryOperator<EnergyUnit> converter) {

@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
@@ -19,7 +19,7 @@ import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BaseModelCache {
 
-    private final Map<ResourceLocation, MekanismModelData> modelMap = new Object2ObjectOpenHashMap<>();
+    private final Map<Identifier, MekanismModelData> modelMap = new Object2ObjectOpenHashMap<>();
 
     private final String modid;
 
@@ -42,8 +42,8 @@ public class BaseModelCache {
         this.modid = modid;
     }
 
-    private ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(modid, path);
+    private Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(modid, path);
     }
 
     public void onBake(BakingCompleted evt) {
@@ -62,7 +62,7 @@ public class BaseModelCache {
         return registerOBJ(rl(path));
     }
 
-    protected OBJModelData registerOBJ(ResourceLocation rl) {
+    protected OBJModelData registerOBJ(Identifier rl) {
         return register(rl, OBJModelData::new);
     }
 
@@ -70,11 +70,11 @@ public class BaseModelCache {
         return registerJSON(rl(path));
     }
 
-    protected JSONModelData registerJSON(ResourceLocation rl) {
+    protected JSONModelData registerJSON(Identifier rl) {
         return register(rl, JSONModelData::new);
     }
 
-    protected JSONModelData registerJSONAndBake(ResourceLocation rl) {
+    protected JSONModelData registerJSONAndBake(Identifier rl) {
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         ModelBakery modelBakery = modelManager.getModelBakery();
         ModelResourceLocation mrl = ModelResourceLocation.standalone(rl);
@@ -92,7 +92,7 @@ public class BaseModelCache {
         return data;
     }
 
-    protected <DATA extends MekanismModelData> DATA register(ResourceLocation rl, Function<ResourceLocation, DATA> creator) {
+    protected <DATA extends MekanismModelData> DATA register(Identifier rl, Function<Identifier, DATA> creator) {
         DATA data = creator.apply(rl);
         modelMap.put(rl, data);
         return data;
@@ -119,11 +119,11 @@ public class BaseModelCache {
 
         protected IUnbakedGeometry<?> model;
 
-        protected final ResourceLocation rl;
+        protected final Identifier rl;
         protected final ModelResourceLocation mrl;
         private final Map<IGeometryBakingContext, BakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
 
-        protected MekanismModelData(ResourceLocation rl) {
+        protected MekanismModelData(Identifier rl) {
             this.rl = rl;
             this.mrl = ModelResourceLocation.standalone(rl);
         }
@@ -155,7 +155,7 @@ public class BaseModelCache {
 
     public static class OBJModelData extends MekanismModelData {
 
-        protected OBJModelData(ResourceLocation rl) {
+        protected OBJModelData(Identifier rl) {
             super(rl);
         }
 
@@ -179,7 +179,7 @@ public class BaseModelCache {
 
         private BakedModel bakedModel;
 
-        private JSONModelData(ResourceLocation rl) {
+        private JSONModelData(Identifier rl) {
             super(rl);
         }
 

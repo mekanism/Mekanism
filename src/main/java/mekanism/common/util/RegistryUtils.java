@@ -8,8 +8,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import org.jetbrains.annotations.Nullable;
@@ -30,7 +30,7 @@ public class RegistryUtils {
 
     public static <R> Optional<Holder.Reference<R>> getHolderById(CompoundTag nbt, Registry<R> registry) {
         if (nbt != null && nbt.contains(SerializationConstants.ID, Tag.TAG_STRING)) {
-            ResourceLocation name = ResourceLocation.tryParse(nbt.getString(SerializationConstants.ID));
+            Identifier name = Identifier.tryParse(nbt.getString(SerializationConstants.ID));
             if (name != null) {
                 return registry.get(name);
             }
@@ -42,30 +42,30 @@ public class RegistryUtils {
         return BuiltInRegistries.BLOCK.getKey(element).getPath();
     }
 
-    public static <TYPE> ResourceLocation getName(Holder<TYPE> element, DefaultedRegistry<TYPE> registry) {
+    public static <TYPE> Identifier getName(Holder<TYPE> element, DefaultedRegistry<TYPE> registry) {
         ResourceKey<?> key = element.getKey();
         if (key == null) {
             return registry.getKey(element.value());
         }
-        return key.location();
+        return key.identifier();
     }
 
     @Nullable
-    public static ResourceLocation getName(Holder<?> element) {
+    public static Identifier getName(Holder<?> element) {
         ResourceKey<?> key = element.getKey();
-        return key == null ? null : key.location();
+        return key == null ? null : key.identifier();
     }
 
     @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public static ResourceLocation getNameGeneric(Object element) {
+    public static Identifier getNameGeneric(Object element) {
         if (element instanceof Holder<?> holder) {
             //If we have a holder, just redirect to trying to look up the name with it
             // As this method is mostly a fallback, we don't care if it fails to find a name if someone has a registry of holders for some reason
             return getName(holder);
         }
         for (Registry<?> registry : BuiltInRegistries.REGISTRY) {
-            ResourceLocation name = ((Registry) registry).getKeyOrNull(element);
+            Identifier name = ((Registry) registry).getKeyOrNull(element);
             if (name != null) {
                 return name;
             }

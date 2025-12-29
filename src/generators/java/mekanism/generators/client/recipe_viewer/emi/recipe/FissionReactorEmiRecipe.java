@@ -17,11 +17,11 @@ import mekanism.common.util.text.BooleanStateDisplay.ActiveDisabled;
 import mekanism.common.util.text.TextUtils;
 import mekanism.generators.client.recipe_viewer.recipe.FissionRecipeViewerRecipe;
 import mekanism.generators.common.GeneratorsLang;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class FissionReactorEmiRecipe extends MekanismEmiRecipe<FissionRecipeViewerRecipe> {
 
-    public FissionReactorEmiRecipe(MekanismEmiRecipeCategory category, ResourceLocation id, FissionRecipeViewerRecipe recipe) {
+    public FissionReactorEmiRecipe(MekanismEmiRecipeCategory category, Identifier id, FissionRecipeViewerRecipe recipe) {
         super(category, id, recipe);
         if (recipe.inputCoolant() == null) {
             addInputDefinition(recipe.waterInput());

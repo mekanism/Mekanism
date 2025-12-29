@@ -10,6 +10,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.IItemSecurityUtils;
@@ -17,14 +18,13 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 @ParametersAreNotNullByDefault
 public class PersonalStorageManager {
 

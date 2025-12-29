@@ -1,5 +1,6 @@
 package mekanism.client.gui.item;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Set;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.GuiMekanism;
@@ -12,12 +13,12 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.container.item.DictionaryContainer;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 //TODO: Eventually it would be nice that when a tag is selected in the GUI that it shows everything else that is in that tag
 public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
@@ -66,8 +67,8 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT && hasShiftDown() && !target.hasTarget()) {
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && event.hasShiftDown() && !target.hasTarget()) {
             Slot slot = getSlotUnderMouse();
             if (slot != null) {
                 ItemStack stack = slot.getItem();
@@ -77,7 +78,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
                 }
             }
         }
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(event, isDoubleClick);
     }
 
     public enum DictionaryTagType implements IDropdownEnum<DictionaryTagType> {

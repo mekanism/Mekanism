@@ -7,15 +7,16 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.robit.RobitSkin;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.advancements.triggers.ChangeRobitSkinTrigger.TriggerInstance;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.ContextAwarePredicate;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.SimpleCriterionTrigger;
+import net.minecraft.advancements.criterion.ContextAwarePredicate;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import org.jetbrains.annotations.NotNull;
 
-public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<ChangeRobitSkinTrigger.TriggerInstance> {
+public class ChangeRobitSkinTrigger extends SimpleCriterionTrigger<TriggerInstance> {
 
     @NotNull
     @Override

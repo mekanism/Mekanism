@@ -44,7 +44,7 @@ import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.Item;
@@ -200,7 +200,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         return nameLookupOverrides.getOrDefault(clazz, clazz.getSimpleName());
     }
 
-    public boolean recipeExists(ResourceLocation location) {
+    public boolean recipeExists(Identifier location) {
         return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 
@@ -215,7 +215,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
      */
     protected CrTExampleBuilder<?> exampleBuilder(String fileName) {
         Objects.requireNonNull(fileName, "Example Builder ID cannot be null.");
-        if (!ResourceLocation.isValidPath(fileName)) {
+        if (!Identifier.isValidPath(fileName)) {
             throw new IllegalArgumentException("'" + fileName + "' is not a valid path, must be [a-z0-9/._-]");
         }
         if (examples.containsKey(fileName)) {
@@ -223,7 +223,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        existingFileHelper.trackGenerated(ResourceLocation.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
+        existingFileHelper.trackGenerated(Identifier.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
@@ -235,7 +235,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
         List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
         for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
-            Path path = pathProvider.file(ResourceLocation.fromNamespaceAndPath(modid, entry.getKey()), "zs");
+            Path path = pathProvider.file(Identifier.fromNamespaceAndPath(modid, entry.getKey()), "zs");
             list.add(MekanismDataGenerator.save(cache, stream -> stream.write(entry.getValue().build().getBytes(StandardCharsets.UTF_8)), path));
         }
         return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));

@@ -10,7 +10,7 @@ import mekanism.common.registration.MekanismDeferredHolder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.MenuProvider;
@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class ContainerTypeRegistryObject<CONTAINER extends AbstractContainerMenu> extends MekanismDeferredHolder<MenuType<?>, MenuType<CONTAINER>> {
 
-    public ContainerTypeRegistryObject(ResourceLocation key) {
+    public ContainerTypeRegistryObject(Identifier key) {
         this(ResourceKey.create(Registries.MENU, key));
     }
 

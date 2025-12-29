@@ -7,20 +7,21 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDigitalSwitch extends GuiTexturedElement {
 
-    public static final ResourceLocation SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
+    public static final Identifier SWITCH = MekanismUtils.getResource(ResourceType.GUI, "switch/switch.png");
     public static final int BUTTON_SIZE_X = 15, BUTTON_SIZE_Y = 8;
 
     private final SwitchType type;
-    private final ResourceLocation icon;
+    private final Identifier icon;
     private final BooleanSupplier stateSupplier;
     private final IClickable onToggle;
 
-    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, ResourceLocation icon, BooleanSupplier stateSupplier, IClickable onToggle, SwitchType type) {
+    public GuiDigitalSwitch(IGuiWrapper gui, int x, int y, Identifier icon, BooleanSupplier stateSupplier, IClickable onToggle, SwitchType type) {
         super(SWITCH, gui, x, y, type.width, type.height);
         this.type = type;
         this.icon = icon;
@@ -47,8 +48,8 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        onToggle.onClick(this, mouseX, mouseY);
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        onToggle.onClick(this, event, isDoubleClick);
     }
 
     public enum SwitchType {

@@ -14,14 +14,14 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelTransporterBox extends MekanismJavaModel {
 
     public static final ModelLayerLocation BOX_LAYER = new ModelLayerLocation(Mekanism.rl("transporter_box"), "main");
-    private static final ResourceLocation BOX_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
+    private static final Identifier BOX_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "transporter_box.png");
 
     private static final ModelPartData BOX = new ModelPartData("box", CubeListBuilder.create()
           .addBox(0F, 0F, 0F, 7, 7, 7),

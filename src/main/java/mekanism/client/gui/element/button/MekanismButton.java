@@ -1,14 +1,16 @@
 package mekanism.client.gui.element.button;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Objects;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.gui.navigation.CommonInputs;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * Extends our "Widget" class (GuiElement) instead of Button so that we can easier utilize common code
@@ -40,20 +42,21 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            onLeftClick.onClick(this, mouseX, mouseY);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        int button = event.button();
+        if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+            onLeftClick.onClick(this, event, isDoubleClick);
+        } else if (button == InputConstants.MOUSE_BUTTON_RIGHT) {
             if (onRightClick != null) {
-                onRightClick.onClick(this, mouseX, mouseY);
+                onRightClick.onClick(this, event, isDoubleClick);
             }
         }
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
         //Only allow right-clicking if we have a right click behavior/action
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT && onRightClick != null;
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT && onRightClick != null;
     }
 
     @Override

@@ -47,7 +47,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
         jitterSlider.setValue((MekanismConfig.client.hudJitter.get() - 1) / 99);
 
         addChild(new GuiScreenSwitch(gui, relativeX + 7, relativeY + 112, 126, MekanismLang.COMPASS.translate(), MekanismConfig.client.hudCompassEnabled,
-              (element, mouseX, mouseY) -> {
+              (element, event, isDoubleClick) -> {
                   MekanismConfig.client.hudCompassEnabled.set(!MekanismConfig.client.hudCompassEnabled.get());
                   MekanismConfig.client.save();
                   return true;

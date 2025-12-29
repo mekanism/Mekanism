@@ -8,8 +8,8 @@ import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.RenderTickHandler.LazyRender;
 import mekanism.common.lib.effect.CustomEffect;
 import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -26,7 +26,7 @@ public class BillboardingEffectRenderer {
         render(effect.getTexture(), profilerSection, () -> effect);
     }
 
-    public static void render(ResourceLocation texture, String profilerSection, Supplier<CustomEffect> lazyEffect) {
+    public static void render(Identifier texture, String profilerSection, Supplier<CustomEffect> lazyEffect) {
         RenderType renderType = MekanismRenderType.SPS.apply(texture);
         RenderTickHandler.addTransparentRenderer(new LazyRender() {
             @Override
@@ -62,7 +62,7 @@ public class BillboardingEffectRenderer {
         Quaternionf quaternion = camera.rotation();
         Vector3f[] vertexPos = {new Vector3f(1.0F, -1.0F, 0.0F), new Vector3f(1.0F, 1.0F, 0.0F),
                                 new Vector3f(-1.0F, 1.0F, 0.0F), new Vector3f(-1.0F, -1.0F, 0.0F)};
-        Vec3 pos = effect.getPos(partialTick).subtract(camera.getPosition());
+        Vec3 pos = effect.getPos(partialTick).subtract(camera.position());
         for (Vector3f vector3f : vertexPos) {
             vector3f.rotate(quaternion);
             vector3f.mul(effect.getScale());

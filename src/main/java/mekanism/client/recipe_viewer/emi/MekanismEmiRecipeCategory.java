@@ -7,14 +7,14 @@ import dev.emi.emi.api.stack.EmiStack;
 import java.util.Comparator;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public class MekanismEmiRecipeCategory extends EmiRecipeCategory {
 
     public static MekanismEmiRecipeCategory create(IRecipeViewerRecipeType<?> recipeType) {
         ItemStack stack = recipeType.iconStack();
-        ResourceLocation icon = recipeType.icon();
+        Identifier icon = recipeType.icon();
         if (stack.isEmpty()) {
             if (icon == null) {
                 throw new IllegalStateException("Expected recipe type to have either an icon stack or an icon location");
@@ -27,7 +27,7 @@ public class MekanismEmiRecipeCategory extends EmiRecipeCategory {
         return new MekanismEmiRecipeCategory(recipeType, EmiStack.of(stack), renderIcon(icon));
     }
 
-    private static EmiRenderable renderIcon(ResourceLocation icon) {
+    private static EmiRenderable renderIcon(Identifier icon) {
         return (graphics, x, y, delta) -> graphics.blit(icon, x - 1, y - 1, 0, 0, 18, 18, 18, 18);
     }
 

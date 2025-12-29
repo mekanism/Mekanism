@@ -14,7 +14,7 @@ import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.api.text.TextComponentUtil;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
@@ -26,7 +26,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
@@ -71,7 +71,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
         }
         Optional<? extends RegistryLookup<Chemical>> chemicalLookup = lookupProvider.lookup(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         if (chemicalLookup.isPresent()) {
-            ResourceLocation rl = ResourceLocation.tryParse(tag);
+            Identifier rl = Identifier.tryParse(tag);
             if (rl != null) {
                 Optional<Reference<Chemical>> chemicalReference = chemicalLookup.get().get(ResourceKey.create(MekanismAPI.CHEMICAL_REGISTRY_NAME, rl));
                 if (chemicalReference.isPresent()) {
@@ -85,7 +85,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
     //TODO - 1.22: Figure out if we should we keep this cache or remove it?
     private final List<IChemicalAttribute> attributes = new ArrayList<>();
     private final List<IChemicalAttribute> attributesView = Collections.unmodifiableList(attributes);
-    private final ResourceLocation iconLocation;
+    private final Identifier iconLocation;
     private final int tint;
     private double radioactivity;
     private boolean hasAttributesWithValidation;
@@ -165,7 +165,7 @@ public class Chemical implements IHasTranslationKey, IHasTextComponent {
      *
      * @return The resource location of the icon
      */
-    public ResourceLocation getIcon() {
+    public Identifier getIcon() {
         return iconLocation;
     }
 

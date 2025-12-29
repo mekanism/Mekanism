@@ -28,7 +28,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -68,7 +68,7 @@ public class SpecialConverters {
 
     private static Item tryCreateItem(@Nullable Object rawName) {
         if (rawName instanceof String name) {
-            ResourceLocation itemName = ResourceLocation.tryParse(name);
+            Identifier itemName = Identifier.tryParse(name);
             if (itemName != null) {
                 return BuiltInRegistries.ITEM.get(itemName);
             }
@@ -151,7 +151,7 @@ public class SpecialConverters {
         if (!(rawTag instanceof String tag) || tag.isEmpty()) {
             throw new ComputerException("Missing '" + SerializationConstants.TARGET + "'");
         }
-        ResourceLocation rl = ResourceLocation.tryParse(tag);
+        Identifier rl = Identifier.tryParse(tag);
         if (rl == null || !TileEntityOredictionificator.isValidTarget(rl)) {
             throw new ComputerException("Invalid '" + SerializationConstants.TARGET + "'");
         }

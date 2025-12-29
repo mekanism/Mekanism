@@ -15,9 +15,8 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -71,7 +70,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                 if (ingredient instanceof ItemStack stack) {
                     return stack.isEmpty() ? null : MekanismUtils.getModId(stack);
                 }
-                ResourceLocation registryName = null;
+                Identifier registryName = null;
                 if (ingredient instanceof FluidStack stack) {
                     if (!stack.isEmpty()) {
                         registryName = RegistryUtils.getName(stack.getFluidHolder());
@@ -98,8 +97,8 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Nullable
     @Override
     protected IClickable getSlotClickHandler() {
-        return (element, mouseX, mouseY) -> {
-            if (!Screen.hasShiftDown()) {
+        return (element, event, isDoubleClick) -> {
+            if (!event.hasShiftDown()) {
                 ItemStack stack = element.gui().getCarriedItem();
                 if (!stack.isEmpty()) {
                     setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);

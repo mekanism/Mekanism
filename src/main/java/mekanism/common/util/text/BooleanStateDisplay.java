@@ -1,15 +1,15 @@
 package mekanism.common.util.text;
 
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public abstract class BooleanStateDisplay implements IHasTextComponent {
 
     protected final boolean value;

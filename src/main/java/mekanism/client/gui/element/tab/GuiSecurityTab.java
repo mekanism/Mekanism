@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.tab;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -34,20 +35,21 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
 
-    private static final ResourceLocation PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
-    private static final ResourceLocation PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
-    private static final ResourceLocation PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
+    private static final Identifier PUBLIC = MekanismUtils.getResource(ResourceType.GUI, "public.png");
+    private static final Identifier PRIVATE = MekanismUtils.getResource(ResourceType.GUI, "private.png");
+    private static final Identifier PROTECTED = MekanismUtils.getResource(ResourceType.GUI, "protected.png");
 
     @Nullable
     private final InteractionHand currentHand;
@@ -86,7 +88,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    protected ResourceLocation getOverlay() {
+    protected Identifier getOverlay() {
         return switch (dataSource.securityMode()) {
             case PUBLIC -> super.getOverlay();
             case PRIVATE -> PRIVATE;
@@ -117,19 +119,20 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    public void onClick(double mouseX, double mouseY, int button) {
+    public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         ISecurityObject security = dataSource.securityObject();
         if (security != null && security.ownerMatches(minecraft.player)) {
+            int button = event.button();
             if (currentHand != null) {
-                PacketUtils.sendToServer(new PacketItemGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? ItemGuiInteraction.NEXT_SECURITY_MODE
+                PacketUtils.sendToServer(new PacketItemGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? ItemGuiInteraction.NEXT_SECURITY_MODE
                                                                                                          : ItemGuiInteraction.PREVIOUS_SECURITY_MODE, currentHand));
             } else {
                 Object provider = dataSource.objectSupplier.get();
                 if (provider instanceof BlockEntity tile) {
-                    PacketUtils.sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
+                    PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteraction.NEXT_SECURITY_MODE
                                                                                                          : GuiInteraction.PREVIOUS_SECURITY_MODE, tile));
                 } else if (provider instanceof Entity entity) {
-                    PacketUtils.sendToServer(new PacketGuiInteract(button == GLFW.GLFW_MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
+                    PacketUtils.sendToServer(new PacketGuiInteract(button == InputConstants.MOUSE_BUTTON_LEFT ? GuiInteractionEntity.NEXT_SECURITY_MODE
                                                                                                          : GuiInteractionEntity.PREVIOUS_SECURITY_MODE, entity));
                 }
             }
@@ -137,8 +140,8 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    public boolean isValidClickButton(int button) {
-        return button == GLFW.GLFW_MOUSE_BUTTON_LEFT || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return buttonInfo.button() == InputConstants.MOUSE_BUTTON_LEFT || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
     }
 
     public record SecurityInfoProvider<OBJECT>(Supplier<OBJECT> objectSupplier, Function<OBJECT, @Nullable ISecurityObject> securityProvider,

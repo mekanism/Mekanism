@@ -168,18 +168,13 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        SidedBlockPos rrTarget = getRoundRobinTarget();
-        if (rrTarget != null) {
-            nbtTags.put(SerializationConstants.ROUND_ROBIN_TARGET, rrTarget.serialize());
-        }
+        output.storeNullable(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC, getRoundRobinTarget());
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        if (nbt.contains(SerializationConstants.ROUND_ROBIN_TARGET, Tag.TAG_COMPOUND)) {
-            setRoundRobinTarget(SidedBlockPos.deserialize(nbt.getCompound(SerializationConstants.ROUND_ROBIN_TARGET)));
-        }
+        input.read(SerializationConstants.ROUND_ROBIN_TARGET, SidedBlockPos.CODEC).ifPresent(this::setRoundRobinTarget);
     }
 
     @Override

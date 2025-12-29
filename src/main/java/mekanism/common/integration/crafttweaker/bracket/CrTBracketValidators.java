@@ -9,7 +9,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.common.integration.crafttweaker.CrTConstants;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.openzen.zencode.java.ZenCodeType;
 
 @ZenRegister
@@ -56,7 +56,7 @@ public class CrTBracketValidators {
     }
 
     private static boolean validate(String bracket, String tokens, ResourceKey<? extends Registry<?>> registryKey) {
-        ResourceLocation registryName = ResourceLocation.tryParse(tokens);
+        Identifier registryName = Identifier.tryParse(tokens);
         if (registryName == null) {
             CrTConstants.CRT_LOGGER.error("Could not get BEP <{}:{}>. Syntax is <{}:modid:{}_name>", bracket, tokens, bracket, bracket);
             return false;

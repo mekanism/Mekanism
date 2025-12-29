@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class EnergyElement extends LookingAtElement {
 
@@ -62,7 +62,7 @@ public class EnergyElement extends LookingAtElement {
     }
 
     @Override
-    public ResourceLocation getID() {
+    public Identifier getID() {
         return LookingAtUtils.ENERGY;
     }
 }

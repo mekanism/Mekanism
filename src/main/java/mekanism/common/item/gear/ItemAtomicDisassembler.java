@@ -49,7 +49,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
@@ -287,9 +287,9 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         private final ILangEntry langEntry;
         private final int efficiency;
         private final EnumColor color;
-        private final ResourceLocation icon;
+        private final Identifier icon;
 
-        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, ResourceLocation icon) {
+        DisassemblerMode(ILangEntry langEntry, int efficiency, BooleanSupplier checkEnabled, EnumColor color, Identifier icon) {
             this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
             this.efficiency = efficiency;
@@ -325,7 +325,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
         @NotNull
         @Override
-        public ResourceLocation icon() {
+        public Identifier icon() {
             return icon;
         }
 

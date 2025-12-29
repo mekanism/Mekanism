@@ -9,7 +9,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -53,23 +53,23 @@ public abstract class CompatRecipeProvider implements ISubRecipeProvider {
         return "compat/" + modid + "/";
     }
 
-    protected ResourceLocation rl(String path) {
-        return ResourceLocation.fromNamespaceAndPath(modid, path);
+    protected Identifier rl(String path) {
+        return Identifier.fromNamespaceAndPath(modid, path);
     }
 
     protected TagKey<Item> tag(String path) {
         return ItemTags.create(rl(path));
     }
 
-    protected Holder<Item> foreignItem(HolderLookup.Provider registries, ResourceLocation id) {
+    protected Holder<Item> foreignItem(HolderLookup.Provider registries, Identifier id) {
         return registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, id));
     }
 
-    protected ItemStack foreignItemStack(HolderLookup.Provider registries, ResourceLocation id, int count) {
+    protected ItemStack foreignItemStack(HolderLookup.Provider registries, Identifier id, int count) {
         return new ItemStack(foreignItem(registries, id), count);
     }
 
-    protected ItemStack foreignItemStack(HolderLookup.Provider registries, ResourceLocation id) {
+    protected ItemStack foreignItemStack(HolderLookup.Provider registries, Identifier id) {
         return foreignItemStack(registries, id, 1);
     }
 }

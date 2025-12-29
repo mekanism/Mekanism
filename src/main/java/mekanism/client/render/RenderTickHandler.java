@@ -55,7 +55,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
@@ -199,7 +199,7 @@ public class RenderTickHandler {
                 for (LazyRender render : transparentRenderers) {
                     Vec3 renderPos = render.getCenterPos(partialTick);
                     //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
-                    render.distance = camera.getPosition().distanceToSqr(renderPos);
+                    render.distance = camera.position().distanceToSqr(renderPos);
                 }
                 //Sort in the order of furthest to closest (reverse of by closest)
                 transparentRenderers.sort(Comparator.comparingDouble(info -> -info.distance));

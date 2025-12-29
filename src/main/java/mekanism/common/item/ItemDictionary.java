@@ -13,7 +13,7 @@ import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
@@ -124,10 +124,10 @@ public class ItemDictionary extends Item {
     }
 
     private <TYPE> boolean sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tagStream) {
-        List<ResourceLocation> tags = tagStream.map(TagKey::location).toList();
+        List<Identifier> tags = tagStream.map(TagKey::location).toList();
         if (!tags.isEmpty()) {
             player.sendSystemMessage(MekanismUtils.logFormat(tagsFoundEntry));
-            for (ResourceLocation tag : tags) {
+            for (Identifier tag : tags) {
                 player.sendSystemMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
             }
             return true;

@@ -12,7 +12,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.slot.GuiSlot;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.MekanismLang;
-import mekanism.common.annotations.GLFWMouseButtons;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.util.MekanismUtils;
@@ -22,18 +21,20 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredientHelper {
 
-    private static final ResourceLocation SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
-    private static final ResourceLocation SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
+    private static final Identifier SLOTS = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots.png");
+    private static final Identifier SLOTS_DARK = MekanismUtils.getResource(ResourceType.GUI_SLOT, "slots_dark.png");
     private static final Component ZERO = TextComponentUtil.build(ChatFormatting.YELLOW, 0);
 
     private final GuiScrollBar scrollBar;
@@ -78,7 +79,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         if (slotX >= 0 && slotY >= 0 && slotX < xSlots && slotY < ySlots) {
             int slotStartX = relativeX + slotX * 18 + 1, slotStartY = relativeY + slotY * 18 + 1;
             if (xAxis >= slotStartX && xAxis < slotStartX + 16 && yAxis >= slotStartY && yAxis < slotStartY + 16 && checkWindows(mouseX, mouseY)) {
-                guiGraphics.fill(RenderType.guiOverlay(), slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
+                guiGraphics.fill(slotStartX, slotStartY, slotStartX + 16, slotStartY + 16, GuiSlot.DEFAULT_HOVER_COLOR);
             }
         }
     }
@@ -98,13 +99,14 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, @GLFWMouseButtons int button) {
+    public boolean mouseReleased(@NotNull MouseButtonEvent event) {
         if (gui().currentlyQuickCrafting()) {
             //If the player is currently quick crafting don't do any special handling for as if they clicked in the screen
-            return super.mouseReleased(mouseX, mouseY, button);
+            return super.mouseReleased(event);
         }
-        super.mouseReleased(mouseX, mouseY, button);
-        clickHandler.onClick(() -> getSlot(mouseX, mouseY), button, Screen.hasShiftDown(), gui().getCarriedItem());
+        super.mouseReleased(event);
+        //TODO - 1.21.11: Evaluate if we just want to pass the mouse button event directly?
+        clickHandler.onClick(() -> getSlot(event.x(), event.y()), event.button(), event.hasShiftDown(), gui().getCarriedItem());
         return true;
     }
 

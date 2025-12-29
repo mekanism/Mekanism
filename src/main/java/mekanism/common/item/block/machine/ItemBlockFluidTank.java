@@ -41,7 +41,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.animal.Cow;
+import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.goat.Goat;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
@@ -202,7 +202,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                                 fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                          fluidState.getType(), pos, world.dimension().location(), fluid);
+                                          fluidState.getType(), pos, world.dimension().identifier(), fluid);
                                     return InteractionResultHolder.fail(stack);
                                 }
                             }
@@ -335,7 +335,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             fluidStack = new FluidStack(fluid, FluidType.BUCKET_VOLUME);
                             if (!validFluid(fluidTank, fluidStack)) {
                                 Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                      fluidState.getType(), pos, world.dimension().location(), fluid);
+                                      fluidState.getType(), pos, world.dimension().identifier(), fluid);
                                 //If we can't insert or extract it, then eject the stack similar to how vanilla does for buckets
                                 return super.execute(source, stack);
                             }

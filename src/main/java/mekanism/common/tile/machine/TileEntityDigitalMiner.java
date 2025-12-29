@@ -527,13 +527,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                             //Exit out. We either mined the block or don't have room so there is no reason to continue checking
                             return;
                         } else if (MekanismAPI.debug) {
-                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, getWorldNN().dimension().location(), pos);
+                            Mekanism.logger.error("Filter failed or can't mine: {} @ {} {}", state, getWorldNN().dimension().identifier(), pos);
                         }
                     } else if (MekanismAPI.debug) {
-                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, getWorldNN().dimension().location(), pos);
+                        Mekanism.logger.error("State was air or was blacklisted (mismatch between search and runtime): {} @ {} {}", state, getWorldNN().dimension().identifier(), pos);
                     }
                 } else if (MekanismAPI.debug) {
-                    Mekanism.logger.debug("Block was not loaded {} {}", getWorldNN().dimension().location(), pos);
+                    Mekanism.logger.debug("Block was not loaded {} {}", getWorldNN().dimension().identifier(), pos);
                 }
                 //If we failed to mine the block, because it isn't loaded, is air, or we shouldn't mine it
                 // remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine
@@ -595,7 +595,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
         boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
         if (MekanismAPI.debug && !canMine) {
-            Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().location(), pos);
+            Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().identifier(), pos);
         }
         dummy.cleanupFakePlayer((ServerLevel) level);
         return canMine;

@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
@@ -38,7 +38,7 @@ public class Outlines {
     }
 
     //modified version of VertexConsumer
-    @MethodsReturnNonnullByDefault
+    @MethodsAreNotNullByDefault
     private static class VertexExtractor {
 
         final Set<Line> lines;

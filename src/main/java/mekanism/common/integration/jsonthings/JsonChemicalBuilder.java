@@ -9,7 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.common.util.ChemicalUtil;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -17,11 +17,11 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
 
     private final List<Consumer<ChemicalBuilder>> baseData = new ArrayList<>();
     @Nullable
-    private ResourceLocation texture;
+    private Identifier texture;
     @Nullable
     private Integer colorRepresentation;
 
-    public JsonChemicalBuilder(ThingParser<JsonChemicalBuilder> ownerParser, ResourceLocation registryName) {
+    public JsonChemicalBuilder(ThingParser<JsonChemicalBuilder> ownerParser, Identifier registryName) {
         super(ownerParser, registryName);
     }
 
@@ -39,7 +39,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
         return ChemicalUtil.chemical(internal, colorRepresentation);
     }
 
-    public JsonChemicalBuilder texture(ResourceLocation texture) {
+    public JsonChemicalBuilder texture(Identifier texture) {
         if (this.texture != null) {
             throw new IllegalStateException("Specified multiple textures");
         }

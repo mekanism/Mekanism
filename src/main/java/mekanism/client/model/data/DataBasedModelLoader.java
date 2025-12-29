@@ -5,7 +5,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.util.HashMap;
 import java.util.Map;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
@@ -30,8 +30,8 @@ public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> 
     @NotNull
     @Override
     public DataBasedGeometry read(@NotNull JsonObject jsonObject, @NotNull JsonDeserializationContext ctx) {
-        ResourceLocation noData = readModelPath(jsonObject, "no_data");
-        Map<ModelProperty<Void>, ResourceLocation> propertyBasedModels = new HashMap<>();
+        Identifier noData = readModelPath(jsonObject, "no_data");
+        Map<ModelProperty<Void>, Identifier> propertyBasedModels = new HashMap<>();
         for (Map.Entry<String, ModelProperty<Void>> entry : SUPPORTED_PROPERTIES.entrySet()) {
             if (jsonObject.has(entry.getKey())) {
                 propertyBasedModels.put(entry.getValue(), readModelPath(jsonObject, entry.getKey()));
@@ -43,9 +43,9 @@ public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> 
         return new DataBasedGeometry(noData, propertyBasedModels);
     }
 
-    private ResourceLocation readModelPath(JsonObject jsonObject, String modelName) {
+    private Identifier readModelPath(JsonObject jsonObject, String modelName) {
         String model = GsonHelper.getAsString(jsonObject, modelName);
-        ResourceLocation modelRl = ResourceLocation.tryParse(model);
+        Identifier modelRl = Identifier.tryParse(model);
         if (modelRl == null) {
             throw new JsonParseException("Expected '" + modelName + "' to be a valid resource location.");
         }

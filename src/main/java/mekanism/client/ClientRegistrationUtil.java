@@ -36,7 +36,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.item.ItemPropertyFunction;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.PreparableReloadListener;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -161,7 +161,7 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setPropertyOverride(Holder<Item> item, ResourceLocation override, ItemPropertyFunction propertyGetter) {
+    public static void setPropertyOverride(Holder<Item> item, Identifier override, ItemPropertyFunction propertyGetter) {
         ItemProperties.register(item.value(), override, propertyGetter);
     }
 
@@ -216,24 +216,24 @@ public class ClientRegistrationUtil {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
                     @NotNull
                     @Override
-                    public ResourceLocation getStillTexture() {
+                    public Identifier getStillTexture() {
                         return fluidType.stillTexture;
                     }
 
                     @NotNull
                     @Override
-                    public ResourceLocation getFlowingTexture() {
+                    public Identifier getFlowingTexture() {
                         return fluidType.flowingTexture;
                     }
 
                     @Override
-                    public ResourceLocation getOverlayTexture() {
+                    public Identifier getOverlayTexture() {
                         return fluidType.overlayTexture;
                     }
 
                     @Nullable
                     @Override
-                    public ResourceLocation getRenderOverlayTexture(Minecraft mc) {
+                    public Identifier getRenderOverlayTexture(Minecraft mc) {
                         return fluidType.renderOverlayTexture;
                     }
 

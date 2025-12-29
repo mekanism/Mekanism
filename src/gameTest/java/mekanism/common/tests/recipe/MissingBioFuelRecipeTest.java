@@ -13,8 +13,8 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.tags.ItemTagsProvider;
 import net.minecraft.data.tags.TagsProvider.TagLookup;
 import net.minecraft.gametest.framework.GameTest;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -34,8 +34,8 @@ public class MissingBioFuelRecipeTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that there are no unknown composter recipes missing corresponding bio fuel recipes.")
     public static void testMissingComposterRecipes(final DynamicTest test, final RegistrationHelper reg) {
-        final TagKey<Item> KNOWN_MISSING = ItemTags.create(ResourceLocation.fromNamespaceAndPath(reg.modId(), "known_missing"));
-        final TagKey<Item> VALID_OUTPUT = ItemTags.create(ResourceLocation.fromNamespaceAndPath(reg.modId(), "valid_output"));
+        final TagKey<Item> KNOWN_MISSING = ItemTags.create(Identifier.fromNamespaceAndPath(reg.modId(), "known_missing"));
+        final TagKey<Item> VALID_OUTPUT = ItemTags.create(Identifier.fromNamespaceAndPath(reg.modId(), "valid_output"));
 
         //TODO: Decide if we want to have things like the biome mods load during game tests as well for purposes of checking if we want to add
         // compat with any of their organic items for making bio-fuel

@@ -3,6 +3,8 @@ package mekanism.client.recipe_viewer.jei;
 import mekanism.client.gui.element.GuiElement;
 import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 
 public class MekJeiWidget implements IJeiGuiEventListener {
 
@@ -32,7 +34,7 @@ public class MekJeiWidget implements IJeiGuiEventListener {
         //Shift the mouse positions to being global instead of relative
         mouseX += element.getX();
         mouseY += element.getY();
-        return element.mouseClicked(mouseX, mouseY, button);
+        return element.mouseClicked(makeMouseEvent(mouseX, mouseY, button), false);
     }
 
     @Override
@@ -40,7 +42,7 @@ public class MekJeiWidget implements IJeiGuiEventListener {
         //Shift the mouse positions to being global instead of relative
         mouseX += element.getX();
         mouseY += element.getY();
-        return element.mouseReleased(mouseX, mouseY, button);
+        return element.mouseReleased(makeMouseEvent(mouseX, mouseY, button));
     }
 
     @Override
@@ -48,7 +50,7 @@ public class MekJeiWidget implements IJeiGuiEventListener {
         //Shift the mouse positions to being global instead of relative
         mouseX += element.getX();
         mouseY += element.getY();
-        return element.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+        return element.mouseDragged(makeMouseEvent(mouseX, mouseY, button), dragX, dragY);
     }
 
     @Override
@@ -62,5 +64,9 @@ public class MekJeiWidget implements IJeiGuiEventListener {
     @Override
     public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
         return element.keyPressed(keyCode, scanCode, modifiers);
+    }
+
+    private MouseButtonEvent makeMouseEvent(double mouseX, double mouseY, int button) {
+        return new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0));
     }
 }

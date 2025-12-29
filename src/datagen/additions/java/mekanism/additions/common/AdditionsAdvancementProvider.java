@@ -13,11 +13,10 @@ import mekanism.common.advancements.BaseAdvancementProvider;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.Criterion;
-import net.minecraft.advancements.critereon.DamagePredicate;
-import net.minecraft.advancements.critereon.EntityHurtPlayerTrigger;
-import net.minecraft.advancements.critereon.EntityPredicate;
-import net.minecraft.advancements.critereon.KilledTrigger;
-import net.minecraft.advancements.critereon.KilledTrigger.TriggerInstance;
+import net.minecraft.advancements.criterion.DamagePredicate;
+import net.minecraft.advancements.criterion.EntityHurtPlayerTrigger;
+import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.KilledTrigger;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
@@ -72,7 +71,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
         return new RecipeCriterion(getName(type), kill(type));
     }
 
-    private Criterion<TriggerInstance> kill(Holder<EntityType<?>> type) {
+    private Criterion<KilledTrigger.TriggerInstance> kill(Holder<EntityType<?>> type) {
         return KilledTrigger.TriggerInstance.playerKilledEntity(EntityPredicate.Builder.entity().of(type.value()));
     }
 
@@ -81,7 +80,7 @@ public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
     }
 
     private String getName(Holder<?> holder) {
-        return Objects.requireNonNull(holder.getKey()).location().getPath();
+        return Objects.requireNonNull(holder.getKey()).identifier().getPath();
     }
 
     private Criterion<EntityHurtPlayerTrigger.TriggerInstance> damaged(Holder<EntityType<?>> type) {

@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.text;
 
+import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.Consumer;
 import java.util.function.IntSupplier;
 import java.util.function.UnaryOperator;
@@ -16,13 +17,14 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
-import org.lwjgl.glfw.GLFW;
 
 /**
  * GuiElement wrapper of TextFieldWidget for more control
@@ -158,7 +160,7 @@ public class GuiTextField extends GuiElement {
     }
 
     public GuiTextField addCheckmarkButton(ButtonType type, Runnable callback) {
-        checkmarkButton = addChild(type.getButton(this, (element, mouseX, mouseY) -> {
+        checkmarkButton = addChild(type.getButton(this, (element, event, isDoubleClick) -> {
             callback.run();
             parent.setFocused(this);
             return true;
@@ -186,21 +188,21 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    protected boolean isValidClickButton(int button) {
-        return super.isValidClickButton(button) || textField.isValidClickButton(button);
+    public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+        return super.isValidClickButton(buttonInfo) || textField.isValidClickButton(buttonInfo);
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        double scaledX = mouseX;
+    public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+        double scaledX = event.x();
         // figure out the proper mouse placement based on text scaling
         if (textScale != 1.0F && scaledX > textField.getX()) {
             scaledX = textField.getX() + (scaledX - textField.getX()) / textScale;
         }
-        if (textField.mouseClicked(scaledX, mouseY, button)) {
+        if (textField.mouseClicked(scaledX, event.y(), isDoubleClick)) {
             return true;
         }
-        return super.isValidClickButton(button) && super.mouseClicked(mouseX, mouseY, button);
+        return super.isValidClickButton(event.buttonInfo()) && super.mouseClicked(event, isDoubleClick);
     }
 
     @Override
@@ -246,11 +248,11 @@ public class GuiTextField extends GuiElement {
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
         if (canWrite()) {
-            if (keyCode == GLFW.GLFW_KEY_ESCAPE || keyCode == GLFW.GLFW_KEY_TAB) {
+            if (keyCode == InputConstants.KEY_ESCAPE || keyCode == InputConstants.KEY_TAB) {
                 //Manually handle hitting escape to make the whole interface go away
                 // and allow using tab to switch focus
                 return false;
-            } else if (keyCode == GLFW.GLFW_KEY_ENTER || keyCode == GLFW.GLFW_KEY_KP_ENTER) {
+            } else if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
                 //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
                     enterHandler.run();
@@ -366,17 +368,17 @@ public class GuiTextField extends GuiElement {
         }
 
         @Override
-        public boolean isValidClickButton(int button) {
-            return super.isValidClickButton(button) || button == GLFW.GLFW_MOUSE_BUTTON_RIGHT;
+        public boolean isValidClickButton(@NotNull MouseButtonInfo buttonInfo) {
+            return super.isValidClickButton(buttonInfo) || buttonInfo.button() == InputConstants.MOUSE_BUTTON_RIGHT;
         }
 
         @Override
-        public void onClick(double mouseX, double mouseY, int button) {
-            if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+        public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_RIGHT) {
                 //Allow clearing on right click
                 setValue("");
             } else {
-                super.onClick(mouseX, mouseY, button);
+                super.onClick(event, isDoubleClick);
             }
         }
 

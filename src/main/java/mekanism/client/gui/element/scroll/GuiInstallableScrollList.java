@@ -7,14 +7,14 @@ import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
     private final int textureWidth;
     private final int textureHeight;
     @Nullable
@@ -22,8 +22,8 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
     @Nullable
     protected ScreenRectangle cachedTooltipRect;
 
-    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int height, ResourceLocation background, int backgroundSideSize,
-          ResourceLocation texture, int textureWidth, int textureHeight) {
+    protected GuiInstallableScrollList(IGuiWrapper gui, int x, int y, int height, Identifier background, int backgroundSideSize,
+          Identifier texture, int textureWidth, int textureHeight) {
         super(gui, x, y, textureWidth + 8, height, textureHeight / 3, background, backgroundSideSize);
         this.texture = texture;
         this.textureWidth = textureWidth;

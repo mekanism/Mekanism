@@ -5,9 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
@@ -19,7 +19,7 @@ import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import org.jetbrains.annotations.Nullable;
 
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 @ParametersAreNonnullByDefault
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MeltdownLevelData implements INBTSerializable<ListTag> {

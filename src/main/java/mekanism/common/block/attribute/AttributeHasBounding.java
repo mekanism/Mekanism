@@ -37,7 +37,7 @@ public class AttributeHasBounding implements Attribute {
                     level.removeBlockEntity(p);
                     level.removeBlock(p, false);
                 } else {
-                    Mekanism.logger.warn("Skipping removing block, expected bounding block but the block at {} in {} was {}", p, level.dimension().location(),
+                    Mekanism.logger.warn("Skipping removing block, expected bounding block but the block at {} in {} was {}", p, level.dimension().identifier(),
                           boundingState.getBlockHolder().getRegisteredName());
                 }
             }
@@ -54,10 +54,10 @@ public class AttributeHasBounding implements Attribute {
                     //Note: As we place it on both server and client, we don't need to sync the main location here as it should already be set on both ends
                     tile.setMainLocation(data, false);
                 } else {
-                    Mekanism.logger.warn("Unable to find Bounding Block Tile at: {} in {}", boundingLocation, level.dimension().location());
+                    Mekanism.logger.warn("Unable to find Bounding Block Tile at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
             } else {
-                Mekanism.logger.warn("Unable to set Bounding Block at: {} in {}", boundingLocation, level.dimension().location());
+                Mekanism.logger.warn("Unable to set Bounding Block at: {} in {}", boundingLocation, level.dimension().identifier());
             }
             return true;//todo decide if this should bail on failure even though we likely have already partially placed some of the bounding blocks
         });
@@ -70,7 +70,7 @@ public class AttributeHasBounding implements Attribute {
                 if (tile != null) {
                     tile.setMainLocation(data, true);
                 } else {
-                    Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().location());
+                    Mekanism.logger.warn("Unable to find Bounding Block Tile for sync at: {} in {}", boundingLocation, level.dimension().identifier());
                 }
                 return true;
             });

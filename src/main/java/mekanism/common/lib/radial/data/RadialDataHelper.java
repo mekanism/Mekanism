@@ -5,7 +5,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 /**
  * @apiNote Do not instantiate this class directly as it will be done via the service loader. Instead, access instances of this via {@link IRadialDataHelper#INSTANCE}
@@ -14,7 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 public class RadialDataHelper implements IRadialDataHelper {
 
     @Override
-    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(ResourceLocation identifier, MODE defaultMode) {
+    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(Identifier identifier, MODE defaultMode) {
         if (defaultMode instanceof IDisableableEnum) {
             //noinspection rawtypes,unchecked
             return new DisableableEnumRadialData(identifier, defaultMode);
@@ -23,7 +23,7 @@ public class RadialDataHelper implements IRadialDataHelper {
     }
 
     @Override
-    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(ResourceLocation identifier, Class<MODE> enumClass) {
+    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForEnum(Identifier identifier, Class<MODE> enumClass) {
         if (IDisableableEnum.class.isAssignableFrom(enumClass)) {
             //noinspection rawtypes,unchecked
             return new DisableableEnumRadialData(identifier, enumClass);
@@ -32,12 +32,12 @@ public class RadialDataHelper implements IRadialDataHelper {
     }
 
     @Override
-    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForTruncated(ResourceLocation identifier, int accessibleValues, MODE defaultMode) {
+    public <MODE extends Enum<MODE> & IRadialMode> RadialData<MODE> dataForTruncated(Identifier identifier, int accessibleValues, MODE defaultMode) {
         return new TruncatedEnumRadialData<>(identifier, accessibleValues, defaultMode);
     }
 
     @Override
-    public RadialData<IRadialMode> booleanBasedData(ResourceLocation identifier, BooleanRadialModes modes, boolean defaultValue) {
+    public RadialData<IRadialMode> booleanBasedData(Identifier identifier, BooleanRadialModes modes, boolean defaultValue) {
         return new BooleanRadialData(identifier, modes, defaultValue);
     }
 }

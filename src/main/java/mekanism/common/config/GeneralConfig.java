@@ -18,7 +18,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.SharedConstants;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.fml.config.ModConfig.Type;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -153,7 +153,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         strictUnboxing = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_STRICT_UNBOXING.applyToBuilder(builder)
               .define("strictUnboxing", false));
         cardboardModBlacklist = CachedConfigValue.wrap(this, MekanismConfigTranslations.GENERAL_CARDBOARD_MOD_BLACKLIST.applyToBuilder(builder)
-              .defineListAllowEmpty("modBlacklist", ArrayList::new, () -> Mekanism.MODID, e -> e instanceof String modid && ResourceLocation.isValidNamespace(modid)));
+              .defineListAllowEmpty("modBlacklist", ArrayList::new, () -> Mekanism.MODID, e -> e instanceof String modid && Identifier.isValidNamespace(modid)));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_FILL_RATE.applyToBuilder(builder).push("item_fill_rate");

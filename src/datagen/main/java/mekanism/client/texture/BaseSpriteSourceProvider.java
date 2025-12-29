@@ -17,25 +17,25 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SpriteSourceProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
-    private final Set<ResourceLocation> trackedSingles = new HashSet<>();
+    private final Set<Identifier> trackedSingles = new HashSet<>();
 
     protected BaseSpriteSourceProvider(PackOutput output, String modid, ExistingFileHelper fileHelper, CompletableFuture<Provider> lookupProvider) {
         super(output, lookupProvider, modid, fileHelper);
     }
 
-    protected void addFiles(SourceList atlas, List<ResourceLocation> resourceLocations) {
-        addFiles(atlas, resourceLocations.stream().sorted(ResourceLocation::compareNamespaced).toArray(ResourceLocation[]::new));
+    protected void addFiles(SourceList atlas, List<Identifier> resourceLocations) {
+        addFiles(atlas, resourceLocations.stream().sorted(Identifier::compareNamespaced).toArray(Identifier[]::new));
     }
 
-    protected void addFiles(SourceList atlas, ResourceLocation... resourceLocations) {
-        for (ResourceLocation rl : resourceLocations) {
+    protected void addFiles(SourceList atlas, Identifier... resourceLocations) {
+        for (Identifier rl : resourceLocations) {
             //Only add this source if we haven't already added it as a direct single file source
             if (trackedSingles.add(rl)) {
                 atlas.addSource(new SingleFile(rl, Optional.empty()));
@@ -45,9 +45,9 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     //TODO - 1.20: Re-evaluate doing this
     protected void addChemicalSprites(SourceList atlas) {
-        List<ResourceLocation> icons = new ArrayList<>();
+        List<Identifier> icons = new ArrayList<>();
         for (Map.Entry<ResourceKey<Chemical>, Chemical> entry : MekanismAPI.CHEMICAL_REGISTRY.entrySet()) {
-            if (entry.getKey().location().getNamespace().equals(modid)) {
+            if (entry.getKey().identifier().getNamespace().equals(modid)) {
                 icons.add(entry.getValue().getIcon());
             }
         }
@@ -55,7 +55,7 @@ public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
     }
 
     protected void addFluids(SourceList atlas, FluidDeferredRegister register) {
-        List<ResourceLocation> icons = new ArrayList<>();
+        List<Identifier> icons = new ArrayList<>();
         for (Holder<FluidType> holder : register.getFluidTypeEntries()) {
             //Note: This should always be the case
             if (holder.value() instanceof MekanismFluidType fluidType) {

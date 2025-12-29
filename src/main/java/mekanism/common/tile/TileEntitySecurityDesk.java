@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import com.mojang.authlib.GameProfile;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.IContentsListener;
@@ -19,7 +18,8 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.players.GameProfileCache;
+import net.minecraft.server.players.NameAndId;
+import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -126,16 +126,14 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (level != null) {
             MinecraftServer server = level.getServer();
             if (server != null) {
-                GameProfileCache profileCache = server.getProfileCache();
-                if (profileCache != null) {
-                    SecurityFrequency frequency = getFreq();
-                    if (frequency != null) {
-                        Optional<GameProfile> gameProfile = profileCache.get(name);
-                        //noinspection OptionalIsPresent - Capturing lambda
-                        if (gameProfile.isPresent()) {
-                            GameProfile profile = gameProfile.get();
-                            frequency.addTrusted(profile.getId(), profile.getName());
-                        }
+                UserNameToIdResolver profileCache = server.services().nameToIdCache();
+                SecurityFrequency frequency = getFreq();
+                if (frequency != null) {
+                    Optional<NameAndId> gameProfile = profileCache.get(name);
+                    //noinspection OptionalIsPresent - Capturing lambda
+                    if (gameProfile.isPresent()) {
+                        NameAndId profile = gameProfile.get();
+                        frequency.addTrusted(profile.id(), profile.name());
                     }
                 }
             }

@@ -8,7 +8,7 @@ import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import net.neoforged.neoforge.client.model.geometry.IUnbakedGeometry;
 import net.neoforged.neoforge.client.model.obj.ObjModel;
@@ -32,7 +32,7 @@ public class TransmitterModel implements IUnbakedGeometry<TransmitterModel> {
     }
 
     @Override
-    public void resolveParents(Function<ResourceLocation, UnbakedModel> modelGetter, IGeometryBakingContext context) {
+    public void resolveParents(Function<Identifier, UnbakedModel> modelGetter, IGeometryBakingContext context) {
         internal.resolveParents(modelGetter, context);
         if (glass != null) {
             glass.resolveParents(modelGetter, context);

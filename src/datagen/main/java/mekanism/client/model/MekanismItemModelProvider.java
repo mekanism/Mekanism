@@ -8,7 +8,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
@@ -23,7 +23,7 @@ public class MekanismItemModelProvider extends BaseItemModelProvider {
         registerBuckets(MekanismFluids.FLUIDS);
         registerModules(MekanismItems.ITEMS);
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            ResourceLocation texture = itemTexture(item.getValue());
+            Identifier texture = itemTexture(item.getValue());
             if (textureExists(texture)) {
                 generated(item.getValue(), texture);
             } else {

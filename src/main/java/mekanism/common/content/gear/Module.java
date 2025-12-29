@@ -12,6 +12,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
@@ -25,13 +26,12 @@ import mekanism.api.text.IHasTextComponent;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -39,7 +39,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-@MethodsReturnNonnullByDefault
+@MethodsAreNotNullByDefault
 public final class Module<MODULE extends ICustomModule<MODULE>> implements IModule<MODULE> {
 
     private record InstalledData(Holder<ModuleData<?>> holder, int installed) {
@@ -79,7 +79,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
           installedData -> installedData.configStreamCodecs().map(installedData::create, Module::getConfigs)
     );
 
-    private final Map<ResourceLocation, ModuleConfig<?>> configItemsByName = new HashMap<>();
+    private final Map<Identifier, ModuleConfig<?>> configItemsByName = new HashMap<>();
     private final List<ModuleConfig<?>> configItems;
 
     private final Holder<ModuleData<?>> holder;
@@ -198,7 +198,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
 
     @Nullable
     @Override
-    public <TYPE> ModuleConfig<TYPE> getConfig(ResourceLocation name) {
+    public <TYPE> ModuleConfig<TYPE> getConfig(Identifier name) {
         //TODO - 1.20.5: Do we want to allow passing in the type to validate that the type is correct?
         return (ModuleConfig<TYPE>) configItemsByName.get(name);
     }
@@ -221,7 +221,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         List<ModuleConfig<?>> moduleConfigs = getUntypedData().defaultConfigs(installed);
         List<ModuleConfig<?>> copiedConfigs = new ArrayList<>(moduleConfigs.size());
         for (ModuleConfig<?> moduleConfig : moduleConfigs) {
-            ResourceLocation name = moduleConfig.name();
+            Identifier name = moduleConfig.name();
             ModuleConfig<?> existingConfig = configItemsByName.get(name);
             if (existingConfig == null) {
                 copiedConfigs.add(moduleConfig);
