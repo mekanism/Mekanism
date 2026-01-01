@@ -36,8 +36,8 @@ import mezz.jei.api.neoforge.NeoForgeTypes;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.category.IRecipeCategory;
+import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
@@ -69,7 +69,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     private final List<GuiElement> guiElements = new ArrayList<>();
     private final Component component;
     private final IGuiHelper guiHelper;
-    private final RecipeType<RECIPE> recipeType;
+    private final IRecipeType<RECIPE> recipeType;
     private final IDrawable icon;
     private final int xOffset;
     private final int yOffset;
@@ -84,7 +84,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         this(helper, MekanismJEI.recipeType(recipeType), recipeType.getTextComponent(), createIcon(helper, recipeType), recipeType.xOffset(), recipeType.yOffset(), recipeType.width(), recipeType.height());
     }
 
-    protected BaseRecipeCategory(IGuiHelper helper, RecipeType<RECIPE> recipeType, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
+    protected BaseRecipeCategory(IGuiHelper helper, IRecipeType<RECIPE> recipeType, Component component, IDrawable icon, int xOffset, int yOffset, int width, int height) {
         this.recipeType = recipeType;
         this.component = component;
         this.guiHelper = helper;
@@ -168,7 +168,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public RecipeType<RECIPE> getRecipeType() {
+    public IRecipeType<RECIPE> getRecipeType() {
         return recipeType;
     }
 

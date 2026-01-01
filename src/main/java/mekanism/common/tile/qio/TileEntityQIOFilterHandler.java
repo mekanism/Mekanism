@@ -47,13 +47,13 @@ public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implement
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        filterManager.writeToNBT(output, dataMap);
+        filterManager.serialize(output);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        filterManager.readFromNBT(input, dataMap);
+        filterManager.deserialize(input);
     }
 
     @Override

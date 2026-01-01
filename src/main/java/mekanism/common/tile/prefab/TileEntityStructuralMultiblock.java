@@ -13,16 +13,14 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -137,7 +135,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!structuralGuiAccessAllowed()) {
             //If we don't have any structures that allow gui access, just short circuit and pass
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -151,8 +149,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (data != null && data.isFormed() && data.allowsStructuralGuiAccess(this)) {
                     // make sure this block is on the structure first
                     if (data.getBounds().getRelativeLocation(getBlockPos()).isWall()) {
-                        ItemInteractionResult result = master.onActivate(player, hand, stack);
-                        if (result.result() != InteractionResult.PASS) {
+                        InteractionResult result = master.onActivate(player, hand, stack);
+                        if (result != InteractionResult.PASS) {
                             return result;
                         }
                     }
@@ -196,7 +194,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 if (multiblock == null || !multiblock.isFormed()) {
                     FormationResult result = structure.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
-                        player.sendSystemMessage(result.getResultText());
+                        player.displayClientMessage(result.getResultText(), false);
                         return InteractionResult.sidedSuccess(isRemote());
                     }
                 }
@@ -210,20 +208,18 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(SerializationConstants.FORMED, hasFormedMultiblock);
-        updateTag.putBoolean(SerializationConstants.GUI, canAccessGui);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putBoolean(SerializationConstants.FORMED, hasFormedMultiblock);
+        output.putBoolean(SerializationConstants.GUI, canAccessGui);
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        hasFormedMultiblock = tag.getBoolean(SerializationConstants.FORMED);
-        canAccessGui = tag.getBoolean(SerializationConstants.GUI);
+        hasFormedMultiblock = input.getBooleanOr(SerializationConstants.FORMED, hasFormedMultiblock);
+        canAccessGui = input.getBooleanOr(SerializationConstants.GUI, canAccessGui);
     }
 
     @Override

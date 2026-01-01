@@ -211,7 +211,7 @@ public class QIOCraftingWindow implements IContentsListener {
         }*/
         //If the recipe is dynamic, doLimitedCrafting is disabled, or the recipe is unlocked
         // allow viewing the recipe
-        return lastRecipe.value().isSpecial() || !player.level().getGameRules().get(GameRules.LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe);
+        return lastRecipe.value().isSpecial() || !player.level().getGameRules().get(GameRules.LIMITED_CRAFTING) || player.getRecipeBook().contains(lastRecipe.id());
     }
 
     @Contract("null, _, _ -> false")
@@ -225,7 +225,7 @@ public class QIOCraftingWindow implements IContentsListener {
             player.triggerRecipeCrafted(lastRecipe, craftingInput.items());
             if (!lastRecipe.value().isSpecial()) {
                 if (player instanceof ServerPlayer serverPlayer && world instanceof ServerLevel level && level.getGameRules().get(GameRules.LIMITED_CRAFTING) &&
-                    !serverPlayer.getRecipeBook().contains(lastRecipe)) {
+                    !serverPlayer.getRecipeBook().contains(lastRecipe.id())) {
                     //If the player cannot use the recipe, don't allow crafting
                     return false;
                 }
@@ -348,7 +348,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
         ItemStack result = outputSlot.getStack().copy();
         Item resultItem = result.getItem();
-        resultItem.onCraftedBy(result, world, player);
+        resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
         int maxToCraft = calculateMaxCraftAmount(result, frequency);
         int amountPerCraft = result.getCount();
@@ -382,7 +382,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 //If they may still be compatible, copy the stack, and apply the onCreated to it so that
                 // we can adjust the NBT if it needs adjusting
                 ItemStack potentialUpdatedOutput = updatedOutput.copy();
-                resultItem.onCraftedBy(potentialUpdatedOutput, world, player);
+                resultItem.onCraftedBy(potentialUpdatedOutput, player);
                 if (!ItemStack.matches(result, potentialUpdatedOutput)) {
                     //If some data is different about the output, stop crafting
                     // Note: we check if the stacks are equal instead of just if they can stack as if they are different sizes
@@ -509,7 +509,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Craft the result, note the result stack should always be a new instance by the time this method is called
-        result.onCraftedBy(world, player, amountCrafted);
+        result.onCraftedBy(player, amountCrafted);
         //Note: We don't fire a crafting event as we don't want to allow for people to modify the output
         // stack or more importantly the input inventory during crafting
         //TODO: If this ends up causing major issues with some weird way another mod ends up doing crafting

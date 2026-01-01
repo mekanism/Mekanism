@@ -1,7 +1,6 @@
 package mekanism.common.item.block;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
@@ -30,6 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> implements ICustomCreativeTabContents {
@@ -71,14 +71,15 @@ public class ItemBlockEnergyCube extends ItemBlockTooltip<BlockEnergyCube> imple
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredEnergy(stack, tooltip, true);
-        tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
-        super.appendHoverText(stack, context, tooltip, flag);
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
+        tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, EnergyDisplay.of(getTier().getMaxEnergy())));
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Don't call super so that we can exclude the stored energy from being shown as we show it in hover text
     }
 

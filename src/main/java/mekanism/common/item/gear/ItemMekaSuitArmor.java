@@ -57,11 +57,13 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.EnderMan;
@@ -71,6 +73,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -142,18 +145,20 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addModuleDetails(stack, tooltip);
+            addModuleDetails(stack, tooltipAdder);
         } else {
-            StorageUtils.addStoredEnergy(stack, tooltip, true);
+            StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
             if (!chemicalTankSpecs.isEmpty()) {
-                StorageUtils.addStoredChemical(stack, tooltip);
+                StorageUtils.addStoredChemical(stack, tooltipAdder);
             }
             if (!fluidTankSpecs.isEmpty()) {
-                StorageUtils.addStoredFluid(stack, tooltip);
+                StorageUtils.addStoredFluid(stack, tooltipAdder);
             }
-            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -228,9 +233,9 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if (slotId >= Inventory.INVENTORY_SIZE && slotId < Inventory.INVENTORY_SIZE + 4 && entity instanceof Player player) {
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
+        if (slot != null && slot.getType() == Type.HUMANOID_ARMOR && entity instanceof Player player) {
             ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
             if (container != null) {
                 for (Module<?> module : container.modules()) {

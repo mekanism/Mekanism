@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import org.jetbrains.annotations.NotNull;
@@ -26,8 +27,10 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     protected abstract Holder<Chemical> getChemicalType();
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredChemical(stack, tooltip);
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        StorageUtils.addStoredChemical(stack, tooltipAdder);
     }
 
     @Override

@@ -22,7 +22,6 @@ import mekanism.common.base.KeySync;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekasuit.ModuleVisionEnhancementUnit;
-import mekanism.common.item.gear.ItemHDPEElytra;
 import mekanism.common.item.gear.ItemJetpack;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.gear.ItemScubaTank;

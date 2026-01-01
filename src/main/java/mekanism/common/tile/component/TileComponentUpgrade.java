@@ -231,10 +231,10 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     }
 
     @Override
-    public void addToUpdateTag(CompoundTag updateTag) {
+    public void addToUpdateTag(@NotNull ValueOutput output) {
         //Note: We only bother to sync how many muffling upgrades we have installed as that is the only thing the client cares about
         if (supports(Upgrade.MUFFLING)) {
-            updateTag.putInt(SerializationConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
+            output.putInt(SerializationConstants.MUFFLING_COUNT, upgrades.getOrDefault(Upgrade.MUFFLING, 0));
         }
     }
 

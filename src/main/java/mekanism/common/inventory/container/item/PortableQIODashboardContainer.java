@@ -124,10 +124,10 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     @Override
     public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
         if (clickType == ClickType.SWAP) {
-            if (hand == InteractionHand.OFF_HAND && dragType == 40) {
+            if (hand == InteractionHand.OFF_HAND && dragType == Inventory.SLOT_OFFHAND) {
                 //Block pressing f to swap it when it is in the offhand
                 return;
-            } else if (hand == InteractionHand.MAIN_HAND && dragType >= 0 && dragType < Inventory.getSelectionSize()) {
+            } else if (hand == InteractionHand.MAIN_HAND && Inventory.isHotbarSlot(dragType)) {
                 //Block taking out of the selected slot (we don't validate we have a hotbar slot as we always should for this container)
                 if (!hotBarSlots.get(dragType).mayPickup(player)) {
                     return;

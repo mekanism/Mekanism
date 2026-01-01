@@ -1,6 +1,6 @@
 package mekanism.api.security;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -48,25 +48,25 @@ public interface IItemSecurityUtils extends ITypedSecurityUtils<ItemStack> {
      * Adds any owner data that the given stack has to the passed in list of tooltips. If the stack does not expose an owner then the corresponding data will not be
      * added.
      *
-     * @param stack   Stack to retrieve the owner data from.
-     * @param tooltip List of components to add extra tooltips to.
+     * @param stack        Stack to retrieve the owner data from.
+     * @param tooltipAdder Handles adding the extra tooltips.
      *
      * @apiNote While this method won't crash if called on the server it won't render quite right due to not having access to the player, so it is best to only call this
      * on the client.
-     * @see #addSecurityTooltip(ItemStack, List)
+     * @see #addSecurityTooltip(ItemStack, Consumer)
      */
-    void addOwnerTooltip(ItemStack stack, List<Component> tooltip);
+    void addOwnerTooltip(ItemStack stack, Consumer<Component> tooltipAdder);
 
     /**
      * Adds any owner and security data that the given stack has to the passed in list of tooltips. If the stack does not expose an owner or any security data then the
      * corresponding data will not be added.
      *
-     * @param stack   Stack to retrieve the owner and any security data from.
-     * @param tooltip List of components to add extra tooltips to.
+     * @param stack        Stack to retrieve the owner and any security data from.
+     * @param tooltipAdder Handles adding the extra tooltips.
      *
      * @apiNote While this method won't crash if called on the server it won't render quite right due to not having access to the player, so it is best to only call this
      * on the client.
-     * @see #addOwnerTooltip(ItemStack, List)
+     * @see #addOwnerTooltip(ItemStack, Consumer)
      */
-    void addSecurityTooltip(ItemStack stack, List<Component> tooltip);
+    void addSecurityTooltip(ItemStack stack, Consumer<Component> tooltipAdder);
 }

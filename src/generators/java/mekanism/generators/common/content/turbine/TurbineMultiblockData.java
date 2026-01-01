@@ -9,6 +9,7 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -28,7 +29,6 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -36,14 +36,13 @@ import mekanism.generators.common.tile.turbine.TileEntityTurbineValve;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineVent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -130,7 +129,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
 
         lastSteamInput = newSteamInput;
@@ -224,23 +223,24 @@ public class TurbineMultiblockData extends MultiblockData {
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, value -> chemicalTank.setStack(value));
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, ventTank::setStack);
+        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(chemicalTank::setStack);
+        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(ventTank::setStack);
         input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
         clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
         clientRotationMap.put(inventoryID, clientRotation);
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.putFloat(SerializationConstants.SCALE, prevSteamScale);
-        tag.putInt(SerializationConstants.VOLUME, getVolume());
-        tag.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        tag.put(SerializationConstants.CHEMICAL, chemicalTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.FLUID, ventTank.getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.COMPLEX, NbtUtils.writeBlockPos(complex));
-        tag.putFloat(SerializationConstants.ROTATION, clientRotation);
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.putFloat(SerializationConstants.SCALE, prevSteamScale);
+        output.putInt(SerializationConstants.VOLUME, getVolume());
+        output.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
+        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, chemicalTank.getStack());
+        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, ventTank.getFluid());
+        output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
+        output.putFloat(SerializationConstants.ROTATION, clientRotation);
     }
 
     @ComputerMethod

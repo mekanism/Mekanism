@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsDataComponents;
@@ -11,17 +12,19 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.item.interfaces.IModeItem;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -32,12 +35,12 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
-        tooltip.add(OnOff.of(data.running(), true).getTextComponent());
-        tooltip.add(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, data.channel()));
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        stack.addToTooltip(AdditionsDataComponents.WALKIE_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
         if (!MekanismAdditionsConfig.additions.voiceServerEnabled.get()) {
-            tooltip.add(AdditionsLang.WALKIE_DISABLED.translateColored(EnumColor.DARK_RED));
+            tooltipAdder.accept(AdditionsLang.WALKIE_DISABLED.translateColored(EnumColor.DARK_RED));
         }
     }
 
@@ -50,7 +53,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
             stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(data.channel(), !data.running()));
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -77,7 +80,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         return AdditionsLang.CHANNEL.translateColored(EnumColor.GRAY, EnumColor.WHITE, data.channel());
     }
 
-    public record WalkieData(int channel, boolean running) {
+    public record WalkieData(int channel, boolean running) implements TooltipProvider {
 
         public static final WalkieData DEFAULT = new WalkieData(1, false);
 
@@ -90,5 +93,11 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
               ByteBufCodecs.BOOL, WalkieData::running,
               WalkieData::new
         );
+
+        @Override
+        public void addToTooltip(@NotNull TooltipContext context, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag, @NotNull DataComponentGetter componentGetter) {
+            tooltipAdder.accept(OnOff.of(running(), true).getTextComponent());
+            tooltipAdder.accept(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, channel()));
+        }
     }
 }

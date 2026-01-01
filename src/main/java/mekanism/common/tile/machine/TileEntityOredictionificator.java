@@ -169,13 +169,13 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        filterManager.writeToNBT(output, dataMap);
+        filterManager.serialize(output);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        filterManager.readFromNBT(input, dataMap);
+        filterManager.deserialize(input);
     }
 
     @Override

@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.text.EnumColor;
@@ -15,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemModule extends Item implements IModuleItem {
@@ -32,24 +34,26 @@ public class ItemModule extends Item implements IModuleItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            tooltip.add(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
+            tooltipAdder.accept(MekanismLang.MODULE_SUPPORTED.translateColored(EnumColor.BRIGHT_GREEN));
             for (Item item : IModuleHelper.INSTANCE.getSupportedItems(moduleData)) {
-                tooltip.add(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
+                tooltipAdder.accept(MekanismLang.GENERIC_LIST.translate(item.getName(new ItemStack(item))));
             }
             Set<ModuleData<?>> conflicting = IModuleHelper.INSTANCE.getConflicting(moduleData);
             if (!conflicting.isEmpty()) {
-                tooltip.add(MekanismLang.MODULE_CONFLICTING.translateColored(EnumColor.RED));
+                tooltipAdder.accept(MekanismLang.MODULE_CONFLICTING.translateColored(EnumColor.RED));
                 for (ModuleData<?> module : conflicting) {
-                    tooltip.add(MekanismLang.GENERIC_LIST.translate(module));
+                    tooltipAdder.accept(MekanismLang.GENERIC_LIST.translate(module));
                 }
             }
         } else {
             ModuleData<?> data = moduleData.value();
-            tooltip.add(TextComponentUtil.translate(data.getDescriptionTranslationKey()));
-            tooltip.add(MekanismLang.MODULE_STACKABLE.translateColored(EnumColor.GRAY, EnumColor.AQUA, data.getMaxStackSize()));
-            tooltip.add(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(TextComponentUtil.translate(data.getDescriptionTranslationKey()));
+            tooltipAdder.accept(MekanismLang.MODULE_STACKABLE.translateColored(EnumColor.GRAY, EnumColor.AQUA, data.getMaxStackSize()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 

@@ -69,12 +69,13 @@ public class CommandMek {
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
                       MinecraftServer server = source.getServer();
-                      GameRules rules = server.getGameRules();
-                      rules.getRule(GameRules.RULE_KEEPINVENTORY).set(true, server);
-                      rules.getRule(GameRules.RULE_DOMOBSPAWNING).set(false, server);
-                      rules.getRule(GameRules.RULE_DAYLIGHT).set(false, server);
-                      rules.getRule(GameRules.RULE_WEATHER_CYCLE).set(false, server);
-                      rules.getRule(GameRules.RULE_MOBGRIEFING).set(false, server);
+                      GameRules rules = source.getLevel().getGameRules();
+                      rules.set(GameRules.KEEP_INVENTORY, true, server);
+                      //TODO - 1.21.11: Should this be SPAWN_MONSTERS?
+                      rules.set(GameRules.SPAWN_MOBS, false, server);
+                      rules.set(GameRules.ADVANCE_TIME, false, server);
+                      rules.set(GameRules.ADVANCE_WEATHER, false, server);
+                      rules.set(GameRules.MOB_GRIEFING, false, server);
                       source.getLevel().setDayTime(2_000);
                       //Act as if /weather clear was ran
                       source.getLevel().setWeatherParameters(ServerLevel.RAIN_DELAY.sample(server.overworld().getRandom()), 0, false, false);

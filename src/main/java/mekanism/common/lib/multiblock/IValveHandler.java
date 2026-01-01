@@ -1,48 +1,38 @@
 package mekanism.common.lib.multiblock;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Collection;
-import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueInput.ValueInputList;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import org.jetbrains.annotations.NotNull;
 
 public interface IValveHandler {
 
-    default void writeValves(CompoundTag updateTag) {
-        ListTag valves = new ListTag();
+    default void writeValves(@NotNull ValueOutput output) {
+        TypedOutputList<ValveData> valveList = output.list(SerializationConstants.VALVE, ValveData.CODEC);
         for (ValveData valveData : getValveData()) {
             if (valveData.activeTicks > 0) {
-                CompoundTag valveNBT = new CompoundTag();
-                valveNBT.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(valveData.location));
-                NBTUtils.writeEnum(valveNBT, SerializationConstants.SIDE, valveData.side);
-                valves.add(valveNBT);
+                valveList.add(valveData);
             }
         }
-        updateTag.put(SerializationConstants.VALVE, valves);
+        if (valveList.isEmpty()) {
+            output.discard(SerializationConstants.VALVE);
+        }
     }
 
     default void readValves(@NotNull ValueInput input) {
         Collection<ValveData> valveData = getValveData();
         valveData.clear();
-        input.childrenList(SerializationConstants.VALVE).ifPresent(valueInputs ->
-              valueInputs.forEach(valveInput ->
-                    valveInput.read(SerializationConstants.POSITION, BlockPos.CODEC).ifPresent(pos -> {
-                        //TODO - 1.21.11: Re-evaluate how we get the side, do we want to just store the side itself?
-                        Direction side = Direction.from3DDataValue(valveInput.getIntOr(SerializationConstants.SIDE, 0));
-                        valveData.add(new ValveData(pos, side));
-                    })
-              )
-        );
+        for (ValveData data : input.listOrEmpty(SerializationConstants.VALVE, ValveData.CODEC)) {
+            valveData.add(data);
+        }
     }
 
     default void triggerValveTransfer(IMultiblock<?> multiblock) {
@@ -60,6 +50,13 @@ public interface IValveHandler {
     Collection<ValveData> getValveData();
 
     class ValveData {
+
+        //TODO - 1.21.11: Re-evaluate how we get the side, do we want to just store the side itself?
+        public static final Codec<ValveData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(data -> data.location),
+              Direction.LEGACY_ID_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(data -> data.side)
+        ).apply(instance, ValveData::new));
+
 
         public final BlockPos location;
         public final Direction side;

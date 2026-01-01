@@ -71,14 +71,12 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
         lastColor = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         if (lastColor != null) {
             NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, lastColor);
         }
-        return updateTag;
     }
 
     @Override

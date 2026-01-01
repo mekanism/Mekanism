@@ -16,6 +16,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.sps.SPSMultiblockData.SyncableCoilData.CoilData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -34,11 +35,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtUtils;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.damagesource.DamageSource;
@@ -47,6 +43,9 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueInput.ValueInputList;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.NotNull;
@@ -99,7 +98,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         double processed = 0;
         couldOperate = canOperate();
@@ -159,17 +158,17 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        coilData.read(tag);
-        lastReceivedEnergy = tag.getLong(SerializationConstants.ENERGY_USAGE);
-        lastProcessed = tag.getDouble(SerializationConstants.LAST_PROCESSED);
+        coilData.read(input);
+        lastReceivedEnergy = input.getLongOr(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        lastProcessed = input.getDoubleOr(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        coilData.write(tag);
-        tag.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
-        tag.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        coilData.write(output);
+        output.putLong(SerializationConstants.ENERGY_USAGE, lastReceivedEnergy);
+        output.putDouble(SerializationConstants.LAST_PROCESSED, lastProcessed);
     }
 
     @Override
@@ -197,7 +196,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return processed;
     }
 
-    private void kill(Level world) {
+    private void kill(ServerLevel world) {
         if (lastReceivedEnergy > 0L && couldOperate && world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND == 0) {
             List<Entity> entitiesToDie = world.getEntitiesOfClass(Entity.class, deathZone);
             if (!entitiesToDie.isEmpty()) {
@@ -205,7 +204,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 LightningBolt lightningBolt = null;
                 List<ServerPlayer> nearbyPlayers = null;
                 for (Entity entity : entitiesToDie) {
-                    if (entity.hurt(damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
+                    if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
                         //If the entity is still alive, see if there is any special handling we want to do
                         EntityType<?> type = entity.getType();
                         if (type.is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
@@ -215,15 +214,15 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                                 lightningBolt.setDamage(0);
                                 lightningBolt.setVisualOnly(true);
                             }
-                            if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt) && world instanceof ServerLevel serverLevel) {//This should always be a server level
+                            if (!EventHooks.onEntityStruckByLightning(entity, lightningBolt)) {
                                 //Keep track of the remaining fire ticks so that we can skip lighting it on fire as we are not actual lightning
                                 int remainingFireTicks = entity.getRemainingFireTicks();
-                                entity.thunderHit(serverLevel, lightningBolt);
+                                entity.thunderHit(world, lightningBolt);
                                 entity.setRemainingFireTicks(remainingFireTicks);
                                 //Trigger advancements for nearby players
                                 if (nearbyPlayers == null) {
                                     nearbyPlayers = new ArrayList<>();
-                                    for (ServerPlayer player : serverLevel.players()) {
+                                    for (ServerPlayer player : world.players()) {
                                         if (advancementArea.contains(player.position())) {
                                             nearbyPlayers.add(player);
                                         }
@@ -304,28 +303,27 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             return ret;
         }
 
-        public void write(CompoundTag tags) {
-            ListTag list = new ListTag(coilMap.size());
-            for (CoilData data : coilMap.values()) {
-                CompoundTag tag = new CompoundTag();
-                tag.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(data.coilPos));
-                NBTUtils.writeEnum(tag, SerializationConstants.SIDE, data.side);
-                tag.putInt(SerializationConstants.LEVEL, data.prevLevel);
-                list.add(tag);
+        public void write(@NotNull ValueOutput output) {
+            if (!coilMap.isEmpty()) {
+                ValueOutputList coilsOutput = output.childrenList(SerializationConstants.COILS);
+                for (CoilData data : coilMap.values()) {
+                    ValueOutput coilOutput = coilsOutput.addChild();
+                    coilOutput.store(SerializationConstants.POSITION, BlockPos.CODEC, data.coilPos);
+                    NBTUtils.writeEnum(coilOutput, SerializationConstants.SIDE, data.side);
+                    coilOutput.putInt(SerializationConstants.LEVEL, data.prevLevel);
+                }
             }
-            tags.put(SerializationConstants.COILS, list);
         }
 
-        public void read(CompoundTag tags) {
+        public void read(@NotNull ValueInput input) {
             coilMap.clear();
-            ListTag list = tags.getList(SerializationConstants.COILS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) {
-                CompoundTag tag = list.getCompound(i);
-                Optional<BlockPos> pos = NbtUtils.readBlockPos(tag, SerializationConstants.POSITION);
+            ValueInputList coilsInput = input.childrenListOrEmpty(SerializationConstants.COILS);
+            for (ValueInput coilInput : coilsInput) {
+                Optional<BlockPos> pos = coilInput.read(SerializationConstants.POSITION, BlockPos.CODEC);
                 if (pos.isPresent()) {
-                    Direction side = Direction.from3DDataValue(tag.getInt(SerializationConstants.SIDE));
+                    Direction side = Direction.from3DDataValue(coilInput.getInt(SerializationConstants.SIDE));
                     CoilData data = new CoilData(pos.get(), side);
-                    data.prevLevel = tag.getInt(SerializationConstants.LEVEL);
+                    data.prevLevel = coilInput.getIntOr(SerializationConstants.LEVEL, data.prevLevel);
                     coilMap.put(data.coilPos, data);
                 }
             }

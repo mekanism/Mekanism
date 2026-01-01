@@ -62,17 +62,17 @@ public final class MekanismAliasMapping implements IAliasMapping {
         //Note: Jetpack module pairing with normal flight alias is in done in the gear section
         rv.addItemAliases(MekanismItems.MODULE_GRAVITATIONAL_MODULATING, MekanismAliases.CREATIVE_FLIGHT);
         rv.addItemAliases(MekanismItems.MODULE_CHARGE_DISTRIBUTION, MekanismAliases.ITEM_CHARGER);
-        rv.addItemAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP.value()::getDescriptionId);
+        rv.addItemAliases(MekanismItems.MODULE_HYDRAULIC_PROPULSION, MekanismAliases.AUTO_STEP, MekanismAliases.STEP_ASSIST, MobEffects.JUMP_BOOST.value()::getDescriptionId);
         rv.addItemAliases(MekanismItems.MODULE_HYDROSTATIC_REPULSOR, MekanismAliases.UNIT_HYDROSTATIC_SPEED, getTranslationKey(Enchantments.DEPTH_STRIDER));
         rv.addItemAliases(MekanismItems.MODULE_MOTORIZED_SERVO, getTranslationKey(Enchantments.SWIFT_SNEAK));
-        rv.addItemAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.MOVEMENT_SPEED.value()::getDescriptionId);
+        rv.addItemAliases(MekanismItems.MODULE_LOCOMOTIVE_BOOSTING, MobEffects.SPEED.value()::getDescriptionId);
         rv.addItemAliases(MekanismItems.MODULE_SOUL_SURFER, getTranslationKey(Enchantments.SOUL_SPEED));
 
         rv.addModuleAliases(MekanismItems.ITEMS);
     }
 
     private static IHasTranslationKey getTranslationKey(ResourceKey<Enchantment> enchantmentKey) {
-        return () -> Util.makeDescriptionId("enchantment", enchantmentKey.location());
+        return () -> Util.makeDescriptionId("enchantment", enchantmentKey.identifier());
     }
 
     private <ITEM, FLUID, CHEMICAL> void addFactoryAliases(RVAliasHelper<ITEM, FLUID, CHEMICAL> rv) {

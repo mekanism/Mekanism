@@ -43,7 +43,6 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -54,7 +53,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
@@ -65,6 +63,7 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -161,7 +160,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
-                    if (suck()) {
+                    if (suck((ServerLevel)  level)) {
                         if (clientEnergyUsed == 0L) {
                             //If it didn't already have an active type (hasn't used energy this tick), then extract energy
                             clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
@@ -186,10 +185,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return fluidTank.getFluid().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
     }
 
-    private boolean suck() {
+    private boolean suck(ServerLevel level) {
         boolean hasFilter = upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
-        if (suck(worldPosition.relative(Direction.DOWN), hasFilter, true)) {
+        if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true)) {
             return true;
         }
         //Even though we can add to recurring in the above for loop, we always then exit and don't get to here if we did so
@@ -199,14 +198,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         //and then add the adjacent block to the recurring list
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (BlockPos tempPumpPos : tempPumpList) {
-            if (suck(tempPumpPos, hasFilter, false)) {
+            if (suck(level, tempPumpPos, hasFilter, false)) {
                 return true;
             }
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
                 mutable.setWithOffset(tempPumpPos, orientation);
                 if (WorldUtils.distanceBetween(worldPosition, mutable) <= MekanismConfig.general.maxPumpRange.get()) {
-                    if (suck(mutable, hasFilter, true)) {
+                    if (suck(level, mutable, hasFilter, true)) {
                         return true;
                     }
                 }
@@ -216,7 +215,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return false;
     }
 
-    private boolean suck(BlockPos pos, boolean hasFilter, boolean addRecurring) {
+    private boolean suck(ServerLevel level, BlockPos pos, boolean hasFilter, boolean addRecurring) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
         Optional<BlockState> state = WorldUtils.getBlockState(level, pos);
         if (state.isPresent()) {
@@ -315,19 +314,25 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.saveAdditional(output);
         output.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            nbtTags.put(SerializationConstants.FLUID, activeType.save(provider));
+            output.store(SerializationConstants.FLUID, FluidStack.CODEC, activeType);
         }
         if (!recurringNodes.isEmpty()) {
-            output.putIntArray(SerializationConstants.RECURRING_NODES, NBTUtils.writeBlockPositions(recurringNodes));
+            TypedOutputList<BlockPos> recurringNodesOutput = output.list(SerializationConstants.RECURRING_NODES, BlockPos.CODEC);
+            for (BlockPos recurringNode : recurringNodes) {
+                recurringNodesOutput.add(recurringNode);
+            }
         }
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
-        NBTUtils.setFluidStackIfPresent(provider, nbt, SerializationConstants.FLUID, fluid -> activeType = fluid);
-        NBTUtils.readBlockPositions(nbt, SerializationConstants.RECURRING_NODES, recurringNodes);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
+        activeType = input.read(SerializationConstants.FLUID, FluidStack.CODEC).orElse(FluidStack.EMPTY);
+        //TODO - 1.21.11: Do we want to support loading the old format for this and the plenisher where it was all smashed in a single int array?
+        for (BlockPos pos : input.listOrEmpty(SerializationConstants.RECURRING_NODES, BlockPos.CODEC)) {
+            recurringNodes.add(pos);
+        }
     }
 
     @Override

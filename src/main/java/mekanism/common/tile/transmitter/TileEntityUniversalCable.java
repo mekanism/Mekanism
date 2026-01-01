@@ -20,10 +20,9 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,17 +76,15 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
         });
     }
 
-    @NotNull
     @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+    protected void writeUpdatedTag(@NotNull ValueOutput output) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundTag updateTag = super.getUpdateTag(provider);
+        super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             EnergyNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.putLong(SerializationConstants.ENERGY, network.energyContainer.getEnergy());
-            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
+            output.putLong(SerializationConstants.ENERGY, network.energyContainer.getEnergy());
+            output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
-        return updateTag;
     }
 
     private List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {

@@ -19,7 +19,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -50,7 +49,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (stack.isEmpty()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;

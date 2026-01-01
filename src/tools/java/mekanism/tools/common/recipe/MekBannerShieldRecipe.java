@@ -82,7 +82,7 @@ public class MekBannerShieldRecipe extends CustomRecipe {
 
     @NotNull
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<MekBannerShieldRecipe> getSerializer() {
         return ToolsRecipeSerializers.BANNER_SHIELD.get();
     }
 }

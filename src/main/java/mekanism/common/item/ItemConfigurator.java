@@ -5,6 +5,7 @@ import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.IConfigurable;
 import mekanism.api.IIncrementalEnum;
@@ -57,6 +58,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
@@ -79,9 +81,10 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
-        tooltip.add(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        tooltipAdder.accept(MekanismLang.STATE.translateColored(EnumColor.PINK, getMode(stack)));
     }
 
     @NotNull

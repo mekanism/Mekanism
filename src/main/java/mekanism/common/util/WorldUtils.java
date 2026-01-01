@@ -488,7 +488,7 @@ public class WorldUtils {
     public static void markChunkDirty(Level world, int chunkX, int chunkZ) {
         ChunkAccess chunk = world.getChunk(chunkX, chunkZ, ChunkStatus.FULL, false);
         if (chunk != null) {
-            chunk.setUnsaved(true);
+            chunk.markUnsaved();
         }
     }
 
@@ -502,7 +502,7 @@ public class WorldUtils {
     /**
      * Dismantles a block, adding to player inventory (or dropping it) and removing it from the world.
      *
-     * @implNote This method ignores {@link GameRules#RULE_DOBLOCKDROPS}, and does not drop experience.
+     * @implNote This method ignores {@link GameRules#BLOCK_DROPS}, and does not drop experience.
      */
     public static void dismantleBlock(BlockState state, Level world, BlockPos pos, @Nullable BlockEntity tile, @Nullable Entity entity, ItemStack tool) {
         if (world instanceof ServerLevel level) {

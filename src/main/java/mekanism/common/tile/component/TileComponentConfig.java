@@ -6,6 +6,7 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -300,22 +301,22 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     }
 
     public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
-        //TODO -  1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
+        //TODO - 1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
         boolean isLegacyData = configNBT.contains(LEGACY_ITEM_CONFIG_KEY) || configNBT.contains(LEGACY_ITEM_EJECT_KEY);
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
             int ordinalToUse = isLegacyData ? type.getLegacyOrdinal() : type.ordinal();
-            NBTUtils.setBooleanIfPresent(configNBT, SerializationConstants.EJECT + ordinalToUse, info::setEjecting);
+            info.setEjecting(configInput.getBooleanOr(SerializationConstants.EJECT + ordinalToUse, info.isEjecting()));
             String configKey = SerializationConstants.CONFIG + ordinalToUse;
             if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
-                readConfigSides(configNBT, onChange, configKey, info, type);
+                readConfigSides(configInput, onChange, configKey, info, type);
             } else if (isLegacyData && type == TransmissionType.CHEMICAL) {
                 //fallback to try load other types in case a machine didn't have GAS
                 for (int legacyOrdinal = TransmissionType.CHEMICAL.getLegacyOrdinal() + 1; legacyOrdinal < TransmissionType.ITEM.getLegacyOrdinal(); legacyOrdinal++) {
                     configKey = SerializationConstants.CONFIG + legacyOrdinal;
                     if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
-                        readConfigSides(configNBT, onChange, configKey, info, type);
+                        readConfigSides(configInput, onChange, configKey, info, type);
                         break;
                     }
                 }
@@ -323,12 +324,15 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         }
     }
 
-    private static void readConfigSides(CompoundTag configNBT, BiConsumer<TransmissionType, RelativeSide> onChange, String configKey, ConfigInfo info, TransmissionType type) {
-        int[] sideData = configNBT.getIntArray(configKey);
-        for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
-            RelativeSide side = EnumUtils.SIDES[i];
-            if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
-                onChange.accept(type, side);
+    private static void readConfigSides(@NotNull ValueInput configInput, BiConsumer<TransmissionType, RelativeSide> onChange, String configKey, ConfigInfo info, TransmissionType type) {
+        Optional<int[]> optionalConfigData = configInput.getIntArray(configKey);
+        if (optionalConfigData.isPresent()) {
+            int[] sideData = optionalConfigData.get();
+            for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
+                RelativeSide side = EnumUtils.SIDES[i];
+                if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
+                    onChange.accept(type, side);
+                }
             }
         }
     }
@@ -361,10 +365,10 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
      * needs that information when in the gui see {@link #getSpecificSyncableData()} for where we sync ejecting status while in GUIs.
      */
     @Override
-    public void addToUpdateTag(CompoundTag updateTag) {
+    public void addToUpdateTag(@NotNull ValueOutput output) {
         CompoundTag configNBT = write(configInfo, false);
         if (!configNBT.isEmpty()) {
-            updateTag.put(getComponentKey(), configNBT);
+            output.store(getComponentKey(), configNBT);
         }
     }
 

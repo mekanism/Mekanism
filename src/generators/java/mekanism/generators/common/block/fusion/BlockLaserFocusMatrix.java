@@ -48,7 +48,7 @@ public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserF
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
+    protected boolean propagatesSkylightDown(@NotNull BlockState state) {
         return true;
     }
 

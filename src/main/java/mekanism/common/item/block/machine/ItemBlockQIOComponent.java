@@ -1,6 +1,6 @@
 package mekanism.common.item.block.machine;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.qio.QIOFrequency;
@@ -13,12 +13,15 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> implements IColoredItem, IFrequencyItem {
 
@@ -27,13 +30,13 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         if (!level.isClientSide() && level.getGameTime() % (5 * SharedConstants.TICKS_PER_SECOND) == 0) {
             syncColorWithFrequency(stack);
         }

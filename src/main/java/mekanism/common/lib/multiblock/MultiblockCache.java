@@ -20,6 +20,7 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
@@ -50,7 +51,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
                 for (int i = 0; i < cacheContainers.size(); i++) {
                     if (i < containers.size()) {
                         //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                        containers.get(i).deserializeNBT(provider, cacheContainers.get(i).serializeNBT(provider));
+                        NBTUtils.copyViaSerialization(problemPath, provider, cacheContainers.get(i), containers.get(i));
                     }
                 }
             }
@@ -74,7 +75,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public void load(@NotNull ValueInput input) {
         for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
-            type.readFrom(provider, nbtTags, this);
+            type.readFrom(input, this);
         }
     }
 
@@ -275,11 +276,11 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             return containerType.getTag() + "_stored";
         }
 
-        public void readFrom(HolderLookup.Provider provider, CompoundTag tag, MultiblockCache<?> cache) {
-            int stored = tag.getInt(getStoredTagKey());
+        public void readFrom(ValueInput input, MultiblockCache<?> cache) {
+            int stored = input.getIntOr(getStoredTagKey(), 0);
             if (stored > 0) {
                 prefab(cache, stored);
-                containerType.readFrom(provider, tag, getContainerList(cache));
+                containerType.readFrom(input, getContainerList(cache));
             }
         }
 
@@ -288,7 +289,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             if (!containers.isEmpty()) {
                 //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
                 // because getInt will default to 0 for keys that aren't present
-                tag.putInt(getStoredTagKey(), containers.size());
+                output.putInt(getStoredTagKey(), containers.size());
                 containerType.saveTo(output, getContainerList(holder));
             }
         }

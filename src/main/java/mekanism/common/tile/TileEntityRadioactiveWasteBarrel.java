@@ -24,11 +24,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -37,6 +34,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -144,13 +142,11 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         return InteractionResult.PASS;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(SerializationConstants.CHEMICAL, chemicalTank.serializeNBT(provider));
-        updateTag.putInt(SerializationConstants.PROGRESS, processTicks);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        chemicalTank.serialize(output.child(SerializationConstants.CHEMICAL));
+        output.putInt(SerializationConstants.PROGRESS, processTicks);
     }
 
     @Override

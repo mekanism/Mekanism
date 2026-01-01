@@ -20,7 +20,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -131,7 +131,7 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (player.isShiftKeyDown() && MekanismUtils.canUseAsWrench(stack)) {
             //Note: We don't handle checking if it is radioactive here, as the assumption is it doesn't have a tile so won't have that information

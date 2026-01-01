@@ -351,13 +351,14 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         output.putInt(SerializationConstants.DELAY, lightUpdateDelay);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         //updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
-        updateTag.putFloat(SerializationConstants.SCALE, prevScale);
+        output.putFloat(SerializationConstants.SCALE, prevScale);
+        //TODO - 1.21.11: Does the following encoding even make any sense if we are using value output for writing it? Given at that point we are sort of using a codec anyway
+        // Though vanilla doesn't currently use value output to write the update tags
         //TODO - 1.21: Re-evaluate this alternate encoding further
         CompoundTag fluidData = new CompoundTag();
         FluidStack fluid = fluidTank.getFluid();
@@ -388,7 +389,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 updateTag.put(SerializationConstants.FLUID, fluidData);
             }
         }
-        return updateTag;
     }
 
     @Override

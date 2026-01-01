@@ -27,10 +27,9 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.level.Level;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -72,7 +71,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         CurrentType type = mergedTank.getCurrentType();
         if (type == CurrentType.EMPTY) {
@@ -102,11 +101,11 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.putFloat(SerializationConstants.SCALE, prevScale);
-        mergedTank.addToUpdateTag(provider, tag);
-        writeValves(tag);
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.putFloat(SerializationConstants.SCALE, prevScale);
+        mergedTank.addToUpdateTag(output);
+        writeValves(output);
     }
 
     private float getScale() {

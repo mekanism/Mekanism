@@ -98,7 +98,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
 
             Direction direction = getDirection();
-            Level level = getWorldNN();
+            ServerLevel level = (ServerLevel) getWorldNN();
             Pos3D from = Pos3D.create(this).centre().translate(direction, 0.501);
             Pos3D to = from.translate(direction, MekanismConfig.general.laserRange.get() - 0.002);
             BlockHitResult result = level.clip(new ClipContext(from, to, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, CollisionContext.empty()));
@@ -219,11 +219,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                             entity.igniteForTicks(MathUtils.clampToInt(value));
                         }
                         int totemTimesUsed = -1;
-                        if (entity instanceof ServerPlayer player) {
-                            MinecraftServer server = entity.getServer();
-                            if (server != null && server.isHardcore()) {
-                                totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
-                            }
+                        if (entity instanceof ServerPlayer player && level.getServer().isHardcore()) {
+                            totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                         }
                         //Note: We add the laser damage type to bypass cooldown via tags so this will go off regardless of invulnerability timer
                         boolean damaged = entity.hurtServer(level, MekanismDamageTypes.LASER.source(level), damage);
@@ -253,7 +250,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         if (laserEnergyScale - energyScale > 0.01) {
                             //Otherwise, send the laser between the two positions and update the energy scale
                             Pos3D entityPos = from.adjustPosition(direction, entity);
-                            sendLaserDataToPlayers(new LaserParticleData(direction, entityPos.distance(from), laserEnergyScale), from);
+                            sendLaserDataToPlayers(level, new LaserParticleData(direction, entityPos.distance(from), laserEnergyScale), from);
                             laserEnergyScale = energyScale;
                             //Update the from position to be where the entity is
                             from = entityPos;
@@ -265,7 +262,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                 }
             }
             //Tell the clients to render the laser
-            sendLaserDataToPlayers(new LaserParticleData(direction, to.distance(from), laserEnergyScale), from);
+            sendLaserDataToPlayers(level, new LaserParticleData(direction, to.distance(from), laserEnergyScale), from);
 
             if (remainingEnergy == 0L || result.getType() == Type.MISS) {
                 //If all the energy was spent on damaging entities or if we aren't actively digging a block,
@@ -291,7 +288,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         diggingProgress += remainingEnergy;
                         if (diggingProgress >= hardness * MekanismConfig.general.laserEnergyPerHardness.get()) {
                             if (MekanismConfig.general.aestheticWorldDamage.get()) {
-                                withFakePlayer((ServerLevel) level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
+                                withFakePlayer(level, to.x(), to.y(), to.z(), hitPos, hitState, result.getDirection());
                             }
                             diggingProgress = 0L;
                         } else {
@@ -378,10 +375,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return (float) Math.min(((double) energy / MekanismConfig.usage.laser.get()) / 10D, 0.6D);
     }
 
-    private void sendLaserDataToPlayers(LaserParticleData data, Vec3 from) {
-        if (!isRemote() && level instanceof ServerLevel serverWorld) {
-            for (ServerPlayer player : serverWorld.players()) {
-                serverWorld.sendParticles(player, data, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
+    private void sendLaserDataToPlayers(ServerLevel level, LaserParticleData data, Vec3 from) {
+        if (!isRemote()) {
+            for (ServerPlayer player : level.players()) {
+                //Note: We render laser particles regardless of the particle limit to avoid players accidentally killing themselves on them
+                level.sendParticles(player, data, true, true, from.x, from.y, from.z, 1, 0, 0, 0, 0);
             }
         }
     }
@@ -433,12 +431,10 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         output.discard(SerializationConstants.LAST_FIRED);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putLong(SerializationConstants.LAST_FIRED, lastFired);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putLong(SerializationConstants.LAST_FIRED, lastFired);
     }
 
     @Override

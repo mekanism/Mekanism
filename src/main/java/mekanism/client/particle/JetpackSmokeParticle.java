@@ -9,6 +9,7 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SmokeParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
 public class JetpackSmokeParticle extends SmokeParticle {
@@ -38,7 +39,7 @@ public class JetpackSmokeParticle extends SmokeParticle {
         }
 
         @Override
-        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public Particle createParticle(@NotNull SimpleParticleType type, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
             return new JetpackSmokeParticle(world, x, y, z, xSpeed, ySpeed, zSpeed, this.spriteSet);
         }
     }

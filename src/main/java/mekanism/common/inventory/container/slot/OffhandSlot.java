@@ -14,7 +14,7 @@ public class OffhandSlot extends InsertableSlot {
     public OffhandSlot(Container inventory, int index, int x, int y, Player owner) {
         super(inventory, index, x, y);
         this.owner = owner;
-        setBackground(InventoryMenu.BLOCK_ATLAS, InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
+        setBackground(InventoryMenu.EMPTY_ARMOR_SLOT_SHIELD);
     }
 
     @Override

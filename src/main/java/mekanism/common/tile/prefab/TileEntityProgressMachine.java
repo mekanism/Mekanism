@@ -12,8 +12,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -60,7 +58,7 @@ public abstract class TileEntityProgressMachine<RECIPE extends MekanismRecipe<?>
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
     }
 
     @Override

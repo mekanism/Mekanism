@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -53,7 +54,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.LivingEntity;
@@ -67,6 +67,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
@@ -102,12 +103,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addModuleDetails(stack, tooltip);
+            addModuleDetails(stack, tooltipAdder);
         } else {
-            StorageUtils.addStoredEnergy(stack, tooltip, true);
-            tooltip.add(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+            super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_MODULES.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -383,12 +385,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                     if (isValidDestinationBlock(world, pos.above()) && isValidDestinationBlock(world, pos.above(2))) {
                         double distance = player.distanceToSqr(pos.getX(), pos.getY(), pos.getZ());
                         if (distance < 5) {
-                            return InteractionResultHolder.pass(stack);
+                            return InteractionResult.PASS;
                         }
                         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                         long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
                         if (energyContainer == null || energyContainer.getEnergy() < energyNeeded) {
-                            return InteractionResultHolder.fail(stack);
+                            return InteractionResult.PASS;
                         }
                         double targetX = pos.getX() + 0.5;
                         double targetY = pos.getY() + 1.5;
@@ -396,7 +398,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, targetX, targetY, targetZ, stack, result);
                         if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             //Fail if the event was cancelled
-                            return InteractionResultHolder.fail(stack);
+                            return InteractionResult.FAIL;
                         }
                         //Note: We intentionally don't use the event's coordinates as we do not support changing the location the Meka-Tool is teleporting to
                         energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
@@ -413,7 +415,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     private boolean isValidDestinationBlock(Level world, BlockPos pos) {

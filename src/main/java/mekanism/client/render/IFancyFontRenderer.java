@@ -1,17 +1,17 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.client.SpecialColors;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
@@ -191,7 +191,7 @@ public interface IFancyFontRenderer {
     private static double getOverflowedBy(Font font, double overflowWidth, long visibleDuration) {
         //Seconds since the gui was opened
         double seconds = visibleDuration / 1_000D;
-        double scrollPeriod = Math.max(overflowWidth * AbstractWidget.PERIOD_PER_SCROLLED_PIXEL, AbstractWidget.MIN_SCROLL_PERIOD);
+        double scrollPeriod = Math.max(overflowWidth * ActiveTextCollector.PERIOD_PER_SCROLLED_PIXEL, ActiveTextCollector.MIN_SCROLL_PERIOD);
         //Controls the speed at which we go between the start of the scroll and the end
         double scrollSpeedModifier = Math.cos((2 * Math.PI) * seconds / scrollPeriod);
         if (!font.isBidirectional()) {

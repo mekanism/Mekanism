@@ -25,6 +25,8 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
@@ -225,8 +227,8 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
-        boolean ret = super.charTyped(c, keyCode);
+    public boolean charTyped(@NotNull CharacterEvent event) {
+        boolean ret = super.charTyped(event);
         if (textField.canWrite()) {
             updateColorFromText();
         }
@@ -234,11 +236,11 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        boolean ret = super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        boolean ret = super.keyPressed(event);
         if (textField.canWrite()) {
             //Update color if the key caused a change to the text contents
-            if (Screen.isPaste(keyCode) || Screen.isCut(keyCode) || keyCode == InputConstants.KEY_BACKSPACE || keyCode == InputConstants.KEY_DELETE) {
+            if (event.isPaste() || event.isCut() || event.key() == InputConstants.KEY_BACKSPACE || event.key() == InputConstants.KEY_DELETE) {
                 updateColorFromText();
             }
         }

@@ -137,7 +137,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin> {
         matrix.translate(displayWidth / 2, 1, displayHeight / 2);
         matrix.mulPose(Axis.XP.rotationDegrees(-90));
 
-        Font font = context.getFont();
+        Font font = context.font();
 
         int requiredWidth = Math.max(font.width(text), 1);
         int requiredHeight = font.lineHeight + 2;

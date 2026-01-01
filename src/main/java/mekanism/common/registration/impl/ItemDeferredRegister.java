@@ -64,7 +64,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
             //Note: All entries should be of this type
             if (entry instanceof ItemRegistryObject<?> registryObject) {
                 consumer.accept(registryObject);
-            } else if (!FMLEnvironment.production) {
+            } else if (!FMLEnvironment.isProduction()) {
                 throw new IllegalStateException("Expected entry to be an ItemRegistryObject");
             }
         }

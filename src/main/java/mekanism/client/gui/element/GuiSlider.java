@@ -1,12 +1,13 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.DoubleConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -57,14 +58,14 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(int key, int i, int j) {
-        if (super.keyPressed(key, i, j)) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        if (super.keyPressed(event)) {
             return true;
         }
         double shift;
-        if (isPreviousButton(key) && value > 0) {
+        if (isPreviousButton(event) && value > 0) {
             shift = -0.01;
-        } else if (isNextButton(key) && value < 1) {
+        } else if (isNextButton(event) && value < 1) {
             shift = 0.01;
         } else {
             return false;
@@ -82,11 +83,11 @@ public class GuiSlider extends GuiElement {
         }
     }
 
-    private boolean isPreviousButton(int key) {
-        return key == InputConstants.KEY_UP || key == InputConstants.KEY_LEFT;
+    private boolean isPreviousButton(InputWithModifiers key) {
+        return key.isUp() || key.isLeft();
     }
 
-    private boolean isNextButton(int key) {
-        return key == InputConstants.KEY_DOWN || key == InputConstants.KEY_RIGHT;
+    private boolean isNextButton(InputWithModifiers key) {
+        return key.isDown() || key.isRight();
     }
 }

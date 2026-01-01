@@ -17,6 +17,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LightTexture;
@@ -214,44 +216,47 @@ public class GuiUtils {
         return null;
     }
 
-    public static <CHILD extends GuiEventListener> boolean checkChildren(List<? extends CHILD> children, int keyCode, int scanCode, int modifiers, KeyPressedPredicate<CHILD> checker) {
+    public static <CHILD extends GuiEventListener> boolean checkChildren(List<? extends CHILD> children, KeyEvent event, KeyPressedPredicate<CHILD> checker) {
         for (int i = children.size() - 1; i >= 0; i--) {
             CHILD child = children.get(i);
-            if (checker.test(child, keyCode, scanCode, modifiers)) {
+            if (checker.test(child, event)) {
                 return true;
             }
         }
         return false;
     }
 
-    public static <CHILD extends GuiEventListener> boolean checkChildrenChar(List<? extends CHILD> children, char c, int keyCode, CharTypedPredicate<CHILD> checker) {
+    public static <CHILD extends GuiEventListener> boolean checkChildrenChar(List<? extends CHILD> children, CharacterEvent event, CharTypedPredicate<CHILD> checker) {
         for (int i = children.size() - 1; i >= 0; i--) {
             CHILD child = children.get(i);
-            if (checker.test(child, c, keyCode)) {
+            if (checker.test(child, event)) {
                 return true;
             }
         }
         return false;
     }
 
+    @FunctionalInterface
     public interface MouseOverPredicate<ELEMENT> {
 
         boolean test(ELEMENT element, double mouseX, double mouseY);
     }
 
+    @FunctionalInterface
     public interface MouseClickedPredicate<ELEMENT> {
 
         boolean test(ELEMENT element, MouseButtonEvent event, boolean isDoubleClick);
     }
 
+    @FunctionalInterface
     public interface KeyPressedPredicate<ELEMENT> {
 
-        boolean test(ELEMENT element, int keyCode, int scanCode, int modifiers);
+        boolean test(ELEMENT element, KeyEvent event);
     }
 
     public interface CharTypedPredicate<ELEMENT> {
 
-        boolean test(ELEMENT element, char c, int keyCode);
+        boolean test(ELEMENT element, CharacterEvent event);
     }
 
     public static int drawStringNoFlush(GuiGraphics graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {

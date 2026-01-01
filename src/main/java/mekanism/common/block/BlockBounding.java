@@ -16,7 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -109,11 +108,11 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
-            return ItemInteractionResult.FAIL;
+            return InteractionResult.FAIL;
         }
         BlockState mainState = world.getBlockState(mainPos);
         return mainState.useItemOn(stack, world, player, hand, withHitResultForMain(hit, mainPos));
@@ -160,7 +159,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    public boolean onDestroyedByPlayer(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, boolean willHarvest,
+    public boolean onDestroyedByPlayer(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player, @NotNull ItemStack toolStack, boolean willHarvest,
           @NotNull FluidState fluidState) {
         if (willHarvest) {
             return true;
@@ -170,10 +169,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
             BlockState mainState = world.getBlockState(mainPos);
             if (!mainState.isAir()) {
                 //Set the main block to air, which will invalidate the rest of the bounding blocks
-                mainState.onDestroyedByPlayer(world, mainPos, player, false, mainState.getFluidState());
+                mainState.onDestroyedByPlayer(world, mainPos, player, toolStack, false, mainState.getFluidState());
             }
         }
-        return super.onDestroyedByPlayer(state, world, pos, player, false, fluidState);
+        return super.onDestroyedByPlayer(state, world, pos, player, toolStack, false, fluidState);
     }
 
     @NotNull
@@ -195,7 +194,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    protected void onExplosionHit(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Explosion explosion,
+    protected void onExplosionHit(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, @NotNull Explosion explosion,
           @NotNull BiConsumer<ItemStack, BlockPos> dropConsumer) {
         BlockPos mainPos = getMainBlockPos(level, pos);
         if (mainPos == null) {

@@ -66,7 +66,7 @@ public abstract class MekanismRecipeHandler<RECIPE extends MekanismRecipe<?>> im
               .append(method)
               .append("(\"")
               //Note: Uses path rather than entire location as we only allow adding recipes to the CrT namespace
-              .append(recipe.id().getPath())
+              .append(recipe.id().identifier().getPath())
               .append('"');
         for (Object param : params) {
             if (param != SKIP_OPTIONAL_PARAM) {

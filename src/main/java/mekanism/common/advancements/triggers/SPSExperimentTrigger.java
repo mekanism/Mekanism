@@ -11,6 +11,7 @@ import net.minecraft.advancements.criterion.ContextAwarePredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.EntityTypePredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
@@ -36,12 +37,12 @@ public class SPSExperimentTrigger extends SimpleCriterionTrigger<TriggerInstance
               ).apply(instance, TriggerInstance::new)
         );
 
-        public static Criterion<TriggerInstance> create(EntityType<?> entityType) {
-            return MekanismCriteriaTriggers.SPS_EXPERIMENT.createCriterion(new TriggerInstance(Optional.empty(), EntityTypePredicate.of(entityType)));
+        public static Criterion<TriggerInstance> create(HolderGetter<EntityType<?>> holderGetter, EntityType<?> entityType) {
+            return MekanismCriteriaTriggers.SPS_EXPERIMENT.createCriterion(new TriggerInstance(Optional.empty(), EntityTypePredicate.of(holderGetter, entityType)));
         }
 
-        public static Criterion<TriggerInstance> create(TagKey<EntityType<?>> entityType) {
-            return MekanismCriteriaTriggers.SPS_EXPERIMENT.createCriterion(new TriggerInstance(Optional.empty(), EntityTypePredicate.of(entityType)));
+        public static Criterion<TriggerInstance> create(HolderGetter<EntityType<?>> holderGetter, TagKey<EntityType<?>> entityType) {
+            return MekanismCriteriaTriggers.SPS_EXPERIMENT.createCriterion(new TriggerInstance(Optional.empty(), EntityTypePredicate.of(holderGetter, entityType)));
         }
     }
 }

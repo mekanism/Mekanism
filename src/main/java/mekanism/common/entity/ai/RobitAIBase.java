@@ -89,7 +89,7 @@ public abstract class RobitAIBase extends Goal {
      */
     private boolean maybeTeleportTo(int x, int y, int z) {
         if (canTeleportTo(new BlockPos(x, y, z))) {
-            theRobit.moveTo(x + 0.5, y, z + 0.5, theRobit.getYRot(), theRobit.getXRot());
+            theRobit.snapTo(x + 0.5, y, z + 0.5, theRobit.getYRot(), theRobit.getXRot());
             getNavigator().stop();
             return true;
         }

@@ -2,6 +2,7 @@ package mekanism.common.item;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
@@ -27,22 +28,26 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class ItemRobit extends ItemEnergized implements ICapabilityAware {
 
@@ -60,16 +65,17 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        super.appendHoverText(stack, context, tooltip, flag);
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
         if (name == null) {
             name = MekanismLang.ROBIT.translate();
         }
-        tooltip.add(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
-        tooltip.add(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+        tooltipAdder.accept(MekanismLang.ROBIT_NAME.translateColored(EnumColor.INDIGO, EnumColor.GRAY, name));
+        tooltipAdder.accept(MekanismLang.ROBIT_SKIN.translateColored(EnumColor.INDIGO, EnumColor.GRAY, RobitSkin.getTranslatedName(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE))));
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
     }
 
     @NotNull
@@ -130,8 +136,8 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slot, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slot, isSelected);
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull ServerLevel level, @NotNull Entity entity, @Nullable EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         if (!level.isClientSide() && HolidayManager.hasRobitSkinsToday() && !stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false)) {
             ResourceKey<RobitSkin> skin = stack.get(MekanismDataComponents.ROBIT_SKIN);
             if (skin == null || skin == MekanismRobitSkins.BASE) {

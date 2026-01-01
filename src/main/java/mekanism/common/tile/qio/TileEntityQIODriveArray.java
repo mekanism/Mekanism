@@ -115,18 +115,16 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         return ModelData.of(DRIVE_STATUS_PROPERTY, driveStatus);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putByteArray(SerializationConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putByteArray(SerializationConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        byte[] status = tag.getByteArray(SerializationConstants.DRIVES);
+        byte[] status = input.getByteArray(SerializationConstants.DRIVES);
         if (!Arrays.equals(status, driveStatus)) {
             driveStatus = status;
             updateModelData();

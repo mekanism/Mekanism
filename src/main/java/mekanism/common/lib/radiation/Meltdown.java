@@ -1,6 +1,8 @@
 package mekanism.common.lib.radiation;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +13,13 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
@@ -30,6 +34,17 @@ import net.neoforged.neoforge.event.EventHooks;
 import org.jetbrains.annotations.Nullable;
 
 public class Meltdown {
+
+    //TODO - 1.21.11: Should we have validation bounds on any of these things?
+    public static final Codec<Meltdown> CODEC = RecordCodecBuilder.create(in -> in.group(
+          BlockPos.CODEC.fieldOf(SerializationConstants.MIN).forGetter(meltdown -> meltdown.minPos),
+          BlockPos.CODEC.fieldOf(SerializationConstants.MAX).forGetter(meltdown -> meltdown.maxPos),
+          Codec.DOUBLE.fieldOf(SerializationConstants.MAGNITUDE).forGetter(meltdown -> meltdown.magnitude),
+          Codec.DOUBLE.fieldOf(SerializationConstants.CHANCE).forGetter(meltdown -> meltdown.chance),
+          Codec.FLOAT.fieldOf(SerializationConstants.RADIUS).forGetter(meltdown -> meltdown.radius),
+          UUIDUtil.CODEC.fieldOf(SerializationConstants.INVENTORY_ID).forGetter(meltdown -> meltdown.multiblockID),
+          ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.AGE).forGetter(meltdown -> meltdown.ticksExisted)
+    ).apply(in, Meltdown::new));
 
     private static final int DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
 
@@ -52,36 +67,6 @@ public class Meltdown {
         this.radius = radius;
         this.multiblockID = multiblockID;
         this.ticksExisted = ticksExisted;
-    }
-
-    @Nullable
-    public static Meltdown load(CompoundTag tag) {
-        Optional<BlockPos> minPos = NbtUtils.readBlockPos(tag, SerializationConstants.MIN);
-        Optional<BlockPos> maxPos = NbtUtils.readBlockPos(tag, SerializationConstants.MAX);
-        if (minPos.isEmpty() || maxPos.isEmpty()) {
-            return null;
-        }
-        return new Meltdown(
-              minPos.get(),
-              maxPos.get(),
-              tag.getDouble(SerializationConstants.MAGNITUDE),
-              tag.getDouble(SerializationConstants.CHANCE),
-              tag.getFloat(SerializationConstants.RADIUS),
-              tag.getUUID(SerializationConstants.INVENTORY_ID),
-              tag.getInt(SerializationConstants.AGE)
-        );
-    }
-
-    public CompoundTag write() {
-        CompoundTag tag = new CompoundTag();
-        tag.put(SerializationConstants.MIN, NbtUtils.writeBlockPos(minPos));
-        tag.put(SerializationConstants.MAX, NbtUtils.writeBlockPos(maxPos));
-        tag.putDouble(SerializationConstants.MAGNITUDE, magnitude);
-        tag.putDouble(SerializationConstants.CHANCE, chance);
-        tag.putFloat(SerializationConstants.RADIUS, radius);
-        tag.putUUID(SerializationConstants.INVENTORY_ID, multiblockID);
-        tag.putInt(SerializationConstants.AGE, ticksExisted);
-        return tag;
     }
 
     public boolean update(ServerLevel world) {

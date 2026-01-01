@@ -82,7 +82,7 @@ public class OwnerDisplay implements IHasTextComponent {
             //If the name is still null, see if the uuid is the same as the client uuid
             if (player.getUUID().equals(ownerUUID)) {
                 //If it is set the name to the name of the player
-                name = player.getGameProfile().getName();
+                name = player.getGameProfile().name();
                 //And cache the name
                 MekanismClient.clientUUIDMap.put(ownerUUID, name);
             } else {
@@ -93,7 +93,7 @@ public class OwnerDisplay implements IHasTextComponent {
                     name = "<" + ownerUUID + ">";
                 } else {
                     //If there is display the player's name
-                    name = owner.getGameProfile().getName();
+                    name = owner.getGameProfile().name();
                     // and cache the name so that it continues to display if the player disconnects
                     MekanismClient.clientUUIDMap.put(ownerUUID, name);
                 }

@@ -47,7 +47,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     @Override
     protected ChemicalCamoContainer readFromNetwork(CompoundTag tag) {
-        Optional<Reference<Chemical>> holder = MekanismAPI.CHEMICAL_REGISTRY.getHolder(tag.getInt(SerializationConstants.CHEMICAL));
+        Optional<Reference<Chemical>> holder = tag.getInt(SerializationConstants.CHEMICAL).flatMap(MekanismAPI.CHEMICAL_REGISTRY::get);
         //noinspection OptionalIsPresent
         if (holder.isPresent()) {
             return new ChemicalCamoContainer(holder.get());

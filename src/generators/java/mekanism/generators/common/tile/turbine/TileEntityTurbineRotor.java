@@ -2,14 +2,11 @@ package mekanism.generators.common.tile.turbine;
 
 import mekanism.api.SerializationConstants;
 import mekanism.common.tile.prefab.TileEntityInternalMultiblock;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Clearable;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -178,8 +175,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        blades = nbt.getInt(SerializationConstants.BLADES);
-        position = nbt.getInt(SerializationConstants.POSITION);
+        blades = input.getIntOr(SerializationConstants.BLADES, blades);
+        position = input.getIntOr(SerializationConstants.POSITION, position);
         updateRadius();
     }
 
@@ -190,13 +187,11 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
         output.putInt(SerializationConstants.POSITION, getPosition());
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putInt(SerializationConstants.BLADES, blades);
-        updateTag.putInt(SerializationConstants.POSITION, position);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putInt(SerializationConstants.BLADES, blades);
+        output.putInt(SerializationConstants.POSITION, position);
     }
 
     @Override

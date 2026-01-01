@@ -43,8 +43,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -320,7 +318,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         output.putBoolean(SerializationConstants.EJECT, autoEject);
         output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
         output.putBoolean(SerializationConstants.SINGLE_ITEM, singleItem);
-        filterManager.writeToNBT(output, dataMap);
+        filterManager.serialize(output);
     }
 
     @Override
@@ -330,7 +328,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         autoEject = input.getBooleanOr(SerializationConstants.EJECT, autoEject);
         roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, roundRobin);
         singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, singleItem);
-        filterManager.readFromNBT(input, dataMap);
+        filterManager.deserialize(input);
     }
 
     @Override

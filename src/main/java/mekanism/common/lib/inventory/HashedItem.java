@@ -5,9 +5,7 @@ import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.common.util.StackUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -77,14 +75,6 @@ public class HashedItem implements IHashedItem {
      */
     public HashedItem recreate() {
         return new HashedItem(createStack(1), hashCode);
-    }
-
-    /**
-     * Helper to serialize the internal stack to nbt.
-     */
-    @NotNull
-    public Tag internalToNBT(HolderLookup.Provider provider) {
-        return itemStack.save(provider);
     }
 
     public boolean isSameItemSameComponents(ItemStack other) {

@@ -38,8 +38,8 @@ import mekanism.common.recipe.serializer.RotaryRecipeSerializer;
 import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
@@ -100,7 +100,7 @@ public class MekanismRecipeSerializersInternal {
     }
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekanismShapedRecipe>> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> MekanismRecipeSerializer.wrapped(MekanismShapedRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new SimpleCraftingRecipeSerializer<>(ClearConfigurationRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new SimpleCraftingRecipeSerializer<>(BinInsertRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new SimpleCraftingRecipeSerializer<>(BinExtractRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new CustomRecipe.Serializer<>(ClearConfigurationRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new CustomRecipe.Serializer<>(BinInsertRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new CustomRecipe.Serializer<>(BinExtractRecipe::new));
 }

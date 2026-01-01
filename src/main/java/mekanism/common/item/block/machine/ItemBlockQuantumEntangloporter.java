@@ -1,8 +1,8 @@
 package mekanism.common.item.block.machine;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.AttachedSideConfig.LightConfigInfo;
@@ -20,6 +20,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileModel<TileEntityQuantumEntangloporter, BlockTypeTile<TileEntityQuantumEntangloporter>>>
@@ -43,8 +44,8 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileMo
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

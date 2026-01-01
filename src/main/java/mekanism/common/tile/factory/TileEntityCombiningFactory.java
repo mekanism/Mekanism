@@ -27,6 +27,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -143,7 +144,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
             //Generic factory upgrade data handling
             super.parseUpgradeData(provider, upgradeData);
             //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
-            extraSlot.deserializeNBT(provider, data.extraSlot.serializeNBT(provider));
+            NBTUtils.copyViaSerialization(problemPath(), provider, data.extraSlot, extraSlot);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }

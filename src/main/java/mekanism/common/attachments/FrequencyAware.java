@@ -6,10 +6,13 @@ import io.netty.buffer.ByteBuf;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.SecurityMode;
+import mekanism.api.text.EnumColor;
+import mekanism.common.MekanismLang;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.Frequency;
@@ -19,16 +22,23 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.text.OwnerDisplay;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipProvider;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity> identity, Optional<FREQ> frequency) {
+public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity> identity, Optional<FREQ> frequency) implements TooltipProvider {
 
     public static final FrequencyAware<?> NONE = new FrequencyAware<>(Optional.empty(), Optional.empty());
 
@@ -118,5 +128,21 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             freq = manager.getOrCreateFrequency(data, player);
         }
         return new FrequencyAware<>(Optional.of(freq.getIdentity()), Optional.of(freq));
+    }
+
+    @Override
+    public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
+        FrequencyIdentity identity = identity().orElse(null);
+        if (identity != null) {
+            tooltipAdder.accept(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
+            UUID ownerUUID = getOwner();
+            if (ownerUUID != null) {
+                String owner = OwnerDisplay.getOwnerName(MekanismUtils.tryGetClientPlayer(), ownerUUID, null);
+                if (owner != null) {
+                    tooltipAdder.accept(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
+                }
+            }
+            tooltipAdder.accept(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.securityMode()));
+        }
     }
 }

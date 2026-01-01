@@ -8,7 +8,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -24,7 +23,7 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         TileEntityStructuralMultiblock tile = WorldUtils.getTileEntity(TileEntityStructuralMultiblock.class, world, pos);
         if (tile == null) {
@@ -37,8 +36,8 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
             }
             return ItemInteractionResult.SUCCESS;
         }
-        ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
-        if (wrenchResult.result() != InteractionResult.PASS) {
+        InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
         return tile.onActivate(player, hand, stack);

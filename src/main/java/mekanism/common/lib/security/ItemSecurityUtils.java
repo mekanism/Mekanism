@@ -2,6 +2,7 @@ package mekanism.common.lib.security;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.TriConsumer;
 import mekanism.api.security.IItemSecurityUtils;
@@ -17,7 +18,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -48,24 +48,24 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
     }
 
     @Override
-    public void addOwnerTooltip(ItemStack stack, List<Component> tooltip) {
+    public void addOwnerTooltip(ItemStack stack, Consumer<Component> tooltipAdder) {
         Objects.requireNonNull(stack, "Stack to add tooltip for may not be null.");
-        Objects.requireNonNull(tooltip, "List of tooltips to add to may not be null.");
+        Objects.requireNonNull(tooltipAdder, "Tooltip consumer may not be null.");
         IOwnerObject ownerObject = ownerCapability(stack);
         if (ownerObject != null) {
-            tooltip.add(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent());
+            tooltipAdder.accept(OwnerDisplay.of(MekanismUtils.tryGetClientPlayer(), ownerObject.getOwnerUUID()).getTextComponent());
         }
     }
 
     @Override
-    public void addSecurityTooltip(ItemStack stack, List<Component> tooltip) {
-        addOwnerTooltip(stack, tooltip);
+    public void addSecurityTooltip(ItemStack stack, Consumer<Component> tooltipAdder) {
+        addOwnerTooltip(stack, tooltipAdder);
         ISecurityObject security = securityCapability(stack);
         if (security != null) {
             SecurityData data = SecurityUtils.get().getFinalData(security, true);
-            tooltip.add(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
+            tooltipAdder.accept(MekanismLang.SECURITY.translateColored(EnumColor.GRAY, data.mode()));
             if (data.override()) {
-                tooltip.add(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
+                tooltipAdder.accept(MekanismLang.SECURITY_OVERRIDDEN.translateColored(EnumColor.RED));
             }
         }
     }
@@ -74,10 +74,10 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
         ItemStack stack = player.getItemInHand(hand);
         if (!tryClaimItem(level, player, stack)) {
             if (!INSTANCE.canAccessOrDisplayError(player, stack)) {
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             } else if (stack.getCount() > 1) {
                 //If the item is currently stacked, don't allow opening the GUI
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             } else if (!level.isClientSide()) {
                 openGui.accept((ServerPlayer) player, hand, stack);
             }
@@ -91,7 +91,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
             if (!level.isClientSide()) {
                 ownerObject.setOwnerUUID(player.getUUID());
                 PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
-                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
+                player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), false);
             }
             return true;
         }

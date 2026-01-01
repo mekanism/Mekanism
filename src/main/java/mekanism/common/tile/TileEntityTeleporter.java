@@ -88,6 +88,7 @@ import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.level.portal.DimensionTransition.PostDimensionTransition;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -673,15 +674,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         container.track(SyncableEnum.create(TeleporterStatus.BY_ID, TeleporterStatus.NO_FREQUENCY, () -> status, value -> status = value));
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(SerializationConstants.RENDERING, shouldRender);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putBoolean(SerializationConstants.RENDERING, shouldRender);
         if (color != null) {
             NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
         }
-        return updateTag;
     }
 
     @Override

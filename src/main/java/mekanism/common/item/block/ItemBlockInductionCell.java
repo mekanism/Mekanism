@@ -1,6 +1,6 @@
 package mekanism.common.item.block;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.attribute.Attribute;
@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntityInductionCell, BlockTypeTile<TileEntityInductionCell>>> {
@@ -29,10 +30,10 @@ public class ItemBlockInductionCell extends ItemBlockTooltip<BlockTile<TileEntit
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         InductionCellTier tier = getTier();
-        tooltip.add(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
-        StorageUtils.addStoredEnergy(stack, tooltip, false);
+        tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(tier.getBaseTier().getColor(), EnumColor.GRAY, EnergyDisplay.of(tier.getMaxEnergy())));
+        StorageUtils.addStoredEnergy(stack, tooltipAdder, false);
     }
 
     @Override

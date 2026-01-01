@@ -105,7 +105,7 @@ public class LookingAtUtils {
         if (tile != null) {
             BlockData blockData = tile.components().get(MekanismDataComponents.BLOCK_DATA.value());
             if (blockData != null) {
-                blockData.addToTooltip(info::addText);
+                blockData.addToTooltip(context, info::addText, flag, componentGetter);
             }
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
                 info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));

@@ -264,11 +264,13 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
     }
 
     private void burn(Entity entity) {
-        if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
-            //Only actually burn the entity if it is not an item, or we allow destroying items
-            if (entity.hurt(MekanismDamageTypes.FLAMETHROWER.source(registryAccess(), this, getOwner()), DAMAGE)) {
-                //Mirror flame enchant of igniting for 5 seconds
-                entity.igniteForSeconds(5);
+        if (entity.level() instanceof ServerLevel level) {
+            if (!(entity instanceof ItemEntity) || MekanismConfig.gear.flamethrowerDestroyItems.get()) {
+                //Only actually burn the entity if it is not an item, or we allow destroying items
+                if (entity.hurtServer(level, MekanismDamageTypes.FLAMETHROWER.source(registryAccess(), this, getOwner()), DAMAGE)) {
+                    //Mirror flame enchant of igniting for 5 seconds
+                    entity.igniteForSeconds(5);
+                }
             }
         }
     }

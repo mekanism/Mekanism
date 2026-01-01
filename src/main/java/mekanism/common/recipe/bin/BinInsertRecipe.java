@@ -19,6 +19,7 @@ import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
@@ -177,7 +178,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<BinInsertRecipe> getSerializer() {
         return MekanismRecipeSerializersInternal.BIN_INSERT.get();
     }
 

@@ -317,15 +317,14 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void deserialize(@NotNull ValueInput frequencyInput) {
         if (securityFrequency != null) {
-            deserializeFrequency(provider, frequencyNBT, FrequencyType.SECURITY, securityFrequency);
+            deserializeFrequency(frequencyInput, FrequencyType.SECURITY, securityFrequency);
         }
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-            FrequencyType<?> type = entry.getKey();
-            deserializeFrequency(provider, frequencyNBT, type, entry.getValue());
+            deserializeFrequency(frequencyInput, entry.getKey(), entry.getValue());
         }
     }
 
-    private static void deserializeFrequency(HolderLookup.Provider provider, CompoundTag frequencyNBT, FrequencyType<?> type, FrequencyData frequencyData) {
+    private static void deserializeFrequency(ValueInput frequencyInput, FrequencyType<?> type, FrequencyData frequencyData) {
         if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
             frequencyData.setFrequency(type.create(provider, frequencyNBT.getCompound(type.getName())));
         }
@@ -344,15 +343,10 @@ public class TileComponentFrequency implements ITileComponent {
     private static void serializeFrequency(ValueOutput frequencyOutput, FrequencyType<?> type, FrequencyData frequencyData) {
         Frequency frequency = frequencyData.selectedFrequency;
         if (frequency != null) {
-            DataResult<Tag> encodedIdentity = type.getIdentitySerializer().codec().encodeStart(ops, frequency.getIdentity());
-            if (encodedIdentity.isSuccess()) {
-                //Note: While we save the full frequency data, and do make some use of it in reading
-                // in general this isn't needed and won't be used as the frequency will be grabbed
-                // from the frequency manager
-                frequencyNBT.put(frequency.getType().getName(), encodedIdentity.getOrThrow());
-            } else {
-                encodedIdentity.ifError(error -> Mekanism.logger.warn("Failed to serialize frequency identity: {}", error.message()));
-            }
+            //Note: While we save the full frequency data, and do make some use of it in reading
+            // in general this isn't needed and won't be used as the frequency will be grabbed
+            // from the frequency manager
+            frequencyOutput.store(frequency.getType().getName(), type.getIdentitySerializer().codec(), frequency.getIdentity());
         }
     }
 

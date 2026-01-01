@@ -19,12 +19,8 @@ import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -34,7 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -84,90 +79,67 @@ public class TransporterStack {
     private Path pathType;
     private LongList pathToTarget = new LongArrayList();
 
-    public static TransporterStack readFromNBT(@NotNull ValueInput input) {
-        TransporterStack stack = new TransporterStack();
-        stack.read(input);
+    public TransporterStack() {
+    }
+
+    private TransporterStack(@NotNull ValueInput input) {
+        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
+        this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
+        this.pathType = NBTUtils.getEnum(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID);
+        this.itemStack = input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY);
+    }
+
+    public static TransporterStack read(@NotNull ValueInput input) {
+        TransporterStack stack = new TransporterStack(input);
+        stack.idleDir = NBTUtils.getEnum(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
+        stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
         return stack;
     }
 
     public static TransporterStack readFromUpdate(@NotNull ValueInput input) {
-        TransporterStack stack = new TransporterStack();
-        stack.readFromUpdateTag(input);
+        TransporterStack stack = new TransporterStack(input);
+        stack.clientNext = input.getLongOr(SerializationConstants.NEXT, Long.MAX_VALUE);
+        stack.clientPrev = input.getLongOr(SerializationConstants.PREVIOUS, Long.MAX_VALUE);
         return stack;
     }
 
-    public void writeToUpdateTag(HolderLookup.Provider provider, LogisticalTransporterBase transporter, CompoundTag updateTag) {
+    private void writeCommon(@NotNull ValueOutput output) {
         if (color != null) {
             NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
         }
-        updateTag.putInt(SerializationConstants.PROGRESS, progress);
-        updateTag.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
+        output.putInt(SerializationConstants.PROGRESS, progress);
+        output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
+        if (!itemStack.isEmpty()) {
+            output.store(SerializationConstants.ITEM_OVERSIZED, SerializerHelper.OVERSIZED_ITEM_CODEC, itemStack);
+        }
+    }
+
+    public void writeToUpdateTag(LogisticalTransporterBase transporter, @NotNull ValueOutput output) {
+        writeCommon(output);
         NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
         long next = getNext(transporter);
         if (next != Long.MAX_VALUE) {
-            updateTag.putLong(SerializationConstants.NEXT, next);
+            output.putLong(SerializationConstants.NEXT, next);
         }
         long prev = getPrev(transporter);
         if (prev != Long.MAX_VALUE) {
-            updateTag.putLong(SerializationConstants.PREVIOUS, prev);
-        }
-        if (!itemStack.isEmpty()) {
-            updateTag.put(SerializationConstants.ITEM, SerializerHelper.saveOversized(provider, itemStack));
+            output.putLong(SerializationConstants.PREVIOUS, prev);
         }
     }
 
-    public void readFromUpdateTag(@NotNull ValueInput input) {
-        this.color = NBTUtils.getEnum(updateTag, SerializationConstants.COLOR, EnumColor.BY_ID);
-        progress = updateTag.getInt(SerializationConstants.PROGRESS);
-        originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
-        NBTUtils.setEnumIfPresent(updateTag, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-
-        //TODO - 1.21.11: is backcompat needed?
-        clientNext = Long.MAX_VALUE;
-        input.getLong(SerializationConstants.NEXT).ifPresent(coord -> clientNext = coord);
-        input.read(SerializationConstants.NEXT, BlockPos.CODEC).ifPresent(coord -> clientNext = coord.asLong());
-        clientPrev = Long.MAX_VALUE;
-        input.getLong(SerializationConstants.PREVIOUS).ifPresent(coord -> clientPrev = coord);
-        input.read(SerializationConstants.PREVIOUS, BlockPos.CODEC).ifPresent(coord -> clientPrev = coord.asLong());
-
-        Tag itemTag = updateTag.get(SerializationConstants.ITEM);
-        if (itemTag != null) {
-            itemStack = SerializerHelper.parseOversized(provider, itemTag).orElse(ItemStack.EMPTY);
+    public void write(@NotNull ValueOutput output) {
+        writeCommon(output);
+        if (pathType != null) {
+            //TODO - 1.21.11: Figure out path type and if we should set it to none when saving to file instead of not saving it
+            // given that for syncing we pretend it is none.
+            NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
         }
-    }
-
-    public void write(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        if (color != null) {
-            NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
-        }
-
-        nbtTags.putInt(SerializationConstants.PROGRESS, progress);
-        nbtTags.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
-
         if (idleDir != null) {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.IDLE_DIR, idleDir);
         }
         if (homeLocation != Long.MAX_VALUE) {
-            nbtTags.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
-        }
-        if (pathType != null) {
-            NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
-        }
-        if (!itemStack.isEmpty()) {
-            nbtTags.put(SerializationConstants.ITEM_OVERSIZED, SerializerHelper.saveOversized(provider, itemStack));
-        }
-    }
-
-    public void read(@NotNull ValueInput input) {
-        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
-        progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
-        originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
-        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue, dir -> idleDir = dir);
-        homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, homeLocation);
-        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID, type -> pathType = type);
-        Tag oversizedTag = nbtTags.get(SerializationConstants.ITEM_OVERSIZED);
-        if (oversizedTag != null) {
-            itemStack = SerializerHelper.parseOversized(provider, oversizedTag).orElse(ItemStack.EMPTY);
+            output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
         }
     }
 

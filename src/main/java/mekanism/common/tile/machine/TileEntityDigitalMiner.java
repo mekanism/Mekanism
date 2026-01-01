@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
@@ -79,22 +78,17 @@ import mekanism.common.tile.interfaces.IHasVisualization;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.Vec3i;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -867,10 +861,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        running = nbt.getBoolean(SerializationConstants.RUNNING);
-        delay = nbt.getInt(SerializationConstants.DELAY);
-        numPowering = nbt.getInt(SerializationConstants.NUM_POWERING);
-        NBTUtils.setEnumIfPresent(nbt, SerializationConstants.STATE, State.BY_ID, s -> {
+        running = input.getBooleanOr(SerializationConstants.RUNNING, running);
+        delay = input.getIntOr(SerializationConstants.DELAY, delay);
+        numPowering = input.getIntOr(SerializationConstants.NUM_POWERING, numPowering);
+        //TODO - 1.21.11: Do we want a codec that also tries to load it from int for legacy data?
+        input.read(SerializationConstants.STATE, State.CODEC).ifPresent(s -> {
             if (!initCalc && s == State.SEARCHING) {
                 //If we loaded and haven't started yet, but we were searching when we saved
                 // pretend we had finished searching so that we will start again on the first tick
@@ -906,15 +901,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         output.putBoolean(SerializationConstants.RUNNING, running);
         output.putInt(SerializationConstants.DELAY, delay);
         output.putInt(SerializationConstants.NUM_POWERING, numPowering);
-        NBTUtils.writeEnum(nbtTags, SerializationConstants.STATE, searcher.state);
-        if (!overflow.isEmpty()) {
-            //Persist any items that are stored as overflow
-            DataResult<Tag> encoded = OverflowAware.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), new OverflowAware(overflow));
-            if (encoded.isSuccess()) {
-                nbtTags.put(SerializationConstants.OVERFLOW, encoded.getOrThrow());
-            } else {
-                encoded.ifError(error -> Mekanism.logger.warn("Failed to encode overflowed items: {}", error.message()));
-            }
+        output.store(SerializationConstants.STATE, State.CODEC, searcher.state);
+        if (!overflow.isEmpty()) {//Persist any items that are stored as overflow
+            output.store(SerializationConstants.OVERFLOW, OverflowAware.CODEC, new OverflowAware(overflow));
         }
     }
 
@@ -1024,13 +1013,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             output.store(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec(), inverseReplaceTarget);
         }
         output.putBoolean(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        filterManager.writeToNBT(output, dataMap);
+        filterManager.serialize(output);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        setRadius(Math.min(dataMap.getInt(SerializationConstants.RADIUS), MekanismConfig.general.minerMaxRadius.get()));
+        setRadius(Math.min(input.getIntOr(SerializationConstants.RADIUS, DEFAULT_RADIUS), MekanismConfig.general.minerMaxRadius.get()));
         input.getInt(SerializationConstants.MIN).ifPresent(newMinY -> {
             if (hasLevel() && !isRemote()) {
                 setMinY(Math.max(newMinY, level.getMinY()));
@@ -1047,27 +1036,25 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         });
         doEject = input.getBooleanOr(SerializationConstants.EJECT, doEject);
         doPull = input.getBooleanOr(SerializationConstants.PULL, doPull);
-        NBTUtils.setBooleanIfPresent(dataMap, SerializationConstants.SILK_TOUCH, this::setSilkTouch);
+        setSilkTouch(input.getBooleanOr(SerializationConstants.SILK_TOUCH, silkTouch));
         inverse = input.getBooleanOr(SerializationConstants.INVERSE, inverse);
         inverseReplaceTarget = input.read(SerializationConstants.REPLACE_TARGET, BuiltInRegistries.ITEM.byNameCodec()).orElse(Items.AIR);
         inverseRequiresReplacement = input.getBooleanOr(SerializationConstants.INVERSE_REQUIRES_REPLACE, inverseRequiresReplacement);
-        filterManager.readFromNBT(input, dataMap);
+        filterManager.deserialize(input);
         //Note: We read the overflow information if it is present in sustained data in order to grab the information from the digital miner item
         // when it is placed or when the BE is loaded from NBT, but the corresponding writing of the data is done in the saveAdditional method
         // as opposed to the writeSustainedData method to ensure that configuration cards do not copy overflow data from one miner to another
-        NBTUtils.setListIfPresent(dataMap, SerializationConstants.OVERFLOW, Tag.TAG_COMPOUND, overflowTag -> {
+        Optional<OverflowAware> overflowAware = input.read(SerializationConstants.OVERFLOW, OverflowAware.CODEC);
+        if (overflowAware.isPresent()) {
             //Clear any existing overflow and read what is the actual overflow from NBT
             overflow.clear();
-            DataResult<Object2IntMap<HashedItem>> decoded = OverflowAware.CODEC.parse(input.createSerializationContext(NbtOps.INSTANCE), overflowTag)
-                  .map(OverflowAware::overflow);
-            decoded.ifSuccess(overflow::putAll);
-            decoded.ifError(error -> Mekanism.logger.warn("Failed to decode overflowed items: {}", error.message()));
+            overflow.putAll(overflowAware.get().overflow());
             hasOverflow = !overflow.isEmpty();
             //Note: Marking rechecking if any of the overflow can fit probably isn't strictly necessary here as in theory it already tried
             // to insert anything before when it was saving, but it doesn't really hurt and then if the last tick had it get overflow or
             // had the inventory change which caused a save, but the next tick never happened the overflow may actually need to be updated
             recheckOverflow = hasOverflow;
-        });
+        }
     }
 
     @Override
@@ -1280,14 +1267,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         filterManager.addContainerTrackers(container);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putInt(SerializationConstants.RADIUS, getRadius());
-        updateTag.putInt(SerializationConstants.MIN, getMinY());
-        updateTag.putInt(SerializationConstants.MAX, getMaxY());
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putInt(SerializationConstants.RADIUS, getRadius());
+        output.putInt(SerializationConstants.MIN, getMinY());
+        output.putInt(SerializationConstants.MAX, getMaxY());
     }
 
     @Override

@@ -36,6 +36,7 @@ import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.integration.computer.TableType.Builder;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.core.Holder;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -158,7 +159,7 @@ public abstract class BaseComputerHelper {
         if (itemName == null) {
             return Items.AIR;
         }
-        return BuiltInRegistries.ITEM.get(itemName);
+        return BuiltInRegistries.ITEM.get(itemName).map(Holder::value).orElse(Items.AIR);
     }
 
     public ItemStack getItemStack(int param) throws ComputerException {

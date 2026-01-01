@@ -7,7 +7,7 @@ import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
-import mezz.jei.api.recipe.RecipeType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -24,15 +24,15 @@ public class CatalystRegistryHelper {
         }
     }
 
-    public static void register(IRecipeCatalystRegistration registry, RecipeType<?> recipeType, List<ItemLike> workstations) {
+    public static void register(IRecipeCatalystRegistration registry, IRecipeType<?> recipeType, List<ItemLike> workstations) {
         for (ItemLike workstation : workstations) {
             Item item = workstation.asItem();
-            registry.addRecipeCatalyst(item, recipeType);
+            registry.addCraftingStation(recipeType, item);
             if (item instanceof BlockItem blockItem) {
                 AttributeFactoryType factoryType = Attribute.get(blockItem.getBlock(), AttributeFactoryType.class);
                 if (factoryType != null) {
                     for (FactoryTier tier : EnumUtils.FACTORY_TIERS) {
-                        registry.addRecipeCatalyst(MekanismBlocks.getFactory(tier, factoryType.getFactoryType()), recipeType);
+                        registry.addCraftingStation(recipeType, MekanismBlocks.getFactory(tier, factoryType.getFactoryType()));
                     }
                 }
             }

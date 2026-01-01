@@ -4,7 +4,7 @@ import java.util.Optional;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.StringRepresentable;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
@@ -76,7 +76,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
     }
 
     @Override
-    default boolean canPlaceLiquid(@Nullable Player player, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+    default boolean canPlaceLiquid(@Nullable LivingEntity owner, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
         return state.getValue(getFluidLoggedProperty()).isEmpty() && isValidFluid(fluid);
     }
 
@@ -111,7 +111,7 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
 
     @NotNull
     @Override
-    default ItemStack pickupBlock(@Nullable Player player, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    default ItemStack pickupBlock(@Nullable LivingEntity owner, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
             Fluid fluid = fluidLogged.getFluid();

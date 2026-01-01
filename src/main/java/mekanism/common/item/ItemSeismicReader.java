@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
@@ -18,12 +18,12 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -35,14 +35,15 @@ public class ItemSeismicReader extends ItemEnergized {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltip.add(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
+            tooltipAdder.accept(MekanismLang.DESCRIPTION_SEISMIC_READER.translate());
         } else if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            super.appendHoverText(stack, context, tooltip, flag);
+            super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -54,13 +55,13 @@ public class ItemSeismicReader extends ItemEnergized {
             return InteractionResultHolder.success(stack);
         }
         if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level())) {
-            player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
+            player.displayClientMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS), false);
         } else {
             if (!player.isCreative()) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 long energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
                 if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL) < energyUsage) {
-                    player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
+                    player.displayClientMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY), false);
                     return InteractionResultHolder.consume(stack);
                 }
                 energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);

@@ -11,7 +11,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +28,7 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     }
 
     @Override
-    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!player.isShiftKeyDown()) {
             TankMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
@@ -39,11 +38,11 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
                 }
                 InteractionResult result = openGui(player);
                 return switch (result) {
-                    case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
-                    case CONSUME -> ItemInteractionResult.CONSUME;
-                    case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-                    case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-                    case FAIL -> ItemInteractionResult.FAIL;
+                    case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
+                    case InteractionResult.CONSUME -> ItemInteractionResult.CONSUME;
+                    case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
+                    case InteractionResult.PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    case InteractionResult.FAIL -> InteractionResult.FAIL;
                 };
             }
         }

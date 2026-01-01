@@ -69,7 +69,7 @@ public class QIOCraftingTransferHandler {
         }
 
         default Identifier id() {
-            return recipeHolder().id();
+            return recipeHolder().id().identifier();
         }
 
         int transferAmount();

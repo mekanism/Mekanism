@@ -16,9 +16,6 @@ import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySl
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -161,13 +158,17 @@ public class BinInventorySlot extends BasicInventorySlot {
         // the tile copy the lock stack as a component
         super.serialize(output);
         if (isLocked()) {
-            nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
+            //TODO - 1.21.11: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
+            output.store(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC, lockStack);
+            //nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
+        //TODO - 1.21.11: Does this properly handle the behavior of when things are empty
+        this.lockStack = input.read(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC).orElse(ItemStack.EMPTY);
+        //NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserialize(input);
     }
 }

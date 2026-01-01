@@ -11,6 +11,9 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.input.MouseButtonInfo;
 import org.joml.Matrix3x2fStack;
 
 @NothingNullByDefault
@@ -52,7 +55,7 @@ public class MekanismEmiWidget extends Widget {
         //Note: EMI only calls this method if we are over it
         //Start by updating the tooltip for the element in case it is conditionally dependent on the mouse position
         element.updateTooltip(mouseX, mouseY);
-        Tooltip tooltip = element.getTooltip();
+        Tooltip tooltip = element.tooltip.get();
         if (tooltip != null) {
             return tooltip.toCharSequence(Minecraft.getInstance()).stream()
                   .map(ClientTooltipComponent::create)
@@ -63,11 +66,11 @@ public class MekanismEmiWidget extends Widget {
 
     @Override
     public boolean mouseClicked(int mouseX, int mouseY, int button) {
-        return forwardClicks && element.mouseClicked(mouseX, mouseY, button);
+        return forwardClicks && element.mouseClicked(new MouseButtonEvent(mouseX, mouseY, new MouseButtonInfo(button, 0)), false);
     }
 
     @Override
     public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return element.keyPressed(keyCode, scanCode, modifiers);
+        return element.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
     }
 }

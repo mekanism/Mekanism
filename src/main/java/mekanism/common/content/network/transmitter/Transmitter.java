@@ -3,6 +3,7 @@ package mekanism.common.content.network.transmitter;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Chunk3D;
@@ -18,15 +19,12 @@ import mekanism.common.lib.transmitter.acceptor.AbstractAcceptorCache;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -436,16 +434,14 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         getTransmitterTile().sendUpdatePacket();
     }
 
-    @NotNull
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
-        updateTag.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        updateTag.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        output.putByte(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
+        output.putByte(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
+        output.putIntArray(SerializationConstants.CONNECTION, getRawConnections());
         //Transmitter
         if (hasTransmitterNetwork()) {
-            updateTag.putUUID(SerializationConstants.NETWORK, getTransmitterNetwork().getUUID());
+            output.store(SerializationConstants.NETWORK, UUIDUtil.CODEC, getTransmitterNetwork().getUUID());
         }
-        return updateTag;
     }
 
     /**
@@ -460,7 +456,7 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
 
         currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        readRawConnections(tag);
+        readRawConnections(input);
 
         for (Direction side : EnumUtils.DIRECTIONS) {
             //If the visible connection data changed, mark that we need to update the model data
@@ -471,8 +467,9 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         }
 
         //Transmitter
-        if (tag.hasUUID(SerializationConstants.NETWORK)) {
-            UUID networkID = tag.getUUID(SerializationConstants.NETWORK);
+        Optional<UUID> optionalNetworkID = input.read(SerializationConstants.NETWORK, UUIDUtil.CODEC);
+        if (optionalNetworkID.isPresent()) {
+            UUID networkID = optionalNetworkID.get();
             if (hasTransmitterNetwork() && getTransmitterNetwork().getUUID().equals(networkID)) {
                 //Nothing needs to be done to update the client network
                 return refreshModelData;
@@ -502,10 +499,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     }
 
     public void read(@NotNull ValueInput input) {
-        redstoneReactive = nbtTags.getBoolean(SerializationConstants.REDSTONE);
+        redstoneReactive = input.getBooleanOr(SerializationConstants.REDSTONE, redstoneReactive);
         currentTransmitterConnections = input.getByteOr(SerializationConstants.CURRENT_CONNECTIONS, currentTransmitterConnections);
         acceptorCache.currentAcceptorConnections = input.getByteOr(SerializationConstants.CURRENT_ACCEPTORS, acceptorCache.currentAcceptorConnections);
-        readRawConnections(nbtTags);
+        readRawConnections(input);
     }
 
     public void write(@NotNull ValueOutput output) {
@@ -523,9 +520,10 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
         return raw;
     }
 
-    private void readRawConnections(CompoundTag tag) {
-        if (tag.contains(SerializationConstants.CONNECTION, Tag.TAG_INT_ARRAY)) {
-            int[] raw = tag.getIntArray(SerializationConstants.CONNECTION);
+    private void readRawConnections(@NotNull ValueInput input) {
+        Optional<int[]> optionalRaw = input.getIntArray(SerializationConstants.CONNECTION);
+        if (optionalRaw.isPresent()) {
+            int[] raw = optionalRaw.get();
             for (int i = 0; i < raw.length && i < EnumUtils.DIRECTIONS.length; i++) {
                 setConnectionTypeRaw(EnumUtils.DIRECTIONS[i], ConnectionType.BY_ID.apply(raw[i]));
             }

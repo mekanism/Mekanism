@@ -37,8 +37,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
@@ -109,10 +107,10 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         transmitter.onUpdateServer();
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        return getTransmitter().getReducedUpdateTag(provider, super.getReducedUpdateTag(provider));
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        getTransmitter().writeReducedUpdatedTag(output);
     }
 
     @Override

@@ -29,12 +29,8 @@ import mekanism.common.upgrade.transmitter.PressurizedTubeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -45,7 +41,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
       IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
 
     public final TubeTier tier;
-    public final IChemicalTank chemicalTank;
+    public final IChemicalTank buffer;
     private final List<IChemicalTank> chemicalTanks;
     @NotNull
     public ChemicalStack saveShare = ChemicalStack.EMPTY;
@@ -53,8 +49,8 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     public PressurizedTube(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.CHEMICAL);
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
-        chemicalTank = BasicChemicalTank.createAllValid(getCapacity(), this);
-        chemicalTanks = Collections.singletonList(chemicalTank);
+        buffer = BasicChemicalTank.createAllValid(getCapacity(), this);
+        chemicalTanks = Collections.singletonList(buffer);
     }
 
     @Override
@@ -129,7 +125,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         if (hasTransmitterNetwork()) {
             return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().chemicalTank.getNeeded());
         }
-        return Math.min(tier.getTubePullAmount(), chemicalTank.getNeeded());
+        return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
     }
 
     @Nullable
@@ -153,16 +149,8 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        if (nbtTags.contains(SerializationConstants.BOXED_CHEMICAL, Tag.TAG_COMPOUND)) {
-            saveShare = ChemicalStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.BOXED_CHEMICAL));
-        } else {
-            saveShare = ChemicalStack.EMPTY;
-        }
-        setStackClearOthers(saveShare, chemicalTank);
-    }
-
-    private void setStackClearOthers(ChemicalStack stack, IChemicalTank tank) {
-        tank.setStack(stack);
+        saveShare = input.read(SerializationConstants.BOXED_CHEMICAL, ChemicalStack.CODEC).orElse(ChemicalStack.EMPTY);
+        buffer.setStack(saveShare);
     }
 
     @Override
@@ -172,9 +160,9 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
-            nbtTags.remove(SerializationConstants.BOXED_CHEMICAL);
+            output.discard(SerializationConstants.BOXED_CHEMICAL);
         } else {
-            nbtTags.put(SerializationConstants.BOXED_CHEMICAL, saveShare.save(provider));
+            output.store(SerializationConstants.BOXED_CHEMICAL, ChemicalStack.CODEC, saveShare);
         }
     }
 
@@ -227,18 +215,18 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     @NotNull
     @Override
     public ChemicalStack releaseShare() {
-        if (chemicalTank.isEmpty()) {
+        if (buffer.isEmpty()) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = chemicalTank.getStack();
-        chemicalTank.setEmpty();
+        ChemicalStack ret = buffer.getStack();
+        buffer.setEmpty();
         return ret;
     }
 
     @NotNull
     @Override
     public ChemicalStack getShare() {
-        return chemicalTank.getStack();
+        return buffer.getStack();
     }
 
     @Override
@@ -265,7 +253,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
                 ChemicalStack chemicalStack = saveShare;
                 long amount = chemicalStack.getAmount();
                 MekanismUtils.logMismatchedStackSize(transmitterNetwork.chemicalTank.shrinkStack(amount, Action.EXECUTE), amount);
-                setStackClearOthers(chemicalStack, chemicalTank);
+                buffer.setStack(chemicalStack);
             }
         }
     }
@@ -275,7 +263,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         if (hasTransmitterNetwork()) {
             tank = getTransmitterNetwork().chemicalTank;
         } else {
-            tank = chemicalTank;
+            tank = buffer;
         }
         return tank.insert(stack, action, AutomationType.INTERNAL);
     }
@@ -298,15 +286,11 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
-        if (tag.contains(SerializationConstants.CHEMICAL, Tag.TAG_STRING)) {
-            network.setLastChemical(Chemical.parseOptionalHolder(provider, tag.getString(SerializationConstants.CHEMICAL)));
-        } else {
-            network.setLastChemical(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
-        }
+        network.setLastChemical(input.read(SerializationConstants.CHEMICAL, Chemical.CODEC).orElse(MekanismAPI.EMPTY_CHEMICAL_HOLDER));
     }
 
     public IChemicalTank getChemicalTank() {
-        return hasTransmitterNetwork() ? getTransmitterNetwork().chemicalTank : chemicalTank;
+        return hasTransmitterNetwork() ? getTransmitterNetwork().chemicalTank : buffer;
     }
 
 }

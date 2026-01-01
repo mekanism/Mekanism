@@ -5,7 +5,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -55,7 +54,7 @@ public interface ITileComponent {
     default void trackForMainContainer(MekanismContainer container) {
     }
 
-    default void addToUpdateTag(CompoundTag updateTag) {
+    default void addToUpdateTag(@NotNull ValueOutput output) {
     }
 
     default void readFromUpdateTag(@NotNull ValueInput input) {

@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -10,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemEnergized extends Item implements ICustomCreativeTabContents {
@@ -35,8 +35,10 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        StorageUtils.addStoredEnergy(stack, tooltip, true);
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
+        StorageUtils.addStoredEnergy(stack, tooltipAdder, true);
     }
 
     @Override

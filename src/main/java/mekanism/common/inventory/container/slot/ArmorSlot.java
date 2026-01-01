@@ -22,7 +22,7 @@ public class ArmorSlot extends InsertableSlot {
         super(inventory, index, x, y);
         this.slotType = slotType;
         this.owner = inventory.player;
-        setBackground(InventoryMenu.BLOCK_ATLAS, ARMOR_SLOT_TEXTURES[this.slotType.getIndex()]);
+        setBackground(ARMOR_SLOT_TEXTURES[this.slotType.getIndex()]);
     }
 
     @Override

@@ -31,6 +31,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -206,23 +207,23 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     public abstract GuiQIOItemViewer<CONTAINER> recreate(CONTAINER container);
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (keyCode == InputConstants.KEY_LSHIFT || keyCode == InputConstants.KEY_RSHIFT) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        if (event.hasShiftDown()) {
             menu.pauseSorting(true);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean keyReleased(int keyCode, int scanCode, int modifiers) {
+    public boolean keyReleased(@NotNull KeyEvent event) {
         //Note: We only want to unpause sorting if they aren't pressing shift. If they were pressing both shift keys and then released one
         // we want to make sure it stays paused. We just pass the value of if the other key is pressed and let the code that handles
         // pausing/unpausing on value change handle determining if we should stay paused
-        if (keyCode == InputConstants.KEY_LSHIFT) {
+        if (key == InputConstants.KEY_LSHIFT) {
             menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_RSHIFT));
-        } else if (keyCode == InputConstants.KEY_RSHIFT) {
+        } else if (key == InputConstants.KEY_RSHIFT) {
             menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_LSHIFT));
         }
-        return super.keyReleased(keyCode, scanCode, modifiers);
+        return super.keyReleased(event);
     }
 }

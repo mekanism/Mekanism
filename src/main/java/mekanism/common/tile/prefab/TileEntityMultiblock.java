@@ -33,12 +33,10 @@ import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -139,7 +137,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                     markForSave();
                 }
                 if (isMaster()) {
-                    if (multiblock.tick(level)) {
+                    if (multiblock.tick((ServerLevel) level)) {
                         needsPacket = true;
                     }
                     getManager().markTicked(multiblock);
@@ -218,7 +216,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public ItemInteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
+    public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
         }
@@ -262,17 +260,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         return isMaster;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(SerializationConstants.RENDERING, isMaster());
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putBoolean(SerializationConstants.RENDERING, isMaster());
         T multiblock = getMultiblock();
-        updateTag.putBoolean(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed());
+        output.putBoolean(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed());
         if (multiblock.isFormed() && isMaster()) {
-            multiblock.writeUpdateTag(updateTag, provider);
+            multiblock.writeUpdateTag(output);
         }
-        return updateTag;
     }
 
     @Override
@@ -372,7 +368,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.sendSystemMessage(result.getResultText());
+                player.displayClientMessage(result.getResultText(), false);
                 return InteractionResult.sidedSuccess(isRemote());
             }
         }

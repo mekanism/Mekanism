@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.Property;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class AttributeStateFacing implements AttributeState {
 
-    private final DirectionProperty facingProperty;
+    private final EnumProperty<Direction> facingProperty;
     private final FacePlacementType placementType;
     private final boolean canRotate;
 
@@ -32,19 +32,19 @@ public class AttributeStateFacing implements AttributeState {
         this(BlockStateProperties.HORIZONTAL_FACING, canRotate);
     }
 
-    public AttributeStateFacing(DirectionProperty facingProperty) {
+    public AttributeStateFacing(EnumProperty<Direction> facingProperty) {
         this(facingProperty, true);
     }
 
-    public AttributeStateFacing(DirectionProperty facingProperty, boolean canRotate) {
+    public AttributeStateFacing(EnumProperty<Direction> facingProperty, boolean canRotate) {
         this(facingProperty, FacePlacementType.PLAYER_LOCATION, canRotate);
     }
 
-    public AttributeStateFacing(DirectionProperty facingProperty, FacePlacementType placementType) {
+    public AttributeStateFacing(EnumProperty<Direction> facingProperty, FacePlacementType placementType) {
         this(facingProperty, placementType, true);
     }
 
-    public AttributeStateFacing(DirectionProperty facingProperty, FacePlacementType placementType, boolean canRotate) {
+    public AttributeStateFacing(EnumProperty<Direction> facingProperty, FacePlacementType placementType, boolean canRotate) {
         this.facingProperty = facingProperty;
         this.placementType = placementType;
         this.canRotate = canRotate;
@@ -63,7 +63,7 @@ public class AttributeStateFacing implements AttributeState {
     }
 
     @NotNull
-    public DirectionProperty getFacingProperty() {
+    public EnumProperty<Direction> getFacingProperty() {
         return facingProperty;
     }
 
@@ -89,7 +89,7 @@ public class AttributeStateFacing implements AttributeState {
     public BlockState copyStateData(BlockState oldState, BlockState newState) {
         AttributeStateFacing newStateFacingAttribute = Attribute.get(newState, AttributeStateFacing.class);
         if (newStateFacingAttribute != null) {
-            DirectionProperty oldFacingProperty = Attribute.getOrThrow(oldState, AttributeStateFacing.class).getFacingProperty();
+            EnumProperty<Direction> oldFacingProperty = Attribute.getOrThrow(oldState, AttributeStateFacing.class).getFacingProperty();
             newState = newState.setValue(newStateFacingAttribute.getFacingProperty(), oldState.getValue(oldFacingProperty));
         }
         return newState;
@@ -151,13 +151,13 @@ public class AttributeStateFacing implements AttributeState {
     public static BlockState mirror(BlockState state, Mirror mirror) {
         AttributeStateFacing blockFacing = Attribute.get(state, AttributeStateFacing.class);
         if (blockFacing != null && blockFacing.canRotate()) {
-            DirectionProperty property = blockFacing.getFacingProperty();
+            EnumProperty<Direction> property = blockFacing.getFacingProperty();
             return rotate(blockFacing, property, state, mirror.getRotation(state.getValue(property)));
         }
         return state;
     }
 
-    private static BlockState rotate(AttributeStateFacing blockFacing, DirectionProperty property, BlockState state, Rotation rotation) {
+    private static BlockState rotate(AttributeStateFacing blockFacing, EnumProperty<Direction> property, BlockState state, Rotation rotation) {
         return blockFacing.setDirection(state, rotation.rotate(state.getValue(property)));
     }
 

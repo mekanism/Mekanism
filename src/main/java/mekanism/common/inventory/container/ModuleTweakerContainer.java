@@ -7,6 +7,7 @@ import mekanism.common.inventory.container.slot.OffhandSlot;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public class ModuleTweakerContainer extends MekanismContainer {
                 }
             });
         }
-        addSlot(new OffhandSlot(inv, 40, 8, 16 + 18 * 4, inv.player) {
+        addSlot(new OffhandSlot(inv, Inventory.SLOT_OFFHAND, 8, 16 + 18 * 4, inv.player) {
             @Override
             public boolean mayPickup(@NotNull Player player) {
                 return false;
@@ -67,13 +68,21 @@ public class ModuleTweakerContainer extends MekanismContainer {
     }
 
     public static boolean hasTweakableItem(Player player) {
+        Inventory inventory = player.getInventory();
         for (int slot = 0; slot < Inventory.getSelectionSize(); slot++) {
-            if (isTweakableItem(player.getInventory().getItem(slot))) {
+            if (isTweakableItem(inventory.getItem(slot))) {
                 return true;
             }
         }
-        return player.getInventory().armor.stream().anyMatch(ModuleTweakerContainer::isTweakableItem) ||
-               player.getInventory().offhand.stream().anyMatch(ModuleTweakerContainer::isTweakableItem);
+        for (EquipmentSlot equipmentslot : EquipmentSlotGroup.ARMOR) {
+            if (equipmentslot.getType() == EquipmentSlot.Type.HUMANOID_ARMOR) {
+                ItemStack armorStack = player.getItemBySlot(equipmentslot);
+                if (!armorStack.isEmpty() && isTweakableItem(armorStack)) {
+                    return true;
+                }
+            }
+        }
+        return isTweakableItem(player.getOffhandItem());
     }
 
     @Override

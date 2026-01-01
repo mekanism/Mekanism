@@ -42,7 +42,6 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.MekanismGenerators;
@@ -52,15 +51,14 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -180,7 +178,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         // burn reactor fuel, create energy
         if (isActive()) {
@@ -264,41 +262,37 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, coolantTank.getFluidTank()::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, fuelTank::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank::setStack);
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank::setStack);
+        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(coolantTank.getFluidTank()::setStack);
+        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(fuelTank::setStack);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT, ChemicalStack.OPTIONAL_CODEC).ifPresent(heatedCoolantTank::setStack);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, ChemicalStack.OPTIONAL_CODEC).ifPresent(wasteTank::setStack);
         readValves(input);
         assemblies.clear();
-        if (tag.contains(SerializationConstants.ASSEMBLIES, Tag.TAG_LIST)) {
-            ListTag list = tag.getList(SerializationConstants.ASSEMBLIES, Tag.TAG_COMPOUND);
-            for (int i = 0; i < list.size(); i++) {
-                FormedAssembly assembly = FormedAssembly.read(list.getCompound(i));
-                if (assembly != null) {
-                    assemblies.add(assembly);
-                }
-            }
+        for (FormedAssembly assembly : input.listOrEmpty(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC)) {
+            assemblies.add(assembly);
         }
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.putFloat(SerializationConstants.SCALE, prevCoolantScale);
-        tag.putFloat(SerializationConstants.SCALE_ALT, prevFuelScale);
-        tag.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
-        tag.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
-        tag.putInt(SerializationConstants.VOLUME, getVolume());
-        tag.put(SerializationConstants.FLUID, coolantTank.getFluidTank().getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.CHEMICAL, fuelTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank.getStack().saveOptional(provider));
-        writeValves(tag);
-        ListTag list = new ListTag(assemblies.size());
-        for (FormedAssembly assembly : assemblies) {
-            list.add(assembly.write());
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.putFloat(SerializationConstants.SCALE, prevCoolantScale);
+        output.putFloat(SerializationConstants.SCALE_ALT, prevFuelScale);
+        output.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
+        output.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
+        output.putInt(SerializationConstants.VOLUME, getVolume());
+        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, coolantTank.getFluidTank().getFluid());
+        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, fuelTank.getStack());
+        output.store(SerializationConstants.CHEMICAL_STORED_ALT, ChemicalStack.OPTIONAL_CODEC, heatedCoolantTank.getStack());
+        output.store(SerializationConstants.CHEMICAL_STORED_ALT_2, ChemicalStack.OPTIONAL_CODEC, wasteTank.getStack());
+        writeValves(output);
+        if (!assemblies.isEmpty()) {
+            TypedOutputList<FormedAssembly> serializedAssemblies = output.list(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC);
+            for (FormedAssembly assembly : assemblies) {
+                serializedAssemblies.add(assembly);
+            }
         }
-        tag.put(SerializationConstants.ASSEMBLIES, list);
     }
 
     private void handleDamage(Level world) {

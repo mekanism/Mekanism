@@ -40,6 +40,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
@@ -164,12 +165,10 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         container.track(SyncableLong.create(this::getEnergyUsed, value -> clientEnergyUsed = value));
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putFloat(SerializationConstants.SOUND_SCALE, soundScale);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putFloat(SerializationConstants.SOUND_SCALE, soundScale);
     }
 
     @Override

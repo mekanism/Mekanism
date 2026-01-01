@@ -98,8 +98,8 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        burnTime = nbt.getInt(SerializationConstants.BURN_TIME);
-        maxBurnTime = nbt.getInt(SerializationConstants.MAX_BURN_TIME);
+        burnTime = input.getIntOr(SerializationConstants.BURN_TIME, burnTime);
+        maxBurnTime = input.getIntOr(SerializationConstants.MAX_BURN_TIME, maxBurnTime);
     }
 
     @Override

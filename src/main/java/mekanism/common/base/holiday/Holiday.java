@@ -30,12 +30,12 @@ public abstract class Holiday {
     final void notify(Player player) {
         HolidayMessage message = getMessage(player);
         if (message != null) {
-            player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines(), EnumColor.DARK_BLUE,
-                  MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)));
+            player.displayClientMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines(), EnumColor.DARK_BLUE,
+                  MekanismLang.GENERIC_SQUARE_BRACKET.translate(MekanismLang.MEKANISM)), false);
             for (Component line : message.lines()) {
-                player.sendSystemMessage(line);
+                player.displayClientMessage(line, false);
             }
-            player.sendSystemMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines(), EnumColor.DARK_BLUE, "[=======]"));
+            player.displayClientMessage(MekanismLang.HOLIDAY_BORDER.translate(message.themedLines(), EnumColor.DARK_BLUE, "[=======]"), false);
         }
         hasNotified = true;
     }

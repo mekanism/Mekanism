@@ -57,7 +57,7 @@ public class GenHandler {
     public static boolean generate(ServerLevel world, ChunkPos chunkPos) {
         boolean generated = false;
         if (!SharedConstants.debugVoidTerrain(chunkPos)) {
-            SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSection());
+            SectionPos sectionPos = SectionPos.of(chunkPos, world.getMinSectionY());
             BlockPos blockPos = sectionPos.origin();
             ChunkGenerator chunkGenerator = world.getChunkSource().getGenerator();
             WorldgenRandom random = new WorldgenRandom(new XoroshiroRandomSource(RandomSupport.generateUniqueSeed()));

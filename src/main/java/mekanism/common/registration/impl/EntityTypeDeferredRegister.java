@@ -8,6 +8,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -58,7 +59,7 @@ public class EntityTypeDeferredRegister extends MekanismDeferredRegister<EntityT
     }
 
     public <ENTITY extends Entity> MekanismDeferredHolder<EntityType<?>, EntityType<ENTITY>> registerBuilder(String name, Supplier<EntityType.Builder<ENTITY>> builder) {
-        return register(name, () -> builder.get().build(name));
+        return register(name, rl -> builder.get().build(ResourceKey.create(getRegistryKey(), rl)));
     }
 
     @Override

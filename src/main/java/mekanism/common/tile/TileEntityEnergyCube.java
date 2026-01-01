@@ -34,6 +34,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
@@ -125,7 +126,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             chargeSlot.setStack(data.chargeSlot.getStack());
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            dischargeSlot.deserializeNBT(provider, data.dischargeSlot.serializeNBT(provider));
+            NBTUtils.copyViaSerialization(problemPath(), provider, data.dischargeSlot, dischargeSlot);
             for (ITileComponent component : getComponents()) {
                 component.read(data.components, provider);
             }
@@ -148,12 +149,10 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         return prevScale;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putFloat(SerializationConstants.SCALE, prevScale);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putFloat(SerializationConstants.SCALE, prevScale);
     }
 
     @Override

@@ -14,7 +14,6 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -51,7 +50,7 @@ public class ItemBalloon extends Item {
             Vec3 pos = new Pos3D(rightHand ? -0.4 : 0.4, 0, 0.3).yRot(player.yBodyRot).translate(new Pos3D(player));
             EntityBalloon balloon = EntityBalloon.create(world, pos.x - 0.5, pos.y - 1.25, pos.z - 0.5, color);
             if (balloon == null) {
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             }
             world.addFreshEntity(balloon);
             world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);

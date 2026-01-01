@@ -11,11 +11,10 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData> {
@@ -83,13 +82,11 @@ public class TileEntitySPSCasing extends TileEntityMultiblock<SPSMultiblockData>
         return multiblock.isFormed() && handleSound;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         SPSMultiblockData multiblock = getMultiblock();
-        updateTag.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0);
-        return updateTag;
+        output.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this) && multiblock.lastProcessed > 0);
     }
 
     @Override

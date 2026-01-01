@@ -49,8 +49,6 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -198,7 +196,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = nbt.getLong(SerializationConstants.USED_SO_FAR);
+        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override

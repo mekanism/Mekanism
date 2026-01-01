@@ -48,8 +48,7 @@ import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
@@ -58,6 +57,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.NotNull;
 
@@ -187,10 +187,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.putDouble(SerializationConstants.PLASMA_TEMP, getLastPlasmaTemp());
-        tag.putBoolean(SerializationConstants.BURNING, isBurning());
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.putDouble(SerializationConstants.PLASMA_TEMP, getLastPlasmaTemp());
+        output.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
     public void addTemperatureFromEnergyInput(long energyAdded) {
@@ -216,7 +216,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         long fuelBurned = 0;
         //Only thermal transfer happens unless we're hot enough to burn.
@@ -285,7 +285,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         lastCaseTemperature = heatCapacitor.getTemperature();
     }
 
-    private void kill(Level world) {
+    private void kill(ServerLevel world) {
         if (world.getRandom().nextInt() % SharedConstants.TICKS_PER_SECOND != 0) {
             return;
         }
@@ -293,7 +293,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (!entitiesToDie.isEmpty()) {
             DamageSource damageSource = GeneratorsDamageTypes.FUSION.source(world, deathZone.getCenter());
             for (Entity entity : entitiesToDie) {
-                entity.hurt(damageSource, 50_000F);
+                entity.hurtServer(world, damageSource, 50_000F);
             }
         }
     }

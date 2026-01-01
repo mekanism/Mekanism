@@ -62,7 +62,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
             //Amount of coolant that is actually used to
             long coolantAmount = Math.round(waterToSteamHeatNecessary / coolant.thermalEnthalpy());
             recipes.add(new BoilerRecipeViewerRecipe(
-                  RecipeViewerUtils.synthetic(key.location(), "boiler", Mekanism.MODID),
+                  RecipeViewerUtils.synthetic(key.identifier(), "boiler", Mekanism.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), coolantAmount), water,
                   steam, coolant.cool(coolantAmount),
                   HeatUtils.BASE_BOIL_TEMP

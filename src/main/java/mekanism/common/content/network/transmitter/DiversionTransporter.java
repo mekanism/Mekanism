@@ -17,9 +17,6 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -95,14 +92,12 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         }
     }
 
-    @NotNull
-    private CompoundTag writeModes(@NotNull ValueOutput output) {
+    private void writeModes(@NotNull ValueOutput output) {
         int[] modeIndices = new int[modes.length];
         for (int i = 0; i < modes.length; i++) {
             modeIndices[i] = modes[i].ordinal();
         }
         output.putIntArray(SerializationConstants.MODE, modeIndices);
-        return nbtTags;
     }
 
     @Override
@@ -117,10 +112,10 @@ public class DiversionTransporter extends LogisticalTransporterBase {
         writeModes(output);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        return writeModes(super.getReducedUpdateTag(provider, updateTag));
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        writeModes(output);
     }
 
     @Override

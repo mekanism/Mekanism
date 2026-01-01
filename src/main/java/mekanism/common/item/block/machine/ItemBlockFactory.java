@@ -1,6 +1,6 @@
 package mekanism.common.item.block.machine;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
@@ -16,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
@@ -43,12 +44,12 @@ public class ItemBlockFactory extends ItemBlockTooltip<BlockTile<?, ?>> {
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Should always be present but validate it just in case
         AttributeFactoryType factoryType = Attribute.get(getBlock(), AttributeFactoryType.class);
         if (factoryType != null) {
-            tooltip.add(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
+            tooltipAdder.accept(MekanismLang.FACTORY_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, factoryType.getFactoryType()));
         }
-        super.addTypeDetails(stack, context, tooltip, flag);
+        super.addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 }

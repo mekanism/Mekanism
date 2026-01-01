@@ -1,7 +1,7 @@
 package mekanism.common.item.block.machine;
 
-import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -38,8 +38,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.animal.cow.Cow;
 import net.minecraft.world.entity.animal.goat.Goat;
@@ -48,6 +46,7 @@ import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -85,27 +84,27 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
         FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (fluidStack.isEmpty()) {
-            tooltip.add(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
+            tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {
-            tooltip.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
         if (tier == FluidTankTier.CREATIVE) {
-            tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
+            tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
+            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
         }
     }
 
     @Override
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(stack), true)));
-        super.addTypeDetails(stack, context, tooltip, flag);
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        tooltipAdder.accept(MekanismLang.BUCKET_MODE.translateColored(EnumColor.INDIGO, YesNo.of(getMode(stack), true)));
+        super.addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @NotNull
@@ -156,10 +155,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
                 return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
-                return InteractionResultHolder.fail(stack);
+                return InteractionResult.FAIL;
             } else if (stack.getCount() > 1) {
                 //Skip if the item is stacked
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             }
             //TODO: At some point maybe try to reduce the duplicate code between this and the dispense behavior
             BlockHitResult result = getPlayerPOVHitResult(world, player, player.isShiftKeyDown() ? ClipContext.Fluid.NONE : ClipContext.Fluid.SOURCE_ONLY);
@@ -167,16 +166,16 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             if (result.getType() == Type.BLOCK) {
                 BlockPos pos = result.getBlockPos();
                 if (!world.mayInteract(player, pos)) {
-                    return InteractionResultHolder.fail(stack);
+                    return InteractionResult.FAIL;
                 }
                 IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
                 if (fluidTank == null) {
                     //If something went wrong, and we don't have a fluid tank fail
-                    return InteractionResultHolder.fail(stack);
+                    return InteractionResult.FAIL;
                 }
                 if (!player.isShiftKeyDown()) {
                     if (!player.mayUseItemAt(pos, result.getDirection(), stack)) {
-                        return InteractionResultHolder.fail(stack);
+                        return InteractionResult.FAIL;
                     }
                     //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
                     BlockState blockState = world.getBlockState(pos);
@@ -193,7 +192,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             ItemStack pickedUpStack = bucketPickup.pickupBlock(player, world, pos, blockState);
                             if (pickedUpStack.isEmpty()) {
                                 //If the fluid can't be picked up, pass on doing anything
-                                return InteractionResultHolder.pass(stack);
+                                return InteractionResult.PASS;
                             } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
                                 //This isn't the best validation check given it may not return a bucket, but it is good enough for now
                                 fluid = bucket.content;
@@ -203,7 +202,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                                 if (!validFluid(fluidTank, fluidStack)) {
                                     Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
                                           fluidState.getType(), pos, world.dimension().identifier(), fluid);
-                                    return InteractionResultHolder.fail(stack);
+                                    return InteractionResult.FAIL;
                                 }
                             }
                             sound = bucketPickup.getPickupSound(blockState);
@@ -215,12 +214,12 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
                             return InteractionResultHolder.success(stack);
                         }
-                        return InteractionResultHolder.fail(stack);
+                        return InteractionResult.FAIL;
                     }
                 } else {
                     if (fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).getAmount() < FluidType.BUCKET_VOLUME
                         || !player.mayUseItemAt(pos.relative(result.getDirection()), result.getDirection(), stack)) {
-                        return InteractionResultHolder.fail(stack);
+                        return InteractionResult.FAIL;
                     }
                     if (WorldUtils.tryPlaceContainedLiquid(player, world, pos, fluidTank.getFluid(), result.getDirection())) {
                         if (!player.isCreative()) {
@@ -233,7 +232,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     //Used after simulation to insert the stack rather than just using the insert method to properly handle cases

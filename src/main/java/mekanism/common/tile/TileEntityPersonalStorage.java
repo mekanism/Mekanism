@@ -51,7 +51,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         }
 
         @Override
-        protected boolean isOwnContainer(@NotNull Player player) {
+        public boolean isOwnContainer(@NotNull Player player) {
             return player.containerMenu instanceof MekanismTileContainer<?> container && container.getTileEntity() == TileEntityPersonalStorage.this;
         }
     };
@@ -79,7 +79,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     public void open(Player player) {
         super.open(player);
         if (!isRemoved() && !player.isSpectator() && level != null) {
-            openersCounter.incrementOpeners(player, level, getBlockPos(), getBlockState());
+            openersCounter.incrementOpeners(player, level, getBlockPos(), getBlockState(), player.getContainerInteractionRange());
         }
     }
 

@@ -10,7 +10,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
@@ -45,7 +44,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (stack.isEmpty()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -57,14 +56,14 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
         } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
-        ItemInteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
-        if (wrenchResult.result() != InteractionResult.PASS) {
+        InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         }
         //Handle filling fluid tank
         if (!player.isShiftKeyDown()) {
             if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             } else if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
                 player.getInventory().setChanged();
                 return ItemInteractionResult.SUCCESS;

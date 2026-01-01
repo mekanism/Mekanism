@@ -1,5 +1,7 @@
 package mekanism.generators.common.content.fission;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -25,13 +27,11 @@ import mekanism.generators.common.tile.fission.TileEntityFissionFuelAssembly;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Vec3i;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import org.jetbrains.annotations.Nullable;
 
 public class FissionReactorValidator extends CuboidStructureValidator<FissionReactorMultiblockData> {
 
@@ -129,7 +129,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
             }
         }
 
-        public FormationResult validate(AssemblyPos assemblyPos) {
+        private FormationResult validate(AssemblyPos assemblyPos) {
             if (controlRodAssembly == null) {
                 return FormationResult.fail(GeneratorsLang.FISSION_INVALID_MISSING_CONTROL_ROD.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
                       MekanismLang.GENERIC_PARENTHESIS.translate(MekanismLang.GENERIC_WITH_COMMA.translate(assemblyPos.x, assemblyPos.z))));
@@ -158,21 +158,11 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public record FormedAssembly(BlockPos pos, int height) {
 
-        public CompoundTag write() {
-            CompoundTag ret = new CompoundTag();
-            ret.put(SerializationConstants.POSITION, NbtUtils.writeBlockPos(pos));
-            ret.putInt(SerializationConstants.HEIGHT, height);
-            return ret;
-        }
-
-        @Nullable
-        public static FormedAssembly read(CompoundTag nbt) {
-            BlockPos blockPos = NbtUtils.readBlockPos(nbt, SerializationConstants.POSITION).orElse(null);
-            if (blockPos == null) {
-                return null;
-            }
-            return new FormedAssembly(blockPos, nbt.getInt(SerializationConstants.HEIGHT));
-        }
+        //TODO - 1.21.11: Do we want more validation for the height part of the codec?
+        public static final Codec<FormedAssembly> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(FormedAssembly::pos),
+              ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.HEIGHT).forGetter(FormedAssembly::height)
+        ).apply(instance, FormedAssembly::new));
     }
 
     private record AssemblyPos(int x, int z) {

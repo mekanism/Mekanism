@@ -17,6 +17,8 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.CommonComponents;
@@ -199,7 +201,8 @@ public class GuiTextField extends GuiElement {
         if (textScale != 1.0F && scaledX > textField.getX()) {
             scaledX = textField.getX() + (scaledX - textField.getX()) / textScale;
         }
-        if (textField.mouseClicked(scaledX, event.y(), isDoubleClick)) {
+        //TODO - 1.21.11: Validate this is fine for how to scale and pass on the mouse button event
+        if (textField.mouseClicked(new MouseButtonEvent(scaledX, event.y(), event.buttonInfo()), isDoubleClick)) {
             return true;
         }
         return super.isValidClickButton(event.buttonInfo()) && super.mouseClicked(event, isDoubleClick);
@@ -246,19 +249,19 @@ public class GuiTextField extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
         if (canWrite()) {
-            if (keyCode == InputConstants.KEY_ESCAPE || keyCode == InputConstants.KEY_TAB) {
+            if (event.isEscape() || event.isCycleFocus()) {
                 //Manually handle hitting escape to make the whole interface go away
                 // and allow using tab to switch focus
                 return false;
-            } else if (keyCode == InputConstants.KEY_RETURN || keyCode == InputConstants.KEY_NUMPADENTER) {
+            } else if (event.isConfirmation()) {
                 //Handle processing both the enter key and the numpad enter key
                 if (enterHandler != null) {
                     enterHandler.run();
                 }
                 return true;
-            } else if (Screen.isPaste(keyCode)) {
+            } else if (event.isPaste()) {
                 //Manual handling of textField#keyPressed for pasting so that we can filter things as needed
                 String text = Minecraft.getInstance().keyboardHandler.getClipboard();
                 if (pasteTransformer != null) {
@@ -285,25 +288,25 @@ public class GuiTextField extends GuiElement {
                 }
                 textField.insertText(text);
             } else {
-                textField.keyPressed(keyCode, scanCode, modifiers);
+                textField.keyPressed(event);
             }
             return true;
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
+    public boolean charTyped(@NotNull CharacterEvent event) {
         if (canWrite()) {
             if (inputTransformer != null) {
                 c = inputTransformer.applyAsChar(c);
             }
             if (inputValidator == null || inputValidator.test(c)) {
-                return textField.charTyped(c, keyCode);
+                return textField.charTyped(event);
             }
             return false;
         }
-        return super.charTyped(c, keyCode);
+        return super.charTyped(event);
     }
 
     public String getText() {

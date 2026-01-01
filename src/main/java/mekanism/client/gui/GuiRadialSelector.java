@@ -28,6 +28,7 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
@@ -209,7 +210,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
         // handle & ignore all key events
         return true;
     }

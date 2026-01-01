@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.EnumMap;
@@ -29,6 +28,8 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.input.InputWithModifiers;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -104,11 +105,11 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    public boolean keyPressed(int key, int i, int j) {
-        if (super.keyPressed(key, i, j)) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        if (super.keyPressed(event)) {
             return true;
         }
-        if (selected != -1 && (isPreviousButton(key) || isNextButton(key))) {
+        if (selected != -1 && (isPreviousButton(event) || isNextButton(event))) {
             int curIndex = -1;
             IntList selectable = new IntArrayList();
             for (int index = 0, slots = menu.slots.size(); index < slots; index++) {
@@ -120,7 +121,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 }
             }
             int targetIndex;
-            if (isPreviousButton(key)) {
+            if (isPreviousButton(event)) {
                 targetIndex = curIndex == 0 ? selectable.size() - 1 : curIndex - 1;
             } else {//isNextButton
                 targetIndex = curIndex + 1;
@@ -131,12 +132,12 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
         return false;
     }
 
-    private boolean isPreviousButton(int key) {
-        return key == InputConstants.KEY_UP || key == InputConstants.KEY_LEFT;
+    private boolean isPreviousButton(InputWithModifiers key) {
+        return key.isUp() || key.isLeft();
     }
 
-    private boolean isNextButton(int key) {
-        return key == InputConstants.KEY_DOWN || key == InputConstants.KEY_RIGHT;
+    private boolean isNextButton(InputWithModifiers key) {
+        return key.isDown() || key.isRight();
     }
 
     @Override

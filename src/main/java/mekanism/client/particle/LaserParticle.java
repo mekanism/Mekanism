@@ -8,18 +8,20 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-public class LaserParticle extends TextureSheetParticle {
+public class LaserParticle extends SingleQuadParticle {
 
     private static final float RADIAN_45 = 45 * Mth.DEG_TO_RAD;
     private static final float RADIAN_90 = 90 * Mth.DEG_TO_RAD;
@@ -27,8 +29,8 @@ public class LaserParticle extends TextureSheetParticle {
     private final Direction direction;
     private final float halfLength;
 
-    private LaserParticle(ClientLevel world, Vec3 start, Vec3 end, Direction dir, float energyScale) {
-        super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D);
+    private LaserParticle(ClientLevel world, Vec3 start, Vec3 end, Direction dir, float energyScale, TextureAtlasSprite sprite) {
+        super(world, (start.x + end.x) / 2D, (start.y + end.y) / 2D, (start.z + end.z) / 2D, sprite);
         lifetime = 5;
         rCol = 1;
         gCol = 0;
@@ -49,7 +51,7 @@ public class LaserParticle extends TextureSheetParticle {
 
     @Override
     public void render(@NotNull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
-        Vec3 view = renderInfo.getPosition();
+        Vec3 view = renderInfo.position();
         float newX = (float) (Mth.lerp(partialTicks, xo, x) - view.x());
         float newY = (float) (Mth.lerp(partialTicks, yo, y) - view.y());
         float newZ = (float) (Mth.lerp(partialTicks, zo, z) - view.z());
@@ -102,8 +104,9 @@ public class LaserParticle extends TextureSheetParticle {
 
     @NotNull
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    protected SingleQuadParticle.Layer getLayer() {
+        //TODO - 1.21.11: Validate this
+        return SingleQuadParticle.Layer.TRANSLUCENT;
     }
 
     @Override
@@ -151,12 +154,10 @@ public class LaserParticle extends TextureSheetParticle {
         }
 
         @Override
-        public LaserParticle createParticle(LaserParticleData data, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed) {
+        public LaserParticle createParticle(LaserParticleData data, @NotNull ClientLevel world, double x, double y, double z, double xSpeed, double ySpeed, double zSpeed, @NotNull RandomSource random) {
             Pos3D start = new Pos3D(x, y, z);
             Pos3D end = start.translate(data.direction(), data.distance());
-            LaserParticle particleLaser = new LaserParticle(world, start, end, data.direction(), data.energyScale());
-            particleLaser.pickSprite(this.spriteSet);
-            return particleLaser;
+            return new LaserParticle(world, start, end, data.direction(), data.energyScale(), spriteSet.get(random));
         }
     }
 }

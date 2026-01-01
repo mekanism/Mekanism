@@ -8,7 +8,7 @@ import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.RandomSource;
@@ -58,18 +58,18 @@ public class RadiationEntity implements IRadiationEntity {
             //Hurt randomly
             if (rand.nextBoolean()) {
                 if (entity instanceof ServerPlayer player) {
-                    MinecraftServer server = entity.getServer();
+                    ServerLevel level = player.level();
                     int totemTimesUsed = -1;
-                    if (server != null && server.isHardcore()) {//Only allow totems to count on hardcore
+                    if (level.getServer().isHardcore()) {//Only allow totems to count on hardcore
                         totemTimesUsed = player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                     }
-                    if (entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength)) {
+                    if (entity.hurtServer(level, MekanismDamageTypes.RADIATION.source(entity.level()), strength)) {
                         //If the damage actually went through fire the trigger
                         boolean hardcoreTotem = totemTimesUsed != -1 && totemTimesUsed < player.getStats().getValue(Stats.ITEM_USED.get(Items.TOTEM_OF_UNDYING));
                         MekanismCriteriaTriggers.DAMAGE.value().trigger(player, MekanismDamageTypes.RADIATION, hardcoreTotem);
                     }
-                } else {
-                    entity.hurt(MekanismDamageTypes.RADIATION.source(entity.level()), strength);
+                } else if (entity.level() instanceof ServerLevel level) {
+                    entity.hurtServer(level, MekanismDamageTypes.RADIATION.source(entity.level()), strength);
                 }
             }
             if (entity instanceof ServerPlayer player) {

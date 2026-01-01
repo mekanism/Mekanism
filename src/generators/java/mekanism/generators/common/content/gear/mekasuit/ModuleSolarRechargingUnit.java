@@ -30,11 +30,12 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
             //Based on how TileEntitySolarGenerator and the rest of our solar things do energy calculations
             if (WorldUtils.canSeeSun(player.level(), pos)) {
                 Biome b = player.level().getBiomeManager().getBiome(pos).value();
-                boolean needsRainCheck = b.getPrecipitationAt(pos) != Precipitation.NONE;
+                int seaLevel = player.level().getSeaLevel();
+                boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
                 // Consider the best temperature to be 0.8; biomes that are higher than that
                 // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
                 // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-                float tempEff = 0.3F * (0.8F - b.getTemperature(pos));
+                float tempEff = 0.3F * (0.8F - b.getTemperature(pos, seaLevel));
 
                 // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
                 // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness

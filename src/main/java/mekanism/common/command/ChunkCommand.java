@@ -162,7 +162,7 @@ public class ChunkCommand {
         if (settings != null) {
             Component message = settings.translateTicketLevel(event.getOldTicketLevel(), event.getNewTicketLevel());
             for (Player player : event.getLevel().players()) {
-                player.sendSystemMessage(message);
+                player.displayClientMessage(message, false);
             }
         }
     }
@@ -177,7 +177,7 @@ public class ChunkCommand {
             if (settings != null) {
                 Component message = settings.translate(direction);
                 for (Player player : level.players()) {
-                    player.sendSystemMessage(message);
+                    player.displayClientMessage(message, false);
                 }
             }
         }

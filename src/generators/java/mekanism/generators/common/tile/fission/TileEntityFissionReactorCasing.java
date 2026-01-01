@@ -10,12 +10,11 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFissionReactorCasing extends TileEntityMultiblock<FissionReactorMultiblockData> {
@@ -85,16 +84,14 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
         return multiblock.isFormed() && multiblock.isBurning() && handleSound;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         FissionReactorMultiblockData multiblock = getMultiblock();
-        updateTag.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
+        output.putBoolean(SerializationConstants.HANDLE_SOUND, multiblock.isFormed() && multiblock.handlesSound(this));
         if (multiblock.isFormed()) {
-            updateTag.putDouble(SerializationConstants.BURNING, multiblock.lastBurnRate);
+            output.putDouble(SerializationConstants.BURNING, multiblock.lastBurnRate);
         }
-        return updateTag;
     }
 
     @Override

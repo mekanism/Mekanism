@@ -1,7 +1,7 @@
 package mekanism.common.item.block;
 
-import java.util.List;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -42,6 +42,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -80,49 +81,51 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltip.add(getBlock().getDescription().translate());
+            tooltipAdder.accept(getBlock().getDescription().translate());
         } else if (hasDetails && MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            addDetails(stack, context, tooltip, flag);
+            addDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         } else {
-            addStats(stack, context, tooltip, flag);
+            addStats(stack, context, tooltipDisplay, tooltipAdder, flag);
             if (hasDetails) {
-                tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+                tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
             }
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
         }
     }
 
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
     }
 
-    protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Note: Security and owner info gets skipped if the stack doesn't expose them
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        addTypeDetails(stack, context, tooltip, flag);
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
         FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (!fluidStack.isEmpty()) {
-            tooltip.add(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
-            tooltip.add(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
+            tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));
         }
         if (Attribute.has(getBlock(), AttributeUpgradeSupport.class)) {
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
                 for (Entry<Upgrade, Integer> entry : upgradeAware.upgrades().entrySet()) {
-                    tooltip.add(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
+                    tooltipAdder.accept(UpgradeDisplay.of(entry.getKey(), entry.getValue()).getTextComponent());
                 }
             }
         }
     }
 
-    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    protected void addTypeDetails(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         //Put this here so that energy cubes can skip rendering energy here
         if (exposesEnergyCapOrTooltips()) {
-            StorageUtils.addStoredEnergy(stack, tooltip, false);
+            StorageUtils.addStoredEnergy(stack, tooltipAdder, false);
         }
     }
 

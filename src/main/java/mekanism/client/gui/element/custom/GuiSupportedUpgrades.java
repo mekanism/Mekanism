@@ -17,7 +17,6 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -79,7 +78,8 @@ public class GuiSupportedUpgrades extends GuiElement {
             gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported
-                guiGraphics.fill(RenderType.guiGhostRecipeOverlay(), xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
+                //TODO - 1.21.11: Figure out if we need a new version of RenderType.guiGhostRecipeOverlay(), or if it just supports it natively now
+                guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
             }
         }
     }

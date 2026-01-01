@@ -15,6 +15,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -138,12 +139,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
         return super.getModelData();
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.putBoolean(SerializationConstants.EMITTING, isEmitting);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putBoolean(SerializationConstants.EMITTING, isEmitting);
     }
 
     @Override
@@ -224,11 +223,11 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @ComputerMethod(requiresPublicSecurity = true)
     void setTargetItem(Identifier itemName) throws ComputerException {
         validateSecurityIsPublic();
-        Item item = BuiltInRegistries.ITEM.get(itemName);
-        if (item == Items.AIR) {
+        Optional<Holder.Reference<Item>> item = BuiltInRegistries.ITEM.get(itemName);
+        if (item.isEmpty() || item.get().value() == Items.AIR) {
             throw new ComputerException("Target item '%s' could not be found. If you are trying to clear it consider using clearTargetItem instead.", itemName);
         }
-        handleStackChange(new ItemStack(item));
+        handleStackChange(new ItemStack(item.get()));
     }
 
     @ComputerMethod(requiresPublicSecurity = true)

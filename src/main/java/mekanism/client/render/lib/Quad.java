@@ -286,7 +286,7 @@ public class Quad {
             start = start.mul(scale, scale, scale, new Vector3f());
             Vector3f end;
             if (side.getAxis().isHorizontal()) {
-                Vec3i normal = side.getNormal();
+                Vec3i normal = side.getUnitVec3i();
                 end = start.add(normal.getZ() * width * scale, 0, normal.getX() * width * scale, new Vector3f());
                 if (side.getAxis() == Axis.X) {
                     //Wind vertices in a different order so that it faces the correct direction

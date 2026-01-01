@@ -144,12 +144,13 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         public SolarCheck(Level world, BlockPos pos) {
             this.world = world;
             this.pos = pos;
+            int seaLevel = world.getSeaLevel();
             Biome b = this.world.getBiomeManager().getBiome(this.pos).value();
-            needsRainCheck = b.getPrecipitationAt(this.pos) != Precipitation.NONE;
+            needsRainCheck = b.getPrecipitationAt(this.pos, seaLevel) != Precipitation.NONE;
             // Consider the best temperature to be 0.8; biomes that are higher than that
             // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
             // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
-            float tempEff = 0.3F * (0.8F - b.getTemperature(this.pos));
+            float tempEff = 0.3F * (0.8F - b.getTemperature(this.pos, seaLevel));
 
             // Treat rainfall as a proxy for humidity; any humidity works as a drag on overall efficiency.
             // As with temperature, we scale it so that it doesn't overwhelm production. Note the signedness

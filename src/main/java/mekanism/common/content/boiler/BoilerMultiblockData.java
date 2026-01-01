@@ -38,16 +38,15 @@ import mekanism.common.tile.multiblock.TileEntityBoilerValve;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,7 +153,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         hotMap.put(inventoryID, getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP - 0.01);
         // external heat dissipation
@@ -245,23 +244,24 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
         input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, value -> waterTank.setStack(value));
-        NBTUtils.setChemicalStackIfPresent(provider, tag, SerializationConstants.CHEMICAL, value -> steamTank.setStack(value));
+        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(waterTank::setStack);
+        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(steamTank::setStack);
         input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);
         readValves(input);
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.putFloat(SerializationConstants.SCALE, prevWaterScale);
-        tag.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
-        tag.putInt(SerializationConstants.VOLUME, getWaterVolume());
-        tag.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
-        tag.put(SerializationConstants.FLUID, waterTank.getFluid().saveOptional(provider));
-        tag.put(SerializationConstants.CHEMICAL, steamTank.getStack().saveOptional(provider));
-        tag.put(SerializationConstants.RENDER_Y, NbtUtils.writeBlockPos(upperRenderLocation));
-        writeValves(tag);
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.putFloat(SerializationConstants.SCALE, prevWaterScale);
+        output.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
+        output.putInt(SerializationConstants.VOLUME, getWaterVolume());
+        output.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
+        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, waterTank.getFluid());
+        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, steamTank.getStack());
+        output.store(SerializationConstants.RENDER_Y, BlockPos.CODEC, upperRenderLocation);
+        writeValves(output);
     }
 
     @Override

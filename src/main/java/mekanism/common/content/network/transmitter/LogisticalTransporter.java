@@ -19,6 +19,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,27 +88,25 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     }
 
     @Override
-    protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.readFromNBT(provider, nbtTags);
+    public void read(@NotNull ValueInput input) {
+        super.read(input);
         setColor(NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID));
     }
 
     @Override
-    public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        super.writeToNBT(provider, nbtTags);
+    public void write(@NotNull ValueOutput output) {
+        super.write(output);
         if (getColor() != null) {
             NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, getColor());
         }
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag = super.getReducedUpdateTag(provider, updateTag);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         if (getColor() != null) {
             NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, getColor());
         }
-        return updateTag;
     }
 
     @Override

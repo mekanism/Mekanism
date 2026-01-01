@@ -219,14 +219,14 @@ public class CommonPlayerTickHandler {
     }
 
     /**
-     * Based on the values and calculations that happen in {@link LivingEntity#calculateFallDamage(float, float)}
+     * Based on the values and calculations that happen in {@link LivingEntity#calculateFallDamage(double, float)}
      */
     @SubscribeEvent
     public void livingFall(LivingFallEvent event) {
         LivingEntity entity = event.getEntity();
-        float safeFallDistance = (float) entity.getAttributeValue(Attributes.SAFE_FALL_DISTANCE);
-        float fallDistance = Math.max(event.getDistance() - safeFallDistance, 0);
-        if (fallDistance <= Mth.EPSILON) {
+        double safeFallDistance = entity.getAttributeValue(Attributes.SAFE_FALL_DISTANCE);
+        double fallDistance = Math.max(event.getDistance() - safeFallDistance, 0);
+        if (fallDistance <= 1.0E-6) {//TODO - 1.21.11: Figure out where this constant is defined
             return;
         }
         double damageMultiplier = event.getDamageMultiplier() * entity.getAttributeValue(Attributes.FALL_DAMAGE_MULTIPLIER);

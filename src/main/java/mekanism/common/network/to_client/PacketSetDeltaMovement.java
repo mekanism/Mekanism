@@ -25,6 +25,6 @@ public record PacketSetDeltaMovement(Vec3 deltaMovement) implements IMekanismPac
 
     @Override
     public void handle(IPayloadContext context) {
-        context.player().lerpMotion(deltaMovement.x, deltaMovement.y, deltaMovement.z);
+        context.player().lerpMotion(deltaMovement);
     }
 }

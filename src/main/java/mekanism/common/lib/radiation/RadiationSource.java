@@ -1,19 +1,22 @@
 package mekanism.common.lib.radiation;
 
-import java.util.Optional;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.radiation.IRadiationSource;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RadiationSource implements IRadiationSource {
+
+    //TODO - 1.21.11: Should we apply bounds to what is valid as the radiation level
+    public static final Codec<RadiationSource> CODEC = RecordCodecBuilder.create(in -> in.group(
+          BlockPos.CODEC.fieldOf(SerializationConstants.POS).forGetter(RadiationSource::getPosition),
+          Codec.DOUBLE.fieldOf(SerializationConstants.RADIATION).forGetter(RadiationSource::getMagnitude)
+    ).apply(in, RadiationSource::new));
 
     private final BlockPos pos;
     /** In Sv/h */
@@ -24,7 +27,6 @@ public class RadiationSource implements IRadiationSource {
         this.magnitude = magnitude;
     }
 
-    @NotNull
     @Override
     public BlockPos getPosition() {
         return pos;
@@ -62,21 +64,5 @@ public class RadiationSource implements IRadiationSource {
         int result = pos.hashCode();
         result = 31 * result + Double.hashCode(magnitude);
         return result;
-    }
-
-    public CompoundTag serializeNBT() {
-        CompoundTag tag = new CompoundTag();
-        tag.put(SerializationConstants.POS, NbtUtils.writeBlockPos(pos));
-        tag.putDouble(SerializationConstants.RADIATION, magnitude);
-        return tag;
-    }
-
-    @Nullable
-    public static RadiationSource deserializeNBT(CompoundTag nbt) {
-        Optional<BlockPos> blockPos = NbtUtils.readBlockPos(nbt, SerializationConstants.POS);
-        if (blockPos.isEmpty()) {
-            return null;
-        }
-        return new RadiationSource(blockPos.get(), nbt.getDouble(SerializationConstants.RADIATION));
     }
 }

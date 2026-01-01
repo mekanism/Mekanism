@@ -117,12 +117,10 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
         ContainerType.HEAT.readFrom(input, getHeatCapacitors(null));
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag = super.getReducedUpdateTag(provider, updateTag);
-        updateTag.putDouble(SerializationConstants.TEMPERATURE, buffer.getHeat());
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.putDouble(SerializationConstants.TEMPERATURE, buffer.getHeat());
     }
 
     @Override

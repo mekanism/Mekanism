@@ -6,15 +6,15 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
-final class ChemicalSpriteParticle extends TextureSheetParticle {
+final class ChemicalSpriteParticle extends SingleQuadParticle {
 
     private final BlockPos pos;
     private final float uo;
@@ -22,7 +22,7 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
     private final int brightness;
 
     ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, Holder<Chemical> chemical) {
-        super(level, x, y, z, sx, sy, sz);
+        super(level, x, y, z, sx, sy, sz, MekanismRenderer.getChemicalTexture(chemical));
         this.pos = BlockPos.containing(x, y, z);
         this.gravity = 1F;
         this.quadSize /= 2F;
@@ -34,14 +34,13 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
         this.rCol = 0.6F * MekanismRenderer.getRed(tint);
         this.gCol = 0.6F * MekanismRenderer.getGreen(tint);
         this.bCol = 0.6F * MekanismRenderer.getBlue(tint);
-
-        setSprite(MekanismRenderer.getChemicalTexture(chemical));
     }
 
     @NotNull
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.TERRAIN_SHEET;
+    protected SingleQuadParticle.Layer getLayer() {
+        //TODO - 1.21.11: Validate this
+        return SingleQuadParticle.Layer.TERRAIN;
     }
 
     @Override
@@ -74,7 +73,7 @@ final class ChemicalSpriteParticle extends TextureSheetParticle {
     static final class Provider implements ParticleProvider<ChemicalParticleOptions> {
 
         @Override
-        public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz) {
+        public Particle createParticle(ChemicalParticleOptions type, ClientLevel level, double x, double y, double z, double sx, double sy, double sz, @NotNull RandomSource random) {
             return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, type.chemical());
         }
     }

@@ -19,6 +19,7 @@ import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.CableUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -93,7 +94,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean ret = super.tick(world);
         energyContainer.tick();
         // We tick the main energy container before adding/draining from the slots, so that we make sure

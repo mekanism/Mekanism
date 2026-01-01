@@ -118,7 +118,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         //Note: We only enable this config option in dev mode
-        if (FMLEnvironment.production) {
+        if (FMLEnvironment.isProduction()) {
             enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
         } else {
             enableAlphaWarning = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ALPHA_WARNING.applyToBuilder(builder).define("alphaWarning", true));

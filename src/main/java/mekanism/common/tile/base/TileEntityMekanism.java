@@ -979,15 +979,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         for (ITileComponent component : components) {
-            component.addToUpdateTag(updateTag);
+            //TODO - 1.21.11: Do we want to be passing a child?
+            component.addToUpdateTag(output);
         }
-        updateTag.putFloat(SerializationConstants.RADIATION, radiationScale);
-        return updateTag;
+        output.putFloat(SerializationConstants.RADIATION, radiationScale);
     }
 
     @Override
@@ -996,7 +995,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (ITileComponent component : components) {
             component.readFromUpdateTag(input);
         }
-        radiationScale = tag.getFloat(SerializationConstants.RADIATION);
+        radiationScale = input.getFloatOr(SerializationConstants.RADIATION, radiationScale);
     }
 
     public void onNeighborChange(Block block, BlockPos neighborPos) {

@@ -11,7 +11,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.WorldUtils;
-import net.minecraft.util.Util;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,8 +23,9 @@ import net.minecraft.server.level.ChunkLevel;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -189,7 +189,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public void useBlock(BlockPos relativePos, Player player, ItemStack item, Direction direction) {
         player.setItemInHand(InteractionHand.MAIN_HAND, item);
         BlockHitResult hit = createHitResult(relativePos, direction, true);
-        ItemInteractionResult result = getBlockState(relativePos).useItemOn(item, getLevel(), player, InteractionHand.MAIN_HAND, hit);
+        InteractionResult result = getBlockState(relativePos).useItemOn(item, getLevel(), player, InteractionHand.MAIN_HAND, hit);
         if (!result.consumesAction()) {
             item.useOn(new UseOnContext(getLevel(), player, InteractionHand.MAIN_HAND, item, hit));
         }

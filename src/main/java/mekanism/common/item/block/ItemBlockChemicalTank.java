@@ -1,8 +1,8 @@
 package mekanism.common.item.block;
 
 import java.util.EnumMap;
-import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.component.AttachedEjector;
@@ -19,11 +19,12 @@ import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.util.Util;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>> {
@@ -49,15 +50,16 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         ChemicalTankTier tier = getTier();
-        StorageUtils.addStoredSubstance(stack, tooltip, tier == ChemicalTankTier.CREATIVE);
+        StorageUtils.addStoredSubstance(stack, tooltipAdder, tier == ChemicalTankTier.CREATIVE);
         if (tier == ChemicalTankTier.CREATIVE) {
-            tooltip.add(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
+            tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
+            tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(tier.getStorage())));
         }
-        super.appendHoverText(stack, context, tooltip, flag);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

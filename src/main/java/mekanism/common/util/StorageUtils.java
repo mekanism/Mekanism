@@ -2,6 +2,7 @@ package mekanism.common.util;
 
 import java.util.List;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -37,11 +38,11 @@ public class StorageUtils {
     private StorageUtils() {
     }
 
-    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap) {
-        addStoredEnergy(stack, tooltip, showMissingCap, MekanismLang.STORED_ENERGY);
+    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap) {
+        addStoredEnergy(stack, tooltipAdder, showMissingCap, MekanismLang.STORED_ENERGY);
     }
 
-    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean showMissingCap, ILangEntry langEntry) {
+    public static void addStoredEnergy(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean showMissingCap, ILangEntry langEntry) {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         if (energyHandlerItem == null) {
             //Fall back to trying to look up the stored energy by the container type if the stack doesn't expose it
@@ -50,15 +51,15 @@ public class StorageUtils {
         if (energyHandlerItem != null) {
             int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
             for (int container = 0; container < energyContainerCount; container++) {
-                tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
+                tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
                       EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
             }
         } else if (showMissingCap) {
-            tooltip.add(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
+            tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
         }
     }
 
-    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull List<Component> tooltip) {
+    public static void addStoredChemical(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
@@ -69,23 +70,23 @@ public class StorageUtils {
             for (int tank = 0; tank < tanks; tank++) {
                 ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
                 if (chemicalInTank.isEmpty()) {
-                    tooltip.add(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
+                    tooltipAdder.accept(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
                 } else {
-                    tooltip.add(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
+                    tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
                           MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
                 }
             }
         } else {
-            tooltip.add(MekanismLang.NO_CHEMICAL.translate());
+            tooltipAdder.accept(MekanismLang.NO_CHEMICAL.translate());
         }
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip) {
-        addStoredFluid(stack, tooltip, MekanismLang.NO_FLUID_TOOLTIP);
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
+        addStoredFluid(stack, tooltipAdder, MekanismLang.NO_FLUID_TOOLTIP);
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, ILangEntry emptyLangEntry) {
-        addStoredFluid(stack, tooltip, emptyLangEntry, (stored, emptyLang) -> {
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry) {
+        addStoredFluid(stack, tooltipAdder, emptyLangEntry, (stored, emptyLang) -> {
             if (stored.isEmpty()) {
                 return emptyLang.translateColored(EnumColor.GRAY);
             }
@@ -94,7 +95,7 @@ public class StorageUtils {
         });
     }
 
-    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull List<Component> tooltip, ILangEntry emptyLangEntry,
+    public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
         IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
         if (handler == null) {
@@ -103,21 +104,21 @@ public class StorageUtils {
         }
         if (handler != null) {
             for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                tooltip.add(storedFunction.apply(handler.getFluidInTank(tank), emptyLangEntry));
+                tooltipAdder.accept(storedFunction.apply(handler.getFluidInTank(tank), emptyLangEntry));
             }
         } else {
-            tooltip.add(emptyLangEntry.translate());
+            tooltipAdder.accept(emptyLangEntry.translate());
         }
     }
 
     /**
      * @implNote Assumes there is only one "type" per substance type
      */
-    public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull List<Component> tooltip, boolean isCreative) {
+    public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
         FluidStack fluidStack = getStoredFluidFromAttachment(stack);
         ChemicalStack chemicalStack = getStoredChemicalFromAttachment(stack);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
-            tooltip.add(MekanismLang.EMPTY.translate());
+            tooltipAdder.accept(MekanismLang.EMPTY.translate());
             return;
         }
         ILangEntry type;
@@ -133,9 +134,9 @@ public class StorageUtils {
             type = MekanismLang.CHEMICAL;
         }
         if (isCreative) {
-            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
+            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
         } else {
-            tooltip.add(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, TextUtils.format(amount))));
+            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, TextUtils.format(amount))));
         }
     }
 

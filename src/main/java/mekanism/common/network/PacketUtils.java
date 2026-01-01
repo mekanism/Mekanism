@@ -41,6 +41,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
@@ -143,7 +144,7 @@ public class PacketUtils {
      * @param message - the message to send
      */
     public static <MSG extends CustomPacketPayload> boolean sendToServer(MSG message) {
-        PacketDistributor.sendToServer(message);
+        ClientPacketDistributor.sendToServer(message);
         return true;
     }
 

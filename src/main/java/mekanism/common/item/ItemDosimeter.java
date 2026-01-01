@@ -16,7 +16,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -42,7 +41,7 @@ public class ItemDosimeter extends Item {
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     @NotNull
@@ -60,10 +59,10 @@ public class ItemDosimeter extends Item {
     private void sendDosimeterLevel(LivingEntity entity, Player player, ILangEntry doseLangEntry) {
         double radiation = RadiationManager.isGlobalRadiationEnabled() ? entity.getData(MekanismAttachmentTypes.RADIATION) : 0;
         EnumColor severityColor = RadiationScale.getSeverityColor(radiation);
-        player.sendSystemMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)));
+        player.displayClientMessage(doseLangEntry.translateColored(EnumColor.GRAY, severityColor, UnitDisplayUtils.getDisplayShort(radiation, RadiationUnit.SV, 3)), false);
         if (MekanismConfig.common.enableDecayTimers.get() && radiation > IRadiationManager.INSTANCE.minRadiationMagnitude()) {
-            player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
-                  TextUtils.getHoursMinutes(player.level(), RadiationUtil.getDecayTime(radiation, false))));
+            player.displayClientMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY, severityColor,
+                  TextUtils.getHoursMinutes(player.level(), RadiationUtil.getDecayTime(radiation, false))), false);
         }
     }
 }

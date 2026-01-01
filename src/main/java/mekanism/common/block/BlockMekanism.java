@@ -25,7 +25,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -268,10 +268,10 @@ public abstract class BlockMekanism extends Block {
         }
     }
 
-    protected ItemInteractionResult genericClientActivated(ItemStack stack, BlockEntity blockEntity) {
+    protected InteractionResult genericClientActivated(ItemStack stack, BlockEntity blockEntity) {
         if (!Attribute.has(this, AttributeGui.class) && MekanismUtils.canUseAsWrench(stack)) {
             if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
-                return ItemInteractionResult.FAIL;
+                return InteractionResult.FAIL;
             }
             return ItemInteractionResult.SUCCESS;
         }

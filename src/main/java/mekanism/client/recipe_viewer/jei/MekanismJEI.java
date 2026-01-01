@@ -60,8 +60,9 @@ import mezz.jei.api.helpers.IStackHelper;
 import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.neoforge.NeoForgeTypes;
-import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.recipe.transfer.IRecipeTransferHandlerHelper;
+import mezz.jei.api.recipe.types.IRecipeHolderType;
+import mezz.jei.api.recipe.types.IRecipeType;
 import mezz.jei.api.registration.IGuiHandlerRegistration;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IModIngredientRegistration;
@@ -86,40 +87,40 @@ public class MekanismJEI implements IModPlugin {
 
     public static final ChemicalStackHelper CHEMICAL_STACK_HELPER = new ChemicalStackHelper();
     private static final ISubtypeInterpreter<ItemStack> MEKANISM_DATA_INTERPRETER = new MekanismSubtypeInterpreter();
-    private static final Map<IRecipeViewerRecipeType<?>, RecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
+    private static final Map<IRecipeViewerRecipeType<?>, IRecipeType<?>> recipeTypeInstanceCache = new HashMap<>();
 
     public static boolean shouldLoad() {
         //Skip handling if both EMI and JEI are loaded as otherwise some things behave strangely
         return !Mekanism.hooks.emi.isLoaded();
     }
 
-    public static RecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
+    public static IRecipeType<?> genericRecipeType(IRecipeViewerRecipeType<?> recipeType) {
         return recipeTypeInstanceCache.computeIfAbsent(recipeType, r -> {
             if (r.requiresHolder()) {
-                return RecipeType.createRecipeHolderType(r.id());
+                return IRecipeHolderType.create(r.id());
             }
-            return new RecipeType<>(r.id(), r.recipeClass());
+            return IRecipeType.create(r.id(), r.recipeClass());
         });
     }
 
     @SuppressWarnings("unchecked")
-    public static <TYPE> RecipeType<TYPE> recipeType(IRecipeViewerRecipeType<TYPE> recipeType) {
+    public static <TYPE> IRecipeType<TYPE> recipeType(IRecipeViewerRecipeType<TYPE> recipeType) {
         if (recipeType.requiresHolder()) {
             throw new IllegalStateException("Basic recipe type requested for a recipe that uses holders");
         }
-        return (RecipeType<TYPE>) genericRecipeType(recipeType);
+        return (IRecipeType<TYPE>) genericRecipeType(recipeType);
     }
 
     @SuppressWarnings("unchecked")
-    public static <TYPE extends Recipe<?>> RecipeType<RecipeHolder<TYPE>> holderRecipeType(IRecipeViewerRecipeType<TYPE> recipeType) {
+    public static <TYPE extends Recipe<?>> IRecipeType<RecipeHolder<TYPE>> holderRecipeType(IRecipeViewerRecipeType<TYPE> recipeType) {
         if (!recipeType.requiresHolder()) {
             throw new IllegalStateException("Holder recipe type requested for a recipe that doesn't use holders");
         }
-        return (RecipeType<RecipeHolder<TYPE>>) genericRecipeType(recipeType);
+        return (IRecipeType<RecipeHolder<TYPE>>) genericRecipeType(recipeType);
     }
 
-    public static RecipeType<?>[] recipeType(IRecipeViewerRecipeType<?>... recipeTypes) {
-        return Arrays.stream(recipeTypes).map(MekanismJEI::genericRecipeType).toArray(RecipeType[]::new);
+    public static IRecipeType<?>[] recipeType(IRecipeViewerRecipeType<?>... recipeTypes) {
+        return Arrays.stream(recipeTypes).map(MekanismJEI::genericRecipeType).toArray(IRecipeType[]::new);
     }
 
     @NotNull

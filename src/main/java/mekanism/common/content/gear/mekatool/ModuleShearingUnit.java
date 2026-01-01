@@ -134,9 +134,9 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     private boolean shearEntity(@Nullable IEnergyContainer energyContainer, LivingEntity entity, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
         IShearable target = (IShearable) entity;
         if (target.isShearable(player, stack, world, pos)) {
-            if (!world.isClientSide()) {
-                for (ItemStack drop : target.onSheared(player, stack, world, pos)) {
-                    target.spawnShearedDrop(world, pos, drop);
+            if (!world.isClientSide() && world instanceof ServerLevel level) {
+                for (ItemStack drop : target.onSheared(player, stack, level, pos)) {
+                    target.spawnShearedDrop(level, pos, drop);
                 }
                 entity.gameEvent(GameEvent.SHEAR, player);
                 if (energyContainer != null) {

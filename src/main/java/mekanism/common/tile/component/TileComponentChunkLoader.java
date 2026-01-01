@@ -283,12 +283,12 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
             for (Map.Entry<BlockPos, TicketSet> entry : ticketHelper.getBlockTickets().entrySet()) {
                 //Only bother looking at non ticking chunks as we don't register any "fully" ticking chunks
                 BlockPos pos = entry.getKey();
-                LongSet forcedChunks = entry.getValue().nonTicking();
-                LongSet tickingForcedChunks = entry.getValue().ticking();
-                LOGGER.debug("Validating tickets for: {}, BlockPos: {}, Forced chunks: {}, Ticking forced chunks: {}", worldName, pos, forcedChunks.size(),
-                      tickingForcedChunks.size());
+                LongSet forcedChunks = entry.getValue().normal();
+                LongSet naturalSpawningChunks = entry.getValue().naturalSpawning();
+                LOGGER.debug("Validating tickets for: {}, BlockPos: {}, Forced chunks: {}, Natural spawning forced chunks: {}", worldName, pos, forcedChunks.size(),
+                      naturalSpawningChunks.size());
                 validateTickets(world, worldName, pos, ticketHelper, forcedChunks, false);
-                validateTickets(world, worldName, pos, ticketHelper, tickingForcedChunks, true);
+                validateTickets(world, worldName, pos, ticketHelper, naturalSpawningChunks, true);
             }
         }
 

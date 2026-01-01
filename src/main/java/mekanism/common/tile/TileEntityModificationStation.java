@@ -30,8 +30,6 @@ import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -145,7 +143,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
     }
 
     @Override

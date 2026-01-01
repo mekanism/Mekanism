@@ -21,7 +21,7 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
     @Nullable
     private Integer colorRepresentation;
 
-    public JsonChemicalBuilder(ThingParser<JsonChemicalBuilder> ownerParser, Identifier registryName) {
+    public JsonChemicalBuilder(ThingParser<Chemical, JsonChemicalBuilder> ownerParser, Identifier registryName) {
         super(ownerParser, registryName);
     }
 

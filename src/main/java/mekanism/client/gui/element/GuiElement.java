@@ -33,6 +33,8 @@ import net.minecraft.client.gui.navigation.FocusNavigationEvent.ArrowNavigation;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.InitialFocus;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent.TabNavigation;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -316,7 +318,8 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
         //Note: We only call this method if we are hovering the proper spot
-        tooltip.refreshTooltipForNextRenderPass(true, isFocused(), getTooltipRectangle(mouseX, mouseY));
+        //TODO - 1.21.11: Is this the correct mouse x and mouse y to be passing? Do we still need to be calling updateTooltip above?
+        tooltip.refreshTooltipForNextRenderPass(guiGraphics, mouseX, mouseY,true, isFocused(), getTooltipRectangle(mouseX, mouseY));
         //We do this before child renders so that if one has a tooltip then they can override the target tooltip
         for (GuiElement child : children) {
             if (child.isMouseOver(mouseX, mouseY)) {
@@ -438,13 +441,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        return GuiUtils.checkChildren(children, keyCode, scanCode, modifiers, GuiElement::keyPressed) || super.keyPressed(keyCode, scanCode, modifiers);
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        return GuiUtils.checkChildren(children, event, GuiElement::keyPressed) || super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
-        return GuiUtils.checkChildrenChar(children, c, keyCode, GuiElement::charTyped) || super.charTyped(c, keyCode);
+    public boolean charTyped(@NotNull CharacterEvent event) {
+        return GuiUtils.checkChildrenChar(children, event, GuiElement::charTyped) || super.charTyped(event);
     }
 
     @Override
@@ -491,12 +494,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         this.buttonBackground = buttonBackground;
     }
 
-    @Override
+    //TODO - 1.21.11: I am guessing mojang removed the duplicate behavior and made it so that it just checks the one method. Validate that there isn't anything else we are meant to override instead
+    /*@Override
     protected boolean clicked(double mouseX, double mouseY) {
         //The code for clicked and isMouseOver is the same. Overriding it here lets us override isMouseOver in subclasses
         // and have it propagate to clicking
         return isMouseOver(mouseX, mouseY);
-    }
+    }*/
 
     /**
      * Override this to render the button with a different x position than this GuiElement

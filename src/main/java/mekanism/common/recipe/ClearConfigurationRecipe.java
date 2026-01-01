@@ -99,7 +99,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<ClearConfigurationRecipe> getSerializer() {
         return MekanismRecipeSerializersInternal.CLEAR_CONFIGURATION.get();
     }
 }

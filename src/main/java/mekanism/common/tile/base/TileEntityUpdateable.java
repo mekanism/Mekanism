@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.Chunk3D;
-import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -15,16 +14,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
-import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -128,28 +129,38 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    @Override
-    public void handleUpdateTag(@NotNull ValueInput input) {
-        //We don't want to do a full read from NBT so simply call the super's read method to let Neo do whatever
-        // it wants, but don't treat this as if it was the full saved NBT data as not everything has to be synced to the client
-        super.loadAdditional(input);
-        //Copy of logic from BlockEntity#loadWithComponents which we can't just call directly as we don't want to call sub-implementations of loadAdditional
-        setComponents(input.read(SerializationConstants.COMPONENTS, DataComponentMap.CODEC).orElse(DataComponentMap.EMPTY));
-    }
-
     @NotNull
     @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
-        return getReducedUpdateTag(provider);
+    public final CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+        //TODO - 1.21.11: Is this fine for how to create the problem reporter?
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
+            writeUpdatedTag(output);
+            return output.buildResult();
+        }
+    }
+
+    protected void writeUpdatedTag(@NotNull ValueOutput output) {
+        writeReducedUpdatedTag(output);
     }
 
     /**
      * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
      */
-    @NotNull
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        //Add the base update tag information
-        return super.getUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+    }
+
+    /**
+     * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
+     */
+    @NotNull//TODO - 1.21.11: Re-evaluate this method and if we want to just inline this into the one caller
+    public final CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
+        //TODO - 1.21.11: Is this fine for how to create the problem reporter?
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
+            writeReducedUpdatedTag(output);
+            return output.buildResult();
+        }
     }
 
     @Override
@@ -158,7 +169,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         //TODO - 1.21.11: Do we need to check if it is empty in any way?
         /*CompoundTag tag = pkt.getTag();
         if (!tag.isEmpty()) {*/
-            handleUpdateTag(input);
+        handleUpdateTag(input);
     }
 
     public void sendUpdatePacket() {

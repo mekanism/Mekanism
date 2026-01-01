@@ -1,6 +1,6 @@
 package mekanism.common.item;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.OwnerObject;
@@ -19,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.NotNull;
@@ -30,10 +31,11 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltip);
-        MekanismUtils.addFrequencyItemTooltip(stack, tooltip);
-        super.appendHoverText(stack, context, tooltip, flag);
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
+        MekanismUtils.addFrequencyItemTooltip(stack, context, tooltipDisplay, tooltipAdder, flag);
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
     }
 
     @Override

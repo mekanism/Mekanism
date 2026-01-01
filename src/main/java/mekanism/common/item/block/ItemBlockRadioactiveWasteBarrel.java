@@ -1,6 +1,6 @@
 package mekanism.common.item.block;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.BlockRadioactiveWasteBarrel;
@@ -11,6 +11,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockRadioactiveWasteBarrel extends ItemBlockTooltip<BlockRadioactiveWasteBarrel> {
@@ -20,17 +21,17 @@ public class ItemBlockRadioactiveWasteBarrel extends ItemBlockTooltip<BlockRadio
     }
 
     @Override
-    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-        tooltip.add(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(MekanismConfig.general.radioactiveWasteBarrelMaxChemical.get())));
+    protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        tooltipAdder.accept(MekanismLang.CAPACITY_MB.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(MekanismConfig.general.radioactiveWasteBarrelMaxChemical.get())));
         int ticks = MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get();
         long decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();
         if (decayAmount == 0 || ticks == 1) {
-            tooltip.add(MekanismLang.WASTE_BARREL_DECAY_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(decayAmount)));
+            tooltipAdder.accept(MekanismLang.WASTE_BARREL_DECAY_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(decayAmount)));
         } else {
             //Show decay rate to four decimals with no trailing zeros (but without decimals if it divides evenly)
-            tooltip.add(MekanismLang.WASTE_BARREL_DECAY_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
+            tooltipAdder.accept(MekanismLang.WASTE_BARREL_DECAY_RATE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
                   TextUtils.format(UnitDisplayUtils.roundDecimals(decayAmount / (double) ticks, 4))));
-            tooltip.add(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(decayAmount),
+            tooltipAdder.accept(MekanismLang.WASTE_BARREL_DECAY_RATE_ACTUAL.translateColored(EnumColor.INDIGO, EnumColor.GRAY, TextUtils.format(decayAmount),
                   EnumColor.GRAY, TextUtils.format(ticks)));
         }
     }

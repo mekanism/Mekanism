@@ -59,9 +59,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
@@ -690,10 +688,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        autoMode = nbt.getBoolean(SerializationConstants.AUTO);
-        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
-        pulseOperations = nbt.getInt(SerializationConstants.PULSE);
-        stockControl = nbt.getBoolean(SerializationConstants.STOCK_CONTROL);
+        autoMode = input.getBooleanOr(SerializationConstants.AUTO, autoMode);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
+        pulseOperations = input.getIntOr(SerializationConstants.PULSE, pulseOperations);
+        stockControl = input.getBooleanOr(SerializationConstants.STOCK_CONTROL, stockControl);
     }
 
     @Override

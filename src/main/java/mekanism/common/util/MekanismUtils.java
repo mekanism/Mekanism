@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -68,6 +69,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.ClipContext;
@@ -471,28 +474,13 @@ public final class MekanismUtils {
     /**
      * @apiNote Only call on the client.
      */
-    public static void addFrequencyItemTooltip(ItemStack stack, List<Component> tooltip) {
+    public static void addFrequencyItemTooltip(ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         if (stack.isEmpty() || !(stack.getItem() instanceof IFrequencyItem frequencyItem)) {//Note: This shouldn't be empty, but we validate it just in case
             return;
         }
         DataComponentType<? extends FrequencyAware<?>> frequencyComponent = MekanismDataComponents.getFrequencyComponent(frequencyItem.getFrequencyType());
-        if (frequencyComponent == null) {
-            return;
-        }
-        FrequencyAware<?> frequencyAware = stack.get(frequencyComponent);
-        if (frequencyAware != null) {
-            FrequencyIdentity identity = frequencyAware.identity().orElse(null);
-            if (identity != null) {
-                tooltip.add(MekanismLang.FREQUENCY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.key()));
-                UUID ownerUUID = frequencyAware.getOwner();
-                if (ownerUUID != null) {
-                    String owner = OwnerDisplay.getOwnerName(tryGetClientPlayer(), frequencyAware.getOwner(), null);
-                    if (owner != null) {
-                        tooltip.add(MekanismLang.OWNER.translateColored(EnumColor.INDIGO, EnumColor.GRAY, owner));
-                    }
-                }
-                tooltip.add(MekanismLang.MODE.translateColored(EnumColor.INDIGO, EnumColor.GRAY, identity.securityMode()));
-            }
+        if (frequencyComponent != null) {
+            stack.addToTooltip(frequencyComponent, context, tooltipDisplay, tooltipAdder, flag);
         }
     }
 

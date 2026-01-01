@@ -6,6 +6,7 @@ import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.gui.navigation.CommonInputs;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.network.chat.Component;
@@ -60,13 +61,13 @@ public class MekanismButton extends GuiElement {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
         //From AbstractButton with an additional check of validating that it is focused
-        if (this.active && this.visible && this.isFocused() && CommonInputs.selected(keyCode)) {
+        if (this.active && this.visible && this.isFocused() && event.isSelection()) {
             playDownSound(minecraft.getSoundManager());
             return onLeftClick.onClick(this, getButtonX() + getButtonWidth() / 2.0, getButtonY() + getButtonHeight() / 2.0);
         }
-        return super.keyPressed(keyCode, scanCode, modifiers);
+        return super.keyPressed(event);
     }
 
 }

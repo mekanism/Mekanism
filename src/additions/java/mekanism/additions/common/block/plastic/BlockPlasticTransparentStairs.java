@@ -28,7 +28,7 @@ public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
     }
 
     @Override
-    protected boolean propagatesSkylightDown(@NotNull BlockState state, @NotNull BlockGetter reader, @NotNull BlockPos pos) {
+    protected boolean propagatesSkylightDown(@NotNull BlockState state) {
         return true;
     }
 

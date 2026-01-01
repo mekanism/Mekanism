@@ -11,6 +11,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
@@ -91,7 +92,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<BinExtractRecipe> getSerializer() {
         return MekanismRecipeSerializersInternal.BIN_EXTRACT.get();
     }
 }

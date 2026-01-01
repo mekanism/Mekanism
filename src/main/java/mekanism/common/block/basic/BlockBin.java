@@ -15,7 +15,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.ItemInteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -72,15 +71,15 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
 
     @NotNull
     @Override
-    protected ItemInteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
+    protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             //No tile, we can just skip trying to use without an item
             return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
         }
-        ItemInteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
-        if (wrenchResult.result() != InteractionResult.PASS) {
+        InteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
+        if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         } else if (hit.getDirection() != bin.getDirection()) {
             return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
@@ -103,7 +102,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     // without requiring them to first be holding the same item
                     bin.addTicks = 5;
                 } else if (bin.addTicks > 0 && !storedStack.isEmpty()) {
-                    NonNullList<ItemStack> inv = player.getInventory().items;
+                    NonNullList<ItemStack> inv = player.getInventory().getNonEquipmentItems();
                     for (int i = 0; i < inv.size(); i++) {
                         if (binSlot.getCount() == binMaxSize) {
                             break;

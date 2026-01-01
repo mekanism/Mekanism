@@ -129,10 +129,10 @@ public class TileComponentSecurity implements ITileComponent {
     }
 
     @Override
-    public void addToUpdateTag(CompoundTag updateTag) {
+    public void addToUpdateTag(@NotNull ValueOutput output) {
         if (ownerUUID != null) {
-            updateTag.putUUID(SerializationConstants.OWNER_UUID, ownerUUID);
-            updateTag.putString(SerializationConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
+            output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, ownerUUID);
+            output.putString(SerializationConstants.OWNER_NAME, MekanismUtils.getLastKnownUsername(ownerUUID));
         }
     }
 

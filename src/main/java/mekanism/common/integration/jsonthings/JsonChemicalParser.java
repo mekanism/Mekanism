@@ -10,13 +10,14 @@ import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.Mekanism;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.RegisterEvent;
 
 @NothingNullByDefault
-public class JsonChemicalParser extends ThingParser<JsonChemicalBuilder> {
+public class JsonChemicalParser extends ThingParser<Chemical, JsonChemicalBuilder> {
 
     public JsonChemicalParser(IEventBus bus) {
         super(GSON, Mekanism.MODID + "/chemical");

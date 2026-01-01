@@ -17,7 +17,7 @@ public abstract class WrappedShapedRecipe extends ShapedRecipe {
     protected WrappedShapedRecipe(ShapedRecipe internal) {
         //Note: We override all uses and calls to pattern and result, so we can just pass null and empty to them
         // Because pattern is AT'd to public however, we make use of it to pass it to super, in case another mod is querying the value
-        super(internal.getGroup(), internal.category(), internal.pattern, ItemStack.EMPTY, internal.showNotification());
+        super(internal.group(), internal.category(), internal.pattern, ItemStack.EMPTY, internal.showNotification());
         this.internal = internal;
     }
 

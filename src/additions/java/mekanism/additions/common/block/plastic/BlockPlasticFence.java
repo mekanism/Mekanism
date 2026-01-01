@@ -8,6 +8,7 @@ import mekanism.common.block.states.BlockStateHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -21,6 +22,7 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockPlasticFence extends FenceBlock implements IColoredBlock, IStateExtendedFluidLoggable {
 
@@ -61,8 +63,8 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
     }
 
     @Override
-    public boolean canPlaceLiquid(Player player, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
-        return IStateExtendedFluidLoggable.super.canPlaceLiquid(player, world, pos, state, fluid);
+    public boolean canPlaceLiquid(@Nullable LivingEntity owner, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull BlockState state, @NotNull Fluid fluid) {
+        return IStateExtendedFluidLoggable.super.canPlaceLiquid(owner, world, pos, state, fluid);
     }
 
     @NotNull
@@ -75,9 +77,9 @@ public class BlockPlasticFence extends FenceBlock implements IColoredBlock, ISta
 
     @NotNull
     @Override
-    public ItemStack pickupBlock(Player player, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
+    public ItemStack pickupBlock(@Nullable LivingEntity owner, @NotNull LevelAccessor world, @NotNull BlockPos pos, @NotNull BlockState state) {
         //Manually declare which pickupBlock we want to be using
-        return IStateExtendedFluidLoggable.super.pickupBlock(player, world, pos, state);
+        return IStateExtendedFluidLoggable.super.pickupBlock(owner, world, pos, state);
     }
 
     @NotNull

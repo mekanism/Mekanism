@@ -1,6 +1,5 @@
 package mekanism.common.content.filter;
 
-import com.mojang.serialization.DataResult;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -8,17 +7,13 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
-import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
-import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class FilterManager<FILTER extends IFilter<?>> {
@@ -161,36 +156,25 @@ public class FilterManager<FILTER extends IFilter<?>> {
         }));
     }
 
-    public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    //TODO - 1.21.11: Test this and deserialization
+    public void serialize(@NotNull ValueOutput output) {
         if (!filters.isEmpty()) {
-            ListTag filterTags = new ListTag(filters.size());
-            RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
+            TypedOutputList<IFilter<?>> filtersOutput = output.list(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC);
             for (FILTER filter : filters) {
-                DataResult<Tag> encoded = BaseFilter.GENERIC_CODEC.encodeStart(serializationContext, filter);
-                encoded.ifSuccess(filterTags::add);
-                encoded.ifError(error -> Mekanism.logger.warn("Failed to serialize filter: {}", error.message()));
-            }
-            if (!filterTags.isEmpty()) {
-                nbt.put(SerializationConstants.FILTERS, filterTags);
+                filtersOutput.add(filter);
             }
         }
     }
 
-    public void readFromNBT(HolderLookup.Provider provider, CompoundTag nbt) {
+    public void deserialize(@NotNull ValueInput input) {
         filters.clear();
         //Instantiate an empty cache for enabled filters so that when we add enabled filters
         // we can also add them to the enabled ones, and also overwrite our old cache
         enabledFilters = new ArrayList<>();
-        NBTUtils.setListIfPresent(nbt, SerializationConstants.FILTERS, Tag.TAG_COMPOUND, tagList -> {
-            RegistryOps<Tag> serializationContext = provider.createSerializationContext(NbtOps.INSTANCE);
-            for (int i = 0, size = tagList.size(); i < size; i++) {
-                DataResult<IFilter<?>> decoded = BaseFilter.GENERIC_CODEC.parse(serializationContext, tagList.getCompound(i));
-                if (decoded.isSuccess()) {
-                    tryAddFilter(decoded.getOrThrow(), false);
-                } else {
-                    decoded.ifError(error -> Mekanism.logger.warn("Failed to deserialize stored filter: {}", error.message()));
-                }
-            }
-        });
+        //TODO - 1.21.11: Validate this behaves appropriately with partial loading. We might have to treat it as a child list and deserialize one element at a time
+        // Also check other places where we go based on the list instead of a child list
+        for (IFilter<?> filter : input.listOrEmpty(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC)) {
+            tryAddFilter(filter, false);
+        }
     }
 }

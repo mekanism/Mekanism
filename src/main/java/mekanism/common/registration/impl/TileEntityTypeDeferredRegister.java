@@ -81,7 +81,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             //Note: All entries should be of this type
             if (entry instanceof TileEntityTypeRegistryObject<?> tileRO) {
                 tileRO.registerCapabilityProviders(event);
-            } else if (!FMLEnvironment.production) {
+            } else if (!FMLEnvironment.isProduction()) {
                 throw new IllegalStateException("Expected entry to be a TileEntityTypeRegistryObject");
             }
         }

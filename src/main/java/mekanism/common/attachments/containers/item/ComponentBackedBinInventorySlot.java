@@ -104,12 +104,11 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     @Override
     public void serialize(ValueOutput output) {
-        CompoundTag nbt = super.serializeNBT(provider);
+        super.serialize(output);
         ItemStack lockStack = getLockStack();
         if (!lockStack.isEmpty()) {
             nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
-        return nbt;
     }
 
     @Override

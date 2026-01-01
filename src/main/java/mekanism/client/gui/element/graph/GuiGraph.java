@@ -61,12 +61,12 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             RenderSystem.enableBlend();
             RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
-            guiGraphics.setColor(1, 1, 1, 0.2F + 0.8F * i / size);
+            MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.2F + 0.8F * i / size);
             guiGraphics.blit(texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
             int hoverIndex = mouseX - getX();
             if (hoverIndex == i && mouseY >= getY() && mouseY < getY() + height) {
-                guiGraphics.setColor(1, 1, 1, 0.5F);
+                MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.5F);
                 guiGraphics.blit(texture, x + i, y, 2, 0, 1, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
                 MekanismRenderer.resetColor(guiGraphics);
                 guiGraphics.blit(texture, x + i, y + height - relativeHeight, 0, 1, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);

@@ -126,7 +126,7 @@ public class VoiceConnection extends Thread {
 
     public boolean canListen(int channel) {
         ServerPlayer player = getPlayer();
-        for (ItemStack itemStack : player.getInventory().items) {
+        for (ItemStack itemStack : player.getInventory().getNonEquipmentItems()) {
             if (canListen(channel, itemStack)) {
                 return true;
             }

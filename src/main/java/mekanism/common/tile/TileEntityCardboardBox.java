@@ -1,16 +1,15 @@
 package mekanism.common.tile;
 
 import java.util.List;
-import mekanism.common.Mekanism;
+import mekanism.api.SerializationConstants;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.base.TileEntityUpdateable;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: If we end up with more blocks where we care about the actual backing component, we should abstract some of this up into TileEntityUpdateable
@@ -31,17 +30,13 @@ public class TileEntityCardboardBox extends TileEntityUpdateable {
         return remapEntries;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         if (components().has(MekanismDataComponents.BLOCK_DATA.get())) {
             //If we have the block data component, just sync all the components to the client, as when handling the update tag
             // it deserializes any components and replaces the components with the new value
-            ComponentHelper.COMPONENTS_CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), components())
-                  .resultOrPartial(error -> Mekanism.logger.warn("Failed to save components: {}", error))
-                  .ifPresent(tag -> updateTag.merge((CompoundTag) tag));
+            output.store(SerializationConstants.COMPONENTS, DataComponentMap.CODEC, components());
         }
-        return updateTag;
     }
 }

@@ -67,6 +67,7 @@ public class ItemMekanismPaxel extends DiggerItem {
     }
 
     @Override
+    @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         ToolsUtils.addDurability(tooltipAdder, stack);

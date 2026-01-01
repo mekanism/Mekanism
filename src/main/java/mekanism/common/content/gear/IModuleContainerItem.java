@@ -2,6 +2,7 @@ package mekanism.common.content.gear;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -57,14 +58,14 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         return IModuleHelper.INSTANCE.getIfEnabled(stack, type);
     }
 
-    default void addModuleDetails(ItemStack stack, List<Component> tooltip) {
+    default void addModuleDetails(ItemStack stack, Consumer<Component> tooltipAdder) {
         for (IModule<?> module : getModules(stack)) {
             ModuleData<?> data = module.getUntypedData();
             if (module.getInstalledCount() > 1) {
                 Component amount = MekanismLang.GENERIC_FRACTION.translate(module.getInstalledCount(), data.getMaxStackSize());
-                tooltip.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, data, amount));
+                tooltipAdder.accept(MekanismLang.GENERIC_WITH_PARENTHESIS.translateColored(EnumColor.GRAY, data, amount));
             } else {
-                tooltip.add(TextComponentUtil.build(EnumColor.GRAY, data));
+                tooltipAdder.accept(TextComponentUtil.build(EnumColor.GRAY, data));
             }
         }
     }

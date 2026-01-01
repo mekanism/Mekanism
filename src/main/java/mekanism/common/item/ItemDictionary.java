@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -18,13 +19,13 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
@@ -43,11 +44,13 @@ public class ItemDictionary extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.descriptionKey)) {
-            tooltip.add(MekanismLang.DESCRIPTION_DICTIONARY.translate());
+            tooltipAdder.accept(MekanismLang.DESCRIPTION_DICTIONARY.translate());
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_DESCRIPTION.translateColored(EnumColor.GRAY, EnumColor.AQUA, MekanismKeyHandler.descriptionKey.getTranslatedKeyMessage()));
         }
     }
 
@@ -72,7 +75,7 @@ public class ItemDictionary extends Item {
                         !sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags)) {
                         //Note: If none of the tag types were present log that there was no key. We check using bitwise AND to ensure we print all
                         // types we find rather than stopping evaluation after the first one that we have no tags for
-                        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
+                        player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), false);
                     }
                 }
                 return InteractionResult.sidedSuccess(world.isClientSide());
@@ -114,21 +117,21 @@ public class ItemDictionary extends Item {
                 }
             }
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 
     private <TYPE> void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tags) {
         if (!sendTagsToPlayer(player, tagsFoundEntry, tags)) {
-            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
+            player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), false);
         }
     }
 
     private <TYPE> boolean sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tagStream) {
         List<Identifier> tags = tagStream.map(TagKey::location).toList();
         if (!tags.isEmpty()) {
-            player.sendSystemMessage(MekanismUtils.logFormat(tagsFoundEntry));
+            player.displayClientMessage(MekanismUtils.logFormat(tagsFoundEntry), false);
             for (Identifier tag : tags) {
-                player.sendSystemMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
+                player.displayClientMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), false);
             }
             return true;
         }

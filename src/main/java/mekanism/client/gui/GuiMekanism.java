@@ -31,6 +31,8 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.ComponentPath;
@@ -302,8 +304,8 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected boolean hasClickedOutside(double mouseX, double mouseY, int guiLeftIn, int guiTopIn, int mouseButton) {
-        return getWindowHovering(mouseX, mouseY) == null && super.hasClickedOutside(mouseX, mouseY, guiLeftIn, guiTopIn, mouseButton);
+    protected boolean hasClickedOutside(double mouseX, double mouseY, int left, int top) {
+        return getWindowHovering(mouseX, mouseY) == null && super.hasClickedOutside(mouseX, mouseY, left, top);
     }
 
     @Override
@@ -527,33 +529,33 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
         for (GuiWindow window : windows) {
-            if (window.keyPressed(keyCode, scanCode, modifiers)) {
+            if (window.keyPressed(event)) {
                 return true;
             }
         }
-        return GuiUtils.checkChildren(children(), keyCode, scanCode, modifiers, (child, k, s, m) -> child instanceof GuiElement && child.keyPressed(k, s, m)) ||
-               super.keyPressed(keyCode, scanCode, modifiers);
+        return GuiUtils.checkChildren(children(), event, (child, e) -> child instanceof GuiElement && child.keyPressed(e)) ||
+               super.keyPressed(event);
     }
 
     @Override
-    public boolean charTyped(char c, int keyCode) {
+    public boolean charTyped(@NotNull CharacterEvent event) {
         for (GuiWindow window : windows) {
-            if (window.charTyped(c, keyCode)) {
+            if (window.charTyped(event)) {
                 return true;
             }
         }
-        return GuiUtils.checkChildrenChar(children(), c, keyCode, (child, ch, k) -> child instanceof GuiElement && child.charTyped(ch, k)) || super.charTyped(c, keyCode);
+        return GuiUtils.checkChildrenChar(children(), event, (child, e) -> child instanceof GuiElement && child.charTyped(e)) || super.charTyped(event);
     }
 
     /**
      * @apiNote mouseXOld and mouseYOld are just guessed mappings I couldn't find any usage from a quick glance.
      */
     @Override
-    public boolean mouseDragged(double mouseX, double mouseY, int button, double mouseXOld, double mouseYOld) {
-        super.mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
-        return getFocused() != null && isDragging() && button == InputConstants.MOUSE_BUTTON_LEFT && getFocused().mouseDragged(mouseX, mouseY, button, mouseXOld, mouseYOld);
+    public boolean mouseDragged(@NotNull MouseButtonEvent event, double mouseXOld, double mouseYOld) {
+        super.mouseDragged(event, mouseXOld, mouseYOld);
+        return getFocused() != null && isDragging() && event.button() == InputConstants.MOUSE_BUTTON_LEFT && getFocused().mouseDragged(event, mouseXOld, mouseYOld);
     }
 
     @Nullable

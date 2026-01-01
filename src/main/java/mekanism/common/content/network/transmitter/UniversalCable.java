@@ -22,11 +22,8 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.upgrade.transmitter.UniversalCableUpgradeData;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -128,7 +125,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        lastWrite = nbtTags.getLong(SerializationConstants.ENERGY);
+        lastWrite = input.getLongOr(SerializationConstants.ENERGY, lastWrite);
         buffer.setEnergy(lastWrite);
     }
 
@@ -139,7 +136,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (lastWrite == 0L) {
-            nbtTags.remove(SerializationConstants.ENERGY);
+            output.discard(SerializationConstants.ENERGY);
         } else {
             output.putLong(SerializationConstants.ENERGY, lastWrite);
         }

@@ -264,7 +264,7 @@ public class SoundHandler {
         }
 
         // Ignore any sound event outside this mod namespace
-        Identifier soundLoc = event.getOriginalSound().getLocation();
+        Identifier soundLoc = event.getOriginalSound().getIdentifier();
         //If it is mekanism or one of the submodules let continue
         if (!soundLoc.getNamespace().startsWith(Mekanism.MODID)) {
             return;

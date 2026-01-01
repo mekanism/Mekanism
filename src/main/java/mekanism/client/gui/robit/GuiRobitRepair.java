@@ -4,6 +4,7 @@ import mekanism.client.gui.element.text.BackgroundType;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.entity.robit.RepairRobitContainer;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -120,10 +121,10 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
 
     @Override
     protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
-        guiGraphics.blit(ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight);
-        guiGraphics.blitSprite(this.menu.getSlot(0).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, this.leftPos + 59, this.topPos + 20, 110, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.menu.getSlot(0).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, this.leftPos + 59, this.topPos + 20, 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {
-            guiGraphics.blitSprite(ERROR_SPRITE, leftPos + 99, topPos + 45, 28, 21);
+            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, ERROR_SPRITE, leftPos + 99, topPos + 45, 28, 21);
         }
     }
 

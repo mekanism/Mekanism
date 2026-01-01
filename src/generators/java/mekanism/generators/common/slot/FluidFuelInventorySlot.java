@@ -12,7 +12,9 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.UseRemainder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.NotNull;
@@ -68,7 +70,9 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 //If filling from item failed, try doing it by conversion
                 int fuel = fuelValue.applyAsInt(current);
                 if (fuel > 0 && fuel <= needed) {
-                    boolean hasContainer = current.hasCraftingRemainingItem();
+                    UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
+                    //TODO - 1.21.11: Should we also validate that the remainder isn't the existing stack?
+                    boolean hasContainer = remainder != null;
                     if (hasContainer && current.getCount() > 1) {
                         //If we have a container but have more than a single stack of it somehow just exit
                         return;
@@ -76,7 +80,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                     fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
                     if (hasContainer) {
                         //If the item has a container, then replace it with the container
-                        setStack(current.getCraftingRemainingItem());
+                        setStack(remainder.convertInto());
                     } else {
                         //Otherwise, shrink the size of the stack by one
                         MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

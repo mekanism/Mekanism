@@ -21,6 +21,6 @@ public class DataSerializerDeferredRegister extends MekanismDeferredRegister<Ent
     }
 
     public <T> MekanismDeferredHolder<EntityDataSerializer<?>, EntityDataSerializer<ResourceKey<T>>> register(String name, ResourceKey<? extends Registry<T>> registryName) {
-        return register(name, Identifier.STREAM_CODEC.map(rl -> ResourceKey.create(registryName, rl), ResourceKey::location));
+        return register(name, Identifier.STREAM_CODEC.map(rl -> ResourceKey.create(registryName, rl), ResourceKey::identifier));
     }
 }

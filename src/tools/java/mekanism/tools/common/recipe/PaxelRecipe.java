@@ -18,7 +18,7 @@ public class PaxelRecipe extends WrappedShapedRecipe {
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public RecipeSerializer<PaxelRecipe> getSerializer() {
         return ToolsRecipeSerializers.PAXEL.get();
     }
 

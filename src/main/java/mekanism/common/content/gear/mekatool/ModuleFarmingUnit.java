@@ -332,7 +332,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
         public void persistData(Level level, BlockPos pos, BlockState state, Direction side) {
             axis = getAxis(state);
             isSet = true;
-            offset = Vec3.atLowerCornerOf(side.getNormal()).scale(0.5);
+            offset = Vec3.atLowerCornerOf(side.getUnitVec3i()).scale(0.5);
         }
 
         @Override

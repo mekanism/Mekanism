@@ -10,6 +10,7 @@ import java.util.function.IntFunction;
 import java.util.function.LongConsumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.common.Mekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.Registry;
@@ -17,7 +18,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueInput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,25 +33,12 @@ public class NBTUtils {
     private NBTUtils() {
     }
 
-    public static int[] writeBlockPositions(Collection<BlockPos> positions) {
-        int[] list = new int[3 * positions.size()];
-        int i = 0;
-        for (BlockPos pos : positions) {
-            list[i++] = pos.getX();
-            list[i++] = pos.getY();
-            list[i++] = pos.getZ();
-        }
-        return list;
-    }
-
-    public static void readBlockPositions(CompoundTag nbt, String key, Collection<BlockPos> positions) {
-        if (nbt.contains(key, Tag.TAG_INT_ARRAY)) {
-            int[] list = nbt.getIntArray(key);
-            if (list.length % 3 == 0) {
-                for (int i = 0; i < list.length;) {
-                    positions.add(new BlockPos(list[i++], list[i++], list[i++]));
-                }
-            }
+    public static void copyViaSerialization(ProblemReporter.PathElement problemPath, HolderLookup.Provider lookup, ValueIOSerializable copyFrom, ValueIOSerializable copyTo) {
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, lookup);
+            copyFrom.serialize(output);
+            ValueInput input = TagValueInput.create(reporter, lookup, output.buildResult());
+            copyTo.deserialize(input);
         }
     }
 

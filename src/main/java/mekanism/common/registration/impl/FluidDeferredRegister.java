@@ -132,7 +132,7 @@ public class FluidDeferredRegister {
         MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, () -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
-              .noCollission().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
+              .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
         return new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
     }
 

@@ -9,13 +9,9 @@ import mekanism.common.tile.base.TileEntityUpdateable;
 import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.interfaces.IUpgradeTile;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.level.Level;
@@ -145,15 +141,11 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         output.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        if (mainPos != null) {
-            updateTag.put(SerializationConstants.MAIN, NbtUtils.writeBlockPos(mainPos));
-        }
-        updateTag.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        output.storeNullable(SerializationConstants.MAIN, BlockPos.CODEC, mainPos);
+        output.putInt(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }
 
     @Override

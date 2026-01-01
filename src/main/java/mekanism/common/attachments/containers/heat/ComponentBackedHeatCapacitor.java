@@ -6,9 +6,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -126,17 +123,13 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
 
     @Override
     public void deserialize(ValueInput input) {
-        double capacity;
         HeatCapacitorData data;
-        if (nbt.contains(SerializationConstants.HEAT_CAPACITY, Tag.TAG_DOUBLE)) {
-            capacity = nbt.getDouble(SerializationConstants.HEAT_CAPACITY);
-        } else {
-            capacity = defaultData.capacity();
-        }
-        if (nbt.contains(SerializationConstants.STORED, Tag.TAG_DOUBLE)) {
-            data = new HeatCapacitorData(nbt.getDouble(SerializationConstants.STORED), capacity);
-        } else {
+        double capacity = input.getDoubleOr(SerializationConstants.HEAT_CAPACITY, defaultData.capacity());
+        double stored = input.getDoubleOr(SerializationConstants.STORED, -1);
+        if (stored == -1) {
             data = new HeatCapacitorData(capacity);
+        } else {
+            data = new HeatCapacitorData(stored, capacity);
         }
         setContents(getAttached(), data);
     }

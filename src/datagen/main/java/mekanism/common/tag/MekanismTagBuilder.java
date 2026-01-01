@@ -46,7 +46,7 @@ public class MekanismTagBuilder<TYPE> {
 
     @SafeVarargs
     public final MekanismTagBuilder<TYPE> add(ResourceKey<TYPE>... keys) {
-        return apply(elementAdder, ResourceKey::location, keys);
+        return apply(elementAdder, ResourceKey::identifier, keys);
     }
 
     @SafeVarargs

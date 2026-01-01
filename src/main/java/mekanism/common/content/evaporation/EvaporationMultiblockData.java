@@ -46,14 +46,12 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -148,7 +146,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     }
 
     @Override
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
         // external heat dissipation
         lastEnvironmentLoss = simulateEnvironment();
@@ -177,17 +175,18 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> inputTank.setStack(fluid));
+        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(inputTank::setStack);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         readValves(input);
     }
 
     @Override
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        super.writeUpdateTag(tag, provider);
-        tag.put(SerializationConstants.FLUID, inputTank.getFluid().saveOptional(provider));
-        tag.putFloat(SerializationConstants.SCALE, prevScale);
-        writeValves(tag);
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        super.writeUpdateTag(output);
+        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, inputTank.getFluid());
+        output.putFloat(SerializationConstants.SCALE, prevScale);
+        writeValves(output);
     }
 
     @Override

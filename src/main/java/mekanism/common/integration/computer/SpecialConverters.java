@@ -22,6 +22,7 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -70,7 +71,7 @@ public class SpecialConverters {
         if (rawName instanceof String name) {
             Identifier itemName = Identifier.tryParse(name);
             if (itemName != null) {
-                return BuiltInRegistries.ITEM.get(itemName);
+                return BuiltInRegistries.ITEM.get(itemName).map(Holder::value).orElse(Items.AIR);
             }
         }
         return Items.AIR;

@@ -1,11 +1,13 @@
 package mekanism.common.content.miner;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Reference2BooleanOpenHashMap;
 import java.util.BitSet;
+import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -21,6 +23,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.BedBlock;
 import net.minecraft.world.level.block.Block;
@@ -127,24 +130,32 @@ public class ThreadMinerSearch extends Thread {
     }
 
     @NothingNullByDefault
-    public enum State implements IHasEnumNameTextComponent {
+    public enum State implements IHasEnumNameTextComponent, StringRepresentable {
         IDLE(MekanismLang.MINER_IDLE),
         SEARCHING(MekanismLang.MINER_SEARCHING),
         PAUSED(MekanismLang.MINER_PAUSED),
         FINISHED(MekanismLang.MINER_READY);
 
+        public static final Codec<State> CODEC = StringRepresentable.fromEnum(State::values);
         public static final IntFunction<State> BY_ID = ByIdMap.continuous(State::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, State> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, State::ordinal);
 
+        private final String serializedName;
         private final ILangEntry langEntry;
 
         State(ILangEntry langEntry) {
+            this.serializedName = name().toLowerCase(Locale.ROOT);
             this.langEntry = langEntry;
         }
 
         @Override
         public Component getTextComponent() {
             return langEntry.translate();
+        }
+
+        @Override
+        public String getSerializedName() {
+            return serializedName;
         }
     }
 }

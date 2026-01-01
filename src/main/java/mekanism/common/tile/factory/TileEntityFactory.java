@@ -7,6 +7,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.ToIntBiFunction;
@@ -63,6 +64,7 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -385,8 +387,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        if (nbt.contains(SerializationConstants.PROGRESS, Tag.TAG_INT_ARRAY)) {
-            int[] savedProgress = nbt.getIntArray(SerializationConstants.PROGRESS);
+        Optional<int[]> optionalProgress = input.getIntArray(SerializationConstants.PROGRESS);
+        if (optionalProgress.isPresent()) {
+            int[] savedProgress = optionalProgress.get();
             if (tier.processes != savedProgress.length) {
                 Arrays.fill(progress, 0);
             }
@@ -472,11 +475,12 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
-            energySlot.deserializeNBT(provider, data.energySlot.serializeNBT(provider));
+            PathElement problemPath = problemPath();
+            NBTUtils.copyViaSerialization(problemPath, provider, data.energySlot, energySlot);
             System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
-                inputSlots.get(i).deserializeNBT(provider, data.inputSlots.get(i).serializeNBT(provider));
+                NBTUtils.copyViaSerialization(problemPath, provider, data.inputSlots.get(i), inputSlots.get(i));
             }
             for (int i = 0; i < data.outputSlots.size(); i++) {
                 outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());

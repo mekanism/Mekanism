@@ -27,11 +27,8 @@ import mekanism.common.upgrade.transmitter.MechanicalPipeUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -136,7 +133,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        saveShare = FluidStack.parseOptional(provider, nbtTags.getCompound(SerializationConstants.FLUID));
+        saveShare = input.read(SerializationConstants.FLUID, FluidStack.CODEC).orElse(FluidStack.EMPTY);
         buffer.setStack(saveShare);
     }
 
@@ -147,9 +144,9 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
             getTransmitterNetwork().validateSaveShares(this);
         }
         if (saveShare.isEmpty()) {
-            nbtTags.remove(SerializationConstants.FLUID);
+            output.discard(SerializationConstants.FLUID);
         } else {
-            nbtTags.put(SerializationConstants.FLUID, saveShare.save(provider));
+            output.store(SerializationConstants.FLUID, FluidStack.CODEC, saveShare);
         }
     }
 
@@ -264,7 +261,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     @Override
     protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
-        NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, network::setLastFluid);
+        network.setLastFluid(input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY));
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

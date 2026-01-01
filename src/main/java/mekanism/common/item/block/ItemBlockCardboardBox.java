@@ -1,6 +1,6 @@
 package mekanism.common.item.block;
 
-import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -25,6 +25,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -41,12 +42,14 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         BlockData existingData = stack.get(MekanismDataComponents.BLOCK_DATA);
-        tooltip.add(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
-        if (existingData != null) {
-            existingData.addToTooltip(tooltip::add);
-        }
+        //TODO - 1.21.11: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
+        tooltipAdder.accept(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
+        //TODO - 1.21.11: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
+        stack.addToTooltip(MekanismDataComponents.BLOCK_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, Direction sideClicked, BlockState state, ItemStack stack) {

@@ -15,7 +15,6 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -38,16 +37,16 @@ public class ItemGeigerCounter extends Item {
                 LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.get().getRadiationLevelAndMaxMagnitude(player);
                 double magnitude = levelAndMaxMagnitude.level();
                 EnumColor severityColor = RadiationScale.getSeverityColor(magnitude);
-                player.sendSystemMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY, severityColor,
-                      UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)));
+                player.displayClientMessage(MekanismLang.RADIATION_EXPOSURE.translateColored(EnumColor.GRAY, severityColor,
+                      UnitDisplayUtils.getDisplayShort(magnitude, RadiationUnit.SVH, 3)), false);
                 if (MekanismConfig.common.enableDecayTimers.get() && magnitude > IRadiationManager.INSTANCE.baselineRadiation()) {
-                    player.sendSystemMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
-                          severityColor, TextUtils.getHoursMinutes(world, RadiationUtil.getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))));
+                    player.displayClientMessage(MekanismLang.RADIATION_DECAY_TIME.translateColored(EnumColor.GRAY,
+                          severityColor, TextUtils.getHoursMinutes(world, RadiationUtil.getDecayTime(levelAndMaxMagnitude.maxMagnitude(), true))), false);
                 }
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
             return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
         }
-        return InteractionResultHolder.pass(stack);
+        return InteractionResult.PASS;
     }
 }

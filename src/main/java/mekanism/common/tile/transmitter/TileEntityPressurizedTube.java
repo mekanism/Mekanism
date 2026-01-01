@@ -1,6 +1,5 @@
 package mekanism.common.tile.transmitter;
 
-import com.mojang.serialization.DataResult;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Predicate;
@@ -11,7 +10,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
-import mekanism.common.Mekanism;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
@@ -28,12 +26,9 @@ import mekanism.common.tile.interfaces.ITileRadioactive;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -89,24 +84,17 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         });
     }
 
-    @NotNull
     @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+    protected void writeUpdatedTag(@NotNull ValueOutput output) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundTag updateTag = super.getUpdateTag(provider);
+        super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
             if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                DataResult<Tag> encoded = Chemical.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), network.lastChemical);
-                if (encoded.isSuccess()) {
-                    updateTag.put(SerializationConstants.CHEMICAL, encoded.getOrThrow());
-                } else {
-                    encoded.ifError(error -> Mekanism.logger.warn("Failed to encode last chemical: {}", error.message()));
-                }
+                output.store(SerializationConstants.CHEMICAL, Chemical.CODEC, network.lastChemical);
             }
-            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
+            output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
-        return updateTag;
     }
 
     @Override

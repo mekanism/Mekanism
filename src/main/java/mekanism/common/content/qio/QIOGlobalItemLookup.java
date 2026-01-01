@@ -108,16 +108,12 @@ public class QIOGlobalItemLookup {
 
         @Override
         public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            if (nbt.contains(SerializationConstants.ALIASES, Tag.TAG_COMPOUND)) {
-                loadAliases(nbt.getCompound(SerializationConstants.ALIASES));
-            }
-            if (nbt.contains(SerializationConstants.ITEMS, Tag.TAG_COMPOUND)) {
-                loadItemData(nbt.getCompound(SerializationConstants.ITEMS), provider);
-            }
+            nbt.getCompound(SerializationConstants.ALIASES).ifPresent(this::loadAliases);
+            nbt.getCompound(SerializationConstants.ITEMS).ifPresent(items -> loadItemData(items, provider));
         }
 
         private void loadItemData(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-            for (String key : nbt.getAllKeys()) {
+            for (String key : nbt.keySet()) {
                 UUID uuid;
                 try {
                     uuid = UUID.fromString(key);
@@ -160,7 +156,7 @@ public class QIOGlobalItemLookup {
             if (!tag.isEmpty() && INSTANCE.mergedIds.isEmpty()) {
                 INSTANCE.mergedIds = new HashMap<>();
             }
-            for (String key : tag.getAllKeys()) {
+            for (String key : tag.keySet()) {
                 try {
                     //Note: Either of these might throw an IllegalArgumentException
                     UUID uuid = UUID.fromString(key);
@@ -208,7 +204,7 @@ public class QIOGlobalItemLookup {
 
         public Tag getNbtRepresentation(@NotNull HolderLookup.Provider provider) {
             if (nbtRepresentation == null) {
-                nbtRepresentation = internalToNBT(provider);
+                nbtRepresentation = getInternalStack().save(provider);
                 //Override to ensure that it gets stored with a count of one in case it was raw
                 // and that then when we read it we don't create it with extra size
                 ((CompoundTag) nbtRepresentation).putByte(SerializationConstants.COUNT, (byte) 1);

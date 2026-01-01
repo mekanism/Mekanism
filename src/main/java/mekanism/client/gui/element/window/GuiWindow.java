@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -157,7 +158,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         if (isFocusOverlay()) {
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.rgba());
         } else {
-            guiGraphics.setColor(1, 1, 1, 0.75F);
+            MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.75F);
             RenderSystem.enableBlend();
             RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
@@ -167,11 +168,11 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-        if (super.keyPressed(keyCode, scanCode, modifiers)) {
+    public boolean keyPressed(@NotNull KeyEvent event) {
+        if (super.keyPressed(event)) {
             return true;
         }
-        if (keyCode == InputConstants.KEY_ESCAPE && !isPinned()) {
+        if (event.isEscape() && !isPinned()) {
             close();
             return true;
         }
@@ -196,7 +197,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     public void renderBlur(GuiGraphics guiGraphics) {
-        guiGraphics.setColor(1, 1, 1, 0.3F);
+        MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableDepthTest();

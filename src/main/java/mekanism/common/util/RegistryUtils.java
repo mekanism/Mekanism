@@ -7,7 +7,6 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Block;
@@ -29,13 +28,12 @@ public class RegistryUtils {
     }
 
     public static <R> Optional<Holder.Reference<R>> getHolderById(CompoundTag nbt, Registry<R> registry) {
-        if (nbt != null && nbt.contains(SerializationConstants.ID, Tag.TAG_STRING)) {
-            Identifier name = Identifier.tryParse(nbt.getString(SerializationConstants.ID));
-            if (name != null) {
-                return registry.get(name);
-            }
+        if (nbt == null) {
+            return Optional.empty();
         }
-        return Optional.empty();
+        return nbt.getString(SerializationConstants.ID)
+              .map(Identifier::tryParse)
+              .flatMap(registry::get);
     }
 
     public static String getPath(Block element) {

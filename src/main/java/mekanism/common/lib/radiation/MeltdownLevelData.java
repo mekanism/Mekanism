@@ -5,24 +5,25 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
 import javax.annotation.ParametersAreNonnullByDefault;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.util.INBTSerializable;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
-import org.jetbrains.annotations.Nullable;
 
 @MethodsAreNotNullByDefault
 @ParametersAreNonnullByDefault
 @EventBusSubscriber(modid = Mekanism.MODID)
-public class MeltdownLevelData implements INBTSerializable<ListTag> {
+public class MeltdownLevelData implements ValueIOSerializable {
 
     private final List<Meltdown> meltdowns = new ArrayList<>();
 
@@ -55,27 +56,21 @@ public class MeltdownLevelData implements INBTSerializable<ListTag> {
     }
 
     @Override
-    public void deserializeNBT(HolderLookup.Provider provider, ListTag meltdownList) {
-        for (int i = 0; i < meltdownList.size(); i++) {
-            Meltdown meltdown = Meltdown.load(meltdownList.getCompound(i));
-            if (meltdown != null) {
-                this.meltdowns.add(meltdown);
-            }
+    public void deserialize(ValueInput input) {
+        //TODO - 1.21.11: Re-evaluate if we want this to be stored under, as previously it was just as a list without needing a key
+        // Also figure out if this properly supports being lenient if say one meltdown source is of a broken format
+        for (Meltdown meltdown : input.listOrEmpty(SerializationConstants.MELTDOWNS, Meltdown.CODEC)) {
+            this.meltdowns.add(meltdown);
         }
     }
 
     @Override
-    @Nullable
-    public ListTag serializeNBT(HolderLookup.Provider provider) {
-        if (meltdowns.isEmpty()) {
-            return null;
+    public void serialize(ValueOutput output) {
+        if (!meltdowns.isEmpty()) {
+            TypedOutputList<Meltdown> meltdownOutput = output.list(SerializationConstants.MELTDOWNS, Meltdown.CODEC);
+            for (Meltdown meltdown : meltdowns) {
+                meltdownOutput.add(meltdown);
+            }
         }
-
-        ListTag list = new ListTag(meltdowns.size());
-        for (Meltdown meltdown : meltdowns) {
-            list.add(meltdown.write());
-        }
-        return list;
     }
-
 }

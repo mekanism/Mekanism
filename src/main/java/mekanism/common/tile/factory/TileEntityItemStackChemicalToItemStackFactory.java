@@ -51,12 +51,14 @@ import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -293,8 +295,9 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
             //Generic factory upgrade data handling
             super.parseUpgradeData(provider, upgradeData);
             //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
-            chemicalTank.deserializeNBT(provider, data.stored.serializeNBT(provider));
-            extraSlot.deserializeNBT(provider, data.chemicalSlot.serializeNBT(provider));
+            PathElement problemPath = problemPath();
+            NBTUtils.copyViaSerialization(problemPath, provider, data.stored, chemicalTank);
+            NBTUtils.copyViaSerialization(problemPath, provider, data.chemicalSlot, extraSlot);
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());

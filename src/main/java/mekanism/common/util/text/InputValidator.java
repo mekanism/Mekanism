@@ -19,7 +19,7 @@ public class InputValidator {
     public static final CharPredicate USERNAME = LETTER_OR_DIGIT.or(c -> c == '_');
     public static final CharPredicate RL_NAMESPACE = Identifier::validNamespaceChar;
     public static final CharPredicate RL_PATH = Identifier::validPathChar;
-    public static final CharPredicate RESOURCE_LOCATION = Identifier::isAllowedInResourceLocation;
+    public static final CharPredicate RESOURCE_LOCATION = Identifier::isAllowedInIdentifier;
     public static final CharPredicate DECIMAL = DIGIT.or(from('.'));
     public static final CharPredicate SCI_NOTATION = DECIMAL.or(from('E'));
 

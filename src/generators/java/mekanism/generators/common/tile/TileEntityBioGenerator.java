@@ -18,18 +18,16 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -98,12 +96,11 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         return sendUpdatePacket;
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        CompoundTag updateTag = super.getReducedUpdateTag(provider);
-        updateTag.put(SerializationConstants.FLUID, bioFuelTank.serializeNBT(provider));
-        return updateTag;
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
+        //TODO - 1.21.11: Do we want to further trim this and similar cases by skipping adding the fluid key if the tank is empty?
+        bioFuelTank.serialize(output.child(SerializationConstants.FLUID));
     }
 
     @Override

@@ -41,13 +41,12 @@ public class CommonPlayerTracker {
 
     @SubscribeEvent
     public void onPlayerLoginEvent(PlayerLoggedInEvent event) {
-        Player player = event.getEntity();
-        if (!player.level().isClientSide()) {
+        if (event.getEntity() instanceof ServerPlayer player) {
             //TODO - 1.21.11: Enable alpha warning everywhere it should be
             if (MekanismConfig.general.enableAlphaWarning.getAsBoolean()) {
                 player.sendSystemMessage(ALPHA_WARNING);
             }
-            MekanismCriteriaTriggers.LOGGED_IN.value().trigger((ServerPlayer) player);
+            MekanismCriteriaTriggers.LOGGED_IN.value().trigger(player);
         }
     }
 

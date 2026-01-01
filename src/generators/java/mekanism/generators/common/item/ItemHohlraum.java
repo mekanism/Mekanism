@@ -1,6 +1,5 @@
 package mekanism.generators.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -17,6 +16,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
@@ -26,23 +26,25 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
+        super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);
             if (!storedGas.isEmpty()) {
-                tooltip.add(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
+                tooltipAdder.accept(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
                 if (storedGas.getAmount() == gasHandlerItem.getChemicalTankCapacity(0)) {
-                    tooltip.add(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
+                    tooltipAdder.accept(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
                 } else {
-                    tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
+                    tooltipAdder.accept(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
                 }
                 return;
             }
         }
-        tooltip.add(MekanismLang.NO_CHEMICAL.translate());
-        tooltip.add(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
+        tooltipAdder.accept(MekanismLang.NO_CHEMICAL.translate());
+        tooltipAdder.accept(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));
     }
 
     @Override

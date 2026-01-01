@@ -19,10 +19,9 @@ import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,17 +76,15 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
         });
     }
 
-    @NotNull
     @Override
-    public CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
+    protected void writeUpdatedTag(@NotNull ValueOutput output) {
         //Note: We add the stored information to the initial update tag and not to the one we sync on side changes which uses getReducedUpdateTag
-        CompoundTag updateTag = super.getUpdateTag(provider);
+        super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            updateTag.put(SerializationConstants.FLUID, network.lastFluid.saveOptional(provider));
-            updateTag.putFloat(SerializationConstants.SCALE, network.currentScale);
+            output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, network.lastFluid);
+            output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
-        return updateTag;
     }
 
     private List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {

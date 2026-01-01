@@ -9,7 +9,9 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.UseRemainder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,13 +36,16 @@ public class FuelInventorySlot extends BasicInventorySlot {
         }
         int burnTime = current.getBurnTime(null) / 2;
         if (burnTime != 0) {
-            if (current.hasCraftingRemainingItem()) {
+            UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
+            //TODO - 1.21.11: Should we also validate that the remainder isn't the existing stack?
+            if (remainder != null) {
                 if (current.getCount() > 1) {
                     //If we have a container but have more than a single stack of it somehow just exit
+                    //TODO - 1.21.11: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
                     return 0;
                 }
                 //If the item has a container, then replace it with the container
-                setStack(current.getCraftingRemainingItem());
+                setStack(remainder.convertInto());
             } else {
                 //Otherwise, shrink the size of the stack by one
                 MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

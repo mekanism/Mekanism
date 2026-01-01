@@ -40,15 +40,13 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
@@ -344,35 +342,28 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         return new InventoryNetwork(networks);
     }
 
-    @NotNull
     @Override
-    public CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider, CompoundTag updateTag) {
-        updateTag = super.getReducedUpdateTag(provider, updateTag);
+    public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
+        super.writeReducedUpdatedTag(output);
         if (!transit.isEmpty()) {
-            ListTag stacks = new ListTag(transit.size());
+            ValueOutputList itemOutputs = output.childrenList(SerializationConstants.ITEMS);
             for (ObjectIterator<Int2ObjectMap.Entry<TransporterStack>> iterator = Int2ObjectMaps.fastIterator(transit); iterator.hasNext(); ) {
                 Int2ObjectMap.Entry<TransporterStack> entry = iterator.next();
-                CompoundTag tagCompound = new CompoundTag();
-                tagCompound.putInt(SerializationConstants.INDEX, entry.getIntKey());
-                entry.getValue().writeToUpdateTag(provider, this, tagCompound);
-                stacks.add(tagCompound);
+                ValueOutput itemOutput = itemOutputs.addChild();
+                itemOutput.putInt(SerializationConstants.INDEX, entry.getIntKey());
+                entry.getValue().writeToUpdateTag(this, itemOutput);
             }
-            updateTag.put(SerializationConstants.ITEMS, stacks);
         }
-        return updateTag;
     }
 
     @Override
     public boolean handleUpdateTag(@NotNull ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
         transit.clear();
-        if (tag.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
-            ListTag tagList = tag.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                CompoundTag compound = tagList.getCompound(i);
-                TransporterStack stack = TransporterStack.readFromUpdate(provider, compound);
-                addStack(compound.getInt(SerializationConstants.INDEX), stack);
-            }
+        ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
+        for (ValueInput itemInput : itemInputs) {
+            //TODO - 1.21.11: How do we want to handle if the item input doesn't contain an index?
+            addStack(itemInput.getIntOr(SerializationConstants.INDEX, 0), TransporterStack.readFromUpdate(itemInput));
         }
         return refreshModelData;
     }
@@ -380,34 +371,21 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        readFromNBT(provider, nbtTags);
-    }
-
-    protected void readFromNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
-        if (nbtTags.contains(SerializationConstants.ITEMS, Tag.TAG_LIST)) {
-            ListTag tagList = nbtTags.getList(SerializationConstants.ITEMS, Tag.TAG_COMPOUND);
-            for (int i = 0; i < tagList.size(); i++) {
-                addStack(nextId++, TransporterStack.readFromNBT(provider, tagList.getCompound(i)));
-            }
+        ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
+        for (ValueInput itemInput : itemInputs) {
+            addStack(nextId++, TransporterStack.read(itemInput));
         }
     }
 
     @Override
     public void write(@NotNull ValueOutput output) {
         super.write(output);
-        writeToNBT(provider, nbtTags);
-    }
-
-    public void writeToNBT(HolderLookup.Provider provider, CompoundTag nbtTags) {
         Collection<TransporterStack> transit = getTransit();
         if (!transit.isEmpty()) {
-            ListTag stacks = new ListTag(transit.size());
+            ValueOutputList itemOutputs = output.childrenList(SerializationConstants.ITEMS);
             for (TransporterStack stack : transit) {
-                CompoundTag tagCompound = new CompoundTag();
-                stack.write(provider, tagCompound);
-                stacks.add(tagCompound);
+                stack.write(itemOutputs.addChild());
             }
-            nbtTags.put(SerializationConstants.ITEMS, stacks);
         }
     }
 

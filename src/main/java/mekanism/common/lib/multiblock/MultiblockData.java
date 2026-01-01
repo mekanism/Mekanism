@@ -39,18 +39,16 @@ import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -154,7 +152,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
      *
      * @return if we need an update packet
      */
-    public boolean tick(Level world) {
+    public boolean tick(ServerLevel world) {
         boolean needsPacket = false;
         for (ValveData data : valves) {
             data.activeTicks = Math.max(0, data.activeTicks - 1);
@@ -284,16 +282,13 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         inventoryID = input.read(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC).orElse(null);
     }
 
-    public void writeUpdateTag(CompoundTag tag, HolderLookup.Provider provider) {
-        tag.putInt(SerializationConstants.VOLUME, getVolume());
-        if (renderLocation != null) {//In theory this shouldn't be null here but check it anyway
-            tag.put(SerializationConstants.RENDER_LOCATION, NbtUtils.writeBlockPos(renderLocation));
-        }
-        tag.put(SerializationConstants.MIN, NbtUtils.writeBlockPos(bounds.getMinPos()));
-        tag.put(SerializationConstants.MAX, NbtUtils.writeBlockPos(bounds.getMaxPos()));
-        if (inventoryID != null) {
-            tag.putUUID(SerializationConstants.INVENTORY_ID, inventoryID);
-        }
+    public void writeUpdateTag(@NotNull ValueOutput output) {
+        output.putInt(SerializationConstants.VOLUME, getVolume());
+        //In theory this shouldn't be null here but check it anyway
+        output.storeNullable(SerializationConstants.RENDER_LOCATION, BlockPos.CODEC, renderLocation);
+        output.store(SerializationConstants.MIN, BlockPos.CODEC, bounds.getMinPos());
+        output.store(SerializationConstants.MAX, BlockPos.CODEC, bounds.getMaxPos());
+        output.storeNullable(SerializationConstants.INVENTORY_ID, UUIDUtil.CODEC, inventoryID);
     }
 
     @ComputerMethod(nameOverride = "getLength")

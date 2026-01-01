@@ -36,14 +36,11 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -54,6 +51,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -240,20 +238,30 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         output.putInt(SerializationConstants.PROGRESS, operatingTicks);
         output.putBoolean(SerializationConstants.FINISHED, finishedCalc);
         if (!activeNodes.isEmpty()) {
-            output.putIntArray(SerializationConstants.ACTIVE_NODES, NBTUtils.writeBlockPositions(activeNodes));
+            TypedOutputList<BlockPos> activeNodesOutput = output.list(SerializationConstants.ACTIVE_NODES, BlockPos.CODEC);
+            for (BlockPos activeNode : activeNodes) {
+                activeNodesOutput.add(activeNode);
+            }
         }
         if (!usedNodes.isEmpty()) {
-            output.putIntArray(SerializationConstants.USED_NODES, NBTUtils.writeBlockPositions(usedNodes));
+            TypedOutputList<BlockPos> usedNodesOutput = output.list(SerializationConstants.USED_NODES, BlockPos.CODEC);
+            for (BlockPos usedNode : usedNodes) {
+                usedNodesOutput.add(usedNode);
+            }
         }
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        operatingTicks = nbt.getInt(SerializationConstants.PROGRESS);
-        finishedCalc = nbt.getBoolean(SerializationConstants.FINISHED);
-        NBTUtils.readBlockPositions(nbt, SerializationConstants.ACTIVE_NODES, activeNodes);
-        NBTUtils.readBlockPositions(nbt, SerializationConstants.USED_NODES, usedNodes);
+        operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
+        finishedCalc = input.getBooleanOr(SerializationConstants.FINISHED, finishedCalc);
+        for (BlockPos pos : input.listOrEmpty(SerializationConstants.ACTIVE_NODES, BlockPos.CODEC)) {
+            activeNodes.add(pos);
+        }
+        for (BlockPos pos : input.listOrEmpty(SerializationConstants.USED_NODES, BlockPos.CODEC)) {
+            usedNodes.add(pos);
+        }
     }
 
     @Override

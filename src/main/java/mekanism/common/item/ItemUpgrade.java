@@ -1,6 +1,7 @@
 package mekanism.common.item;
 
 import java.util.List;
+import java.util.function.Consumer;
 import mekanism.api.Upgrade;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -33,13 +35,14 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    @Deprecated
+    public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
             Upgrade upgradeType = getUpgradeType(stack);
-            tooltip.add(upgradeType.getDescription());
-            tooltip.add(APILang.UPGRADE_MAX_INSTALLED.translate(upgradeType.getMax()));
+            tooltipAdder.accept(upgradeType.getDescription());
+            tooltipAdder.accept(APILang.UPGRADE_MAX_INSTALLED.translate(upgradeType.getMax()));
         } else {
-            tooltip.add(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
+            tooltipAdder.accept(MekanismLang.HOLD_FOR_DETAILS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
     }
 
