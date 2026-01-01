@@ -1,6 +1,5 @@
 package mekanism.api.recipes;
 
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
@@ -42,10 +41,7 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     //@Override//TODO - 1.21.11: Re-evaluate this, we might want to keep some form of it?
     public abstract boolean isIncomplete();//TODO - 1.21.11: This is now part of PlacementInfo#isImpossibleToPlace ??
 
-    //todo 1.21.5 or 1.22: make this abstract
-    public void logMissingTags() {
-        MekanismAPI.logger.error("Please implement logMissingTags(): {}", this);
-    }
+    public abstract void logMissingTags();
 
     @Override
     public ItemStack assemble(INPUT input, HolderLookup.Provider provider) {

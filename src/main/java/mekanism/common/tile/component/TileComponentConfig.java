@@ -40,12 +40,9 @@ import mekanism.common.tile.component.config.slot.HeatSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapability;
@@ -54,8 +51,6 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileComponentConfig implements ITileComponent, ISpecificContainerTracker {
 
-    public static final String LEGACY_ITEM_EJECT_KEY = SerializationConstants.EJECT + TransmissionType.ITEM.getLegacyOrdinal();
-    public static final String LEGACY_ITEM_CONFIG_KEY = SerializationConstants.CONFIG + TransmissionType.ITEM.getLegacyOrdinal();
     public final TileEntityMekanism tile;
     private final Map<TransmissionType, ConfigInfo> configInfo = new EnumMap<>(TransmissionType.class);
     private final Map<TransmissionType, List<Consumer<Direction>>> configChangeListeners = new EnumMap<>(TransmissionType.class);
@@ -295,43 +290,27 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         });
     }
 
-    public static void read(CompoundTag configNBT, Map<TransmissionType, ConfigInfo> configInfo) {
-        read(configNBT, configInfo, (type, side) -> {
+    public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo) {
+        read(configInput, configInfo, (type, side) -> {
         });
     }
 
     public static void read(@NotNull ValueInput configInput, Map<TransmissionType, ConfigInfo> configInfo, BiConsumer<TransmissionType, RelativeSide> onChange) {
-        //TODO - 1.22 remove backcompat - check for old ITEM ordinal, switch to legacy ordinals if found
-        boolean isLegacyData = configNBT.contains(LEGACY_ITEM_CONFIG_KEY) || configNBT.contains(LEGACY_ITEM_EJECT_KEY);
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            int ordinalToUse = isLegacyData ? type.getLegacyOrdinal() : type.ordinal();
+            //TODO - 1.21.11: Do we want to replace it using the ordinal with using a serialized name as part of the key?
+            // Or maybe better yet, just have it be a input.child(type) and then have sub parts of the ejecting and side data?
+            int ordinalToUse = type.ordinal();
             info.setEjecting(configInput.getBooleanOr(SerializationConstants.EJECT + ordinalToUse, info.isEjecting()));
-            String configKey = SerializationConstants.CONFIG + ordinalToUse;
-            if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
-                readConfigSides(configInput, onChange, configKey, info, type);
-            } else if (isLegacyData && type == TransmissionType.CHEMICAL) {
-                //fallback to try load other types in case a machine didn't have GAS
-                for (int legacyOrdinal = TransmissionType.CHEMICAL.getLegacyOrdinal() + 1; legacyOrdinal < TransmissionType.ITEM.getLegacyOrdinal(); legacyOrdinal++) {
-                    configKey = SerializationConstants.CONFIG + legacyOrdinal;
-                    if (configNBT.contains(configKey, Tag.TAG_INT_ARRAY)) {
-                        readConfigSides(configInput, onChange, configKey, info, type);
-                        break;
+            Optional<int[]> optionalConfigData = configInput.getIntArray(SerializationConstants.CONFIG + ordinalToUse);
+            if (optionalConfigData.isPresent()) {
+                int[] sideData = optionalConfigData.get();
+                for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
+                    RelativeSide side = EnumUtils.SIDES[i];
+                    if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
+                        onChange.accept(type, side);
                     }
-                }
-            }
-        }
-    }
-
-    private static void readConfigSides(@NotNull ValueInput configInput, BiConsumer<TransmissionType, RelativeSide> onChange, String configKey, ConfigInfo info, TransmissionType type) {
-        Optional<int[]> optionalConfigData = configInput.getIntArray(configKey);
-        if (optionalConfigData.isPresent()) {
-            int[] sideData = optionalConfigData.get();
-            for (int i = 0; i < sideData.length && i < EnumUtils.SIDES.length; i++) {
-                RelativeSide side = EnumUtils.SIDES[i];
-                if (info.setDataType(DataType.BY_ID.apply(sideData[i]), side)) {
-                    onChange.accept(type, side);
                 }
             }
         }
@@ -339,25 +318,22 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     @Override
     public void serialize(@NotNull ValueOutput configOutput) {
-        //TODO - 1.21.11: WRITE THIS TO CONFIG OUTPUT
-        write(configInfo, true);
+        write(configOutput, configInfo, true);
     }
 
-    public static CompoundTag write(Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
-        CompoundTag configNBT = new CompoundTag();
+    public static void write(@NotNull ValueOutput configOutput, Map<TransmissionType, ? extends IPersistentConfigInfo> configInfo, boolean full) {
         for (Entry<TransmissionType, ? extends IPersistentConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             IPersistentConfigInfo info = entry.getValue();
             if (full) {
-                configNBT.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
+                configOutput.putBoolean(SerializationConstants.EJECT + type.ordinal(), info.isEjecting());
             }
             int[] sideData = new int[EnumUtils.SIDES.length];
             for (int i = 0; i < EnumUtils.SIDES.length; i++) {
                 sideData[i] = info.getDataType(EnumUtils.SIDES[i]).ordinal();
             }
-            configNBT.putIntArray(SerializationConstants.CONFIG + type.ordinal(), sideData);
+            configOutput.putIntArray(SerializationConstants.CONFIG + type.ordinal(), sideData);
         }
-        return configNBT;
     }
 
     /**
@@ -366,9 +342,11 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
      */
     @Override
     public void addToUpdateTag(@NotNull ValueOutput output) {
-        CompoundTag configNBT = write(configInfo, false);
-        if (!configNBT.isEmpty()) {
-            output.store(getComponentKey(), configNBT);
+        String key = getComponentKey();
+        ValueOutput configOutput = output.child(key);
+        write(configOutput, configInfo, false);
+        if (configOutput.isEmpty()) {
+            output.discard(key);
         }
     }
 
