@@ -679,7 +679,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         super.writeReducedUpdatedTag(output);
         output.putBoolean(SerializationConstants.RENDERING, shouldRender);
         if (color != null) {
-            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
     }
 
@@ -687,7 +687,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
         shouldRender = input.getBooleanOr(SerializationConstants.RENDERING, shouldRender);
-        color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
+        color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     //Methods relating to IComputerTile

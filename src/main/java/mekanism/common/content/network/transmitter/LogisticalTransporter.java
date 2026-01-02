@@ -13,8 +13,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
@@ -90,14 +88,14 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        setColor(NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID));
+        setColor(NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID));
     }
 
     @Override
     public void write(@NotNull ValueOutput output) {
         super.write(output);
         if (getColor() != null) {
-            NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, getColor());
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
         }
     }
 
@@ -105,14 +103,14 @@ public class LogisticalTransporter extends LogisticalTransporterBase implements 
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (getColor() != null) {
-            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, getColor());
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, getColor());
         }
     }
 
     @Override
     public boolean handleUpdateTag(@NotNull ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
-        EnumColor color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
+        EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (this.color != color) {
             setColor(color);
             //Color changed, mark the model data as needing to be refreshed

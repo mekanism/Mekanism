@@ -238,10 +238,10 @@ public class MekanismEmi implements EmiPlugin {
                     registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "condensentrating"), recipeHolder, true));
                     registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, RecipeViewerUtils.synthetic(recipeHolder.id(), "decondensentrating"), recipeHolder, false));
                 } else {
-                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id(), recipeHolder, true));
+                    registry.addRecipe(new RotaryEmiRecipe(condensentratingCategory, recipeHolder.id().identifier(), recipeHolder, true));
                 }
             } else if (recipe.hasFluidToChemical()) {
-                registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id(), recipeHolder, false));
+                registry.addRecipe(new RotaryEmiRecipe(decondensentratingCategory, recipeHolder.id().identifier(), recipeHolder, false));
             }
         }
 

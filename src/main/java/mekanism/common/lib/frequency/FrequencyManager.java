@@ -217,7 +217,9 @@ public class FrequencyManager<FREQ extends Frequency> {
 
         @Override
         public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-            NBTUtils.setUUIDIfPresent(nbtTags, SerializationConstants.OWNER_UUID, uuid -> loadedOwner = uuid);
+            if (nbtTags.hasUUID(SerializationConstants.OWNER_UUID)) {
+                loadedOwner = nbtTags.getUUID(SerializationConstants.OWNER_UUID);
+            }
             ListTag list = nbtTags.getList(SerializationConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
             loadedFrequencies = new HashList<>();
             Codec<FREQ> codec = frequencyType.codec();

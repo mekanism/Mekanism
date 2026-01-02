@@ -221,13 +221,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(data, SerializationConstants.EDIT_MODE, editMode);
+        NBTUtils.writeEnum(output, SerializationConstants.EDIT_MODE, editMode);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(data, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.EDIT_MODE, ContainerEditMode.BY_ID, mode -> editMode = mode);
     }
 
     @Override

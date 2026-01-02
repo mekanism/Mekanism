@@ -83,16 +83,16 @@ public class TransporterStack {
     }
 
     private TransporterStack(@NotNull ValueInput input) {
-        this.color = NBTUtils.getEnum(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
-        this.pathType = NBTUtils.getEnum(nbtTags, SerializationConstants.PATH_TYPE, Path.BY_ID);
+        this.pathType = NBTUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
         this.itemStack = input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY);
     }
 
     public static TransporterStack read(@NotNull ValueInput input) {
         TransporterStack stack = new TransporterStack(input);
-        stack.idleDir = NBTUtils.getEnum(nbtTags, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
+        stack.idleDir = NBTUtils.getEnum(input, SerializationConstants.IDLE_DIR, Direction::from3DDataValue);
         stack.homeLocation = input.getLongOr(SerializationConstants.HOME_LOCATION, Long.MAX_VALUE);
         return stack;
     }
@@ -106,7 +106,7 @@ public class TransporterStack {
 
     private void writeCommon(@NotNull ValueOutput output) {
         if (color != null) {
-            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, color);
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
         output.putInt(SerializationConstants.PROGRESS, progress);
         output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
@@ -117,7 +117,7 @@ public class TransporterStack {
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, @NotNull ValueOutput output) {
         writeCommon(output);
-        NBTUtils.writeEnum(updateTag, SerializationConstants.PATH_TYPE, getPathType());
+        NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, getPathType());
         long next = getNext(transporter);
         if (next != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.NEXT, next);
@@ -133,10 +133,10 @@ public class TransporterStack {
         if (pathType != null) {
             //TODO - 1.21.11: Figure out path type and if we should set it to none when saving to file instead of not saving it
             // given that for syncing we pretend it is none.
-            NBTUtils.writeEnum(nbtTags, SerializationConstants.PATH_TYPE, pathType);
+            NBTUtils.writeEnum(output, SerializationConstants.PATH_TYPE, pathType);
         }
         if (idleDir != null) {
-            NBTUtils.writeEnum(nbtTags, SerializationConstants.IDLE_DIR, idleDir);
+            NBTUtils.writeEnum(output, SerializationConstants.IDLE_DIR, idleDir);
         }
         if (homeLocation != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);

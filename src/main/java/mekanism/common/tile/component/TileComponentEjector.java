@@ -58,8 +58,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -421,7 +419,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     @Override
     public void deserialize(@NotNull ValueInput ejectorInput) {
         strictInput = ejectorInput.getBooleanOr(SerializationConstants.STRICT_INPUT, strictInput);
-        outputColor = NBTUtils.getEnum(ejectorNBT, SerializationConstants.COLOR, EnumColor.BY_ID);
+        outputColor = NBTUtils.getEnum(ejectorInput, SerializationConstants.COLOR, EnumColor.BY_ID);
         //Input colors
         Optional<int[]> optionalColors = ejectorInput.getIntArray(SerializationConstants.INPUT_COLOR);
         if (optionalColors.isPresent()) {
@@ -440,7 +438,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             ejectorOutput.putBoolean(SerializationConstants.STRICT_INPUT, true);
         }
         if (outputColor != null) {
-            NBTUtils.writeEnum(ejectorNBT, SerializationConstants.COLOR, outputColor);
+            NBTUtils.writeEnum(ejectorOutput, SerializationConstants.COLOR, outputColor);
         }
         //Input colors
         int[] colors = new int[inputColors.length];

@@ -16,8 +16,6 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -61,28 +59,28 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
         if (lastColor != null) {
-            NBTUtils.writeEnum(dataMap, SerializationConstants.COLOR, lastColor);
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
         }
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        lastColor = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, EnumColor.BY_ID);
+        lastColor = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
     }
 
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         if (lastColor != null) {
-            NBTUtils.writeEnum(updateTag, SerializationConstants.COLOR, lastColor);
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, lastColor);
         }
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        EnumColor color = NBTUtils.getEnum(tag, SerializationConstants.COLOR, EnumColor.BY_ID);
+        EnumColor color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         if (lastColor != color) {
             lastColor = color;
             WorldUtils.updateBlock(getLevel(), getBlockPos(), getBlockState());

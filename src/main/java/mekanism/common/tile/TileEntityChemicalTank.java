@@ -194,13 +194,13 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_MODE, dumping);
+        NBTUtils.writeEnum(output, SerializationConstants.DUMP_MODE, dumping);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(data, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumping = mode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_MODE, GasMode.BY_ID, mode -> dumping = mode);
     }
 
     @Override

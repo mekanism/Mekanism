@@ -19,7 +19,6 @@ import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -108,7 +107,7 @@ public class TileComponentSecurity implements ITileComponent {
 
     @Override
     public void deserialize(@NotNull ValueInput securityInput) {
-        NBTUtils.setEnumIfPresent(securityNBT, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
+        NBTUtils.setEnumIfPresent(securityInput, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, mode -> securityMode = mode);
         //Note: We can just set the owner uuid directly as the frequency data should be set already from the frequency component
         // Or if it was cleared due to changing owner data as an item, the block place should update it properly
         //TODO: If this ends up causing issues anywhere we may want to consider ensuring the frequency gets set if it is missing
@@ -118,7 +117,7 @@ public class TileComponentSecurity implements ITileComponent {
     @Override
     public void serialize(@NotNull ValueOutput securityOutput) {
         if (securityMode != SecurityMode.PUBLIC) {
-            NBTUtils.writeEnum(securityNBT, SerializationConstants.SECURITY_MODE, securityMode);
+            NBTUtils.writeEnum(securityOutput, SerializationConstants.SECURITY_MODE, securityMode);
         }
         securityOutput.storeNullable(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, ownerUUID);
     }

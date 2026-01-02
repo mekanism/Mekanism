@@ -313,7 +313,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
         if (color != null) {
-            NBTUtils.writeEnum(dataMap, SerializationConstants.COLOR, color);
+            NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         }
         output.putBoolean(SerializationConstants.EJECT, autoEject);
         output.putBoolean(SerializationConstants.ROUND_ROBIN, roundRobin);
@@ -324,7 +324,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        this.color = NBTUtils.getEnum(dataMap, SerializationConstants.COLOR, EnumColor.BY_ID);
+        this.color = NBTUtils.getEnum(input, SerializationConstants.COLOR, EnumColor.BY_ID);
         autoEject = input.getBooleanOr(SerializationConstants.EJECT, autoEject);
         roundRobin = input.getBooleanOr(SerializationConstants.ROUND_ROBIN, roundRobin);
         singleItem = input.getBooleanOr(SerializationConstants.SINGLE_ITEM, singleItem);

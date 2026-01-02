@@ -492,7 +492,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void addAdditionalSaveData(@NotNull ValueOutput output) {
         super.addAdditionalSaveData(output);
         output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, getOwnerUUID());
-        NBTUtils.writeEnum(nbtTags, SerializationConstants.SECURITY_MODE, getSecurityMode());
+        NBTUtils.writeEnum(output, SerializationConstants.SECURITY_MODE, getSecurityMode());
         output.putBoolean(SerializationConstants.FOLLOW, getFollowing());
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
@@ -506,7 +506,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     public void readAdditionalSaveData(@NotNull ValueInput input) {
         super.readAdditionalSaveData(input);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(this::setOwnerUUID);
-        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.SECURITY_MODE, SecurityMode.BY_ID, this::setSecurityMode);
         setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);

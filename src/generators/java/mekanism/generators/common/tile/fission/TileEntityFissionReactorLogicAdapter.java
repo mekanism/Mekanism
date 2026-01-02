@@ -158,13 +158,13 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(nbt, SerializationConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.LOGIC_TYPE, FissionReactorLogic.BY_ID, logicType -> this.logicType = logicType);
     }
 
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(nbtTags, SerializationConstants.LOGIC_TYPE, logicType);
+        NBTUtils.writeEnum(output, SerializationConstants.LOGIC_TYPE, logicType);
     }
 
     @Override

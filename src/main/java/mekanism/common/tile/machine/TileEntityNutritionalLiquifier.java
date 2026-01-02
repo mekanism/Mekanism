@@ -240,14 +240,14 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        fluidTank.serialize(output.child(SerializationConstants.FLUID));
+        output.putChild(SerializationConstants.FLUID, fluidTank);
         output.storeNullable(SerializationConstants.ITEM, HashedItem.CODEC, lastPasteItem);
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        input.child(SerializationConstants.FLUID).ifPresent(fluidTank::deserialize);
+        input.readChild(SerializationConstants.FLUID, fluidTank);
         lastPasteItem = input.read(SerializationConstants.ITEM, HashedItem.CODEC).orElse(null);
     }
 

@@ -177,7 +177,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         input.getLong(SerializationConstants.MAX).ifPresent(this::updateMaxThreshold);
         //TODO - 1.21.11: Re-evaluate all the cases we have an or that support optional if we should just use the optional
         delay = input.getIntOr(SerializationConstants.TIME, delay);
-        NBTUtils.setEnumIfPresent(data, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.OUTPUT_MODE, RedstoneOutput.BY_ID, mode -> outputMode = mode);
     }
 
     @Override
@@ -186,7 +186,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
         output.putLong(SerializationConstants.MIN, minThreshold);
         output.putLong(SerializationConstants.MAX, maxThreshold);
         output.putInt(SerializationConstants.TIME, delay);
-        NBTUtils.writeEnum(data, SerializationConstants.OUTPUT_MODE, outputMode);
+        NBTUtils.writeEnum(output, SerializationConstants.OUTPUT_MODE, outputMode);
     }
 
     @Override

@@ -34,6 +34,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -222,11 +223,11 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         }
         InteractionResult result = openGui(player);
         return switch (result) {
-            case SUCCESS, SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
-            case CONSUME -> ItemInteractionResult.CONSUME;
-            case CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-            case PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
-            case FAIL -> ItemInteractionResult.FAIL;
+            case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> InteractionResult.SUCCESS;
+            case InteractionResult.CONSUME -> InteractionResult.CONSUME;
+            case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
+            case InteractionResult.PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            case InteractionResult.FAIL -> InteractionResult.FAIL;
         };
     }
 
@@ -276,7 +277,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.handleUpdateTag(input);
         isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
         T multiblock = getMultiblock();
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.HAS_STRUCTURE, multiblock::setFormedForce);
+        //TODO - 1.21.11: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
+        multiblock.setFormedForce(input.getBooleanOr(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed()));
         if (isMaster()) {
             if (multiblock.isFormed()) {
                 multiblock.readUpdateTag(input);

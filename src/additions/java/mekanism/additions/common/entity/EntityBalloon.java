@@ -309,7 +309,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     public void readAdditionalSaveData(@NotNull ValueInput input) {
-        NBTUtils.setEnumIfPresent(nbtTags, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.COLOR, EnumColor.BY_ID, color -> this.color = color);
         input.read(SerializationConstants.LATCHED, BlockPos.CODEC).ifPresent(pos -> latched = pos);
         input.read(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC).ifPresent(uuid -> {
             hasCachedEntity = true;
@@ -319,7 +319,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Override
     protected void addAdditionalSaveData(@NotNull ValueOutput output) {
-        NBTUtils.writeEnum(nbtTags, SerializationConstants.COLOR, color);
+        NBTUtils.writeEnum(output, SerializationConstants.COLOR, color);
         output.storeNullable(SerializationConstants.LATCHED, BlockPos.CODEC, latched);
         if (latchedEntity != null) {
             output.store(SerializationConstants.OWNER_UUID, UUIDUtil.CODEC, latchedEntity.getUUID());

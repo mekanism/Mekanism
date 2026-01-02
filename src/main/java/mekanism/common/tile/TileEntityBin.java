@@ -177,13 +177,13 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        binSlot.serialize(output.child(SerializationConstants.ITEM));
+        output.putChild(SerializationConstants.ITEM, binSlot);
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        input.child(SerializationConstants.ITEM).ifPresent(binSlot::deserialize);
+        input.readChild(SerializationConstants.ITEM, binSlot);
     }
 
     @Override

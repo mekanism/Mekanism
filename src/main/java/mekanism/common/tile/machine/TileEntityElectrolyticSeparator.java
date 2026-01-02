@@ -351,15 +351,15 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_LEFT, dumpLeft);
-        NBTUtils.writeEnum(dataMap, SerializationConstants.DUMP_RIGHT, dumpRight);
+        NBTUtils.writeEnum(output, SerializationConstants.DUMP_LEFT, dumpLeft);
+        NBTUtils.writeEnum(output, SerializationConstants.DUMP_RIGHT, dumpRight);
     }
 
     @Override
     public void readSustainedData(@NotNull ValueInput input) {
         super.readSustainedData(input);
-        NBTUtils.setEnumIfPresent(dataMap, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
-        NBTUtils.setEnumIfPresent(dataMap, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_LEFT, GasMode.BY_ID, mode -> dumpLeft = mode);
+        NBTUtils.setEnumIfPresent(input, SerializationConstants.DUMP_RIGHT, GasMode.BY_ID, mode -> dumpRight = mode);
     }
 
     @Override

@@ -814,13 +814,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     public void writeSustainedData(@NotNull ValueOutput output) {
         if (supportsRedstone()) {
-            NBTUtils.writeEnum(data, SerializationConstants.CONTROL_TYPE, controlType);
+            NBTUtils.writeEnum(output, SerializationConstants.CONTROL_TYPE, controlType);
         }
     }
 
     public void readSustainedData(@NotNull ValueInput input) {
         if (supportsRedstone()) {
-            NBTUtils.setEnumIfPresent(data, SerializationConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
+            NBTUtils.setEnumIfPresent(input, SerializationConstants.CONTROL_TYPE, RedstoneControl.BY_ID, type -> controlType = supportedOrNextType(type));
         }
     }
 
