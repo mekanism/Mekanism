@@ -26,9 +26,9 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.capabilities.Capabilities.EnergyStorage;
-import net.neoforged.neoforge.capabilities.Capabilities.FluidHandler;
-import net.neoforged.neoforge.capabilities.Capabilities.ItemHandler;
+import net.neoforged.neoforge.capabilities.Capabilities.Energy;
+import net.neoforged.neoforge.capabilities.Capabilities.Fluid;
+import net.neoforged.neoforge.capabilities.Capabilities.Item;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
@@ -51,10 +51,10 @@ public class Capabilities {
                                    EntityCapability<IFluidHandler, @Nullable Direction> entity) implements IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> {
     }
 
-    public static final MultiTypeCapability<IEnergyStorage> ENERGY = new MultiTypeCapability<>(EnergyStorage.BLOCK, EnergyStorage.ITEM, EnergyStorage.ENTITY);
-    public static final IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> FLUID = new FluidCapability(FluidHandler.BLOCK, FluidHandler.ITEM, FluidHandler.ENTITY);
+    public static final MultiTypeCapability<IEnergyStorage> ENERGY = new MultiTypeCapability<>(Energy.BLOCK, Energy.ITEM, Energy.ENTITY);
+    public static final IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> FLUID = new FluidCapability(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
-    public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(ItemHandler.BLOCK, ItemHandler.ITEM, ItemHandler.ENTITY);
+    public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);
 
     public static final MultiTypeCapability<IChemicalHandler> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), IChemicalHandler.class);
 
@@ -110,7 +110,7 @@ public class Capabilities {
             TileEntityBoundingBlock.proxyCapability(event, capability);
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
-        TileEntityBoundingBlock.proxyCapability(event, FluidHandler.BLOCK);
+        TileEntityBoundingBlock.proxyCapability(event, FLUID.block());
         TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
         TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }

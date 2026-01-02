@@ -6,6 +6,7 @@ import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -21,15 +22,15 @@ import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends HumanoidModel<STATE>, A extends HumanoidModel<STATE>> extends HumanoidArmorLayer<STATE, MODEL, A> {
 
     public MekanismArmorLayer(RenderLayerParent<STATE, MODEL> entityRenderer, HumanoidArmorLayer<STATE, MODEL, A> vanillaLayer, EquipmentLayerRenderer equipmentRenderer) {
-        super(entityRenderer, vanillaLayer.innerModel, vanillaLayer.outerModel, equipmentRenderer);
+        super(entityRenderer, vanillaLayer.modelSet, vanillaLayer.babyModelSet, equipmentRenderer);
     }
 
     @Override
-    public void render(PoseStack matrix, MultiBufferSource renderer, int packedLight, STATE state, float yRot, float xRot) {
-        renderArmorPart(matrix, renderer, state, state.chestEquipment, EquipmentSlot.CHEST, packedLight, partialTicks);
-        renderArmorPart(matrix, renderer, state, state.legsEquipment, EquipmentSlot.LEGS, packedLight, partialTicks);
-        renderArmorPart(matrix, renderer, state, state.feetEquipment, EquipmentSlot.FEET, packedLight, partialTicks);
-        renderArmorPart(matrix, renderer, state, state.headEquipment, EquipmentSlot.HEAD, packedLight, partialTicks);
+    public void submit(PoseStack matrix, SubmitNodeCollector collector, int packedLight, STATE state, float yRot, float xRot) {
+        renderArmorPart(matrix, collector, state, state.chestEquipment, EquipmentSlot.CHEST, packedLight, partialTicks);
+        renderArmorPart(matrix, collector, state, state.legsEquipment, EquipmentSlot.LEGS, packedLight, partialTicks);
+        renderArmorPart(matrix, collector, state, state.feetEquipment, EquipmentSlot.FEET, packedLight, partialTicks);
+        renderArmorPart(matrix, collector, state, state.headEquipment, EquipmentSlot.HEAD, packedLight, partialTicks);
     }
 
     private void renderArmorPart(PoseStack matrix, MultiBufferSource renderer, STATE state, ItemStack stack, EquipmentSlot slot, int light, float partialTicks) {

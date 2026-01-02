@@ -125,7 +125,7 @@ public class ClientTickHandler {
 
     public static boolean isVisionEnhancementOn(Player player) {
         ItemStack head = player.getItemBySlot(EquipmentSlot.HEAD);
-        if (!player.getCooldowns().isOnCooldown(head.getItem())) {
+        if (!player.getCooldowns().isOnCooldown(head)) {
             IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(head);
             if (container != null) {
                 IModule<ModuleVisionEnhancementUnit> module = container.getIfEnabled(MekanismModules.VISION_ENHANCEMENT_UNIT);

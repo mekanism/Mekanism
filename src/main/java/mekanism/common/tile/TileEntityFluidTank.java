@@ -394,19 +394,19 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.FLUID, fluid -> fluidTank.setStack(fluid));
-        //NBTUtils.setFluidStackIfPresent(provider, tag, SerializationConstants.VALVE, fluid -> valveFluid = fluid);
-        NBTUtils.setFloatIfPresent(tag, SerializationConstants.SCALE, scale -> {
-            if (lightUpdateDelay == 0 && MekanismUtils.scaleChanged(prevScale, scale)) {
-                if (prevScale == 0 || scale == 0) {
-                    //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
-                    // as the fluid may have changed and have a light value, mark that the client should update the light value
-                    //Note: If we previously had no fluid, we queue the lighting for the next client tick
-                    lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
-                }
+        //input.child(SerializationConstants.FLUID).ifPresent(fluidTank::deserialize);
+        //valveFluid = input.read(SerializationConstants.VALVE, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY);
+        float scale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
+        if (lightUpdateDelay == 0 && MekanismUtils.scaleChanged(prevScale, scale)) {
+            if (prevScale == 0 || scale == 0) {
+                //If it was empty and no longer is, or wasn't empty and now is empty we want to recheck the block lighting
+                // as the fluid may have changed and have a light value, mark that the client should update the light value
+                //Note: If we previously had no fluid, we queue the lighting for the next client tick
+                lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
             }
-            prevScale = scale;
-        });
+        }
+        //TODO - 1.21.11: Should we only update this when the scale has changed? And/or if we had updated the light level?
+        prevScale = scale;
 
         boolean unsetFluid = true;
         if (tag.contains(SerializationConstants.FLUID, Tag.TAG_COMPOUND)) {

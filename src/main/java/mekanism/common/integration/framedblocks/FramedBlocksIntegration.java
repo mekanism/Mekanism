@@ -31,7 +31,7 @@ public final class FramedBlocksIntegration {
         CAMO_FACTORIES.register(modBus);
         PARTICLE_TYPES.register(modBus);
 
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             ClientEvents.init(modBus);
         }
     }

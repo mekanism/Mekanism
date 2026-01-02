@@ -22,11 +22,8 @@ import mekanism.common.tier.ConductorTier;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.upgrade.transmitter.ThermodynamicConductorUpgradeData;
 import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
@@ -126,7 +123,7 @@ public class ThermodynamicConductor extends Transmitter<IHeatHandler, HeatNetwor
     @Override
     public boolean handleUpdateTag(@NotNull ValueInput input) {
         boolean refreshModelData = super.handleUpdateTag(input);
-        NBTUtils.setDoubleIfPresent(tag, SerializationConstants.TEMPERATURE, buffer::setHeat);
+        buffer.setHeat(input.getDoubleOr(SerializationConstants.TEMPERATURE, buffer.getHeat()));
         return refreshModelData;
     }
 

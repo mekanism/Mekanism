@@ -21,6 +21,7 @@ import mekanism.common.registration.MekanismDeferredRegister;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject.CapabilityData;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import mekanism.common.tile.base.TileEntityMekanism;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.Block;
@@ -29,7 +30,6 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.entity.BlockEntityType.BlockEntitySupplier;
 import net.neoforged.bus.api.IEventBus;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -81,7 +81,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
             //Note: All entries should be of this type
             if (entry instanceof TileEntityTypeRegistryObject<?> tileRO) {
                 tileRO.registerCapabilityProviders(event);
-            } else if (!FMLEnvironment.isProduction()) {
+            } else if (SharedConstants.IS_RUNNING_IN_IDE) {
                 throw new IllegalStateException("Expected entry to be a TileEntityTypeRegistryObject");
             }
         }

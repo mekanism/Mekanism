@@ -76,7 +76,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity> imple
     protected abstract String getProfilerSection();
 
     protected Camera getCamera() {
-        return context.getBlockEntityRenderDispatcher().camera;
+        return context.blockEntityRenderDispatcher().camera;
     }
 
     protected final boolean isInsideBounds(double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {

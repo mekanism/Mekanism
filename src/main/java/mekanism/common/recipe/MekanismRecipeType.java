@@ -200,7 +200,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     private static RegistryAccess tryGetRegistryAccess() {
         //Try to get a fallback world if we are in a context that may not have one
         //If we are on the client get the client's world, if we are on the server get the current server's world
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             Level clientWorld = MekanismClient.tryGetClientWorld();
             return clientWorld != null ? clientWorld.registryAccess() : null;
         }
@@ -215,7 +215,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         if (world == null) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
-            if (FMLEnvironment.dist.isClient()) {
+            if (FMLEnvironment.getDist().isClient()) {
                 Level clientWorld = MekanismClient.tryGetClientWorld();
                 if (clientWorld != null) {
                     recipeManager = clientWorld.getRecipeManager();

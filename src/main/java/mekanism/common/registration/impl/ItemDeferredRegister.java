@@ -11,6 +11,7 @@ import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.item.ItemModule;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.MekanismDeferredRegister;
+import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.Registries;
@@ -64,7 +65,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
             //Note: All entries should be of this type
             if (entry instanceof ItemRegistryObject<?> registryObject) {
                 consumer.accept(registryObject);
-            } else if (!FMLEnvironment.isProduction()) {
+            } else if (SharedConstants.IS_RUNNING_IN_IDE) {
                 throw new IllegalStateException("Expected entry to be an ItemRegistryObject");
             }
         }

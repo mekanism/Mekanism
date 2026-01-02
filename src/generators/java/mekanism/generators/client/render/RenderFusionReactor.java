@@ -27,7 +27,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
 
     public RenderFusionReactor(BlockEntityRendererProvider.Context context) {
         super(context);
-        core = new ModelEnergyCore(context.getModelSet());
+        core = new ModelEnergyCore(context.entityModelSet());
     }
 
     @Override

@@ -37,7 +37,6 @@ import mekanism.common.util.CableUtils;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -182,8 +181,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        NBTUtils.setDoubleIfPresent(tag, SerializationConstants.PLASMA_TEMP, this::setLastPlasmaTemp);
-        NBTUtils.setBooleanIfPresent(tag, SerializationConstants.BURNING, this::setBurning);
+        setLastPlasmaTemp(input.getDoubleOr(SerializationConstants.PLASMA_TEMP, getPlasmaTemp()));
+        setBurning(input.getBooleanOr(SerializationConstants.BURNING, isBurning()));
     }
 
     @Override

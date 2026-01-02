@@ -59,7 +59,7 @@ public final class FluidUtils {
         // chemicals
         if (stack.getFluid().isSame(Fluids.LAVA)) {//Special case lava
             return 0xFFDB6B19;
-        } else if (FMLEnvironment.dist.isClient()) {
+        } else if (FMLEnvironment.getDist().isClient()) {
             //Note: We can only return an accurate result on the client side. This method should never be called from the server
             // but in case it is make sure we only run on the client side
             return IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack);

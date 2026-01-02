@@ -48,53 +48,9 @@ public class NBTUtils {
         }
     }
 
-    public static void setLongIfPresent(CompoundTag nbt, String key, LongConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_LONG)) {
-            setter.accept(nbt.getLong(key));
-        }
-    }
-
-    public static void setFloatIfPresent(CompoundTag nbt, String key, FloatConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_FLOAT)) {
-            setter.accept(nbt.getFloat(key));
-        }
-    }
-
-    public static void setDoubleIfPresent(CompoundTag nbt, String key, DoubleConsumer setter) {
-        if (nbt.contains(key, Tag.TAG_DOUBLE)) {
-            setter.accept(nbt.getDouble(key));
-        }
-    }
-
-    public static void setListIfPresent(CompoundTag nbt, String key, int type, Consumer<ListTag> setter) {
-        if (nbt.contains(key, Tag.TAG_LIST)) {
-            setter.accept(nbt.getList(key, type));
-        }
-    }
-
     public static void setUUIDIfPresent(CompoundTag nbt, String key, Consumer<UUID> setter) {
         if (nbt.hasUUID(key)) {
             setter.accept(nbt.getUUID(key));
-        }
-    }
-
-    public static void setFluidStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<FluidStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(FluidStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
-    public static void setChemicalStackIfPresent(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ChemicalStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ChemicalStack.parseOptional(provider, nbt.getCompound(key)));
-        }
-    }
-
-    public static void setItemStackOrEmpty(HolderLookup.Provider provider, CompoundTag nbt, String key, Consumer<ItemStack> setter) {
-        if (nbt.contains(key, Tag.TAG_COMPOUND)) {
-            setter.accept(ItemStack.parseOptional(provider, nbt.getCompound(key)));
-        } else {
-            setter.accept(ItemStack.EMPTY);
         }
     }
 

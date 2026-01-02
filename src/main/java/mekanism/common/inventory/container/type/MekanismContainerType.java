@@ -74,7 +74,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
     private static <TILE extends BlockEntity> TILE getTileFromBuf(FriendlyByteBuf buf, Class<TILE> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
-        } else if (!FMLEnvironment.dist.isClient()) {
+        } else if (!FMLEnvironment.getDist().isClient()) {
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         BlockPos pos = buf.readBlockPos();
@@ -90,7 +90,7 @@ public class MekanismContainerType<T, CONTAINER extends AbstractContainerMenu> e
     private static <ENTITY extends Entity> ENTITY getEntityFromBuf(FriendlyByteBuf buf, Class<ENTITY> type) {
         if (buf == null) {
             throw new IllegalArgumentException("Null packet buffer");
-        } else if (!FMLEnvironment.dist.isClient()) {
+        } else if (!FMLEnvironment.getDist().isClient()) {
             throw new UnsupportedOperationException("This method is only supported on the client.");
         }
         if (Minecraft.getInstance().level == null) {

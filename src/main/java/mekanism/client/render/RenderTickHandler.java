@@ -379,6 +379,7 @@ public class RenderTickHandler {
 
     @SubscribeEvent
     public void onBlockHover(RenderHighlightEvent.Block event) {
+        //TODO - 1.21.11: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         Player player = minecraft.player;
         if (player == null) {
             return;
@@ -435,10 +436,10 @@ public class RenderTickHandler {
                         //If we use a TER to render the wire frame, grab the tile
                         BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
                         if (tile != null) {
-                            BlockEntityRenderer<BlockEntity> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
+                            BlockEntityRenderer<BlockEntity, ?> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
                             if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
                                 matrix.pushPose();
-                                Vec3 viewPosition = info.getPosition();
+                                Vec3 viewPosition = info.position();
                                 matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                                 //0.4 Alpha
                                 VertexConsumer buffer = renderer.getBuffer(RenderType.lines());
@@ -454,7 +455,7 @@ public class RenderTickHandler {
                     } else {
                         //Otherwise, skip getting the tile and just grab the model
                         matrix.pushPose();
-                        Vec3 viewPosition = info.getPosition();
+                        Vec3 viewPosition = info.position();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
                         renderQuadsWireFrame(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random);
@@ -489,7 +490,7 @@ public class RenderTickHandler {
                         if (configInfo != null) {
                             RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
                             if (configInfo.isSideEnabled(side)) {
-                                Vec3 viewPosition = info.getPosition();
+                                Vec3 viewPosition = info.position();
                                 matrix.pushPose();
                                 matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
                                 @Nullable Model3D object = getOverlayModel(face, type);

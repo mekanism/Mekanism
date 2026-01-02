@@ -64,7 +64,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
 
     public RenderLogisticalTransporter(BlockEntityRendererProvider.Context context) {
         super(context);
-        modelBox = new ModelTransporterBox(context.getModelSet());
+        modelBox = new ModelTransporterBox(context.entityModelSet());
     }
 
     public static void onStitch(TextureAtlas map) {
@@ -201,7 +201,7 @@ public class RenderLogisticalTransporter extends RenderTransmitterBase<TileEntit
         @Nullable
         private ItemEntity entityItem;
         @Nullable
-        private EntityRenderer<? super ItemEntity> renderer;
+        private EntityRenderer<? super ItemEntity, ?> renderer;
 
         public void init(Level world, BlockPos pos) {
             if (entityItem == null) {

@@ -105,7 +105,7 @@ public interface IJetpackItem {
             return ItemStack.EMPTY;
         }
         ItemStack jetpack = getJetpack(entity, stack -> stack.getItem() instanceof IJetpackItem jetpackItem && jetpackItem.canUseJetpack(stack));
-        if (entity instanceof Player player && player.getCooldowns().isOnCooldown(jetpack.getItem())) {
+        if (entity instanceof Player player && player.getCooldowns().isOnCooldown(jetpack)) {
             return ItemStack.EMPTY;
         }
         return jetpack;

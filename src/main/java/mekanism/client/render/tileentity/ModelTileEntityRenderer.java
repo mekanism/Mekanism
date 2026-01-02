@@ -14,6 +14,6 @@ public abstract class ModelTileEntityRenderer<TILE extends BlockEntity, MODEL ex
 
     protected ModelTileEntityRenderer(BlockEntityRendererProvider.Context context, Function<EntityModelSet, MODEL> modelCreator) {
         super(context);
-        this.model = modelCreator.apply(context.getModelSet());
+        this.model = modelCreator.apply(context.entityModelSet());
     }
 }

@@ -51,6 +51,7 @@ import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
@@ -151,7 +152,7 @@ public final class MekanismUtils {
 
     @Nullable
     public static Player tryGetClientPlayer() {
-        if (FMLEnvironment.dist.isClient()) {
+        if (FMLEnvironment.getDist().isClient()) {
             return MekanismClient.tryGetClientPlayer();
         }
         //Note: Ideally we would have some way to get which player is in question on the server
@@ -165,9 +166,9 @@ public final class MekanismUtils {
      * @implNote While the default implementation of getCreatorModId falls back to the registry name, it is possible someone is overriding this and not falling back.
      */
     @NotNull
-    public static String getModId(@NotNull ItemStack stack) {
+    public static String getModId(@NotNull HolderLookup.Provider registries, @NotNull ItemStack stack) {
         Item item = stack.getItem();
-        String modid = item.getCreatorModId(stack);
+        String modid = item.getCreatorModId(registries, stack);
         if (modid == null) {
             Mekanism.logger.error("Unexpected null registry name for item of class type: {}", item.getClass().getSimpleName());
             return "";

@@ -39,6 +39,7 @@ import net.minecraft.util.TimeUtil;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +86,10 @@ public class RecipeViewerUtils {
             return synthetic(Identifier.fromNamespaceAndPath(namespace, "_unregistered_sad_face_"), prefix);
         }
         return synthetic(Identifier.fromNamespaceAndPath(namespace, id.replace(':', '_')), prefix);
+    }
+
+    public static Identifier synthetic(ResourceKey<Recipe<?>> key, String prefix) {
+        return synthetic(key.identifier(), prefix);
     }
 
     public static Identifier synthetic(Identifier id, String prefix) {

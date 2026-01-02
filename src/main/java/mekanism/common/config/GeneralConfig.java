@@ -20,7 +20,6 @@ import mekanism.common.tier.FluidTankTier;
 import net.minecraft.SharedConstants;
 import net.minecraft.resources.Identifier;
 import net.neoforged.fml.config.ModConfig.Type;
-import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.fluids.FluidType;
 
@@ -118,10 +117,10 @@ public class GeneralConfig extends BaseMekanismConfig {
         ModConfigSpec.Builder builder = new ModConfigSpec.Builder();
 
         //Note: We only enable this config option in dev mode
-        if (FMLEnvironment.isProduction()) {
-            enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
-        } else {
+        if (SharedConstants.IS_RUNNING_IN_IDE) {
             enableAlphaWarning = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ALPHA_WARNING.applyToBuilder(builder).define("alphaWarning", true));
+        } else {
+            enableAlphaWarning = ConstantPredicates.ALWAYS_TRUE;
         }
 
         logPackets = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_PACKET_LOGGING.applyToBuilder(builder)

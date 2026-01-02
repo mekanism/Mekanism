@@ -36,6 +36,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -154,7 +155,7 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     @Override
     public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
         super.setConfigurationData(provider, player, data);
-        NBTUtils.setLongIfPresent(data, SerializationConstants.ENERGY_USAGE, energyContainer::updateEnergyUsage);
+        data.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(energyContainer::updateEnergyUsage);
     }
 
     @Override
