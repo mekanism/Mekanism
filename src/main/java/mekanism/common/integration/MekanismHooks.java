@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.common.integration.computer.FactoryRegistry;
 import mekanism.common.integration.computer.computercraft.CCCapabilityHelper;
-import mekanism.common.integration.crafttweaker.content.CrTContentUtils;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
@@ -16,14 +15,12 @@ import mekanism.common.integration.projecte.MekanismNormalizedSimpleStacks;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.resources.Identifier;
-import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.InterModComms;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
 
 /**
  * Hooks for Mekanism. Use to grab items or blocks out of different mods.
@@ -97,12 +94,9 @@ public final class MekanismHooks {
     }
 
     public void hookConstructor(final IEventBus modEventBus) {
+        //TODO: Evaluate if we want to move any of these into their own class and just have them in a constructor as another entrypoint
         if (curios.isLoaded()) {
             CuriosIntegration.addListeners(modEventBus);
-        }
-        if (craftTweaker.isLoaded() && !DatagenModLoader.isRunningDataGen()) {
-            //Register our CrT listener at lowest priority to try and ensure they get later ids than our normal registries
-            modEventBus.addListener(EventPriority.LOWEST, CrTContentUtils::registerCrTContent);
         }
         if (jsonThings.isLoaded()) {
             JsonThingsIntegration.hook(modEventBus);
