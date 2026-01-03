@@ -8,11 +8,11 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public abstract class TileEntityConfigurableMachine extends TileEntityMekanism implements ISideConfiguration {
 
@@ -35,18 +35,17 @@ public abstract class TileEntityConfigurableMachine extends TileEntityMekanism i
     }
 
     @Override
-    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
-        CompoundTag data = super.getConfigurationData(provider, player);
-        configComponent.write(data, provider);
-        ejectorComponent.write(data, provider);
-        return data;
+    public void writeConfigurationData(ValueOutput output, Player player) {
+        super.writeConfigurationData(output, player);
+        configComponent.write(output);
+        ejectorComponent.write(output);
     }
 
     @Override
-    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
-        super.setConfigurationData(provider, player, data);
-        configComponent.read(data, provider);
-        ejectorComponent.read(data, provider);
+    public void setConfigurationData(ValueInput input, Player player) {
+        super.setConfigurationData(input, player);
+        configComponent.read(input);
+        ejectorComponent.read(input);
     }
 
     @Override

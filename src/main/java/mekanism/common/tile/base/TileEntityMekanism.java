@@ -1488,17 +1488,15 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IConfigCardAccess
     @Override
-    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
-        CompoundTag data = new CompoundTag();
-        writeSustainedData(provider);
-        getFrequencyComponent().writeConfiguredFrequencies(provider, data);
-        return data;
+    public void writeConfigurationData(ValueOutput output, Player player) {
+        writeSustainedData(output);
+        getFrequencyComponent().writeConfiguredFrequencies(output);
     }
 
     @Override
-    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
-        readSustainedData(provider);
-        getFrequencyComponent().readConfiguredFrequencies(provider, player, data);
+    public void setConfigurationData(ValueInput input, Player player) {
+        readSustainedData(input);
+        getFrequencyComponent().readConfiguredFrequencies(input, player);
     }
 
     @Override

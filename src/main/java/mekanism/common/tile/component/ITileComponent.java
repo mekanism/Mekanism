@@ -7,28 +7,26 @@ import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.NotNull;
 
-public interface ITileComponent {
+public interface ITileComponent extends ValueIOSerializable {
 
     String getComponentKey();
 
     default void read(@NotNull ValueInput input) {
-        input.child(getComponentKey()).ifPresent(this::deserialize);
+        input.readChild(getComponentKey(), this);
     }
 
     default void write(@NotNull ValueOutput output) {
         String key = getComponentKey();
         ValueOutput child = output.child(key);
         serialize(child);
+        //TODO - 1.21.11: Do we want to just store it regardless and use output.putChild(getComponentKey(), this)?
         if (child.isEmpty()) {
             output.discard(key);
         }
     }
-
-    void deserialize(@NotNull ValueInput input);
-
-    void serialize(@NotNull ValueOutput output);
 
     default void applyImplicitComponents(@NotNull DataComponentGetter input) {
     }

@@ -18,6 +18,11 @@ public class RegistryUtils {
     private RegistryUtils() {
     }
 
+    public static <R> String getNameForReporting(Registry<R> registry, R element) {
+        //Based off of BlockEntity#getNameForReporting
+        return registry.getKey(element) + " // " + element.getClass().getCanonicalName();
+    }
+
     public static Holder<BlockEntityType<?>> getBEHolder(BlockEntityType<?> type) {
         Holder<BlockEntityType<?>> holder = type.builtInRegistryHolder();
         //I don't believe this can ever be null as it is always instantiated, but just in case the nullability annotation is valid... handle it

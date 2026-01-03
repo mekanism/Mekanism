@@ -6,9 +6,6 @@ import java.util.function.IntFunction;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.common.Mekanism;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.Registry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.TagValueOutput;
@@ -24,6 +21,7 @@ public class NBTUtils {
     }
 
     public static void copyViaSerialization(ProblemReporter.PathElement problemPath, HolderLookup.Provider lookup, ValueIOSerializable copyFrom, ValueIOSerializable copyTo) {
+        //TODO - 1.21.11: Evaluate all uses and whether we want to use the scoped collector that doesn't provide a problem path?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, lookup);
             copyFrom.serialize(output);
@@ -52,12 +50,5 @@ public class NBTUtils {
 
     public static void writeEnum(ValueOutput output, String key, Enum<?> e) {
         output.putInt(key, e.ordinal());
-    }
-
-    public static <V> void writeRegistryEntry(CompoundTag nbt, String key, Registry<V> registry, V entry) {
-        Identifier registryName = registry.getKeyOrNull(entry);
-        if (registryName != null) {//We expect the registry to have the entry, but if it doesn't then don't add it
-            nbt.putString(key, registryName.toString());
-        }
     }
 }

@@ -30,13 +30,9 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
@@ -146,16 +142,15 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
     }
 
     @Override
-    public CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player) {
-        CompoundTag data = super.getConfigurationData(provider, player);
-        data.putLong(SerializationConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick());
-        return data;
+    public void writeConfigurationData(ValueOutput output, Player player) {
+        super.writeConfigurationData(output, player);
+        output.putLong(SerializationConstants.ENERGY_USAGE, energyContainer.getEnergyPerTick());
     }
 
     @Override
-    public void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data) {
-        super.setConfigurationData(provider, player, data);
-        data.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(energyContainer::updateEnergyUsage);
+    public void setConfigurationData(ValueInput input, Player player) {
+        super.setConfigurationData(input, player);
+        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(energyContainer::updateEnergyUsage);
     }
 
     @Override

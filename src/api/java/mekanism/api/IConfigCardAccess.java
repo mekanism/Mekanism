@@ -1,9 +1,9 @@
 package mekanism.api;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 /**
  * Expose this as a capability on your block to expose it to Mekanism's Configuration card for purposes of saving data to the card and then loading it on another block.
@@ -42,33 +42,28 @@ public interface IConfigCardAccess {
     }
 
     /**
-     * Collects configuration data for this capability into a new {@link CompoundTag}.
-     * <br><br>
-     * Mekanism additionally adds two extra pieces of data to this {@link CompoundTag} afterwards corresponding to the following two constants:
-     * {@link SerializationConstants#DATA_NAME} and {@link SerializationConstants#DATA_TYPE} so it is recommended to ensure you don't put any data in a matching entry, or it will be
-     * overwritten.
+     * Collects configuration data for this capability onto the passed in {@link ValueOutput output}.
      *
-     * @param provider - Provider to lookup holders from.
-     * @param player   - Player who is using the configuration card.
+     * @param output Output to write the pertinent configuration data to.
+     * @param player Player who is using the configuration card.
      *
-     * @return A new {@link CompoundTag} containing all pertinent configuration data.
+     * @since 10.8.0, Replaces the old getConfigurationData
      */
-    CompoundTag getConfigurationData(HolderLookup.Provider provider, Player player);
+    void writeConfigurationData(ValueOutput output, Player player);
 
     /**
-     * Sets the configuration data for the tile this capability represents from the given {@link CompoundTag} that contains the previously stored configuration data.
+     * Sets the configuration data for the tile this capability represents from the given {@link ValueInput input} that contains the previously stored configuration
+     * data.
      *
-     * @param provider - Provider to lookup holders from.
-     * @param player   - Player who is using the configuration card.
-     * @param data     - {@link CompoundTag} of the configuration data stored on the configuration card ItemStack.
+     * @param input  The configuration data stored on the configuration card ItemStack.
+     * @param player Player who is using the configuration card.
      */
-    void setConfigurationData(HolderLookup.Provider provider, Player player, CompoundTag data);
+    void setConfigurationData(ValueInput input, Player player);
 
     /**
-     * This is called after {@link #setConfigurationData(HolderLookup.Provider, Player, CompoundTag)} to allow for easily doing any post-processing such as invalidating
-     * capabilities while ensuring that the proper data can be set first if a hierarchy is used so there may be multiple layers of
-     * {@link #setConfigurationData(HolderLookup.Provider, Player, CompoundTag)} and ensuring the post-processing doesn't happen until afterwards would lead to a bunch of
-     * duplicate code.
+     * This is called after {@link #setConfigurationData(ValueInput, Player)} to allow for easily doing any post-processing such as invalidating capabilities while
+     * ensuring that the proper data can be set first if a hierarchy is used so there may be multiple layers of {@link #setConfigurationData(ValueInput, Player)} and
+     * ensuring the post-processing doesn't happen until afterwards would lead to a bunch of duplicate code.
      */
     void configurationDataSet();
 }
