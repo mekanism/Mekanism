@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei;
 import mekanism.client.gui.element.GuiElement;
 import mezz.jei.api.gui.inputs.IJeiGuiEventListener;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
 
@@ -63,7 +64,7 @@ public class MekJeiWidget implements IJeiGuiEventListener {
 
     @Override
     public boolean keyPressed(double mouseX, double mouseY, int keyCode, int scanCode, int modifiers) {
-        return element.keyPressed(keyCode, scanCode, modifiers);
+        return element.keyPressed(new KeyEvent(keyCode, scanCode, modifiers));
     }
 
     private MouseButtonEvent makeMouseEvent(double mouseX, double mouseY, int button) {

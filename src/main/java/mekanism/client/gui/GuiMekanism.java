@@ -443,7 +443,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         if (deferredTooltipRendering != null) {
             //Note: render has a pop at the end of it in vanilla, so we have to apply the deferred tooltip rendering again
             pose.translate(0, 0, maxZOffset);
-            graphics.renderTooltip(font, deferredTooltipRendering.tooltip(), deferredTooltipRendering.positioner(), mouseX, mouseY);
+            graphics.setTooltipForNextFrame(font, deferredTooltipRendering.tooltip(), deferredTooltipRendering.positioner(), mouseX, mouseY);
             clearTooltipForNextRenderPass();
         }
         pose.popPose();

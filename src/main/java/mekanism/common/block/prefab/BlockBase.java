@@ -138,9 +138,9 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
             if (!world.isClientSide()) {
                 WorldUtils.dismantleBlock(state, world, pos, player, stack);
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {

@@ -37,6 +37,7 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
@@ -81,11 +82,11 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
               (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType))))
               .setTooltip(MekanismLang.AUTO_EJECT);
         addChild(new TooltipToggleButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
-              () -> getTargetType(DataType::getNext) == DataType.NONE, (element, event, isDoubleClick) -> {
-            DataType targetType = getTargetType(DataType::getNext);
+              () -> getTargetType(Screen.hasShiftDown(), DataType::getNext) == DataType.NONE, (element, event, isDoubleClick) -> {
+            DataType targetType = getTargetType(event, DataType::getNext);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), event.hasShiftDown() ? null : currentType, targetType));
         }, (element, event, isDoubleClick) -> {
-            DataType targetType = getTargetType(DataType::getPrevious);
+            DataType targetType = getTargetType(event, DataType::getPrevious);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), event.hasShiftDown() ? null : currentType, targetType));
         }, TooltipUtils.create(MekanismLang.SIDE_CONFIG_CLEAR, MekanismLang.SIDE_CONFIG_CLEAR_ALL), TooltipUtils.create(MekanismLang.SIDE_CONFIG_INCREMENT)));
         addSideDataButton(RelativeSide.BOTTOM, 67, 92);
@@ -99,8 +100,12 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
         PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.CONTAINER_TRACK_SIDE_CONFIG, tile, MekanismContainer.SIDE_CONFIG_WINDOW));
     }
 
-    private DataType getTargetType(BiFunction<DataType, Predicate<DataType>, DataType> shift) {
-        if (Screen.hasShiftDown()) {
+    private DataType getTargetType(MouseButtonEvent event, BiFunction<DataType, Predicate<DataType>, DataType> shift) {
+        return getTargetType(event.hasShiftDown(), shift);
+    }
+
+    private DataType getTargetType(boolean hasShiftDown, BiFunction<DataType, Predicate<DataType>, DataType> shift) {
+        if (hasShiftDown) {
             return DataType.NONE;
         }
         ConfigInfo info = tile.getConfig().getConfig(currentType);

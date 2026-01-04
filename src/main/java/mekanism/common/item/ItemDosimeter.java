@@ -51,7 +51,7 @@ public class ItemDosimeter extends Item {
             if (!player.level().isClientSide()) {
                 sendDosimeterLevel(entity, player, MekanismLang.RADIATION_EXPOSURE_ENTITY);
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

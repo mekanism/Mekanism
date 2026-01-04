@@ -3,25 +3,22 @@ package mekanism.api;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Collections;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 @NothingNullByDefault
 public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
@@ -39,6 +36,9 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
      * @since 10.6.0
      */
     public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
+    //TODO - 1.21.11: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
+    //TODO - 1.21.11: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
+    private static final Codec<Map<Upgrade, Integer>> UPGRADE_MAP_CODEC = Codec.unboundedMap(CODEC, ExtraCodecs.POSITIVE_INT);
 
     /**
      * Gets an upgrade by index, wrapping for out of bounds indices.
@@ -68,70 +68,26 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
     }
 
     /**
-     * Reads and builds a map of upgrades to their amounts from NBT.
+     * Reads and builds a map of upgrades to their amounts from the given input.
      *
-     * @param nbtTags Stored upgrades.
+     * @param upgradeInput Stored upgrades.
      *
-     * @return Installed upgrade map.
-     *
-     * @implNote Unmodifiable if empty.
+     * @return Unmodifiable map representing the installed upgrades.
      */
-    public static Map<Upgrade, Integer> buildMap(@Nullable CompoundTag nbtTags) {
-        if (nbtTags == null) {
-            return Collections.emptyMap();
-        }
-        Map<Upgrade, Integer> upgrades = null;
-        Optional<ListTag> list = nbtTags.getList(SerializationConstants.UPGRADES);
-        if (list.isPresent()) {
-            ListTag listTag = list.get();
-            for (int tagCount = 0; tagCount < listTag.size(); tagCount++) {
-                Optional<CompoundTag> compound = listTag.getCompound(tagCount);
-                if (compound.isPresent()) {
-                    CompoundTag compoundTag = compound.get();
-                    Optional<Integer> type = compoundTag.getInt(SerializationConstants.TYPE);
-                    if (type.isPresent()) {
-                        Upgrade upgrade = BY_ID.apply(type.get());
-                        //Validate the nbt isn't malformed with a negative or zero amount
-                        int installed = Math.max(compoundTag.getIntOr(SerializationConstants.AMOUNT, 0), 0);
-                        if (installed > 0) {
-                            if (upgrades == null) {
-                                upgrades = new EnumMap<>(Upgrade.class);
-                            }
-                            upgrades.put(upgrade, installed);
-                        }
-                    }
-                }
-            }
-        }
-        return upgrades == null ? Collections.emptyMap() : upgrades;
+    public static Map<Upgrade, Integer> buildMap(ValueInput upgradeInput) {
+        return upgradeInput.read(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC).orElse(Collections.emptyMap());
     }
 
     /**
      * Writes a map of upgrades to their amounts to NBT.
      *
-     * @param upgrades Upgrades to store.
-     * @param nbtTags  Tag to write to.
+     * @param upgrades      Upgrades to store.
+     * @param upgradeOutput Output to write upgrades to.
      */
-    public static void saveMap(Map<Upgrade, Integer> upgrades, CompoundTag nbtTags) {
-        ListTag list = new ListTag(upgrades.size());
-        for (Entry<Upgrade, Integer> entry : upgrades.entrySet()) {
-            list.add(entry.getKey().getTag(entry.getValue()));
+    public static void saveMap(Map<Upgrade, Integer> upgrades, ValueOutput upgradeOutput) {
+        if (!upgrades.isEmpty()) {
+            upgradeOutput.store(SerializationConstants.UPGRADES, UPGRADE_MAP_CODEC, upgrades);
         }
-        nbtTags.put(SerializationConstants.UPGRADES, list);
-    }
-
-    /**
-     * Writes this upgrade with given amount to NBT.
-     *
-     * @param amount Amount.
-     *
-     * @return NBT.
-     */
-    public CompoundTag getTag(int amount) {
-        CompoundTag compound = new CompoundTag();
-        compound.putInt(SerializationConstants.TYPE, ordinal());
-        compound.putInt(SerializationConstants.AMOUNT, amount);
-        return compound;
     }
 
     /**

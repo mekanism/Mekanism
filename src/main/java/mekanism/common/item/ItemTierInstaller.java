@@ -152,9 +152,7 @@ public class ItemTierInstaller extends Item {
                         // In general replacing the tile likely will have caused this to be invalidated
                         // but mark it just to be safe, and in case there are any bounding blocks so that they notify the level their caps might have changed
                         upgradedTile.invalidateCapabilitiesFull();
-                        if (!player.isCreative()) {
-                            context.getItemInHand().shrink(1);
-                        }
+                        context.getItemInHand().consume(1, player);
                         if (player instanceof ServerPlayer serverPlayer) {
                             MekanismCriteriaTriggers.USE_TIER_INSTALLER.value().trigger(serverPlayer, toTier);
                         }

@@ -50,10 +50,10 @@ public class ItemSeismicReader extends ItemEnergized {
     @NotNull
     @Override
     public InteractionResult use(Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (world.isClientSide()) {
-            return InteractionResultHolder.success(stack);
+            return InteractionResult.SUCCESS;
         }
+        ItemStack stack = player.getItemInHand(hand);
         if (!WorldUtils.isChunkVibrated(new ChunkPos(player.blockPosition()), player.level())) {
             player.displayClientMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS), false);
         } else {

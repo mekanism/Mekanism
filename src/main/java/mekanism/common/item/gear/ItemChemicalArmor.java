@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.item.interfaces.IChemicalItem;
@@ -21,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem, ICustomCreativeTabContents {
 
     protected ItemChemicalArmor(Holder<ArmorMaterial> material, ArmorType armorType, Item.Properties properties) {
-        super(material, armorType, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1));
+        super(material, armorType, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1));
     }
 
     protected abstract Holder<Chemical> getChemicalType();

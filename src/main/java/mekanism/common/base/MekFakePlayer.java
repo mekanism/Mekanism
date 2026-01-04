@@ -122,7 +122,7 @@ public class MekFakePlayer extends FakePlayer {
         // If the fake player has a reference to the world getting unloaded,
         // null out the fake player so that the world can unload
         MekFakePlayer actual = INSTANCE == null ? null : INSTANCE.get();
-        if (actual != null && actual.serverLevel() == world) {
+        if (actual != null && actual.level() == world) {
             //don't keep reference to the World, note we set it to the overworld to avoid any potential null pointers
             actual.setServerLevel(world.getServer().overworld());
         }
@@ -136,7 +136,7 @@ public class MekFakePlayer extends FakePlayer {
         private MekFakePlayer myFakePlayer = null;
 
         public FakeGameProfile() {
-            super(Mekanism.gameProfile.getId(), Mekanism.gameProfile.getName());
+            super(Mekanism.gameProfile.id(), Mekanism.gameProfile.name());
         }
 
         private UUID getEmulatingUUID() {
@@ -144,15 +144,15 @@ public class MekFakePlayer extends FakePlayer {
         }
 
         @Override
-        public UUID getId() {
+        public UUID id() {
             UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID == null ? super.getId() : emulatingUUID;
+            return emulatingUUID == null ? super.id() : emulatingUUID;
         }
 
         @Override
-        public String getName() {
+        public String name() {
             UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID == null ? super.getName() : MekanismUtils.getLastKnownUsername(emulatingUUID);
+            return emulatingUUID == null ? super.name() : MekanismUtils.getLastKnownUsername(emulatingUUID);
         }
 
         //NB: super check they're the same class, we only check that name & id match
@@ -164,13 +164,13 @@ public class MekFakePlayer extends FakePlayer {
             if (!(o instanceof GameProfile that)) {
                 return false;
             }
-            return Objects.equals(getId(), that.getId()) && Objects.equals(getName(), that.getName());
+            return Objects.equals(id(), that.id()) && Objects.equals(name(), that.name());
         }
 
         @Override
         public int hashCode() {
-            UUID id = getId();
-            String name = getName();
+            UUID id = id();
+            String name = name();
             int result = id == null ? 0 : id.hashCode();
             result = 31 * result + (name == null ? 0 : name.hashCode());
             return result;

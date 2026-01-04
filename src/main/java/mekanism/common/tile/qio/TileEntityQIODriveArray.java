@@ -1,9 +1,12 @@
 package mekanism.common.tile.qio;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
+import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -19,8 +22,6 @@ import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.Identifier;
@@ -118,16 +119,21 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
-        output.putByteArray(SerializationConstants.DRIVES, Arrays.copyOf(driveStatus, driveStatus.length));
+        output.store(SerializationConstants.DRIVES, Codec.BYTE_BUFFER, ByteBuffer.wrap(driveStatus));
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
-        byte[] status = input.getByteArray(SerializationConstants.DRIVES);
-        if (!Arrays.equals(status, driveStatus)) {
-            driveStatus = status;
-            updateModelData();
+        Optional<byte[]> decodedStatus = input.read(SerializationConstants.DRIVES, Codec.BYTE_BUFFER)
+              .map(ByteBuffer::array)
+              .filter(array -> array.length == DRIVE_SLOTS);
+        if (decodedStatus.isPresent()) {
+            byte[] status = decodedStatus.get();
+            if (!Arrays.equals(status, driveStatus)) {
+                driveStatus = status;
+                updateModelData();
+            }
         }
     }
 

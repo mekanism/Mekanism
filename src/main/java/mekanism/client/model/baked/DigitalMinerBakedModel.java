@@ -3,7 +3,6 @@ package mekanism.client.model.baked;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.base.holiday.ClientHolidayInfo;
-import net.minecraft.client.resources.model.BakedModel;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 

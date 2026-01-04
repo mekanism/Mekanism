@@ -38,10 +38,10 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
             if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
                     //If the block doesn't have a gui (frames of things like the evaporation plant), or the multiblock is not formed then pass
-                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    return InteractionResult.TRY_WITH_EMPTY_HAND;
                 }
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {

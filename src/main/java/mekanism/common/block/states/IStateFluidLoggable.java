@@ -8,6 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.LiquidBlockContainer;
@@ -67,11 +69,11 @@ public interface IStateFluidLoggable extends BucketPickup, LiquidBlockContainer 
         return 0;
     }
 
-    default void updateFluids(@NotNull BlockState state, @NotNull LevelAccessor world, @NotNull BlockPos currentPos) {
+    default void updateFluids(@NotNull LevelReader world, @NotNull BlockPos currentPos, @NotNull BlockState state, @NotNull ScheduledTickAccess tickAccess) {
         IFluidLogType fluidLogged = state.getValue(getFluidLoggedProperty());
         if (!fluidLogged.isEmpty()) {
             Fluid fluid = fluidLogged.getFluid();
-            world.scheduleTick(currentPos, fluid, fluid.getTickDelay(world));
+            tickAccess.scheduleTick(currentPos, fluid, fluid.getTickDelay(world));
         }
     }
 

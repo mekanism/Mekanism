@@ -27,7 +27,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
@@ -93,7 +92,9 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
-            guiGraphics.renderTooltip(font(), stack, mouseX, mouseY);
+            //TODO - 1.21.11: Validate this (and all other places we now use setTooltipForNextFrame) is an acceptable replacement for the old setTooltip,
+            // and we don't have to do something to allow it to be this frame
+            guiGraphics.setTooltipForNextFrame(font(), stack, mouseX, mouseY);
         }
     }
 

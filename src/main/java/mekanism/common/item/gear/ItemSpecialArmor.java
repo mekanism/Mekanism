@@ -1,6 +1,7 @@
 package mekanism.common.item.gear;
 
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -15,22 +16,12 @@ public abstract class ItemSpecialArmor extends Item {
     }
 
     @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return material.value().enchantmentValue() > 0 && stack.getMaxStackSize() == 1;
-    }
-
-    @Override
-    public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
-        return isEnchantable(stack) && super.isBookEnchantable(stack, book);
-    }
-
-    @Override
     public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.isPrimaryItemFor(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
     public boolean supportsEnchantment(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.supportsEnchantment(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.supportsEnchantment(stack, enchantment);
     }
 }

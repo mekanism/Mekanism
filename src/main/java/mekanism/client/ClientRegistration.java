@@ -91,9 +91,9 @@ import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
+import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.model.data.DataBasedModelLoader;
-import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
@@ -188,8 +188,6 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.PlayerSkin;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -198,6 +196,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.material.Fluid;
@@ -210,7 +209,6 @@ import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
 import net.neoforged.neoforge.client.event.ModelEvent.ModifyBakingResult;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -220,7 +218,6 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.client.model.SeparateTransformsModel;
 import net.neoforged.neoforge.common.NeoForge;
 import org.jetbrains.annotations.NotNull;
 
@@ -625,9 +622,9 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor and elytra layer to the various player renderers
-        for (PlayerSkin.Model skin : event.getSkins()) {
+        for (PlayerModelType skin : event.getSkins()) {
             //Note: We expect this to always be an instanceof PlayerRenderer, but we just bother checking if it is a LivingEntityRenderer
-            if (event.getSkin(skin) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
+            if (event.getPlayerRenderer(skin) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
                 addCustomLayers(EntityType.PLAYER, renderer, event.getContext());
             }
         }

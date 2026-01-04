@@ -11,8 +11,9 @@ import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -43,12 +44,12 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     @NotNull
     @Override
-    protected BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
-          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(world, currentPos)) {
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
+          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+        if (facing.getOpposite() == Attribute.getFacing(state) && !state.canSurvive(level, currentPos)) {
             return Blocks.AIR.defaultBlockState();
         }
-        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override

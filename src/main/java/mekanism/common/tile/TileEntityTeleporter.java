@@ -60,8 +60,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -77,15 +75,14 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.Mth;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.animal.Fox;
+import net.minecraft.world.entity.animal.fox.Fox;
 import net.minecraft.world.entity.monster.Shulker;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.portal.DimensionTransition;
-import net.minecraft.world.level.portal.DimensionTransition.PostDimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -103,7 +100,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private static final TeleportInfo NO_FRAME = new TeleportInfo(TeleporterStatus.NO_FRAME, null, Collections.emptyList());
     private static final TeleportInfo NO_DESTINATION = new TeleportInfo(TeleporterStatus.NO_DESTINATION, null, Collections.emptyList());
     private static final TeleportInfo NOT_ENOUGH_ENERGY = new TeleportInfo(TeleporterStatus.NOT_ENOUGH_ENERGY, null, Collections.emptyList());
-    private static final PostDimensionTransition AWARD_ADVANCEMENT = entity -> {
+    private static final TeleportTransition.PostTeleportTransition AWARD_ADVANCEMENT = entity -> {
         if (entity instanceof ServerPlayer player) {
             MekanismCriteriaTriggers.TELEPORT.value().trigger(player);
         }
@@ -156,7 +153,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     private boolean canTeleportEntity(Entity entity, @Nullable Level destinationLevel) {
         if (entity.isSpectator() || !entity.canUsePortal(false) || entity instanceof PartEntity || entity.getType().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
             return false;
-        } else if (destinationLevel != null && !entity.canChangeDimensions(entity.level(), destinationLevel)) {
+        } else if (destinationLevel != null && !entity.canTeleport(entity.level(), destinationLevel)) {
             return false;
         }
         return !didTeleport.contains(entity.getUUID());
@@ -278,7 +275,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 return NO_DESTINATION;
             }
             targetWorld = server.getLevel(closestCoords.dimension());
-            if (targetWorld == null || !server.isLevelEnabled(targetWorld)) {//In theory should not happen
+            if (targetWorld == null || !((ServerLevel) level).isAllowedToEnterPortal(targetWorld)) {
                 return NO_DESTINATION;
             }
         }
@@ -358,7 +355,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 double oldY = entity.getY();
                 double oldZ = entity.getZ();
                 Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporter, event, true, AWARD_ADVANCEMENT);
-                //Note: The below logic isn't part of a PostDimensionTransition as the transition applies to all entities and passengers,
+                //Note: The below logic isn't part of a PostTeleportTransition as the transition applies to all entities and passengers,
                 // and we want the below logic to only happen once
                 for (GlobalPos coords : activeCoords) {
                     Level world = level.dimension() == coords.dimension() ? level : currentServer.getLevel(coords.dimension());
@@ -392,7 +389,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private void markTeleported(TileEntityTeleporter teleporter, Entity entity, boolean sameDimension, Level destinationWorld) {
-        if (sameDimension || entity.canChangeDimensions(entity.level(), destinationWorld)) {
+        if (sameDimension || entity.canTeleport(entity.level(), destinationWorld)) {
             //Only mark the entity as teleported if it will teleport, it is in the same dimension or is able to change dimensions
             // This is mainly important for the passengers as we teleport all entities and passengers up to one that can't change dimensions
             teleporter.didTeleport.add(entity.getUUID());
@@ -404,7 +401,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     @Nullable
     public static Entity teleportEntityTo(Entity entity, Level targetWorld, TileEntityTeleporter target, MekanismTeleportEvent.Teleporter event, boolean persistMovement,
-          PostDimensionTransition transition) {
+          TeleportTransition.PostTeleportTransition transition) {
         Vec3 destination = event.getTarget();
         float yRot = entity.getYRot();
         if (entity instanceof ServerPlayer player) {
@@ -422,14 +419,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
             if (!entity.getPassengers().isEmpty()) {
                 //Force re-apply any passengers so that players don't get "stuck" outside what they may be riding
-                ((ServerChunkCache) entity.level().getChunkSource()).broadcast(entity, new ClientboundSetPassengersPacket(entity));
+                ((ServerChunkCache) entity.level().getChunkSource()).sendToTrackingPlayers(entity, new ClientboundSetPassengersPacket(entity));
                 Entity controller = entity.getControllingPassenger();
                 if (controller != entity && controller instanceof ServerPlayer player && !player.isFakePlayer()) {
                     if (player.connection != null) {
                         //Force sync the fact that the vehicle moved to the client that is controlling it
                         // so that it makes sure to use the correct positions when sending move packets
                         // back to the server instead of running into moved wrongly issues
-                        player.connection.send(new ClientboundMoveVehiclePacket(entity));
+                        player.connection.send(ClientboundMoveVehiclePacket.fromEntity(entity));
                     }
                 }
             }
@@ -439,7 +436,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 PacketDistributor.sendToPlayer(player, new PacketSetDeltaMovement(deltaMovement));
             }
             //Handle transition logic even though we didn't change dimensions
-            if (transition != DimensionTransition.DO_NOTHING) {
+            if (transition != TeleportTransition.DO_NOTHING) {
                 for (Entity passenger : entity.getIndirectPassengers()) {
                     transition.onTransition(passenger);
                 }
@@ -448,7 +445,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return entity;
         }
         //player.connection.teleport(player.getX(), player.getY(), player.getZ(), yaw, player.getXRot());
-        return entity.changeDimension(new DimensionTransition((ServerLevel) targetWorld, destination, entity.getDeltaMovement(), yRot, entity.getXRot(), transition));
+        return entity.teleport(new TeleportTransition((ServerLevel) targetWorld, destination, entity.getDeltaMovement(), yRot, entity.getXRot(), transition));
     }
 
     private List<Entity> getToTeleport(boolean sameDimension, Level destinationLevel) {
@@ -467,9 +464,8 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      * @apiNote Only call from the server side
      */
     public static long calculateEnergyCost(Entity entity, GlobalPos pos) {
-        MinecraftServer currentServer = entity.getServer();
-        if (currentServer != null) {
-            Level targetWorld = currentServer.getLevel(pos.dimension());
+        if (entity.level() instanceof ServerLevel level) {
+            Level targetWorld = level.getServer().getLevel(pos.dimension());
             if (targetWorld != null) {
                 return calculateEnergyCost(entity, targetWorld, pos);
             }
@@ -516,7 +512,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
 
     private static void fillIndirectPassengers(Entity base, boolean sameDimension, Level targetDimension, Set<Entity> passengers) {
         for (Entity entity : base.getPassengers()) {
-            if (sameDimension || entity.canChangeDimensions(entity.level(), targetDimension)) {
+            if (sameDimension || entity.canTeleport(entity.level(), targetDimension)) {
                 passengers.add(entity);
                 fillIndirectPassengers(entity, sameDimension, targetDimension, passengers);
             }

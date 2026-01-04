@@ -47,7 +47,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        if (slotType == getEquipmentSlot()) {
+        if (slotType == EquipmentSlot.CHEST) {
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getMode(stack), true)));
             ChemicalStack stored = ChemicalStack.EMPTY;
@@ -71,7 +71,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return slotType == getEquipmentSlot();
+        return slotType == EquipmentSlot.CHEST;
     }
 
     @Override

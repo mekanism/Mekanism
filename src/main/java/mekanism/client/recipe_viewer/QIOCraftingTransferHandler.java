@@ -39,12 +39,13 @@ import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,8 +69,8 @@ public class QIOCraftingTransferHandler {
             return recipeHolder().value();
         }
 
-        default Identifier id() {
-            return recipeHolder().id().identifier();
+        default ResourceKey<Recipe<?>> id() {
+            return recipeHolder().id();
         }
 
         int transferAmount();

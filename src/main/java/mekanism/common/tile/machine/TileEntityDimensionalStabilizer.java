@@ -45,6 +45,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
 
     public static final int MAX_LOAD_RADIUS = 2;
     public static final int MAX_LOAD_DIAMETER = 2 * MAX_LOAD_RADIUS + 1;
+    public static final int ARRAY_SIZE = MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER;
     private static final String COMPUTER_RANGE_STR = "Range: [-" + MAX_LOAD_RADIUS + ", " + MAX_LOAD_RADIUS + "]";
     private static final String COMPUTER_RANGE_RAD = "Range: [1, " + MAX_LOAD_RADIUS + "]";
     private static final LongObjectToLongFunction<TileEntityDimensionalStabilizer> BASE_ENERGY_CALCULATOR = (base, tile) -> MathUtils.multiplyClamped(base, tile.chunksLoaded);
@@ -216,13 +217,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
     @Override
     public void writeSustainedData(@NotNull ValueOutput output) {
         super.writeSustainedData(output);
-        byte[] chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
-        for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
-            for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
-                chunksToLoad[x * MAX_LOAD_DIAMETER + z] = (byte) (isChunkLoadingAt(x, z) ? 1 : 0);
-            }
-        }
-        output.putByteArray(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, chunksToLoad);
+        output.store(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, StabilizedChunks.CODEC, StabilizedChunks.create(this));
     }
 
     @Override
@@ -230,12 +225,7 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         super.readSustainedData(input);
         boolean changed = false;
         int lastChunksLoaded = chunksLoaded;
-        byte[] chunksToLoad = dataMap.getByteArray(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD);
-        if (chunksToLoad.length != MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER) {
-            //If it is the wrong size dummy it to all zeros so things get set to false as we don't know
-            // where to position our values
-            chunksToLoad = new byte[MAX_LOAD_DIAMETER * MAX_LOAD_DIAMETER];
-        }
+        byte[] chunksToLoad = input.read(SerializationConstants.STABILIZER_CHUNKS_TO_LOAD, StabilizedChunks.CODEC).orElse(StabilizedChunks.NONE).chunks();
         for (int x = 0; x < MAX_LOAD_DIAMETER; x++) {
             for (int z = 0; z < MAX_LOAD_DIAMETER; z++) {
                 changed |= setChunkLoadingAt(x, z, chunksToLoad[x * MAX_LOAD_DIAMETER + z] == 1);

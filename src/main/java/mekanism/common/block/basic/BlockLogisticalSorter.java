@@ -11,9 +11,11 @@ import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,16 +54,16 @@ public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSo
 
     @NotNull
     @Override
-    protected BlockState updateShape(BlockState state, @NotNull Direction dir, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos pos,
-          @NotNull BlockPos neighborPos) {
-        if (!world.isClientSide()) {
-            TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, world, pos);
-            Direction opposite = dir.getOpposite();
-            if (sorter != null && !sorter.hasConnectedInventory() && InventoryUtils.isItemHandler(sorter.getLevel(), neighborPos, opposite)) {
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
+          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+        if (!level.isClientSide()) {
+            TileEntityLogisticalSorter sorter = WorldUtils.getTileEntity(TileEntityLogisticalSorter.class, level, currentPos);
+            Direction opposite = facing.getOpposite();
+            if (sorter != null && !sorter.hasConnectedInventory() && InventoryUtils.isItemHandler(sorter.getLevel(), facingPos, opposite)) {
                 sorter.setFacing(opposite);
                 state = sorter.getBlockState();
             }
         }
-        return super.updateShape(state, dir, facingState, world, pos, neighborPos);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 }

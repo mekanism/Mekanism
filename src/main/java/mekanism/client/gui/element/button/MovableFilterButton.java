@@ -18,6 +18,7 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,24 +30,25 @@ public class MovableFilterButton extends FilterButton {
 
     private final FilterSelectButton upButton;
     private final FilterSelectButton downButton;
-    public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, IntConsumer upButtonPress,
-          IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
+
+    public MovableFilterButton(IGuiWrapper gui, int x, int y, int index, IntSupplier filterIndex, FilterManager<?> filterManager, ObjIntConsumer<MouseButtonEvent> upButtonPress,
+          ObjIntConsumer<MouseButtonEvent> downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress, Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         this(gui, x, y, TEXTURE_WIDTH, TEXTURE_HEIGHT / 2, index, filterIndex, filterManager, upButtonPress, downButtonPress, onPress, toggleButtonPress, renderStackSupplier);
     }
 
     public MovableFilterButton(IGuiWrapper gui, int x, int y, int width, int height, int index, IntSupplier filterIndex, FilterManager<?> filterManager,
-          IntConsumer upButtonPress, IntConsumer downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress,
+          ObjIntConsumer<MouseButtonEvent> upButtonPress, ObjIntConsumer<MouseButtonEvent> downButtonPress, ObjIntConsumer<IFilter<?>> onPress, IntConsumer toggleButtonPress,
           Function<IFilter<?>, List<ItemStack>> renderStackSupplier) {
         super(gui, x, y, width, height, index, filterIndex, filterManager, onPress, toggleButtonPress, renderStackSupplier);
         int arrowX = relativeX + this.width - 14;
         int halfHeight = this.height / 2;
         upButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight - 8, false, (element, event, isDoubleClick) -> {
-            upButtonPress.accept(getActualIndex());
+            upButtonPress.accept(event, getActualIndex());
             return true;
         }));
         upButton.setTooltip(MOVE_UP);
         downButton = addChild(new FilterSelectButton(gui, arrowX, relativeY + halfHeight + 1, true, (element, event, isDoubleClick) -> {
-            downButtonPress.accept(getActualIndex());
+            downButtonPress.accept(event, getActualIndex());
             return true;
         }));
         downButton.setTooltip(MOVE_DOWN);

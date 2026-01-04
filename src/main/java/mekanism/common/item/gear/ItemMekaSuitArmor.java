@@ -99,7 +99,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
 
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
         super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
-              properties.rarity(Rarity.EPIC).setNoRepair().stacksTo(1)
+              properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
         ));
         switch (armorType) {
             case HELMET -> {

@@ -126,10 +126,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
         if (level != null) {
             MinecraftServer server = level.getServer();
             if (server != null) {
-                UserNameToIdResolver profileCache = server.services().nameToIdCache();
+                UserNameToIdResolver nameToIdCache = server.services().nameToIdCache();
                 SecurityFrequency frequency = getFreq();
                 if (frequency != null) {
-                    Optional<NameAndId> gameProfile = profileCache.get(name);
+                    Optional<NameAndId> gameProfile = nameToIdCache.get(name);
                     //noinspection OptionalIsPresent - Capturing lambda
                     if (gameProfile.isPresent()) {
                         NameAndId profile = gameProfile.get();

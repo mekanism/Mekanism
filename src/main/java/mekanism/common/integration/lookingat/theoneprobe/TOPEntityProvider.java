@@ -6,7 +6,6 @@ import mcjty.theoneprobe.api.IProbeInfoEntityProvider;
 import mcjty.theoneprobe.api.ProbeMode;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.integration.lookingat.theoneprobe.TOPProvider.TOPLookingAtHelper;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -22,6 +21,6 @@ public class TOPEntityProvider implements IProbeInfoEntityProvider {
 
     @Override
     public void addProbeEntityInfo(ProbeMode mode, IProbeInfo info, Player player, Level level, Entity entity, IProbeHitEntityData data) {
-        LookingAtUtils.addInfo(new TOPLookingAtHelper(info), entity);
+        LookingAtUtils.addInfo(new TOPProvider.TOPLookingAtHelper(info), entity);
     }
 }

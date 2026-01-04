@@ -25,7 +25,7 @@ public class MekanismPermissions {
     private static final PermissionResolver<Boolean> ALWAYS_TRUE = (player, uuid, context) -> true;
 
     public static final PermissionNode<Boolean> BYPASS_SECURITY = node("bypass_security", PermissionTypes.BOOLEAN,
-          (player, uuid, context) -> player != null && player.server.getPlayerList().isOp(player.getGameProfile()));
+          (player, uuid, context) -> player != null && player.level().getServer().getPlayerList().isOp(player.nameAndId()));
 
     //Commands
     public static final CommandPermissionNode COMMAND = new CommandPermissionNode(node("command", PermissionTypes.BOOLEAN,

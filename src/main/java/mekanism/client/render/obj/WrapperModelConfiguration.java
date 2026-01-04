@@ -5,7 +5,6 @@ import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.RenderTypeGroup;
-import net.neoforged.neoforge.client.model.geometry.IGeometryBakingContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 

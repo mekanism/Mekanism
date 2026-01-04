@@ -1,8 +1,11 @@
 package mekanism.common.tile.factory;
 
+import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.LongStream;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -56,8 +59,6 @@ import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -253,9 +254,11 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        if (nbt.contains(SerializationConstants.USED_SO_FAR, Tag.TAG_LONG_ARRAY)) {
-            long[] savedUsed = nbt.getLongArray(SerializationConstants.USED_SO_FAR);
-            if (tier.processes != savedUsed.length) {
+        Optional<LongStream> savedUsage = input.read(SerializationConstants.USED_SO_FAR, Codec.LONG_STREAM);
+        if (savedUsage.isPresent()) {
+            long[] savedUsed = savedUsage.get().toArray();
+            if (tier.processes > savedUsed.length) {
+                //If we have more elements than were saved make sure to zero everything so that the ones past the end get properly reset
                 Arrays.fill(usedSoFar, 0);
             }
             for (int i = 0; i < tier.processes && i < savedUsed.length; i++) {
@@ -269,7 +272,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        nbtTags.putLongArray(SerializationConstants.USED_SO_FAR, Arrays.copyOf(usedSoFar, usedSoFar.length));
+        output.store(SerializationConstants.USED_SO_FAR, Codec.LONG_STREAM, Arrays.stream(usedSoFar));
     }
 
     @Override

@@ -24,7 +24,7 @@ public class MekKeyBindingBuilder {
     private KeyModifier keyModifier = KeyModifier.NONE;
     @Nullable
     private InputConstants.Key key;
-    private String category = MekanismLang.MEKANISM.getTranslationKey();
+    private KeyMapping.Category category = MekanismLang.MEKANISM.getTranslationKey();
     @Nullable
     private BiConsumer<KeyMapping, Boolean> onKeyDown;
     @Nullable

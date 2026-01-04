@@ -93,11 +93,12 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public ItemAtomicDisassembler(Properties properties) {
-        super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
+        //TODO - 1.21.11: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
+        super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
               .component(DataComponents.TOOL, new Tool(List.of(
                     Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER),
-                    new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK.asLookup()), Optional.empty(), Optional.of(true))
+                    new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
               ), 1, 0))
         );
     }
@@ -250,23 +251,13 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
-        return isEnchantable(stack) && super.isBookEnchantable(stack, book);
-    }
-
-    @Override
     public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.isPrimaryItemFor(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
     public boolean supportsEnchantment(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.supportsEnchantment(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.supportsEnchantment(stack, enchantment);
     }
 
     @NothingNullByDefault

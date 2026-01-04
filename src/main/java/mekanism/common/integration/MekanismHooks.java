@@ -10,7 +10,6 @@ import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.integration.framedblocks.FramedBlocksIntegration;
 import mekanism.common.integration.gender.MekanismGenderArmor;
 import mekanism.common.integration.jsonthings.JsonThingsIntegration;
-import mekanism.common.integration.lookingat.theoneprobe.TOPProvider;
 import mekanism.common.integration.projecte.MekanismNormalizedSimpleStacks;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.registries.MekanismItems;
@@ -35,7 +34,7 @@ public final class MekanismHooks {
             this(modid, loadedCheck.test(modid));
         }
 
-        private void sendImc(String method, Supplier<?> toSend) {
+        public void sendImc(String method, Supplier<?> toSend) {
             InterModComms.sendTo(modid, method, toSend);
         }
 
@@ -138,9 +137,6 @@ public final class MekanismHooks {
             //Note: While it is only strings, so it is safe to call and IMC validates the mods are loaded
             // we add this check here, so we can skip iterating the list of things we want to blacklist when it is not present
             sendDarkModeEverywhereIMC();
-        }
-        if (theOneProbe.isLoaded()) {
-            theOneProbe.sendImc("getTheOneProbe", TOPProvider::new);
         }
     }
 

@@ -166,7 +166,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         }
         long count = slot.count();
         if (count < 10_000) {
-            guiGraphics.renderTooltip(font(), stack, slotX, slotY);
+            guiGraphics.setTooltipForNextFrame(font(), stack, slotX, slotY);
         } else {
             //If the slot's displayed count is truncated, make sure we also add the actual amount to the tooltip
             gui().renderItemTooltipWithExtra(guiGraphics, stack, slotX, slotY, Collections.singletonList(MekanismLang.QIO_STORED_COUNT.translateColored(EnumColor.GRAY,

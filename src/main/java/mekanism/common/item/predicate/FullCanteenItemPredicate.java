@@ -6,7 +6,6 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.gear.ItemCanteen;
 import mekanism.common.registries.MekanismFluids;
-import net.minecraft.advancements.critereon.ItemSubPredicate;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 

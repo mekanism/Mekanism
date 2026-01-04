@@ -17,10 +17,12 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
@@ -31,10 +33,11 @@ import org.jetbrains.annotations.NotNull;
 //Note: While our logic is not dependent on knowing about transferMultiple, we make use of it for encoding and decoding
 // as when it is false we can reduce how many bytes the packet is by a good amount by making assumptions about the sizes of things
 @NothingNullByDefault
-public record PacketQIOFillCraftingWindow(Identifier recipeID, boolean transferMultiple, boolean rejectToInventory,
+public record PacketQIOFillCraftingWindow(ResourceKey<Recipe<?>> recipeID, boolean transferMultiple, boolean rejectToInventory,
                                           Byte2ObjectMap<List<SingularHashedItemSource>> sources) implements IMekanismPacket {
 
     public static final CustomPacketPayload.Type<PacketQIOFillCraftingWindow> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("fill_qio"));
+    private static final StreamCodec<ByteBuf, ResourceKey<Recipe<?>>> RECIPE_ID_CODEC = ResourceKey.streamCodec(Registries.RECIPE);
     public static final StreamCodec<ByteBuf, PacketQIOFillCraftingWindow> STREAM_CODEC = StreamCodec.ofMember(PacketQIOFillCraftingWindow::write, PacketQIOFillCraftingWindow::decode);
 
     @NotNull
@@ -55,7 +58,7 @@ public record PacketQIOFillCraftingWindow(Identifier recipeID, boolean transferM
                 if (optionalRecipe.isPresent()) {
                     Recipe<?> recipe = optionalRecipe.get().value();
                     if (recipe instanceof CraftingRecipe craftingRecipe) {
-                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID, craftingRecipe, sources);
+                        QIOServerCraftingTransferHandler.tryTransfer(container, selectedCraftingGrid, rejectToInventory, player, recipeID.identifier(), craftingRecipe, sources);
                     } else {
                         Mekanism.logger.warn("Received transfer request from: {}, but the type ({}) of the specified recipe was not a crafting recipe.",
                               player, recipe.getClass());
@@ -68,7 +71,7 @@ public record PacketQIOFillCraftingWindow(Identifier recipeID, boolean transferM
     }
 
     private void write(@NotNull ByteBuf buffer) {
-        Identifier.STREAM_CODEC.encode(buffer, recipeID);
+        RECIPE_ID_CODEC.encode(buffer, recipeID);
         buffer.writeBoolean(transferMultiple);
         buffer.writeBoolean(rejectToInventory);
         //Cast to byte as this should always be at most 9
@@ -109,7 +112,7 @@ public record PacketQIOFillCraftingWindow(Identifier recipeID, boolean transferM
     }
 
     private static PacketQIOFillCraftingWindow decode(ByteBuf buffer) {
-        Identifier recipeID = Identifier.STREAM_CODEC.decode(buffer);
+        ResourceKey<Recipe<?>> recipeID = RECIPE_ID_CODEC.decode(buffer);
         boolean transferMultiple = buffer.readBoolean();
         boolean rejectToInventory = buffer.readBoolean();
         byte slotCount = buffer.readByte();

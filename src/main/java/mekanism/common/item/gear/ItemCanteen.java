@@ -1,6 +1,5 @@
 package mekanism.common.item.gear;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -32,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemCanteen extends Item implements ICustomCreativeTabContents {
 
     public ItemCanteen(Properties properties) {
-        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).setNoRepair());
+        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).setNoCombineRepair());
     }
 
     @Override

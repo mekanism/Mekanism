@@ -45,6 +45,6 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
             }
             player.displayClientMessage(text, false);
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 }

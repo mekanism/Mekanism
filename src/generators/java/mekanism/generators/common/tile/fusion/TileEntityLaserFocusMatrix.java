@@ -28,9 +28,10 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
             FusionReactorMultiblockData multiblock = getMultiblock();
             if (multiblock.isFormed()) {
                 multiblock.setPlasmaTemp(1_000_000_000);
-                return InteractionResult.sidedSuccess(isRemote());
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
+        //TODO - 1.21.11: Don't call super on the client side if it was successful?
         return super.onRightClick(player);
     }
 

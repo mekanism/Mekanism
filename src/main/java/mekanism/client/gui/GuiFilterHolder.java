@@ -56,14 +56,14 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         scrollBar = addRenderableWidget(new GuiScrollBar(this, 253, 17, 140, filterManager::count, () -> FILTER_COUNT));
         //Add each of the buttons and then just change visibility state to match filter info
         for (int i = 0; i < FILTER_COUNT; i++) {
-            addFilterButton(new MovableFilterButton(this, 96, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, index -> {
+            addFilterButton(new MovableFilterButton(this, 96, 18 + i * 29, i, scrollBar::getCurrentSelection, filterManager, (event, index) -> {
                 if (index > 0) {
-                    GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_TOP : GuiInteraction.MOVE_FILTER_UP;
+                    GuiInteraction interaction = event.hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_TOP : GuiInteraction.MOVE_FILTER_UP;
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
-            }, index -> {
+            },  (event, index) -> {
                 if (index < filterManager.count() - 1) {
-                    GuiInteraction interaction = hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_BOTTOM : GuiInteraction.MOVE_FILTER_DOWN;
+                    GuiInteraction interaction = event.hasShiftDown() ? GuiInteraction.MOVE_FILTER_TO_BOTTOM : GuiInteraction.MOVE_FILTER_DOWN;
                     PacketUtils.sendToServer(new PacketGuiInteract(interaction, tile, index));
                 }
             }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), this::getRenderStacks));

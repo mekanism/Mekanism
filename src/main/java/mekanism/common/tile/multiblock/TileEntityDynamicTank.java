@@ -41,12 +41,12 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
                     case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
                     case InteractionResult.CONSUME -> ItemInteractionResult.CONSUME;
                     case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-                    case InteractionResult.PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
                     case InteractionResult.FAIL -> InteractionResult.FAIL;
                 };
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @NotNull

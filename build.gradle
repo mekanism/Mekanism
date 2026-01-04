@@ -53,6 +53,7 @@ ext {
     extraTypes = ['datagen']
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     disableCrT = true
+    disableTOP = true
 }
 
 sourceSets {
@@ -67,6 +68,10 @@ sourceSets {
             if (disableCrT) {
                 println("Disabling compilation of CraftTweaker integration")
                 exclude('mekanism/common/integration/crafttweaker/**')
+            }
+            if (disableTOP) {
+                println("Disabling compilation of The One Probe integration")
+                exclude('mekanism/common/integration/lookingat/theoneprobe/**')
             }
         }
         resources {

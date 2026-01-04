@@ -76,16 +76,16 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         TileEntityBin bin = WorldUtils.getTileEntity(TileEntityBin.class, world, pos);
         if (bin == null) {
             //No tile, we can just skip trying to use without an item
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         InteractionResult wrenchResult = bin.tryWrench(state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {
             return wrenchResult;
         } else if (hit.getDirection() != bin.getDirection()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (stack.isEmpty() && player.isShiftKeyDown()) {
-            return bin.toggleLock() ? ItemInteractionResult.sidedSuccess(world.isClientSide()) : ItemInteractionResult.FAIL;
+            return bin.toggleLock() ? InteractionResult.sidedSuccess(world.isClientSide()) : InteractionResult.FAIL;
         } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
             ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();

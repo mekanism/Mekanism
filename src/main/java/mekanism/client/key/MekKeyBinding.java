@@ -22,7 +22,7 @@ public class MekKeyBinding extends KeyMapping {
     private final boolean repeating;
     private boolean lastState;
 
-    MekKeyBinding(String description, IKeyConflictContext keyConflictContext, KeyModifier keyModifier, InputConstants.Key key, String category,
+    MekKeyBinding(String description, IKeyConflictContext keyConflictContext, KeyModifier keyModifier, InputConstants.Key key, KeyMapping.Category category,
           @Nullable BiConsumer<KeyMapping, Boolean> onKeyDown, @Nullable Consumer<KeyMapping> onKeyUp, @Nullable BooleanSupplier toggleable, boolean repeating) {
         super(description, keyConflictContext, keyModifier, key, category);
         this.onKeyDown = onKeyDown;

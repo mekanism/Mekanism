@@ -94,9 +94,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 }
                 if (!world.isClientSide()) {
                     BlockData data = new BlockData(world.registryAccess(), state, tile);
-                    if (!player.isCreative()) {
-                        stack.shrink(1);
-                    }
+                    stack.consume(1, player);
                     //Mark that we are monitoring item drops that might have been created due to using the cardboard box
                     // and then replace the block with the cardboard box, which will cause items to drop and then get
                     // cancelled by our listener in CommonWorldTickHandler

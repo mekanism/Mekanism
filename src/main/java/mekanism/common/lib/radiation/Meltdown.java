@@ -6,7 +6,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.util.MekanismUtils;
@@ -14,8 +13,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -25,13 +22,13 @@ import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerExplosion;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.event.EventHooks;
-import org.jetbrains.annotations.Nullable;
 
 public class Meltdown {
 
@@ -92,7 +89,7 @@ public class Meltdown {
      * Creates an explosion and ensures all blocks that are inside our meltdown radius actually get destroyed
      */
     private void createExplosion(ServerLevel world, double x, double y, double z, float radius, boolean causesFire, Explosion.BlockInteraction mode) {
-        Explosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
+        MeltdownExplosion explosion = new MeltdownExplosion(world, x, y, z, radius, causesFire, mode, multiblockID);
         //Calculate which block positions should get broken based on the logic that would happen in Explosion#explode
         ObjectArrayList<BlockPos> toBlow = new ObjectArrayList<>();
         for (int j = 0; j < 16; ++j) {
@@ -147,14 +144,14 @@ public class Meltdown {
         List<Pair<ItemStack, BlockPos>> drops = new ArrayList<>();
         for (BlockPos toExplode : toBlow) {
             world.getBlockState(toExplode)
-                  .onExplosionHit(world, toExplode, explosion, (stack, position) -> Explosion.addOrAppendStack(drops, stack, position));
+                  .onExplosionHit(world, toExplode, explosion, (stack, position) -> ServerExplosion.addOrAppendStack(drops, stack, position));
         }
         for (Pair<ItemStack, BlockPos> pair : drops) {
             Block.popResource(world, pair.getSecond(), pair.getFirst());
         }
     }
 
-    private static void syncExplosionToClient(ServerLevel level, Explosion explosion) {
+    private static void syncExplosionToClient(ServerLevel level, ServerExplosion explosion) {
         //Note: We can just sync the explosion the same way vanilla does (ServerLevel#explode) after setting it off
         // as the client doesn't need to know about the multiblock's uuid that caused the meltdown
         if (!explosion.interactsWithBlocks()) {
@@ -176,7 +173,7 @@ public class Meltdown {
         }
     }
 
-    public static class MeltdownExplosion extends Explosion {
+    public static class MeltdownExplosion extends ServerExplosion {
 
         private final UUID multiblockID;
 

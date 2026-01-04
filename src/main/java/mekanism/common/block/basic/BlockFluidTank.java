@@ -47,7 +47,7 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
     protected InteractionResult useItemOn(@NotNull ItemStack stack, @NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Player player,
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         if (stack.isEmpty()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         TileEntityFluidTank tile = WorldUtils.getTileEntity(TileEntityFluidTank.class, world, pos, true);
         if (tile == null) {
@@ -66,9 +66,9 @@ public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<
                 return InteractionResult.FAIL;
             } else if (FluidUtils.handleTankInteraction(player, hand, stack, tile.fluidTank)) {
                 player.getInventory().setChanged();
-                return ItemInteractionResult.SUCCESS;
+                return InteractionResult.SUCCESS;
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 }

@@ -113,7 +113,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         if (getMode(stack) && !entity.isBaby()) {
             Level level = player.level();
             if (ItemSecurityUtils.get().tryClaimItem(level, player, stack)) {
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResult.FAIL;
             } else if (stack.getCount() > 1) {
@@ -131,7 +131,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 //Try to insert the fluid
                 if (fluidTank.insert(milk, Action.EXECUTE, AutomationType.MANUAL).getAmount() < FluidType.BUCKET_VOLUME) {
                     player.playSound(entity instanceof Cow ? SoundEvents.COW_MILK : SoundEvents.GOAT_MILK, 1.0F, 1.0F);
-                    return InteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
                 //Fail if we can't insert any
                 return InteractionResult.FAIL;
@@ -380,7 +380,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
             @NotNull
             @Override
-            protected ItemInteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+            protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
                   @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
                 FluidStack fluidStack = fluidTank.getFluid();
                 BlockState endState = getState(fluidStack);
@@ -399,15 +399,15 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                         }
                         level.gameEvent(null, GameEvent.FLUID_PLACE, pos);
                     }
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         };
 
         @NotNull
         @Override
-        public final ItemInteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+        public final InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
               @NotNull InteractionHand hand, @NotNull ItemStack stack) {
             if (stack.getCount() == 1 && stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
@@ -415,16 +415,16 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 //Get the fluid tank for the stack
                 if (fluidTank == null) {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and skip
-                    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                    return InteractionResult.TRY_WITH_EMPTY_HAND;
                 }
                 return interact(state, level, pos, player, hand, stack, fluidTank);
             }
             //Otherwise skip
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
 
         @NotNull
-        protected abstract ItemInteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+        protected abstract InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
               @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank);
     }
 
@@ -433,14 +433,14 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         public static final BasicDrainCauldronInteraction WATER = new BasicDrainCauldronInteraction(Fluids.WATER) {
             @NotNull
             @Override
-            protected ItemInteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+            protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
                   @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
                 if (state.getValue(LayeredCauldronBlock.LEVEL) == 3) {
                     //When emptying a water cauldron make sure it is full and just ignore handling of partial transfers
                     // as while we can handle them, they come with the added complication of deciding what value to give bottles
                     return super.interact(state, level, pos, player, hand, stack, fluidTank);
                 }
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
         };
         public static final BasicDrainCauldronInteraction LAVA = new BasicDrainCauldronInteraction(Fluids.LAVA);
@@ -453,7 +453,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
         @NotNull
         @Override
-        protected ItemInteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
+        protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
               @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
             FluidStack fluidStack = new FluidStack(type, FluidType.BUCKET_VOLUME);
             FluidStack remainder = fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL);
@@ -472,9 +472,9 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                     }
                     level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
                 }
-                return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
     }
 }

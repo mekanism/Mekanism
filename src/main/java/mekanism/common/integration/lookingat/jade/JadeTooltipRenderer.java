@@ -70,14 +70,15 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
     @Override
     public void appendTooltip(ITooltip tooltip, ACCESSOR accessor, IPluginConfig config) {
         CompoundTag data = accessor.getServerData();
-        if (data.contains(SerializationConstants.MEK_DATA, Tag.TAG_LIST)) {
+        Optional<ListTag> optionalData = data.getList(SerializationConstants.MEK_DATA);
+        if (optionalData.isPresent()) {
             Component lastText = null;
             RegistryOps<Tag> registryOps = accessor.getLevel().registryAccess().createSerializationContext(NbtOps.INSTANCE);
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
-            ListTag list = data.getList(SerializationConstants.MEK_DATA, Tag.TAG_COMPOUND);
+            ListTag list = optionalData.get();
             for (int i = 0; i < list.size(); i++) {
-                CompoundTag elementData = list.getCompound(i);
-                Optional<ILookingAtElement> lookingAtElement = ELEMENT_CODEC.parse(registryOps, elementData).result();
+                //TODO - 1.21.11: Make this non capturing if jade doesn't end up switching to value inputs/outputs and we have to stay with using compound tags
+                Optional<ILookingAtElement> lookingAtElement = list.getCompound(i).flatMap(compound -> ELEMENT_CODEC.parse(registryOps, compound).result());
                 if (lookingAtElement.isEmpty()) {
                     //Error deserializing, skip it
                     continue;

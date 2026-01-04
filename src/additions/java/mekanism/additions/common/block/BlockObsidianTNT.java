@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.item.context.BlockPlaceContext;
@@ -15,6 +16,8 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.TntBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -116,10 +119,10 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
-          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        updateFluids(state, world, currentPos);
-        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
+          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+        updateFluids(level, currentPos, state, scheduledTickAccess);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     public static boolean createAndAddEntity(@NotNull Level world, @NotNull BlockPos pos, @Nullable LivingEntity igniter) {

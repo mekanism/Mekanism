@@ -51,7 +51,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack ->  level == null ? 0 : stack.getBurnTime(null,level.fuelValues()), listener, 15, 29));
+        builder.addSlot(fuelSlot = FuelInventorySlot.forFuel(stack ->  level == null ? 0 : stack.getBurnTime(null, level.fuelValues()), listener, 15, 29));
         return builder.build();
     }
 
@@ -67,7 +67,7 @@ public class TileEntityFuelwoodHeater extends TileEntityMekanism {
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         if (burnTime == 0) {
-            maxBurnTime = burnTime = fuelSlot.burn();
+            maxBurnTime = burnTime = fuelSlot.burn(level.fuelValues());
         }
         if (burnTime > 0) {
             int ticks = Math.min(burnTime, MekanismConfig.general.fuelwoodTickMultiplier.get());

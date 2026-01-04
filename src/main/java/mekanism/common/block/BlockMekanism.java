@@ -24,6 +24,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
@@ -46,7 +48,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.redstone.Redstone;
-import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,8 +78,9 @@ public abstract class BlockMekanism extends Block {
 
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
-        ItemStack stack = super.getCloneItemStack(state, target, world, pos, player);
+    public ItemStack getCloneItemStack(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockState state, boolean includeData, @NotNull Player player) {
+        ItemStack stack = super.getCloneItemStack(world, pos, state, includeData, player);
+        //TODO - 1.21.11: Do we also want to check the includeData field in this if statement?
         if (MekanismConfig.common.copyBlockData.get()) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
             if (tile != null) {
@@ -120,12 +122,12 @@ public abstract class BlockMekanism extends Block {
 
     @NotNull
     @Override
-    protected BlockState updateShape(BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world, @NotNull BlockPos currentPos,
-          @NotNull BlockPos facingPos) {
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
+          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
         if (state.getBlock() instanceof IStateFluidLoggable fluidLoggable) {
-            fluidLoggable.updateFluids(state, world, currentPos);
+            fluidLoggable.updateFluids(level, currentPos, state, scheduledTickAccess);
         }
-        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override
@@ -169,14 +171,12 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    public void onBlockExploded(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
-        if (!world.isClientSide()) {
-            AttributeMultiblock multiblockAttribute = Attribute.get(state, AttributeMultiblock.class);
-            if (multiblockAttribute != null && explosion instanceof MeltdownExplosion meltdown) {
-                MultiblockData multiblock = multiblockAttribute.getMultiblock(world, pos, meltdown.getMultiblockID());
-                if (multiblock != null) {
-                    multiblock.meltdownHappened(world);
-                }
+    public void onBlockExploded(@NotNull BlockState state, @NotNull ServerLevel world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
+        AttributeMultiblock multiblockAttribute = Attribute.get(state, AttributeMultiblock.class);
+        if (multiblockAttribute != null && explosion instanceof MeltdownExplosion meltdown) {
+            MultiblockData multiblock = multiblockAttribute.getMultiblock(world, pos, meltdown.getMultiblockID());
+            if (multiblock != null) {
+                multiblock.meltdownHappened(world);
             }
         }
         super.onBlockExploded(state, world, pos, explosion);
@@ -206,7 +206,8 @@ public abstract class BlockMekanism extends Block {
     }
 
     @Override
-    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos, @NotNull Direction direction) {
+        //TODO - 1.21.11: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support
@@ -273,8 +274,8 @@ public abstract class BlockMekanism extends Block {
             if (blockEntity instanceof ITileRadioactive tileRadioactive && tileRadioactive.getRadiationScale() > 0) {
                 return InteractionResult.FAIL;
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 }

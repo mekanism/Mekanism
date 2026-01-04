@@ -47,7 +47,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
     }
 
     public ItemFreeRunners(Holder<ArmorMaterial> material, Item.Properties properties) {
-        super(material, ArmorType.BOOTS, properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1)
+        super(material, ArmorType.BOOTS, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
         );
     }
@@ -108,9 +108,9 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        if (slotType == getEquipmentSlot()) {
+        if (slotType == EquipmentSlot.FEET) {
             list.add(MekanismLang.FREE_RUNNERS_MODE.translateColored(EnumColor.GRAY, getMode(stack).getTextComponent()));
-            StorageUtils.addStoredEnergy(stack, list, true, MekanismLang.FREE_RUNNERS_STORED);
+            StorageUtils.addStoredEnergy(stack, list::add, true, MekanismLang.FREE_RUNNERS_STORED);
         }
     }
 
@@ -126,7 +126,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return slotType == getEquipmentSlot();
+        return slotType == EquipmentSlot.FEET;
     }
 
     @Override

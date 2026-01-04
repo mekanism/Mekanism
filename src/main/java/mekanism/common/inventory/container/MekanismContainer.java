@@ -216,9 +216,10 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
     }
 
     protected void addArmorSlots(@NotNull Inventory inv, int x, int y, int offhandOffset) {
-        for (int index = 0; index < inv.armor.size(); index++) {
-            final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + inv.armor.size() - index - 1];
-            addSlot(new ArmorSlot(inv, 36 + inv.armor.size() - index - 1, x, y, slotType));
+        int armorSlots = 4;
+        for (int index = 0; index < armorSlots; index++) {
+            final EquipmentSlot slotType = EnumUtils.EQUIPMENT_SLOT_TYPES[2 + armorSlots - index - 1];
+            addSlot(new ArmorSlot(inv, 36 + armorSlots - index - 1, x, y, slotType));
             y += 18;
         }
         if (offhandOffset != -1) {

@@ -66,11 +66,11 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
 
     default void renderItemTooltipWithExtra(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
-            guiGraphics.renderTooltip(font(), stack, xAxis, yAxis);
+            guiGraphics.setTooltipForNextFrame(font(), stack, xAxis, yAxis);
         } else {
             List<Component> tooltip = new ArrayList<>(Screen.getTooltipFromItem(Minecraft.getInstance(), stack));
             tooltip.addAll(toAppend);
-            guiGraphics.renderTooltip(font(), tooltip, stack.getTooltipImage(), stack, xAxis, yAxis);
+            guiGraphics.setTooltipForNextFrame(font(), tooltip, stack.getTooltipImage(), stack, xAxis, yAxis);
         }
     }
 

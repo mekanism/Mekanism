@@ -41,21 +41,18 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.ArmorStandModel;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.object.armorstand.ArmorStandModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.decoration.ArmorStand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -64,7 +61,6 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
-import net.neoforged.neoforge.client.event.RecipesUpdatedEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -94,12 +90,12 @@ public class ClientTickHandler {
         if (!player.isSpectator() && !jetpack.isEmpty()) {
             JetpackMode mode = ((IJetpackItem) jetpack.getItem()).getJetpackMode(jetpack);
             boolean guiOpen = minecraft.screen != null;
-            boolean ascending = minecraft.player.input.jumping;
+            boolean ascending = minecraft.player.input.keyPresses.jump();
             boolean rising = ascending && !guiOpen;
             if (mode == JetpackMode.NORMAL || mode == JetpackMode.VECTOR) {
                 return rising;
             } else if (mode == JetpackMode.HOVER) {
-                boolean descending = minecraft.player.input.shiftKeyDown;
+                boolean descending = minecraft.player.input.keyPresses.shift();
                 if (!rising || descending) {
                     return !CommonPlayerTickHandler.isOnGroundOrSleeping(player);
                 }
@@ -216,10 +212,10 @@ public class ClientTickHandler {
             ItemStack primaryJetpack = IJetpackItem.getPrimaryJetpack(minecraft.player);
             if (!primaryJetpack.isEmpty()) {
                 JetpackMode primaryMode = ((IJetpackItem) primaryJetpack.getItem()).getJetpackMode(primaryJetpack);
-                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.jumping);
-                MekanismClient.updateKey(minecraft.player.input.jumping, KeySync.ASCEND);
+                JetpackMode mode = IJetpackItem.getPlayerJetpackMode(minecraft.player, primaryMode, p -> p.input.keyPresses.jump());
+                MekanismClient.updateKey(minecraft.player.input.keyPresses.jump(), KeySync.ASCEND);
                 double jetpackThrust = ((IJetpackItem) primaryJetpack.getItem()).getJetpackThrust(primaryJetpack);
-                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.jumping)) {
+                if (jetpackInUse && IJetpackItem.handleJetpackMotion(minecraft.player, mode, jetpackThrust, p -> p.input.keyPresses.jump())) {
                     minecraft.player.resetFallDistance();
                 }
             }
@@ -316,7 +312,7 @@ public class ClientTickHandler {
 
     @SubscribeEvent
     public void onFog(ViewportEvent.RenderFog event) {
-        if (visionEnhancement && event.getCamera().getEntity() instanceof Player player) {
+        if (visionEnhancement && event.getCamera().entity() instanceof Player player) {
             IModule<ModuleVisionEnhancementUnit> module = IModuleHelper.INSTANCE.getIfEnabled(player, EquipmentSlot.HEAD, MekanismModules.VISION_ENHANCEMENT_UNIT);
             if (module != null) {
                 //This near plane is the same as spectators have set for lava and powdered snow

@@ -12,6 +12,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
+import net.minecraft.world.level.block.entity.FuelValues;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,11 +31,11 @@ public class FuelInventorySlot extends BasicInventorySlot {
               listener, x, y);
     }
 
-    public int burn() {
+    public int burn(FuelValues fuelValues) {
         if (isEmpty()) {
             return 0;
         }
-        int burnTime = current.getBurnTime(null) / 2;
+        int burnTime = current.getBurnTime(null, fuelValues) / 2;
         if (burnTime != 0) {
             UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
             //TODO - 1.21.11: Should we also validate that the remainder isn't the existing stack?

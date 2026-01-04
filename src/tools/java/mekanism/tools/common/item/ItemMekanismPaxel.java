@@ -120,10 +120,10 @@ public class ItemMekanismPaxel extends DiggerItem {
             world.setBlock(blockpos, resultToSet, Block.UPDATE_ALL_IMMEDIATE);
             world.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, resultToSet));
             if (player != null) {
-                stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(context.getHand()));
+                stack.hurtAndBreak(1, player, context.getHand().asEquipmentSlot());
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Nullable

@@ -80,7 +80,7 @@ public class ItemConfigurationCard extends Item {
             if (player.isShiftKeyDown()) {
                 if (!world.isClientSide()) {
                     String translationKey = configCardAccess.getConfigCardName();
-                    try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(, Mekanism.logger)) {
+                    try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath, Mekanism.logger)) {
                         TagValueOutput output = TagValueOutput.createWithContext(reporter, world.registryAccess());
                         output.putString(SerializationConstants.DATA_NAME, translationKey);
                         output.store(SerializationConstants.DATA_TYPE, BLOCK_CODEC, configCardAccess.getConfigurationDataType());
@@ -123,7 +123,7 @@ public class ItemConfigurationCard extends Item {
                     }
                 }
             }
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS_SERVER;
         }
         return InteractionResult.SUCCESS;
     }
@@ -137,7 +137,8 @@ public class ItemConfigurationCard extends Item {
                 configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
                 player.displayClientMessage(MekanismLang.CONFIG_CARD_CLEARED.translate(), true);
             }
-            return InteractionResultHolder.sidedSuccess(configCard, level.isClientSide());
+            //TODO - 1.21.11: Does this need to use a copy of the stack rather than directly removing the component above?
+            return InteractionResult.SUCCESS.heldItemTransformedTo(configCard);
         }
         return super.use(level, player, usedHand);
     }

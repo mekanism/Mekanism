@@ -34,7 +34,7 @@ public class ItemAlloy extends Item {
                 if (!world.isClientSide()) {
                     alloyInteraction.onAlloyInteraction(player, context.getItemInHand(), tier);
                 }
-                return InteractionResult.sidedSuccess(world.isClientSide());
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
         return InteractionResult.PASS;

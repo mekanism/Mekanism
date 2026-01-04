@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.Upgrade;
 import mekanism.api.text.APILang;
@@ -70,7 +69,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                                 stack.shrink(added);
                             }
                         }
-                        return InteractionResult.sidedSuccess(world.isClientSide());
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }

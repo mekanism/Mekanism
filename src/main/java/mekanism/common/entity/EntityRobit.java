@@ -88,8 +88,8 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializer;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -115,7 +115,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.pathfinder.PathType;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.HitResult;
@@ -412,7 +412,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             ServerLevel newWorld = ((ServerLevel) this.level()).getServer().getLevel(event.getTargetDimension());
             if (newWorld != null) {
                 Vec3 destination = event.getTarget();
-                changeDimension(new DimensionTransition(newWorld, destination, Vec3.ZERO, getYRot(), getXRot(), DimensionTransition.DO_NOTHING));
+                teleport(new TeleportTransition(newWorld, destination, Vec3.ZERO, getYRot(), getXRot(), TeleportTransition.DO_NOTHING));
             }
         }
     }

@@ -3,7 +3,6 @@ package mekanism.common.util;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.mojang.authlib.GameProfile;
 import it.unimi.dsi.fastutil.longs.Long2DoubleArrayMap;
 import it.unimi.dsi.fastutil.longs.Long2DoubleMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -38,14 +37,12 @@ import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.interfaces.IUpgradeTile;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
-import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -57,6 +54,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
@@ -89,7 +87,6 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
-import net.neoforged.neoforge.common.EffectCures;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.event.level.BlockEvent;
@@ -585,9 +582,9 @@ public final class MekanismUtils {
         }
         String ret = UsernameCache.getLastKnownUsername(uuid);
         if (ret == null && !warnedFails.contains(uuid) && EffectiveSide.get().isServer()) { // see if MC/Yggdrasil knows about it?!
-            Optional<GameProfile> gp = ServerLifecycleHooks.getCurrentServer().getProfileCache().get(uuid);
-            if (gp.isPresent()) {
-                ret = gp.get().getName();
+            Optional<NameAndId> nameToIdCache = ServerLifecycleHooks.getCurrentServer().services().nameToIdCache().get(uuid);
+            if (nameToIdCache.isPresent()) {
+                ret = nameToIdCache.get().name();
             }
         }
         if (ret == null && !warnedFails.contains(uuid)) {
@@ -838,7 +835,7 @@ public final class MekanismUtils {
             targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
             Block block = targetState.getBlock();
             //Remove the block
-            if (targetState.onDestroyedByPlayer(world, foundPos, player, true, fluidState)) {
+            if (targetState.onDestroyedByPlayer(world, foundPos, player, stack, true, fluidState)) {
                 block.destroy(world, foundPos, targetState);
                 //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
                 block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);

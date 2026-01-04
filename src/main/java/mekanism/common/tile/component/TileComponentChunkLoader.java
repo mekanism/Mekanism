@@ -1,13 +1,16 @@
 package mekanism.common.tile.component;
 
 import com.mojang.logging.LogUtils;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.longs.LongIterator;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
+import java.util.stream.LongStream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
@@ -230,15 +233,17 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                 chunkSet.clear();
             }
         }
-        for (long chunk : nbtTags.getLongArray(SerializationConstants.CHUNK_SET)) {
-            chunkSet.add(chunk);
+        Optional<LongStream> chunks = input.read(SerializationConstants.CHUNK_SET, Codec.LONG_STREAM);
+        //noinspection OptionalIsPresent - Capturing lambda
+        if (chunks.isPresent()) {
+            chunks.get().forEach(chunkSet::add);
         }
     }
 
     @Override
     public void write(@NotNull ValueOutput output) {
         if (!chunkSet.isEmpty()) {
-            nbtTags.putLongArray(SerializationConstants.CHUNK_SET, chunkSet.toLongArray());
+            output.store(SerializationConstants.CHUNK_SET, Codec.LONG_STREAM, chunkSet.longStream());
         }
     }
 

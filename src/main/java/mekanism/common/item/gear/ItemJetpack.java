@@ -36,7 +36,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
     }
 
     public ItemJetpack(Holder<ArmorMaterial> material, Item.Properties properties) {
-        super(material, ArmorType.CHESTPLATE, properties.setNoRepair().component(MekanismDataComponents.JETPACK_MODE, JetpackMode.NORMAL));
+        super(material, ArmorType.CHESTPLATE, properties.component(MekanismDataComponents.JETPACK_MODE, JetpackMode.NORMAL));
     }
 
     @Override
@@ -83,7 +83,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
-        if (slotType == getEquipmentSlot()) {
+        if (slotType == EquipmentSlot.CHEST) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
             ChemicalStack stored = ChemicalStack.EMPTY;
@@ -109,6 +109,6 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
-        return slotType == getEquipmentSlot();
+        return slotType == EquipmentSlot.CHEST;
     }
 }

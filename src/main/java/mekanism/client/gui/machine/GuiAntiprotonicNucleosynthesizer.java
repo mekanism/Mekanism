@@ -89,6 +89,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(0, 0, 100);
+        //TODO - 1.21.11: I think it is this?
+        //guiGraphics.submitGuiElementRenderState();
         MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
         float partialTicks = MekanismRenderer.getPartialTick();
         bolt.update(this, boltSupplier.get(), partialTicks);

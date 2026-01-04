@@ -32,9 +32,9 @@ public class BlockStructuralGlass<TILE extends TileEntityStructuralMultiblock> e
             if (!MekanismUtils.canUseAsWrench(stack) && !tile.structuralGuiAccessAllowed()) {
                 //If the block's multiblock doesn't allow gui access via structural multiblocks (for example the evaporation plant),
                 // or if the multiblock is not formed then pass
-                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                return InteractionResult.TRY_WITH_EMPTY_HAND;
             }
-            return ItemInteractionResult.SUCCESS;
+            return InteractionResult.SUCCESS;
         }
         InteractionResult wrenchResult = tile.tryWrench(state, player, stack).getInteractionResult();
         if (wrenchResult != InteractionResult.PASS) {

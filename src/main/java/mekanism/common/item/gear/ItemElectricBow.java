@@ -41,7 +41,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
 
     public ItemElectricBow(Properties properties) {
-        super(properties.rarity(Rarity.RARE).setNoRepair().stacksTo(1).component(MekanismDataComponents.ELECTRIC_BOW_MODE, false));
+        super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1).component(MekanismDataComponents.ELECTRIC_BOW_MODE, false));
     }
 
     @Override

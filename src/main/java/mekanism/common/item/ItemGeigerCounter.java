@@ -31,8 +31,8 @@ public class ItemGeigerCounter extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (!player.isShiftKeyDown()) {
+            ItemStack stack = player.getItemInHand(hand);
             if (!world.isClientSide()) {
                 LevelAndMaxMagnitude levelAndMaxMagnitude = RadiationManager.get().getRadiationLevelAndMaxMagnitude(player);
                 double magnitude = levelAndMaxMagnitude.level();

@@ -9,7 +9,6 @@ import java.util.function.Function;
 import java.util.function.UnaryOperator;
 import net.minecraft.util.Util;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 

@@ -89,16 +89,6 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height > 0;
-    }
-
-    @Override
-    public boolean isIncomplete() {
-        return false;
-    }
-
-    @Override
     public RecipeSerializer<ClearConfigurationRecipe> getSerializer() {
         return MekanismRecipeSerializersInternal.CLEAR_CONFIGURATION.get();
     }

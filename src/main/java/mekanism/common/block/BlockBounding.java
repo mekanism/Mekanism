@@ -14,6 +14,7 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -24,6 +25,7 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -36,7 +38,6 @@ import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -145,17 +146,17 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     /**
-     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(BlockState, HitResult, LevelReader, BlockPos, Player)}.
+     * {@inheritDoc} Delegate to main {@link Block#getCloneItemStack(LevelReader, BlockPos, BlockState, boolean, Player)}.
      */
     @NotNull
     @Override
-    public ItemStack getCloneItemStack(@NotNull BlockState state, @NotNull HitResult target, @NotNull LevelReader world, @NotNull BlockPos pos, @NotNull Player player) {
+    public ItemStack getCloneItemStack(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockState state, boolean includeData, @NotNull Player player) {
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos == null) {
             return ItemStack.EMPTY;
         }
         BlockState mainState = world.getBlockState(mainPos);
-        return mainState.getBlock().getCloneItemStack(mainState, target, world, mainPos, player);
+        return mainState.getBlock().getCloneItemStack(world, mainPos, mainState, includeData, player);
     }
 
     @Override
@@ -253,7 +254,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
     }
 
     @Override
-    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos) {
+    protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos, @NotNull Direction direction) {
         if (!world.isClientSide()) {
             TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
             if (tile != null) {
@@ -356,10 +357,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    protected BlockState updateShape(@NotNull BlockState state, @NotNull Direction facing, @NotNull BlockState facingState, @NotNull LevelAccessor world,
-          @NotNull BlockPos currentPos, @NotNull BlockPos facingPos) {
-        updateFluids(state, world, currentPos);
-        return super.updateShape(state, facing, facingState, world, currentPos, facingPos);
+    protected BlockState updateShape(@NotNull BlockState state, @NotNull LevelReader level, @NotNull ScheduledTickAccess scheduledTickAccess, @NotNull BlockPos currentPos,
+          @NotNull Direction facing, @NotNull BlockPos facingPos, @NotNull BlockState facingState, @NotNull RandomSource random) {
+        updateFluids(level, currentPos, state, scheduledTickAccess);
+        return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override

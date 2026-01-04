@@ -219,14 +219,14 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @Override
     public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (player.isShiftKeyDown() || !getMultiblock().isFormed()) {
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         InteractionResult result = openGui(player);
         return switch (result) {
             case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> InteractionResult.SUCCESS;
             case InteractionResult.CONSUME -> InteractionResult.CONSUME;
             case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
-            case InteractionResult.PASS -> ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
             case InteractionResult.FAIL -> InteractionResult.FAIL;
         };
     }
@@ -371,7 +371,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
                 player.displayClientMessage(result.getResultText(), false);
-                return InteractionResult.sidedSuccess(isRemote());
+                return InteractionResult.SUCCESS_SERVER;
             }
         }
         return InteractionResult.PASS;

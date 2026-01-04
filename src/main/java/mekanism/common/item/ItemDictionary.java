@@ -78,7 +78,7 @@ public class ItemDictionary extends Item {
                         player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), false);
                     }
                 }
-                return InteractionResult.sidedSuccess(world.isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -91,7 +91,7 @@ public class ItemDictionary extends Item {
             if (!player.level().isClientSide()) {
                 sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_ENTITY_TYPE_TAGS_FOUND, entity.getType().getTags());
             }
-            return InteractionResult.sidedSuccess(player.level().isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

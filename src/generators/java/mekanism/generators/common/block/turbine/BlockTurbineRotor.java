@@ -42,9 +42,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         if (!player.isShiftKeyDown()) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (tile.addBlade(true)) {
-                    if (!player.isCreative()) {
-                        stack.shrink(1);
-                    }
+                    stack.consume(1, player);
                     return ItemInteractionResult.CONSUME;
                 }
             }
@@ -67,6 +65,6 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                 }
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 }

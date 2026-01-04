@@ -138,7 +138,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     public InteractionResult onActivate(Player player, InteractionHand hand, ItemStack stack) {
         if (!structuralGuiAccessAllowed()) {
             //If we don't have any structures that allow gui access, just short circuit and pass
-            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         for (Structure structure : structures.values()) {
             //If we already have an interaction that has been handled with one of our multiblocks just pass
@@ -157,7 +157,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                 }
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     @Override

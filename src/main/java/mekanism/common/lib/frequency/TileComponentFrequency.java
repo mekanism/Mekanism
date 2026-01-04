@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -350,21 +351,20 @@ public class TileComponentFrequency implements ITileComponent {
         }
     }
 
-    public void readConfiguredFrequencies(HolderLookup.Provider provider, Player player, CompoundTag data) {
-        if (hasCustomFrequencies() && data.contains(getComponentKey(), Tag.TAG_COMPOUND)) {
-            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-            CompoundTag frequencyNBT = data.getCompound(getComponentKey());
-            for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
-                FrequencyType<?> type = entry.getKey();
-                //Don't allow transferring security data via config cards
-                if (type == FrequencyType.SECURITY) {
-                    continue; // should no longer happen
-                }
-                if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-                    CompoundTag frequencyData = frequencyNBT.getCompound(type.getName());
-                    DataResult<FrequencyIdentity> decodedIdentity = type.getIdentitySerializer().codec().parse(registryOps, frequencyData);
-                    if (decodedIdentity.isSuccess()) {
-                        FrequencyIdentity identity = decodedIdentity.getOrThrow();
+    public void readConfiguredFrequencies(ValueInput input, Player player) {
+        if (hasCustomFrequencies()) {
+            Optional<ValueInput> child = input.child(getComponentKey());
+            if (child.isPresent()) {
+                ValueInput frequencyInput = child.get();
+                for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
+                    FrequencyType<?> type = entry.getKey();
+                    //Don't allow transferring security data via config cards
+                    if (type == FrequencyType.SECURITY) {
+                        continue; // should no longer happen
+                    }
+                    Optional<FrequencyIdentity> decodedIdentity = frequencyInput.read(type.getName(), type.getIdentitySerializer().codec());
+                    if (decodedIdentity.isPresent()) {
+                        FrequencyIdentity identity = decodedIdentity.get();
                         if (identity.ownerUUID() != null) {
                             if (identity.securityMode() == SecurityMode.PUBLIC || identity.ownerUUID().equals(player.getUUID())) {
                                 //If the frequency is public or the player is the owner allow setting the frequency
@@ -372,34 +372,27 @@ public class TileComponentFrequency implements ITileComponent {
                             }
                             continue;
                         }
-                    } else {
-                        decodedIdentity.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency identity: {}", error.message()));
                     }
+                    //If our stored data doesn't have a frequency for the specific type or there was some issue parsing the data, unset the frequency
+                    unsetFrequency(type, entry.getValue());
                 }
-                //If our stored data doesn't have a frequency for the specific type or there was some issue parsing the data, unset the frequency
-                unsetFrequency(type, entry.getValue());
             }
         }
     }
 
-    public void writeConfiguredFrequencies(HolderLookup.Provider provider, CompoundTag data) {
-        RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-        CompoundTag frequencyNBT = new CompoundTag();
+    public void writeConfiguredFrequencies(ValueOutput output) {
+        String key = getComponentKey();
+        ValueOutput frequencyOutput = output.child(key);
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             FrequencyType<?> type = entry.getKey();
             Frequency frequency = entry.getValue().selectedFrequency;
             if (frequency != null && type != FrequencyType.SECURITY) {
                 //Don't allow transferring security data via config cards
-                DataResult<Tag> encoded = type.getIdentitySerializer().codec().encodeStart(registryOps, frequency.getIdentity());
-                if (encoded.isSuccess()) {
-                    frequencyNBT.put(type.getName(), encoded.getOrThrow());
-                } else {
-                    encoded.ifError(error -> Mekanism.logger.warn("Failed to encode frequency identity: {}", error.message()));
-                }
+                frequencyOutput.store(type.getName(), type.getIdentitySerializer().codec(), frequency.getIdentity());
             }
         }
-        if (!frequencyNBT.isEmpty()) {
-            data.put(getComponentKey(), frequencyNBT);
+        if (frequencyOutput.isEmpty()) {
+            output.discard(key);
         }
     }
 

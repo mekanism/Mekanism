@@ -16,7 +16,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.sps.SPSMultiblockData.SyncableCoilData.CoilData;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -321,7 +320,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             for (ValueInput coilInput : coilsInput) {
                 Optional<BlockPos> pos = coilInput.read(SerializationConstants.POSITION, BlockPos.CODEC);
                 if (pos.isPresent()) {
-                    Direction side = Direction.from3DDataValue(coilInput.getInt(SerializationConstants.SIDE));
+                    Direction side = Direction.from3DDataValue(coilInput.getIntOr(SerializationConstants.SIDE, 0));
                     CoilData data = new CoilData(pos.get(), side);
                     data.prevLevel = coilInput.getIntOr(SerializationConstants.LEVEL, data.prevLevel);
                     coilMap.put(data.coilPos, data);

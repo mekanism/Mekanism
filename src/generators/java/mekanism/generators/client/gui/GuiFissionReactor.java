@@ -1,6 +1,5 @@
 package mekanism.generators.client.gui;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.text.EnumColor;
@@ -98,7 +97,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                         //Offset to fix rendering position
                         matrix.translate(-getGuiLeft(), -getGuiTop());
                         //Tooltip.MAX_WIDTH = 170
-                        guiGraphics.renderTooltip(font, font.split(GeneratorsLang.FISSION_FORCE_DISABLED.translate(), 170), mouseX, mouseY);
+                        guiGraphics.setTooltipForNextFrame(font, font.split(GeneratorsLang.FISSION_FORCE_DISABLED.translate(), 170), mouseX, mouseY);
                         matrix.popMatrix();
                     }
                     active = false;

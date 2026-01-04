@@ -5,7 +5,6 @@ import java.util.Objects;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
-import net.minecraft.client.gui.navigation.CommonInputs;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;

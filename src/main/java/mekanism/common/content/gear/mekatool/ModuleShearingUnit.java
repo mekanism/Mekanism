@@ -100,7 +100,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                 if (cost > 0) {
                     energyContainer.extract(cost, Action.EXECUTE, AutomationType.MANUAL);
                 }
-                return InteractionResult.sidedSuccess(level.isClientSide());
+                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;

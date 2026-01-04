@@ -17,7 +17,6 @@ import mekanism.common.integration.lookingat.EnergyElement;
 import mekanism.common.integration.lookingat.FluidElement;
 import mekanism.common.integration.lookingat.LookingAtHelper;
 import mekanism.common.integration.lookingat.LookingAtUtils;
-import mekanism.common.integration.lookingat.theoneprobe.TOPChemicalElement.ChemicalElementFactory;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -40,7 +39,7 @@ public class TOPProvider implements IProbeInfoProvider, Function<ITheOneProbe, V
         probe.registerProbeConfigProvider(ProbeConfigProvider.INSTANCE);
         probe.registerElementFactory(new TOPEnergyElement.Factory());
         probe.registerElementFactory(new TOPFluidElement.Factory());
-        probe.registerElementFactory(new ChemicalElementFactory());
+        probe.registerElementFactory(new TOPChemicalElement.ChemicalElementFactory());
         //Grab the default view settings
         IProbeConfig probeConfig = probe.createProbeConfig();
         displayFluidTanks = () -> probeConfig.getTankMode() > 0;

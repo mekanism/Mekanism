@@ -1,6 +1,7 @@
 package mekanism.common.recipe;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -53,6 +54,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -61,6 +63,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeMap;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
@@ -218,7 +221,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
             if (FMLEnvironment.getDist().isClient()) {
                 Level clientWorld = MekanismClient.tryGetClientWorld();
                 if (clientWorld != null) {
-                    recipeManager = clientWorld.getRecipeManager();
+                    recipeManager = clientWorld.recipeAccess();
                     registryAccess = clientWorld.registryAccess();
                 }
             } else {
@@ -229,7 +232,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
                 }
             }
         } else {
-            recipeManager = world.getRecipeManager();
+            recipeManager = world.recipeAccess();
             registryAccess = world.registryAccess();
         }
         if (recipeManager == null) {
@@ -249,7 +252,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public List<RecipeHolder<RECIPE>> getRecipes(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
         if (cachedRecipes.isEmpty()) {
             //Note: This is a fresh immutable list that gets returned
-            List<RecipeHolder<RECIPE>> recipes = getRecipesUncached(recipeManager, registryAccess);
+            Collection<RecipeHolder<RECIPE>> recipes = getRecipesUncached(recipeManager, registryAccess);
             //Make the list of cached recipes immutable and filter out any incomplete recipes
             // as there is no reason to potentially look the partial complete piece up if
             // the other portion of the recipe is incomplete
@@ -267,9 +270,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      * @param registryAccess Registry access to use (for Smelting only). Call {@link #tryGetRegistryAccess()} if none directly available
      */
     @NotNull
-    private List<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
-        //Note: This is a fresh mutable list that gets returned
-        List<RecipeHolder<RECIPE>> recipes = recipeManager.getAllRecipesFor(this);
+    private Collection<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+        RecipeMap recipeMap = recipeManager.recipeMap();
+        Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {
             if (registryAccess == null) {
                 //If we failed, then only return the recipes that are for the base type
@@ -277,7 +280,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
             }
             //Ensure the recipes can be modified
             recipes = new ArrayList<>(recipes);
-            for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeManager.getAllRecipesFor(RecipeType.SMELTING)) {
+            for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeMap.byType(RecipeType.SMELTING)) {
                 ItemStack recipeOutput = smeltingRecipe.value().getResultItem(registryAccess);
                 if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
                     //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
@@ -321,19 +324,27 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      */
     public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input,
           Level level) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            //TODO - 1.21.11: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
+            return Optional.empty();
+        }
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return level.recipeAccess().getRecipeFor(recipeType, input, level)
+        return serverLevel.recipeAccess().getRecipeFor(recipeType, input, level)
               .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 
     /**
      * Helper for getting a recipe from a world's recipe manager.
      */
-    public static Optional<RecipeHolder<?>> byKey(ServerLevel level, Identifier id) {
+    public static Optional<RecipeHolder<?>> byKey(Level level, ResourceKey<Recipe<?>> id) {
+        if (!(level instanceof ServerLevel serverLevel)) {
+            //TODO - 1.21.11: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
+            return Optional.empty();
+        }
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
-        return level.recipeAccess().byKey(id)
+        return serverLevel.recipeAccess().byKey(id)
               .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
     }
 }

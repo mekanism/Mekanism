@@ -29,6 +29,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -53,7 +54,7 @@ import org.jetbrains.annotations.NotNull;
 public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemicalItem, ICustomCreativeTabContents, IAttachmentBasedModeItem<FlamethrowerMode> {
 
     public ItemFlamethrower(Properties properties) {
-        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoRepair()
+        super(properties.stacksTo(1).rarity(Rarity.RARE).setNoCombineRepair()
               .component(MekanismDataComponents.FLAMETHROWER_MODE, FlamethrowerMode.COMBAT)
         );
     }
@@ -196,23 +197,13 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     }
 
     @Override
-    public boolean isEnchantable(@NotNull ItemStack stack) {
-        return false;
-    }
-
-    @Override
-    public boolean isBookEnchantable(@NotNull ItemStack stack, @NotNull ItemStack book) {
-        return isEnchantable(stack) && super.isBookEnchantable(stack, book);
-    }
-
-    @Override
     public boolean isPrimaryItemFor(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.isPrimaryItemFor(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.isPrimaryItemFor(stack, enchantment);
     }
 
     @Override
     public boolean supportsEnchantment(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        return isEnchantable(stack) && super.supportsEnchantment(stack, enchantment);
+        return stack.has(DataComponents.ENCHANTABLE) && super.supportsEnchantment(stack, enchantment);
     }
 
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {

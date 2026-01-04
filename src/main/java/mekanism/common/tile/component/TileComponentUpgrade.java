@@ -23,12 +23,10 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -224,7 +222,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void serialize(@NotNull ValueOutput upgradeOutput) {
         if (!upgrades.isEmpty()) {
-            Upgrade.saveMap(upgrades, upgradeNBT);
+            Upgrade.saveMap(upgrades, upgradeOutput);
         }
         //Save the inventory
         ContainerType.ITEM.saveTo(upgradeOutput, getSlots());

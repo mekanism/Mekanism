@@ -55,9 +55,7 @@ public class ItemBalloon extends Item {
             world.addFreshEntity(balloon);
             world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
         }
-        if (!player.isCreative()) {
-            stack.shrink(1);
-        }
+        stack.consume(1, player);
         return InteractionResultHolder.success(stack);
     }
 
