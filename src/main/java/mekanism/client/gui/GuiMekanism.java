@@ -480,13 +480,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         // first try to send the mouse event to our overlays
         GuiWindow top = windows.peek();
         for (GuiWindow overlay : windows) {
-            if (overlay.mouseClicked(mouseX, mouseY, button)) {
+            if (overlay.mouseClicked(event, isDoubleClick)) {
                 if (windows.contains(overlay)) {
                     //Validate that the focused window is still one of our windows, as if it wasn't focused/on top, and
                     // it is being closed, we don't want to update and mark it as focused, as our defocusing code won't
                     // run as we ran it when we pressed the button
                     setFocused(overlay);
-                    if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                         setDragging(true);
                     }
                     // this check prevents us from moving the window to the top of the stack if the clicked window opened up an additional window
@@ -505,7 +505,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         GuiEventListener clickedChild = GuiUtils.findChild(children(), event, isDoubleClick, GuiEventListener::mouseClicked);
         if (clickedChild != null) {
             setFocused(clickedChild);
-            if (button == InputConstants.MOUSE_BUTTON_LEFT) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                 setDragging(true);
             }
             return true;

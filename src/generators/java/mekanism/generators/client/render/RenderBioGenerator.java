@@ -13,19 +13,24 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.EnumUtils;
+import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator> {
+public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBioGenerator, BioGeneratorRenderState> {
 
     private static final Map<Direction, Int2ObjectMap<Model3D>> fuelModels = new EnumMap<>(Direction.class);
     private static final int stages = 40;
@@ -39,14 +44,27 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     }
 
     @Override
-    protected void render(TileEntityBioGenerator tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        matrix.pushPose();
-        FluidStack fluid = tile.bioFuelTank.getFluid();
-        float fluidScale = fluid.getAmount() / (float) tile.bioFuelTank.getCapacity();
-        MekanismRenderer.renderObject(getModel(fluid, tile.getDirection(), fluidScale), matrix,
-              renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), LightTexture.FULL_BRIGHT, overlayLight,
-              FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
-        matrix.popPose();
+    public BioGeneratorRenderState createRenderState() {
+        return new BioGeneratorRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityBioGenerator generator, BioGeneratorRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
+        FluidStack fluid = generator.bioFuelTank.getFluid();
+        float fluidScale = fluid.getAmount() / (float) generator.bioFuelTank.getCapacity();
+        state.model = getModel(fluid, generator.getDirection(), fluidScale);
+        state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
+    }
+
+    @Override
+    public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.model != null) {
+            //TODO - 1.21.11: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
+            MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), state.tint, LightTexture.FULL_BRIGHT,
+                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+        }
     }
 
     @Override
@@ -88,5 +106,12 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
             modelMap.put(stage, model);
         }
         return model;
+    }
+
+    public static class BioGeneratorRenderState extends BlockEntityRenderState {
+
+        @Nullable
+        public Model3D model;
+        public int tint = 0xFFFFFFFF;
     }
 }

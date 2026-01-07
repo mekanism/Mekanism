@@ -739,10 +739,10 @@ public class QIOCraftingWindow implements IContentsListener {
                 //If something about mapping the recipe went wrong, we can't find any equivalents
                 return;
             }
-            Ingredient usedIngredient = slotIngredients.getOrDefault(index, Ingredient.EMPTY);
+            Ingredient usedIngredient = slotIngredients.get(index);
             //Validate the ingredient was valid for its spot, because if it isn't something went wrong and there is no point
             // in attempting to find a replacement
-            if (usedIngredient.test(used)) {
+            if (usedIngredient != null && usedIngredient.test(used)) {
                 for (ItemStack item : usedIngredient.getItems()) {
                     if (item.isEmpty()) {
                         //If for some reason the ingredient returns empty stacks, just skip those
@@ -873,7 +873,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 for (int actualRow = 0; actualRow < 3; actualRow++) {
                     int column = actualColumn - columnStart;
                     int row = actualRow - rowStart;
-                    Ingredient ingredient = Ingredient.EMPTY;
+                    Ingredient ingredient = null;
                     if (column >= 0 && row >= 0 && column < recipeWidth && row < recipeHeight) {
                         if (mirrored) {
                             ingredient = ingredients.get(recipeWidth - column - 1 + row * recipeWidth);
@@ -882,7 +882,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         }
                     }
                     int i = actualColumn + actualRow * 3;
-                    if (ingredient.test(getItem(i, index, used))) {
+                    if (ingredient != null && ingredient.test(getItem(i, index, used))) {
                         //If the ingredient matches, add it to our map
                         slotIngredients.put(i, ingredient);
                     } else {

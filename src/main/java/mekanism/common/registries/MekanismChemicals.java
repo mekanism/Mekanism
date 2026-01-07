@@ -14,6 +14,7 @@ import mekanism.common.registration.impl.DeferredChemical;
 import mekanism.common.registration.impl.SlurryRegistryObject;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.util.ARGB;
 
 public class MekanismChemicals {
 
@@ -72,9 +73,7 @@ public class MekanismChemicals {
 
     private static DeferredChemical<Chemical> registerPigment(EnumColor color) {
         int[] rgb = color.getRgbCode();
-        int tint = rgb[0] << 16;
-        tint |= rgb[1] << 8;
-        tint |= rgb[2];
+        int tint = ARGB.color(0, rgb[0], rgb[1], rgb[2]);
         return CHEMICALS.registerPigment(color.getRegistryPrefix(), tint);
     }
 }

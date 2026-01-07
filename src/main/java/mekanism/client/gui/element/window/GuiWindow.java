@@ -156,7 +156,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     @Override
     public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.rgba());
+            //TODO - 1.21.11: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
+            MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
             MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.75F);
             RenderSystem.enableBlend();

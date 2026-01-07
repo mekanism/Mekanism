@@ -1,37 +1,33 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityPersonalChest;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.model.geom.ModelLayers;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.ChestRenderer;
+import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
+import net.minecraft.client.resources.model.Material;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
-import net.minecraft.util.profiling.ProfilerFiller;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPersonalChest> {
+public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> {
 
-    private static final Identifier texture = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
-
-    private final ModelPart lid;
-    private final ModelPart bottom;
-    private final ModelPart lock;
+    private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
+    //TODO - 1.21.11: Validate this is properly grabbing the texture
+    private static final Material MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
 
     public RenderPersonalChest(BlockEntityRendererProvider.Context context) {
         super(context);
-        ModelPart modelpart = context.bakeLayer(ModelLayers.CHEST);
-        this.bottom = modelpart.getChild("bottom");
-        this.lid = modelpart.getChild("lid");
-        this.lock = modelpart.getChild("lock");
+    }
+
+    //TODO - 1.21.11: Evaluate if we have to do anything or if it works fine even though it isn't a ChestBlockEntity
+    /*@Override
+    public void extractRenderState(TileEntityPersonalChest chest, ChestRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
+        super.extractRenderState(chest, state, partialTicks, cameraPosition, breakProgress);
     }
 
     @Override
@@ -51,9 +47,15 @@ public class RenderPersonalChest extends MekanismTileEntityRenderer<TileEntityPe
         lock.render(matrix, builder, light, overlayLight);
         bottom.render(matrix, builder, light, overlayLight);
         matrix.popPose();
+    }*/
+
+    @Nullable
+    @Override
+    protected Material getCustomMaterial(TileEntityPersonalChest chest, ChestRenderState state) {
+        return MATERIAL;
     }
 
-    @Override
+    //@Override//TODO - 1.21.11: Figure out if we need to setup profiling for this again?
     protected String getProfilerSection() {
         return ProfilerConstants.PERSONAL_CHEST;
     }

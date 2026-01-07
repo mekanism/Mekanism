@@ -29,8 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
-import net.neoforged.neoforge.client.event.ModelEvent.RegisterAdditional;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -80,12 +79,12 @@ public class AdditionsClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerAdditionalModels(RegisterAdditional event) {
+    public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
         AdditionsModelCache.INSTANCE.setup(event);
     }
 
     @SubscribeEvent
-    public static void onModelBake(BakingCompleted event) {
+    public static void onModelBake(ModelEvent.BakingCompleted event) {
         AdditionsModelCache.INSTANCE.onBake(event);
     }
 

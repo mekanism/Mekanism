@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
@@ -12,20 +11,25 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank> {
+public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank, FluidTankRenderState> {
 
     private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedCenterFluids = new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
     private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
@@ -42,22 +46,36 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     @Override
-    protected void render(TileEntityFluidTank tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        FluidStack fluid = tile.fluidTank.getFluid();
-        float fluidScale = fluid.isEmpty() ? 0 : tile.prevScale;
-        VertexConsumer buffer = null;
-        if (fluidScale > 0) {
-            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            MekanismRenderer.renderObject(getFluidModel(fluid, fluidScale), matrix, buffer, MekanismRenderer.getColorARGB(fluid, fluidScale),
-                  MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), tile.getBlockPos());
+    public FluidTankRenderState createRenderState() {
+        return new FluidTankRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
+        //TODO - 1.21.11: Should we by copying the fluid stacks?
+        state.fluid = tank.fluidTank.getFluid();
+        state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
+        state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
+        state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;
+        if (!tank.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tank.valveFluid)) {
+            //If it is lighter than air we don't need to render the valve
+            state.valveFluid = tank.valveFluid;
+            state.valveTint = MekanismRenderer.getColorARGB(state.valveFluid);
+            state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.valveFluid);
         }
-        if (!tile.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tile.valveFluid)) {
-            if (buffer == null) {
-                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            }
-            MekanismRenderer.renderObject(getValveModel(tile.valveFluid, fluidScale), matrix, buffer,
-                  MekanismRenderer.getColorARGB(tile.valveFluid), MekanismRenderer.calculateGlowLight(light, tile.valveFluid), overlayLight, FaceDisplay.FRONT,
-                  getCamera(), tile.getBlockPos());
+    }
+
+    @Override
+    public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        if (state.fluidScale > 0) {
+            MekanismRenderer.renderObject(getFluidModel(state.fluid, state.fluidScale), poseStack, buffer, state.fluidTint, state.fluidGlow,
+                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+        }
+        if (!state.valveFluid.isEmpty()) {
+            MekanismRenderer.renderObject(getValveModel(state.valveFluid, state.fluidScale), poseStack, buffer, state.valveTint, state.valveGlow,
+                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
         }
     }
 
@@ -66,7 +84,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return ProfilerConstants.FLUID_TANK;
     }
 
-    private Model3D getValveModel(@NotNull FluidStack fluid, float fluidScale) {
+    private Model3D getValveModel(FluidStack fluid, float fluidScale) {
         Int2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
         int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
         Model3D model = modelMap.get(stage);
@@ -82,7 +100,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return model;
     }
 
-    public static Model3D getFluidModel(@NotNull FluidStack fluid, float fluidScale) {
+    public static Model3D getFluidModel(FluidStack fluid, float fluidScale) {
         Int2ObjectMap<Model3D> modelMap = cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
         int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
         Model3D model = modelMap.get(stage);
@@ -97,5 +115,17 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
             modelMap.put(stage, model);
         }
         return model;
+    }
+
+    public static class FluidTankRenderState extends BlockEntityRenderState {
+
+        //TODO - 1.21.11: Store the textures instead of the fluid stacks
+        public FluidStack fluid = FluidStack.EMPTY;
+        public int fluidTint = 0xFFFFFFFF;
+        public int fluidGlow;
+        public float fluidScale;
+        public FluidStack valveFluid = FluidStack.EMPTY;
+        public int valveTint = 0xFFFFFFFF;
+        public int valveGlow;
     }
 }

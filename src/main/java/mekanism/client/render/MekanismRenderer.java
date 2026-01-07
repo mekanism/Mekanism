@@ -29,7 +29,7 @@ import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.render.transmitter.RenderLogisticalTransporter;
+import mekanism.client.render.transmitter.RenderDiversionTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
@@ -38,10 +38,8 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -115,32 +113,32 @@ public class MekanismRenderer {
         if (spriteLocation == null) { // e.g. badly implemented fluids
             spriteLocation = MissingTextureAtlasSprite.getLocation();
         }
-        return Minecraft.getInstance().getTextureAtlas(TextureAtlas.LOCATION_BLOCKS).apply(spriteLocation);
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(TextureAtlas.LOCATION_BLOCKS).getSprite(spriteLocation);
     }
 
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay, Camera camera, BlockPos renderPos) {
+          FaceDisplay faceDisplay, Vec3 camPos, BlockPos renderPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camera, Vec3.atLowerCornerOf(renderPos));
+            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(renderPos));
         }
     }
 
     public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
-          FaceDisplay faceDisplay, Camera camera) {
+          FaceDisplay faceDisplay, Vec3 camPos) {
         if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camera, null);
+            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camPos, null);
         }
     }
 
     public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, float fluidHeight, BlockPos pos, int glow,
-          int overlay, FaceDisplay faceDisplay, Camera camera) {
+          int overlay, FaceDisplay faceDisplay, Vec3 camPos) {
         for (ValveData valveData : valves) {
             ValveRenderData valveRenderData = ValveRenderData.get(data, valveData);
             Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, fluidHeight);
             if (valveModel != null) {
                 matrix.pushPose();
                 matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camera, valveData.location);
+                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camPos, valveData.location);
                 matrix.popPose();
             }
         }
@@ -151,28 +149,12 @@ public class MekanismRenderer {
         guiGraphics.setColor(1, 1, 1, 1);
     }
 
-    public static float getRed(int color) {
-        return ARGB.red(color) / 255.0F;
-    }
-
-    public static float getGreen(int color) {
-        return ARGB.green(color) / 255.0F;
-    }
-
-    public static float getBlue(int color) {
-        return ARGB.blue(color) / 255.0F;
-    }
-
-    public static float getAlpha(int color) {
-        return ARGB.alpha(color) / 255.0F;
-    }
-
     public static void color(GuiGraphics guiGraphics, int color) {
-        color(guiGraphics, color, getAlpha(color));
+        color(guiGraphics, color, ARGB.alphaFloat(color));
     }
 
     public static void color(GuiGraphics guiGraphics, int color, float alpha) {
-        guiGraphics.setColor(getRed(color), getGreen(color), getBlue(color), alpha);
+        guiGraphics.setColor(ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), alpha);
     }
 
     public static void color(GuiGraphics guiGraphics, ColorRegistryObject colorRO) {
@@ -215,7 +197,7 @@ public class MekanismRenderer {
 
     public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {
         if (fluidStack.isEmpty()) {
-            return -1;
+            return 0xFFFFFFFF;
         }
         int color = getColorARGB(fluidStack);
         if (MekanismUtils.lighterThanAirGas(fluidStack)) {
@@ -235,7 +217,7 @@ public class MekanismRenderer {
 
     public static int getColorARGB(@NotNull Holder<Chemical> chemical, float scale) {
         if (chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-            return -1;
+            return 0xFFFFFFFF;
         } else if (chemical.is(MekanismAPITags.Chemicals.GASEOUS)) {
             return getColorARGB(getTint(chemical), Math.min(1, scale + 0.2F));
         }
@@ -246,9 +228,9 @@ public class MekanismRenderer {
         if (alpha >= 1) {
             return ARGB.opaque(rgb);
         } else if (alpha < 0) {
-            alpha = 0;
+            return ARGB.transparent(rgb);
         }
-        return ARGB.color(ARGB.as8BitChannel(alpha), rgb);
+        return ARGB.color(alpha, rgb);
     }
 
     public static int calculateGlowLight(int combinedLight, @NotNull FluidStack fluid) {
@@ -315,7 +297,6 @@ public class MekanismRenderer {
         teleporterPortal = map.getSprite(Mekanism.rl("block/teleporter_portal"));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
-        RenderLogisticalTransporter.onStitch(map);
         RenderTransmitterBase.onStitch();
 
         //Reset any cached models now that the atlases are built

@@ -16,10 +16,12 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelScubaMask extends MekanismJavaModel {
+public class ModelScubaMask extends MekanismJavaModel<Unit> {
 
     public static final ModelLayerLocation MASK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_mask"), "main");
     private static final Identifier MASK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
@@ -123,8 +125,7 @@ public class ModelScubaMask extends MekanismJavaModel {
     private final List<ModelPart> glass;
 
     public ModelScubaMask(EntityModelSet entityModelSet) {
-        super(RenderType::entitySolid);
-        ModelPart root = entityModelSet.bakeLayer(MASK_LAYER);
+        super(entityModelSet.bakeLayer(MASK_LAYER), RenderTypes::entitySolid);
         parts = getRenderableParts(root, HELMET_FEED, TUBE_BACK, TUBE_L, TUBE_R, TUBE_FRONT, MOUTH_INTAKE, FIN_UPPER_R, FIN_UPPER_L,
               FIN_MID_R, FIN_MID_L, FIN_BACK, TOP_PLATE, FILTER_L, FILTER_R, FILTER_PIPE_LOWER, FILTER_PIPE_UPPER, PIPE_CORNER_F_L,
               PIPE_CORNER_F_R, PIPE_CORNER_B_R, PIPE_CORNER_B_L);

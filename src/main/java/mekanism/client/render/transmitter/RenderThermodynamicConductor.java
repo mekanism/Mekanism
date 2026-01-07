@@ -3,33 +3,62 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.transmitter.TransmitterRenderState.ConductorRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor> {
+public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEntityThermodynamicConductor, ConductorRenderState> {
 
     public RenderThermodynamicConductor(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityThermodynamicConductor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        matrix.pushPose();
-        matrix.translate(0.5, 0.5, 0.5);
-        ThermodynamicConductor conductor = tile.getTransmitter();
-        int argb = HeatUtils.getColorFromTemp(conductor.getTotalTemperature(), conductor.getBaseColor()).argb();
-        renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), argb, MekanismRenderer.getAlpha(argb), LightTexture.FULL_BRIGHT,
-              overlayLight, MekanismRenderer.heatIcon);
-        matrix.popPose();
+    public ConductorRenderState createRenderState() {
+        return new ConductorRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityThermodynamicConductor conductor, ConductorRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(conductor, state, partialTick, cameraPosition, breakProgress);
+        ThermodynamicConductor transmitter = conductor.getTransmitter();
+        state.tempColor = HeatUtils.getColorFromTemp(transmitter.getTotalTemperature(), transmitter.getBaseColor()).argb();
+    }
+
+    @Override
+    public void submit(ConductorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        //TODO - 1.21.11: What submit do we want to be using
+        nodeCollector.submitModelPart(
+              this.model,
+              poseStack,
+              //TODO - 1.21.11: Is this the correct render type to be using? It used to be translucent cull
+              RenderTypes.entityTranslucent(MekanismRenderer.heatIcon.contents().name()),
+              //TODO - 1.21.11: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
+              LightTexture.FULL_BRIGHT,
+              OverlayTexture.NO_OVERLAY,
+              //TODO - 1.21.11: Do we need to pass the texture here as well, or not?
+              MekanismRenderer.heatIcon,
+              state.tempColor,
+              state.breakProgress//TODO - 1.21.11: Should we be rendering the crumbling overlay here?
+        );
+        poseStack.popPose();
     }
 
     @Override

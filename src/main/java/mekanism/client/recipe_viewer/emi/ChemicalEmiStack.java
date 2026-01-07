@@ -23,8 +23,9 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.TooltipFlag;
 
 @NothingNullByDefault
@@ -62,9 +63,9 @@ public class ChemicalEmiStack extends EmiStack {
         if ((flags & RENDER_ICON) != 0) {
             int color = MekanismRenderer.getTint(chemical);
             TextureAtlasSprite sprite = MekanismRenderer.getChemicalTexture(chemical);
-            float red = MekanismRenderer.getRed(color);
-            float green = MekanismRenderer.getGreen(color);
-            float blue = MekanismRenderer.getBlue(color);
+            float red = ARGB.redFloat(color);
+            float green = ARGB.greenFloat(color);
+            float blue = ARGB.blueFloat(color);
             graphics.blit(x, y, 0, 16, 16, sprite, red, green, blue, 1);
 
         }

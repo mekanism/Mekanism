@@ -40,7 +40,7 @@ public record PacketLightningRender(LightningPreset preset, int renderer, Vec3 s
     @Override
     public void handle(IPayloadContext context) {
         if (preset.shouldAdd.getAsBoolean()) {
-            RenderTickHandler.renderBolt(renderer, preset.boltCreator.create(start, end, segments));
+            RenderTickHandler.renderBolt(renderer, preset.boltCreator.create(start, end, segments), context.player().level().getGameTime());
         }
     }
 

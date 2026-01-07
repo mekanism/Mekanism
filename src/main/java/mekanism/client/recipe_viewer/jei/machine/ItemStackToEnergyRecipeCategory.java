@@ -63,7 +63,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
             if (energy != 0L) {
                 //Manually add the tooltip showing the amounts if the mouse is over the energy gauge
                 tooltip.add(EnergyDisplay.of(energy).getTextComponent());
-                if (Minecraft.getInstance().options.advancedItemTooltips || Screen.hasShiftDown()) {
+                if (Minecraft.getInstance().options.advancedItemTooltips || Minecraft.getInstance().hasShiftDown()) {
                     tooltip.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, MekanismLang.JEI_RECIPE_ID.translate(recipeHolder.id())));
                 }
             }

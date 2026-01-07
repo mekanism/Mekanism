@@ -54,7 +54,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
                 return true;
             }
             return false;
-        }, 1.0F, () -> Screen.hasShiftDown() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get()).setGhostHandler((IGhostItemConsumer) ingredient -> {
+        }, 1.0F, () -> minecraft.hasShiftDown() ? MekanismSounds.BEEP_OFF.get() : MekanismSounds.BEEP_ON.get()).setGhostHandler((IGhostItemConsumer) ingredient -> {
             updateStack((ItemStack) ingredient);
             minecraft.getSoundManager().play(SimpleSoundInstance.forUI(MekanismSounds.BEEP_ON.get(), 1.0F, 1.0F));
         });

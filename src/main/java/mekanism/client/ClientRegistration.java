@@ -88,7 +88,6 @@ import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.ModelTransporterBox;
 import mekanism.client.model.baked.DigitalMinerBakedModel;
 import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.EnergyCubeModel;
@@ -109,6 +108,7 @@ import mekanism.client.render.armor.JetpackArmor;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.armor.ScubaMaskArmor;
 import mekanism.client.render.armor.ScubaTankArmor;
+import mekanism.client.render.entity.FlameModel;
 import mekanism.client.render.entity.RenderFlame;
 import mekanism.client.render.entity.RenderRobit;
 import mekanism.client.render.hud.MekaSuitEnergyLevel;
@@ -143,11 +143,13 @@ import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
 import mekanism.client.render.tileentity.RenderThermalEvaporationPlant;
 import mekanism.client.render.tileentity.RenderThermoelectricBoiler;
+import mekanism.client.render.transmitter.RenderDiversionTransporter;
 import mekanism.client.render.transmitter.RenderLogisticalTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderPressurizedTube;
 import mekanism.client.render.transmitter.RenderThermodynamicConductor;
 import mekanism.client.render.transmitter.RenderUniversalCable;
+import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
@@ -207,8 +209,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
-import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
-import net.neoforged.neoforge.client.event.ModelEvent.ModifyBakingResult;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
@@ -343,9 +344,10 @@ public class ClientRegistration {
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderFluidTank::new, MekanismTileEntityTypes.BASIC_FLUID_TANK, MekanismTileEntityTypes.ADVANCED_FLUID_TANK,
               MekanismTileEntityTypes.ELITE_FLUID_TANK, MekanismTileEntityTypes.ULTIMATE_FLUID_TANK, MekanismTileEntityTypes.CREATIVE_FLUID_TANK);
         //Transmitters
-        ClientRegistrationUtil.bindTileEntityRenderer(event, RenderLogisticalTransporter::new, MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER,
+        ClientRegistrationUtil.bindTileEntityRenderer(event, context -> new RenderLogisticalTransporter<>(context, TransporterRenderState::new), MekanismTileEntityTypes.RESTRICTIVE_TRANSPORTER,
               MekanismTileEntityTypes.DIVERSION_TRANSPORTER, MekanismTileEntityTypes.BASIC_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ADVANCED_LOGISTICAL_TRANSPORTER,
               MekanismTileEntityTypes.ELITE_LOGISTICAL_TRANSPORTER, MekanismTileEntityTypes.ULTIMATE_LOGISTICAL_TRANSPORTER);
+        ClientRegistrationUtil.bindTileEntityRenderer(event, RenderDiversionTransporter::new, MekanismTileEntityTypes.DIVERSION_TRANSPORTER);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderMechanicalPipe::new, MekanismTileEntityTypes.BASIC_MECHANICAL_PIPE,
               MekanismTileEntityTypes.ADVANCED_MECHANICAL_PIPE, MekanismTileEntityTypes.ELITE_MECHANICAL_PIPE, MekanismTileEntityTypes.ULTIMATE_MECHANICAL_PIPE);
         ClientRegistrationUtil.bindTileEntityRenderer(event, RenderPressurizedTube::new, MekanismTileEntityTypes.BASIC_PRESSURIZED_TUBE,
@@ -361,14 +363,19 @@ public class ClientRegistration {
         event.registerLayerDefinition(ModelJetpack.JETPACK_LAYER, ModelJetpack::createLayerDefinition);
         event.registerLayerDefinition(ModelArmoredJetpack.ARMORED_JETPACK_LAYER, ModelArmoredJetpack::createLayerDefinition);
         event.registerLayerDefinition(ModelAtomicDisassembler.DISASSEMBLER_LAYER, ModelAtomicDisassembler::createLayerDefinition);
-        event.registerLayerDefinition(ModelEnergyCore.CORE_LAYER, ModelEnergyCore::createLayerDefinition);
+        event.registerLayerDefinition(RenderEnergyCube.CORE_LAYER, RenderEnergyCube::createCoreLayer);
         event.registerLayerDefinition(ModelFlamethrower.FLAMETHROWER_LAYER, ModelFlamethrower::createLayerDefinition);
         event.registerLayerDefinition(ModelArmoredFreeRunners.ARMORED_FREE_RUNNER_LAYER, ModelArmoredFreeRunners::createLayerDefinition);
         event.registerLayerDefinition(ModelFreeRunners.FREE_RUNNER_LAYER, ModelFreeRunners::createLayerDefinition);
         event.registerLayerDefinition(ModelIndustrialAlarm.ALARM_LAYER, ModelIndustrialAlarm::createLayerDefinition);
+        event.registerLayerDefinition(RenderIndustrialAlarm.LIGHT_BOX_LAYER, RenderIndustrialAlarm::createLightBoxLayer);
         event.registerLayerDefinition(ModelScubaMask.MASK_LAYER, ModelScubaMask::createLayerDefinition);
         event.registerLayerDefinition(ModelScubaTank.TANK_LAYER, ModelScubaTank::createLayerDefinition);
-        event.registerLayerDefinition(ModelTransporterBox.BOX_LAYER, ModelTransporterBox::createLayerDefinition);
+        event.registerLayerDefinition(RenderLogisticalTransporter.BOX_LAYER, RenderLogisticalTransporter::createBoxLayer);
+        event.registerLayerDefinition(RenderDiversionTransporter.OVERLAY_LAYER, RenderDiversionTransporter::createOverlayLayer);
+
+        //Entity layer definitions
+        event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);
     }
 
     @SubscribeEvent
@@ -476,12 +483,12 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerAdditionalModels(RegisterAdditional event) {
+    public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
         MekanismModelCache.INSTANCE.setup(event);
     }
 
     @SubscribeEvent
-    public static void onModelBake(ModifyBakingResult event) {
+    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
         event.getModels().replaceAll((rl, model) -> {
             CustomModelRegistryObject obj = customModels.get(rl.id());
             return obj == null ? model : obj.createModel(model, event);
@@ -489,7 +496,7 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void onModelBake(BakingCompleted event) {
+    public static void onModelBake(ModelEvent.BakingCompleted event) {
         MekanismModelCache.INSTANCE.onBake(event);
     }
 
@@ -694,6 +701,6 @@ public class ClientRegistration {
     @FunctionalInterface
     public interface CustomModelRegistryObject {
 
-        BakedModel createModel(BakedModel original, ModifyBakingResult event);
+        BakedModel createModel(BakedModel original, ModelEvent.ModifyBakingResult event);
     }
 }

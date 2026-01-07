@@ -20,6 +20,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
@@ -106,9 +107,9 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
     @Override
     public InteractionResult openGui(Player player) {
         InteractionResult result = super.openGui(player);
-        if (result.consumesAction() && !isRemote()) {
+        if (result.consumesAction() && level instanceof ServerLevel serverLevel) {
             player.awardStat(Stats.CUSTOM.get(getStat()));
-            PiglinAi.angerNearbyPiglins(player, true);
+            PiglinAi.angerNearbyPiglins(serverLevel, player, true);
         }
         return result;
     }

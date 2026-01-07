@@ -40,7 +40,7 @@ public class AdditionsConfig extends BaseMekanismConfig {
         obsidianTNTDelay = CachedIntValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_DELAY.applyToBuilder(builder)
               .defineInRange("delay", 5 * SharedConstants.TICKS_PER_SECOND, 0, Integer.MAX_VALUE));
         obsidianTNTBlastRadius = CachedFloatValue.wrap(this, AdditionsConfigTranslations.SERVER_OBSIDIAN_RADIUS.applyToBuilder(builder)
-              .defineInRange("blastRadius", 12, 0.1, 1_000));
+              .defineInRange("blastRadius", 12, 0.1, 128));
         builder.pop();
 
         AdditionsConfigTranslations.SERVER_VOICE.applyToBuilder(builder).push("voice_server");

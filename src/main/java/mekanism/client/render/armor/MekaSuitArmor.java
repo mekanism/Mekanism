@@ -49,21 +49,23 @@ import mekanism.common.lib.effect.BoltEffect.BoltRenderInfo;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.ElytraAnimationState;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
@@ -118,86 +120,86 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         return colorUnit != null ? colorUnit.getCustomInstance().color() : Color.WHITE;
     }
 
-    public void renderArm(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight,
-          LivingEntity entity, ItemStack stack, boolean rightHand) {
+    public <STATE extends HumanoidRenderState> void renderArm(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
+          STATE state, ItemStack stack, boolean rightHand) {
         ModelPos armPos = rightHand ? ModelPos.RIGHT_ARM : ModelPos.LEFT_ARM;
-        ArmorQuads armorQuads = cache.getUnchecked(key(entity));
+        ArmorQuads armorQuads = cache.getUnchecked(key(state));
         boolean hasOpaqueArm = armorQuads.opaqueQuads().containsKey(armPos);
         boolean hasTransparentArm = armorQuads.transparentQuads().containsKey(armPos);
         if (hasOpaqueArm || hasTransparentArm) {
-            matrix.pushPose();
-            armPos.translate(baseModel, matrix, entity);
-            PoseStack.Pose last = matrix.last();
+            poseStack.pushPose();
+            armPos.translate(baseModel, poseStack, state);
+            PoseStack.Pose last = poseStack.last();
             if (hasOpaqueArm) {
-                VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, MekanismRenderType.MEKASUIT, false, stack.hasFoil());
-                putQuads(armorQuads.opaqueQuads().get(armPos), builder, last, light, overlayLight, getColor(stack));
+                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, MekanismRenderType.MEKASUIT, false, stack.hasFoil());
+                putQuads(armorQuads.opaqueQuads().get(armPos), builder, last, lightCoords, getColor(stack));
             }
             if (hasTransparentArm) {
-                VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS), false, stack.hasFoil());
-                putQuads(armorQuads.transparentQuads().get(armPos), builder, last, light, overlayLight, Color.WHITE);
+                VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS), false, stack.hasFoil());
+                putQuads(armorQuads.transparentQuads().get(armPos), builder, last, lightCoords, Color.WHITE);
             }
-            matrix.popPose();
+            poseStack.popPose();
         }
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
-        if (baseModel.young) {
-            matrix.pushPose();
+    public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
+          STATE state, ItemStack stack) {
+        if (state.isBaby) {
+            poseStack.pushPose();
             float f1 = 1.0F / baseModel.babyBodyScale;
-            matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
-            renderMekaSuit(baseModel, matrix, renderer, light, overlayLight, getColor(stack), partialTicks, hasEffect, entity);
-            matrix.popPose();
+            poseStack.scale(f1, f1, f1);
+            poseStack.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
+            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), stack.hasFoil(), state);
+            poseStack.popPose();
         } else {
-            renderMekaSuit(baseModel, matrix, renderer, light, overlayLight, getColor(stack), partialTicks, hasEffect, entity);
+            renderMekaSuit(baseModel, poseStack, nodeCollector, lightCoords, getColor(stack), stack.hasFoil(), state);
         }
     }
 
-    private void renderMekaSuit(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight, Color color, float partialTicks, boolean hasEffect, LivingEntity entity) {
-        ArmorQuads armorQuads = cache.getUnchecked(key(entity));
-        render(baseModel, renderer, matrix, light, overlayLight, color, hasEffect, entity, armorQuads.opaqueQuads(), false);
+    private <STATE extends HumanoidRenderState> void renderMekaSuit(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector,
+          int lightCoords, Color color, boolean hasEffect, STATE state) {
+        ArmorQuads armorQuads = cache.getUnchecked(key(state));
+        render(baseModel, nodeCollector, poseStack, lightCoords, color, hasEffect, state, armorQuads.opaqueQuads(), false);
 
         if (type == EquipmentSlot.CHEST) {
             BoltRenderer boltRenderer = boltRenderMap.computeIfAbsent(entity.getUUID(), id -> new BoltRenderer());
-            if (IModuleHelper.INSTANCE.isEnabled(entity.getItemBySlot(EquipmentSlot.CHEST), MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
+            if (IModuleHelper.INSTANCE.isEnabled(state.chestEquipment, MekanismModules.GRAVITATIONAL_MODULATING_UNIT)) {
                 BoltEffect leftBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(-0.01, 0.35, 0.37), new Vec3(-0.01, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
                 BoltEffect rightBolt = new BoltEffect(BoltRenderInfo.ELECTRICITY, new Vec3(0.025, 0.35, 0.37), new Vec3(0.025, 0.15, 0.37), 10)
                       .size(0.012F).lifespan(6).spawn(SpawnFunction.noise(3, 1));
-                boltRenderer.update(0, leftBolt, partialTicks);
-                boltRenderer.update(1, rightBolt, partialTicks);
+                boltRenderer.update(0, leftBolt, state.partialTick);
+                boltRenderer.update(1, rightBolt, state.partialTick);
             }
-            //Adjust the matrix so that we render the lightning in the correct spot if the player is crouching
-            matrix.pushPose();
-            ModelPos.BODY.translate(baseModel, matrix, entity);
-            boltRenderer.render(partialTicks, matrix, renderer);
-            matrix.popPose();
+            //Adjust the poseStack so that we render the lightning in the correct spot if the player is crouching
+            poseStack.pushPose();
+            ModelPos.BODY.translate(baseModel, poseStack, state);
+            boltRenderer.render(gameTime, state.partialTick, poseStack, renderer);
+            poseStack.popPose();
         }
 
         //Pass white as the color because we don't want to tint transparent quads
-        render(baseModel, renderer, matrix, light, overlayLight, Color.WHITE, hasEffect, entity, armorQuads.transparentQuads(), true);
+        render(baseModel, renderer, poseStack, lightCoords, Color.WHITE, hasEffect, state, armorQuads.transparentQuads(), true);
     }
 
-    private void render(HumanoidModel<? extends LivingEntity> baseModel, MultiBufferSource renderer, PoseStack matrix, int light, int overlayLight,
-          Color color, boolean hasEffect, LivingEntity entity, Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
+    private <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, SubmitNodeCollector nodeCollector, PoseStack poseStack, int lightCoords,
+          Color color, boolean hasEffect, STATE state, Map<ModelPos, List<BakedQuad>> quadMap, boolean transparent) {
         if (!quadMap.isEmpty()) {
             RenderType renderType = transparent ? RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS) : MekanismRenderType.MEKASUIT;
-            VertexConsumer builder = ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
+            VertexConsumer builder = ItemRenderer.getFoilBuffer(nodeCollector, renderType, false, hasEffect);
             for (Map.Entry<ModelPos, List<BakedQuad>> entry : quadMap.entrySet()) {
-                matrix.pushPose();
-                entry.getKey().translate(baseModel, matrix, entity);
-                putQuads(entry.getValue(), builder, matrix.last(), light, overlayLight, color);
-                matrix.popPose();
+                poseStack.pushPose();
+                entry.getKey().translate(baseModel, poseStack, state);
+                putQuads(entry.getValue(), builder, poseStack.last(), lightCoords, color);
+                poseStack.popPose();
             }
         }
     }
 
-    private void putQuads(List<BakedQuad> quads, VertexConsumer builder, PoseStack.Pose pose, int light, int overlayLight, Color color) {
+    private void putQuads(List<BakedQuad> quads, VertexConsumer builder, PoseStack.Pose pose, int lightCoords, Color color) {
         for (BakedQuad quad : quads) {
-            builder.putBulkData(pose, quad, color.rf(), color.gf(), color.bf(), color.af(), light, overlayLight, false);
+            builder.putBulkData(pose, quad, color.rf(), color.gf(), color.bf(), color.af(), lightCoords, OverlayTexture.NO_OVERLAY);
         }
     }
 
@@ -268,20 +270,20 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             return null;
         }
 
-        public void translate(HumanoidModel<? extends LivingEntity> baseModel, PoseStack matrix, LivingEntity entity) {
+        public <STATE extends HumanoidRenderState> void translate(HumanoidModel<STATE> baseModel, PoseStack poseStack, STATE state) {
             switch (this) {
-                case HEAD -> baseModel.head.translateAndRotate(matrix);
-                case BODY -> baseModel.body.translateAndRotate(matrix);
-                case LEFT_ARM -> baseModel.leftArm.translateAndRotate(matrix);
-                case RIGHT_ARM -> baseModel.rightArm.translateAndRotate(matrix);
-                case LEFT_LEG -> baseModel.leftLeg.translateAndRotate(matrix);
-                case RIGHT_LEG -> baseModel.rightLeg.translateAndRotate(matrix);
-                case LEFT_WING, RIGHT_WING -> translateWings(baseModel, matrix, entity);
+                case HEAD -> baseModel.head.translateAndRotate(poseStack);
+                case BODY -> baseModel.body.translateAndRotate(poseStack);
+                case LEFT_ARM -> baseModel.leftArm.translateAndRotate(poseStack);
+                case RIGHT_ARM -> baseModel.rightArm.translateAndRotate(poseStack);
+                case LEFT_LEG -> baseModel.leftLeg.translateAndRotate(poseStack);
+                case RIGHT_LEG -> baseModel.rightLeg.translateAndRotate(poseStack);
+                case LEFT_WING, RIGHT_WING -> translateWings(baseModel, poseStack, state);
             }
         }
 
-        private void translateWings(HumanoidModel<? extends LivingEntity> baseModel, PoseStack matrix, LivingEntity entity) {
-            baseModel.body.translateAndRotate(matrix);
+        private <STATE extends HumanoidRenderState> void translateWings(HumanoidModel<STATE> baseModel, PoseStack poseStack, STATE state) {
+            baseModel.body.translateAndRotate(poseStack);
             float x = 0;
             float y = 0;
             float z = 0;
@@ -290,11 +292,11 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
             //Note: In theory the entity is always "fall flying" for wing rendering given our conditions
             // for it rendering, but we validate it just in case.
             //If the entity is not dive-bombing the ground (at which point the wings will be folded)
-            if (entity.isFallFlying() && entity.getXRot() < 45) {
+            if (state.isFallFlying && state.xRot < 45) {
                 float scale = 0;
                 // then we check if the entity is not pointing steeply into the sky
                 // if it isn't or if the entity has a lot of movement
-                if (entity.getXRot() > -45 || entity.getDeltaMovement().y > 1) {
+                if (state.xRot > -45 || entity.getDeltaMovement().y > 1) {
                     // then we fully expand the wings
                     scale = 1;
                 } else if (entity.getDeltaMovement().y > 0) {
@@ -309,16 +311,19 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 yRot = EXPANDED_WING_Y_ROT * scale;
                 zRot = EXPANDED_WING_Z_ROT * scale;
             }
-            if (entity instanceof AbstractClientPlayer player) {
+            //TODO - 1.21.11: I think we should actually be updating the rotations in entity.elytraAnimationState rather than in the state?
+            if (state instanceof AvatarRenderState playerState) {
                 //If the entity is a player, then transition the wings gradually to their target position
-                player.elytraRotX = 0;
-                yRot = player.elytraRotY = player.elytraRotY + (yRot - player.elytraRotY) * 0.01F;
+                ElytraAnimationState elytraAnimationState;
+                //TODO - 1.21.11: What is the difference between playerState.flyingYRot and state.elytraRotY?
+                state.elytraRotX = 0;
+                yRot = state.elytraRotY = state.elytraRotY + (yRot - state.elytraRotY) * 0.01F;
                 //Base off of target values
-                float scale = player.elytraRotY / EXPANDED_WING_Y_ROT;
+                float scale = state.elytraRotY / EXPANDED_WING_Y_ROT;
                 x = EXPANDED_WING_X * scale;
                 y = EXPANDED_WING_Y * scale;
                 z = EXPANDED_WING_Z * scale;
-                zRot = player.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
+                zRot = state.elytraRotZ = EXPANDED_WING_Z_ROT * scale;
             }
             if (this == RIGHT_WING) {
                 //Invert things that need to be inverted for the right wing to mirror it properly
@@ -326,12 +331,12 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                 yRot = -yRot;
                 zRot = -zRot;
             }
-            matrix.translate(x / 16, y / 16, z / 16);
+            poseStack.translate(x / 16, y / 16, z / 16);
             if (yRot != 0.0F) {
-                matrix.mulPose(Axis.YP.rotationDegrees(yRot));
+                poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
             }
             if (zRot != 0.0F) {
-                matrix.mulPose(Axis.ZP.rotationDegrees(zRot));
+                poseStack.mulPose(Axis.ZP.rotationDegrees(zRot));
             }
 
         }
@@ -543,11 +548,23 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
         moduleModelSpec.put(slotType, moduleData, new ModuleModelSpec(moduleData.value(), slotType, name, isActive));
     }
 
-    public QuickHash key(LivingEntity player) {
+    private ItemStack getItemBySlot(HumanoidRenderState state, EquipmentSlot slot) {
+        return switch (slot) {
+            case MAINHAND -> state.mainArm == HumanoidArm.RIGHT ? state.rightHandItemStack : state.leftHandItemStack;
+            case OFFHAND -> state.mainArm == HumanoidArm.RIGHT ? state.leftHandItemStack : state.rightHandItemStack;
+            case FEET -> state.feetEquipment;
+            case LEGS -> state.legsEquipment;
+            case CHEST -> state.chestEquipment;
+            case HEAD -> state.headEquipment;
+            default -> ItemStack.EMPTY;
+        };
+    }
+
+    public QuickHash key(HumanoidRenderState state) {
         Object2BooleanMap<ModuleModelSpec> modules = new Object2BooleanOpenHashMap<>();
         Set<EquipmentSlot> wornParts = EnumSet.noneOf(EquipmentSlot.class);
         for (EquipmentSlot slotType : EnumUtils.ARMOR_SLOTS) {
-            ItemStack stack = player.getItemBySlot(slotType);
+            ItemStack stack = getItemBySlot(state, slotType);
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
                 if (container != null) {
@@ -555,15 +572,14 @@ public class MekaSuitArmor implements ICustomArmor, ISpecialGear {
                     for (Entry<Holder<ModuleData<?>>, ModuleModelSpec> entry : moduleModelSpec.row(slotType).entrySet()) {
                         if (container.hasEnabled(entry.getKey())) {
                             ModuleModelSpec spec = entry.getValue();
-                            modules.put(spec, spec.isActive(player));
+                            modules.put(spec, spec.isActive(state));
                         }
                     }
                 }
             }
         }
         return new QuickHash(modules.isEmpty() ? Object2BooleanMaps.emptyMap() : modules, wornParts.isEmpty() ? Collections.emptySet() : wornParts,
-              MekanismUtils.getItemInHand(player, HumanoidArm.LEFT).getItem() instanceof ItemMekaTool,
-              MekanismUtils.getItemInHand(player, HumanoidArm.RIGHT).getItem() instanceof ItemMekaTool);
+              state.leftHandItemStack.getItem() instanceof ItemMekaTool, state.rightHandItemStack.getItem() instanceof ItemMekaTool);
     }
 
     public static class ModuleOBJModelData extends OBJModelData {

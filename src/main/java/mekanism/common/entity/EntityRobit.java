@@ -69,10 +69,10 @@ import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismDataSerializers;
-import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
+import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.util.MekanismUtils;
@@ -82,6 +82,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
+import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -93,7 +94,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.server.level.TicketType;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -118,7 +118,6 @@ import net.minecraft.world.level.pathfinder.PathType;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
@@ -141,7 +140,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return SynchedEntityData.defineId(EntityRobit.class, dataSerializer);
     }
 
-    private static final TicketType<Integer> ROBIT_CHUNK_UNLOAD = TicketType.create("robit_chunk_unload", Integer::compareTo, SharedConstants.TICKS_PER_SECOND);
     private static final EntityDataAccessor<UUID> OWNER_UUID = define(MekanismDataSerializers.UUID.value());
     //TODO: Ensure this properly updates if the user's name changes but uuid is the same
     private static final EntityDataAccessor<String> OWNER_NAME = define(EntityDataSerializers.STRING);
@@ -237,19 +235,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         outputHandler = OutputHelper.getOutputHandler(smeltingOutputSlot, RecipeError.NOT_ENOUGH_OUTPUT_SPACE);
     }
 
-    @Nullable
-    public static EntityRobit create(Level world, double x, double y, double z) {
-        EntityRobit robit = MekanismEntityTypes.ROBIT.get().create(world);
-        if (robit == null) {
-            return null;
-        }
-        robit.setPos(x, y, z);
-        robit.xo = x;
-        robit.yo = y;
-        robit.zo = z;
-        return robit;
-    }
-
     @Override
     protected void registerGoals() {
         super.registerGoals();
@@ -275,7 +260,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     protected void defineSynchedData(@NotNull SynchedEntityData.Builder builder) {
         super.defineSynchedData(builder);
         //Default before it has a brief chance to get set the owner to mekanism's fake player
-        builder.define(OWNER_UUID, Mekanism.gameProfile.getId());
+        builder.define(OWNER_UUID, Mekanism.gameProfile.id());
         builder.define(OWNER_NAME, "");
         builder.define(SECURITY, SecurityMode.PUBLIC);
         builder.define(FOLLOW, false);
@@ -294,7 +279,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerLevel) level()).getChunkSource().addRegionTicket(ROBIT_CHUNK_UNLOAD, new ChunkPos(blockPosition()), 2, getId());
+            ((ServerLevel) level()).getChunkSource().addTicketWithRadius(MekanismTicketTypes.ROBIT_CHUNK_UNLOAD.value(), new ChunkPos(blockPosition()), 2);
         }
         super.onRemovedFromLevel();
     }
@@ -312,7 +297,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 if (level.dimension() == homeLocation.dimension()) {
                     serverWorld = level;
                 } else {
-                    MinecraftServer server = getServer();
+                    MinecraftServer server = level.getServer();
                     serverWorld = server == null ? null : server.getLevel(homeLocation.dimension());
                 }
                 BlockPos homePos = homeLocation.pos();
@@ -424,6 +409,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     @NotNull
     @Override
     public InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
+        //TODO - 1.21.11: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
         if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;
         } else if (player.isShiftKeyDown()) {
@@ -445,7 +431,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 player.openMenu(provider, buf -> buf.writeVarInt(getId()));
             }
         }
-        return InteractionResult.sidedSuccess(level().isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private ItemStack getItemVariant() {
@@ -663,7 +649,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @Override
-    public ItemStack getPickedResult(@NotNull HitResult target) {
+    public ItemStack getPickResult() {
         return getItemVariant();
     }
 
@@ -782,8 +768,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private Identifier getModelTexture() {
         Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
         ResourceKey<RobitSkin> skinKey = getSkin();
-        Optional<RobitSkin> optionalSkin = robitSkins.getOptional(skinKey);
-        RobitSkin skin;
+        Optional<Holder.Reference<RobitSkin>> optionalSkin = robitSkins.get(skinKey);
+        Holder.Reference<RobitSkin> skin;
         if (optionalSkin.isPresent()) {
             skin = optionalSkin.get();
         } else {
@@ -791,7 +777,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             setSkin(skinKey = MekanismRobitSkins.BASE, null);
             skin = robitSkins.getOrThrow(skinKey);
         }
-        List<Identifier> textures = skin.textures();
+        List<Identifier> textures = skin.value().textures();
         if (textures.isEmpty()) {
             //Note: Should not really happen but in case a custom impl has no textures handle it
             textureIndex = 0;
@@ -800,7 +786,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                 setSkin(skinKey = MekanismRobitSkins.BASE, null);
                 skin = robitSkins.getOrThrow(skinKey);
             }
-            if (skin.textures().isEmpty()) {
+            if (skin.value().textures().isEmpty()) {
                 //This should not happen but if it does throw a cleaner error than a stack overflow
                 throw new IllegalStateException("Base robit skin has no textures defined.");
             }

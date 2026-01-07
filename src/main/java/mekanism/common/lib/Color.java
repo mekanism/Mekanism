@@ -1,6 +1,7 @@
 package mekanism.common.lib;
 
 import mekanism.common.util.StatUtils;
+import net.minecraft.util.ARGB;
 
 public class Color {
 
@@ -17,6 +18,7 @@ public class Color {
     }
 
     public int r() {
+        //TODO - 1.21.11: Should this use ARGB.as8BitChannel() to be consistent with it flooring instead of what we are doing which is rounding?
         return (int) Math.round(r * 255D);
     }
 
@@ -69,11 +71,11 @@ public class Color {
     }
 
     public int rgba() {
-        return (r() & 0xFF) << 24 | (g() & 0xFF) << 16 | (b() & 0xFF) << 8 | (a() & 0xFF);
+        return ARGB.color(r(), g(), b(), a());
     }
 
     public int argb() {
-        return (a() & 0xFF) << 24 | rgb();
+        return ARGB.color(a(), r(), g(), b());
     }
 
     public int rgb() {

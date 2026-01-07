@@ -16,10 +16,12 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelJetpack extends MekanismJavaModel {
+public class ModelJetpack extends MekanismJavaModel<Unit> {
 
     public static final ModelLayerLocation JETPACK_LAYER = new ModelLayerLocation(Mekanism.rl("jetpack"), "main");
     private static final Identifier JETPACK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "jetpack.png");
@@ -111,7 +113,7 @@ public class ModelJetpack extends MekanismJavaModel {
     }
 
     protected ModelJetpack(ModelPart root) {
-        super(RenderType::entitySolid);
+        super(root, RenderTypes::entitySolid);
         this.frameRenderType = renderType(JETPACK_TEXTURE);
         this.wingRenderType = MekanismRenderType.JETPACK_GLASS.apply(JETPACK_TEXTURE);
         parts = getRenderableParts(root, PACK_TOP, PACK_BOTTOM, THRUSTER_LEFT, THRUSTER_RIGHT, FUEL_TUBE_RIGHT, FUEL_TUBE_LEFT, PACK_MID,

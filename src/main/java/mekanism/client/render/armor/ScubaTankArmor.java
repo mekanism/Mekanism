@@ -4,10 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.model.ModelScubaTank;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,30 +28,31 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
     }
 
     @Override
-    public void render(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight, float partialTicks, boolean hasEffect, LivingEntity entity, ItemStack stack) {
+    public <STATE extends HumanoidRenderState> void render(HumanoidModel<STATE> baseModel, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords,
+          STATE state, ItemStack stack) {
         if (!baseModel.body.visible) {
             //If the body model shouldn't show don't bother displaying it
             return;
         }
-        if (baseModel.young) {
-            matrix.pushPose();
-            float f1 = 1.0F / baseModel.babyBodyScale;
-            matrix.scale(f1, f1, f1);
-            matrix.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
-            renderTank(baseModel, matrix, renderer, light, overlayLight, hasEffect);
-            matrix.popPose();
-        } else {
-            renderTank(baseModel, matrix, renderer, light, overlayLight, hasEffect);
+        poseStack.pushPose();
+        if (state.isBaby) {
+            float f1 = 1.0F / state.babyBodyScale;
+            poseStack.scale(f1, f1, f1);
+            poseStack.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
         }
-    }
-
-    private void renderTank(HumanoidModel<? extends LivingEntity> baseModel, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light,
-          int overlayLight, boolean hasEffect) {
-        matrix.pushPose();
-        baseModel.body.translateAndRotate(matrix);
-        matrix.translate(0, 0, 0.06);
-        model.render(matrix, renderer, light, overlayLight, hasEffect);
-        matrix.popPose();
+        baseModel.body.translateAndRotate(poseStack);
+        poseStack.translate(0, 0, 0.06);
+        //TODO - 1.21.11: Figure out how to get the foil render types and how to make it render?
+        nodeCollector.submitModel(
+              this.model,
+              Unit.INSTANCE,
+              poseStack,
+              this.model.getRenderType(),
+              lightCoords,
+              OverlayTexture.NO_OVERLAY,
+              state.outlineColor,
+              null
+        );
+        poseStack.popPose();
     }
 }

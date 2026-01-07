@@ -39,6 +39,11 @@ public final class JsonChemicalBuilder extends BaseBuilder<Chemical, JsonChemica
         return ChemicalUtil.chemical(internal, colorRepresentation);
     }
 
+    @Override
+    public void validate() {
+        //TODO - 1.21.11: Is there any data we want to be validating here?
+    }
+
     public JsonChemicalBuilder texture(Identifier texture) {
         if (this.texture != null) {
             throw new IllegalStateException("Specified multiple textures");

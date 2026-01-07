@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.text.IHasTranslationKey;
-import mekanism.common.MekanismLang;
 import net.minecraft.client.KeyMapping;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
@@ -24,7 +23,8 @@ public class MekKeyBindingBuilder {
     private KeyModifier keyModifier = KeyModifier.NONE;
     @Nullable
     private InputConstants.Key key;
-    private KeyMapping.Category category = MekanismLang.MEKANISM.getTranslationKey();
+    @Nullable
+    private KeyMapping.Category category;
     @Nullable
     private BiConsumer<KeyMapping, Boolean> onKeyDown;
     @Nullable
@@ -74,11 +74,7 @@ public class MekKeyBindingBuilder {
         return this;
     }
 
-    public MekKeyBindingBuilder category(IHasTranslationKey category) {
-        return category(Objects.requireNonNull(category, "Category cannot be null.").getTranslationKey());
-    }
-
-    public MekKeyBindingBuilder category(String category) {
+    public MekKeyBindingBuilder category(KeyMapping.Category category) {
         this.category = Objects.requireNonNull(category, "Category cannot be null.");
         return this;
     }
@@ -113,7 +109,7 @@ public class MekKeyBindingBuilder {
               keyConflictContext,
               keyModifier,
               Objects.requireNonNull(key, "Key has not been set"),
-              category,
+              Objects.requireNonNull(category, "Category has not been set"),
               onKeyDown,
               onKeyUp,
               toggleable,

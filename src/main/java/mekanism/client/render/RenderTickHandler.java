@@ -3,9 +3,7 @@ package mekanism.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -49,22 +47,21 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
-import net.minecraft.client.model.PlayerModel;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.MultiBufferSource.BufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
@@ -86,14 +83,11 @@ import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
-import net.neoforged.neoforge.client.event.RenderHighlightEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.common.util.Lazy;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
@@ -106,7 +100,6 @@ public class RenderTickHandler {
 
     private static final Map<BlockState, List<Line>> cachedWireFrames = new Reference2ObjectOpenHashMap<>();
     private static final Map<Direction, Map<TransmissionType, Model3D>> cachedOverlays = new EnumMap<>(Direction.class);
-    private static final List<LazyRender> transparentRenderers = new ArrayList<>();
     private static final BoltRenderer boltRenderer = new BoltRenderer();
     private static final Map<Class<?>, Boolean> IS_EMI_SCREEN = new HashMap<>();
 
@@ -114,7 +107,6 @@ public class RenderTickHandler {
 
     public static void clearQueued() {
         RadiationOverlay.INSTANCE.resetRadiation();
-        transparentRenderers.clear();
     }
 
     public static void resetCached() {
@@ -122,8 +114,8 @@ public class RenderTickHandler {
         cachedWireFrames.clear();
     }
 
-    public static void renderBolt(Object renderer, BoltEffect bolt) {
-        boltRenderer.update(renderer, bolt, MekanismRenderer.getPartialTick());
+    public static void renderBolt(Object renderer, BoltEffect bolt, long gameTime) {
+        boltRenderer.update(renderer, bolt, gameTime, MekanismRenderer.getPartialTick());
     }
 
     //Note: This listener is only registered if a recipe viewer is loaded
@@ -175,49 +167,13 @@ public class RenderTickHandler {
         }
     }
 
-    public static void addTransparentRenderer(LazyRender render) {
-        transparentRenderers.add(render);
-    }
-
-    @SubscribeEvent
-    public void renderWorldAfterTranslucentBlocks(RenderLevelStageEvent.AfterTranslucentBlocks event) {
-        //Only do matrix transforms and mess with buffers if we actually have any renders to render
-        if (!transparentRenderers.isEmpty()) {
-            Camera camera = event.getCamera();
-            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            PoseStack poseStack = event.getPoseStack();
-            int renderTick = event.getRenderTick();
-            float partialTick = event.getPartialTick().getGameTimeDeltaPartialTick(false);
-            ProfilerFiller profiler = Profiler.get();
-            profiler.push(ProfilerConstants.DELAYED);
-            if (transparentRenderers.size() == 1) {
-                //If we only have one render type we don't need to bother calculating any distances
-                LazyRender lazyRender = transparentRenderers.getFirst();
-                doTransparentRender(lazyRender.getRenderType(), lazyRender, camera, renderer, poseStack, renderTick, partialTick, profiler);
-            } else {
-
-                for (LazyRender render : transparentRenderers) {
-                    Vec3 renderPos = render.getCenterPos(partialTick);
-                    //Note: We can just use the distance sqr as we use it for both things, so they compare the same anyway
-                    render.distance = camera.position().distanceToSqr(renderPos);
-                }
-                //Sort in the order of furthest to closest (reverse of by closest)
-                transparentRenderers.sort(Comparator.comparingDouble(info -> -info.distance));
-                for (LazyRender render : transparentRenderers) {
-                    doTransparentRender(render.getRenderType(), render, camera, renderer, poseStack, renderTick, partialTick, profiler);
-                }
-            }
-            renderer.endBatch();
-            transparentRenderers.clear();
-            profiler.pop();
-        }
-    }
-
     @SubscribeEvent
     public void renderWorldAfterParticles(RenderLevelStageEvent.AfterParticles event) {
         if (boltRenderer.hasBoltsToRender()) {
+            //TODO - 1.21.11: Figure out if this is still valid as the buffer
             MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
-            boltRenderer.render(event.getPartialTick().getGameTimeDeltaPartialTick(false), event.getPoseStack(), renderer, event.getCamera().getPosition());
+            LevelRenderState levelState = event.getLevelRenderState();
+            boltRenderer.render(levelState.gameTime, deltaTracker.getGameTimeDeltaPartialTick(false), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
             renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
         }
     }
@@ -236,7 +192,7 @@ public class RenderTickHandler {
         ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
         if (chestStack.getItem() instanceof ItemMekaSuitArmor armorItem) {
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).gearModel();
-            PlayerRenderer renderer = (PlayerRenderer) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
+            AvatarRenderer<AbstractClientPlayer> renderer = (AvatarRenderer<AbstractClientPlayer>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel model = renderer.getModel();
             model.setAllVisible(true);
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
@@ -250,7 +206,7 @@ public class RenderTickHandler {
             model.crouching = false;
             model.swimAmount = 0.0F;
             model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-            armor.renderArm(model, event.getPoseStack(), event.getMultiBufferSource(), event.getPackedLight(), OverlayTexture.NO_OVERLAY, player, chestStack, rightHand);
+            armor.renderArm(model, event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), player, chestStack, rightHand);
             event.setCanceled(true);
         }
     }
@@ -445,7 +401,7 @@ public class RenderTickHandler {
                                 VertexConsumer buffer = renderer.getBuffer(RenderType.lines());
                                 //0.4 Alpha
                                 if (wireFrameRenderer.isCombined()) {
-                                    renderQuadsWireFrame(actualState, buffer, matrix, world.random);
+                                    renderQuadsWireFrame(world, actualPos, actualState, buffer, matrix);
                                 }
                                 wireFrameRenderer.renderWireFrame(tile, event.getDeltaTracker().getGameTimeDeltaPartialTick(false), matrix, buffer);
                                 matrix.popPose();
@@ -458,7 +414,7 @@ public class RenderTickHandler {
                         Vec3 viewPosition = info.position();
                         matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
                         //0.4 Alpha
-                        renderQuadsWireFrame(actualState, renderer.getBuffer(RenderType.lines()), matrix, world.random);
+                        renderQuadsWireFrame(world, actualPos, actualState, renderer.getBuffer(RenderType.lines()), matrix, world);
                         matrix.popPose();
                         shouldCancel = true;
                     }
@@ -512,12 +468,11 @@ public class RenderTickHandler {
         }
     }
 
-    private void renderQuadsWireFrame(BlockState state, VertexConsumer buffer, PoseStack matrix, RandomSource rand) {
+    private void renderQuadsWireFrame(Level level, BlockPos pos, BlockState state, VertexConsumer buffer, PoseStack matrix) {
         List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {
-            BakedModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
-            //TODO: Eventually we may want to add support for Model data and maybe render type
-            lines = Outlines.extract(bakedModel, state, rand, ModelData.EMPTY, null);
+            BlockStateModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            lines = Outlines.extract(level, pos, state, bakedModel);
             cachedWireFrames.put(state, lines);
         }
         PoseStack.Pose pose = matrix.last();
@@ -537,12 +492,12 @@ public class RenderTickHandler {
 
             pose.transform(line.x1(), line.y1(), line.z1(), 1F, pos);
             buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(0, 0, 0, 102)
+                  .setColor(0x66000000)
                   .setNormal(normal.x, normal.y, normal.z);
 
             pose.transform(line.x2(), line.y2(), line.z2(), 1F, pos);
             buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(0, 0, 0, 102)
+                  .setColor(0x66000000)
                   .setNormal(normal.x, normal.y, normal.z);
         }
     }
@@ -561,31 +516,5 @@ public class RenderTickHandler {
             modelMap.put(type, model);
         }
         return model;
-    }
-
-    public abstract static class LazyRender {
-
-        public double distance;
-
-        public abstract void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler);
-
-        @NotNull
-        public abstract Vec3 getCenterPos(float partialTick);
-
-        @NotNull
-        public abstract String getProfilerSection();
-
-        @NotNull
-        public abstract RenderType getRenderType();
-    }
-
-    private static void doTransparentRender(RenderType renderType, LazyRender transparentRender, Camera camera, BufferSource renderer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
-        //Batch all renders for a single render type into a single buffer addition
-        VertexConsumer buffer = renderer.getBuffer(renderType);
-
-        String profilerSection = transparentRender.getProfilerSection();
-        profiler.push(profilerSection);
-        transparentRender.render(camera, buffer, poseStack, renderTick, partialTick, profiler);
-        profiler.pop();
     }
 }

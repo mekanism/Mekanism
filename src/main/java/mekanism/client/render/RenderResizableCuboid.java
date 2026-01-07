@@ -5,12 +5,10 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -36,16 +34,16 @@ public class RenderResizableCuboid {
     private RenderResizableCuboid() {
     }
 
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay, Camera camera,
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos) {
         Arrays.fill(combinedARGB, argb);
-        renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay, camera, renderPos);
+        renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay, camPos, renderPos);
     }
 
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Camera camera,
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
@@ -54,7 +52,6 @@ public class RenderResizableCuboid {
         if (renderPos != null && faceDisplay != FaceDisplay.BOTH) {
             //If we know the position this model is based around in the world, and we aren't displaying both faces
             // then calculate to see if we can skip rendering any faces due to the camera not facing them
-            Vec3 camPos = camera.position();
             Vec3 minPos = renderPos.add(cube.minX, cube.minY, cube.minZ);
             Vec3 maxPos = renderPos.add(cube.maxX, cube.maxY, cube.maxZ);
             for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -146,15 +143,6 @@ public class RenderResizableCuboid {
         int colorNorth = colors[Direction.NORTH.ordinal()];
         int colorSouth = colors[Direction.SOUTH.ordinal()];
 
-        int redNorth = ARGB.red(colorNorth);
-        int greenNorth = ARGB.green(colorNorth);
-        int blueNorth = ARGB.blue(colorNorth);
-        int alphaNorth = ARGB.alpha(colorNorth);
-        int redSouth = ARGB.red(colorSouth);
-        int greenSouth = ARGB.green(colorSouth);
-        int blueSouth = ARGB.blue(colorSouth);
-        int alphaSouth = ARGB.alpha(colorSouth);
-
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
             float y1 = yBounds[y];
@@ -217,27 +205,28 @@ public class RenderResizableCuboid {
                     float z1 = zBounds[0];
                     // add quads
 
-                    drawFace(buffer, matrix4f, minUNorth, maxUNorth, minVNorth, maxVNorth, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minUNorth, maxUNorth, minVNorth, maxVNorth, light, overlay, faceDisplay, normal, colorNorth,
                           x1, y1, z1,
                           x1, y2, z1,
                           x2, y2, z1,
-                          x2, y1, z1, redNorth, greenNorth, blueNorth, alphaNorth);
+                          x2, y1, z1);
                 }
                 if (hasSouth) {
                     float z2 = zBounds[zDelta + 1];
                     // add quads
-                    drawFace(buffer, matrix4f, minUSouth, maxUSouth, minVSouth, maxVSouth, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minUSouth, maxUSouth, minVSouth, maxVSouth, light, overlay, faceDisplay, normal, colorSouth,
                           x2, y1, z2,
                           x2, y2, z2,
                           x1, y2, z2,
-                          x1, y1, z2, redSouth, greenSouth, blueSouth, alphaSouth);
+                          x1, y1, z2);
                 }
 
             }
         }
     }
 
-    private static void renderSideXAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+    private static void renderSideXAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
+          TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
         TextureAtlasSprite westSprite = sprites[Direction.WEST.ordinal()];
         TextureAtlasSprite eastSprite = sprites[Direction.EAST.ordinal()];
         boolean hasWest = westSprite != null;
@@ -249,14 +238,6 @@ public class RenderResizableCuboid {
 
         int westColor = colors[Direction.WEST.ordinal()];
         int eastColor = colors[Direction.EAST.ordinal()];
-        int redWest = ARGB.red(westColor);
-        int greenWest = ARGB.green(westColor);
-        int blueWest = ARGB.blue(westColor);
-        int alphaWest = ARGB.alpha(westColor);
-        int redEast = ARGB.red(eastColor);
-        int greenEast = ARGB.green(eastColor);
-        int blueEast = ARGB.blue(eastColor);
-        int alphaEast = ARGB.alpha(eastColor);
 
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
@@ -315,20 +296,20 @@ public class RenderResizableCuboid {
                 if (hasWest) {
                     float x1 = xBounds[0];
                     // add quads
-                    drawFace(buffer, matrix4f, minUWest, maxUWest, minVWest, maxVWest, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minUWest, maxUWest, minVWest, maxVWest, light, overlay, faceDisplay, normal, westColor,
                           x1, y1, z2,
                           x1, y2, z2,
                           x1, y2, z1,
-                          x1, y1, z1, redWest, greenWest, blueWest, alphaWest);
+                          x1, y1, z1);
                 }
                 if (hasEast) {
                     float x2 = xBounds[xDelta + 1];
                     // add quads
-                    drawFace(buffer, matrix4f, minUEast, maxUEast, minVEast, maxVEast, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minUEast, maxUEast, minVEast, maxVEast, light, overlay, faceDisplay, normal, eastColor,
                           x2, y1, z1,
                           x2, y2, z1,
                           x2, y2, z2,
-                          x2, y1, z2, redEast, greenEast, blueEast, alphaEast);
+                          x2, y1, z2);
 
                 }
             }
@@ -347,14 +328,6 @@ public class RenderResizableCuboid {
 
         int downColor = colors[Direction.DOWN.ordinal()];
         int upColor = colors[Direction.UP.ordinal()];
-        int redUp = ARGB.red(upColor);
-        int greenUp = ARGB.green(upColor);
-        int blueUp = ARGB.blue(upColor);
-        int alphaUp = ARGB.alpha(upColor);
-        int redDown = ARGB.red(downColor);
-        int greenDown = ARGB.green(downColor);
-        int blueDown = ARGB.blue(downColor);
-        int alphaDown = ARGB.alpha(downColor);
 
         // render each side
         for (int z = 0; z <= zDelta; z += 1) {
@@ -413,20 +386,20 @@ public class RenderResizableCuboid {
                 if (hasUp) {
                     float y2 = yBounds[yDelta + 1];
                     // add quads
-                    drawFace(buffer, matrix4f, minUUp, maxUUp, minVUp, maxVUp, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minUUp, maxUUp, minVUp, maxVUp, light, overlay, faceDisplay, normal, upColor,
                           x1, y2, z1,
                           x1, y2, z2,
                           x2, y2, z2,
-                          x2, y2, z1, redUp, greenUp, blueUp, alphaUp);
+                          x2, y2, z1);
                 }
                 if (hasDown) {
                     float y1 = yBounds[0];
                     // add quads
-                    drawFace(buffer, matrix4f, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal,
+                    drawFace(buffer, matrix4f, minU, maxU, minV, maxV, light, overlay, faceDisplay, normal, downColor,
                           x1, y1, z2,
                           x1, y1, z1,
                           x2, y1, z1,
-                          x2, y1, z2, redDown, greenDown, blueDown, alphaDown);
+                          x2, y1, z2);
                 }
             }
         }
@@ -463,32 +436,32 @@ public class RenderResizableCuboid {
     }
 
     private static void drawFace(VertexConsumer buffer, Matrix4f matrix, float minU, float maxU, float minV, float maxV, int light, int overlay,
-          FaceDisplay faceDisplay, NormalData normal,
+          FaceDisplay faceDisplay, NormalData normal, int color,
           float x1, float y1, float z1,
           float x2, float y2, float z2,
           float x3, float y3, float z3,
-          float x4, float y4, float z4, int red, int green, int blue, int alpha) {
+          float x4, float y4, float z4) {
         if (faceDisplay.front) {
             buffer.addVertex(matrix, x1, y1, z1)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(minU, maxV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.front.x(), normal.front.y(), normal.front.z());
             buffer.addVertex(matrix, x2, y2, z2)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(minU, minV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.front.x(), normal.front.y(), normal.front.z());
             buffer.addVertex(matrix, x3, y3, z3)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(maxU, minV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.front.x(), normal.front.y(), normal.front.z());
             buffer.addVertex(matrix, x4, y4, z4)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(maxU, maxV)
                   .setOverlay(overlay)
                   .setLight(light)
@@ -496,25 +469,25 @@ public class RenderResizableCuboid {
         }
         if (faceDisplay.back) {
             buffer.addVertex(matrix, x4, y4, z4)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(maxU, maxV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.back.x(), normal.back.y(), normal.back.z());
             buffer.addVertex(matrix, x3, y3, z3)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(maxU, minV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.back.x(), normal.back.y(), normal.back.z());
             buffer.addVertex(matrix, x2, y2, z2)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(minU, minV)
                   .setOverlay(overlay)
                   .setLight(light)
                   .setNormal(normal.back.x(), normal.back.y(), normal.back.z());
             buffer.addVertex(matrix, x1, y1, z1)
-                  .setColor(red, green, blue, alpha)
+                  .setColor(color)
                   .setUv(minU, maxV)
                   .setOverlay(overlay)
                   .setLight(light)

@@ -3,36 +3,55 @@ package mekanism.client.render.transmitter;
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.transmitter.TransmitterRenderState.CableRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable> {
+public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniversalCable, CableRenderState> {
 
     public RenderUniversalCable(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityUniversalCable tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        EnergyNetwork network = tile.getTransmitter().getTransmitterNetwork();
-        if (network == null) {
-            return;//race condition perhaps
+    public CableRenderState createRenderState() {
+        return new CableRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityUniversalCable cable, CableRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(cable, state, partialTick, cameraPosition, breakProgress);
+        EnergyNetwork network = cable.getTransmitter().getTransmitterNetwork();
+        if (network == null) {//TODO - 1.21.11: Does this race condition still exist?
+            return;//race conditions, yay
         }
-        matrix.pushPose();
-        matrix.translate(0.5, 0.5, 0.5);
-        renderModel(tile, matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, network.currentScale, LightTexture.FULL_BRIGHT,
-              overlayLight, MekanismRenderer.energyIcon);
-        matrix.popPose();
+        state.currentScale = network.currentScale;
+    }
+
+    @Override
+    public void submit(CableRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        //TODO - 1.21.11: What threshold do we want to cut this off at?
+        if (state.currentScale > 0) {
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.5, 0.5);
+            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, state.currentScale, LightTexture.FULL_BRIGHT,
+                  OverlayTexture.NO_OVERLAY, MekanismRenderer.energyIcon);
+
+            poseStack.popPose();
+        }
     }
 
     @Override

@@ -44,8 +44,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.object.armorstand.ArmorStandModel;
-import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.entity.state.ArmorStandRenderState;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.RandomSource;
@@ -61,6 +61,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent.MouseScrollingEvent;
+import net.neoforged.neoforge.client.event.RecipesReceivedEvent;
 import net.neoforged.neoforge.client.event.RenderLivingEvent;
 import net.neoforged.neoforge.client.event.ViewportEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
@@ -332,19 +333,18 @@ public class ClientTickHandler {
                 }
                 //Scale the distance based on the number of installed modules
                 event.scaleFarPlaneDistance(((float) Math.pow(module.getInstalledCount(), 1.25)) / module.getUntypedData().getMaxStackSize());
-                //Cancel the event to ensure our changes are applied
-                event.setCanceled(true);
             }
         }
     }
 
     @SubscribeEvent
-    public void recipesUpdated(RecipesUpdatedEvent event) {
+    public void recipesUpdated(RecipesReceivedEvent event) {
         //Note: Dedicated servers first connection the server sends recipes then tags, and on reload sends tags then recipes.
         // We ignore this fact and only clear the cache in the recipes updated event however, as the cache should already be
         // empty on our initial connection, and even if it isn't the client has no way to query the recipes and cause the
         // caches to be initialized before the tags are then received as we lazily initialize our recipe caches.
         MekanismRecipeType.clearCache();
+        //TODO - 1.21.11: Do we need to mark OnDataPackSync#sendRecipes?
     }
 
     @SubscribeEvent
@@ -365,41 +365,45 @@ public class ClientTickHandler {
         }
     }
 
+    //TODO - 1.21.11: Do we need to even be calling this anymore in post? As we are adjusting the state now rather than just the model
     private static void setModelVisibility(HumanoidRenderState state, HumanoidModel<?> entityModel, boolean showModel) {
         if (state.headEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.head.visible = showModel;
             entityModel.hat.visible = showModel;
-            if (entityModel instanceof PlayerModel playerModel) {
-                playerModel.ear.visible = showModel;
+            if (state instanceof AvatarRenderState playerState) {
+                //TODO -1.21.11: Figure this out?
+                playerState.showExtraEars = showModel;
             }
         }
         if (state.chestEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.body.visible = showModel;
             if (!(state instanceof ArmorStandRenderState)) {
-                //Don't adjust arms for armor stands as the model will end up changing them anyway and then we may incorrectly activate them
+                //Don't adjust arms for armor stands as the model will end up changing them anyway, and then we may incorrectly activate them
+                //TODO - 1.21.11: Is this still true? I am guessing we might be able to just disable them for the armor stand
                 entityModel.leftArm.visible = showModel;
                 entityModel.rightArm.visible = showModel;
             }
-            if (entityModel instanceof PlayerModel playerModel) {
-                playerModel.cloak.visible = showModel;
-                playerModel.jacket.visible = showModel;
-                playerModel.leftSleeve.visible = showModel;
-                playerModel.rightSleeve.visible = showModel;
+            if (state instanceof AvatarRenderState playerState) {
+                playerState.showCape = showModel;
+                playerState.showJacket = showModel;
+                playerState.showLeftSleeve = showModel;
+                playerState.showRightSleeve = showModel;
             } else if (entityModel instanceof ArmorStandModel armorStandModel) {
                 armorStandModel.rightBodyStick.visible = showModel;
                 armorStandModel.leftBodyStick.visible = showModel;
                 armorStandModel.shoulderStick.visible = showModel;
             }
-        } else if (itemHidesCape(state.chestEquipment.getItem()) && entityModel instanceof PlayerModel playerModel) {
+        } else if (itemHidesCape(state.chestEquipment.getItem()) && state instanceof AvatarRenderState playerState) {
             //Hide the player's cape if they have an HDPE elytra as it will be part of the elytra's layer and shouldn't be rendered
-            playerModel.cloak.visible = showModel;
+            //TODO - 1.21.11: I think the cape layer now actually has something that we might be able to integrate with that sort of checks if there is a wings layer present
+            playerState.showCape = false;
         }
         if (state.legsEquipment.getItem() instanceof ItemMekaSuitArmor) {
             entityModel.leftLeg.visible = showModel;
             entityModel.rightLeg.visible = showModel;
-            if (entityModel instanceof PlayerModel playerModel) {
-                playerModel.leftPants.visible = showModel;
-                playerModel.rightPants.visible = showModel;
+            if (state instanceof AvatarRenderState playerState) {
+                playerState.showLeftPants = showModel;
+                playerState.showRightPants = showModel;
             }
         }
     }

@@ -3,8 +3,9 @@ package mekanism.generators.client.render;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -17,24 +18,30 @@ import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.RenderData.ScaledRenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
+import mekanism.generators.client.render.RenderFissionReactor.FissionRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.Camera;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing> {
+public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionReactorMultiblockData, TileEntityFissionReactorCasing, FissionRenderState> {
 
     private static final Map<RenderData, Model3D> cachedHeatedCoolantModels = new Object2ObjectOpenHashMap<>();
     private static final Cache<ScaledRenderData, Model3D> cachedCoolantModels = CacheBuilder.newBuilder().maximumSize(10).expireAfterAccess(5, TimeUnit.MINUTES).build();
-    private static final int GLOW_ARGB = MekanismRenderer.getColorARGB(0x76E0EC, 0.6F);
+    private static final int GLOW_ARGB = ARGB.color(0.6F, 0x76E0EC);
     //TODO: Replace using a model here for the glow with using FuelAssemblyBakedModel as it should provide a performance boost
     // The issue and reason it doesn't use it yet is because rendering the coolant hides the FuelAssemblyBakedModel due to
     // transparency sort ordering
@@ -65,54 +72,81 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     }
 
     @Override
-    protected void render(TileEntityFissionReactorCasing tile, FissionReactorMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer,
-          int light, int overlayLight, ProfilerFiller profiler) {
-        BlockPos pos = tile.getBlockPos();
-        VertexConsumer buffer = null;
-        if (multiblock.isBurning()) {
-            buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
-            Model3D model = glowModel.get();
-            Camera camera = getCamera();
-            for (FormedAssembly assembly : multiblock.assemblies) {
-                BlockPos assemblyPos = assembly.pos();
-                matrix.pushPose();
-                matrix.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
-                //Add a bit of extra distance so that it includes the lower part of the control rod
-                matrix.scale(1, assembly.height() + 0.625F, 1);
-                MekanismRenderer.renderObject(model, matrix, buffer, GLOW_ARGB, LightTexture.FULL_BRIGHT, overlayLight, FaceDisplay.FRONT, camera, assemblyPos);
-                matrix.popPose();
-            }
-            profiler.pop();
-        }
+    public FissionRenderState createRenderState() {
+        return new FissionRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityFissionReactorCasing reactor, FissionRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(reactor, state, partialTick, cameraPosition, breakProgress);
+        FissionReactorMultiblockData multiblock = reactor.getMultiblock();
+        state.heatedCoolantScale = multiblock.prevHeatedCoolantScale;
+        state.coolantScale = multiblock.prevCoolantScale;
+
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
-            if (buffer == null) {
-                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            }
-            ScaledRenderData data = RenderData.Builder.create(multiblock.coolantTank.getFluidTank().getFluid()).of(multiblock).buildScaled(multiblock.prevCoolantScale);
-            Model3D model = getCoolantModel(data);
-            renderObject(data.asRenderData(), pos, model, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
+            state.coolantData = RenderData.Builder.create(multiblock.coolantTank.getFluidTank().getFluid()).of(multiblock).buildScaled(state.coolantScale);
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            if (buffer == null) {
-                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            }
-            ScaledRenderData data = RenderData.Builder.create(multiblock.coolantTank.getChemicalTank().getStack()).of(multiblock).buildScaled(multiblock.prevCoolantScale);
-            Model3D model = getCoolantModel(data);
-            renderObject(data.asRenderData(), pos, model, matrix, buffer, overlayLight, multiblock.prevCoolantScale);
+            state.coolantData = RenderData.Builder.create(multiblock.coolantTank.getChemicalTank().getStack()).of(multiblock).buildScaled(state.coolantScale);
+        }
+        if (state.coolantData != null) {
+            state.coolantModel = getCoolantModel(state.coolantData);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
-            if (buffer == null) {
-                buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            }
-            RenderData data = RenderData.Builder.create(multiblock.heatedCoolantTank.getStack()).of(multiblock).build();
+            state.heatedCoolantData = RenderData.Builder.create(multiblock.heatedCoolantTank.getStack()).of(multiblock).build();
             //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
-            Model3D gasModel = cachedHeatedCoolantModels.computeIfAbsent(data, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
-            renderObject(data, pos, gasModel, matrix, buffer, overlayLight, multiblock.prevHeatedCoolantScale);
+            state.heatedCoolantModel = cachedHeatedCoolantModels.computeIfAbsent(state.heatedCoolantData, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
+        }
+
+        if (multiblock.isBurning()) {
+            //TODO - 1.21.11: Do we need to copy this like this?
+            state.assemblies.addAll(multiblock.assemblies);
+        }
+    }
+
+    @Override
+    public void submit(FissionRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        BlockPos pos = state.blockPos;
+        if (!state.assemblies.isEmpty()) {
+            //TODO - 1.21.11: Profiler?
+            //profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
+            Model3D model = glowModel.get();
+            for (FormedAssembly assembly : state.assemblies) {
+                BlockPos assemblyPos = assembly.pos();
+                poseStack.pushPose();
+                poseStack.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
+                //Add a bit of extra distance so that it includes the lower part of the control rod
+                poseStack.scale(1, assembly.height() + 0.625F, 1);
+                MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), GLOW_ARGB, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, assemblyPos);
+                poseStack.popPose();
+            }
+            //profiler.pop();
+        }
+        if (state.coolantData != null && state.coolantModel != null) {
+            renderObject(camera.pos, state.coolantData.asRenderData(), state.blockPos, state.coolantModel, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.coolantScale);
+        }
+        if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
+            renderObject(camera.pos, state.heatedCoolantData, state.blockPos, state.heatedCoolantModel, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.heatedCoolantScale);
         }
     }
 
     @Override
     protected String getProfilerSection() {
         return GeneratorsProfilerConstants.FISSION_REACTOR;
+    }
+
+    public static class FissionRenderState extends BlockEntityRenderState {
+
+        public List<FormedAssembly> assemblies = new ArrayList<>();
+        @Nullable
+        public ScaledRenderData coolantData;
+        @Nullable
+        public Model3D coolantModel;
+        public float coolantScale;
+        @Nullable
+        public RenderData heatedCoolantData;
+        @Nullable
+        public Model3D heatedCoolantModel;
+        public float heatedCoolantScale;
     }
 }

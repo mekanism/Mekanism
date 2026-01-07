@@ -19,6 +19,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector3f;
 
 public final class TransporterUtils {
 
@@ -67,8 +68,8 @@ public final class TransporterUtils {
     public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
         BlockPos blockPos;
         if (stack.hasPath()) {
-            float[] pos = getStackPosition(transporter, stack, 0);
-            blockPos = transporter.getBlockPos().offset(Mth.floor(pos[0]), Mth.floor(pos[1]), Mth.floor(pos[2]));
+            Vector3f pos = getStackPosition(transporter, stack, 0);
+            blockPos = transporter.getBlockPos().offset(Mth.floor(pos.x()), Mth.floor(pos.y()), Mth.floor(pos.z()));
         } else {
             blockPos = transporter.getBlockPos();
         }
@@ -76,10 +77,11 @@ public final class TransporterUtils {
         InventoryUtils.dropStack(transporter.getLevel(), blockPos, null, stack.itemStack, (level, pos, ignored, item) -> Block.popResource(level, pos, item));
     }
 
-    public static float[] getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {
-        Direction side = stack.getSide(transporter);
-        float progress = ((stack.progress + partial) / 100F) - 0.5F;
-        return new float[]{0.5F + side.getStepX() * progress, 0.25F + side.getStepY() * progress, 0.5F + side.getStepZ() * progress};
+    public static Vector3f getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {
+        return stack.getSide(transporter)
+              .step()//Note: Direction#step returns a new Vector3f
+              .mul(((stack.progress + partial) / 100F) - 0.5F)
+              .add(0.5F, 0.25F, 0.5F);
     }
 
     public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemStack itemStack, Direction side, boolean force) {

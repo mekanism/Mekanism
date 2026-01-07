@@ -10,6 +10,7 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 1.21.11: Maybe AtlasManager.AtlasConfig ?
 public class RobitSpriteUploader extends TextureAtlasHolder {
 
     public static final Identifier ATLAS_LOCATION = Mekanism.rl("textures/atlas/robit.png");

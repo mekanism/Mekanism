@@ -92,11 +92,9 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     @Override
     public void wasExploded(Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         if (!world.isClientSide()) {
-            PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
-            if (tnt != null) {
-                tnt.setFuse((short) (world.random.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
-                world.addFreshEntity(tnt);
-            }
+            PrimedTnt tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
+            tnt.setFuse((short) (world.random.nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
+            world.addFreshEntity(tnt);
         }
     }
 
@@ -126,12 +124,9 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     public static boolean createAndAddEntity(@NotNull Level world, @NotNull BlockPos pos, @Nullable LivingEntity igniter) {
-        PrimedTnt tnt = EntityObsidianTNT.create(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-        if (tnt != null) {
-            world.addFreshEntity(tnt);
-            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
-            return true;
-        }
-        return false;
+        PrimedTnt tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
+        world.addFreshEntity(tnt);
+        world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
+        return true;
     }
 }

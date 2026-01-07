@@ -1,20 +1,15 @@
 package mekanism.common.integration.lookingat.theoneprobe;
 
 import mekanism.common.Mekanism;
+import mekanism.common.integration.MekanismHooks;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 
-@Mod(Mekanism.MODID)
+@Mod(value = Mekanism.MODID, depends = MekanismHooks.TOP_MOD_ID)
 public class MekanismTOPIntegration {
 
     public MekanismTOPIntegration(IEventBus modEventBus) {
-        if (Mekanism.hooks.theOneProbe.isLoaded()) {
-            modEventBus.addListener(InterModEnqueueEvent.class, this::imcQueue);
-        }
-    }
-
-    private void imcQueue(InterModEnqueueEvent event) {
-        Mekanism.hooks.theOneProbe.sendImc("getTheOneProbe", TOPProvider::new);
+        modEventBus.addListener(InterModEnqueueEvent.class, event -> Mekanism.hooks.theOneProbe.sendImc("getTheOneProbe", TOPProvider::new));
     }
 }

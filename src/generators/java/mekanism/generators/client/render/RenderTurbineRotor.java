@@ -1,76 +1,108 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.tileentity.ModelTileEntityRenderer;
+import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.generators.client.model.ModelTurbine;
+import mekanism.generators.client.model.ModelTurbine.TurbineBladeRenderState;
+import mekanism.generators.client.render.RenderTurbineRotor.TurbineRotorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineRotor;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbineRotor, ModelTurbine> {
+public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTurbineRotor, TurbineRotorRenderState> {
 
-    @Nullable
-    public static RenderTurbineRotor INSTANCE;
     private static final float BASE_SPEED = 512F;
 
-    public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
-        super(context, ModelTurbine::new);
-        INSTANCE = this;
-    }
+    private final ModelTurbine model;
 
-    public VertexConsumer getBuffer(@NotNull MultiBufferSource renderer) {
-        return model.getBuffer(renderer);
+    public RenderTurbineRotor(BlockEntityRendererProvider.Context context) {
+        super(context);
+        this.model = new ModelTurbine(context.entityModelSet());
     }
 
     @Override
-    protected void render(TileEntityTurbineRotor tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        render(tile, matrix, getBuffer(renderer), light, overlayLight);
+    public TurbineRotorRenderState createRenderState() {
+        return new TurbineRotorRenderState();
     }
 
-    public void render(TileEntityTurbineRotor tile, PoseStack matrix, VertexConsumer buffer, int light, int overlayLight) {
-        int housedBlades = tile.getHousedBlades();
+    @Override
+    public void extractRenderState(TileEntityTurbineRotor rotor, TurbineRotorRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(rotor, state, partialTick, cameraPosition, breakProgress);
+        int housedBlades = rotor.getHousedBlades();
         if (housedBlades == 0) {
             return;
         }
-        int baseIndex = tile.getPosition() * 2;
-        if (isTickingNormally(tile)) {
-            UUID multiblockUUID = tile.getMultiblockUUID();
+        UUID multiblockUUID = rotor.getMultiblockUUID();
+        if (multiblockUUID != null) {
+            //We are rendering inside the multiblock, use full-bright for the textures
+            //TODO - 1.21.11: Validate that this works
+            state.lightCoords = LightTexture.FULL_BRIGHT;
+        }
+
+        int baseIndex = rotor.getPosition() * 2;
+        if (isTickingNormally(rotor)) {//TODO - 1.21.11: Re-evaluate where these calculations should be done
             if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
                 float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;
-                tile.rotationLower = (tile.rotationLower + rotateSpeed * (1F / (baseIndex + 1))) % 360;
-                tile.rotationUpper = (tile.rotationUpper + rotateSpeed * (1F / (baseIndex + 2))) % 360;
-            } else {
-                tile.rotationLower = tile.rotationLower % 360;
-                tile.rotationUpper = tile.rotationUpper % 360;
+                rotor.rotationLower += rotateSpeed / (baseIndex + 1);
+                rotor.rotationUpper += rotateSpeed / (baseIndex + 2);
             }
+            rotor.rotationLower %= 360;
+            rotor.rotationUpper %= 360;
+        }
+        state.lowerBlade.index = baseIndex;
+        state.lowerBlade.rotation = rotor.rotationLower;
+
+        state.upperBlade.index = baseIndex + 1;
+        state.upperBlade.rotation = rotor.rotationUpper;
+    }
+
+    @Override
+    public void submit(TurbineRotorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.housedBlades == 0) {//No blades, nothing to render
+            return;
         }
         //Bottom blade
-        matrix.pushPose();
-        matrix.translate(0.5, -1, 0.5);
-        matrix.mulPose(Axis.YP.rotationDegrees(tile.rotationLower));
-        model.render(matrix, buffer, light, overlayLight, baseIndex);
-        matrix.popPose();
+        poseStack.pushPose();
+        poseStack.translate(0.5, -1, 0.5);
+        submitBlade(state, state.lowerBlade, poseStack, nodeCollector);
+        poseStack.popPose();
+
         //Top blade
-        if (housedBlades == 2) {
-            matrix.pushPose();
-            matrix.translate(0.5, -0.5, 0.5);
-            matrix.mulPose(Axis.YP.rotationDegrees(tile.rotationUpper));
-            model.render(matrix, buffer, light, overlayLight, baseIndex + 1);
-            matrix.popPose();
+        if (state.housedBlades == 2) {
+            poseStack.pushPose();
+            poseStack.translate(0.5, -0.5, 0.5);
+            submitBlade(state, state.upperBlade, poseStack, nodeCollector);
+            poseStack.popPose();
         }
+    }
+
+    private void submitBlade(TurbineRotorRenderState state, TurbineBladeRenderState bladeState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
+        nodeCollector.submitModel(
+              this.model,
+              bladeState,
+              poseStack,
+              this.model.getRenderType(),
+              //TODO - 1.21.11: Do we need to calculate lighting differently for if the blades are very long?
+              state.lightCoords,
+              OverlayTexture.NO_OVERLAY,
+              0,//No outline
+              state.breakProgress
+        );
     }
 
     @Override
@@ -79,13 +111,15 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
     }
 
     @Override
-    public boolean shouldRenderOffScreen(TileEntityTurbineRotor tile) {
+    public boolean shouldRenderOffScreen() {
         return true;
     }
 
     @Override
     public boolean shouldRender(TileEntityTurbineRotor tile, Vec3 camera) {
-        return tile.getMultiblockUUID() == null && tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
+        //TODO - 1.21.11: See if this renders fine, we used to only use this for when there was no multiblock and had the multiblock render
+        // delegate to this renderer with a full bright for when it is formed
+        return /*tile.getMultiblockUUID() == null &&*/ tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
     }
 
     @Override
@@ -97,5 +131,12 @@ public class RenderTurbineRotor extends ModelTileEntityRenderer<TileEntityTurbin
         }
         BlockPos pos = tile.getBlockPos();
         return AABB.encapsulatingFullBlocks(pos.offset(-radius, 0, -radius), pos.offset(radius, 0, radius));
+    }
+
+    public static class TurbineRotorRenderState extends BlockEntityRenderState {
+
+        public TurbineBladeRenderState lowerBlade = new TurbineBladeRenderState();
+        public TurbineBladeRenderState upperBlade = new TurbineBladeRenderState();
+        public int housedBlades;
     }
 }

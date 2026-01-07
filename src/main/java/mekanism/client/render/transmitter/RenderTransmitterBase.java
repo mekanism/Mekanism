@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.MekanismModelCache;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.Quad;
 import mekanism.client.render.lib.QuadUtils;
 import mekanism.client.render.obj.VisibleModelConfiguration;
@@ -28,13 +27,14 @@ import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.joml.Vector3f;
 
 @NothingNullByDefault
-public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter> extends MekanismTileEntityRenderer<TRANSMITTER> {
+public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter, STATE extends TransmitterRenderState> extends MekanismTileEntityRenderer<TRANSMITTER, STATE> {
 
     public static final Identifier MODEL_LOCATION = MekanismUtils.getResource(ResourceType.MODEL, "transmitter_contents.obj");
     private static final ModelResourceLocation MODEL_VARIANT = ModelResourceLocation.standalone(MODEL_LOCATION);
@@ -84,7 +84,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
         for (Direction side : EnumUtils.DIRECTIONS) {
             list.add(side.getSerializedName() + transmitter.getTransmitter().getConnectionType(side).name());
         }
-        renderModel(transmitter, matrix, builder, MekanismRenderer.getRed(rgb), MekanismRenderer.getGreen(rgb), MekanismRenderer.getBlue(rgb), alpha, light,
+        renderModel(transmitter, matrix, builder, ARGB.redFloat(rgb), ARGB.greenFloat(rgb), ARGB.blueFloat(rgb), alpha, light,
               overlayLight, icon, list);
     }
 
@@ -94,7 +94,7 @@ public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransm
             Pose entry = matrix.last();
             //Get all the sides
             for (BakedQuad quad : getBakedQuads(visible, icon, transmitter.getLevel())) {
-                builder.putBulkData(entry, quad, red, green, blue, alpha, light, overlayLight, false);
+                builder.putBulkData(entry, quad, red, green, blue, alpha, light, overlayLight);
             }
         }
     }

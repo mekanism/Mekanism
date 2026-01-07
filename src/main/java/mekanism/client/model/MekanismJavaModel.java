@@ -25,20 +25,14 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public abstract class MekanismJavaModel extends Model.Simple {
+public abstract class MekanismJavaModel<STATE> extends Model<STATE> {
 
-    public MekanismJavaModel(Function<Identifier, RenderType> renderType) {
-        super(renderType);
+    public MekanismJavaModel(ModelPart root, Function<Identifier, RenderType> renderType) {
+        super(root, renderType);
     }
 
-    protected static VertexConsumer getVertexConsumer(@NotNull MultiBufferSource renderer, @NotNull RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getFoilBufferDirect(renderer, renderType, false, hasEffect);
-    }
-
-    protected static void setRotation(ModelPart model, float x, float y, float z) {
-        model.xRot = x;
-        model.yRot = y;
-        model.zRot = z;
+    public static VertexConsumer getVertexConsumer(@NotNull MultiBufferSource renderer, @NotNull RenderType renderType, boolean hasEffect) {
+        return ItemRenderer.getFoilBuffer(renderer, renderType, false, hasEffect);
     }
 
     protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
@@ -56,12 +50,12 @@ public abstract class MekanismJavaModel extends Model.Simple {
     }
 
     protected static LayerDefinition createLayerDefinition(int textureWidth, int textureHeight, ModelPartData... parts) {
-        MeshDefinition meshdefinition = new MeshDefinition();
-        PartDefinition partdefinition = meshdefinition.getRoot();
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition partDefinition = mesh.getRoot();
         for (ModelPartData part : parts) {
-            part.addToDefinition(partdefinition);
+            part.addToDefinition(partDefinition);
         }
-        return LayerDefinition.create(meshdefinition, textureWidth, textureHeight);
+        return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
     protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer) {
@@ -102,10 +96,10 @@ public abstract class MekanismJavaModel extends Model.Simple {
         Set<Line> lines = new HashSet<>();
         for (Cube cube : cubes) {
             for (ModelPart.Polygon quad : cube.polygons) {
-                quad.vertices()[0].pos().div(16, v0);
-                quad.vertices()[1].pos().div(16, v1);
-                quad.vertices()[2].pos().div(16, v2);
-                quad.vertices()[3].pos().div(16, v3);
+                setVectorFromVertex(quad.vertices()[0], v0);
+                setVectorFromVertex(quad.vertices()[1], v1);
+                setVectorFromVertex(quad.vertices()[2], v2);
+                setVectorFromVertex(quad.vertices()[3], v3);
                 lines.add(Line.from(v0, v1));
                 lines.add(Line.from(v1, v2));
                 lines.add(Line.from(v2, v3));
@@ -113,5 +107,9 @@ public abstract class MekanismJavaModel extends Model.Simple {
             }
         }
         RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal);
+    }
+
+    private static void setVectorFromVertex(ModelPart.Vertex vertex, Vector3f vector) {
+        vector.set(vertex.worldX(), vertex.worldY(), vertex.worldZ());
     }
 }

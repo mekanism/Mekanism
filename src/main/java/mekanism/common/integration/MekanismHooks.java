@@ -28,6 +28,12 @@ import net.neoforged.neoforge.common.NeoForge;
  */
 public final class MekanismHooks {
 
+    //Note: These have to be static for use in CraftTweaker/Mod entrypoint annotations
+    public static final String CRAFT_TWEAKER_MOD_ID = "crafttweaker";
+    public static final String JEITWEAKER_MOD_ID = "jeitweaker";
+    public static final String PROJECTE_MOD_ID = "projecte";
+    public static final String TOP_MOD_ID = "theoneprobe";
+
     public record IntegrationInfo(String modid, boolean isLoaded) {
 
         private IntegrationInfo(String modid, Predicate<String> loadedCheck) {
@@ -66,28 +72,24 @@ public final class MekanismHooks {
     public final IntegrationInfo recipeStages;
     public final IntegrationInfo theOneProbe;
 
-    //Note: These have to be static for use in CraftTweaker annotations
-    public static final String JEITWEAKER_MOD_ID = "jeitweaker";
-    public static final String PROJECTE_MOD_ID = "projecte";
-
     public MekanismHooks() {
         ModList modList = ModList.get();
         //Note: The modlist is null when running tests
         Predicate<String> loadedCheck = modList == null ? modid -> false : modList::isLoaded;
         computerCraft = new IntegrationInfo("computercraft", loadedCheck);
-        craftTweaker = new IntegrationInfo("crafttweaker", loadedCheck);
+        craftTweaker = new IntegrationInfo(CRAFT_TWEAKER_MOD_ID, loadedCheck);
         curios = new IntegrationInfo("curios", loadedCheck);
         darkModeEverywhere = new IntegrationInfo("darkmodeeverywhere", loadedCheck);
         fluxNetworks = new IntegrationInfo("fluxnetworks", loadedCheck);
         grandPower = new IntegrationInfo("grandpower", loadedCheck);
         jei = new IntegrationInfo("jei", loadedCheck);
         emi = new IntegrationInfo("emi", loadedCheck);
-        jeiTweaker = new IntegrationInfo("jeitweaker", loadedCheck);
+        jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
         jsonThings = new IntegrationInfo("jsonthings", loadedCheck);
         oc2 = new IntegrationInfo("oc2", loadedCheck);
-        projecte = new IntegrationInfo("projecte", loadedCheck);
+        projecte = new IntegrationInfo(PROJECTE_MOD_ID, loadedCheck);
         recipeStages = new IntegrationInfo("recipestages", loadedCheck);
-        theOneProbe = new IntegrationInfo("theoneprobe", loadedCheck);
+        theOneProbe = new IntegrationInfo("TOP_MOD_ID", loadedCheck);
         genderMod = new IntegrationInfo("wildfire_gender", loadedCheck);
         framedBlocks = new IntegrationInfo("framedblocks", loadedCheck);
     }

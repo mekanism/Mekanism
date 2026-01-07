@@ -123,7 +123,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
     }
 
-    public boolean slotClicked(@NotNull Slot slot, int button) {
+    public boolean slotClicked(@NotNull Slot slot, int button, boolean hasShiftDown) {
         //Copy of super.mouseClicked, minus the call to all the sub elements as we know how we are interacting with it
         InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
         boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);
@@ -147,7 +147,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
                         this.slotClicked(slot, slot.index, button, ClickType.CLONE);
                     } else {
                         ClickType clicktype = ClickType.PICKUP;
-                        if (hasShiftDown()) {
+                        if (hasShiftDown) {
                             this.lastQuickMoved = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
                             clicktype = ClickType.QUICK_MOVE;
                         }

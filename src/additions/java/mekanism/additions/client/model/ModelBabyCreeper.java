@@ -21,26 +21,26 @@ public class ModelBabyCreeper extends AgeableListModel<EntityBabyCreeper> {
     public static final ModelLayerLocation ARMOR_LAYER = new ModelLayerLocation(MekanismAdditions.rl("baby_creeper"), "armor");
 
     public static LayerDefinition createBodyLayer(CubeDeformation cubeDeformation) {
-        MeshDefinition meshDefinition = new MeshDefinition();
-        PartDefinition partDefinition = meshDefinition.getRoot();
-        partDefinition.addOrReplaceChild("head", CubeListBuilder.create()
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        root.addOrReplaceChild("head", CubeListBuilder.create()
                     .texOffs(0, 0)
                     .addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, cubeDeformation),
               //Only real difference between this model and the vanilla creeper model is the "fix" for the head's rotation point
               // the other difference is extending ageable model instead
               PartPose.offset(0, 10, -2));
-        partDefinition.addOrReplaceChild("body", CubeListBuilder.create()
+        root.addOrReplaceChild("body", CubeListBuilder.create()
                     .texOffs(16, 16)
                     .addBox(-4.0F, 0.0F, -2.0F, 8.0F, 12.0F, 4.0F, cubeDeformation),
               PartPose.offset(0.0F, 6.0F, 0.0F));
         CubeListBuilder cubelistbuilder = CubeListBuilder.create()
               .texOffs(0, 16)
               .addBox(-2.0F, 0.0F, -2.0F, 4.0F, 6.0F, 4.0F, cubeDeformation);
-        partDefinition.addOrReplaceChild("right_hind_leg", cubelistbuilder, PartPose.offset(-2.0F, 18.0F, 4.0F));
-        partDefinition.addOrReplaceChild("left_hind_leg", cubelistbuilder, PartPose.offset(2.0F, 18.0F, 4.0F));
-        partDefinition.addOrReplaceChild("right_front_leg", cubelistbuilder, PartPose.offset(-2.0F, 18.0F, -4.0F));
-        partDefinition.addOrReplaceChild("left_front_leg", cubelistbuilder, PartPose.offset(2.0F, 18.0F, -4.0F));
-        return LayerDefinition.create(meshDefinition, 64, 32);
+        root.addOrReplaceChild("right_hind_leg", cubelistbuilder, PartPose.offset(-2.0F, 18.0F, 4.0F));
+        root.addOrReplaceChild("left_hind_leg", cubelistbuilder, PartPose.offset(2.0F, 18.0F, 4.0F));
+        root.addOrReplaceChild("right_front_leg", cubelistbuilder, PartPose.offset(-2.0F, 18.0F, -4.0F));
+        root.addOrReplaceChild("left_front_leg", cubelistbuilder, PartPose.offset(2.0F, 18.0F, -4.0F));
+        return LayerDefinition.create(mesh, 64, 32);
     }
 
     private final ModelPart head;

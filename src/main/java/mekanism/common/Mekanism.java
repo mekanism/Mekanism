@@ -98,6 +98,7 @@ import mekanism.common.registries.MekanismPlacementModifiers;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismSounds;
+import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.tile.component.TileComponentChunkLoader;
 import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueInvalidationListener;
@@ -257,6 +258,7 @@ public class Mekanism {
         MekanismRecipeConditions.CONDITION_CODECS.register(modEventBus);
         MekanismItemPredicates.PREDICATES.register(modEventBus);
         MekanismDataMapTypes.REGISTER.register(modEventBus);
+        MekanismTicketTypes.TICKET_TYPES.register(modEventBus);
     }
 
     private void registerRegistries(NewRegistryEvent event) {

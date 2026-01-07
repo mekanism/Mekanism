@@ -7,8 +7,8 @@ import mekanism.client.render.item.MekanismISTER;
 import mekanism.common.Mekanism;
 import mekanism.tools.client.ShieldTextures;
 import mekanism.tools.common.registries.ToolsItems;
-import net.minecraft.client.model.ShieldModel;
 import net.minecraft.client.model.geom.ModelLayers;
+import net.minecraft.client.model.object.equipment.ShieldModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -55,7 +55,7 @@ public class RenderMekanismShieldItem extends MekanismISTER {
         Material material = textures.getBase();
         matrix.pushPose();
         matrix.scale(1, -1, -1);
-        VertexConsumer buffer = material.sprite().wrap(ItemRenderer.getFoilBufferDirect(renderer, shieldModel.renderType(material.atlasLocation()), true, stack.hasFoil()));
+        VertexConsumer buffer = material.sprite().wrap(ItemRenderer.getFoilBuffer(renderer, shieldModel.renderType(material.atlasLocation()), true, stack.hasFoil()));
         BannerPatternLayers bannerPattern = stack.getOrDefault(DataComponents.BANNER_PATTERNS, BannerPatternLayers.EMPTY);
         DyeColor color = stack.get(DataComponents.BASE_COLOR);
         if (!bannerPattern.layers().isEmpty() || color != null) {

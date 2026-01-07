@@ -4,31 +4,47 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.data.RenderData;
+import mekanism.client.render.tileentity.RenderDynamicTank.DynamicTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblockData, TileEntityDynamicTank> {
+public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblockData, TileEntityDynamicTank, DynamicTankRenderState> {
 
     public RenderDynamicTank(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityDynamicTank tile, TankMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light,
-          int overlayLight, ProfilerFiller profiler) {
-        RenderData data = getRenderData(multiblock);
-        if (data != null) {
+    public DynamicTankRenderState createRenderState() {
+        return new DynamicTankRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityDynamicTank tank, DynamicTankRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
+        TankMultiblockData multiblock = tank.getMultiblock();
+        state.renderData = getRenderData(multiblock);
+        state.scale = multiblock.prevScale;
+    }
+
+    @Override
+    public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.renderData != null) {
             VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            renderObject(data, multiblock.valves, tile.getBlockPos(), matrix, buffer, overlayLight, multiblock.prevScale);
+            renderObject(camera.pos, state.renderData, state.valves, state.blockPos, poseStack, buffer, OverlayTexture.NO_OVERLAY, state.scale);
         }
     }
 
@@ -53,5 +69,12 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
     @Override
     protected boolean shouldRender(TileEntityDynamicTank tile, TankMultiblockData multiblock, Vec3 camera) {
         return super.shouldRender(tile, multiblock, camera) && !multiblock.isEmpty();
+    }
+
+    public static class DynamicTankRenderState extends BlockEntityRenderState {
+
+        @Nullable
+        public RenderData renderData;
+        public float scale;
     }
 }

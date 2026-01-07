@@ -2,11 +2,12 @@ package mekanism.additions.client.model;
 
 import java.util.List;
 import mekanism.additions.common.entity.baby.EntityBabyEnderman;
-import net.minecraft.client.model.EndermanModel;
 import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.monster.enderman.EndermanModel;
+import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelBabyEnderman extends EndermanModel<EntityBabyEnderman> {
+public class ModelBabyEnderman extends EndermanModel<EndermanRenderState> {
 
     public ModelBabyEnderman(ModelPart part) {
         super(part);
@@ -26,12 +27,12 @@ public class ModelBabyEnderman extends EndermanModel<EntityBabyEnderman> {
     }
 
     @Override
-    public void setupAnim(@NotNull EntityBabyEnderman enderman, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-        super.setupAnim(enderman, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
+    public void setupAnim(@NotNull EndermanRenderState state) {
+        super.setupAnim(state);
         //Shift the head and the "hat" (jaw) be in the proper place for baby endermen
         head.y += 5.0F;
         hat.y += 5.0F;
-        if (creepy) {
+        if (state.isCreepy) {
             //Shift the head when angry to only the third the distance it goes up when it is an adult
             head.y += 1.67F;
         }

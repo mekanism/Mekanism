@@ -84,17 +84,29 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
         super(root);
         leftParts.addAll(getRenderableParts(root, PLATE_L, TOP_PLATE_L, CONNECTION_L, ARMORED_BRACE_L));
         rightParts.addAll(getRenderableParts(root, PLATE_R, TOP_PLATE_R, CONNECTION_R, ARMORED_BRACE_R));
+        //TODO - 1.21.11: Figure out how to have the lit parts of the model be rendered as full bright
         litLeftParts = getRenderableParts(root, BATTERY_L);
         litRightParts = getRenderableParts(root, BATTERY_R);
     }
 
     @Override
-    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color, boolean left) {
-        super.renderLeg(poseStack, vertexConsumer, light, overlayLight, color, left);
+    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
+        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, color);
         if (left) {
             renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
         } else {
             renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
+        }
+    }
+
+    @Override
+    public void setupAnim(FreeRunnerRenderState state) {
+        super.setupAnim(state);
+        for (ModelPart leftPart : litLeftParts) {
+            leftPart.visible = state.leftVisible();
+        }
+        for (ModelPart rightPart : litRightParts) {
+            rightPart.visible = state.rightVisible();
         }
     }
 }

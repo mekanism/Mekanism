@@ -1,8 +1,7 @@
 package mekanism.client.model;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
+import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -12,12 +11,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.NotNull;
 
-public class ModelFreeRunners extends MekanismJavaModel {
+public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
 
     public static final ModelLayerLocation FREE_RUNNER_LAYER = new ModelLayerLocation(Mekanism.rl("free_runners"), "main");
     private static final Identifier FREE_RUNNER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "free_runners.png");
@@ -56,30 +54,31 @@ public class ModelFreeRunners extends MekanismJavaModel {
     }
 
     protected ModelFreeRunners(ModelPart root) {
-        super(RenderType::entitySolid);
+        super(root, RenderTypes::entitySolid);
         leftParts = getRenderableParts(root, SPRING_L, BRACE_L, SUPPORT_L);
         rightParts = getRenderableParts(root, SPRING_R, BRACE_R, SUPPORT_R);
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
+    public RenderType getRenderType() {
+        return RENDER_TYPE;
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
-        renderLeg(poseStack, vertexConsumer, light, overlayLight, color, true);
-        renderLeg(poseStack, vertexConsumer, light, overlayLight, color, false);
-    }
-
-    public void renderLeg(@NotNull PoseStack poseStack, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect, boolean left) {
-        renderLeg(poseStack, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF, left);
-    }
-
-    protected void renderLeg(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color, boolean left) {
-        if (left) {
-            renderPartsToBuffer(leftParts, poseStack, vertexConsumer, light, overlayLight, color);
-        } else {
-            renderPartsToBuffer(rightParts, poseStack, vertexConsumer, light, overlayLight, color);
+    public void setupAnim(FreeRunnerRenderState state) {
+        super.setupAnim(state);
+        for (ModelPart leftPart : leftParts) {
+            leftPart.visible = state.leftVisible();
         }
+        for (ModelPart rightPart : rightParts) {
+            rightPart.visible = state.rightVisible();
+        }
+    }
+
+    //TODO - 1.21.11: Do we want a static field for the various states?
+    public record FreeRunnerRenderState(boolean leftVisible, boolean rightVisible) {
+
+        public static final FreeRunnerRenderState BOTH = new FreeRunnerRenderState(true, true);
+        public static final FreeRunnerRenderState LEFT_ONLY = new FreeRunnerRenderState(true, false);
+        public static final FreeRunnerRenderState RIGHT_ONLY = new FreeRunnerRenderState(false, true);
     }
 }

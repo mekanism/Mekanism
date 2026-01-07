@@ -36,7 +36,9 @@ public class RenderFluidTankItem extends MekanismISTER {
             if (!fluid.isEmpty()) {
                 float fluidScale = (float) fluid.getAmount() / attachment.getTankCapacity(0);
                 if (fluidScale > 0) {
-                    RenderResizableCuboid.renderCube(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()), MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT, getCamera(), null);
+                    RenderResizableCuboid.renderCube(RenderFluidTank.getFluidModel(fluid, fluidScale), matrix, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
+                          MekanismRenderer.getColorARGB(fluid, fluidScale), MekanismRenderer.calculateGlowLight(light, fluid), overlayLight, FaceDisplay.FRONT,
+                          getBlockEntityRenderDispatcher().camera, null);
                 }
             }
         }

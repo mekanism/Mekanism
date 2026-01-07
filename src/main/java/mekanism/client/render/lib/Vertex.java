@@ -19,7 +19,7 @@ public class Vertex {
     private Vector3f normal;
 
     //Store int representations of the colors so that we don't go between ints and doubles when unpacking and repacking a vertex
-    private int red, green, blue, alpha;
+    private int color;
 
     // 0 to 16
     private float texU, texV;
@@ -33,21 +33,17 @@ public class Vertex {
     }
 
     public Vertex(Vector3f pos, Vector3f normal, Color color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
-        this(pos, normal, color.r(), color.g(), color.b(), color.a(), texU, texV, overlayU, overlayV, lightU, lightV);
+        this(pos, normal, color.argb(), texU, texV, overlayU, overlayV, lightU, lightV);
     }
 
-    public Vertex(Vector3f pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
-        this(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, new HashMap<>());
+    public Vertex(Vector3f pos, Vector3f normal, int color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV) {
+        this(pos, normal, color, texU, texV, overlayU, overlayV, lightU, lightV, new HashMap<>());
     }
 
-    public Vertex(Vector3f pos, Vector3f normal, int red, int green, int blue, int alpha, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV,
-          Map<VertexFormatElement, int[]> miscData) {
+    public Vertex(Vector3f pos, Vector3f normal, int color, float texU, float texV, int overlayU, int overlayV, int lightU, int lightV, Map<VertexFormatElement, int[]> miscData) {
         this.pos = pos;
         this.normal = normal;
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.alpha = alpha;
+        this.color = color;
         this.texU = texU;
         this.texV = texV;
         this.overlayU = overlayU;
@@ -115,14 +111,11 @@ public class Vertex {
     }
 
     public Vertex color(Color color) {
-        return color(color.r(), color.g(), color.b(), color.a());
+        return color(color.argb());
     }
 
-    public Vertex color(int red, int green, int blue, int alpha) {
-        this.red = red;
-        this.green = green;
-        this.blue = blue;
-        this.alpha = alpha;
+    public Vertex color(int color) {
+        this.color = color;
         return this;
     }
 
@@ -190,14 +183,14 @@ public class Vertex {
             for (Map.Entry<VertexFormatElement, int[]> entry : miscData.entrySet()) {
                 miscCopy.put(entry.getKey(), Arrays.copyOf(entry.getValue(), entry.getValue().length));
             }
-            return new Vertex(pos, new Vector3f(normal), red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, miscCopy);
+            return new Vertex(pos, new Vector3f(normal), color, texU, texV, overlayU, overlayV, lightU, lightV, miscCopy);
         }
-        return new Vertex(pos, normal, red, green, blue, alpha, texU, texV, overlayU, overlayV, lightU, lightV, miscData);
+        return new Vertex(pos, normal, color, texU, texV, overlayU, overlayV, lightU, lightV, miscData);
     }
 
     public void write(VertexConsumer consumer) {
-        consumer.addVertex(pos.x, pos.y, pos.z);
-        consumer.setColor(red, green, blue, alpha);
+        consumer.addVertex(pos);
+        consumer.setColor(color);
         consumer.setUv(texU, texV);
         consumer.setUv1(overlayU, overlayV);
         consumer.setUv2(lightU, lightV);

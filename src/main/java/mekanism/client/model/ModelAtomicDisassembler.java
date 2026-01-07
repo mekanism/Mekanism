@@ -17,10 +17,12 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelAtomicDisassembler extends MekanismJavaModel {
+public class ModelAtomicDisassembler extends MekanismJavaModel<Unit> {
 
     public static final ModelLayerLocation DISASSEMBLER_LAYER = new ModelLayerLocation(Mekanism.rl("atomic_disassembler"), "main");
     private static final Identifier DISASSEMBLER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "atomic_disassembler.png");
@@ -89,8 +91,7 @@ public class ModelAtomicDisassembler extends MekanismJavaModel {
     private final List<ModelPart> bladeParts;
 
     public ModelAtomicDisassembler(EntityModelSet entityModelSet) {
-        super(RenderType::entitySolid);
-        ModelPart root = entityModelSet.bakeLayer(DISASSEMBLER_LAYER);
+        super(entityModelSet.bakeLayer(DISASSEMBLER_LAYER), RenderTypes::entitySolid);
         parts = getRenderableParts(root, HANDLE, HANDLE_TOP, HEAD, NECK, REAR_BAR, NECK_ANGLED, BLADE_HOLDER_BACK, BLADE_HOLDER_MAIN,
               BLADE_HOLDER_FRONT, HANDLE_BASE, HANDLE_TOP_BACK);
         bladeParts = getRenderableParts(root, BLADE_FRONT_CONNECTOR, BLADE_BACK, BLADE_FRONT_UPPER, BLADE_FRONT_LOWER, BLADE_BACK_SMALL);

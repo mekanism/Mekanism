@@ -31,6 +31,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.ListSortType;
 import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphics;
@@ -134,7 +135,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
             recreateViewer();
         } else if (wasOnRecipeViewer) {
             //When switching back to the QIO Item Viewer from a recipe viewer, we want to ensure that we update the current pause state
-            menu.pauseSorting(hasShiftDown());
+            menu.pauseSorting(Minecraft.getInstance().hasShiftDown());
         }
     }
 

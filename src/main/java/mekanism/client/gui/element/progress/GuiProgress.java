@@ -9,15 +9,15 @@ import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.client.gui.element.progress.IProgressInfoHandler.IBooleanProgressInfoHandler;
-import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
-import mekanism.client.render.MekanismRenderer;
+import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -135,14 +135,14 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         float minV = vOffset / textureHeight;
         float maxV = (vOffset + height) / textureHeight;
 
-        float alphaFrom = MekanismRenderer.getAlpha(colorFrom);
-        float redFrom = MekanismRenderer.getRed(colorFrom);
-        float greenFrom = MekanismRenderer.getGreen(colorFrom);
-        float blueFrom = MekanismRenderer.getBlue(colorFrom);
-        float alphaTo = MekanismRenderer.getAlpha(colorTo);
-        float redTo = MekanismRenderer.getRed(colorTo);
-        float greenTo = MekanismRenderer.getGreen(colorTo);
-        float blueTo = MekanismRenderer.getBlue(colorTo);
+        float alphaFrom = ARGB.alphaFloat(colorFrom);
+        float redFrom = ARGB.redFloat(colorFrom);
+        float greenFrom = ARGB.greenFloat(colorFrom);
+        float blueFrom = ARGB.blueFloat(colorFrom);
+        float alphaTo = ARGB.alphaFloat(colorTo);
+        float redTo = ARGB.redFloat(colorTo);
+        float greenTo = ARGB.greenFloat(colorTo);
+        float blueTo = ARGB.blueFloat(colorTo);
         //Adjust coloring to be based on how much of the progress bar is actually filled
         // so that it properly has the correct colors for the start and the end
         float percent = (float) progress;

@@ -11,6 +11,7 @@ import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,9 +32,9 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.brightness = 0;
 
         int tint = MekanismRenderer.getTint(chemical);
-        this.rCol = 0.6F * MekanismRenderer.getRed(tint);
-        this.gCol = 0.6F * MekanismRenderer.getGreen(tint);
-        this.bCol = 0.6F * MekanismRenderer.getBlue(tint);
+        this.rCol = 0.6F * ARGB.redFloat(tint);
+        this.gCol = 0.6F * ARGB.greenFloat(tint);
+        this.bCol = 0.6F * ARGB.blueFloat(tint);
     }
 
     @NotNull

@@ -17,27 +17,31 @@ import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
+import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
 import mekanism.common.base.ProfilerConstants;
+import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.Camera;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe> {
+public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechanicalPipe, PipeRenderState> {
 
     private static final int stages = 100;
     private static final float height = 0.45F;
@@ -55,34 +59,39 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     }
 
     @Override
-    protected void render(TileEntityMechanicalPipe tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        MechanicalPipe pipe = tile.getTransmitter();
-        FluidNetwork network = pipe.getTransmitterNetwork();
-        if (network == null) {
-            return;//race conditions
+    public PipeRenderState createRenderState() {
+        return new PipeRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityMechanicalPipe pipe, PipeRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(pipe, state, partialTick, cameraPosition, breakProgress);
+        MechanicalPipe transmitter = pipe.getTransmitter();
+        FluidNetwork network = transmitter.getTransmitterNetwork();
+        if (network == null) {//TODO - 1.21.11: Does this race condition still exist?
+            return;//race conditions, yay
         }
         FluidStack fluidStack = network.lastFluid;
         if (fluidStack.isEmpty()) {
-            //Shouldn't be the case but validate it
-            return;
+            return;//Shouldn't be the case but validate it
         }
-        float fluidScale = network.currentScale;
-        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, fluidScale));
-        int glow = MekanismRenderer.calculateGlowLight(light, fluidStack);
-        int color = MekanismRenderer.getColorARGB(fluidStack, fluidScale);
+        state.currentScale = network.currentScale;
+        state.fluidTexture = MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL);
+        state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
+
+        int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
+        //TODO - 1.21.11: Should we overwrite lightCoords with glow?
+        int glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
+
+
         List<String> connectionContents = new ArrayList<>();
         boolean[] renderSides = new boolean[6];
         boolean hasHorizontalSide = false;
         int verticalSides = 0;
-        VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-        Camera camera = getCamera();
         for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = pipe.getConnectionType(side);
-            if (connectionType == ConnectionType.NORMAL) {
-                //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
-                MekanismRenderer.renderObject(getModel(side, fluidStack, stage), matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT, camera, tile.getBlockPos());
-            } else if (connectionType != ConnectionType.NONE) {
+            ConnectionType connectionType = transmitter.getConnectionType(side);
+            //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
+            if (connectionType == ConnectionType.PUSH || connectionType == ConnectionType.PULL) {
                 connectionContents.add(side.getSerializedName() + connectionType.getSerializedName().toUpperCase(Locale.ROOT));
             }
             renderSides[side.ordinal()] = connectionType != ConnectionType.NORMAL;
@@ -103,13 +112,28 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             // small gaps if we didn't render
             model.setSideRender(side, renderSides[side.ordinal()] || (side.getAxis().isVertical() && renderBase && stage != stages - 1));
         }
-        MekanismRenderer.renderObject(model, matrix, buffer, color, glow, overlayLight, FaceDisplay.FRONT, camera, tile.getBlockPos());
+    }
+
+    @Override
+    public void submit(PipeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.fluidTexture == null) {
+            return;
+        }
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            ConnectionType connectionType = transmitter.getConnectionType(side);
+            if (connectionType == ConnectionType.NORMAL) {
+                //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
+                MekanismRenderer.renderObject(getModel(side, fluidStack, stage), poseStack, buffer, state.fluidTint, glow, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+            }
+        }
+        MekanismRenderer.renderObject(model, poseStack, buffer, state.fluidTint, glow, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
         if (!connectionContents.isEmpty()) {
-            matrix.pushPose();
-            matrix.translate(0.5, 0.5, 0.5);
-            renderModel(tile, matrix, buffer, MekanismRenderer.getRed(color), MekanismRenderer.getGreen(color), MekanismRenderer.getBlue(color),
-                  MekanismRenderer.getAlpha(color), glow, overlayLight, MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL), connectionContents);
-            matrix.popPose();
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.5, 0.5);
+            renderModel(state, poseStack, buffer, ARGB.redFloat(state.fluidTint), ARGB.greenFloat(state.fluidTint), ARGB.blueFloat(state.fluidTint),
+                  ARGB.alphaFloat(state.fluidTint), glow, OverlayTexture.NO_OVERLAY,
+                  state.fluidTexture, connectionContents);
+            poseStack.popPose();
         }
     }
 

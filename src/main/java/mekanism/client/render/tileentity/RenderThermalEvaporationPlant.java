@@ -1,35 +1,50 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
+import mekanism.client.render.tileentity.RenderThermalEvaporationPlant.TEPRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.evaporation.EvaporationMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationController;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<EvaporationMultiblockData, TileEntityThermalEvaporationController> {
+public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<EvaporationMultiblockData, TileEntityThermalEvaporationController, TEPRenderState> {
 
     public RenderThermalEvaporationPlant(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected void render(TileEntityThermalEvaporationController tile, EvaporationMultiblockData multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer,
-          int light, int overlayLight, ProfilerFiller profiler) {
-        VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-        FluidRenderData data = RenderData.Builder.create(multiblock.inputTank.getFluid())
+    public TEPRenderState createRenderState() {
+        return new TEPRenderState();
+    }
+
+    @Override
+    public void extractRenderState(TileEntityThermalEvaporationController controller, TEPRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
+        EvaporationMultiblockData multiblock = controller.getMultiblock();
+        state.scale = Math.min(1, multiblock.prevScale);
+        state.valves = multiblock.valves;
+        state.data = RenderData.Builder.create(multiblock.inputTank.getFluid())
               .of(multiblock)
               .height(multiblock.height() - 1)
               .build();
-        renderObject(data, multiblock.valves, tile.getBlockPos(), matrix, buffer, overlayLight, Math.min(1, multiblock.prevScale));
+    }
+
+    @Override
+    public void submit(TEPRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        renderObject(camera.pos, state.data, state.valves, state.blockPos, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.scale);
     }
 
     @Override
@@ -40,5 +55,12 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
     @Override
     protected boolean shouldRender(TileEntityThermalEvaporationController tile, EvaporationMultiblockData multiblock, Vec3 camera) {
         return super.shouldRender(tile, multiblock, camera) && !multiblock.inputTank.isEmpty();
+    }
+
+    public static class TEPRenderState extends BlockEntityRenderState {
+
+        @Nullable
+        public FluidRenderData data;
+        public float scale;
     }
 }

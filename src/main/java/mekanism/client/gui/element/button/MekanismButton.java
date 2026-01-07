@@ -64,7 +64,8 @@ public class MekanismButton extends GuiElement {
         //From AbstractButton with an additional check of validating that it is focused
         if (this.active && this.visible && this.isFocused() && event.isSelection()) {
             playDownSound(minecraft.getSoundManager());
-            return onLeftClick.onClick(this, getButtonX() + getButtonWidth() / 2.0, getButtonY() + getButtonHeight() / 2.0);
+            MouseButtonEvent mouseEvent = new MouseButtonEvent(getButtonX() + getButtonWidth() / 2.0, getButtonY() + getButtonHeight() / 2.0, new MouseButtonInfo(InputConstants.MOUSE_BUTTON_LEFT, event.modifiers()));
+            return onLeftClick.onClick(this, mouseEvent, false);
         }
         return super.keyPressed(event);
     }

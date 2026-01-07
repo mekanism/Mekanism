@@ -66,7 +66,7 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
             IGuiWrapper gui = gui();
             if (gui instanceof VirtualSlotContainerScreen<?> screen && virtualSlot != null) {
                 //Redirect to a copy of vanilla logic
-                return screen.slotClicked(virtualSlot.getSlot(), event.button());
+                return screen.slotClicked(virtualSlot.getSlot(), event.button(), event.hasShiftDown());
             }
         }
         return super.mouseClicked(event, isDoubleClick);

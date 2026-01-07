@@ -96,7 +96,7 @@ public class LaserParticle extends SingleQuadParticle {
     }
 
     private void addVertex(VertexConsumer vertexBuilder, Vector3f pos, float u, float v, int light) {
-        vertexBuilder.addVertex(pos.x(), pos.y(), pos.z())
+        vertexBuilder.addVertex(pos)
               .setUv(u, v)
               .setColor(rCol, gCol, bCol, alpha)
               .setLight(light);

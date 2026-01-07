@@ -8,14 +8,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 
-public class BabyEndermanHeldBlockLayer extends RenderLayer<EntityBabyEnderman, ModelBabyEnderman> {
+public class BabyEndermanHeldBlockLayer extends RenderLayer<EndermanRenderState, ModelBabyEnderman> {
 
-    public BabyEndermanHeldBlockLayer(RenderLayerParent<EntityBabyEnderman, ModelBabyEnderman> renderer) {
+    public BabyEndermanHeldBlockLayer(RenderLayerParent<EndermanRenderState, ModelBabyEnderman> renderer) {
         super(renderer);
     }
 

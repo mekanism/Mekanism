@@ -57,7 +57,7 @@ public final class FramedBlocksIntegration {
             modBus.addListener(ClientEvents::onRegisterParticleProviders);
         }
 
-        private static void onRegisterAdditionalModels(ModelEvent.RegisterAdditional event) {
+        private static void onRegisterAdditionalModels(ModelEvent.RegisterStandalone event) {
             event.register(ChemicalModel.BARE_MODEL);
         }
 

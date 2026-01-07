@@ -177,13 +177,6 @@ public final class MekanismUtils {
         return (entity.getMainArm() == HumanoidArm.RIGHT) == (hand == InteractionHand.MAIN_HAND);
     }
 
-    public static ItemStack getItemInHand(LivingEntity entity, HumanoidArm side) {
-        if (entity.getMainArm() == side) {
-            return entity.getMainHandItem();
-        }
-        return entity.getOffhandItem();
-    }
-
     /**
      * Gets the left side of a certain orientation.
      *

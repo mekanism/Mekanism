@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.energy.IEnergyContainer;
@@ -11,12 +10,13 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
+import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -33,6 +33,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -89,42 +90,45 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         BlockPos pos = context.getClickedPos();
         TileEntityMekanism chargepad = WorldUtils.getTileEntity(TileEntityChargepad.class, world, pos);
         if (chargepad != null && !chargepad.getActive()) {
-            if (!world.isClientSide()) {
+            if (world instanceof ServerLevel level) {
                 ItemStack stack = context.getItemInHand();
-                EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
-                if (robit == null) {
+                //TODO - 1.21.11: Determine how we want to set the y offset
+                //EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
+                EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
+                    robit.setHome(chargepad.getTileGlobalPos());
+                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                    if (energyContainer != null) {
+                        robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
+                    }
+                    UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
+                    if (ownerUUID == null) {
+                        robit.setOwnerUUID(player.getUUID());
+                        //If the robit doesn't already have an owner, make sure we portray this
+                        PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
+                    } else {
+                        robit.setOwnerUUID(ownerUUID);
+                    }
+                    ContainerType.ITEM.copyFromStack(world.registryAccess(), stack, robit.getInventorySlots(null));
+                    Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
+                    if (name != null) {
+                        robit.setCustomName(name);
+                    }
+                    ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
+                    if (securityObject != null) {
+                        robit.setSecurityMode(securityObject.getSecurityMode());
+                    }
+                    robit.setSkin(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
+                    robit.setDefaultSkinManuallySelected(stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
+                }, pos, EntitySpawnReason.SPAWN_ITEM_USE, false, false);
+                if (spawnedRobit == null) {
                     return InteractionResult.FAIL;
                 }
-                robit.setHome(chargepad.getTileGlobalPos());
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer != null) {
-                    robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
-                }
-                UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
-                if (ownerUUID == null) {
-                    robit.setOwnerUUID(player.getUUID());
-                    //If the robit doesn't already have an owner, make sure we portray this
-                    PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
-                } else {
-                    robit.setOwnerUUID(ownerUUID);
-                }
-                ContainerType.ITEM.copyFromStack(world.registryAccess(), stack, robit.getInventorySlots(null));
-                Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
-                if (name != null) {
-                    robit.setCustomName(name);
-                }
-                ISecurityObject securityObject = IItemSecurityUtils.INSTANCE.securityCapability(stack);
-                if (securityObject != null) {
-                    robit.setSecurityMode(securityObject.getSecurityMode());
-                }
-                robit.setSkin(stack.getOrDefault(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.BASE), player);
-                robit.setDefaultSkinManuallySelected(stack.getOrDefault(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, false));
-                world.addFreshEntity(robit);
-                world.gameEvent(player, GameEvent.ENTITY_PLACE, robit.blockPosition());
+                world.gameEvent(player, GameEvent.ENTITY_PLACE, spawnedRobit.blockPosition());
+                //TODO - 1.21.11: Do we want this to be consume?
                 stack.shrink(1);
-                CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer) player, robit);
+                CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer) player, spawnedRobit);
             }
-            return InteractionResult.sidedSuccess(world.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }

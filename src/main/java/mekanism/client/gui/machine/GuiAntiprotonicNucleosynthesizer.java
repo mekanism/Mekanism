@@ -94,7 +94,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
         float partialTicks = MekanismRenderer.getPartialTick();
         bolt.update(this, boltSupplier.get(), partialTicks);
-        bolt.render(partialTicks, pose, renderer);
+        bolt.render(gameTime, partialTicks, pose, renderer);
         renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
         pose.popPose();
     }

@@ -1,23 +1,22 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.List;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
-import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelFlamethrower extends MekanismJavaModel {
+public class ModelFlamethrower extends MekanismJavaModel<Unit> {
 
     public static final ModelLayerLocation FLAMETHROWER_LAYER = new ModelLayerLocation(Mekanism.rl("flamethrower"), "main");
     private static final Identifier FLAMETHROWER_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "flamethrower.png");
@@ -121,22 +120,22 @@ public class ModelFlamethrower extends MekanismJavaModel {
     }
 
     private final RenderType RENDER_TYPE = renderType(FLAMETHROWER_TEXTURE);
-    private final List<ModelPart> parts;
+    //private final List<ModelPart> parts;
 
     public ModelFlamethrower(EntityModelSet entityModelSet) {
-        super(RenderType::entitySolid);
-        ModelPart root = entityModelSet.bakeLayer(FLAMETHROWER_LAYER);
-        parts = getRenderableParts(root, RING_BOTTOM, RING_TOP, RING, AXLE, AXLE_B_LEFT, AXLE_B_RIGHT, AXLE_T_RIGHT, AXLE_T_LEFT, GRASP, GRASP_ROD,
+        super(entityModelSet.bakeLayer(FLAMETHROWER_LAYER), RenderTypes::entitySolid);
+        /*parts = getRenderableParts(root, RING_BOTTOM, RING_TOP, RING, AXLE, AXLE_B_LEFT, AXLE_B_RIGHT, AXLE_T_RIGHT, AXLE_T_LEFT, GRASP, GRASP_ROD,
               SUPPORT_CENTER, SUPPORT_FRONT, SUPPORT_REAR, LARGE_BARREL, LARGE_BARREL_DECOR, LARGE_BARREL_DECOR_2, BARREL, BARREL_RING, BARREL_RING_2,
-              FLAME, FLAME_STRUT, HYDROGEN_DECOR, HYDROGEN);
+              FLAME, FLAME_STRUT, HYDROGEN_DECOR, HYDROGEN);*/
     }
 
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, boolean hasEffect) {
         renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
     }
 
-    @Override
+    //TODO - 1.21.11: Test this, I think it should in theory just work
+    /*@Override
     public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
         renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
-    }
+    }*/
 }

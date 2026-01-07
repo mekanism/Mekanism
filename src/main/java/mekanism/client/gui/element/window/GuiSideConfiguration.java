@@ -36,7 +36,6 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +81,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
               (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketEjectConfiguration(this.tile.getBlockPos(), currentType))))
               .setTooltip(MekanismLang.AUTO_EJECT);
         addChild(new TooltipToggleButton(gui, relativeX + 136, relativeY + 95, 14, getButtonLocation("clear_sides"),
-              () -> getTargetType(Screen.hasShiftDown(), DataType::getNext) == DataType.NONE, (element, event, isDoubleClick) -> {
+              () -> getTargetType(minecraft.hasShiftDown(), DataType::getNext) == DataType.NONE, (element, event, isDoubleClick) -> {
             DataType targetType = getTargetType(event, DataType::getNext);
             return PacketUtils.sendToServer(new PacketBatchConfiguration(this.tile.getBlockPos(), event.hasShiftDown() ? null : currentType, targetType));
         }, (element, event, isDoubleClick) -> {

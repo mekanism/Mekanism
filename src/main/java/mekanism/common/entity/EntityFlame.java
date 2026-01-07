@@ -217,9 +217,10 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         ItemStack stack = item.getItem();
         if (!stack.isEmpty()) {//This probably should never be empty but validate it in case
             Level level = level();
-            Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level);
+            SingleRecipeInput input = new SingleRecipeInput(stack);
+            Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level);
             if (recipe.isPresent()) {
-                ItemStack result = recipe.get().value().getResultItem(level.registryAccess());
+                ItemStack result = recipe.get().value().assemble(input, level.registryAccess());
                 item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
                 item.tickCount = 0;
                 spawnParticlesAt(item.blockPosition());
@@ -238,9 +239,10 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
         if (stack.isEmpty()) {
             return;
         }
+        SingleRecipeInput input = new SingleRecipeInput(stack);
         Optional<RecipeHolder<SmeltingRecipe>> recipe;
         try {
-            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, new SingleRecipeInput(stack), level());
+            recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level());
         } catch (Exception e) {
             return;
         }
@@ -250,7 +252,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
                     //We can't break the block exit
                     return;
                 }
-                ItemStack result = recipe.get().value().getResultItem(level().registryAccess());
+                ItemStack result = recipe.get().value().assemble(input, level().registryAccess());
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
                     level().removeBlock(blockPos, false);
                     ItemEntity item = new ItemEntity(level(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());

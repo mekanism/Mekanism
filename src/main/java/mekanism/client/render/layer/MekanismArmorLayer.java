@@ -5,17 +5,15 @@ import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.client.render.armor.ICustomArmor;
 import mekanism.client.render.armor.ISpecialGear;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EquipmentLayerRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.equipment.Equippable;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 
 @ParametersAreNotNullByDefault
@@ -26,22 +24,26 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
     }
 
     @Override
-    public void submit(PoseStack matrix, SubmitNodeCollector collector, int packedLight, STATE state, float yRot, float xRot) {
-        renderArmorPart(matrix, collector, state, state.chestEquipment, EquipmentSlot.CHEST, packedLight, partialTicks);
-        renderArmorPart(matrix, collector, state, state.legsEquipment, EquipmentSlot.LEGS, packedLight, partialTicks);
-        renderArmorPart(matrix, collector, state, state.feetEquipment, EquipmentSlot.FEET, packedLight, partialTicks);
-        renderArmorPart(matrix, collector, state, state.headEquipment, EquipmentSlot.HEAD, packedLight, partialTicks);
+    public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, STATE state, float yRot, float xRot) {
+        renderArmorPart(poseStack, nodeCollector, state.chestEquipment, EquipmentSlot.CHEST, state, lightCoords);
+        renderArmorPart(poseStack, nodeCollector, state.legsEquipment, EquipmentSlot.LEGS, state, lightCoords);
+        renderArmorPart(poseStack, nodeCollector, state.feetEquipment, EquipmentSlot.FEET, state, lightCoords);
+        renderArmorPart(poseStack, nodeCollector, state.headEquipment, EquipmentSlot.HEAD, state, lightCoords);
     }
 
-    private void renderArmorPart(PoseStack matrix, MultiBufferSource renderer, STATE state, ItemStack stack, EquipmentSlot slot, int light, float partialTicks) {
-        Item item = stack.getItem();
-        if (item instanceof ArmorItem armorItem && armorItem.getEquipmentSlot() == slot && IClientItemExtensions.of(item) instanceof ISpecialGear specialGear) {
+    
+    //PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack itemStack, EquipmentSlot slot, int lightCoords, S state
+    private void renderArmorPart(PoseStack poseStack, SubmitNodeCollector nodeCollector, ItemStack stack, EquipmentSlot slot, STATE state, int lightCoords) {
+        Equippable equippable = stack.get(DataComponents.EQUIPPABLE);
+        //TODO - 1.21.11: Should we check there is an asset id like super does?
+        if (equippable != null && equippable.slot() == slot && IClientItemExtensions.of(stack.getItem()) instanceof ISpecialGear specialGear) {
             ICustomArmor model = specialGear.gearModel();
             //TODO - 1.21.11: Fix this as it seems baby models now get handled via this
-            A coreModel = slot == EquipmentSlot.LEGS ? innerModel : outerModel;
-            getParentModel().copyPropertiesTo(coreModel);
-            setPartVisibility(coreModel, slot);
-            model.render(coreModel, matrix, renderer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasFoil(), state, stack);
+            //TODO - 1.21.11: Figure out baby vs not
+            A coreModel = getArmorModel(state, slot);// slot == EquipmentSlot.LEGS ? innerModel : outerModel;
+            //EquipmentClientInfo.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
+            model.render(coreModel, poseStack, nodeCollector, lightCoords, state, stack);
+            //this.equipmentRenderer.renderLayers(layerType, equippable.assetId().orElseThrow(), model, state, stack, poseStack, nodeCollector, lightCoords, state.outlineColor);
         }
     }
 }

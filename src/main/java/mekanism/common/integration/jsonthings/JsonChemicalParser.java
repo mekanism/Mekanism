@@ -21,7 +21,7 @@ public class JsonChemicalParser extends ThingParser<Chemical, JsonChemicalBuilde
 
     public JsonChemicalParser(IEventBus bus) {
         super(GSON, Mekanism.MODID + "/chemical");
-        bus.addListener(this::register);
+        bus.addListener(RegisterEvent.class, this::register);
     }
 
     private void register(RegisterEvent event) {

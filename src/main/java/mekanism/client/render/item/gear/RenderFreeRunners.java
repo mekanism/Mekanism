@@ -2,29 +2,25 @@ package mekanism.client.render.item.gear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.function.Consumer;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelFreeRunners;
+import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import mekanism.client.render.item.MekanismISTER;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3fc;
 
+@NothingNullByDefault
 public class RenderFreeRunners extends MekanismISTER {
 
     public static final RenderFreeRunners RENDERER = new RenderFreeRunners(false);
     public static final RenderFreeRunners ARMORED_RENDERER = new RenderFreeRunners(true);
 
-    private final boolean armored;
-    private ModelFreeRunners freeRunners;
+    private final ModelFreeRunners freeRunners;
 
     private RenderFreeRunners(boolean armored) {
-        this.armored = armored;
-    }
-
-    @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
         if (armored) {
             freeRunners = new ModelArmoredFreeRunners(getEntityModels());
         } else {
@@ -33,13 +29,29 @@ public class RenderFreeRunners extends MekanismISTER {
     }
 
     @Override
-    public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight) {
-        matrix.pushPose();
-        matrix.translate(0.5, 0.5, 0.5);
-        matrix.mulPose(Axis.ZP.rotationDegrees(180));
-        matrix.translate(0, -1, 0);
-        freeRunners.render(matrix, renderer, light, overlayLight, stack.hasFoil());
-        matrix.popPose();
+    public void submit(ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0.5, 0.5);
+        poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        poseStack.translate(0, -1, 0);
+        //TODO - 1.21.11: Do we need to pass the texture as well?
+        nodeCollector.submitModel(
+              this.freeRunners,
+              FreeRunnerRenderState.RIGHT_ONLY,
+              poseStack,
+              this.freeRunners.getRenderType(),
+              lightCoords,
+              overlayCoords,
+              outlineColor,
+              null
+        );
+        poseStack.popPose();
+    }
+
+    @Override
+    public void getExtents(Consumer<Vector3fc> output) {
+        PoseStack poseStack = new PoseStack();
+        this.freeRunners.setupAnim(FreeRunnerRenderState.BOTH);
+        this.freeRunners.root().getExtentsForGui(poseStack, output);
     }
 }

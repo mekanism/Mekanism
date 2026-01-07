@@ -7,12 +7,12 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.entity.EntityDimensions;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
-import net.minecraft.world.entity.monster.Stray;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.monster.skeleton.Stray;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -23,13 +23,13 @@ import org.jetbrains.annotations.Nullable;
 public class EntityBabyStray extends Stray {
 
     //Copy of stray spawn restrictions
-    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, MobSpawnType reason, BlockPos pos, RandomSource random) {
+    public static boolean spawnRestrictions(EntityType<EntityBabyStray> type, ServerLevelAccessor world, EntitySpawnReason reason, BlockPos pos, RandomSource random) {
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos(pos.getX(), pos.getY(), pos.getZ());
         do {
             mutable.move(Direction.UP);
         } while (world.getBlockState(mutable).is(Blocks.POWDER_SNOW));
         if (checkMonsterSpawnRules(type, world, reason, pos, random)) {
-            if (reason == MobSpawnType.SPAWNER) {
+            if (reason == EntitySpawnReason.SPAWNER) {
                 return true;
             }
             mutable.move(Direction.DOWN);

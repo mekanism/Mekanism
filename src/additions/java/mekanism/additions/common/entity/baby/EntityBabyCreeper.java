@@ -1,6 +1,8 @@
 package mekanism.additions.common.entity.baby;
 
 import mekanism.additions.common.registries.AdditionsEntityTypes;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Pose;
@@ -33,12 +35,13 @@ public class EntityBabyCreeper extends Creeper {
      */
     @Override
     protected void explodeCreeper() {
-        if (!level().isClientSide()) {
+        if (level() instanceof ServerLevel serverLevel) {
             float f = isPowered() ? 1 : 0.5F;
             dead = true;
-            level().explode(this, getX(), getY(), getZ(), explosionRadius * f, Level.ExplosionInteraction.MOB);
-            discard();
+            serverLevel.explode(this, getX(), getY(), getZ(), explosionRadius * f, Level.ExplosionInteraction.MOB);
             spawnLingeringCloud();
+            triggerOnDeathMobEffects(serverLevel, Entity.RemovalReason.KILLED);
+            discard();
         }
     }
 }

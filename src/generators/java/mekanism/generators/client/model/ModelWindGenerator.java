@@ -2,9 +2,9 @@ package mekanism.generators.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.List;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
+import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import mekanism.generators.common.MekanismGenerators;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -14,11 +14,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
 
-public class ModelWindGenerator extends MekanismJavaModel {
+public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationRenderState> {
 
     public static final ModelLayerLocation GENERATOR_LAYER = new ModelLayerLocation(MekanismGenerators.rl("wind_generator"), "main");
     private static final Identifier GENERATOR_TEXTURE = MekanismGenerators.rl("render/wind_generator.png");
@@ -109,8 +110,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
               REAR_PLATE_1, REAR_PLATE_2, BLADE_1A, BLADE_2A, BLADE_3A, BLADE_1B, BLADE_2B, BLADE_3B, POST_1A, POST_1B, POST_1C, POST_1D);
     }
 
-    private final RenderType RENDER_TYPE = renderType(GENERATOR_TEXTURE);
-    private final List<ModelPart> parts;
+    public final RenderType RENDER_TYPE = renderType(GENERATOR_TEXTURE);
     private final ModelPart blade1a;
     private final ModelPart blade1b;
     private final ModelPart blade2a;
@@ -121,10 +121,7 @@ public class ModelWindGenerator extends MekanismJavaModel {
     private final ModelPart bladeCenter;
 
     public ModelWindGenerator(EntityModelSet entityModelSet) {
-        super(RenderType::entitySolid);
-        ModelPart root = entityModelSet.bakeLayer(GENERATOR_LAYER);
-        parts = getRenderableParts(root, HEAD, PLATE_CONNECTOR_2, PLATE_CONNECTOR, PLATE, BASE_RIM, BASE, WIRE, REAR_PLATE_1, REAR_PLATE_2, POST_1A, POST_1B,
-              POST_1C, POST_1D, BLADE_1A, BLADE_2A, BLADE_3A, BLADE_1B, BLADE_2B, BLADE_3B, BLADE_CAP, BLADE_CENTER);
+        super(entityModelSet.bakeLayer(GENERATOR_LAYER), RenderTypes::entitySolid);
         blade1a = BLADE_1A.getFromRoot(root);
         blade1b = BLADE_1B.getFromRoot(root);
         blade2a = BLADE_2A.getFromRoot(root);
@@ -135,49 +132,46 @@ public class ModelWindGenerator extends MekanismJavaModel {
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
+    @Deprecated(forRemoval = true)//TODO - 1.21.11: Remove this
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, float angle, int light, int overlayLight, boolean hasEffect) {
-        float baseRotation = getAbsoluteRotation(angle);
-        setRotation(blade1a, 0F, 0F, baseRotation);
-        setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
-
-        float blade2Rotation = getAbsoluteRotation(angle - 60);
-        setRotation(blade2a, 0F, 0F, blade2Rotation);
-        setRotation(blade2b, 0F, 0F, 0.0349066F + blade2Rotation);
-
-        float blade3Rotation = getAbsoluteRotation(angle + 60);
-        setRotation(blade3a, 0F, 0F, blade3Rotation);
-        setRotation(blade3b, 0F, 0F, 0.0349066F + blade3Rotation);
-
-        setRotation(bladeCap, 0F, 0F, baseRotation);
-        setRotation(bladeCenter, 0F, 0F, baseRotation);
-
+        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState();
+        state.angle = angle;
+        setupAnim(state);
         renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
     }
 
-    @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
-        renderPartsToBuffer(parts, poseStack, vertexConsumer, light, overlayLight, color);
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float angle) {
+        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState();
+        state.angle = angle;
+        setupAnim(state);
+        renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float angle) {
-        float baseRotation = getAbsoluteRotation(angle);
-        setRotation(blade1a, 0F, 0F, baseRotation);
-        setRotation(blade1b, 0F, 0F, 0.0349066F + baseRotation);
+    @Override
+    public void setupAnim(WindGeneratorRotationRenderState state) {
+        super.setupAnim(state);
+        float baseRotation = getAbsoluteRotation(state.angle);
+        blade1a.setRotation(0F, 0F, baseRotation);
+        blade1b.setRotation(0F, 0F, 0.0349066F + baseRotation);
 
-        float blade2Rotation = getAbsoluteRotation(angle - 60);
-        setRotation(blade2a, 0F, 0F, blade2Rotation);
-        setRotation(blade2b, 0F, 0F, 0.0349066F + blade2Rotation);
+        float blade2Rotation = getAbsoluteRotation(state.angle - 60);
+        blade2a.setRotation(0F, 0F, blade2Rotation);
+        blade2b.setRotation(0F, 0F, 0.0349066F + blade2Rotation);
 
-        float blade3Rotation = getAbsoluteRotation(angle + 60);
-        setRotation(blade3a, 0F, 0F, blade3Rotation);
-        setRotation(blade3b, 0F, 0F, 0.0349066F + blade3Rotation);
+        float blade3Rotation = getAbsoluteRotation(state.angle + 60);
+        blade3a.setRotation(0F, 0F, blade3Rotation);
+        blade3b.setRotation(0F, 0F, 0.0349066F + blade3Rotation);
 
-        setRotation(bladeCap, 0F, 0F, baseRotation);
-        setRotation(bladeCenter, 0F, 0F, baseRotation);
-        renderPartsAsWireFrame(parts, matrix, vertexBuilder);
+        bladeCap.setRotation(0F, 0F, baseRotation);
+        bladeCenter.setRotation(0F, 0F, baseRotation);
     }
 
     private float getAbsoluteRotation(float angle) {
         return (angle % 360) * Mth.DEG_TO_RAD;
+    }
+
+    public static class WindGeneratorRotationRenderState {
+
+        public float angle;
     }
 }

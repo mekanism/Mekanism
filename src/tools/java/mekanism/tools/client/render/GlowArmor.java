@@ -6,6 +6,7 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class GlowArmor extends Model {
@@ -14,7 +15,7 @@ public class GlowArmor extends Model {
     private HumanoidModel<?> base;
 
     private GlowArmor() {
-        super(RenderType::entityCutoutNoCull);
+        super(RenderTypes::entityCutoutNoCull);
     }
 
     public static GlowArmor wrap(HumanoidModel<?> base) {

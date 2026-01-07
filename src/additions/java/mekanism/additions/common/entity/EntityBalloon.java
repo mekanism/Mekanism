@@ -64,8 +64,6 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     public EntityBalloon(EntityType<EntityBalloon> type, Level world) {
         super(type, world);
-
-        noCulling = true;
         blocksBuilding = true;
         setPos(getX() + 0.5F, getY() + 3F, getZ() + 0.5F);
         setDeltaMovement(getDeltaMovement().x(), 0.04, getDeltaMovement().z());
@@ -77,10 +75,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         if (balloon == null) {
             return null;
         }
-        balloon.setPos(x + 0.5F, y + 3F, z + 0.5F);
-        balloon.xo = balloon.getX();
-        balloon.yo = balloon.getY();
-        balloon.zo = balloon.getZ();
+        balloon.absSnapTo(x + 0.5F, y + 3F, z + 0.5F);
         balloon.color = c;
         return balloon;
     }
@@ -93,11 +88,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         }
         balloon.latchedEntity = entity;
         float height = balloon.latchedEntity.getBbHeight();
-        balloon.setPos(balloon.latchedEntity.getX(), balloon.latchedEntity.getY() + height + 1.7F, balloon.latchedEntity.getZ());
-
-        balloon.xo = balloon.getX();
-        balloon.yo = balloon.getY();
-        balloon.zo = balloon.getZ();
+        balloon.absSnapTo(balloon.latchedEntity.getX(), balloon.latchedEntity.getY() + height + 1.7F, balloon.latchedEntity.getZ());
 
         balloon.color = c;
         balloon.entityData.set(IS_LATCHED, (byte) 2);
@@ -112,11 +103,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
             return null;
         }
         balloon.latched = pos;
-        balloon.setPos(balloon.latched.getX() + 0.5F, balloon.latched.getY() + 1.8F, balloon.latched.getZ() + 0.5F);
-
-        balloon.xo = balloon.getX();
-        balloon.yo = balloon.getY();
-        balloon.zo = balloon.getZ();
+        balloon.absSnapTo(balloon.latched.getX() + 0.5F, balloon.latched.getY() + 1.8F, balloon.latched.getZ() + 0.5F);
 
         balloon.color = c;
         balloon.entityData.set(IS_LATCHED, (byte) 1);
@@ -224,11 +211,11 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
                     // Note: We allow for a smaller level of precision than when comparing to if it is above the height
                     // so that we can ensure entities move to above the position for purposes of pushing them over blocks
                     latchedEntity.setDeltaMovement(motion.x(), Math.max(0.04, motion.y() * 1.015), motion.z());
-                    latchedEntity.hasImpulse = true;
+                    latchedEntity.needsSync = true;
                 } else if (latchedEntity.getY() - 0.1 > targetElevation) {
                     //The entity is above the target height, apply negative vertical motion to it
                     latchedEntity.setDeltaMovement(motion.x(), Math.min(-0.04, motion.y() * 1.015), motion.z());
-                    latchedEntity.hasImpulse = true;
+                    latchedEntity.needsSync = true;
                 } else {//The entity is at the target elevation, remove any vertical motion
                     latchedEntity.setDeltaMovement(motion.x(), 0, motion.z());
                 }
@@ -366,7 +353,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     public void remove(@NotNull RemovalReason reason) {
         super.remove(reason);
         if (latchedEntity != null) {
-            latchedEntity.hasImpulse = false;
+            latchedEntity.needsSync = false;
         }
     }
 
@@ -410,8 +397,8 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @NotNull
     @Override
-    protected AABB makeBoundingBox() {
-        AABB boundingBox = super.makeBoundingBox();
+    protected AABB makeBoundingBox(@NotNull Vec3 position) {
+        AABB boundingBox = super.makeBoundingBox(position);
         return boundingBox.setMinY(boundingBox.minY - OFFSET)
               .setMaxY(boundingBox.maxY - OFFSET);
     }
@@ -422,7 +409,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     }
 
     @Override
-    public ItemStack getPickedResult(HitResult target) {
+    public ItemStack getPickResult() {
         return AdditionsItems.BALLOONS.get(color).asStack();
     }
 }

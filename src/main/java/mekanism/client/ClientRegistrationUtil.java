@@ -5,7 +5,6 @@ import java.lang.ref.WeakReference;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -30,6 +29,7 @@ import net.minecraft.client.gui.screens.inventory.MenuAccess;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.fog.FogRenderer;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
@@ -92,25 +92,25 @@ public class ClientRegistrationUtil {
     }
 
     @SafeVarargs
-    public static <T extends BlockEntity> void bindTileEntityRenderer(EntityRenderersEvent.RegisterRenderers event, BlockEntityRendererProvider<T> rendererProvider,
-          TileEntityTypeRegistryObject<? extends T>... tileEntityTypeROs) {
+    public static <T extends BlockEntity, S extends BlockEntityRenderState> void bindTileEntityRenderer(EntityRenderersEvent.RegisterRenderers event,
+          BlockEntityRendererProvider<T, S> rendererProvider, TileEntityTypeRegistryObject<? extends T>... tileEntityTypeROs) {
         if (tileEntityTypeROs.length == 0) {
             throw new IllegalArgumentException("No renderers provided.");
         } else if (tileEntityTypeROs.length == 1) {
             event.registerBlockEntityRenderer(tileEntityTypeROs[0].get(), rendererProvider);
         } else {
-            BlockEntityRendererProvider<T> provider = new BlockEntityRendererProvider<>() {
+            BlockEntityRendererProvider<T, S> provider = new BlockEntityRendererProvider<>() {
                 @Nullable
                 private WeakReference<Context> cachedContext;
                 @Nullable
-                private WeakReference<BlockEntityRenderer<T>> cachedRenderer;
+                private WeakReference<BlockEntityRenderer<T, S>> cachedRenderer;
 
                 @NotNull
                 @Override
-                public BlockEntityRenderer<T> create(@NotNull Context context) {
+                public BlockEntityRenderer<T, S> create(@NotNull Context context) {
                     //If there is a cached context and renderer make use of it, otherwise create one and cache it
                     // this allows us to reduce the number of renderer classes we create
-                    BlockEntityRenderer<T> renderer = cachedRenderer == null ? null : cachedRenderer.get();
+                    BlockEntityRenderer<T, S> renderer = cachedRenderer == null ? null : cachedRenderer.get();
                     if (cachedContext == null || cachedContext.get() != context || renderer == null) {
                         renderer = rendererProvider.create(context);
                         cachedContext = new WeakReference<>(context);
@@ -236,7 +236,7 @@ public class ClientRegistrationUtil {
                     @Override
                     public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,
                           @NotNull Vector3f fluidFogColor) {
-                        return new Vector3f(MekanismRenderer.getRed(getTintColor()), MekanismRenderer.getGreen(getTintColor()), MekanismRenderer.getBlue(getTintColor()));
+                        return new Vector3f(ARGB.redFloat(getTintColor()), ARGB.greenFloat(getTintColor()), ARGB.blueFloat(getTintColor()));
                     }
 
                     @Override

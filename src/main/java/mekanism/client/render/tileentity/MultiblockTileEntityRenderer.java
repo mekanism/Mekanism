@@ -1,32 +1,24 @@
 package mekanism.client.render.tileentity;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 
 @NothingNullByDefault
-public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends MultiblockData, TILE extends TileEntityMultiblock<MULTIBLOCK>> extends MekanismTileEntityRenderer<TILE> {
+public abstract class MultiblockTileEntityRenderer<MULTIBLOCK extends MultiblockData, TILE extends TileEntityMultiblock<MULTIBLOCK>, STATE extends BlockEntityRenderState>
+      extends MekanismTileEntityRenderer<TILE, STATE> {
 
     protected MultiblockTileEntityRenderer(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
     @Override
-    protected final void render(TILE tile, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler) {
-        render(tile, tile.getMultiblock(), partialTick, matrix, renderer, light, overlayLight, profiler);
-    }
-
-    protected abstract void render(TILE tile, MULTIBLOCK multiblock, float partialTick, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight, ProfilerFiller profiler);
-
-    @Override
-    public final boolean shouldRenderOffScreen(TILE tile) {
+    public final boolean shouldRenderOffScreen() {
         return true;
     }
 

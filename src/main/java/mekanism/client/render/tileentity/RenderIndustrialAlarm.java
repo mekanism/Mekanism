@@ -1,88 +1,126 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelIndustrialAlarm;
-import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.RenderTickHandler.LazyRender;
+import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
+import mekanism.client.render.tileentity.RenderIndustrialAlarm.AlarmRenderState;
+import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityIndustrialAlarm;
-import net.minecraft.client.Camera;
+import net.minecraft.client.model.geom.ModelLayerLocation;
+import net.minecraft.client.model.geom.ModelPart;
+import net.minecraft.client.model.geom.PartPose;
+import net.minecraft.client.model.geom.builders.CubeDeformation;
+import net.minecraft.client.model.geom.builders.CubeListBuilder;
+import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.model.geom.builders.MeshDefinition;
+import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.util.profiling.ProfilerFiller;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityIndustrialAlarm, ModelIndustrialAlarm> {
+public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntityIndustrialAlarm, AlarmRenderState> {
 
+    public static final ModelLayerLocation LIGHT_BOX_LAYER = new ModelLayerLocation(Mekanism.rl("industrial_alarm/light_box"), "main");
     private static final float ROTATE_SPEED = 10F;
 
+    public static LayerDefinition createLightBoxLayer() {
+        MeshDefinition mesh = new MeshDefinition();
+        PartDefinition root = mesh.getRoot();
+        root.addOrReplaceChild("light_box",
+              CubeListBuilder.create().addBox(-2F, 1F, -2F, 4, 4, 4, new CubeDeformation(0.01F)),
+              PartPose.ZERO
+        );
+        return LayerDefinition.create(mesh, 64, 64);
+    }
+
+    private final ModelIndustrialAlarm model;
+    private final ModelPart lightBox;
+
     public RenderIndustrialAlarm(BlockEntityRendererProvider.Context context) {
-        super(context, ModelIndustrialAlarm::new);
+        super(context);
+        this.model = new ModelIndustrialAlarm(context.entityModelSet());
+        this.lightBox = context.bakeLayer(LIGHT_BOX_LAYER);
     }
 
     @Override
-    protected void render(TileEntityIndustrialAlarm tile, float partialTicks, PoseStack matrix, MultiBufferSource renderer, int light, int overlayLight,
-          ProfilerFiller profiler) {
-        RenderTickHandler.addTransparentRenderer(new LazyRender() {
-            @Override
-            public void render(Camera camera, VertexConsumer buffer, PoseStack poseStack, int renderTick, float partialTick, ProfilerFiller profiler) {
-                float rot = (renderTick + partialTick) * ROTATE_SPEED % 360;
-                Vec3 renderPos = Vec3.atBottomCenterOf(tile.getBlockPos());
-                poseStack.pushPose();
-                Vec3 offset = renderPos.subtract(camera.position());
-                poseStack.translate(offset.x, offset.y, offset.z);
-                switch (tile.getDirection()) {
-                    case DOWN -> {
-                        poseStack.translate(0, 1, 0);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(180));
-                    }
-                    case NORTH -> {
-                        poseStack.translate(0, 0.5, 0.5);
-                        poseStack.mulPose(Axis.XN.rotationDegrees(90));
-                    }
-                    case SOUTH -> {
-                        poseStack.translate(0, 0.5, -0.5);
-                        poseStack.mulPose(Axis.XP.rotationDegrees(90));
-                    }
-                    case EAST -> {
-                        poseStack.translate(-0.5, 0.5, 0);
-                        poseStack.mulPose(Axis.ZN.rotationDegrees(90));
-                    }
-                    case WEST -> {
-                        poseStack.translate(0.5, 0.5, 0);
-                        poseStack.mulPose(Axis.ZP.rotationDegrees(90));
-                    }
-                }
-                model.render(poseStack, buffer, LightTexture.FULL_BRIGHT, overlayLight, 0xFFFFFFFF, rot);
-                poseStack.popPose();
-            }
+    public AlarmRenderState createRenderState() {
+        return new AlarmRenderState();
+    }
 
-            @Override
-            @NotNull
-            public Vec3 getCenterPos(float partialTick) {
-                //Centered position, does not need to be cached as it is only called once
-                return tile.getBlockPos().getCenter();
-            }
+    @Override
+    public void extractRenderState(TileEntityIndustrialAlarm alarm, AlarmRenderState state, float partialTick, Vec3 cameraPosition,
+          @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
+        super.extractRenderState(alarm, state, partialTick, cameraPosition, breakProgress);
+        state.direction = alarm.getDirection();
+        //TODO - 1.21.11: Do we want to use game time as a basis or some other value?
+        state.modelState.setRotation((alarm.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360);
+    }
 
-            @Override
-            @NotNull
-            public String getProfilerSection() {
-                return ProfilerConstants.INDUSTRIAL_ALARM;
+    @Override
+    public void submit(AlarmRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        if (state.direction == null) {
+            return;
+        }
+        poseStack.pushPose();
+        poseStack.translate(0.5, 0, 0.5);
+        switch (state.direction) {
+            case DOWN -> {
+                poseStack.translate(0, 1, 0);
+                poseStack.mulPose(Axis.XP.rotationDegrees(180));
             }
-
-            @Override
-            @NotNull
-            public RenderType getRenderType() {
-                return model.getRenderType();
+            case NORTH -> {
+                poseStack.translate(0, 0.5, 0.5);
+                poseStack.mulPose(Axis.XN.rotationDegrees(90));
             }
-        });
+            case SOUTH -> {
+                poseStack.translate(0, 0.5, -0.5);
+                poseStack.mulPose(Axis.XP.rotationDegrees(90));
+            }
+            case EAST -> {
+                poseStack.translate(-0.5, 0.5, 0);
+                poseStack.mulPose(Axis.ZN.rotationDegrees(90));
+            }
+            case WEST -> {
+                poseStack.translate(0.5, 0.5, 0);
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+            }
+        }
+        //TODO - 1.21.11: Validate this render type and that the texture is accessible
+        RenderType renderType = this.model.getRenderType();
+        nodeCollector.submitModel(
+              this.model,
+              state.modelState,
+              poseStack,
+              renderType,
+              //TODO - 1.21.11: Why isn't this (and the model part below) using state.lightCoords for the light
+              LightTexture.FULL_BRIGHT,
+              OverlayTexture.NO_OVERLAY,
+              state.modelState.getTint(),
+              null,//TODO - 1.21.11: Do we need to specify the texture again
+              0,//No outline
+              state.breakProgress//TODO - 1.21.11: I am guessing one of these things we don't want the break overlay to go on, which is it
+        );
+        nodeCollector.submitModelPart(
+              this.lightBox,
+              poseStack,
+              renderType,
+              LightTexture.FULL_BRIGHT,
+              OverlayTexture.NO_OVERLAY,
+              null//TODO - 1.21.11: Texture?
+        );
+        poseStack.popPose();
     }
 
     @Override
@@ -93,5 +131,12 @@ public class RenderIndustrialAlarm extends ModelTileEntityRenderer<TileEntityInd
     @Override
     public boolean shouldRender(TileEntityIndustrialAlarm tile, Vec3 camera) {
         return tile.getActive() && super.shouldRender(tile, camera);
+    }
+
+    public static class AlarmRenderState extends BlockEntityRenderState {
+
+        @Nullable
+        public Direction direction;
+        public IndustrialAlarmRenderState modelState = new IndustrialAlarmRenderState();
     }
 }

@@ -14,6 +14,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
+import net.minecraft.util.ARGB;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
@@ -46,7 +47,8 @@ public class Quad {
         shade = quad.shade();
         hasAmbientOcclusion = quad.hasAmbientOcclusion();
         BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
-        unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY, true);
+        //TODO - 1.21.11: Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
+        unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY);
         vertices = unpacker.getVertices();
     }
 
@@ -165,7 +167,12 @@ public class Quad {
 
         @Override
         public VertexConsumer setColor(int red, int green, int blue, int alpha) {
-            vertices[vertexIndex].color(red, green, blue, alpha);
+            return setColor(ARGB.color(alpha, red, green, blue));
+        }
+
+        @Override
+        public VertexConsumer setColor(int color) {
+            vertices[vertexIndex].color(color);
             return this;
         }
 
@@ -190,6 +197,12 @@ public class Quad {
         @Override
         public VertexConsumer setNormal(float x, float y, float z) {
             vertices[vertexIndex].normal(x, y, z);
+            return this;
+        }
+
+        @Override
+        public VertexConsumer setLineWidth(float width) {
+            //TODO - 1.21.11: Do we need to be implementing this? I doubt it actually gets called for the usage, but we need to make sure
             return this;
         }
 

@@ -83,7 +83,8 @@ public class GuiUtils {
         //Slightly modified copy of Gui#drawBackdrop so that we can support it in places that can't directly call it
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
-            int argb = 0xFFFFFF | alpha << 24;
+            int argb = ARGB.white(alpha);
+            //TODO - 1.21.11: Can we merge the multiply and argb calls into one?
             guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
     }
