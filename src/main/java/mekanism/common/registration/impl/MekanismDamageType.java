@@ -50,12 +50,12 @@ public record MekanismDamageType(ResourceKey<DamageType> key, float exhaustion, 
         return new DamageSource(holder(registryAccess), position);
     }
 
-    public DamageSource source(Level level, @Nullable Entity directEntity, @Nullable Entity causingEntity) {
+    public DamageSource source(RegistryAccess registryAccess @Nullable Entity directEntity, @Nullable Entity causingEntity) {
         if (directEntity instanceof Player player && player.getMainHandItem().is(Items.MACE)) {
             // Return null or throw, so the weapon code falls back to vanilla
             return null;
         }
-        return new DamageSource(holder(level.registryAccess()), directEntity, causingEntity);
+        return new DamageSource(holder(registryAccess), directEntity, causingEntity);
     }
 
     private Holder<DamageType> holder(RegistryAccess registryAccess) {
