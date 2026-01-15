@@ -1,8 +1,10 @@
 package mekanism.common.multiblock;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
@@ -573,54 +575,52 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	public class NodeCounter
 	{
 		public Set<Coord4D> iterated = new HashSet<Coord4D>();
-		
+
 		public NodeChecker checker;
 		
 		public NodeCounter(NodeChecker c)
 		{
 			checker = c;
 		}
-		
-		public void loop(Coord4D pos)
-		{
-			iterated.add(pos);
-			
-			if(!checker.shouldContinue(iterated.size()))
-			{
-				return;
-			}
-			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Coord4D coord = pos.getFromSide(side);
-				
-				if(!iterated.contains(coord) && checker.isValid(coord))
-				{
-					loop(coord);
-				}
-			}
-		}
-		
-		public int calculate(Coord4D coord)
-		{
-			if(!checker.isValid(coord))
-			{
+
+		public int calculate(Coord4D startCoord) {
+			if (!checker.isValid(startCoord)) {
 				return 0;
 			}
-			
-			loop(coord);
-			
+
+			Queue<Coord4D> queue = new ArrayDeque<>();
+
+			iterated.add(startCoord);
+			queue.add(startCoord);
+
+			while (!queue.isEmpty()) {
+				Coord4D pos = queue.poll();
+				if (!checker.shouldContinue(iterated.size())) {
+					break;
+				}
+
+				for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
+					Coord4D next = pos.getFromSide(side);
+
+					if (checker.isValid(next) && iterated.add(next)) {
+						queue.add(next);
+					}
+				}
+			}
+
 			return iterated.size();
 		}
+
 	}
-	
+
 	public static abstract class NodeChecker
 	{
 		public abstract boolean isValid(final Coord4D coord);
-		
+
 		public boolean shouldContinue(int iterated)
 		{
-			return true;
+			// Should prevent freezes if this ever gets out of hand. The largest structure requires ~3.6k iterations
+			return iterated < 5000;
 		}
 	}
 }
