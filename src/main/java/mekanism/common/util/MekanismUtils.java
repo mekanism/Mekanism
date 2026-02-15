@@ -174,6 +174,8 @@ public final class MekanismUtils
 			URL url = new URL(urlToRead);
 			HttpURLConnection conn = (HttpURLConnection)url.openConnection();
 			conn.setRequestMethod("GET");
+			conn.setConnectTimeout(800); 
+            conn.setReadTimeout(800); 
 			BufferedReader rd = new BufferedReader(new InputStreamReader(conn.getInputStream()));
 
 			while((line = rd.readLine()) != null)
