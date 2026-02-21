@@ -1490,7 +1490,8 @@ public class Mekanism
 		logger.info("Version " + versionNumber + " initializing...");
 
 		//Get data from server
-		new ThreadGetData();
+		if (general.updateNotifications)
+			new ThreadGetData();
 
 		//Register with ForgeChunkManager
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());

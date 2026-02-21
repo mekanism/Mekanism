@@ -1,15 +1,16 @@
 package mekanism.common.multiblock;
 
+import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import mekanism.api.Coord4D;
 import mekanism.common.tile.TileEntityMultiblock;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
 public abstract class UpdateProtocol<T extends SynchronizedData<T>>
@@ -31,14 +32,44 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	}
 
 	/**
-	 * Recursively loops through each node connected to the given TileEntity.
+	 * Recursively scans through each node connected to the given TileEntity.
+	 * @param start - the TileEntity to loop over
+	 */
+	public void scanThrough(TileEntity start)
+	{
+		Queue<TileEntity> queue = new ArrayDeque<>();
+
+		queue.add(start);
+		iteratedNodes.add(start);
+
+		while (!queue.isEmpty())
+		{
+			TileEntity tile = queue.poll();
+
+			updateNode(tile);
+
+			for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
+			{
+				Coord4D coord = Coord4D.get(tile).getFromSide(side);
+				TileEntity neighbor = coord.getTileEntity(tile.getWorldObj());
+
+				if (neighbor != null &&
+						isViableNode(coord.xCoord, coord.yCoord, coord.zCoord) &&
+						iteratedNodes.add(neighbor))
+				{
+					queue.add(neighbor);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Updates each node connected to the given TileEntity.
 	 * @param tile - the TileEntity to loop over
 	 */
-	public void loopThrough(TileEntity tile)
+	public void updateNode(TileEntity tile)
 	{
-		World worldObj = tile.getWorldObj();
-
-		int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
+        int origX = tile.xCoord, origY = tile.yCoord, origZ = tile.zCoord;
 
 		boolean isCorner = true;
 		boolean isHollow = true;
@@ -212,27 +243,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 			}
 		}
 
-		innerNodes.clear();		
-		iteratedNodes.add(tile);
-		
-		if(iteratedNodes.size() > 2048)
-		{
-			return;
-		}
-
-		for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-		{
-			Coord4D coord = Coord4D.get(tile).getFromSide(side);
-			TileEntity tileEntity = coord.getTileEntity(tile.getWorldObj());
-
-			if(isViableNode(coord.xCoord, coord.yCoord, coord.zCoord))
-			{
-				if(tileEntity != null && !iteratedNodes.contains(tileEntity))
-				{
-					loopThrough(tileEntity);
-				}
-			}
-		}
+		innerNodes.clear();
 	}
 	
 	protected boolean canForm(T structure)
@@ -436,7 +447,7 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	 */
 	public void doUpdate()
 	{
-		loopThrough(pointer);
+		scanThrough(pointer);
 
 		if(structureFound != null)
 		{
@@ -573,54 +584,52 @@ public abstract class UpdateProtocol<T extends SynchronizedData<T>>
 	public class NodeCounter
 	{
 		public Set<Coord4D> iterated = new HashSet<Coord4D>();
-		
+
 		public NodeChecker checker;
 		
 		public NodeCounter(NodeChecker c)
 		{
 			checker = c;
 		}
-		
-		public void loop(Coord4D pos)
-		{
-			iterated.add(pos);
-			
-			if(!checker.shouldContinue(iterated.size()))
-			{
-				return;
-			}
-			
-			for(ForgeDirection side : ForgeDirection.VALID_DIRECTIONS)
-			{
-				Coord4D coord = pos.getFromSide(side);
-				
-				if(!iterated.contains(coord) && checker.isValid(coord))
-				{
-					loop(coord);
-				}
-			}
-		}
-		
-		public int calculate(Coord4D coord)
-		{
-			if(!checker.isValid(coord))
-			{
+
+		public int calculate(Coord4D startCoord) {
+			if (!checker.isValid(startCoord)) {
 				return 0;
 			}
-			
-			loop(coord);
-			
+
+			Queue<Coord4D> queue = new ArrayDeque<>();
+
+			iterated.add(startCoord);
+			queue.add(startCoord);
+
+			while (!queue.isEmpty()) {
+				Coord4D pos = queue.poll();
+				if (!checker.shouldContinue(iterated.size())) {
+					break;
+				}
+
+				for (ForgeDirection side : ForgeDirection.VALID_DIRECTIONS) {
+					Coord4D next = pos.getFromSide(side);
+
+					if (checker.isValid(next) && iterated.add(next)) {
+						queue.add(next);
+					}
+				}
+			}
+
 			return iterated.size();
 		}
+
 	}
-	
+
 	public static abstract class NodeChecker
 	{
 		public abstract boolean isValid(final Coord4D coord);
-		
+
 		public boolean shouldContinue(int iterated)
 		{
-			return true;
+			// Should prevent freezes if this ever gets out of hand. The largest structure requires ~3.6k iterations
+			return iterated < 5000;
 		}
 	}
 }
