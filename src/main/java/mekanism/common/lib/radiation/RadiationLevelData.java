@@ -21,7 +21,7 @@ public class RadiationLevelData implements INBTSerializable<ListTag> {
     private static final IntSupplier MAX_BLOCK_RANGE = new ConfigBasedCachedIntSupplier(() -> {
         int chunkRadius = MekanismConfig.general.radiationChunkCheckRadius.get();
         // we only compute exposure when within the MAX_RANGE bounds
-        return Mth.square(chunkRadius * 16);
+        return chunkRadius * 16;
     }, MekanismConfig.general.radiationChunkCheckRadius);
 
     private final IndexedCuboidMap<RadiationSource> sources = new IndexedCuboidMap<>();
