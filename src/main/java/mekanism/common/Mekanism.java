@@ -1489,10 +1489,6 @@ public class Mekanism
 		//Initialization notification
 		logger.info("Version " + versionNumber + " initializing...");
 
-		//Get data from server
-		if (general.updateNotifications)
-			new ThreadGetData();
-
 		//Register with ForgeChunkManager
 		ForgeChunkManager.setForcedChunkLoadingCallback(this, new ChunkManager());
 

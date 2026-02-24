@@ -49,9 +49,7 @@ public class CommandMekanism extends CommandBase
 		{
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Version: " + EnumColor.DARK_GREY + Mekanism.versionNumber));
-			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Latest Version: " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Code, textures, and ideas by aidancbrady"));
-			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + " *Recent News: " + EnumColor.INDIGO + Mekanism.recentNews));
 			sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 		}
 		else if(params.length >= 1)
@@ -80,27 +78,6 @@ public class CommandMekanism extends CommandBase
 					sender.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " /mk teleporter freq deleteAll [user]" + EnumColor.GREY + " -- removes all frequencies owned by a certain user."));
 					sender.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
 				}
-			}
-			else if(params[0].equalsIgnoreCase("version"))
-			{
-				if(!MekanismUtils.checkForUpdates((EntityPlayer)sender))
-				{
-					if(general.updateNotifications || Mekanism.latestVersionNumber == null || Mekanism.recentNews == null || Mekanism.latestVersionNumber.equals("null"))
-					{
-						sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Minecraft is in offline mode, could not check for updates."));
-					}
-					else {
-						sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Your client is up to date."));
-					}
-				}
-			}
-			else if(params[0].equalsIgnoreCase("news"))
-			{
-				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " Most recent news: " + EnumColor.INDIGO + Mekanism.recentNews));
-			}
-			else if(params[0].equalsIgnoreCase("latest"))
-			{
-				sender.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " The latest version for mekanism is " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber + EnumColor.GREY + "."));
 			}
 			else if(params[0].equalsIgnoreCase("teleporter"))
 			{

@@ -103,62 +103,6 @@ public final class MekanismUtils
 
 	public static final Map<String, Class<?>> classesFound = new HashMap<String, Class<?>>();
 
-	/**
-	 * Checks for a new version of Mekanism.
-	 */
-	public static boolean checkForUpdates(EntityPlayer entityplayer)
-	{
-		try {
-			if(general.updateNotifications && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
-			{
-				if(!Mekanism.latestVersionNumber.equals("null"))
-				{
-					ArrayList<IModule> list = new ArrayList<IModule>();
-
-					for(IModule module : Mekanism.modulesLoaded)
-					{
-						if(Version.get(Mekanism.latestVersionNumber).comparedState(module.getVersion()) == 1)
-						{
-							list.add(module);
-						}
-					}
-
-					if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1 || !list.isEmpty())
-					{
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[Mekanism]" + EnumColor.GREY + " -------------"));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.outdated") + "."));
-
-						if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == 1)
-						{
-							entityplayer.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " Mekanism: " + EnumColor.DARK_RED + Mekanism.versionNumber));
-						}
-
-						for(IModule module : list)
-						{
-							entityplayer.addChatMessage(new ChatComponentText(EnumColor.INDIGO + " Mekanism" + module.getName() + ": " + EnumColor.DARK_RED + module.getVersion()));
-						}
-
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.consider") + " " + EnumColor.DARK_GREY + Mekanism.latestVersionNumber));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.newFeatures") + ": " + EnumColor.INDIGO + Mekanism.recentNews));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + " " + LangUtils.localize("update.visit") + " " + EnumColor.DARK_GREY + "https://thorfusion.com" + EnumColor.GREY + " " + LangUtils.localize("update.toDownload") + "."));
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.GREY + "------------- " + EnumColor.DARK_BLUE + "[=======]" + EnumColor.GREY + " -------------"));
-						return true;
-					}
-					else if(Version.get(Mekanism.latestVersionNumber).comparedState(Mekanism.versionNumber) == -1)
-					{
-						entityplayer.addChatMessage(new ChatComponentText(EnumColor.DARK_BLUE + "[Mekanism] " + EnumColor.GREY + LangUtils.localize("update.devBuild") + " " + EnumColor.DARK_GREY + Mekanism.versionNumber));
-						return true;
-					}
-				}
-				else {
-					Mekanism.logger.info("Minecraft is in offline mode, could not check for updates.");
-				}
-			}
-		} catch(Exception e) {}
-
-		return false;
-	}
-
 
 	/**
 	 * Returns one line of HTML from the url.
@@ -203,33 +147,6 @@ public final class MekanismUtils
 		}
 
 		return builder.toString();
-	}
-
-	/**
-	 * Checks if the mod doesn't need an update.
-	 * @return if mod doesn't need an update
-	 */
-	public static boolean noUpdates()
-	{
-		if(Mekanism.latestVersionNumber.contains("null"))
-		{
-			return true;
-		}
-
-		if(Mekanism.versionNumber.comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-		{
-			return false;
-		}
-
-		for(IModule module : Mekanism.modulesLoaded)
-		{
-			if(module.getVersion().comparedState(Version.get(Mekanism.latestVersionNumber)) == -1)
-			{
-				return false;
-			}
-		}
-
-		return true;
 	}
 
 	/**

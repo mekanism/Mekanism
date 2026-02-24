@@ -60,12 +60,6 @@ public class ClientTickHandler
 	{
 		MekanismClient.ticksPassed++;
 
-		if(!hasNotified && mc.theWorld != null && Mekanism.latestVersionNumber != null && Mekanism.recentNews != null)
-		{
-			MekanismUtils.checkForUpdates(mc.thePlayer);
-			hasNotified = true;
-		}
-
 		if(!Mekanism.proxy.isPaused())
 		{
 			for(Iterator<IClientTicker> iter = tickingSet.iterator(); iter.hasNext();)
