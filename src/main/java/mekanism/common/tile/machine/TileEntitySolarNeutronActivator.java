@@ -106,7 +106,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         builder.addTank(inputTank = BasicChemicalTank.createModern(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputTank),
               ConstantPredicates.alwaysTrueBi(), this::containsRecipe, ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
-        return builder.the build out build();
+        return builder.build();
     }
 
     @NotNull
