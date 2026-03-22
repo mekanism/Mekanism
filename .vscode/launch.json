@@ -1,0 +1,159 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Client",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 0
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\clientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\clientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dadditions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\client",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "ClientAlt",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 1
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\clientAltRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\clientAltRunVmArgs.txt",
+        "-Dfml.modFolders\u003dadditions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\clientAlt",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Data",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 2
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\dataRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\dataRunVmArgs.txt",
+        "-Dfml.modFolders\u003dgeneratorsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;generatorsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\datagenGenerators;mekanismData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanismData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;mekanismData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\datagenMain;additionsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;additionsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\datagenAdditions;toolsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools;toolsData%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\datagenTools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\data",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "DataGameTest",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 3
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\dataGameTestRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\dataGameTestRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmekanismtests%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\gameTest;additions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\gameTestServer",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestClient",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 4
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\gameTestClientRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\gameTestClientRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmekanismtests%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\gameTest;additions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\client",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "GameTestServer",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 5
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\gameTestServerRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\gameTestServerRunVmArgs.txt",
+        "-Dfml.modFolders\u003dmekanismtests%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\gameTest;additions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\gameTestServer",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    },
+    {
+      "type": "java",
+      "request": "launch",
+      "name": "Server",
+      "presentation": {
+        "group": "Mod Development - Mekanism",
+        "order": 6
+      },
+      "projectName": "Mekanism",
+      "mainClass": "net.neoforged.devlaunch.Main",
+      "args": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\serverRunProgramArgs.txt"
+      ],
+      "vmArgs": [
+        "@C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\build\\moddev\\serverRunVmArgs.txt",
+        "-Dfml.modFolders\u003dadditions%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\additions;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\api;mekanism%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\main;generators%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\generators;tools%%C:\\Users\\otrower\\Documents\\Coding\\Mekanism\\bin\\tools"
+      ],
+      "cwd": "${workspaceFolder}\\runs\\server",
+      "env": {},
+      "console": "internalConsole",
+      "shortenCommandLine": "none"
+    }
+  ]
+}
