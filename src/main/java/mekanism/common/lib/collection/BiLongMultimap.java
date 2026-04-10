@@ -120,4 +120,8 @@ public class BiLongMultimap<V> {
     public boolean isEmpty() {
         return map.isEmpty() && reverseMap.isEmpty();
     }
+
+    public boolean containsKey(long key) {
+        return map.containsKey(key);
+    }
 }

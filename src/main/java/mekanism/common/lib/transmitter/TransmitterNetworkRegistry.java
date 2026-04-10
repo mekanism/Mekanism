@@ -1,25 +1,23 @@
 package mekanism.common.lib.transmitter;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Multimap;
+import it.unimi.dsi.fastutil.longs.Long2BooleanMap;
+import it.unimi.dsi.fastutil.longs.Long2BooleanMaps;
+import it.unimi.dsi.fastutil.longs.Long2BooleanRBTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMaps;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Deque;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Chunk3D;
 import mekanism.api.MekanismAPI;
 import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.Transmitter;
+import mekanism.common.lib.collection.LongMultimap;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
@@ -27,7 +25,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ChunkMap;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -35,12 +35,12 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.level.ChunkTicketLevelUpdatedEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class TransmitterNetworkRegistry {
 
-    private static final Multimap<Chunk3D, Transmitter<?, ?, ?>> transmitters = HashMultimap.create();
-    private static Object2BooleanMap<Chunk3D> changedTicketChunks = new Object2BooleanOpenHashMap<>();
+    private static final Map<ResourceKey<Level>, DimData> dimensionStore = new HashMap<>();
     private static final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private static final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
     private static Map<GlobalPos, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
@@ -71,16 +71,27 @@ public class TransmitterNetworkRegistry {
         networksToChange.clear();
         invalidTransmitters.clear();
         newOrphanTransmitters.clear();
-        transmitters.clear();
-        changedTicketChunks.clear();
+        dimensionStore.clear();
+    }
+
+    private static DimData dimData(ResourceKey<Level> dimension) {
+        return dimensionStore.computeIfAbsent(dimension, _ -> new DimData());
+    }
+
+    @Nullable
+    private static DimData dimDataOrNull(ResourceKey<Level> dimension) {
+        return dimensionStore.get(dimension);
     }
 
     public static void trackTransmitter(Transmitter<?, ?, ?> transmitter) {
-        transmitters.put(transmitter.getTileChunk(), transmitter);
+        dimData(transmitter.getDimension()).trackTransmitter(transmitter);
     }
 
     public static void untrackTransmitter(Transmitter<?, ?, ?> transmitter) {
-        transmitters.remove(transmitter.getTileChunk(), transmitter);
+        DimData dimData = dimDataOrNull(transmitter.getDimension());
+        if (dimData != null) {
+            dimData.untrackTransmitter(transmitter);
+        }
     }
 
     public static void invalidateTransmitter(Transmitter<?, ?, ?> transmitter) {
@@ -147,42 +158,15 @@ public class TransmitterNetworkRegistry {
             //Load type stayed the same, just exit
             return;
         }
-        Chunk3D chunk = new Chunk3D(event.getLevel().dimension(), event.getChunkPos());
-        if (transmitters.containsKey(chunk)) {
-            //Only track it if we have any transmitters in that chunk
-            if (changedTicketChunks.getOrDefault(chunk, loaded) != loaded) {
-                //If we are watching the chunk and the loaded state isn't what we already had it as,
-                // then remove it as it didn't actually change. In theory in all cases this is equivalent
-                // to just checking if changeTicketChunks contains chunk, but is slightly more accurate
-                // in case for some reason we get two load or unload notifications in a row
-                changedTicketChunks.removeBoolean(chunk);
-            } else {
-                // Otherwise, make sure the map is aware of the change
-                changedTicketChunks.put(chunk, loaded);
-            }
+        ResourceKey<Level> dimension = event.getLevel().dimension();
+        DimData dimData = dimDataOrNull(dimension);
+        if (dimData != null) {
+            dimData.onTicketLevelChange(event.getChunkPos(), loaded);
         }
     }
 
     private static void handleChangedChunks() {
-        if (!changedTicketChunks.isEmpty()) {
-            Object2BooleanMap<Chunk3D> changed = changedTicketChunks;
-            changedTicketChunks = new Object2BooleanOpenHashMap<>();
-            if (MekanismAPI.debug) {
-                Mekanism.logger.info("Dealing with {} changed chunks", changed.size());
-            }
-            for (ObjectIterator<Object2BooleanMap.Entry<Chunk3D>> iterator = Object2BooleanMaps.fastIterator(changed); iterator.hasNext(); ) {
-                Object2BooleanMap.Entry<Chunk3D> entry = iterator.next();
-                Chunk3D chunk = entry.getKey();
-                boolean loaded = entry.getBooleanValue();
-                Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);
-                for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
-                    transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);
-                }
-                if (MekanismAPI.debug) {
-                    Mekanism.logger.info("{} {} transmitters in chunk: {}, {}", loaded ? "Loaded" : "Unloaded", chunkTransmitters.size(), chunk.x, chunk.z);
-                }
-            }
-        }
+        dimensionStore.values().forEach(DimData::handleChangedChunks);
     }
 
     private static void removeInvalidTransmitters() {
@@ -343,5 +327,62 @@ public class TransmitterNetworkRegistry {
     }
 
     private TransmitterNetworkRegistry() {
+    }
+
+    static class DimData {
+
+        private final LongMultimap<Transmitter<?, ?, ?>> transmitters = new LongMultimap<>();
+        private Long2BooleanMap changedTicketChunks = newL2BMap();
+        //todo newOrphanTransmitters
+
+        private static @NonNull Long2BooleanRBTreeMap newL2BMap() {
+            return new Long2BooleanRBTreeMap();
+        }
+
+        void trackTransmitter(Transmitter<?, ?, ?> transmitter) {
+            transmitters.put(ChunkPos.pack(transmitter.getBlockPos()), transmitter);
+        }
+
+        void untrackTransmitter(Transmitter<?, ?, ?> transmitter) {
+            transmitters.remove(ChunkPos.pack(transmitter.getBlockPos()), transmitter);
+        }
+
+        void onTicketLevelChange(long chunkPos, boolean loaded) {
+            if (transmitters.containsKey(chunkPos)) {
+                //Only track it if we have any transmitters in that chunk
+                if (changedTicketChunks.getOrDefault(chunkPos, loaded) != loaded) {
+                    //If we are watching the chunk and the loaded state isn't what we already had it as,
+                    // then remove it as it didn't actually change. In theory in all cases this is equivalent
+                    // to just checking if changeTicketChunks contains chunk, but is slightly more accurate
+                    // in case for some reason we get two load or unload notifications in a row
+                    changedTicketChunks.remove(chunkPos);
+                } else {
+                    // Otherwise, make sure the map is aware of the change
+                    changedTicketChunks.put(chunkPos, loaded);
+                }
+            }
+        }
+
+        void handleChangedChunks() {
+            if (!changedTicketChunks.isEmpty()) {
+                Long2BooleanMap changed = changedTicketChunks;
+                changedTicketChunks = newL2BMap();
+                if (MekanismAPI.debug) {
+                    Mekanism.logger.info("Dealing with {} changed chunks", changed.size());
+                }
+                for (var iterator = Long2BooleanMaps.fastIterator(changed); iterator.hasNext(); ) {
+                    Long2BooleanMap.Entry entry = iterator.next();
+                    long chunk = entry.getLongKey();
+                    boolean loaded = entry.getBooleanValue();
+                    Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);
+                    for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
+                        transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);
+                    }
+                    if (MekanismAPI.debug) {
+                        Mekanism.logger.info("{} {} transmitters in chunk: {}, {}", loaded ? "Loaded" : "Unloaded", chunkTransmitters.size(), ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
+                    }
+                }
+            }
+        }
     }
 }

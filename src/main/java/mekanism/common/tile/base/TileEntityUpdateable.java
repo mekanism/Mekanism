@@ -3,7 +3,6 @@ package mekanism.common.tile.base;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import mekanism.api.Chunk3D;
 import mekanism.common.Mekanism;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketUpdateTile;
@@ -13,7 +12,6 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.SectionPos;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.Connection;
@@ -224,12 +222,4 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return worldPositionLong;
     }
 
-    @Override
-    public Chunk3D getTileChunk() {
-        if (cacheCoord && cachedCoord != null) {
-            return new Chunk3D(cachedCoord);
-        }
-        BlockPos pos = this.getBlockPos();
-        return new Chunk3D(this.getLevel().dimension(), SectionPos.blockToSectionCoord(pos.getX()), SectionPos.blockToSectionCoord(pos.getZ()));
-    }
 }

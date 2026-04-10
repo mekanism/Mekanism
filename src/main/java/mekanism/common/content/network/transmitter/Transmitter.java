@@ -6,7 +6,6 @@ import java.util.EnumSet;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Chunk3D;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -165,11 +164,6 @@ public abstract class Transmitter<ACCEPTOR, NETWORK extends DynamicNetwork<ACCEP
     @Override
     public GlobalPos getTileGlobalPos() {
         return transmitterTile.getTileGlobalPos();
-    }
-
-    @Override
-    public Chunk3D getTileChunk() {
-        return transmitterTile.getTileChunk();
     }
 
     public boolean isRemote() {
