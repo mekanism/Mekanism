@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.longs.Long2BooleanMaps;
 import it.unimi.dsi.fastutil.longs.Long2BooleanRBTreeMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectRBTreeMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
@@ -23,7 +24,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ChunkMap;
@@ -43,7 +43,6 @@ public class TransmitterNetworkRegistry {
     private static final Map<ResourceKey<Level>, DimData> dimensionStore = new HashMap<>();
     private static final Set<DynamicNetwork<?, ?, ?>> networks = new ObjectOpenHashSet<>();
     private static final Map<UUID, DynamicNetwork<?, ?, ?>> clientNetworks = new Object2ObjectOpenHashMap<>();
-    private static Map<GlobalPos, Transmitter<?, ?, ?>> newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
     private static Set<Transmitter<?, ?, ?>> invalidTransmitters = new ObjectOpenHashSet<>();
     private static Set<DynamicNetwork<?, ?, ?>> networksToChange = new ObjectOpenHashSet<>();
 
@@ -70,7 +69,6 @@ public class TransmitterNetworkRegistry {
         networks.clear();
         networksToChange.clear();
         invalidTransmitters.clear();
-        newOrphanTransmitters.clear();
         dimensionStore.clear();
     }
 
@@ -96,11 +94,9 @@ public class TransmitterNetworkRegistry {
 
     public static void invalidateTransmitter(Transmitter<?, ?, ?> transmitter) {
         invalidTransmitters.add(transmitter);
-        GlobalPos coord = transmitter.getTileGlobalPos();
-        Transmitter<?, ?, ?> removed = newOrphanTransmitters.remove(coord);
-        if (removed != null && removed != transmitter) {
-            Mekanism.logger.error("Different orphan transmitter was registered at location during removal! {}", coord);
-            newOrphanTransmitters.put(coord, transmitter);//put it back?
+        DimData dimData = dimDataOrNull(transmitter.getDimension());
+        if (dimData != null) {
+            dimData.invalidateTransmitter(transmitter);
         }
     }
 
@@ -109,11 +105,7 @@ public class TransmitterNetworkRegistry {
             //If we weren't an invalid transmitter, then we need to add it as a new orphan, otherwise removing it is good enough
             // as if it was an orphan before it still will be one, and if it wasn't then it still will be part of the network it
             // was in.
-            GlobalPos pos = transmitter.getTileGlobalPos();
-            Transmitter<?, ?, ?> previous = newOrphanTransmitters.put(pos, transmitter);
-            if (previous != null && previous != transmitter && previous.isValid()) {
-                Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", pos);
-            }
+            dimData(transmitter.getDimension()).registerOrphanTransmitter(transmitter);
         }
     }
 
@@ -158,8 +150,7 @@ public class TransmitterNetworkRegistry {
             //Load type stayed the same, just exit
             return;
         }
-        ResourceKey<Level> dimension = event.getLevel().dimension();
-        DimData dimData = dimDataOrNull(dimension);
+        DimData dimData = dimDataOrNull(event.getLevel().dimension());
         if (dimData != null) {
             dimData.onTicketLevelChange(event.getChunkPos(), loaded);
         }
@@ -202,20 +193,7 @@ public class TransmitterNetworkRegistry {
     }
 
     private static void assignOrphans() {
-        if (!newOrphanTransmitters.isEmpty()) {
-            Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters = newOrphanTransmitters;
-            newOrphanTransmitters = new Object2ObjectOpenHashMap<>();
-            if (MekanismAPI.debug) {
-                Mekanism.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
-            }
-
-            for (Transmitter<?, ?, ?> orphanTransmitter : orphanTransmitters.values()) {
-                if (orphanTransmitter.isValid() && orphanTransmitter.isOrphan()) {
-                    OrphanPathFinder<?, ?, ?> finder = new OrphanPathFinder<>(orphanTransmitter);
-                    networksToChange.add(finder.getNetworkFromOrphan(orphanTransmitters));
-                }
-            }
-        }
+        dimensionStore.values().forEach(DimData::assignOrphans);
     }
 
     private static void commitChanges() {
@@ -260,7 +238,7 @@ public class TransmitterNetworkRegistry {
             transmitterValidator = startPoint.getNewOrphanValidator();
         }
 
-        NETWORK getNetworkFromOrphan(Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters) {
+        NETWORK getNetworkFromOrphan(Long2ObjectMap<Transmitter<?, ?, ?>> orphanTransmitters) {
             //Calculate the network
             if (queue.peek() != null) {
                 Mekanism.logger.error("OrphanPathFinder queue was not empty?!");
@@ -292,10 +270,9 @@ public class TransmitterNetworkRegistry {
             return network;
         }
 
-        private void iterate(Map<GlobalPos, Transmitter<?, ?, ?>> orphanTransmitters, BlockPos from) {
+        private void iterate(Long2ObjectMap<Transmitter<?, ?, ?>> orphanTransmitters, BlockPos from) {
             if (iterated.add(from)) {
-                GlobalPos fromCoord = GlobalPos.of(world.dimension(), from);
-                Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(fromCoord);
+                Transmitter<?, ?, ?> transmitter = orphanTransmitters.get(from.asLong());
                 if (transmitter != null) {
                     if (transmitter.isValid() && transmitter.isOrphan() && startPoint.supportsTransmissionType(transmitter) &&
                         transmitterValidator.isTransmitterCompatible(transmitter)) {
@@ -329,13 +306,17 @@ public class TransmitterNetworkRegistry {
     private TransmitterNetworkRegistry() {
     }
 
-    static class DimData {
+    private static class DimData {
 
         private final LongMultimap<Transmitter<?, ?, ?>> transmitters = new LongMultimap<>();
-        private Long2BooleanMap changedTicketChunks = newL2BMap();
-        //todo newOrphanTransmitters
+        private /*chunkpos*/ Long2BooleanMap changedTicketChunks = newL2BMap();
+        private /*blockpos*/ Long2ObjectMap<Transmitter<?, ?, ?>> newOrphanTransmitters = newL2OMap();
 
-        private static @NonNull Long2BooleanRBTreeMap newL2BMap() {
+        private static @NonNull Long2ObjectRBTreeMap<Transmitter<?, ?, ?>> newL2OMap() {
+            return new Long2ObjectRBTreeMap<>();
+        }
+
+        private static @NonNull Long2BooleanMap newL2BMap() {
             return new Long2BooleanRBTreeMap();
         }
 
@@ -383,6 +364,44 @@ public class TransmitterNetworkRegistry {
                     }
                 }
             }
+        }
+
+        void invalidateTransmitter(Transmitter<?, ?, ?> transmitter) {
+            long coord = transmitter.getWorldPositionLong();
+            Transmitter<?, ?, ?> removed = newOrphanTransmitters.remove(coord);
+            if (removed != null && removed != transmitter) {
+                Mekanism.logger.error("Different orphan transmitter was registered at location during removal! {}", blockToStr(coord));
+                newOrphanTransmitters.put(coord, transmitter);//put it back? TODO: work out if this is correct, probably continues the error
+            }
+        }
+
+        void registerOrphanTransmitter(Transmitter<?, ?, ?> transmitter) {
+            long pos = transmitter.getWorldPositionLong();
+            Transmitter<?, ?, ?> previous = newOrphanTransmitters.put(pos, transmitter);
+            if (previous != null && previous != transmitter && previous.isValid()) {
+                Mekanism.logger.error("Different orphan transmitter was already registered at location! {}", blockToStr(pos));
+            }
+        }
+
+        private void assignOrphans() {
+            if (!newOrphanTransmitters.isEmpty()) {
+                Long2ObjectMap<Transmitter<?, ?, ?>> orphanTransmitters = newOrphanTransmitters;
+                newOrphanTransmitters = newL2OMap();
+                if (MekanismAPI.debug) {
+                    Mekanism.logger.info("Dealing with {} orphan Transmitters", orphanTransmitters.size());
+                }
+
+                for (Transmitter<?, ?, ?> orphanTransmitter : orphanTransmitters.values()) {
+                    if (orphanTransmitter.isValid() && orphanTransmitter.isOrphan()) {
+                        OrphanPathFinder<?, ?, ?> finder = new OrphanPathFinder<>(orphanTransmitter);
+                        networksToChange.add(finder.getNetworkFromOrphan(orphanTransmitters));
+                    }
+                }
+            }
+        }
+
+        static String blockToStr(long blockPos) {
+            return String.format("x=%d, y=%d, z=%d", BlockPos.getX(blockPos), BlockPos.getY(blockPos), BlockPos.getZ(blockPos));
         }
     }
 }
