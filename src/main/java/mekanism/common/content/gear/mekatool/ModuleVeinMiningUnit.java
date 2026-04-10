@@ -118,7 +118,7 @@ public record ModuleVeinMiningUnit(boolean extended, ExcavationRange excavationR
         if (Math.abs(shift) % 2 == 1) {
             //We are changing by an odd amount, so toggle the mode
             if (displayChangeMessage) {
-                player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(MekanismLang.MODULE_EXTENDED_MODE, EnumColor.INDIGO, !extended)), false);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.MODULE_MODE_CHANGE.translate(MekanismLang.MODULE_EXTENDED_MODE, EnumColor.INDIGO, !extended)));
             }
             toggleExtended(module, moduleContainer, stack, player.registryAccess());
         }

@@ -111,7 +111,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.displayClientMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
+            player.sendOverlayMessage(GeneratorsLang.REACTOR_PORT_EJECT.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
         }
         return InteractionResult.SUCCESS;
     }

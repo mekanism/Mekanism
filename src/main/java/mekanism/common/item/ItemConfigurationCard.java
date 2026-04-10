@@ -92,7 +92,7 @@ public class ItemConfigurationCard extends Item {
                         }
                         stack.set(MekanismDataComponents.CONFIGURATION_DATA, output.buildResult());
                     }
-                    player.displayClientMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)), true);
+                    player.sendOverlayMessage(MekanismLang.CONFIG_CARD_GOT.translate(EnumColor.INDIGO, TextComponentUtil.translate(translationKey)));
                     MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, true);
                 }
             } else {
@@ -115,10 +115,10 @@ public class ItemConfigurationCard extends Item {
                                 configCardAccess.setConfigurationData(configInput.get(), player);
                             }
                             configCardAccess.configurationDataSet();
-                            player.displayClientMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, getConfigCardName(input)), true);
+                            player.sendOverlayMessage(MekanismLang.CONFIG_CARD_SET.translate(EnumColor.INDIGO, getConfigCardName(input)));
                             MekanismCriteriaTriggers.CONFIGURATION_CARD.value().trigger((ServerPlayer) player, false);
                         } else {
-                            player.displayClientMessage(MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED), true);
+                            player.sendOverlayMessage(MekanismLang.CONFIG_CARD_UNEQUAL.translateColored(EnumColor.RED));
                         }
                     }
                 }
@@ -135,7 +135,7 @@ public class ItemConfigurationCard extends Item {
             ItemStack configCard = player.getItemInHand(usedHand);
             if (!level.isClientSide()) {
                 configCard.remove(MekanismDataComponents.CONFIGURATION_DATA);
-                player.displayClientMessage(MekanismLang.CONFIG_CARD_CLEARED.translate(), true);
+                player.sendOverlayMessage(MekanismLang.CONFIG_CARD_CLEARED.translate());
             }
             //TODO - 1.21.11: Does this need to use a copy of the stack rather than directly removing the component above?
             return InteractionResult.SUCCESS.heldItemTransformedTo(configCard);

@@ -91,7 +91,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
             if (!level.isClientSide()) {
                 ownerObject.setOwnerUUID(player.getUUID());
                 PacketDistributor.sendToAllPlayers(new PacketSyncSecurity(player.getUUID()));
-                player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN), false);
+                player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.NOW_OWN));
             }
             return true;
         }

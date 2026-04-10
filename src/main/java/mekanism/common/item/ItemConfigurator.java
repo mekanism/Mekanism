@@ -136,16 +136,16 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         RelativeSide relativeSide = RelativeSide.fromDirections(config.getDirection(), side);
                         DataType dataType = info.getDataType(relativeSide);
                         if (!player.isShiftKeyDown()) {
-                            player.displayClientMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                  dataType, dataType.getColor().getColoredName()), true);
+                            player.sendOverlayMessage(MekanismLang.CONFIGURATOR_VIEW_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                                  dataType, dataType.getColor().getColoredName()));
                         } else if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                             return InteractionResult.FAIL;
                         } else {
                             DataType old = dataType;
                             dataType = info.incrementDataType(relativeSide);
                             if (dataType != old) {
-                                player.displayClientMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
-                                      dataType, dataType.getColor().getColoredName()), true);
+                                player.sendOverlayMessage(MekanismLang.CONFIGURATOR_TOGGLE_MODE.translateColored(EnumColor.GRAY, transmissionType, dataType.getColor(),
+                                      dataType, dataType.getColor().getColoredName()));
                                 config.getConfig().sideChanged(transmissionType, relativeSide);
                             }
                         }

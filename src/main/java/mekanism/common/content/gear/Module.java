@@ -317,9 +317,9 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     public void displayModeChange(Player player, Component modeName, IHasTextComponent mode) {
         Component modeComponent = mode.getTextComponent();
         if (modeComponent.getStyle().getColor() != null) {
-            player.displayClientMessage(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, modeComponent), true);
+            player.sendOverlayMessage(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, modeComponent));
         } else {
-            player.displayClientMessage(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, modeComponent), true);
+            player.sendOverlayMessage(MekanismLang.MODULE_MODE_CHANGE.translate(modeName, EnumColor.INDIGO, modeComponent));
         }
     }
 
@@ -331,7 +331,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
         } else {//Going from disabled to enabled
             message = MekanismLang.GENERIC_STORED.translate(modeName, EnumColor.BRIGHT_GREEN, MekanismLang.MODULE_ENABLED_LOWER);
         }
-        player.displayClientMessage(message, true);
+        player.sendOverlayMessage(message);
         ((ModuleContainer) moduleContainer).toggleEnabled(player.registryAccess(), stack, holder);
     }
 

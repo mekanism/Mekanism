@@ -75,7 +75,7 @@ public class ItemDictionary extends Item {
                         !sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags)) {
                         //Note: If none of the tag types were present log that there was no key. We check using bitwise AND to ensure we print all
                         // types we find rather than stopping evaluation after the first one that we have no tags for
-                        player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), false);
+                        player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
                     }
                 }
                 return InteractionResult.SUCCESS;
@@ -122,16 +122,16 @@ public class ItemDictionary extends Item {
 
     private <TYPE> void sendTagsOrEmptyToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tags) {
         if (!sendTagsToPlayer(player, tagsFoundEntry, tags)) {
-            player.displayClientMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY), false);
+            player.sendSystemMessage(MekanismUtils.logFormat(MekanismLang.DICTIONARY_NO_KEY));
         }
     }
 
     private <TYPE> boolean sendTagsToPlayer(Player player, ILangEntry tagsFoundEntry, Stream<TagKey<TYPE>> tagStream) {
         List<Identifier> tags = tagStream.map(TagKey::location).toList();
         if (!tags.isEmpty()) {
-            player.displayClientMessage(MekanismUtils.logFormat(tagsFoundEntry), false);
+            player.sendSystemMessage(MekanismUtils.logFormat(tagsFoundEntry));
             for (Identifier tag : tags) {
-                player.displayClientMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag), false);
+                player.sendSystemMessage(MekanismLang.DICTIONARY_KEY.translateColored(EnumColor.DARK_GREEN, tag));
             }
             return true;
         }

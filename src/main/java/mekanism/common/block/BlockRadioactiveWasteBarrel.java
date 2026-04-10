@@ -43,7 +43,7 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
                 text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
                       TextUtils.format(stored.getAmount()), TextUtils.getPercent(tile.getChemicalScale()));
             }
-            player.displayClientMessage(text, false);
+            player.sendSystemMessage(text);
         }
         return InteractionResult.SUCCESS;
     }

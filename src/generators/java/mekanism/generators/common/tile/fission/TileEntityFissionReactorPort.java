@@ -115,7 +115,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         if (!isRemote()) {
             FissionPortMode mode = getMode().getNext();
             setMode(mode);
-            player.displayClientMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode), true);
+            player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
         }
         return InteractionResult.SUCCESS;
     }

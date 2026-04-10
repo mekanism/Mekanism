@@ -40,8 +40,8 @@ public class ItemNetworkReader extends ItemEnergized {
     }
 
     private void displayBorder(Player player, Object toDisplay, boolean brackets) {
-        player.displayClientMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE,
-              brackets ? MekanismLang.GENERIC_SQUARE_BRACKET.translate(toDisplay) : toDisplay), false);
+        player.sendSystemMessage(MekanismLang.NETWORK_READER_BORDER.translateColored(EnumColor.GRAY, "-------------", EnumColor.DARK_BLUE,
+              brackets ? MekanismLang.GENERIC_SQUARE_BRACKET.translate(toDisplay) : toDisplay));
     }
 
     private void displayEndBorder(Player player) {
@@ -82,7 +82,7 @@ public class ItemNetworkReader extends ItemEnergized {
             } else if (player.isShiftKeyDown() && MekanismAPI.debug) {
                 displayBorder(player, MekanismLang.DEBUG_TITLE, true);
                 for (Component component : TransmitterNetworkRegistry.toComponents()) {
-                    player.displayClientMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, component), false);
+                    player.sendSystemMessage(TextComponentUtil.build(EnumColor.DARK_GRAY, component));
                 }
                 displayEndBorder(player);
             }
@@ -95,8 +95,8 @@ public class ItemNetworkReader extends ItemEnergized {
         Transmitter<?, ?, ?> transmitter = tile.getTransmitter();
         if (transmitter.hasTransmitterNetwork()) {
             DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
-            player.displayClientMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()), false);
-            player.displayClientMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()), false);
+            player.sendSystemMessage(MekanismLang.NETWORK_READER_TRANSMITTERS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.transmittersSize()));
+            player.sendSystemMessage(MekanismLang.NETWORK_READER_ACCEPTORS.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, transmitterNetwork.getAcceptorCount()));
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_NEEDED, transmitterNetwork.getNeededInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_BUFFER, transmitterNetwork.getStoredInfo());
             sendMessageIfNonNull(player, MekanismLang.NETWORK_READER_THROUGHPUT, transmitterNetwork.getFlowInfo());
@@ -106,7 +106,7 @@ public class ItemNetworkReader extends ItemEnergized {
                 sendTemperature(player, heatHandler);
             }
         } else {
-            player.displayClientMessage(MekanismLang.NO_NETWORK.translate(), false);
+            player.sendSystemMessage(MekanismLang.NO_NETWORK.translate());
         }
         displayEndBorder(player);
     }
@@ -123,8 +123,8 @@ public class ItemNetworkReader extends ItemEnergized {
                 DynamicNetwork<?, ?, ?> transmitterNetwork = transmitter.getTransmitterNetwork();
                 if (transmitterNetwork.hasAcceptor(pos) && !iteratedNetworks.contains(transmitterNetwork)) {
                     displayBorder(player, compileList(transmitter.getSupportedTransmissionTypes()), false);
-                    player.displayClientMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
-                          compileList(transmitterNetwork.getAcceptorDirections(posAsLong))), false);
+                    player.sendSystemMessage(MekanismLang.NETWORK_READER_CONNECTED_SIDES.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY,
+                          compileList(transmitterNetwork.getAcceptorDirections(posAsLong))));
                     displayEndBorder(player);
                     iteratedNetworks.add(transmitterNetwork);
                 }
@@ -134,12 +134,12 @@ public class ItemNetworkReader extends ItemEnergized {
 
     private void sendTemperature(Player player, IHeatHandler handler) {
         Component temp = MekanismUtils.getTemperatureDisplay(handler.getTotalTemperature(), TemperatureUnit.KELVIN, true);
-        player.displayClientMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp), false);
+        player.sendSystemMessage(MekanismLang.NETWORK_READER_TEMPERATURE.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, temp));
     }
 
     private void sendMessageIfNonNull(Player player, ILangEntry langEntry, Object toSend) {
         if (toSend != null) {
-            player.displayClientMessage(langEntry.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, toSend), false);
+            player.sendSystemMessage(langEntry.translateColored(EnumColor.GRAY, EnumColor.DARK_GRAY, toSend));
         }
     }
 

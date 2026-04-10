@@ -88,7 +88,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         if (!isRemote()) {
             boolean oldMode = getActive();
             setActive(!oldMode);
-            player.displayClientMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)), true);
+            player.sendOverlayMessage(MekanismLang.SPS_PORT_MODE.translateColored(EnumColor.GRAY, InputOutput.of(oldMode, true)));
         }
         return InteractionResult.SUCCESS;
     }

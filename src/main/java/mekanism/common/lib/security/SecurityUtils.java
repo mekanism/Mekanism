@@ -223,7 +223,7 @@ public final class SecurityUtils implements ISecurityUtils {
     @Override
     public void displayNoAccess(Player player) {
         Objects.requireNonNull(player, "Player may not be null.");
-        player.displayClientMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS), false);
+        player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_ACCESS));
     }
 
     public boolean isTrusted(SecurityMode mode, @Nullable UUID ownerUUID, UUID playerUUID) {

@@ -304,7 +304,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
                 if (MekanismConfig.client.enableMultiblockFormationParticles.get()) {
                     new SparkleAnimation(this, multiblock.renderLocation, multiblock.length() - 1, multiblock.width() - 1, multiblock.height() - 1).run();
                 } else {
-                    player.displayClientMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO), true);
+                    player.sendOverlayMessage(MekanismLang.MULTIBLOCK_FORMED_CHAT.translateColored(EnumColor.INDIGO));
                 }
             }
         }
@@ -370,7 +370,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         if (!isRemote() && !getMultiblock().isFormed()) {
             FormationResult result = getStructure().runUpdate(this);
             if (!result.isFormed() && result.getResultText() != null) {
-                player.displayClientMessage(result.getResultText(), false);
+                player.sendSystemMessage(result.getResultText());
                 return InteractionResult.SUCCESS_SERVER;
             }
         }
