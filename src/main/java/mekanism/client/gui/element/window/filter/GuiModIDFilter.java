@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerGhostTarget.IGhostIngredientConsumer;
 import mekanism.common.MekanismLang;
@@ -68,7 +69,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             @Override
             public String supportedTarget(Object ingredient) {
                 if (ingredient instanceof ItemStack stack) {
-                    return stack.isEmpty() ? null : MekanismUtils.getModId(stack);
+                    return stack.isEmpty() ? null : MekanismClient.getModId(stack);
                 }
                 Identifier registryName = null;
                 if (ingredient instanceof FluidStack stack) {
@@ -101,7 +102,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
             if (!event.hasShiftDown()) {
                 ItemStack stack = element.gui().getCarriedItem();
                 if (!stack.isEmpty()) {
-                    setFilterName(MekanismUtils.getModId(stack.copyWithCount(1)), false);
+                    setFilterName(MekanismClient.getModId(stack.copyWithCount(1)), false);
                     return true;
                 }
             }

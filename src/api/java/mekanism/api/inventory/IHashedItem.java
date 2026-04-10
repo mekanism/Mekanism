@@ -47,7 +47,7 @@ public interface IHashedItem {
      * @since 10.7.11
      */
     default Holder<Item> getItemHolder() {
-        return getInternalStack().getItemHolder();
+        return getInternalStack().typeHolder();
     }
 
     /**

@@ -2,6 +2,7 @@ package mekanism.client;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
@@ -14,10 +15,12 @@ import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketKey;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.Connection;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,6 +29,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @Mod(value = Mekanism.MODID, dist = Dist.CLIENT)
@@ -105,5 +109,10 @@ public class MekanismClient {
         if (event.getOldPlayer().level() != event.getNewPlayer().level()) {
             resetDimensionChange();
         }
+    }
+
+    @NotNull
+    public static String getModId(@NotNull ItemStack stack) {
+        return MekanismUtils.getModId(Objects.requireNonNull(Minecraft.getInstance().level, "No active Level").registryAccess(), stack);
     }
 }

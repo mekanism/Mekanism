@@ -6,12 +6,12 @@ import java.util.Locale;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.tile.machine.TileEntityOredictionificator;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -113,7 +113,7 @@ public class GuiOredictionificatorFilter extends GuiTextFilter<Oredictionificato
         if (filter.hasFilter()) {
             ItemStack renderStack = slotDisplay.getRenderStack();
             if (!renderStack.isEmpty()) {
-                list.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(renderStack, MekanismUtils.getModId(renderStack)));
+                list.add(MekanismLang.GENERIC_WITH_PARENTHESIS.translate(renderStack, MekanismClient.getModId(renderStack)));
             }
             list.add(TextComponentUtil.getString(filter.getFilterText()));
         }

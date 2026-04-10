@@ -8,6 +8,7 @@ import java.util.function.ObjIntConsumer;
 import java.util.function.Predicate;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
+import mekanism.client.MekanismClient;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.slot.GuiSequencedSlotDisplay;
@@ -26,6 +27,7 @@ import mekanism.common.content.transporter.SorterFilter;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
@@ -156,7 +158,7 @@ public class FilterButton extends MekanismButton {
             drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), textWidth - 8, 3, false, 0.7F);
         } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
             ItemStack result = oreDictFilter.getResult();
-            Component text = TextComponentUtil.build(result, " (", MekanismUtils.getModId(result), ")");
+            Component text = TextComponentUtil.build(result, " (", MekanismClient.getModId(result), ")");
             drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false, 0.7F);
         } else if (filter instanceof QIOItemStackFilter itemFilter) {
             if (itemFilter.fuzzyMode) {

@@ -21,6 +21,7 @@ import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.HolderSet.ListBacked;
 import net.minecraft.core.Registry;
@@ -128,7 +129,7 @@ public final class TagCache {
         return new MatchingStacks(true, blocks.stream().map(ItemStack::new).filter(stack -> !stack.isEmpty()).toList());
     }
 
-    public static List<ItemStack> getItemModIDStacks(@NotNull String modName) {
+    public static List<ItemStack> getItemModIDStacks(@NotNull HolderLookup.Provider registries, @NotNull String modName) {
         return itemModIDStacks.computeIfAbsent(modName, name -> {
             List<ItemStack> stacks = new ArrayList<>();
             for (Map.Entry<ResourceKey<Item>, Item> entry : BuiltInRegistries.ITEM.entrySet()) {
@@ -137,7 +138,7 @@ public final class TagCache {
                     //Note: We get the modid based on the stack so that if there is a mod that has a different modid for an item
                     // that isn't based on NBT it can properly change the modid (this is unlikely to happen, but you never know)
                     ItemStack stack = new ItemStack(entry.getValue());
-                    if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(stack))) {
+                    if (!stack.isEmpty() && WildcardMatcher.matches(name, MekanismUtils.getModId(registries, stack))) {
                         stacks.add(stack);
                     }
                 }
