@@ -47,7 +47,7 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
 
     @NotNull
     @Override
-    public ItemStack assemble(RecipeInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(RecipeInput input) {
         if (!isIncomplete() && input.size() == 2) {
             ItemStack mainInput = input.getItem(0);
             ItemStack extraInput = input.getItem(1);

@@ -8,7 +8,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -54,7 +53,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
 
     @NotNull
     @Override
-    public ItemStack assemble(SingleChemicalRecipeInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(SingleChemicalRecipeInput input) {
         if (!isIncomplete() && test(input.chemical())) {
             return getOutput(input.chemical());
         }

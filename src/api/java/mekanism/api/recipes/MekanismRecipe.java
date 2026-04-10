@@ -44,7 +44,7 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     public abstract void logMissingTags();
 
     @Override
-    public ItemStack assemble(INPUT input, HolderLookup.Provider provider) {
+    public ItemStack assemble(INPUT input) {
         return ItemStack.EMPTY;
     }
 

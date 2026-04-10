@@ -39,7 +39,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
 
     @NotNull
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(SingleRecipeInput input) {
         if (!isIncomplete() && test(input.item())) {
             return getOutput(input.item());
         }

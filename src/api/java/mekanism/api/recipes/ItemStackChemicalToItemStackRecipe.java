@@ -34,7 +34,7 @@ public abstract class ItemStackChemicalToItemStackRecipe extends ItemStackChemic
 
     @NotNull
     @Override
-    public ItemStack assemble(SingleItemChemicalRecipeInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(SingleItemChemicalRecipeInput input) {
         if (!isIncomplete() && test(input.item(), input.chemical())) {
             return getOutput(input.item(), input.chemical());
         }
