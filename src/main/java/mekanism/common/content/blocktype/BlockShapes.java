@@ -692,8 +692,10 @@ public final class BlockShapes {
               box(4, 30, 4, 6, 32, 6), // node1
               box(5, 30, 10, 6, 32, 11), // node2
               box(6, 30, 6, 10, 31, 10), // coil
-              box(4, 4, 0, 12, 12, 1), // port
-              box(5, 5, 1, 11, 11, 3), // port_connector
+              box(4, 4, 0, 12, 12, 1), // port_front
+              box(5, 5, 1, 11, 11, 3), // port_connector_front
+              box(4, 4, 15, 12, 12, 16), // port_back
+              box(5, 5, 13, 11, 11, 15), // port_connector_back
               box(6, 18, 7, 7, 25, 8), // random_shape1
               box(6, 17, 7, 9, 18, 8), // random_shape2
               box(8, 15, 7, 9, 17, 8) // random_shape3

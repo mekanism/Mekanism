@@ -64,6 +64,13 @@ public class TileEntityInternalMultiblock extends TileEntityMekanism implements 
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         //Note: We handle when an internal multiblock is removed that isn't touching anything in BlockMekanism#onRemove
         if (!isRemote() && multiblock != null) {
+            //Check if the neighborPos is really a neighbor of this block for bad mods giving non-neighbors
+            int dX = Math.abs(neighborPos.getX() - worldPosition.getX());
+            int dY = Math.abs(neighborPos.getY() - worldPosition.getY());
+            int dZ = Math.abs(neighborPos.getZ() - worldPosition.getZ());
+            if ((dX + dY + dZ) > 1) {
+                return;
+            }
             //If the neighbor change happened to a block inside a multiblock, and it isn't a block that is part of the multiblock
             if (level.isEmptyBlock(neighborPos) || !multiblock.isKnownLocation(neighborPos)) {
                 //And we are not already an internal part of the structure, or we are changing an internal part to air
