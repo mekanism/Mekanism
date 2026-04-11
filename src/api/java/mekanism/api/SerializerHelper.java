@@ -24,6 +24,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -64,14 +65,18 @@ public class SerializerHelper {
      * Helper codec to deserialize an optional item stack and fall back to the empty stack if an error is encountered in deserialization.
      *
      * @since 10.7.9
+     * @deprecated Use an ItemStackTemplate instead
      */
-    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC =  ExtraCodecs.optionalEmptyMap(ItemStack.SINGLE_ITEM_CODEC)
-          .xmap(stack -> stack.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
+    @Deprecated(forRemoval = true, since = "10.8.0")
+    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC = ExtraCodecs.optionalEmptyMap(ItemStack.CODEC)
+          .xmap(stack -> stack.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack.copyWithCount(1)));
     /**
      * Helper codec to deserialize an optional item stack with a constant count of one and fall back to the empty stack if an error is encountered in deserialization.
      *
      * @since 10.7.9
+     * @deprecated Use an ItemStackTemplate instead
      */
+    @Deprecated(forRemoval = true, since = "10.8.0")
     public static final Codec<ItemStack> LENIENT_OPTIONAL_SINGLE_ITEM_CODEC = OPTIONAL_SINGLE_ITEM_CODEC
           .promotePartial(ON_STACK_LOAD_ERROR)
           .orElse(ItemStack.EMPTY);
@@ -90,9 +95,9 @@ public class SerializerHelper {
      * @since 10.6.1
      */
     public static final Codec<ItemStack> OVERSIZED_ITEM_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-          Item.CODEC.fieldOf(SerializationConstants.ID).forGetter(ItemStack::getItemHolder),
-          ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.COUNT).orElse(1).forGetter(ItemStack::getCount),
-          DataComponentPatch.CODEC.optionalFieldOf(SerializationConstants.COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
+          Item.CODEC.fieldOf(ItemInstance.FIELD_ID).forGetter(ItemStack::typeHolder),
+          ExtraCodecs.POSITIVE_INT.fieldOf(ItemInstance.FIELD_COUNT).orElse(1).forGetter(ItemStack::getCount),
+          DataComponentPatch.CODEC.optionalFieldOf(ItemInstance.FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(instance, ItemStack::new)));
 
     /**

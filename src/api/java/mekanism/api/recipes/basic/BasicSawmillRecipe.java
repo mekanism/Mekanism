@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
@@ -35,21 +36,19 @@ public class BasicSawmillRecipe extends SawmillRecipe {
      */
     public BasicSawmillRecipe(ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput, @Nullable ItemStackTemplate secondaryOutput, double secondaryChance) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
-        Objects.requireNonNull(mainOutput, "Main output cannot be null.");
-        Objects.requireNonNull(secondaryOutput, "Secondary output cannot be null.");
-        if (mainOutput.isEmpty() && secondaryOutput.isEmpty()) {
+        if (mainOutput == null && secondaryOutput == null) {
             throw new IllegalArgumentException("At least one output must not be empty.");
         } else if (secondaryChance < 0 || secondaryChance > 1) {
             throw new IllegalArgumentException("Secondary output chance must be at least zero and at most one.");
-        } else if (mainOutput.isEmpty()) {
+        } else if (mainOutput == null) {
             if (secondaryChance == 0 || secondaryChance == 1) {
                 throw new IllegalArgumentException("Secondary output must have a chance greater than zero and less than one.");
             }
-        } else if (secondaryOutput.isEmpty() && secondaryChance != 0) {
+        } else if (secondaryOutput == null && secondaryChance != 0) {
             throw new IllegalArgumentException("If there is no secondary output, the chance of getting the secondary output should be zero.");
         }
-        this.mainOutput = mainOutput.copy();
-        this.secondaryOutput = secondaryOutput.copy();
+        this.mainOutput = mainOutput;
+        this.secondaryOutput = secondaryOutput;
         this.secondaryChance = secondaryChance;
     }
 
@@ -64,14 +63,14 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         return new BasicChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }
 
-    @Override
+    @Override// todo 26.1 - see if template can be used
     public List<ItemStack> getMainOutputDefinition() {
-        return mainOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(mainOutput);
+        return mainOutput == null ? Collections.emptyList() : Collections.singletonList(mainOutput.create());
     }
 
     @Override
     public List<ItemStack> getSecondaryOutputDefinition() {
-        return secondaryOutput.isEmpty() ? Collections.emptyList() : Collections.singletonList(secondaryOutput);
+        return secondaryOutput == null ? Collections.emptyList() : Collections.singletonList(secondaryOutput.create());
     }
 
     @Override
@@ -89,8 +88,8 @@ public class BasicSawmillRecipe extends SawmillRecipe {
      *
      * @return the uncopied basic output, or empty if the value is ItemStack.EMPTY
      */
-    public Optional<ItemStack> getMainOutputRaw() {
-        return this.mainOutput.isEmpty() ? Optional.empty() : Optional.of(this.mainOutput);
+    public Optional<ItemStackTemplate> getMainOutputRaw() {
+        return Optional.ofNullable(this.mainOutput);
     }
 
     /**
@@ -98,8 +97,8 @@ public class BasicSawmillRecipe extends SawmillRecipe {
      *
      * @return the uncopied basic output
      */
-    public Optional<ItemStack> getSecondaryOutputRaw() {
-        return this.secondaryOutput.isEmpty() ? Optional.empty() : Optional.of(this.secondaryOutput);
+    public Optional<ItemStackTemplate> getSecondaryOutputRaw() {
+        return Optional.ofNullable(this.secondaryOutput);
     }
 
     @Override
@@ -115,18 +114,18 @@ public class BasicSawmillRecipe extends SawmillRecipe {
             return false;
         }
         BasicSawmillRecipe other = (BasicSawmillRecipe) o;
-        return secondaryChance == other.secondaryChance && input.equals(other.input) && ItemStack.matches(mainOutput, other.mainOutput) &&
-               ItemStack.matches(secondaryOutput, other.secondaryOutput);
+        return secondaryChance == other.secondaryChance && input.equals(other.input) && ItemStackTemplateHelper.matches(mainOutput, other.mainOutput) &&
+               ItemStackTemplateHelper.matches(secondaryOutput, other.secondaryOutput);
     }
 
     @Override
     public int hashCode() {
         int hash = 31 * input.hashCode() + Double.hashCode(secondaryChance);
-        hash = 31 * hash + ItemStack.hashItemAndComponents(mainOutput);
-        hash = 31 * hash + mainOutput.getCount();
-        if (!secondaryOutput.isEmpty()) {
-            hash = 31 * hash + ItemStack.hashItemAndComponents(secondaryOutput);
-            hash = 31 * hash + secondaryOutput.getCount();
+        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(mainOutput);
+        hash = 31 * hash + (mainOutput != null ? mainOutput.count() : 0);
+        if (secondaryOutput != null) {
+            hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(secondaryOutput);
+            hash = 31 * hash + secondaryOutput.count();
         }
         return hash;
     }
@@ -140,32 +139,36 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         }
 
         @Override
-        public ItemStack getMainOutput() {
-            return mainOutput.copy();
+        @Nullable
+        public ItemStackTemplate getMainOutput() {
+            return mainOutput;
         }
 
         @Override
-        public ItemStack getMaxSecondaryOutput() {
-            return secondaryChance > 0 ? secondaryOutput.copy() : ItemStack.EMPTY;
+        @Nullable
+        public ItemStackTemplate getMaxSecondaryOutput() {
+            return secondaryChance > 0 ? secondaryOutput : null;
         }
 
         @Override
-        public ItemStack getSecondaryOutput() {
-            if (rand <= secondaryChance) {
-                return secondaryOutput.copy();
+        @Nullable
+        public ItemStackTemplate getSecondaryOutput() {
+            if (secondaryOutput != null && rand <= secondaryChance) {
+                return secondaryOutput;
             }
-            return ItemStack.EMPTY;
+            return null;
         }
 
         @Override
-        public ItemStack nextSecondaryOutput() {
-            if (secondaryChance > 0) {
+        @Nullable
+        public ItemStackTemplate nextSecondaryOutput() {
+            if (secondaryOutput != null && secondaryChance > 0) {
                 double rand = RANDOM.nextDouble();
                 if (rand <= secondaryChance) {
-                    return secondaryOutput.copy();
+                    return secondaryOutput;
                 }
             }
-            return ItemStack.EMPTY;
+            return null;
         }
     }
 }

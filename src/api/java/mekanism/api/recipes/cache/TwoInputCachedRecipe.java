@@ -20,6 +20,7 @@ import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -176,10 +177,10 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param extraInputHandler Secondary/Extra input handler.
      * @param outputHandler     Output handler.
      */
-    public static TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, @NotNull ItemStack, CombinerRecipe> combiner(CombinerRecipe recipe,
+    public static TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, @Nullable ItemStackTemplate, CombinerRecipe> combiner(CombinerRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IInputHandler<@NotNull ItemStack> extraInputHandler,
-          IOutputHandler<@NotNull ItemStack> outputHandler) {
+          IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, extraInputHandler, outputHandler, recipe::getMainInput, recipe::getExtraInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY);
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_TEMPLATE_EMPTY);
     }
 }

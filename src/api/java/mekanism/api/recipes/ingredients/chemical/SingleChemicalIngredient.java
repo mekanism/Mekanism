@@ -8,6 +8,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.ResourceKey;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -25,6 +26,7 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//T
           .fieldOf(SerializationConstants.CHEMICAL);
 
     private final Holder<Chemical> chemical;
+    private final ResourceKey<Chemical> myKey;
 
     /**
      * @param chemical Holder for the chemical to match.
@@ -34,11 +36,12 @@ public non-sealed class SingleChemicalIngredient extends ChemicalIngredient {//T
             throw new IllegalStateException("SingleChemicalIngredient must not be constructed with mekanism:empty, use IChemicalIngredientCreator.empty() instead!");
         }
         this.chemical = chemical;
+        this.myKey = chemical.unwrapKey().orElseThrow();
     }
 
     @Override
     public final boolean test(Holder<Chemical> chemical) {
-        return chemical.is(this.chemical);
+        return chemical.is(this.myKey);
     }
 
     @Override

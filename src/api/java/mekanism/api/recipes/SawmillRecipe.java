@@ -11,12 +11,14 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Input: ItemStack
@@ -107,27 +109,26 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
     public interface ChanceOutput {
 
         /**
-         * Gets a copy of the main output of this recipe. This may be empty if there is only a secondary chance based output.
+         * Gets a copy of the main output of this recipe. This may be null if there is only a secondary chance based output.
          *
-         * @implNote return a new copy
          */
-        ItemStack getMainOutput();
+        @Nullable
+        ItemStackTemplate getMainOutput();
 
         /**
          * Gets a copy of the secondary output ignoring the random chance of it happening. This is mostly used for checking the maximum amount we can get as a secondary
          * output for purposes of seeing if we have space to process.
          *
-         * @implNote return a new copy or ItemStack.EMPTY
          */
-        ItemStack getMaxSecondaryOutput();
+        @Nullable
+        ItemStackTemplate getMaxSecondaryOutput();
 
         /**
          * Gets a copy of the secondary output if the random number generated for this output matches the chance of a secondary output being produced, otherwise returns
          * an empty stack.
-         *
-         * @implNote return a new copy or ItemStack.EMPTY
          */
-        ItemStack getSecondaryOutput();
+        @Nullable
+        ItemStackTemplate getSecondaryOutput();
 
         /**
          * Similar to {@link #getSecondaryOutput()} except that this calculates a new random number to act as if this was another chance output for purposes of handling
@@ -135,6 +136,7 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
          *
          * @implNote return a new copy or ItemStack.EMPTY
          */
-        ItemStack nextSecondaryOutput();
+        @Nullable
+        ItemStackTemplate nextSecondaryOutput();
     }
 }

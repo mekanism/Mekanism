@@ -3,11 +3,11 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -19,7 +19,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
 
     protected final ItemStackIngredient mainInput;
     protected final ItemStackIngredient extraInput;
-    protected final ItemStack output;
+    protected final ItemStackTemplate output;
 
     /**
      * @param mainInput  Main input.
@@ -30,10 +30,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = output;
     }
 
     @Override
@@ -53,22 +50,15 @@ public class BasicCombinerRecipe extends CombinerRecipe {
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
-        return output.copy();
+    public ItemStackTemplate getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
+        return output;
     }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
-    }
-
     @Override
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
+        return Collections.singletonList(output.create());
     }
 
-    public ItemStack getOutputRaw() {
+    public ItemStackTemplate getOutputRaw() {
         return output;
     }
 
@@ -85,15 +75,15 @@ public class BasicCombinerRecipe extends CombinerRecipe {
             return false;
         }
         BasicCombinerRecipe other = (BasicCombinerRecipe) o;
-        return mainInput.equals(other.mainInput) && extraInput.equals(other.extraInput) && ItemStack.matches(output, other.output);
+        return mainInput.equals(other.mainInput) && extraInput.equals(other.extraInput) && ItemStackTemplateHelper.matches(output, other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = mainInput.hashCode();
         hash = 31 * hash + extraInput.hashCode();
-        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
-        hash = 31 * hash + output.getCount();
+        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(output);
+        hash = 31 * hash + output.count();
         return hash;
     }
 }

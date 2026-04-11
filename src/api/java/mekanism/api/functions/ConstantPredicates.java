@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +45,13 @@ public class ConstantPredicates {
      * @since 10.5.15
      */
     public static final Predicate<ItemStack> ITEM_EMPTY = ItemStack::isEmpty;
+    /**
+     * Represents a predicate that checks if an item stack produced by a template is empty (or the template is null).
+     *
+     * @since 10.5.15
+     */
+    public static final Predicate<ItemStackTemplate> ITEM_TEMPLATE_EMPTY = template -> template == null || template.create().isEmpty();
+
     /**
      * Represents a predicate that checks if a fluid stack is empty.
      *
