@@ -368,7 +368,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             fluidData.putInt(SerializationConstants.AMOUNT, fluid.getAmount());
         }
         if (!fluid.isEmpty()) {
-            Identifier key = RegistryUtils.getName(fluid.getFluidHolder());
+            Identifier key = RegistryUtils.getName(fluid.typeHolder());
             if (key == null) {
                 //Note: This should never be null as it returns a reference holder, but if it is, log an error
                 Mekanism.logger.error("Attempted to sync a fluid tank that is storing an unregistered fluid. This should not happen, and likely indicates a porting bug.");

@@ -8,7 +8,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.component.DataComponentExactPredicate;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -48,9 +48,9 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         }
         //Support Components that are on the stack in case it matters
         // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
-        DataComponentExactPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
-        if (predicate != null) {
-            return from(DataComponentIngredient.of(false, predicate, stack.typeHolder()), amount);
+        DataComponentPatch componentsPatch = stack.getComponentsPatch();
+        if (!componentsPatch.isEmpty()) {
+            return from(DataComponentIngredient.of(false, componentsPatch, stack.typeHolder()), amount);
         }
         return from(Ingredient.of(stack.getItem()), amount);
     }

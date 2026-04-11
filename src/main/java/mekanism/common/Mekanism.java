@@ -421,7 +421,7 @@ public class Mekanism {
 
     private void onLiquidTransferred(FluidTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", event.fluidType.getFluidHolder().getRegisteredName(), networkID);
+        PacketUtils.log("Sending type '{}' update message for fluid network with id {}", event.fluidType.typeHolder().getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketFluidNetworkContents(networkID, event.fluidType));
     }
 

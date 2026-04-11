@@ -201,7 +201,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     setTarget(null);
                 } else {
                     setTarget(fluidStack.copy());
-                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.getFluidHolder()));
+                    tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(fluidStack.typeHolder()));
                 }
             }
             case ChemicalStack chemicalStack -> {

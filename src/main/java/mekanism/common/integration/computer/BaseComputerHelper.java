@@ -240,7 +240,7 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(stack.getFluidHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable ItemStack stack) {
