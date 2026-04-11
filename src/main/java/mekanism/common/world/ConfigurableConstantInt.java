@@ -6,15 +6,14 @@ import java.util.Optional;
 import mekanism.api.SerializationConstants;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedIntValue;
-import mekanism.common.registries.MekanismIntProviderTypes;
 import mekanism.common.resource.ore.OreType.OreVeinType;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviderType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-public class ConfigurableConstantInt extends IntProvider {
+public class ConfigurableConstantInt implements IntProvider {
 
     public static final MapCodec<ConfigurableConstantInt> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
           OreVeinType.CODEC.optionalFieldOf(SerializationConstants.ORE_TYPE).forGetter(config -> Optional.ofNullable(config.oreVeinType))
@@ -48,19 +47,18 @@ public class ConfigurableConstantInt extends IntProvider {
     }
 
     @Override
-    public int getMinValue() {
+    public int minInclusive() {
         return getValue();
     }
 
     @Override
-    public int getMaxValue() {
+    public int maxInclusive() {
         return getValue();
     }
 
-    @NotNull
     @Override
-    public IntProviderType<?> getType() {
-        return MekanismIntProviderTypes.CONFIGURABLE_CONSTANT.get();
+    public @NonNull MapCodec<? extends IntProvider> codec() {
+        return CODEC;
     }
 
     @Override

@@ -2,14 +2,13 @@ package mekanism.common.world;
 
 import com.mojang.serialization.MapCodec;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.registries.MekanismIntProviderTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
-import net.minecraft.util.valueproviders.IntProviderType;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
-public class ConfigurableUniformInt extends IntProvider {
+public class ConfigurableUniformInt implements IntProvider {
 
     public static final ConfigurableUniformInt SALT = new ConfigurableUniformInt();
     public static final MapCodec<ConfigurableUniformInt> CODEC = MapCodec.unit(SALT);
@@ -19,27 +18,26 @@ public class ConfigurableUniformInt extends IntProvider {
 
     @Override
     public int sample(@NotNull RandomSource random) {
-        return Mth.randomBetweenInclusive(random, getMinValue(), getMaxValue());
+        return Mth.randomBetweenInclusive(random, minInclusive(), maxInclusive());
     }
 
     @Override
-    public int getMinValue() {
+    public int minInclusive() {
         return MekanismConfig.world.salt.minRadius.get();
     }
 
     @Override
-    public int getMaxValue() {
+    public int maxInclusive() {
         return MekanismConfig.world.salt.maxRadius.get();
     }
 
-    @NotNull
     @Override
-    public IntProviderType<?> getType() {
-        return MekanismIntProviderTypes.CONFIGURABLE_UNIFORM.get();
+    public @NonNull MapCodec<? extends IntProvider> codec() {
+        return CODEC;
     }
 
     @Override
     public String toString() {
-        return "[" + getMinValue() + "-" + getMaxValue() + "]";
+        return "[" + minInclusive() + "-" + maxInclusive() + "]";
     }
 }
