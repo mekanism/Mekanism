@@ -45,7 +45,7 @@ public class RecipeTestHelper extends MekGameTestHelper {
             if (representation.is(knownMissingTag)) {
                 fail("Item " + representation.getItem() + " is marked as being known to be missing, but has a " + type + " recipe.");
             }
-            ResourceKey<Item> key = representation.getItemHolder().getKey();
+            ResourceKey<Item> key = representation.typeHolder().getKey();
             if (key != null) {
                 inputs.add(key);
             }

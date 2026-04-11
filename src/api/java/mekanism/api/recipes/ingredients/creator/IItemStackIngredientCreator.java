@@ -50,7 +50,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
         DataComponentExactPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(stack.getComponentsPatch());
         if (predicate != null) {
-            return from(DataComponentIngredient.of(false, predicate, stack.getItemHolder()), amount);
+            return from(DataComponentIngredient.of(false, predicate, stack.typeHolder()), amount);
         }
         return from(Ingredient.of(stack.getItem()), amount);
     }

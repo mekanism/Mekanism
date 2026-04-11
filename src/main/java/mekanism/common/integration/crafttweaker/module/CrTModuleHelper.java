@@ -29,7 +29,7 @@ public class CrTModuleHelper {
      */
     @ZenCodeType.Method
     public static Set<ModuleData<?>> getSupported(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getSupported(stack.getItemHolder());
+        return IModuleHelper.INSTANCE.getSupported(stack.typeHolder());
     }
 
     /**

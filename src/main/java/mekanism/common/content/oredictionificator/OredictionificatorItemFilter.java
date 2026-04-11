@@ -52,7 +52,7 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
 
     @Override
     protected Holder<Item> getFallbackElement() {
-        return getEmptyStack().getItemHolder();
+        return getEmptyStack().typeHolder();
     }
 
     @Override

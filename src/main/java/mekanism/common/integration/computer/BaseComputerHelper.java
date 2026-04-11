@@ -247,7 +247,7 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(stack.getItemHolder().getRegisteredName(), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable BlockState state) {
