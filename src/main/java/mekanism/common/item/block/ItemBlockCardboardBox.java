@@ -81,7 +81,7 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
                 if (state.is(MekanismTags.Blocks.CARDBOARD_BLACKLIST)) {
                     return InteractionResult.FAIL;
                 }
-                Identifier stateName = RegistryUtils.getName(state.getBlockHolder());
+                Identifier stateName = RegistryUtils.getName(state.typeHolder());
                 if (stateName == null || MekanismConfig.general.cardboardModBlacklist.get().contains(stateName.getNamespace()) ||
                     !canReplace(world, player, pos, context.getClickedFace(), state, stack)) {
                     return InteractionResult.FAIL;

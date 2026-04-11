@@ -48,7 +48,7 @@ public class MinerModIDFilter extends MinerFilter<MinerModIDFilter> implements I
 
     @Override
     public boolean canFilter(BlockState state) {
-        Identifier name = RegistryUtils.getName(state.getBlockHolder());
+        Identifier name = RegistryUtils.getName(state.typeHolder());
         return name != null && WildcardMatcher.matches(modID, name.getNamespace());
     }
 

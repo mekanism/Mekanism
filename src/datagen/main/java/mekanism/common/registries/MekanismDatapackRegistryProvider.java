@@ -45,7 +45,7 @@ import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
-import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedBlockStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedStateProvider;
 import net.minecraft.world.level.levelgen.placement.BiomeFilter;
 import net.minecraft.world.level.levelgen.placement.BlockPredicateFilter;
 import net.minecraft.world.level.levelgen.placement.CountPlacement;
@@ -94,7 +94,7 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
                   }
               }
               context.register(configuredFeature(Mekanism.rl("salt")), new ConfiguredFeature<>(MekanismFeatures.DISK.get(), new ResizableDiskConfig(
-                    RuleBasedBlockStateProvider.simple(MekanismBlocks.SALT_BLOCK.value()),
+                    RuleBasedStateProvider.simple(MekanismBlocks.SALT_BLOCK.value()),
                     BlockPredicate.matchesBlocks(Blocks.DIRT, Blocks.CLAY),
                     ConfigurableUniformInt.SALT
               )));

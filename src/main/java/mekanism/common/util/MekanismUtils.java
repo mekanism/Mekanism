@@ -592,7 +592,8 @@ public final class MekanismUtils {
      */
     public static void speedUpEffectSafely(LivingEntity entity, MobEffectInstance effectInstance) {
         if (effectInstance.getDuration() > 0) {
-            int remainingDuration = effectInstance.tickDownDuration();
+            effectInstance.tickDownDuration()
+            int remainingDuration = effectInstance.getDuration();
             if (remainingDuration == 0 && effectInstance.hiddenEffect != null) {
                 effectInstance.setDetailsFrom(effectInstance.hiddenEffect);
                 effectInstance.hiddenEffect = effectInstance.hiddenEffect.hiddenEffect;
@@ -774,7 +775,7 @@ public final class MekanismUtils {
                                 // if we are floating above the bottom we don't take the area below us into account
                                 actualFluidHeight = fluidY - Math.max(bb.minY, y);
                             }
-                            details.heights.merge(ChunkPos.asLong(x, z), actualFluidHeight, Double::sum);
+                            details.heights.merge(ChunkPos.pack(x, z), actualFluidHeight, Double::sum);
                         }
                     }
                 }

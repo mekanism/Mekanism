@@ -24,7 +24,7 @@ public interface Attribute {
     }
 
     static boolean has(BlockState state, Class<? extends Attribute> type) {
-        return has(state.getBlockHolder(), type);
+        return has(state.typeHolder(), type);
     }
 
     static boolean has(Holder<Block> block, Class<? extends Attribute> type) {
@@ -37,7 +37,7 @@ public interface Attribute {
 
     @Nullable
     static <ATTRIBUTE extends Attribute> ATTRIBUTE get(BlockState state, Class<ATTRIBUTE> type) {
-        return get(state.getBlockHolder(), type);
+        return get(state.typeHolder(), type);
     }
 
     @Nullable
@@ -51,7 +51,7 @@ public interface Attribute {
     }
 
     static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(BlockState state, Class<ATTRIBUTE> type) {
-        return getOrThrow(state.getBlockHolder(), type);
+        return getOrThrow(state.typeHolder(), type);
     }
 
     static <ATTRIBUTE extends Attribute> ATTRIBUTE getOrThrow(Holder<Block> block, Class<ATTRIBUTE> type) {

@@ -38,7 +38,7 @@ public class BlockStateHelper {
     public static final BlockBehaviour.StatePredicate ALWAYS_PREDICATE = (state, world, pos) -> true;
 
     public static BlockState getDefaultState(@NotNull BlockState state) {
-        for (Attribute attr : Attribute.getAll(state.getBlockHolder())) {
+        for (Attribute attr : Attribute.getAll(state.typeHolder())) {
             if (attr instanceof AttributeState atr) {
                 state = atr.getDefaultState(state);
             }
@@ -101,7 +101,7 @@ public class BlockStateHelper {
         if (state == null) {
             return null;
         }
-        for (Attribute attr : Attribute.getAll(state.getBlockHolder())) {
+        for (Attribute attr : Attribute.getAll(state.typeHolder())) {
             if (attr instanceof AttributeState atr) {
                 state = atr.getStateForPlacement(state, world, pos, player, face);
             }
@@ -123,7 +123,7 @@ public class BlockStateHelper {
     public static BlockState copyStateData(BlockState oldState, BlockState newState) {
         Block oldBlock = oldState.getBlock();
         Block newBlock = newState.getBlock();
-        for (Attribute attr : Attribute.getAll(oldState.getBlockHolder())) {
+        for (Attribute attr : Attribute.getAll(oldState.typeHolder())) {
             if (attr instanceof AttributeState atr) {
                 newState = atr.copyStateData(oldState, newState);
             }

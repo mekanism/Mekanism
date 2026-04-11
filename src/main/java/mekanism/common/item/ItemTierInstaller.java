@@ -85,7 +85,7 @@ public class ItemTierInstaller extends Item {
         } else if (world.isClientSide()) {
             return InteractionResult.PASS;
         }
-        Holder<Block> block = state.getBlockHolder();
+        Holder<Block> block = state.typeHolder();
         AttributeUpgradeable upgradeableBlock = Attribute.get(block, AttributeUpgradeable.class);
         if (upgradeableBlock != null) {
             BaseTier baseTier = Attribute.getBaseTier(block);

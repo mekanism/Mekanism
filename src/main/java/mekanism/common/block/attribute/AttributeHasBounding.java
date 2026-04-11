@@ -38,7 +38,7 @@ public class AttributeHasBounding implements Attribute {
                     level.removeBlock(p, false);
                 } else {
                     Mekanism.logger.warn("Skipping removing block, expected bounding block but the block at {} in {} was {}", p, level.dimension().identifier(),
-                          boundingState.getBlockHolder().getRegisteredName());
+                          boundingState.typeHolder().getRegisteredName());
                 }
             }
             return true;

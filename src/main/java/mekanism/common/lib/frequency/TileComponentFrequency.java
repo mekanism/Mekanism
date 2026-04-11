@@ -1,7 +1,5 @@
 package mekanism.common.lib.frequency;
 
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.DynamicOps;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
@@ -17,7 +15,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.Mekanism;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
@@ -31,14 +28,9 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -326,8 +318,9 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     private static void deserializeFrequency(ValueInput frequencyInput, FrequencyType<?> type, FrequencyData frequencyData) {
-        if (frequencyNBT.contains(type.getName(), Tag.TAG_COMPOUND)) {
-            frequencyData.setFrequency(type.create(provider, frequencyNBT.getCompound(type.getName())));
+        Optional<FrequencyIdentity> identity = frequencyInput.read(type.getName(), type.getIdentitySerializer().codec());
+        if (identity.isPresent()) {
+            frequencyData.setFrequency(type.create(identity.get()));
         }
     }
 

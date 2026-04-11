@@ -202,7 +202,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     protected boolean hasAnalogOutputSignal(@NotNull BlockState blockState) {
-        return Attribute.has(blockState.getBlockHolder(), AttributeComparator.class);
+        return Attribute.has(blockState.typeHolder(), AttributeComparator.class);
     }
 
     @Override

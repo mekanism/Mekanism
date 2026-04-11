@@ -126,7 +126,7 @@ public class Attributes {
     public record AttributeCustomPathType(Attributes.PathCheck pathCheck) implements Attribute {
 
         public static final AttributeCustomPathType WHEN_NOT_FORMED = new AttributeCustomPathType((state, level, pos, mob) ->
-              WorldUtils.isInsideFormedMultiblock(level, pos, mob) ? PathType.DAMAGE_OTHER : null);
+              WorldUtils.isInsideFormedMultiblock(level, pos, mob) ? PathType.FENCE : null);
     }
 
     /** If a block can emit redstone. */
