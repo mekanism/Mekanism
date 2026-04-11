@@ -166,7 +166,7 @@ public class TransmitterNetworkTest {
         public int updateChunkLoading(MekGameTestHelper helper, boolean load, int level) {
             if (absolutePos == null) {
                 absolutePos = helper.absolutePos(relativePos);
-                absPos = absolutePos.toLong();
+                absPos = absolutePos.pack();
             }
             if (helper.isChunkLoaded(relativePos) != load) {
                 //If the chunk isn't watched and is loaded we want to try and unload it

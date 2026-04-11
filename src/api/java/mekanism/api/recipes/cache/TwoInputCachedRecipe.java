@@ -141,11 +141,11 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      */
-    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ItemStack, RECIPE>
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ItemStackTemplate, RECIPE>
     itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
-          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.ITEM_EMPTY);
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.ITEM_TEMPLATE_EMPTY);
     }
 
     /**

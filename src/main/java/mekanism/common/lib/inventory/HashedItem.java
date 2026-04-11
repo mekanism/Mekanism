@@ -16,13 +16,13 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author aidancbrady
  */
-@NothingNullByDefault
+@NothingNullByDefault//TODO 26.1 - convert to use ItemStackTemplate?
 public class HashedItem implements IHashedItem {
 
     /**
      * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
      */
-    public static final Codec<HashedItem> CODEC = ItemStack.SINGLE_ITEM_CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
+    public static final Codec<HashedItem> CODEC = ItemStack.CODEC.xmap(HashedItem::raw, HashedItem::getInternalStack);
     /**
      * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
      */

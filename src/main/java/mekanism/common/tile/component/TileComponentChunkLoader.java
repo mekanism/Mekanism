@@ -90,8 +90,8 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         LOGGER.debug("Attempting to add {} chunk tickets. Pos: {} World: {}", tickets, prevPos, world.dimension().identifier());
         if (tickets > 0) {
             for (ChunkPos chunkPos : chunks) {
-                boolean success = TICKET_CONTROLLER.forceChunk(world, prevPos, chunkPos.x, chunkPos.z, true, forceTicks);
-                chunkSet.add(chunkPos.toLong());
+                boolean success = TICKET_CONTROLLER.forceChunk(world, prevPos, chunkPos.x(), chunkPos.z(), true, forceTicks);
+                chunkSet.add(chunkPos.pack());
                 if (!success) {
                     LOGGER.error("Failed to force chunk during registration {}", chunkPos);
                 }
@@ -186,7 +186,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
                               world.dimension().identifier());
                         if (MekanismAPI.debug) {
                             LOGGER.debug("Current set: {}", chunkSet);
-                            LOGGER.debug("Tile chunk: {}", ChunkPos.asLong(tile.getBlockPos()));
+                            LOGGER.debug("Tile chunk: {}", ChunkPos.pack(tile.getBlockPos()));
                             LOGGER.debug("Tile requested: {}", newChunks);
                         }
                     }
@@ -268,7 +268,7 @@ public class TileComponentChunkLoader<T extends TileEntityMekanism & IChunkLoade
         }
         LongSet chunksAsLongs = new LongOpenHashSet(chunks.size());
         for (ChunkPos chunkPos : chunks) {
-            chunksAsLongs.add(chunkPos.toLong());
+            chunksAsLongs.add(chunkPos.pack());
         }
         return chunksAsLongs;
     }

@@ -50,6 +50,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -80,7 +81,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
     public IChemicalTank chemicalTank;
 
-    protected final IOutputHandler<@NotNull ItemStack> outputHandler;
+    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
     protected final ILongInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
 

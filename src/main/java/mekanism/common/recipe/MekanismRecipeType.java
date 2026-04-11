@@ -215,13 +215,14 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public List<RecipeHolder<RECIPE>> getRecipes(@Nullable Level world) {
         RecipeManager recipeManager = null;
         RegistryAccess registryAccess = null;
-        if (world == null) {
+        if (!(world instanceof ServerLevel serverLevel)) {
             //Try to get a fallback world if we are in a context that may not have one
             //If we are on the client get the client's world, if we are on the server get the current server's world
             if (FMLEnvironment.getDist().isClient()) {
                 Level clientWorld = MekanismClient.tryGetClientWorld();
                 if (clientWorld != null) {
-                    recipeManager = clientWorld.recipeAccess();
+                    //TODO 26.1 unpossible?
+                    //recipeManager = clientWorld.recipeAccess();
                     registryAccess = clientWorld.registryAccess();
                 }
             } else {
@@ -232,7 +233,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
                 }
             }
         } else {
-            recipeManager = world.recipeAccess();
+            recipeManager = serverLevel.recipeAccess();
             registryAccess = world.registryAccess();
         }
         if (recipeManager == null) {
@@ -248,7 +249,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     }
 
     @NotNull
-    @Override
+    @Override//todo 26.1 recipeManager _is_ a registry access now
     public List<RecipeHolder<RECIPE>> getRecipes(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
         if (cachedRecipes.isEmpty()) {
             //Note: This is a fresh immutable list that gets returned
@@ -281,7 +282,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
             //Ensure the recipes can be modified
             recipes = new ArrayList<>(recipes);
             for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeMap.byType(RecipeType.SMELTING)) {
-                ItemStack recipeOutput = smeltingRecipe.value().getResultItem(registryAccess);
+                ItemStack recipeOutput = smeltingRecipe.value().result().getResultItem(registryAccess);
                 if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
                     //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
                     NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();

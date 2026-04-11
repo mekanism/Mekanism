@@ -220,12 +220,12 @@ public class FrequencyManager<FREQ extends Frequency> {
             if (nbtTags.hasUUID(SerializationConstants.OWNER_UUID)) {
                 loadedOwner = nbtTags.getUUID(SerializationConstants.OWNER_UUID);
             }
-            ListTag list = nbtTags.getList(SerializationConstants.FREQUENCY_LIST, Tag.TAG_COMPOUND);
+            ListTag list = nbtTags.getListOrEmpty(SerializationConstants.FREQUENCY_LIST);
             loadedFrequencies = new HashList<>();
             Codec<FREQ> codec = frequencyType.codec();
             RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
             for (int i = 0; i < list.size(); i++) {
-                DataResult<FREQ> parsed = codec.parse(registryOps, list.getCompound(i));
+                DataResult<FREQ> parsed = codec.parse(registryOps, list.getCompoundOrEmpty(i));
                 parsed.ifSuccess(loadedFrequencies::add);
                 parsed.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency: {}", error.message()));
             }

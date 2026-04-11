@@ -10,6 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
+//TODO 26.1 - should it still use Item?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     public ItemInputCache() {
@@ -25,12 +26,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
         if (input.isSimple()) {
             //Simple ingredients don't actually check anything related to NBT,
             // so we can add the items to our base/raw input cache directly
-            for (ItemStack item : input.getItems()) {
-                if (!item.isEmpty()) {
-                    //Ignore empty stacks as some mods have ingredients that some stacks are empty
-                    addInputCache(item.getItem(), recipe);
-                }
-            }
+            input.items().forEach(item -> addInputCache(item.value(), recipe));
         } else if (input.getCustomIngredient() instanceof CompoundIngredient(List<Ingredient> children)) {
             //Special handling for neo's compound ingredient to map all children as best as we can
             // as maybe some of them are simple
@@ -41,7 +37,7 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
             return result;
         } else if (input.getCustomIngredient() instanceof DataComponentIngredient componentIngredient && componentIngredient.isStrict()) {
             //Special handling for neo's NBT Ingredient as it requires an exact component match
-            for (ItemStack item : input.getItems()) {
+            for (ItemStack item : input.getItems()) {//FIXME: use the patch from componentIngredient?
                 //Note: We copy it with a count of one, as we need to copy it anyway to ensure nothing somehow causes our backing map to mutate it,
                 // so while we are at it, we just set the size to one, as we don't care about the size
                 addNbtInputCache(item.copyWithCount(1), recipe);

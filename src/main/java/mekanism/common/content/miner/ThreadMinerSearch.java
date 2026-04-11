@@ -98,7 +98,7 @@ public class ThreadMinerSearch extends Thread {
                 acceptedItems.put(info, accepted);
             }
             if (accepted) {
-                long chunk = ChunkPos.asLong(testPos);
+                long chunk = ChunkPos.pack(testPos);
                 oresToMine.computeIfAbsent(chunk, k -> new BitSet()).set(i);
                 found++;
             }

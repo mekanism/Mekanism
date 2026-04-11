@@ -17,11 +17,13 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.lib.inventory.Finder;
 import mekanism.common.lib.inventory.TransitRequest;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
@@ -90,11 +92,11 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         max = filter.max;
     }
 
-    public abstract Finder getFinder();
+    public abstract Finder getFinder(@NotNull HolderLookup.Provider registries);
 
-    public TransitRequest mapInventory(IItemHandler itemHandler, boolean singleItem) {
+    public TransitRequest mapInventory(@NotNull HolderLookup.Provider registries, IItemHandler itemHandler, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return TransitRequest.definedItem(itemHandler, min, max, getFinder());
+            return TransitRequest.definedItem(itemHandler, min, max, getFinder(registries));
         }
         return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, getFinder());
     }

@@ -225,7 +225,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
                         continue;
                     }
                     ServerLevel level = (ServerLevel) qe.getLevel();
-                    if (level == null || !level.shouldTickBlocksAt(ChunkPos.asLong(qe.getBlockPos()))) {
+                    if (level == null || !level.shouldTickBlocksAt(ChunkPos.pack(qe.getBlockPos()))) {
                         //Skip QEs that aren't supposed to be ticking
                         continue;
                     }

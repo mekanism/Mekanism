@@ -271,7 +271,7 @@ class IndexedCuboidMapTest {
         assertPresent(center1, radius, value1, map);
         List<String> singletonValue = List.of(value1);
         Assertions.assertIterableEquals(singletonValue, new AsIterable<>(map.find(center1)));
-        Assertions.assertIterableEquals(singletonValue, new AsIterable<>(map.allCenteredInChunk(ChunkPos.asLong(center1))));
+        Assertions.assertIterableEquals(singletonValue, new AsIterable<>(map.allCenteredInChunk(ChunkPos.pack(center1))));
 
         return map;
     }
@@ -294,7 +294,7 @@ class IndexedCuboidMapTest {
         Assertions.assertEquals(value, map.findFirstAt(centre), "expected value we added");
 
         Assertions.assertTrue(contains(map.find(centre), value));
-        Assertions.assertTrue(contains(map.allCenteredInChunk(ChunkPos.asLong(centre)), value));
+        Assertions.assertTrue(contains(map.allCenteredInChunk(ChunkPos.pack(centre)), value));
 
         for (BlockPos checkPos : BlockPos.betweenClosed(centre.offset(-radius, -radius, -radius), centre.offset(radius, radius, radius))) {
             Assertions.assertTrue(contains(map.find(checkPos), value), "expected to find value in search grid");
@@ -307,7 +307,7 @@ class IndexedCuboidMapTest {
         Assertions.assertNotEquals(value, map.findFirstAt(centre), "expected no match");
 
         Assertions.assertFalse(contains(map.find(centre), value));
-        Assertions.assertFalse(contains(map.allCenteredInChunk(ChunkPos.asLong(centre)), value));
+        Assertions.assertFalse(contains(map.allCenteredInChunk(ChunkPos.pack(centre)), value));
 
         for (BlockPos checkPos : BlockPos.betweenClosed(centre.offset(-myRadius, -myRadius, -myRadius), centre.offset(myRadius, myRadius, myRadius))) {
             Assertions.assertFalse(contains(map.find(checkPos), value), "expected to not find value in search grid");

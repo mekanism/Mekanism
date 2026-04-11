@@ -445,7 +445,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private void tryMineBlock() {
         BlockPos startingPos = getStartingPos();
         int diameter = getDiameter();
-        long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.toLong();
+        long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.pack();
         for (ObjectIterator<Long2ObjectMap.Entry<BitSet>> iterator = Long2ObjectMaps.fastIterator(oresToMine); iterator.hasNext(); ) {
             Long2ObjectMap.Entry<BitSet> entry = iterator.next();
             long chunk = entry.getLongKey();
@@ -1189,7 +1189,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        ChunkPos minerChunk = new ChunkPos(worldPosition);
+        ChunkPos minerChunk = ChunkPos.containing(worldPosition);
         if (targetChunk != null) {
             //If we have a target check to make sure it is in the radius (most likely it is)
             if (SectionPos.blockToSectionCoord(worldPosition.getX() - radius) <= targetChunk.x &&

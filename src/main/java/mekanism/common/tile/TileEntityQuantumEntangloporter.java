@@ -227,7 +227,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @Override
     public Set<ChunkPos> getChunkSet() {
-        return Collections.singleton(new ChunkPos(getBlockPos()));
+        return Collections.singleton(ChunkPos.containing(getBlockPos()));
     }
 
     public InventoryFrequency getFreq() {

@@ -257,15 +257,14 @@ public abstract class BaseComputerHelper {
 
         Map<String, Object> wrapped = new HashMap<>(2);
         wrapped.put(SerializationConstants.BLOCK, state.typeHolder().getRegisteredName());
-        Map<String, Object> stateData = new HashMap<>();
-        for (Map.Entry<Property<?>, Comparable<?>> entry : state.getValues().entrySet()) {
-            Property<?> property = entry.getKey();
-            Object value = entry.getValue();
+        Map<String, Object> stateData = state.getValues().collect(HashMap::new, (map, entry) -> {
+            Property<?> property = entry.property();
+            Object value = entry.value();
             if (!(property instanceof IntegerProperty) && !(property instanceof BooleanProperty)) {
                 value = Util.getPropertyName(property, value);
             }
-            stateData.put(property.getName(), value);
-        }
+            map.put(property.getName(), value);
+        }, HashMap::putAll);
         if (!stateData.isEmpty()) {
             wrapped.put(SerializationConstants.STATE, stateData);
         }

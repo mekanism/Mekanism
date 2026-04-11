@@ -75,7 +75,7 @@ public class ChunkCommand {
             if (positionFromArgument) {
                 chunkPos = ColumnPosArgument.getColumnPos(ctx, POS_PARAM).toChunkPos();
             } else {
-                chunkPos = new ChunkPos(BlockPos.containing(ctx.getSource().getPosition()));
+                chunkPos = ChunkPos.containing(BlockPos.containing(ctx.getSource().getPosition()));
             }
             String name = hasName ? StringArgumentType.getString(ctx, NAME_PARAM) : null;
             ChunkWatchSettings settings = new ChunkWatchSettings(name, chunkPos);
@@ -92,7 +92,7 @@ public class ChunkCommand {
                   .requires(MekanismPermissions.COMMAND_CHUNK_UNWATCH)
                   .executes(ctx -> {
                       CommandSourceStack source = ctx.getSource();
-                      return unwatch(source, new ChunkPos(BlockPos.containing(source.getPosition())));
+                      return unwatch(source, ChunkPos.containing(BlockPos.containing(source.getPosition())));
                   }).then(Commands.argument(POS_PARAM, ColumnPosArgument.columnPos())
                         .executes(ctx -> {
                             ColumnPos column = ColumnPosArgument.getColumnPos(ctx, POS_PARAM);
@@ -173,7 +173,7 @@ public class ChunkCommand {
             if (chunkWatchers.isEmpty() || level.players().isEmpty()) {
                 return;
             }
-            ChunkWatchSettings settings = chunkWatchers.get(event.getChunk().getPos().toLong());
+            ChunkWatchSettings settings = chunkWatchers.get(event.getChunk().getPos().pack());
             if (settings != null) {
                 Component message = settings.translate(direction);
                 for (Player player : level.players()) {

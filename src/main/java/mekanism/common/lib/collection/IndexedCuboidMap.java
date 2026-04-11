@@ -136,7 +136,7 @@ public class IndexedCuboidMap<VALUE> {
      * @return an iterator of matching values
      */
     public Iterator<VALUE> find(BlockPos searchPos) {
-        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(searchPos));
+        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.pack(searchPos));
         if (values == null) {
             return Collections.emptyIterator();
         }
@@ -160,7 +160,7 @@ public class IndexedCuboidMap<VALUE> {
      */
     @Nullable
     public VALUE findFirstAt(BlockPos centre) {
-        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.asLong(centre));
+        Set<CenteredBoundingBox> values = chunkIndex.getValues(ChunkPos.pack(centre));
         if (values == null) {
             return null;
         }

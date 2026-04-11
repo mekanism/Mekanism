@@ -58,7 +58,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     }
 
     public int setChunkLoadLevel(ChunkPos relativePos, int newLevel) {
-        long absPos = absolutePos(relativePos).toLong();
+        long absPos = absolutePos(relativePos).pack();
         DistanceManager distanceManager = getChunkMap().getDistanceManager();
         ChunkHolder holder = distanceManager.getChunk(absPos);
         int oldLevel = holder == null ? UNLOAD_LEVEL : holder.getTicketLevel();
@@ -72,7 +72,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public ChunkPos absolutePos(ChunkPos relativePos) {
         BlockPos relativeMiddle = relativePos.getMiddleBlockPosition(0);
         BlockPos absolutePos = absolutePos(relativeMiddle);
-        return new ChunkPos(absolutePos);
+        return ChunkPos.containing(absolutePos);
     }
 
     public BlockState getBlockState(int x, int y, int z) {

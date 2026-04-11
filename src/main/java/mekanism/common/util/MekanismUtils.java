@@ -592,7 +592,7 @@ public final class MekanismUtils {
      */
     public static void speedUpEffectSafely(LivingEntity entity, MobEffectInstance effectInstance) {
         if (effectInstance.getDuration() > 0) {
-            effectInstance.tickDownDuration()
+            effectInstance.tickDownDuration();
             int remainingDuration = effectInstance.getDuration();
             if (remainingDuration == 0 && effectInstance.hiddenEffect != null) {
                 effectInstance.setDetailsFrom(effectInstance.hiddenEffect);

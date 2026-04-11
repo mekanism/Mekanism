@@ -4,6 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -11,6 +12,8 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 public class MachineUpgradeData implements IUpgradeData {
 
@@ -42,9 +45,13 @@ public class MachineUpgradeData implements IUpgradeData {
         this.inputSlots = inputSlots;
         this.outputSlots = outputSlots;
         this.sorting = sorting;
-        this.components = new CompoundTag();
+
+        ProblemReporter.Collector reporter = new ProblemReporter.Collector();
+        TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
         for (ITileComponent component : components) {
-            component.write(this.components, provider);
+            component.write(output);
         }
+        reporter.forEach((id, problem) -> Mekanism.logger.warn("Found MachineUpgradeData validation problem in {}: {}", id, problem.description()));
+        this.components = output.buildResult();
     }
 }

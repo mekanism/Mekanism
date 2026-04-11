@@ -49,6 +49,7 @@ import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
@@ -115,6 +116,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
     private int clientTypes;
+    private HolderLookup.Provider registries = null;//set by update
 
     private EnumColor color = EnumColor.INDIGO;
 
@@ -215,7 +217,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 failedWildcardTags.clear();
             }
         }
-        String modID = MekanismUtils.getModId(stack);
+        String modID = MekanismUtils.getModId(this.registries, stack);
         Set<HashedItem> modItems = modIDLookupMap.get(modID);
         if (modItems == null) {
             //If we added a new modid to the lookup map we also want to make sure that we clear our modid wildcard cache
@@ -300,7 +302,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             //Note: We don't need to clear the failed wildcard tags as if we are removing tags they still won't have any matches
         }
         ItemStack stack = type.getInternalStack();
-        String modID = MekanismUtils.getModId(stack);
+        String modID = MekanismUtils.getModId(this.registries, stack);
         Set<HashedItem> itemsForMod = modIDLookupMap.get(modID);
         //In theory if we are removing an item, and it existed we should have a set corresponding to it,
         // but double check that it is not null just in case
@@ -554,6 +556,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public boolean update(BlockEntity tile) {
+        this.registries = tile.getLevel().registryAccess();
         boolean changedData = super.update(tile);
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
             for (int i = 0, slots = holder.getDriveSlots().size(); i < slots; i++) {

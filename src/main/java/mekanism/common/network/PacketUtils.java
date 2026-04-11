@@ -153,7 +153,7 @@ public class PacketUtils {
     }
 
     public static <MSG extends CustomPacketPayload> void sendToAllTracking(MSG message, Level world, BlockPos pos) {
-        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) world, new ChunkPos(pos), message);
+        PacketDistributor.sendToPlayersTrackingChunk((ServerLevel) world, ChunkPos.containing(pos), message);
     }
 
     /**

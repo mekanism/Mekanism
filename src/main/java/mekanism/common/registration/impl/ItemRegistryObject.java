@@ -60,7 +60,7 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
     @NotNull
     @Override
     public Component getTextComponent() {
-        return value().getName();
+        return value().getName(asStack());
     }
 
     @Internal

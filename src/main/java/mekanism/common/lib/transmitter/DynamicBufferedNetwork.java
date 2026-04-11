@@ -56,7 +56,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
     @Override
     protected void addTransmitterFromCommit(TRANSMITTER transmitter) {
         super.addTransmitterFromCommit(transmitter);
-        chunks.add(ChunkPos.asLong(transmitter.getBlockPos()));
+        chunks.add(ChunkPos.pack(transmitter.getBlockPos()));
         //Update the capacity here, to make sure that we can actually absorb the buffer properly
         updateCapacity(transmitter);
         absorbBuffer(transmitter);

@@ -57,8 +57,8 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
-        return output.create();
+    public ItemStackTemplate getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
+        return output;
     }
 
     @Override
@@ -72,8 +72,8 @@ public abstract class BasicItemStackChemicalToItemStackRecipe extends ItemStackC
     }
 
     @Override
-    public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output.create());
+    public List<@NotNull ItemStackTemplate> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override

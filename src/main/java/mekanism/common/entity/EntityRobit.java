@@ -281,7 +281,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             //If this robit is currently following its owner and is being removed from the world (due to chunk unloading)
             // register a ticket that loads the chunk for a second, so that it has time to have its following check run again
             // (as it runs every 10 ticks, half a second), and then teleport to the owner.
-            ((ServerLevel) level()).getChunkSource().addTicketWithRadius(MekanismTicketTypes.ROBIT_CHUNK_UNLOAD.value(), new ChunkPos(blockPosition()), 2);
+            ((ServerLevel) level()).getChunkSource().addTicketWithRadius(MekanismTicketTypes.ROBIT_CHUNK_UNLOAD.value(), ChunkPos.containing(blockPosition()), 2);
         }
         super.onRemovedFromLevel();
     }

@@ -33,6 +33,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
@@ -49,7 +50,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     protected final IInputHandler<@NotNull ItemStack> inputHandler;
-    protected final IOutputHandler<@NotNull ItemStack> outputHandler;
+    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
 
     private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")

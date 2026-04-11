@@ -3,9 +3,11 @@ package mekanism.common.lib.inventory;
 import java.util.function.Predicate;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Finder extends Predicate<ItemStack> {
@@ -29,10 +31,10 @@ public interface Finder extends Predicate<ItemStack> {
     }
 
     static Finder tag(String tagName) {
-        return stack -> !stack.isEmpty() && stack.getTags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
+        return stack -> !stack.isEmpty() && stack.tags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }
 
-    static Finder modID(String modID) {
-        return stack -> !stack.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(stack));
+    static Finder modID(String modID, @NotNull HolderLookup.Provider registries) {
+        return stack -> !stack.isEmpty() && WildcardMatcher.matches(modID, MekanismUtils.getModId(registries, stack));
     }
 }
