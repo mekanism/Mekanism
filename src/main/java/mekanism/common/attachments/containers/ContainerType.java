@@ -19,7 +19,6 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalHandler;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
@@ -37,16 +36,15 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.util.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
@@ -68,6 +66,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     private static final List<ContainerType<?, ?, ?>> TYPES_INTERNAL = new ArrayList<>();
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
+    //todo 26.1 - these collect/apply methods should be static, they don't actually use the tile
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
           SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
           TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy) {
@@ -276,10 +275,6 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return false;
     }
 
-    private ValueOutputList save(HolderLookup.Provider provider, List<CONTAINER> containers) {
-        return DataHandlerUtils.writeContents(provider, containerKey, containers);
-    }
-
     public void saveTo(ValueOutput output, TileEntityMekanism tile) {
         saveTo(output, getContainers(tile));
     }
@@ -301,29 +296,10 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         DataHandlerUtils.readContents(input.childrenListOrEmpty(containerTag), containerKey, containers);
     }
 
-    public void copyToStack(HolderLookup.Provider provider, List<CONTAINER> containers, ItemStack stack) {
-        HANDLER handler = createHandler(stack);
-        if (handler != null) {
-            DataHandlerUtils.readContents(save(provider, containers), containerKey, handler.getContainers());
-            //TODO - 1.21: FIX the getattached here?
-            stack.set(component, handler.getAttached());
-            if (stack.getCount() > 1) {
-                Mekanism.logger.error("Copied {} to a stack ({}). This might lead to duplication of data.", getComponentName(), stack);
-            }
-        }
-    }
-
     public void copyToTile(TileEntityMekanism tile, DataComponentGetter input) {
         ATTACHED attachedData = input.get(component);
         if (attachedData != null) {
             copyToTile.copy(tile, input, getContainers(tile), attachedData);
-        }
-    }
-
-    public void copyFromStack(HolderLookup.Provider provider, ItemStack stack, List<CONTAINER> containers) {
-        HANDLER handler = createHandler(stack);
-        if (handler != null) {
-            DataHandlerUtils.readContents(save(provider, handler.getContainers()), containerKey, containers);
         }
     }
 

@@ -44,6 +44,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -110,6 +111,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
@@ -179,7 +181,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
     private final IInputHandler<@NotNull ItemStack> inputHandler;
-    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
 
     @NotNull
     private final List<IInventorySlot> inventorySlots;
@@ -203,7 +205,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         recipeCacheLookupMonitor = new RecipeCacheLookupMonitor<>(this);
         // Choose a random offset to check for all errors. We do this to ensure that not every tile tries to recheck errors for every
         // recipe the same tick and thus create uneven spikes of CPU usage
-        int checkOffset = level().random.nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
+        int checkOffset = level().getRandom().nextInt(TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY);
         recheckAllRecipeErrors = () -> !playersUsing.isEmpty() && level().getGameTime() % TileEntityRecipeMachine.RECIPE_CHECK_FREQUENCY == checkOffset;
         IContentsListener recipeCacheUnpauseListener = () -> {
             onContentsChanged();
@@ -338,7 +340,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
             if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
-                setSkin(HolidayManager.getRandomBaseSkin(level().random), null);
+                setSkin(HolidayManager.getRandomBaseSkin(level().getRandom()), null);
             }
         }
     }
@@ -440,7 +442,15 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ContainerType.ITEM.copyToStack(level().registryAccess(), getInventorySlots(null), stack);
+        List<IInventorySlot> robitSlots = getInventorySlots(null);
+        ComponentBackedItemHandler stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
+        for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
+            ItemStack invStack = robitSlots.get(slot).getStack();
+            if (invStack.isEmpty()) {
+                continue;
+            }
+            stackInventory.setStackInSlot(slot, invStack.copy());
+        }
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());
         }

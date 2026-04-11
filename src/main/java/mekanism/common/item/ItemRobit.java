@@ -1,8 +1,10 @@
 package mekanism.common.item;
 
+import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.security.ISecurityObject;
@@ -10,10 +12,12 @@ import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.entity.EntityRobit;
+import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -108,7 +112,22 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     } else {
                         robit.setOwnerUUID(ownerUUID);
                     }
-                    ContainerType.ITEM.copyFromStack(world.registryAccess(), stack, robit.getInventorySlots(null));
+                    List<IInventorySlot> robitSlots = robit.getInventorySlots(null);
+                    ComponentBackedItemHandler stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
+                    if (stackInventory != null) {
+                        for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
+                            ItemStack stackInSlot = stackInventory.getStackInSlot(slot);
+                            if (stackInSlot.isEmpty()) {
+                                continue;
+                            }
+                            IInventorySlot robitSlot = robitSlots.get(slot);
+                            if (robitSlot instanceof BasicInventorySlot basicInventorySlot) {
+                                basicInventorySlot.setStackUnchecked(stackInSlot.copy());
+                            } else {
+                                robitSlot.setStack(stackInSlot.copy());
+                            }
+                        }
+                    }
                     Component name = stack.get(MekanismDataComponents.ROBIT_NAME);
                     if (name != null) {
                         robit.setCustomName(name);

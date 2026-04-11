@@ -26,6 +26,7 @@ import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -157,9 +158,9 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param outputHandler    Output handler.
      */
     public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
-              ConstantPredicates.ITEM_EMPTY);
+              ConstantPredicates.ITEM_TEMPLATE_EMPTY);
     }
 
     /**
