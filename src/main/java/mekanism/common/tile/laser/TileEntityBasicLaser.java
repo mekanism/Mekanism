@@ -24,14 +24,10 @@ import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
@@ -324,7 +320,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
-        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        dummy.setEmulatingData(this);//pretend to be the owner
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
         if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, hitSide)) {

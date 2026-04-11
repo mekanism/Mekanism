@@ -2,15 +2,17 @@ package mekanism.common.base;
 
 import com.mojang.authlib.GameProfile;
 import java.lang.ref.WeakReference;
-import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Function;
 import mekanism.common.Mekanism;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.lib.security.ISecurityTile;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.players.NameAndId;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.neoforged.neoforge.common.util.FakePlayer;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Global, shared FakePlayer for Mekanism-specific uses
@@ -34,9 +36,10 @@ public class MekFakePlayer extends FakePlayer {
      */
     private UUID emulatingUUID = null;
 
+    private String emulatingName = null;
+
     private MekFakePlayer(ServerLevel world) {
-        super(world, new FakeGameProfile());
-        ((FakeGameProfile) this.getGameProfile()).myFakePlayer = this;
+        super(world, Mekanism.gameProfile);
     }
 
     @Override
@@ -44,8 +47,9 @@ public class MekFakePlayer extends FakePlayer {
         return false;
     }
 
-    public void setEmulatingUUID(UUID uuid) {
-        this.emulatingUUID = uuid;
+    public void setEmulatingData(ISecurityTile securityTile) {
+        this.emulatingUUID = securityTile.getOwnerUUID();
+        this.emulatingName = Mekanism.gameProfile.name() + " " + securityTile.getOwnerName();
     }
 
     @NotNull
@@ -54,8 +58,38 @@ public class MekFakePlayer extends FakePlayer {
         return this.emulatingUUID == null ? super.getUUID() : this.emulatingUUID;
     }
 
+    @Override
+    public @NonNull GameProfile getGameProfile() {
+        if (emulatingUUID == null) {
+            return super.getGameProfile();
+        }
+        return new GameProfile(emulatingUUID, emulatingName);
+    }
+
+    @Override
+    public @NonNull NameAndId nameAndId() {
+        if (emulatingUUID == null) {
+            return super.nameAndId();
+        }
+        return new NameAndId(emulatingUUID, emulatingName);
+    }
+
+    @Override
+    public @NonNull Component getName() {
+        if (emulatingUUID == null) {
+            return super.getName();
+        }
+        return Component.literal(emulatingName);
+    }
+
+    @Override
+    public @NonNull String getPlainTextName() {
+        return emulatingName != null ? emulatingName : super.getPlainTextName();
+    }
+
     public void cleanupFakePlayer(ServerLevel world) {
         emulatingUUID = null;
+        emulatingName = null;
         //don't keep reference to the World, note we set it to the overworld to avoid any potential null pointers
         setServerLevel(world.getServer().overworld());
     }
@@ -128,52 +162,4 @@ public class MekFakePlayer extends FakePlayer {
         }
     }
 
-    /**
-     * Game profile supporting our UUID emulation
-     */
-    private static class FakeGameProfile extends GameProfile {
-
-        private MekFakePlayer myFakePlayer = null;
-
-        public FakeGameProfile() {
-            super(Mekanism.gameProfile.id(), Mekanism.gameProfile.name());
-        }
-
-        private UUID getEmulatingUUID() {
-            return myFakePlayer == null ? null : myFakePlayer.emulatingUUID;
-        }
-
-        @Override
-        public UUID id() {
-            UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID == null ? super.id() : emulatingUUID;
-        }
-
-        @Override
-        public String name() {
-            UUID emulatingUUID = getEmulatingUUID();
-            return emulatingUUID == null ? super.name() : MekanismUtils.getLastKnownUsername(emulatingUUID);
-        }
-
-        //NB: super check they're the same class, we only check that name & id match
-        @Override
-        public boolean equals(final Object o) {
-            if (this == o) {
-                return true;
-            }
-            if (!(o instanceof GameProfile that)) {
-                return false;
-            }
-            return Objects.equals(id(), that.id()) && Objects.equals(name(), that.name());
-        }
-
-        @Override
-        public int hashCode() {
-            UUID id = id();
-            String name = name();
-            int result = id == null ? 0 : id.hashCode();
-            result = 31 * result + (name == null ? 0 : name.hashCode());
-            return result;
-        }
-    }
 }

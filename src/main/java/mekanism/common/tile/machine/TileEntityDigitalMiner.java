@@ -586,7 +586,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private boolean canMine(BlockState state, BlockPos pos) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
-        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        dummy.setEmulatingData(this);//pretend to be the owner
         boolean canMine = !NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level, pos, state, dummy)).isCanceled();
         if (MekanismAPI.debug && !canMine) {
             Mekanism.logger.debug("Denied mining block: {} @ {} {}", state, level.dimension().identifier(), pos);
@@ -597,7 +597,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private BlockState getStateForPlacement(ItemStack stack, BlockPos pos) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer((ServerLevel) level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
-        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        dummy.setEmulatingData(this);//pretend to be the owner
         BlockState result = StackUtils.getStateForPlacement(stack, pos, dummy);
         dummy.cleanupFakePlayer((ServerLevel) level);
         return result;
@@ -1296,7 +1296,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
         }
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, this.worldPosition.getX(), this.worldPosition.getY(), this.worldPosition.getZ());
-        dummy.setEmulatingUUID(getOwnerUUID());//pretend to be the owner
+        dummy.setEmulatingData(this);//pretend to be the owner
         List<ItemStack> drops = WorldUtils.getDrops(state, level, pos, WorldUtils.getTileEntity(level, pos), dummy, stack);
         dummy.cleanupFakePlayer(level);
         return drops;
