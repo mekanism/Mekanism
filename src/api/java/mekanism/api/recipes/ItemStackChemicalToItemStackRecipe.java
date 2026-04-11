@@ -2,7 +2,6 @@ package mekanism.api.recipes;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,10 +26,6 @@ import org.jetbrains.annotations.NotNull;
  */
 @NothingNullByDefault
 public abstract class ItemStackChemicalToItemStackRecipe extends ItemStackChemicalToObjectRecipe<ItemStack> {
-
-    @NotNull
-    @Override
-    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     @NotNull
     @Override

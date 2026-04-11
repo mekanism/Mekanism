@@ -5,18 +5,26 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<ChemicalCrystallizerRecipeBuilder> {
 
     private final ChemicalStackIngredient input;
-    private final ItemStack output;
+    private final ItemStackTemplate output;
 
-    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient input, ItemStack output) {
+    protected ChemicalCrystallizerRecipeBuilder(ChemicalStackIngredient input, ItemStackTemplate output) {
         this.input = input;
         this.output = output;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(output);
     }
 
     /**
@@ -25,10 +33,7 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      * @param input  Input.
      * @param output Output.
      */
-    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient input, ItemStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This crystallizing recipe requires a non empty item output.");
-        }
+    public static ChemicalCrystallizerRecipeBuilder crystallizing(ChemicalStackIngredient input, ItemStackTemplate output) {
         return new ChemicalCrystallizerRecipeBuilder(input, output);
     }
 
@@ -43,6 +48,6 @@ public class ChemicalCrystallizerRecipeBuilder extends MekanismRecipeBuilder<Che
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        save(recipeOutput, output.getItemHolder());
+        save(recipeOutput, output.typeHolder());
     }
 }

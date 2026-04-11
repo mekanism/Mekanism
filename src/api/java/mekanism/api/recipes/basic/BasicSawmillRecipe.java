@@ -10,15 +10,19 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class BasicSawmillRecipe extends SawmillRecipe {
 
     protected final ItemStackIngredient input;
-    protected final ItemStack mainOutput;
-    protected final ItemStack secondaryOutput;
+    @Nullable
+    protected final ItemStackTemplate mainOutput;
+    @Nullable
+    protected final ItemStackTemplate secondaryOutput;
     protected final double secondaryChance;
 
     /**
@@ -29,7 +33,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
      *
      * @apiNote At least one output must not be empty.
      */
-    public BasicSawmillRecipe(ItemStackIngredient input, ItemStack mainOutput, ItemStack secondaryOutput, double secondaryChance) {
+    public BasicSawmillRecipe(ItemStackIngredient input, @Nullable ItemStackTemplate mainOutput, @Nullable ItemStackTemplate secondaryOutput, double secondaryChance) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(mainOutput, "Main output cannot be null.");
         Objects.requireNonNull(secondaryOutput, "Secondary output cannot be null.");

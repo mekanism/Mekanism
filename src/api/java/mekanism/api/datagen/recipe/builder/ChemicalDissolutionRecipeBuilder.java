@@ -7,6 +7,8 @@ import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.basic.BasicChemicalDissolutionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<ChemicalDissolutionRecipeBuilder> {
@@ -21,6 +23,11 @@ public class ChemicalDissolutionRecipeBuilder extends MekanismRecipeBuilder<Chem
         this.chemicalInput = chemicalInput;
         this.output = output;
         this.perTickUsage = perTickUsage;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return getDefaultRecipeId(output);
     }
 
     /**

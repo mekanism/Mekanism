@@ -7,6 +7,8 @@ import mekanism.api.recipes.basic.BasicActivatingRecipe;
 import mekanism.api.recipes.basic.BasicCentrifugingRecipe;
 import mekanism.api.recipes.ChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 /**
  * @since 10.7.0 Previously was GasToGasRecipeBuilder
@@ -22,6 +24,11 @@ public class ChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<Chemi
         this.input = input;
         this.output = output;
         this.factory = factory;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return getDefaultRecipeId(output);
     }
 
     /**

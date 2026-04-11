@@ -6,14 +6,13 @@ import it.unimi.dsi.fastutil.chars.CharOpenHashSet;
 import it.unimi.dsi.fastutil.chars.CharSet;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
@@ -61,7 +60,7 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, TagKey<Item> tag) {
+    public ExtendedShapedRecipeBuilder key(char symbol, HolderSet<Item> tag) {
         return key(symbol, Ingredient.of(tag));
     }
 
@@ -118,11 +117,10 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
     @Override
     protected Recipe<?> asRecipe() {
         return wrapRecipe(new ShapedRecipe(
-              Objects.requireNonNullElse(this.group, ""),
-              RecipeBuilder.determineBookCategory(this.category),
+              RecipeBuilder.createCraftingCommonInfo(this.showNotification),
+              RecipeBuilder.createCraftingBookInfo(this.category, this.group),
               ShapedRecipePattern.of(this.key, this.pattern),
-              resultStack(),
-              this.showNotification
+              resultStack()
         ));
     }
 

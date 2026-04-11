@@ -1,10 +1,10 @@
 package mekanism.api.recipes;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeBookCategories;
 import net.minecraft.world.item.crafting.RecipeBookCategory;
 import net.minecraft.world.item.crafting.RecipeInput;
 
@@ -48,25 +48,22 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
         return ItemStack.EMPTY;
     }
 
-    //@Override
-    public ItemStack getResultItem(HolderLookup.Provider provider) {
-        //TODO - 1.21.11: This and get Toast symbol are replaced by List<RecipeDisplay> display()
-        return ItemStack.EMPTY;
-    }
-
     public ItemStack getToastSymbol() {//TODO - 1.21.11: Remove this after removing the things that use it
         return ItemStack.EMPTY;
     }
 
     @Override
     public PlacementInfo placementInfo() {
-        //TODO - 1.21.11: Implement this
-        throw new UnsupportedOperationException();
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public boolean showNotification() {
+        return false;
     }
 
     @Override
     public RecipeBookCategory recipeBookCategory() {
-        //TODO - 1.21.11: Implement this
-        throw new UnsupportedOperationException();
+        return RecipeBookCategories.CRAFTING_MISC;
     }
 }

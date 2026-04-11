@@ -9,25 +9,23 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Contract;
 
 @NothingNullByDefault
 public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
 
     protected final FluidStackIngredient input;
-    protected final FluidStack output;
+    protected final FluidStackTemplate output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicFluidToFluidRecipe(FluidStackIngredient input, FluidStack output) {
+    public BasicFluidToFluidRecipe(FluidStackIngredient input, FluidStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = output;
     }
 
     @Override
@@ -42,16 +40,16 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
 
     @Override
     public List<FluidStack> getOutputDefinition() {
-        return Collections.singletonList(output);
+        return Collections.singletonList(output.create());
     }
 
     @Override
     @Contract(value = "_ ->new", pure = true)
     public FluidStack getOutput(FluidStack input) {
-        return output.copy();
+        return output.create();
     }
 
-    public FluidStack getOutputRaw() {
+    public FluidStackTemplate getOutputRaw() {
         return output;
     }
 
@@ -68,14 +66,13 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
             return false;
         }
         BasicFluidToFluidRecipe other = (BasicFluidToFluidRecipe) o;
-        return input.equals(other.input) && FluidStack.matches(output, other.output);
+        return input.equals(other.input) && output.equals(other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = input.hashCode();
-        hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
-        hash = 31 * hash + output.getAmount();
+        hash = 31 * hash + output.hashCode();
         return hash;
     }
 }

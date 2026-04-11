@@ -6,6 +6,10 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ElectrolysisRecipe;
 import mekanism.api.recipes.basic.BasicElectrolysisRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<ElectrolysisRecipeBuilder> {
@@ -19,6 +23,14 @@ public class ElectrolysisRecipeBuilder extends MekanismRecipeBuilder<Electrolysi
         this.input = input;
         this.leftChemicalOutput = leftChemicalOutput;
         this.rightChemicalOutput = rightChemicalOutput;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        Identifier leftId = chemicalId(leftChemicalOutput);
+        Identifier rightId = chemicalId(rightChemicalOutput);
+        Identifier combinedId = Identifier.fromNamespaceAndPath(leftId.getNamespace(), leftId.getPath() + "_" + rightId.getPath());
+        return ResourceKey.create(Registries.RECIPE, combinedId);
     }
 
     /**

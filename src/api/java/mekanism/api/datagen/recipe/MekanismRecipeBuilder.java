@@ -5,6 +5,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalStack;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementRequirements;
@@ -20,6 +21,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.fluids.FluidInstance;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -29,6 +31,7 @@ import org.jetbrains.annotations.Nullable;
 @SuppressWarnings("UnusedReturnValue")
 public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilder<BUILDER>> implements RecipeBuilder {
 
+    protected static final ResourceKey<Recipe<?>> NO_DEFAULT_ID = ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath("if_you_see_this", "you_forgot_an_id"));
     protected final List<ICondition> conditions = new ArrayList<>();
     protected final Map<String, Criterion<?>> criteria = new LinkedHashMap<>();
     @Nullable
@@ -85,12 +88,6 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      */
     protected abstract Recipe<?> asRecipe();
 
-    @Override
-    public Item getResult() {
-        //TODO - 1.21.11: Re-evaluate this method and decide if we want it to fail more gracefully
-        throw new UnsupportedOperationException("Not implemented yet");
-    }
-
     /**
      * Performs any extra validation.
      *
@@ -108,7 +105,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @param id           Name of the recipe being built.
      */
     public void save(RecipeOutput recipeOutput, Identifier id) {
-        Identifier defaultId = RecipeBuilder.getDefaultRecipeId(getResult());
+        Identifier defaultId = defaultId().identifier();
         if (id.equals(defaultId)) {
             throw new IllegalStateException("Recipe " + id + " should remove its 'save' argument as it is equal to default one");
         } else {
@@ -151,5 +148,18 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
             throw new IllegalStateException("Could not retrieve registry name for output.");
         }
         save(recipeOutput, key.identifier());
+    }
+
+    public static ResourceKey<Recipe<?>> getDefaultRecipeId(FluidInstance fluid) {
+        return ResourceKey.create(Registries.RECIPE, fluid.typeHolder().unwrapKey().orElseThrow().identifier());
+    }
+
+    //TODO 26.1 - probably needs to not be a chemical stack?
+    public static ResourceKey<Recipe<?>> getDefaultRecipeId(ChemicalStack stack) {
+        return ResourceKey.create(Registries.RECIPE, chemicalId(stack));
+    }
+
+    public static Identifier chemicalId(ChemicalStack stack) {
+        return stack.getChemicalHolder().unwrapKey().orElseThrow().identifier();
     }
 }

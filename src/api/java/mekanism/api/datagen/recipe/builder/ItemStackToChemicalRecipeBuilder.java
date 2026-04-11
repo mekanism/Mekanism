@@ -8,6 +8,8 @@ import mekanism.api.recipes.basic.BasicChemicalConversionRecipe;
 import mekanism.api.recipes.basic.BasicPigmentExtractingRecipe;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<ItemStackToChemicalRecipeBuilder> {
@@ -20,6 +22,11 @@ public class ItemStackToChemicalRecipeBuilder extends MekanismRecipeBuilder<Item
         this.input = input;
         this.output = output;
         this.factory = factory;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return getDefaultRecipeId(output);
     }
 
     /**

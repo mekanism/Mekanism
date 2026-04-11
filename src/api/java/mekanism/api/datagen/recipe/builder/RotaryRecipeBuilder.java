@@ -7,6 +7,8 @@ import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,6 +28,11 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
         this.fluidInput = fluidInput;
         this.chemicalOutput = chemicalOutput;
         this.fluidOutput = fluidOutput;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return NO_DEFAULT_ID;
     }
 
     /**

@@ -3,20 +3,21 @@ package mekanism.common.recipe.builder;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import net.minecraft.core.Holder;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDER>> extends MekanismRecipeBuilder<BUILDER> {
 
-    private final Holder<Item> result;
-    private final int count;
+    private final ItemStackTemplate result;
     protected RecipeCategory category = RecipeCategory.MISC;
 
     protected BaseRecipeBuilder(Holder<Item> result, int count) {
-        this.result = result;
-        this.count = count;
+        this.result = new ItemStackTemplate(result, count);
     }
 
     @SuppressWarnings("unchecked")
@@ -25,12 +26,12 @@ public abstract class BaseRecipeBuilder<BUILDER extends BaseRecipeBuilder<BUILDE
         return (BUILDER) this;
     }
 
-    @Override
-    public Item getResult() {
-        return result.value();
+    protected ItemStackTemplate resultStack() {
+        return result;
     }
 
-    protected ItemStack resultStack() {
-        return new ItemStack(result, count);
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(result);
     }
 }

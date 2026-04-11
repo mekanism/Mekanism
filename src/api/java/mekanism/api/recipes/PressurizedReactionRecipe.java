@@ -2,6 +2,7 @@ package mekanism.api.recipes;
 
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
@@ -14,6 +15,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -21,6 +23,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 /**
@@ -124,12 +127,11 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
     /**
      * @apiNote Both item and chemical may be present or one may be empty.
      */
-    public record PressurizedReactionRecipeOutput(@NotNull ItemStack item, @NotNull ChemicalStack chemical) {
+    public record PressurizedReactionRecipeOutput(@Nullable ItemStackTemplate item, @NotNull ChemicalStack chemical) {
 
         public PressurizedReactionRecipeOutput {
-            Objects.requireNonNull(item, "Item output cannot be null.");
             Objects.requireNonNull(chemical, "Chemical output cannot be null.");
-            if (item.isEmpty() && chemical.isEmpty()) {
+            if (item == null && chemical.isEmpty()) {
                 throw new IllegalArgumentException("At least one output must be present.");
             }
         }
@@ -142,15 +144,15 @@ public abstract class PressurizedReactionRecipe extends MekanismRecipe<ReactionR
                 return false;
             }
             PressurizedReactionRecipeOutput other = (PressurizedReactionRecipeOutput) o;
-            return ItemStack.matches(item, other.item) && chemical.equals(other.chemical);
+            return ItemStackTemplateHelper.matches(item, other.item) && chemical.equals(other.chemical);
         }
 
         @Override
         public int hashCode() {
             int hash = chemical.hashCode();
-            if (!item.isEmpty()) {
-                hash = 31 * hash + ItemStack.hashItemAndComponents(item);
-                hash = 31 * hash + item.getCount();
+            if (item != null) {
+                hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(item);
+                hash = 31 * hash + item.count();
             }
             return hash;
         }

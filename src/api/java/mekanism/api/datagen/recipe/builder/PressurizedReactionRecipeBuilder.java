@@ -8,7 +8,10 @@ import mekanism.api.recipes.basic.BasicPressurizedReactionRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<PressurizedReactionRecipeBuilder> {
@@ -18,17 +21,23 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
     private final ChemicalStackIngredient inputChemical;
     private long energyRequired = 0;
     private final int duration;
-    private final ItemStack outputItem;
+    @Nullable
+    private final ItemStackTemplate outputItem;
     private final ChemicalStack outputChemical;
 
     protected PressurizedReactionRecipeBuilder(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical, int duration,
-          ItemStack outputItem, ChemicalStack outputChemical) {
+          @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
         this.inputSolid = inputSolid;
         this.inputFluid = inputFluid;
         this.inputChemical = inputChemical;
         this.duration = duration;
         this.outputItem = outputItem;
         this.outputChemical = outputChemical;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return NO_DEFAULT_ID;
     }
 
     /**
@@ -41,8 +50,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputItem    Item Output.
      */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ItemStack outputItem) {
-        if (outputItem.isEmpty()) {
+          int duration, @Nullable ItemStackTemplate outputItem) {
+        if (outputItem == null) {
             throw new IllegalArgumentException("This reaction recipe requires a non empty output item.");
         }
         validateDuration(duration);
@@ -64,7 +73,7 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
             throw new IllegalArgumentException("This reaction recipe requires a non empty output chemical.");
         }
         validateDuration(duration);
-        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, ItemStack.EMPTY, outputChemical);
+        return new PressurizedReactionRecipeBuilder(inputSolid, inputFluid, inputChemical, duration, null, outputChemical);
     }
 
     /**
@@ -78,8 +87,8 @@ public class PressurizedReactionRecipeBuilder extends MekanismRecipeBuilder<Pres
      * @param outputChemical Chemical Output.
      */
     public static PressurizedReactionRecipeBuilder reaction(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
-          int duration, ItemStack outputItem, ChemicalStack outputChemical) {
-        if (outputItem.isEmpty() || outputChemical.isEmpty()) {
+          int duration, @Nullable ItemStackTemplate outputItem, ChemicalStack outputChemical) {
+        if (outputItem == null || outputChemical.isEmpty()) {
             throw new IllegalArgumentException("This reaction recipe requires non empty item and chemical outputs.");
         }
         validateDuration(duration);

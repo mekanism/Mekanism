@@ -3,33 +3,30 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemStackRecipe {
 
     protected final ItemStackIngredient input;
-    protected final ItemStack output;
+    protected final ItemStackTemplate output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStack output, RecipeType<ItemStackToItemStackRecipe> recipeType) {
+    public BasicItemStackToItemStackRecipe(ItemStackIngredient input, ItemStackTemplate output, RecipeType<ItemStackToItemStackRecipe> recipeType) {
         super(recipeType);
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = output;
     }
 
     @Override
@@ -45,21 +42,15 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     @Override
     @Contract(value = "_ -> new", pure = true)
     public ItemStack getOutput(ItemStack input) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
+        return output.create();
     }
 
     @Override
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
+        return Collections.singletonList(output.create());
     }
 
-    public ItemStack getOutputRaw() {
+    public ItemStackTemplate getOutputRaw() {
         return output;
     }
 
@@ -71,14 +62,14 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
             return false;
         }
         BasicItemStackToItemStackRecipe other = (BasicItemStackToItemStackRecipe) o;
-        return input.equals(other.input) && ItemStack.matches(output, other.output);
+        return input.equals(other.input) && ItemStackTemplateHelper.matches(output, other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = input.hashCode();
-        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
-        hash = 31 * hash + output.getCount();
+        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(output);
+        hash = 31 * hash + output.count();
         return hash;
     }
 }

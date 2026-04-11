@@ -10,8 +10,10 @@ import mekanism.api.recipes.basic.BasicPaintingRecipe;
 import mekanism.api.recipes.basic.BasicPurifyingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackChemicalToItemStackRecipeBuilder> {
@@ -19,16 +21,21 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
     private final ItemStackChemicalToItemStackRecipeBuilder.Factory factory;
     private final ItemStackIngredient itemInput;
     private final ChemicalStackIngredient chemicalInput;
-    private final ItemStack output;
+    private final ItemStackTemplate output;
     private final boolean perTickUsage;
 
-    protected ItemStackChemicalToItemStackRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage,
+    protected ItemStackChemicalToItemStackRecipeBuilder(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage,
           ItemStackChemicalToItemStackRecipeBuilder.Factory factory) {
         this.itemInput = itemInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
         this.perTickUsage = perTickUsage;
         this.factory = factory;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(output);
     }
 
     /**
@@ -39,11 +46,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param output        Output.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public static ItemStackChemicalToItemStackRecipeBuilder compressing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This compressing recipe requires a non empty item output.");
-        }
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicCompressingRecipe::new);
     }
 
@@ -55,11 +59,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param output        Output.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public static ItemStackChemicalToItemStackRecipeBuilder purifying(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This purifying recipe requires a non empty item output.");
-        }
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicPurifyingRecipe::new);
     }
 
@@ -71,11 +72,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param output        Output.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public static ItemStackChemicalToItemStackRecipeBuilder injecting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This injecting recipe requires a non empty item output.");
-        }
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicInjectingRecipe::new);
     }
 
@@ -87,11 +85,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param output        Output.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public static ItemStackChemicalToItemStackRecipeBuilder metallurgicInfusing(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This metallurgic infusing recipe requires a non empty output.");
-        }
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicMetallurgicInfuserRecipe::new);
     }
 
@@ -103,11 +98,8 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
      * @param output        Output.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output,
+    public static ItemStackChemicalToItemStackRecipeBuilder painting(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output,
           boolean perTickUsage) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This painting recipe requires a non empty item output.");
-        }
         return new ItemStackChemicalToItemStackRecipeBuilder(itemInput, chemicalInput, output, perTickUsage, BasicPaintingRecipe::new);
     }
 
@@ -116,18 +108,9 @@ public class ItemStackChemicalToItemStackRecipeBuilder extends MekanismRecipeBui
         return factory.create(itemInput, chemicalInput, output, perTickUsage);
     }
 
-    /**
-     * Builds this recipe using the output item's name as the recipe name.
-     *
-     * @param recipeOutput Finished Recipe Consumer.
-     */
-    public void build(RecipeOutput recipeOutput) {
-        save(recipeOutput, output.getItemHolder());
-    }
-
     @FunctionalInterface
     public interface Factory {
 
-        ItemStackChemicalToItemStackRecipe create(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, boolean perTickUsage);
+        ItemStackChemicalToItemStackRecipe create(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, boolean perTickUsage);
     }
 }

@@ -7,6 +7,8 @@ import mekanism.api.recipes.FluidChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<FluidChemicalToChemicalRecipeBuilder> {
@@ -19,6 +21,11 @@ public class FluidChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<
         this.fluidInput = fluidInput;
         this.chemicalInput = chemicalInput;
         this.output = output;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return getDefaultRecipeId(output);
     }
 
     /**

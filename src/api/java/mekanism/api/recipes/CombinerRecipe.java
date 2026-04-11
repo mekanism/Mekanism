@@ -6,7 +6,6 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -78,10 +77,6 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
      */
     @Contract(value = "_, _ -> new", pure = true)
     public abstract ItemStack getOutput(@NotNull ItemStack input, @NotNull ItemStack extra);
-
-    @NotNull
-    @Override
-    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
 
     /**
      * For JEI, gets the output representations to display.

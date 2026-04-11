@@ -5,6 +5,8 @@ import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
 import mekanism.api.recipes.ItemStackToEnergyRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToEnergyRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemStackToEnergyRecipeBuilder> {
@@ -15,6 +17,11 @@ public class ItemStackToEnergyRecipeBuilder extends MekanismRecipeBuilder<ItemSt
     protected ItemStackToEnergyRecipeBuilder(ItemStackIngredient input, long output) {
         this.input = input;
         this.output = output;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return NO_DEFAULT_ID;
     }
 
     /**

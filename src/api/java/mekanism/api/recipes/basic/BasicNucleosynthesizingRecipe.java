@@ -3,14 +3,15 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +21,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
 
     protected final ItemStackIngredient itemInput;
     protected final ChemicalStackIngredient chemicalInput;
-    protected final ItemStack output;
+    protected final ItemStackTemplate output;
     private final int duration;
     private final boolean perTickUsage;
 
@@ -31,14 +32,11 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
      * @param duration      Duration in ticks that it takes the recipe to complete. Must be greater than zero.
      * @param perTickUsage  Should the recipe consume the chemical input each tick it is processing.
      */
-    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStack output, int duration, boolean perTickUsage) {
+    public BasicNucleosynthesizingRecipe(ItemStackIngredient itemInput, ChemicalStackIngredient chemicalInput, ItemStackTemplate output, int duration, boolean perTickUsage) {
         this.itemInput = Objects.requireNonNull(itemInput, "Item input cannot be null.");
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = output;
         if (duration <= 0) {
             throw new IllegalArgumentException("Duration must be a number greater than zero.");
         }
@@ -69,13 +67,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     @Override
     @Contract(value = "_, _ -> new", pure = true)
     public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
+        return output.create();
     }
 
     @Override
@@ -85,11 +77,11 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
 
     @Override
     public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
+        return Collections.singletonList(output.create());
     }
 
     @Override
-    public ItemStack getOutputRaw() {
+    public ItemStackTemplate getOutputRaw() {
         return output;
     }
 
@@ -107,7 +99,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         }
         BasicNucleosynthesizingRecipe other = (BasicNucleosynthesizingRecipe) o;
         return duration == other.duration && perTickUsage == other.perTickUsage && itemInput.equals(other.itemInput) && chemicalInput.equals(other.chemicalInput) &&
-               ItemStack.matches(output, other.output);
+               ItemStackTemplateHelper.matches(output, other.output);
     }
 
     @Override
@@ -116,8 +108,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
         result = 31 * result + chemicalInput.hashCode();
         result = 31 * result + duration;
         result = 31 * result + Boolean.hashCode(perTickUsage);
-        result = 31 * result + ItemStack.hashItemAndComponents(output);
-        result = 31 * result + output.getCount();
+        result = 31 * result + ItemStackTemplateHelper.hashItemAndComponents(output);
+        result = 31 * result + output.count();
         return result;
     }
 }

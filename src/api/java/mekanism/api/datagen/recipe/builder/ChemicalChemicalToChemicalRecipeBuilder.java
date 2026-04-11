@@ -3,10 +3,12 @@ package mekanism.api.datagen.recipe.builder;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
+import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.basic.BasicChemicalInfuserRecipe;
 import mekanism.api.recipes.basic.BasicPigmentMixingRecipe;
-import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuilder<ChemicalChemicalToChemicalRecipeBuilder> {
@@ -22,6 +24,11 @@ public class ChemicalChemicalToChemicalRecipeBuilder extends MekanismRecipeBuild
         this.rightInput = rightInput;
         this.output = output;
         this.factory = factory;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return getDefaultRecipeId(output);
     }
 
     /**

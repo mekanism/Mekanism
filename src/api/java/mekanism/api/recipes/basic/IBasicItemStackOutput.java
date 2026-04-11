@@ -1,6 +1,6 @@
 package mekanism.api.recipes.basic;
 
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 public interface IBasicItemStackOutput {
 
@@ -9,5 +9,5 @@ public interface IBasicItemStackOutput {
      *
      * @return the uncopied basic output
      */
-    ItemStack getOutputRaw();
+    ItemStackTemplate getOutputRaw();
 }

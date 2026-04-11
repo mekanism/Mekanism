@@ -3,52 +3,43 @@ package mekanism.api.recipes.basic;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 
 @NothingNullByDefault
 public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe {
 
     protected final ChemicalStackIngredient input;
-    protected final ItemStack output;
+    protected final ItemStackTemplate output;
 
     /**
      * @param input  Input.
      * @param output Output.
      */
-    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, ItemStack output) {
+    public BasicChemicalCrystallizerRecipe(ChemicalStackIngredient input, ItemStackTemplate output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("Output cannot be empty.");
-        }
-        this.output = output.copy();
+        this.output = output;
     }
 
     @Contract(value = "_ -> new", pure = true)
     @Override
     public ItemStack getOutput(ChemicalStack input) {
-        return output.copy();
-    }
-
-    @NotNull
-    @Override
-    public ItemStack getResultItem(@NotNull HolderLookup.Provider provider) {
-        return output.copy();
+        return output.create();
     }
 
     @Override
     public List<ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output);
+        return Collections.singletonList(output.create());
     }
 
     @Override
@@ -71,7 +62,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
      *
      * @return the uncopied output definition
      */
-    public ItemStack getOutputRaw() {
+    public ItemStackTemplate getOutputRaw() {
         return this.output;
     }
 
@@ -88,14 +79,14 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
             return false;
         }
         BasicChemicalCrystallizerRecipe other = (BasicChemicalCrystallizerRecipe) o;
-        return input.equals(other.input) && ItemStack.matches(output, other.output);
+        return input.equals(other.input) && ItemStackTemplateHelper.matches(output, other.output);
     }
 
     @Override
     public int hashCode() {
         int hash = input.hashCode();
-        hash = 31 * hash + ItemStack.hashItemAndComponents(output);
-        hash = 31 * hash + output.getCount();
+        hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(output);
+        hash = 31 * hash + output.count();
         return hash;
     }
 }

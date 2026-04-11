@@ -7,20 +7,28 @@ import mekanism.api.recipes.basic.BasicCrushingRecipe;
 import mekanism.api.recipes.basic.BasicEnrichingRecipe;
 import mekanism.api.recipes.basic.BasicSmeltingRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 
 @NothingNullByDefault
 public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<ItemStackToItemStackRecipeBuilder> {
 
     private final ItemStackToItemStackRecipeBuilder.Factory factory;
     private final ItemStackIngredient input;
-    private final ItemStack output;
+    private final ItemStackTemplate output;
 
-    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStack output, ItemStackToItemStackRecipeBuilder.Factory factory) {
+    protected ItemStackToItemStackRecipeBuilder(ItemStackIngredient input, ItemStackTemplate output, ItemStackToItemStackRecipeBuilder.Factory factory) {
         this.input = input;
         this.output = output;
         this.factory = factory;
+    }
+
+    @Override
+    public ResourceKey<Recipe<?>> defaultId() {
+        return RecipeBuilder.getDefaultRecipeId(output);
     }
 
     /**
@@ -29,10 +37,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToItemStackRecipeBuilder crushing(ItemStackIngredient input, ItemStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This crushing recipe requires a non empty item output.");
-        }
+    public static ItemStackToItemStackRecipeBuilder crushing(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicCrushingRecipe::new);
     }
 
@@ -42,10 +47,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This enriching recipe requires a non empty item output.");
-        }
+    public static ItemStackToItemStackRecipeBuilder enriching(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicEnrichingRecipe::new);
     }
 
@@ -55,10 +57,7 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param input  Input.
      * @param output Output.
      */
-    public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStack output) {
-        if (output.isEmpty()) {
-            throw new IllegalArgumentException("This smelting recipe requires a non empty item output.");
-        }
+    public static ItemStackToItemStackRecipeBuilder smelting(ItemStackIngredient input, ItemStackTemplate output) {
         return new ItemStackToItemStackRecipeBuilder(input, output, BasicSmeltingRecipe::new);
     }
 
@@ -73,12 +72,12 @@ public class ItemStackToItemStackRecipeBuilder extends MekanismRecipeBuilder<Ite
      * @param recipeOutput Finished Recipe Consumer.
      */
     public void build(RecipeOutput recipeOutput) {
-        save(recipeOutput, output.getItemHolder());
+        save(recipeOutput, output.typeHolder());
     }
 
     @FunctionalInterface
     public interface Factory {
 
-        ItemStackToItemStackRecipe create(ItemStackIngredient input, ItemStack output);
+        ItemStackToItemStackRecipe create(ItemStackIngredient input, ItemStackTemplate output);
     }
 }

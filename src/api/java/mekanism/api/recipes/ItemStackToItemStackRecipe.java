@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -71,14 +70,11 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
     @Contract(value = "_ -> new", pure = true)
     public abstract ItemStack getOutput(ItemStack input);
 
-    @NotNull
-    @Override
-    public abstract ItemStack getResultItem(@NotNull HolderLookup.Provider provider);
-
     /**
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
+     * TODO 26.1 - can this use ItemStackTemplate?
      */
     public abstract List<ItemStack> getOutputDefinition();
 

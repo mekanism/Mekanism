@@ -9,6 +9,7 @@ import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +26,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
      * @param extraInput Secondary/extra input.
      * @param output     Output.
      */
-    public BasicCombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStack output) {
+    public BasicCombinerRecipe(ItemStackIngredient mainInput, ItemStackIngredient extraInput, ItemStackTemplate output) {
         this.mainInput = Objects.requireNonNull(mainInput, "Main input cannot be null.");
         this.extraInput = Objects.requireNonNull(extraInput, "Secondary/Extra input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
