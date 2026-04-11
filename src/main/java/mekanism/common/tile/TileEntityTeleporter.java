@@ -151,7 +151,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     }
 
     private boolean canTeleportEntity(Entity entity, @Nullable Level destinationLevel) {
-        if (entity.isSpectator() || !entity.canUsePortal(false) || entity instanceof PartEntity || entity.getType().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
+        if (entity.isSpectator() || !entity.canUsePortal(false) || entity instanceof PartEntity || entity.typeHolder().is(Tags.EntityTypes.TELEPORTING_NOT_SUPPORTED)) {
             return false;
         } else if (destinationLevel != null && !entity.canTeleport(entity.level(), destinationLevel)) {
             return false;
@@ -332,7 +332,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             return;
         }
         boolean sameDimension = level.dimension() == teleportInfo.closest.dimension();
-        Level teleWorld = sameDimension ? level : currentServer.getLevel(teleportInfo.closest.dimension());
+        ServerLevel teleWorld = sameDimension ? (ServerLevel) level : currentServer.getLevel(teleportInfo.closest.dimension());
         BlockPos closestPos = teleportInfo.closest.pos();
         TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, closestPos);
         if (teleporter != null) {
@@ -345,7 +345,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
                 // the cost will be negligible due to being on top of the destination
                 long energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
 
-                MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld.dimension(), energyCost);
+                MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld, energyCost);
                 if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                     //Skip the entity if the event was cancelled
                     continue;

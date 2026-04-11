@@ -6,6 +6,7 @@ import mekanism.api.robit.IRobit;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -14,6 +15,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.fml.LogicalSide;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityTeleportEvent;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base Mekanism extension of the {@link EntityTeleportEvent}.
@@ -29,8 +31,8 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
      * @param targetY Destination y position.
      * @param targetZ Destination z position.
      */
-    protected MekanismTeleportEvent(Entity entity, double targetX, double targetY, double targetZ) {
-        super(entity, targetX, targetY, targetZ);
+    protected MekanismTeleportEvent(Entity entity, ServerLevel targetLevel, double targetX, double targetY, double targetZ) {
+        super(entity, targetLevel, targetX, targetY, targetZ);
     }
 
     /**
@@ -60,8 +62,8 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          * @param mekaTool    Meka-Tool used for teleportation.
          * @param targetBlock The hit result representing the target block.
          */
-        public MekaTool(Player player, double targetX, double targetY, double targetZ, ItemStack mekaTool, BlockHitResult targetBlock) {
-            super(player, targetX, targetY, targetZ);
+        public MekaTool(Player player, ServerLevel targetLevel, double targetX, double targetY, double targetZ, ItemStack mekaTool, BlockHitResult targetBlock) {
+            super(player, targetLevel, targetX, targetY, targetZ);
             this.mekaTool = mekaTool;
             this.targetBlock = targetBlock;
         }
@@ -95,24 +97,32 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
     public static class GlobalTeleport extends MekanismTeleportEvent {
 
         private final ResourceKey<Level> targetDimension;
+        private final @Nullable Exception creationStack;
 
         /**
          * @param entity          The entity that is teleporting.
          * @param targetX         Destination x position.
          * @param targetY         Destination y position.
          * @param targetZ         Destination z position.
-         * @param targetDimension Destination dimension.
+         * @param targetLevel     Destination dimension.
          */
-        public GlobalTeleport(Entity entity, double targetX, double targetY, double targetZ, ResourceKey<Level> targetDimension) {
-            super(entity, targetX, targetY, targetZ);
+        public GlobalTeleport(Entity entity, double targetX, double targetY, double targetZ, ResourceKey<Level> targetDimension, @Nullable ServerLevel targetLevel) {
+            //noinspection DataFlowIssue - null checked in getter
+            super(entity, targetLevel, targetX, targetY, targetZ);
             this.targetDimension = targetDimension;
+            //noinspection ConstantValue
+            if (targetLevel == null) {
+                creationStack = new Exception();
+            } else {
+                creationStack = null;
+            }
         }
 
         /**
          * @return If the teleport is going across dimensions
          */
         public boolean isTransDimensional() {
-            return getEntity().level().dimension() != targetDimension;
+            return getEntity().level().dimension() != targetLevel.dimension();
         }
 
         /**
@@ -120,6 +130,15 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          */
         public ResourceKey<Level> getTargetDimension() {
             return targetDimension;
+        }
+
+        @Override
+        public ServerLevel getTargetLevel() {
+            //noinspection ConstantValue
+            if (targetLevel == null) {
+                throw new RuntimeException("Not available, see cause for creation trace", creationStack);
+            }
+            return super.getTargetLevel();
         }
     }
 
@@ -148,7 +167,19 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
         }
 
         private <ROBIT extends Entity & IRobit> Robit(ROBIT robit, GlobalPos homeLocation) {
-            super(robit, homeLocation.pos().getX() + 0.5, homeLocation.pos().getY() + 0.3, homeLocation.pos().getZ() + 0.5, homeLocation.dimension());
+            super(robit, homeLocation.pos().getX() + 0.5, homeLocation.pos().getY() + 0.3, homeLocation.pos().getZ() + 0.5, homeLocation.dimension(), getLevel(homeLocation, robit));
+        }
+
+        @Nullable
+        private static <ROBIT extends Entity & IRobit> ServerLevel getLevel(GlobalPos homeLocation, ROBIT robit) {
+            if (!(robit.level() instanceof ServerLevel serverLevel)) {
+                return null;
+            }
+            ResourceKey<Level> targetDim = homeLocation.dimension();
+            if (serverLevel.dimension() == targetDim) {
+                return serverLevel;
+            }
+            return serverLevel.getServer().getLevel(targetDim);
         }
     }
 
@@ -180,8 +211,8 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          * @param targetDimension Destination dimension.
          * @param energyCost      The energy cost to perform the teleportation.
          */
-        public Teleporter(Entity entity, BlockPos teleporterPos, ResourceKey<Level> targetDimension, long energyCost) {
-            super(entity, teleporterPos.getX() + 0.5, teleporterPos.getY(), teleporterPos.getZ() + 0.5, targetDimension);
+        public Teleporter(Entity entity, BlockPos teleporterPos, ServerLevel targetDimension, long energyCost) {
+            super(entity, teleporterPos.getX() + 0.5, teleporterPos.getY(), teleporterPos.getZ() + 0.5, targetDimension.dimension(), targetDimension);
             this.energyCost = energyCost;
         }
 
@@ -219,7 +250,7 @@ public class MekanismTeleportEvent extends EntityTeleportEvent {
          * @param portableTeleporter Portable Teleporter used for teleportation.
          * @param energyCost         The energy cost to perform the teleportation.
          */
-        public PortableTeleporter(Player player, BlockPos teleporterPos, ResourceKey<Level> targetDimension, ItemStack portableTeleporter, long energyCost) {
+        public PortableTeleporter(Player player, BlockPos teleporterPos, ServerLevel targetDimension, ItemStack portableTeleporter, long energyCost) {
             super(player, teleporterPos, targetDimension, energyCost);
             this.portableTeleporter = portableTeleporter;
         }

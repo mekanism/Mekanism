@@ -14,8 +14,11 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.tile.interfaces.ITileWrapper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
@@ -99,9 +102,17 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
     }
 
     public GlobalPos getClosestCoords(GlobalPos pos) {
+        return getClosestCoords(pos.dimension(), pos.pos());
+    }
+
+    private static boolean areEqual(GlobalPos pos, ResourceKey<Level> checkDim, BlockPos checkPos) {
+        return pos.dimension() == checkDim && pos.pos().equals(checkPos);
+    }
+
+    public GlobalPos getClosestCoords(ResourceKey<Level> dimension, BlockPos pos) {
         GlobalPos closest = null;
         for (GlobalPos iterCoord : activeCoords) {
-            if (iterCoord.equals(pos)) {
+            if (areEqual(iterCoord, dimension, pos)) {
                 continue;
             }
             if (closest == null) {
@@ -109,10 +120,10 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
                 continue;
             }
 
-            if (pos.dimension() != closest.dimension() && pos.dimension() == iterCoord.dimension()) {
+            if (dimension != closest.dimension() && dimension == iterCoord.dimension()) {
                 closest = iterCoord;
-            } else if (pos.dimension() != closest.dimension() || pos.dimension() == iterCoord.dimension()) {
-                if (pos.pos().distSqr(closest.pos()) > pos.pos().distSqr(iterCoord.pos())) {
+            } else if (dimension != closest.dimension() || dimension == iterCoord.dimension()) {
+                if (pos.distSqr(closest.pos()) > pos.distSqr(iterCoord.pos())) {
                     closest = iterCoord;
                 }
             }

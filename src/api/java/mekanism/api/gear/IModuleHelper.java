@@ -225,7 +225,7 @@ public interface IModuleHelper {
      * @since 10.5.0
      */
     default boolean isModuleContainer(ItemStack stack) {
-        return !stack.isEmpty() && isModuleContainer(stack.getItemHolder());
+        return !stack.isEmpty() && isModuleContainer(stack.typeHolder());
     }
 
     /**

@@ -21,6 +21,7 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -56,10 +57,10 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
             if (found == null) {
                 return;
             }
-            GlobalPos coords = found.getClosestCoords(GlobalPos.of(player.level().dimension(), player.blockPosition()));
+            GlobalPos coords = found.getClosestCoords(player.level().dimension(), player.blockPosition());
             if (coords != null) {
                 MinecraftServer server = player.level().getServer();
-                Level teleWorld = server == null ? null : server.getLevel(coords.dimension());
+                ServerLevel teleWorld = server == null ? null : server.getLevel(coords.dimension());
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
                     long energyCost;
@@ -79,7 +80,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                         teleporter.didTeleport.add(player.getUUID());
                         teleporter.teleDelay = 5;
                         BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, coords.dimension(), stack, energyCost);
+                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
                         if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             //Fail if the event was cancelled
                             return;
