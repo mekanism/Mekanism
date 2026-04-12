@@ -6,6 +6,7 @@ import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.OwnerObject;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
@@ -40,7 +41,7 @@ public class ItemPortableTeleporter extends ItemEnergized implements IFrequencyI
 
     @Override
     public FrequencyType<?> getFrequencyType() {
-        return FrequencyType.TELEPORTER;
+        return FrequencyTypes.TELEPORTER;
     }
 
     @NotNull

@@ -10,6 +10,7 @@ import mekanism.common.block.prefab.BlockTile.BlockTileModel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismDataComponents;
@@ -50,6 +51,6 @@ public class ItemBlockQuantumEntangloporter extends ItemBlockTooltip<BlockTileMo
 
     @Override
     public FrequencyType<?> getFrequencyType() {
-        return FrequencyType.INVENTORY;
+        return FrequencyTypes.INVENTORY;
     }
 }

@@ -10,7 +10,7 @@ import mekanism.common.inventory.container.item.MekanismItemContainer.IItemConta
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.network.to_server.PacketItemGuiInteract;
@@ -80,7 +80,7 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
         if (stack.getItem() instanceof IItemContainerTracker containerTracker) {
             containerTracker.addContainerTrackers(this, stack);
         }
-        track(SyncableFrequency.create(FrequencyType.QIO, this::getFrequency, f -> freq = f));
+        track(SyncableFrequency.create(FrequencyTypes.QIO, this::getFrequency, f -> freq = f));
     }
 
     @Override

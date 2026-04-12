@@ -9,6 +9,7 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import net.minecraft.client.gui.GuiGraphics;
@@ -47,6 +48,6 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
 
     @Override
     public FrequencyType<TeleporterFrequency> getFrequencyType() {
-        return FrequencyType.TELEPORTER;
+        return FrequencyTypes.TELEPORTER;
     }
 }

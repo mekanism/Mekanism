@@ -7,6 +7,7 @@ import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
@@ -36,7 +37,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
 
     @Override
     protected FrequencyType<TeleporterFrequency> getFrequencyType() {
-        return FrequencyType.TELEPORTER;
+        return FrequencyTypes.TELEPORTER;
     }
 
     @Override

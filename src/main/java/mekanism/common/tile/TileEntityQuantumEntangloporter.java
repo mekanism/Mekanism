@@ -42,7 +42,7 @@ import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentChunkLoader;
@@ -98,7 +98,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         ejectorComponent.setOutputData(configComponent, TransmissionType.ITEM).setCanEject(type -> hasFrequency() && canFunction());
 
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
-        frequencyComponent.track(FrequencyType.INVENTORY, true, true, true);
+        frequencyComponent.track(FrequencyTypes.INVENTORY, true, true, true);
         cacheCoord();
     }
 
@@ -231,7 +231,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     }
 
     public InventoryFrequency getFreq() {
-        return getFrequency(FrequencyType.INVENTORY);
+        return getFrequency(FrequencyTypes.INVENTORY);
     }
 
     @ComputerMethod(nameOverride = "getTransferLoss", methodDescription = "May not be accurate if there is no frequency")
@@ -265,7 +265,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<InventoryFrequency> getFrequencies() {
-        return FrequencyType.INVENTORY.getController().getPublicLookup().getFrequencies();
+        return FrequencyTypes.INVENTORY.getController().getPublicLookup().getFrequencies();
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
@@ -280,21 +280,21 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        InventoryFrequency frequency = FrequencyType.INVENTORY.getController().getPublicLookup().getFrequency(name);
+        InventoryFrequency frequency = FrequencyTypes.INVENTORY.getController().getPublicLookup().getFrequency(name);
         if (frequency == null) {
             throw new ComputerException("No public inventory frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.INVENTORY, frequency.getIdentity(), getOwnerUUID());
+        setFrequency(FrequencyTypes.INVENTORY, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        InventoryFrequency frequency = FrequencyType.INVENTORY.getController().getPublicLookup().getFrequency(name);
+        InventoryFrequency frequency = FrequencyTypes.INVENTORY.getController().getPublicLookup().getFrequency(name);
         if (frequency != null) {
             throw new ComputerException("Unable to create public inventory frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.INVENTORY, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
+        setFrequency(FrequencyTypes.INVENTORY, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
     }
 
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point

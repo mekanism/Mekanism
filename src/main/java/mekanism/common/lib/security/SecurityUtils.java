@@ -14,7 +14,7 @@ import mekanism.client.MekanismClient;
 import mekanism.common.MekanismLang;
 import mekanism.common.base.MekanismPermissions;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
@@ -130,7 +130,7 @@ public final class SecurityUtils implements ISecurityUtils {
                     // sides but I don't think there is much benefit to doing so for how complex it is to do
                     yield true;
                 }
-                SecurityFrequency frequency = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(owner);
+                SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(owner);
                 //If we have no frequency handle it as if it was private, otherwise check if the player is trusted
                 yield frequency != null && frequency.isTrusted(player);
             }
@@ -171,7 +171,7 @@ public final class SecurityUtils implements ISecurityUtils {
         } else if (isClient) {
             return MekanismClient.clientSecurityMap.getOrDefault(uuid, SecurityData.DUMMY);
         }
-        SecurityFrequency frequency = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(uuid);
+        SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(uuid);
         return frequency == null ? SecurityData.DUMMY : new SecurityData(frequency);
     }
 
@@ -228,7 +228,7 @@ public final class SecurityUtils implements ISecurityUtils {
 
     public boolean isTrusted(SecurityMode mode, @Nullable UUID ownerUUID, UUID playerUUID) {
         if (ownerUUID != null && mode == SecurityMode.TRUSTED) {
-            SecurityFrequency frequency = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(ownerUUID);
+            SecurityFrequency frequency = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(ownerUUID);
             return frequency != null && frequency.isTrusted(playerUUID);
         }
         return false;

@@ -9,6 +9,7 @@ import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.item.QIOFrequencySelectItemContainer;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.button.PacketItemButtonPress;
 import mekanism.common.network.to_server.button.PacketItemButtonPress.ClickedItemButton;
@@ -43,7 +44,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
 
     @Override
     public FrequencyType<QIOFrequency> getFrequencyType() {
-        return FrequencyType.QIO;
+        return FrequencyTypes.QIO;
     }
 
     @Override

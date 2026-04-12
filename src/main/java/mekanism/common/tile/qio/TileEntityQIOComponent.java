@@ -9,7 +9,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
@@ -30,7 +30,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
 
     public TileEntityQIOComponent(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        frequencyComponent.track(FrequencyType.QIO, true, true, true);
+        frequencyComponent.track(FrequencyTypes.QIO, true, true, true);
     }
 
     @Nullable
@@ -90,7 +90,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<QIOFrequency> getFrequencies() {
-        return FrequencyType.QIO.getController().getPublicLookup().getFrequencies();
+        return FrequencyTypes.QIO.getController().getPublicLookup().getFrequencies();
     }
 
     @ComputerMethod
@@ -111,21 +111,21 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        QIOFrequency frequency = FrequencyType.QIO.getController().getPublicLookup().getFrequency(name);
+        QIOFrequency frequency = FrequencyTypes.QIO.getController().getPublicLookup().getFrequency(name);
         if (frequency == null) {
             throw new ComputerException("No public QIO frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.QIO, frequency.getIdentity(), getOwnerUUID());
+        setFrequency(FrequencyTypes.QIO, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        QIOFrequency frequency = FrequencyType.QIO.getController().getPublicLookup().getFrequency(name);
+        QIOFrequency frequency = FrequencyTypes.QIO.getController().getPublicLookup().getFrequency(name);
         if (frequency != null) {
             throw new ComputerException("Unable to create public QIO frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.QIO, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
+        setFrequency(FrequencyTypes.QIO, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

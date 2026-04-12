@@ -10,7 +10,7 @@ import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.client.MekanismClient;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityData;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.IMekanismPacket;
@@ -33,7 +33,7 @@ public record PacketBatchSecurityUpdate(Map<UUID, SecurityData> securityMap, Map
 
     public PacketBatchSecurityUpdate() {
         this(new Object2ObjectOpenHashMap<>(), new Object2ObjectOpenHashMap<>());
-        List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequencies());
+        List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequencies());
         for (SecurityFrequency frequency : frequencies) {
             UUID owner = frequency.getOwner();
             //In theory no owner should be null but just in case handle it anyway

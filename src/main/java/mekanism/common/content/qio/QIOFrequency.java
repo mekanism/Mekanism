@@ -41,7 +41,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.lib.collection.BiMultimap;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
@@ -124,11 +124,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
     public QIOFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
-        super(FrequencyType.QIO, n, uuid, securityMode);
+        super(FrequencyTypes.QIO, n, uuid, securityMode);
     }
 
     private QIOFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
-        super(FrequencyType.QIO, name, owner, ownerName, securityMode);
+        super(FrequencyTypes.QIO, name, owner, ownerName, securityMode);
     }
 
     /**
@@ -481,7 +481,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?
-            SecurityFrequency security = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
+            SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
             if (security != null) {
                 for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
                     if (!ownerMatches(player.getUUID()) && !security.isTrusted(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {

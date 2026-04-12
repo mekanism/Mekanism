@@ -2,7 +2,7 @@ package mekanism.common.content.qio;
 
 import java.util.List;
 import mekanism.api.inventory.qio.IQIOComponent;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyHandler;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import org.jetbrains.annotations.Nullable;
@@ -12,14 +12,14 @@ public interface IQIOFrequencyHolder extends IFrequencyHandler, ITileWrapper, IQ
     @Nullable
     @Override
     default QIOFrequency getQIOFrequency() {
-        return getFrequency(FrequencyType.QIO);
+        return getFrequency(FrequencyTypes.QIO);
     }
 
     default List<QIOFrequency> getPublicFrequencies() {
-        return getPublicCache(FrequencyType.QIO);
+        return getPublicCache(FrequencyTypes.QIO);
     }
 
     default List<QIOFrequency> getPrivateFrequencies() {
-        return getPrivateCache(FrequencyType.QIO);
+        return getPrivateCache(FrequencyTypes.QIO);
     }
 }

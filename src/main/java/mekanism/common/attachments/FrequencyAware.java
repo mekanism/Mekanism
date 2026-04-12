@@ -19,6 +19,7 @@ import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
 import mekanism.common.registries.MekanismDataComponents;
@@ -95,7 +96,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             //If it is a trusted frequency, and we are on the server, validate whether the owner of the item can actually access the frequency
             UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
             if (ownerUUID != null && !frequency.ownerMatches(ownerUUID)) {
-                SecurityFrequency security = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
+                SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequency.getOwner());
                 if (security != null && !security.isTrusted(ownerUUID)) {
                     //TODO - 1.21: Re-evaluate this
                     stack.remove(type);

@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
@@ -26,6 +27,6 @@ public class ItemBlockTeleporter extends ItemBlockTooltip<BlockTile<?, ?>> imple
 
     @Override
     public FrequencyType<?> getFrequencyType() {
-        return FrequencyType.TELEPORTER;
+        return FrequencyTypes.TELEPORTER;
     }
 }

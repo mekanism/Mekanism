@@ -46,7 +46,7 @@ import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.network.to_client.PacketSetDeltaMovement;
@@ -130,7 +130,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     public TileEntityTeleporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.TELEPORTER, pos, state);
         chunkLoaderComponent = new TileComponentChunkLoader<>(this);
-        frequencyComponent.track(FrequencyType.TELEPORTER, true, true, false);
+        frequencyComponent.track(FrequencyTypes.TELEPORTER, true, true, false);
         cacheCoord();
     }
 
@@ -191,7 +191,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             resetBounds();
         }
 
-        TeleporterFrequency freq = getFrequency(FrequencyType.TELEPORTER);
+        TeleporterFrequency freq = getFrequency(FrequencyTypes.TELEPORTER);
         TeleportInfo teleportInfo = canTeleport(freq);
         status = teleportInfo.status();
         if (status.isReady() && teleDelay == 0 && canFunction()) {
@@ -689,18 +689,18 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<TeleporterFrequency> getFrequencies() {
-        return FrequencyType.TELEPORTER.getController().getPublicLookup().getFrequencies();
+        return FrequencyTypes.TELEPORTER.getController().getPublicLookup().getFrequencies();
     }
 
     @ComputerMethod
     boolean hasFrequency() {
-        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+        TeleporterFrequency frequency = getFrequency(FrequencyTypes.TELEPORTER);
         return frequency != null && frequency.isValid() && !frequency.isRemoved();
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")
     TeleporterFrequency getFrequency() throws ComputerException {
-        TeleporterFrequency frequency = getFrequency(FrequencyType.TELEPORTER);
+        TeleporterFrequency frequency = getFrequency(FrequencyTypes.TELEPORTER);
         if (frequency == null || !frequency.isValid() || frequency.isRemoved()) {
             throw new ComputerException("No frequency is currently selected.");
         }
@@ -710,21 +710,21 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getController().getPublicLookup().getFrequency(name);
+        TeleporterFrequency frequency = FrequencyTypes.TELEPORTER.getController().getPublicLookup().getFrequency(name);
         if (frequency == null) {
             throw new ComputerException("No public teleporter frequency with name '%s' found.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, frequency.getIdentity(), getOwnerUUID());
+        setFrequency(FrequencyTypes.TELEPORTER, frequency.getIdentity(), getOwnerUUID());
     }
 
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getController().getPublicLookup().getFrequency(name);
+        TeleporterFrequency frequency = FrequencyTypes.TELEPORTER.getController().getPublicLookup().getFrequency(name);
         if (frequency != null) {
             throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
         }
-        setFrequency(FrequencyType.TELEPORTER, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
+        setFrequency(FrequencyTypes.TELEPORTER, new FrequencyIdentity(name, SecurityMode.PUBLIC, getOwnerUUID()), getOwnerUUID());
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

@@ -7,6 +7,7 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.item.block.ItemBlockTooltip;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
@@ -44,7 +45,7 @@ public class ItemBlockQIOComponent extends ItemBlockTooltip<BlockTile<?, ?>> imp
 
     @Override
     public FrequencyType<?> getFrequencyType() {
-        return FrequencyType.QIO;
+        return FrequencyTypes.QIO;
     }
 
     @Override

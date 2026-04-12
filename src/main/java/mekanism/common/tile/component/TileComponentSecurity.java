@@ -9,7 +9,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
@@ -38,11 +38,11 @@ public class TileComponentSecurity implements ITileComponent {
     public TileComponentSecurity(TileEntityMekanism tile) {
         this.tile = tile;
         tile.addComponent(this);
-        tile.getFrequencyComponent().track(FrequencyType.SECURITY, true, false, true);
+        tile.getFrequencyComponent().track(FrequencyTypes.SECURITY, true, false, true);
     }
 
     public SecurityFrequency getFrequency() {
-        return tile.getFrequency(FrequencyType.SECURITY);
+        return tile.getFrequency(FrequencyTypes.SECURITY);
     }
 
     @ComputerMethod
@@ -53,9 +53,9 @@ public class TileComponentSecurity implements ITileComponent {
     public void setOwnerUUID(UUID uuid) {
         ownerUUID = uuid;
         if (ownerUUID == null) {
-            tile.getFrequencyComponent().unsetFrequency(FrequencyType.SECURITY);
+            tile.getFrequencyComponent().unsetFrequency(FrequencyTypes.SECURITY);
         } else {
-            tile.setFrequency(FrequencyType.SECURITY, new FrequencyIdentity(ownerUUID, SecurityMode.PUBLIC, ownerUUID), ownerUUID);
+            tile.setFrequency(FrequencyTypes.SECURITY, new FrequencyIdentity(ownerUUID, SecurityMode.PUBLIC, ownerUUID), ownerUUID);
         }
     }
 

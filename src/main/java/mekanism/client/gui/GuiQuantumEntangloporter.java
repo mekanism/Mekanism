@@ -11,6 +11,7 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.IWarningTracker;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
@@ -57,7 +58,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
 
     @Override
     public FrequencyType<InventoryFrequency> getFrequencyType() {
-        return FrequencyType.INVENTORY;
+        return FrequencyTypes.INVENTORY;
     }
 
     @Override

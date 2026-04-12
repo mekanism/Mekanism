@@ -47,7 +47,7 @@ import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
@@ -134,12 +134,12 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
     public InventoryFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
-        super(FrequencyType.INVENTORY, n, uuid, securityMode);
+        super(FrequencyTypes.INVENTORY, n, uuid, securityMode);
         presetVariables();
     }
 
     private InventoryFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
-        super(FrequencyType.INVENTORY, name, owner, ownerName, securityMode);
+        super(FrequencyTypes.INVENTORY, name, owner, ownerName, securityMode);
         presetVariables();
     }
 

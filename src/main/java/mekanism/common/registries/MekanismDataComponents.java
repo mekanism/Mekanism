@@ -37,6 +37,7 @@ import mekanism.common.item.interfaces.IFreeRunnerItem.FreeRunnerMode;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.DataComponentDeferredRegister;
@@ -256,18 +257,18 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<TeleporterFrequency>>> TELEPORTER_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("teleporter_frequency", () -> FrequencyType.TELEPORTER);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<InventoryFrequency>>> INVENTORY_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("inventory_frequency", () -> FrequencyType.INVENTORY);
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<QIOFrequency>>> QIO_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("qio_frequency", () -> FrequencyType.QIO);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<TeleporterFrequency>>> TELEPORTER_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("teleporter_frequency", () -> FrequencyTypes.TELEPORTER);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<InventoryFrequency>>> INVENTORY_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("inventory_frequency", () -> FrequencyTypes.INVENTORY);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<FrequencyAware<QIOFrequency>>> QIO_FREQUENCY = DATA_COMPONENTS.registerFrequencyAware("qio_frequency", () -> FrequencyTypes.QIO);
 
     @Nullable
     @SuppressWarnings({"unchecked", "rawtypes"})
     public static <FREQ extends Frequency> DataComponentType<FrequencyAware<FREQ>> getFrequencyComponent(FrequencyType<FREQ> freq) {
-        if (freq == FrequencyType.TELEPORTER) {
+        if (freq == FrequencyTypes.TELEPORTER) {
             return (DataComponentType) TELEPORTER_FREQUENCY.value();
-        } else if (freq == FrequencyType.INVENTORY) {
+        } else if (freq == FrequencyTypes.INVENTORY) {
             return (DataComponentType) INVENTORY_FREQUENCY.value();
-        } else if (freq == FrequencyType.QIO) {
+        } else if (freq == FrequencyTypes.QIO) {
             return (DataComponentType) QIO_FREQUENCY.value();
         }
         return null;

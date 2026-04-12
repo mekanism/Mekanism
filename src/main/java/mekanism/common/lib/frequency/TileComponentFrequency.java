@@ -74,7 +74,7 @@ public class TileComponentFrequency implements ITileComponent {
     public void tickServer(Level level, BlockPos pos) {
         if (level.getGameTime() % 5 == tickOffset) {
             if (securityFrequency != null) {
-                updateFrequency(FrequencyType.SECURITY, securityFrequency);
+                updateFrequency(FrequencyTypes.SECURITY, securityFrequency);
             }
             nonSecurityFrequencies.forEach(updateFrequencyRef);
         }
@@ -94,7 +94,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     public void track(FrequencyType<?> type, boolean needsSync, boolean needsListCache, boolean notifyNeighbors) {
         FrequencyData value = new FrequencyData(needsSync, needsListCache, notifyNeighbors);
-        if (type == FrequencyType.SECURITY) {
+        if (type == FrequencyTypes.SECURITY) {
             securityFrequency = value;
         } else {
             nonSecurityFrequencies.put(type, value);
@@ -113,7 +113,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     @Nullable
     private <FREQ extends Frequency> FrequencyData getFrequencyData(FrequencyType<FREQ> type) {
-        return type == FrequencyType.SECURITY ? securityFrequency : nonSecurityFrequencies.get(type);
+        return type == FrequencyTypes.SECURITY ? securityFrequency : nonSecurityFrequencies.get(type);
     }
 
     public <FREQ extends Frequency> void unsetFrequency(FrequencyType<FREQ> type) {
@@ -200,11 +200,11 @@ public class TileComponentFrequency implements ITileComponent {
             if (frequencyData.selectedFrequency.isValid()) {
                 boolean unsetFrequency = frequencyData.selectedFrequency.isRemoved();
                 //Note: Security frequencies can only be public, and security means something different on them. So even if it is set as trusted, we don't need to check this
-                if (!unsetFrequency && type != FrequencyType.SECURITY && frequencyData.selectedFrequency.getSecurity() == SecurityMode.TRUSTED) {
+                if (!unsetFrequency && type != FrequencyTypes.SECURITY && frequencyData.selectedFrequency.getSecurity() == SecurityMode.TRUSTED) {
                     //If we aren't unsetting the frequency, check if it is a trusted frequency that we no longer have access to
                     UUID ownerUUID = tile.getOwnerUUID();
                     if (ownerUUID != null && !frequencyData.selectedFrequency.ownerMatches(ownerUUID)) {
-                        SecurityFrequency security = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
+                        SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
                         unsetFrequency = security != null && !security.isTrusted(ownerUUID);
                     }
                 }
@@ -279,7 +279,7 @@ public class TileComponentFrequency implements ITileComponent {
             if (frequencyComponent != null && !remapEntries.contains(frequencyComponent)) {
                 remapEntries.add(frequencyComponent);
             }
-            if (type == FrequencyType.QIO && !remapEntries.contains(MekanismDataComponents.COLOR.get())) {
+            if (type == FrequencyTypes.QIO && !remapEntries.contains(MekanismDataComponents.COLOR.get())) {
                 remapEntries.add(MekanismDataComponents.COLOR.get());
             }
         }
@@ -300,7 +300,7 @@ public class TileComponentFrequency implements ITileComponent {
                 //TODO: Do we want to support multiple frequency types each having a colored frequency?
                 // Currently we only really need the QIO to support it, as the other colorable frequency (teleporters)
                 // don't need the item to be aware of the color
-                if (type == FrequencyType.QIO && frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
+                if (type == FrequencyTypes.QIO && frequencyData.selectedFrequency instanceof IColorableFrequency colorableFrequency) {
                     builder.set(MekanismDataComponents.COLOR, colorableFrequency.getColor());
                 }
             }
@@ -310,7 +310,7 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void deserialize(@NotNull ValueInput frequencyInput) {
         if (securityFrequency != null) {
-            deserializeFrequency(frequencyInput, FrequencyType.SECURITY, securityFrequency);
+            deserializeFrequency(frequencyInput, FrequencyTypes.SECURITY, securityFrequency);
         }
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             deserializeFrequency(frequencyInput, entry.getKey(), entry.getValue());
@@ -327,7 +327,7 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void serialize(@NotNull ValueOutput frequencyOutput) {
         if (securityFrequency != null) {
-            serializeFrequency(frequencyOutput, FrequencyType.SECURITY, securityFrequency);
+            serializeFrequency(frequencyOutput, FrequencyTypes.SECURITY, securityFrequency);
         }
         for (Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             serializeFrequency(frequencyOutput, entry.getKey(), entry.getValue());
@@ -352,7 +352,7 @@ public class TileComponentFrequency implements ITileComponent {
                 for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
                     FrequencyType<?> type = entry.getKey();
                     //Don't allow transferring security data via config cards
-                    if (type == FrequencyType.SECURITY) {
+                    if (type == FrequencyTypes.SECURITY) {
                         continue; // should no longer happen
                     }
                     Optional<FrequencyIdentity> decodedIdentity = frequencyInput.read(type.getName(), type.getIdentitySerializer().codec());
@@ -379,7 +379,7 @@ public class TileComponentFrequency implements ITileComponent {
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             FrequencyType<?> type = entry.getKey();
             Frequency frequency = entry.getValue().selectedFrequency;
-            if (frequency != null && type != FrequencyType.SECURITY) {
+            if (frequency != null && type != FrequencyTypes.SECURITY) {
                 //Don't allow transferring security data via config cards
                 frequencyOutput.store(type.getName(), type.getIdentitySerializer().codec(), frequency.getIdentity());
             }
@@ -396,7 +396,7 @@ public class TileComponentFrequency implements ITileComponent {
                 deactivate(entry.getKey(), entry.getValue());
             }
             if (securityFrequency != null) {
-                deactivate(FrequencyType.SECURITY, securityFrequency);
+                deactivate(FrequencyTypes.SECURITY, securityFrequency);
             }
         }
     }
@@ -404,7 +404,7 @@ public class TileComponentFrequency implements ITileComponent {
     @Override
     public void trackForMainContainer(MekanismContainer container) {
         if (securityFrequency != null) {
-            trackFrequencyForMainContainer(container, securityFrequency, FrequencyType.SECURITY);
+            trackFrequencyForMainContainer(container, securityFrequency, FrequencyTypes.SECURITY);
         }
         for (Map.Entry<FrequencyType<?>, FrequencyData> entry : nonSecurityFrequencies.entrySet()) {
             FrequencyData data = entry.getValue();

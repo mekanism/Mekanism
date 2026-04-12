@@ -2,13 +2,11 @@ package mekanism.common.lib.frequency;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
@@ -61,7 +59,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
             // This is needed as it is statically initialized, and we need to make sure that it gets initialized
             // before we try to create or load each frequency, or they won't be properly loaded/saved on servers
             // as this happens on servers before the frequency types reliably have a chance to add their lookups
-            FrequencyType.init();
+            FrequencyTypes.init();
             allLookups.forEach(FrequencyLookup::createOrLoad);
         }
     }
@@ -113,7 +111,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
         if (securityMode == SecurityMode.TRUSTED && ownerUUID != null) {
             List<FREQ> trustedFrequencies = new ArrayList<>(frequencies.values());
             //TODO: Try to come up with a better way of doing this that allows us to cache this
-            FrequencyLookup<SecurityFrequency> securityLookup = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC);
+            FrequencyLookup<SecurityFrequency> securityLookup = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC);
             for (FrequencyLookup<FREQ> trustedLookup : frequencyType.getController().getTrustedLookups()) {
                 if (!ownerUUID.equals(trustedLookup.ownerUUID)) {
                     //Add any frequencies that the owner has access to because of being trusted by the other player

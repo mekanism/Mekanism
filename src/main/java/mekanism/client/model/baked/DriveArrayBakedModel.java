@@ -16,7 +16,7 @@ import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.content.qio.IQIODriveItem;
 import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
@@ -157,7 +157,7 @@ public class DriveArrayBakedModel extends ExtensionOverrideBakedModel<byte[]> {
         }
 
         private boolean hasFrequency(ItemStack stack) {
-            if (stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == FrequencyType.QIO) {
+            if (stack.getItem() instanceof IFrequencyItem frequencyItem && frequencyItem.getFrequencyType() == FrequencyTypes.QIO) {
                 FrequencyAware<QIOFrequency> frequencyAware = stack.getOrDefault(MekanismDataComponents.QIO_FREQUENCY, FrequencyAware.none());
                 return frequencyAware.identity().isPresent() && frequencyAware.getOwner() != null;
             }

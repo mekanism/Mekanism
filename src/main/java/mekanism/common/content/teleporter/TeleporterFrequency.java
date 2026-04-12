@@ -11,7 +11,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.lib.frequency.Frequency;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.tile.interfaces.ITileWrapper;
 import net.minecraft.core.BlockPos;
@@ -48,11 +48,11 @@ public class TeleporterFrequency extends Frequency implements IColorableFrequenc
      * @param uuid Should only be null if we have incomplete data that we are loading
      */
     public TeleporterFrequency(String n, @Nullable UUID uuid, SecurityMode securityMode) {
-        super(FrequencyType.TELEPORTER, n, uuid, securityMode);
+        super(FrequencyTypes.TELEPORTER, n, uuid, securityMode);
     }
 
     private TeleporterFrequency(String name, @Nullable UUID owner, String ownerName, SecurityMode securityMode) {
-        super(FrequencyType.TELEPORTER, name, owner, ownerName, securityMode);
+        super(FrequencyTypes.TELEPORTER, name, owner, ownerName, securityMode);
     }
 
     public Set<GlobalPos> getActiveCoords() {

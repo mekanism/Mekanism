@@ -13,6 +13,7 @@ import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.item.interfaces.IGuiItem;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.network.to_client.qio.BulkQIOData;
@@ -91,7 +92,7 @@ public class ItemPortableQIODashboard extends Item implements IFrequencyItem, IG
 
     @Override
     public FrequencyType<?> getFrequencyType() {
-        return FrequencyType.QIO;
+        return FrequencyTypes.QIO;
     }
 
     @Override

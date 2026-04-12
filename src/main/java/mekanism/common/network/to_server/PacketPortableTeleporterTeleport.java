@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
@@ -38,7 +38,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
     public static final CustomPacketPayload.Type<PacketPortableTeleporterTeleport> TYPE = new CustomPacketPayload.Type<>(Mekanism.rl("portable_teleport"));
     public static final StreamCodec<ByteBuf, PacketPortableTeleporterTeleport> STREAM_CODEC = StreamCodec.composite(
           PacketUtils.INTERACTION_HAND_STREAM_CODEC, PacketPortableTeleporterTeleport::currentHand,
-          FrequencyType.TELEPORTER.getIdentitySerializer().streamCodec(), PacketPortableTeleporterTeleport::identity,
+          FrequencyTypes.TELEPORTER.getIdentitySerializer().streamCodec(), PacketPortableTeleporterTeleport::identity,
           PacketPortableTeleporterTeleport::new
     );
 
@@ -53,7 +53,7 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
         ServerPlayer player = (ServerPlayer) context.player();
         ItemStack stack = player.getItemInHand(currentHand);
         if (!stack.isEmpty() && stack.getItem() instanceof ItemPortableTeleporter) {
-            TeleporterFrequency found = FrequencyType.TELEPORTER.getFrequency(identity, player.getUUID());
+            TeleporterFrequency found = FrequencyTypes.TELEPORTER.getFrequency(identity, player.getUUID());
             if (found == null) {
                 return;
             }

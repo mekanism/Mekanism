@@ -3,6 +3,7 @@ package mekanism.common.inventory.container.item;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
 import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
@@ -16,6 +17,6 @@ public class QIOFrequencySelectItemContainer extends FrequencyItemContainer<QIOF
 
     @Override
     protected FrequencyType<QIOFrequency> getFrequencyType() {
-        return FrequencyType.QIO;
+        return FrequencyTypes.QIO;
     }
 }

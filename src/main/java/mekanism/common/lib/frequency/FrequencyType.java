@@ -3,19 +3,12 @@ package mekanism.common.lib.frequency;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import io.netty.handler.codec.DecoderException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.content.entangloporter.InventoryFrequency;
-import mekanism.common.content.qio.QIOFrequency;
-import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.frequency.FrequencyTypes.FrequencyConstructor;
 import mekanism.common.lib.security.SecurityUtils;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -25,48 +18,16 @@ import org.jetbrains.annotations.Nullable;
 
 public class FrequencyType<FREQ extends Frequency> {
 
-    protected static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
-    private static int maxNameLength = 0;
-
-    public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, registryMap::get);
-    //Note: This is lazy so that we ensure we don't call it until after maxNameLength has been set
-    public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(maxNameLength).map(
+    public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
+    public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(255).map(
           name -> {
-              FrequencyType<?> type = registryMap.get(name);
+              FrequencyType<?> type = FrequencyTypes.byName(name);
               if (type == null) {
                   throw new DecoderException("Unable to find frequency type for name: " + name);
               }
               return type;
           }, FrequencyType::getName
     ));
-
-    public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
-          (key, uuid, securityMode) -> new TeleporterFrequency((String) key, uuid, securityMode),
-          TeleporterFrequency.CODEC,
-          TeleporterFrequency.STREAM_CODEC,
-          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
-    public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
-          (key, uuid, securityMode) -> new InventoryFrequency((String) key, uuid, securityMode),
-          InventoryFrequency.CODEC,
-          InventoryFrequency.STREAM_CODEC,
-          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
-    public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
-          (key, uuid, securityMode) -> new SecurityFrequency(uuid, securityMode),
-          SecurityFrequency.CODEC,
-          SecurityFrequency.STREAM_CODEC,
-          FrequencyController.Type.PUBLIC_ONLY,
-          IdentitySerializer.UUID);
-    public static final FrequencyType<QIOFrequency> QIO = register("QIO",
-          (key, uuid, securityMode) -> new QIOFrequency((String) key, uuid, securityMode),
-          QIOFrequency.CODEC,
-          QIOFrequency.STREAM_CODEC,
-          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
-
-    public static void init() {
-    }
 
     private final String name;
     private final FrequencyConstructor<FREQ> creationFunction;
@@ -75,15 +36,7 @@ public class FrequencyType<FREQ extends Frequency> {
     private final IdentitySerializer identitySerializer;
     private final FrequencyController<FREQ> controller;
 
-    private static <FREQ extends Frequency> FrequencyType<FREQ> register(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec,
-          StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec, FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
-        FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, codec, streamCodec, managerType, identitySerializer);
-        registryMap.put(name, type);
-        maxNameLength = Math.max(maxNameLength, name.length());
-        return type;
-    }
-
-    private FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction,  Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
+    public FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
           FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
         this.name = name;
         this.creationFunction = creationFunction;
@@ -139,7 +92,7 @@ public class FrequencyType<FREQ extends Frequency> {
             return null;
         }
         FrequencyController<FREQ> manager = getController();
-        if (freq.getType() == SECURITY) {
+        if (freq.getType() == FrequencyTypes.SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
             return manager.getPublicLookup();
         }
@@ -173,10 +126,6 @@ public class FrequencyType<FREQ extends Frequency> {
         return identitySerializer;
     }
 
-    public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
-        return (FrequencyType<FREQ>) registryMap.get(tag.getString(SerializationConstants.TYPE));
-    }
-
     @Override
     public String toString() {
         return name;
@@ -192,9 +141,4 @@ public class FrequencyType<FREQ extends Frequency> {
         return super.equals(obj) || (obj instanceof FrequencyType<?> other && Objects.equals(name, other.name));
     }
 
-    @FunctionalInterface
-    private interface FrequencyConstructor<FREQ extends Frequency> {
-
-        FREQ create(Object key, UUID owner, SecurityMode securityMode);
-    }
 }

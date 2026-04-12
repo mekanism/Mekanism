@@ -9,7 +9,7 @@ import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismBlocks;
@@ -141,6 +141,6 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
     }
 
     public SecurityFrequency getFreq() {
-        return getFrequency(FrequencyType.SECURITY);
+        return getFrequency(FrequencyTypes.SECURITY);
     }
 }

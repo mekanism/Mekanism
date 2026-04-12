@@ -164,7 +164,7 @@ public abstract class Frequency implements IFrequency {
         if (ownerUUID != null) {
             code = 31 * code + ownerUUID.hashCode();
         }
-        if (frequencyType != FrequencyType.SECURITY) {
+        if (frequencyType != FrequencyTypes.SECURITY) {
             code = 31 * code + (securityMode.ordinal());
         }
         return code;
@@ -176,7 +176,7 @@ public abstract class Frequency implements IFrequency {
             return true;
         }
         if (obj instanceof Frequency other) {
-            if (frequencyType == FrequencyType.SECURITY || securityMode == other.securityMode) {
+            if (frequencyType == FrequencyTypes.SECURITY || securityMode == other.securityMode) {
                 return ownerUUID != null && name.equals(other.name) && ownerUUID.equals(other.ownerUUID);
             }
         }
