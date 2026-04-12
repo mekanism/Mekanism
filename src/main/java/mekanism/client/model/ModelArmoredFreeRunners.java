@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredFreeRunners extends ModelFreeRunners {
@@ -93,9 +94,9 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
         super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, color);
         if (left) {
-            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
+            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
         } else {
-            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
+            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
         }
     }
 

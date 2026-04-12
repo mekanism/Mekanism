@@ -5,7 +5,7 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -25,7 +25,7 @@ public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockT
     }
 
     @Override
-    public boolean shouldDisplayFluidOverlay(@NotNull BlockState state, @NotNull BlockAndTintGetter world, @NotNull BlockPos pos, @NotNull FluidState fluidState) {
+    public boolean shouldDisplayFluidOverlay(@NotNull BlockState state, @NotNull BlockAndLightGetter world, @NotNull BlockPos pos, @NotNull FluidState fluidState) {
         return true;
     }
 

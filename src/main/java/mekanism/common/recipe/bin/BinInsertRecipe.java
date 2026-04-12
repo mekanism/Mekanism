@@ -171,7 +171,7 @@ public class BinInsertRecipe extends BinRecipe {
         return remainingItems;
     }
 
-    @Override
+    @Override//todo placement info / bin ingredient
     public boolean canCraftInDimensions(int width, int height) {
         //Require at least two slots as we have to represent at least the bin and the stack we are adding to it
         return width * height >= 2;

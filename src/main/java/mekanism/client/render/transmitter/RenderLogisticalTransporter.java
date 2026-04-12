@@ -32,9 +32,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -112,7 +113,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                           //TODO - 1.21.11: Is this the correct render type to be using? I believe it is what we used to use, so it probably is fine
                           RenderTypes.entityCutoutNoCull(BOX_TEXTURE),
                           //TODO - 1.21.11: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
-                          LightTexture.FULL_BRIGHT,
+                          LightCoordsUtil.FULL_BRIGHT,
                           OverlayTexture.NO_OVERLAY,
                           //TODO - 1.21.11: Do we need to pass the texture here as well, or not?
                           null,

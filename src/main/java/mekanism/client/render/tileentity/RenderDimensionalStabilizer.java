@@ -21,12 +21,13 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -148,7 +149,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(camera.pos, startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
                   endChunk.getMaxBlockX() + 1, Double.POSITIVE_INFINITY, endChunk.getMaxBlockZ() + 1) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), colors, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos);
+            MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos);
             poseStack.popPose();
         }
     }

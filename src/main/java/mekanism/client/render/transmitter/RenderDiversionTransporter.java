@@ -23,10 +23,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.MaterialSet;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.player.Player;
@@ -40,9 +40,9 @@ import org.jetbrains.annotations.Nullable;
 public class RenderDiversionTransporter extends RenderLogisticalTransporter<TileEntityDiversionTransporter, DiversionTransporterRenderState> {
 
     public static final ModelLayerLocation OVERLAY_LAYER = new ModelLayerLocation(Mekanism.rl("diversion_overlay"), "main");
-    private static final Material TORCH_OFF_TEXTURE = Sheets.BLOCKS_MAPPER.defaultNamespaceApply("redstone_torch_off");
-    private static final Material TORCH_TEXTURE = Sheets.BLOCKS_MAPPER.defaultNamespaceApply("redstone_torch");
-    private static final Material GUNPOWDER_TEXTURE = Sheets.ITEMS_MAPPER.defaultNamespaceApply("gunpowder");
+    private static final SpriteId TORCH_OFF_TEXTURE = Sheets.BLOCKS_MAPPER.defaultNamespaceApply("redstone_torch_off");
+    private static final SpriteId TORCH_TEXTURE = Sheets.BLOCKS_MAPPER.defaultNamespaceApply("redstone_torch");
+    private static final SpriteId GUNPOWDER_TEXTURE = Sheets.ITEMS_MAPPER.defaultNamespaceApply("gunpowder");
     private static final int DIVERSION_OVERLAY_ARGB = ARGB.white(0.8F);
 
     public static LayerDefinition createOverlayLayer() {
@@ -58,12 +58,12 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
         return LayerDefinition.create(mesh, 16, 16);
     }
 
-    protected final MaterialSet materials;
+    protected final SpriteGetter materials;
     private final ModelPart overlayModel;
 
     public RenderDiversionTransporter(BlockEntityRendererProvider.Context context) {
         super(context, DiversionTransporterRenderState::new);
-        this.materials = context.materials();
+        this.materials = context.sprites();
         this.overlayModel = context.bakeLayer(OVERLAY_LAYER);
     }
 
@@ -90,7 +90,7 @@ public class RenderDiversionTransporter extends RenderLogisticalTransporter<Tile
 
     @Override
     public void submit(DiversionTransporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (!MekanismConfig.client.opaqueTransmitters.get()) {//TODO - 1.21.11: Re-evaluate this check
+        if (!MekanismConfig.client.opaqueTransmitters.get()) {//TODO - 26.1: Re-evaluate this check
             super.submit(state, poseStack, nodeCollector, camera);
         }
         if (state.overlay != null) {

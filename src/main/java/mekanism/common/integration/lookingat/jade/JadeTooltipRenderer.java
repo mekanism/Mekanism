@@ -15,6 +15,7 @@ import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -126,7 +127,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, float rawX, float rawY, float maxX, float maxY) {
+        public void extractRenderState(GuiGraphicsExtractor guiGraphics, float rawX, float rawY, float maxX, float maxY) {
             int x = Mth.floor(rawX);
             int y = Mth.floor(rawY);
             if (text != null) {

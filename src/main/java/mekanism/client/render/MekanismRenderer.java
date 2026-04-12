@@ -40,9 +40,12 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.renderer.block.FluidModel;
+import net.minecraft.client.renderer.block.FluidStateModelSet;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -55,9 +58,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class MekanismRenderer {
@@ -78,27 +83,43 @@ public class MekanismRenderer {
      * @param type  Still or Flowing
      *
      * @return the sprite, or missing sprite if not found
-     */
+     *///todo 26.1 - is this still what should be done?
     public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
-        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluid);
-        Identifier spriteLocation;
+        FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
-            spriteLocation = properties.getStillTexture();
+            return fluidModel.stillMaterial().sprite();
         } else {
-            spriteLocation = properties.getFlowingTexture();
+            return fluidModel.flowingMaterial().sprite();
         }
-        return getSprite(spriteLocation);
     }
 
     public static TextureAtlasSprite getFluidTexture(@NotNull FluidStack fluidStack, @NotNull FluidTextureType type) {
-        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(fluidStack.getFluid());
-        Identifier spriteLocation;
+        FluidModel fluidModel = getFluidModel(fluidStack);
         if (type == FluidTextureType.STILL) {
-            spriteLocation = properties.getStillTexture(fluidStack);
+            return fluidModel.stillMaterial().sprite();
         } else {
-            spriteLocation = properties.getFlowingTexture(fluidStack);
+            return fluidModel.flowingMaterial().sprite();
         }
-        return getSprite(spriteLocation);
+    }
+
+    public static int getColorTint(FluidStack stack) {
+        FluidModel fluidModel = getFluidModel(stack);
+        FluidTintSource tintSource = fluidModel.fluidTintSource();
+        if (tintSource == null) {
+            return 0xFFFFFFFF;
+        }
+        return tintSource.colorAsStack(stack);
+    }
+
+    private static @NonNull FluidModel getFluidModel(FluidStack stack) {
+        return getFluidModel(stack.getFluid());
+    }
+
+    private static @NonNull FluidModel getFluidModel(Fluid fluid) {
+        Minecraft minecraft = Minecraft.getInstance();
+        ModelManager modelManager = minecraft.getModelManager();
+        FluidStateModelSet fluidStateModelSet = modelManager.getFluidStateModelSet();
+        return fluidStateModelSet.get(fluid.defaultFluidState());
     }
 
     public static TextureAtlasSprite getChemicalTexture(@NotNull ChemicalStack stack) {

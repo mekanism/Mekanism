@@ -14,9 +14,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +52,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
               //TODO - 1.21.11: Is this the correct render type to be using? It used to be translucent cull
               RenderTypes.entityTranslucent(MekanismRenderer.heatIcon.contents().name()),
               //TODO - 1.21.11: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
-              LightTexture.FULL_BRIGHT,
+              LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               //TODO - 1.21.11: Do we need to pass the texture here as well, or not?
               MekanismRenderer.heatIcon,

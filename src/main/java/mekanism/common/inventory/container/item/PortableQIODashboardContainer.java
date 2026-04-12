@@ -21,7 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -122,8 +122,8 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
-        if (clickType == ClickType.SWAP) {
+    public void clicked(int slotId, int dragType, @NotNull ContainerInput clickType, @NotNull Player player) {
+        if (clickType == ContainerInput.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == Inventory.SLOT_OFFHAND) {
                 //Block pressing f to swap it when it is in the offhand
                 return;

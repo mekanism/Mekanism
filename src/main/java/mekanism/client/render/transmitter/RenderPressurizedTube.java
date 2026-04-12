@@ -14,8 +14,9 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +51,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), state.chemicalTint, state.currentScale,
-                  LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.chemicalTexture);
+                  LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.chemicalTexture);
             poseStack.popPose();
         }
     }

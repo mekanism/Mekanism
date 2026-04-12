@@ -12,11 +12,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
+import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
+
+    private @Nullable PlacementInfo placementInfo;
 
     public BinExtractRecipe(CraftingBookCategory category) {
         super(category);
@@ -34,7 +38,7 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ItemStack binStack = findBinStack(inv);
         if (binStack.isEmpty()) {
             //If we didn't find a singular bin our recipe can't possibly match
@@ -87,8 +91,12 @@ public class BinExtractRecipe extends BinRecipe {
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
-        return width * height >= 1;
+    public PlacementInfo placementInfo() {
+        if (this.placementInfo == null) {
+            this.placementInfo = PlacementInfo.create(this.input);//todo bin ingredient??
+        }
+
+        return this.placementInfo;
     }
 
     @Override

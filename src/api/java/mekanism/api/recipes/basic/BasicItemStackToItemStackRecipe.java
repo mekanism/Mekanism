@@ -40,9 +40,9 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
     }
 
     @Override
-    @Contract(value = "_ -> new", pure = true)
-    public ItemStack getOutput(ItemStack input) {
-        return output.create();
+    @Contract(pure = true)
+    public ItemStackTemplate getOutput(ItemStack input) {
+        return output;
     }
 
     @Override

@@ -21,6 +21,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -63,7 +64,7 @@ public class RenderEnergyCubeItem extends MekanismISTER {
             matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
             matrix.mulPose(Axis.YP.rotationDegrees(scaledTicks));
             matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, LightTexture.FULL_BRIGHT, overlayLight, tier.getBaseTier(), (float) energyPercentage);
+            core.render(matrix, renderer, LightCoordsUtil.FULL_BRIGHT, overlayLight, tier.getBaseTier(), (float) energyPercentage);
             matrix.popPose();
         }
     }

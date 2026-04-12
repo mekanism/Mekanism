@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -265,7 +267,7 @@ public class GuiUtils {
     public static int drawStringNoFlush(GuiGraphics graphics, Matrix4f matrix, Font font, Component component, float x, float y, int color, boolean drawShadow) {
         //Copy of GuiGraphics#drawString(Font, FormattedCharSequence, float, float, int, boolean) but without the flush at the end
         return font.drawInBatch(component.getVisualOrderText(), x, y, color, drawShadow, matrix, graphics.bufferSource(),
-              Font.DisplayMode.NORMAL, 0, LightTexture.FULL_BRIGHT);
+              DisplayMode.NORMAL, 0, LightCoordsUtil.FULL_BRIGHT);
     }
 
     public static void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {

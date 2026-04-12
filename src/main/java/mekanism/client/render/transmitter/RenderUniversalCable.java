@@ -13,8 +13,9 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,7 +48,7 @@ public class RenderUniversalCable extends RenderTransmitterBase<TileEntityUniver
         if (state.currentScale > 0) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
-            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, state.currentScale, LightTexture.FULL_BRIGHT,
+            renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), 0xFFFFFF, state.currentScale, LightCoordsUtil.FULL_BRIGHT,
                   OverlayTexture.NO_OVERLAY, MekanismRenderer.energyIcon);
 
             poseStack.popPose();

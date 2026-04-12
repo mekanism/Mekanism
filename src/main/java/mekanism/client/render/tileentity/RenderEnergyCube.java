@@ -21,9 +21,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
@@ -79,7 +80,7 @@ public class RenderEnergyCube extends MekanismTileEntityRenderer<TileEntityEnerg
               //TODO - 1.21.11: Figure out the render type
               ModelEnergyCore.RENDER_TYPE,
               //TODO - 1.21.11: Do we want to be using the state's light level instead?
-              LightTexture.FULL_BRIGHT,
+              LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null,//TODO - 1.21.11: Do we need to specify the texture or is doing so in the render type good enough?
               state.coreTint,

@@ -4,6 +4,7 @@ import com.google.common.base.Preconditions;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
@@ -62,6 +63,11 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
         this.outputChemical = outputChemical.copy();
     }
 
+    public BasicPressurizedReactionRecipe(ItemStackIngredient inputSolid, FluidStackIngredient inputFluid, ChemicalStackIngredient inputChemical,
+          long energyRequired, int duration, Optional<ItemStackTemplate> outputItem, ChemicalStack outputChemical) {
+        this(inputSolid, inputFluid, inputChemical, energyRequired, duration, outputItem.orElse(null), outputChemical);
+    }
+
     @Override
     public ItemStackIngredient getInputSolid() {
         return inputSolid;
@@ -106,6 +112,10 @@ public class BasicPressurizedReactionRecipe extends PressurizedReactionRecipe {
     @Nullable
     public ItemStackTemplate getOutputItem() {
         return outputItem;
+    }
+
+    public Optional<ItemStackTemplate> getOutputItemOptional() {
+        return Optional.ofNullable(outputItem);
     }
 
     public ChemicalStack getOutputChemical() {

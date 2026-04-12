@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.distribution.FluidHandlerTarget;
@@ -18,7 +19,6 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -62,7 +62,7 @@ public final class FluidUtils {
         } else if (FMLEnvironment.getDist().isClient()) {
             //Note: We can only return an accurate result on the client side. This method should never be called from the server
             // but in case it is make sure we only run on the client side
-            return IClientFluidTypeExtensions.of(stack.getFluid()).getTintColor(stack);
+            return MekanismRenderer.getColorTint(stack);
         }
         return 0xFFFFFFFF;
     }

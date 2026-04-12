@@ -4,6 +4,7 @@ import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.AbstractCookingRecipe;
@@ -84,8 +85,8 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
     @Override
     protected Recipe<?> asRecipe() {
         return factory.create(
-              Objects.requireNonNullElse(this.group, ""),
-              bookCategory,
+              RecipeBuilder.createCraftingCommonInfo(true),
+              new AbstractCookingRecipe.CookingBookInfo(this.bookCategory, Objects.requireNonNullElse(this.group, "")),
               this.ingredient,
               resultStack(),
               this.experience,

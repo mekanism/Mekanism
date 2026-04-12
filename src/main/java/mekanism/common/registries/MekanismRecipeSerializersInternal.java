@@ -93,7 +93,7 @@ public class MekanismRecipeSerializersInternal {
 
         MekanismRecipeSerializers.REACTION = RECIPE_SERIALIZERS.register("reaction", () -> MekanismRecipeSerializer.reaction(BasicPressurizedReactionRecipe::new));
 
-        MekanismRecipeSerializers.ROTARY = RECIPE_SERIALIZERS.register("rotary", () -> new RotaryRecipeSerializer(BasicRotaryRecipe::new, BasicRotaryRecipe::new, BasicRotaryRecipe::new));
+        MekanismRecipeSerializers.ROTARY = RECIPE_SERIALIZERS.register("rotary", () -> RotaryRecipeSerializer.create(BasicRotaryRecipe::new, BasicRotaryRecipe::new, BasicRotaryRecipe::new));
 
         MekanismRecipeSerializers.SAWING = RECIPE_SERIALIZERS.register("sawing", () -> SawmillRecipeSerializer.create(BasicSawmillRecipe::new));
 

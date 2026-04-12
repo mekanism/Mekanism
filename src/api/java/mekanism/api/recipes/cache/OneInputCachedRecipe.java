@@ -157,7 +157,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStackTemplate, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.ITEM_TEMPLATE_EMPTY);

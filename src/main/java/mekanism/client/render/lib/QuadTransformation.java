@@ -10,6 +10,7 @@ import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
@@ -25,7 +26,7 @@ public interface QuadTransformation {
 
     QuadTransformation identity = q -> false;
 
-    QuadTransformation fullbright = packedLight(LightTexture.FULL_BRIGHT);
+    QuadTransformation fullbright = packedLight(LightCoordsUtil.FULL_BRIGHT);
     QuadTransformation filtered_fullbright = TextureFilteredTransformation.of(fullbright, rl -> rl.getPath().contains("led"));
 
     static QuadTransformation color(Color color) {

@@ -10,7 +10,7 @@ import mekanism.common.registries.MekanismContainerTypes;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -68,8 +68,8 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     }
 
     @Override
-    public void clicked(int slotId, int dragType, @NotNull ClickType clickType, @NotNull Player player) {
-        if (clickType == ClickType.SWAP) {
+    public void clicked(int slotId, int dragType, @NotNull ContainerInput containerInput, @NotNull Player player) {
+        if (containerInput == ContainerInput.SWAP) {
             if (hand == InteractionHand.OFF_HAND && dragType == Inventory.SLOT_OFFHAND) {
                 //Block pressing f to swap it when it is in the offhand
                 return;
@@ -80,6 +80,6 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
                 }
             }
         }
-        super.clicked(slotId, dragType, clickType, player);
+        super.clicked(slotId, dragType, containerInput, player);
     }
 }

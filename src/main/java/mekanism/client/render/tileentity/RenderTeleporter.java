@@ -19,11 +19,12 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -60,7 +61,7 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
     @Override
     public void submit(TeleporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.model != null) {
-            MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), state.tint, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+            MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
                   FaceDisplay.FRONT, camera.pos, state.blockPos);
         }
     }

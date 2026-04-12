@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -40,7 +41,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
         if (!isIncomplete() && test(input.item())) {
-            return getOutput(input.item());
+            return getOutput(input.item()).create();
         }
         return ItemStack.EMPTY;
     }
@@ -67,8 +68,8 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @Contract(value = "_ -> new", pure = true)
-    public abstract ItemStack getOutput(ItemStack input);
+    @Contract(pure = true)
+    public abstract ItemStackTemplate getOutput(ItemStack input);
 
     /**
      * For JEI, gets the output representations to display.

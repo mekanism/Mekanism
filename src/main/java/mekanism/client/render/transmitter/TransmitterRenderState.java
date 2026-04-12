@@ -7,7 +7,7 @@ import mekanism.api.text.EnumColor;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -42,7 +42,7 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public static class DiversionTransporterRenderState extends TransporterRenderState {
 
             @Nullable
-            public Material overlay;
+            public SpriteId overlay;
         }
 
         public record TransporterStackRenderState(Vector3f stackPos, ItemStackRenderState item, @Nullable EnumColor color) {

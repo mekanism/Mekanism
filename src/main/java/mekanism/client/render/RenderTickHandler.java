@@ -61,6 +61,7 @@ import net.minecraft.client.renderer.state.LevelRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.profiling.Profiler;
 import net.minecraft.util.profiling.ProfilerFiller;
@@ -453,7 +454,7 @@ public class RenderTickHandler {
                                 VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                                 int argb = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
                                 if (object != null) {
-                                    RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
+                                    RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
                                 }
                                 matrix.popPose();
                             }

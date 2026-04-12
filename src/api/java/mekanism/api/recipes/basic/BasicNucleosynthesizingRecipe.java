@@ -14,7 +14,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe implements IBasicItemStackOutput {
@@ -66,8 +65,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStack getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
-        return output.create();
+    public ItemStackTemplate getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
+        return output;
     }
 
     @Override
@@ -76,8 +75,8 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
     }
 
     @Override
-    public List<@NotNull ItemStack> getOutputDefinition() {
-        return Collections.singletonList(output.create());
+    public List<ItemStackTemplate> getOutputDefinition() {
+        return Collections.singletonList(output);
     }
 
     @Override

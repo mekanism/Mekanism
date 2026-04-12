@@ -11,6 +11,7 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ModelArmoredJetpack extends ModelJetpack {
@@ -81,7 +82,7 @@ public class ModelArmoredJetpack extends ModelJetpack {
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
         renderPartsToBuffer(armoredParts, poseStack, vertexConsumer, light, overlayLight, color);
-        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, LightTexture.FULL_BRIGHT, overlayLight, color);
+        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
         poseStack.popPose();
     }
 }

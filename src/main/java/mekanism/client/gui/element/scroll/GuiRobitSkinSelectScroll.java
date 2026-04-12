@@ -32,6 +32,7 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
@@ -214,7 +215,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         PoseStack.Pose matrixEntry = pose.last();
         ModelData modelData = ModelData.of(EntityRobit.SKIN_TEXTURE_PROPERTY, MathUtils.getByIndexMod(textures, index));
         for (BakedQuad quad : model.getQuads(null, null, robit.level().random, modelData, null)) {
-            builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+            builder.putBulkData(matrixEntry, quad, 1, 1, 1, 1, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 

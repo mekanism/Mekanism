@@ -40,7 +40,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -254,7 +253,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return stack.has(component) || knownDefaultCreators.containsKey(stack.getItem());
     }
 
-    public void addDefault(Holder<Item> item, DataComponentPatch.Builder builder) {
+    public void addDefault(Holder<Item> item, DataComponentMap.Builder builder) {
         Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(item.value());
         if (lazy != null) {
             //Supports the type

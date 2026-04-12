@@ -23,9 +23,10 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,7 +106,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
               poseStack,
               renderType,
               //TODO - 1.21.11: Why isn't this (and the model part below) using state.lightCoords for the light
-              LightTexture.FULL_BRIGHT,
+              LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               state.modelState.getTint(),
               null,//TODO - 1.21.11: Do we need to specify the texture again
@@ -116,7 +117,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
               this.lightBox,
               poseStack,
               renderType,
-              LightTexture.FULL_BRIGHT,
+              LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
               null//TODO - 1.21.11: Texture?
         );

@@ -15,9 +15,10 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -51,7 +52,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         if (multiblockUUID != null) {
             //We are rendering inside the multiblock, use full-bright for the textures
             //TODO - 1.21.11: Validate that this works
-            state.lightCoords = LightTexture.FULL_BRIGHT;
+            state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
         int baseIndex = rotor.getPosition() * 2;

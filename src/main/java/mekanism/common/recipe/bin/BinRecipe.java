@@ -12,8 +12,15 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 @NothingNullByDefault
 public abstract class BinRecipe extends CustomRecipe {
 
-    protected BinRecipe(CraftingBookCategory category) {
-        super(category);
+    private final CraftingBookCategory craftingBookCategory;
+
+    protected BinRecipe(CraftingBookCategory craftingBookCategory) {
+        this.craftingBookCategory = craftingBookCategory;
+    }
+
+    @Override
+    public CraftingBookCategory category() {
+        return this.craftingBookCategory;
     }
 
     protected static ComponentBackedBinInventorySlot convertToSlot(ItemStack binStack) {
@@ -24,8 +31,4 @@ public abstract class BinRecipe extends CustomRecipe {
         return slot;
     }
 
-    @Override
-    public boolean isIncomplete() {
-        return false;
-    }
 }

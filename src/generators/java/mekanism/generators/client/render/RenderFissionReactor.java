@@ -29,10 +29,12 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.state.CameraRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -117,7 +119,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                 poseStack.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 poseStack.scale(1, assembly.height() + 0.625F, 1);
-                MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), GLOW_ARGB, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, assemblyPos);
+                MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, assemblyPos);
                 poseStack.popPose();
             }
             //profiler.pop();
