@@ -7,7 +7,7 @@ import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 
-public class FrequencyManagerWrapper<FREQ extends Frequency> {
+public class FrequencyController<FREQ extends Frequency> {
 
     private final Type type;
     private final FrequencyType<FREQ> frequencyType;
@@ -15,7 +15,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
     private Map<UUID, FrequencyLookup<FREQ>> privateLookups;
     private Map<UUID, FrequencyLookup<FREQ>> trustedLookups;
 
-    private FrequencyManagerWrapper(Type type, FrequencyType<FREQ> frequencyType) {
+    private FrequencyController(Type type, FrequencyType<FREQ> frequencyType) {
         this.type = type;
         this.frequencyType = frequencyType;
 
@@ -30,8 +30,8 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         }
     }
 
-    public static <FREQ extends Frequency> FrequencyManagerWrapper<FREQ> create(FrequencyType<FREQ> frequencyType, Type type) {
-        return new FrequencyManagerWrapper<>(type, frequencyType);
+    public static <FREQ extends Frequency> FrequencyController<FREQ> create(FrequencyType<FREQ> frequencyType, Type type) {
+        return new FrequencyController<>(type, frequencyType);
     }
 
     public FrequencyLookup<FREQ> getPublicLookup() {

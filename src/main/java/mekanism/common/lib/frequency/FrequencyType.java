@@ -44,25 +44,25 @@ public class FrequencyType<FREQ extends Frequency> {
           (key, uuid, securityMode) -> new TeleporterFrequency((String) key, uuid, securityMode),
           TeleporterFrequency.CODEC,
           TeleporterFrequency.STREAM_CODEC,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
+          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
     public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
           (key, uuid, securityMode) -> new InventoryFrequency((String) key, uuid, securityMode),
           InventoryFrequency.CODEC,
           InventoryFrequency.STREAM_CODEC,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
+          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
     public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
           (key, uuid, securityMode) -> new SecurityFrequency(uuid, securityMode),
           SecurityFrequency.CODEC,
           SecurityFrequency.STREAM_CODEC,
-          FrequencyManagerWrapper.Type.PUBLIC_ONLY,
+          FrequencyController.Type.PUBLIC_ONLY,
           IdentitySerializer.UUID);
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid, securityMode) -> new QIOFrequency((String) key, uuid, securityMode),
           QIOFrequency.CODEC,
           QIOFrequency.STREAM_CODEC,
-          FrequencyManagerWrapper.Type.PUBLIC_PRIVATE_TRUSTED,
+          FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME);
 
     public static void init() {
@@ -73,10 +73,10 @@ public class FrequencyType<FREQ extends Frequency> {
     private final Codec<FREQ> codec;
     private final StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec;
     private final IdentitySerializer identitySerializer;
-    private final FrequencyManagerWrapper<FREQ> managerWrapper;
+    private final FrequencyController<FREQ> controller;
 
     private static <FREQ extends Frequency> FrequencyType<FREQ> register(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec,
-          StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec, FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
+          StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec, FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
         FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, codec, streamCodec, managerType, identitySerializer);
         registryMap.put(name, type);
         maxNameLength = Math.max(maxNameLength, name.length());
@@ -84,12 +84,12 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     private FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction,  Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
-          FrequencyManagerWrapper.Type managerType, IdentitySerializer identitySerializer) {
+          FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
         this.name = name;
         this.creationFunction = creationFunction;
         this.codec = codec;
         this.streamCodec = streamCodec;
-        this.managerWrapper = FrequencyManagerWrapper.create(this, managerType);
+        this.controller = FrequencyController.create(this, managerType);
         this.identitySerializer = identitySerializer;
     }
 
@@ -120,25 +120,25 @@ public class FrequencyType<FREQ extends Frequency> {
         return streamCodec.decode(buffer);
     }
 
-    public FrequencyManagerWrapper<FREQ> getManagerWrapper() {
-        return managerWrapper;
+    public FrequencyController<FREQ> getController() {
+        return controller;
     }
 
     public FrequencyLookup<FREQ> getLookup(@Nullable UUID owner, SecurityMode securityMode) {
         return switch (securityMode) {
-            case PUBLIC -> getManagerWrapper().getPublicLookup();
-            case PRIVATE -> getManagerWrapper().getPrivateLookup(owner);
-            case TRUSTED -> getManagerWrapper().getTrustedLookup(owner);
+            case PUBLIC -> getController().getPublicLookup();
+            case PRIVATE -> getController().getPrivateLookup(owner);
+            case TRUSTED -> getController().getTrustedLookup(owner);
         };
     }
 
     @Nullable
     @Contract("null -> null")
-    public FrequencyLookup<FREQ> getFrequencyManager(@Nullable FREQ freq) {
+    public FrequencyLookup<FREQ> getFrequencyLookup(@Nullable FREQ freq) {
         if (freq == null) {
             return null;
         }
-        FrequencyManagerWrapper<FREQ> manager = getManagerWrapper();
+        FrequencyController<FREQ> manager = getController();
         if (freq.getType() == SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
             return manager.getPublicLookup();
@@ -150,11 +150,11 @@ public class FrequencyType<FREQ extends Frequency> {
         };
     }
 
-    public FrequencyLookup<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
+    public FrequencyLookup<FREQ> getLookup(FrequencyIdentity identity, UUID owner) {
         return switch (identity.securityMode()) {
-            case PUBLIC -> getManagerWrapper().getPublicLookup();
-            case PRIVATE -> getManagerWrapper().getPrivateLookup(owner);
-            case TRUSTED -> getManagerWrapper().getTrustedLookup(owner);
+            case PUBLIC -> getController().getPublicLookup();
+            case PRIVATE -> getController().getPrivateLookup(owner);
+            case TRUSTED -> getController().getTrustedLookup(owner);
         };
     }
 
@@ -162,9 +162,9 @@ public class FrequencyType<FREQ extends Frequency> {
     public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
         FrequencyLookup<FREQ> manager;
         if (!Objects.equals(identity.ownerUUID(), owner) && SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), owner)) {
-            manager = getManager(identity, identity.ownerUUID());
+            manager = getLookup(identity, identity.ownerUUID());
         } else {
-            manager = getManager(identity, owner);
+            manager = getLookup(identity, owner);
         }
         return manager.getFrequency(identity.key());
     }
@@ -179,7 +179,7 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public static void clear() {
         for (FrequencyType<?> type : registryMap.values()) {
-            type.managerWrapper.clear();
+            type.controller.clear();
         }
     }
 

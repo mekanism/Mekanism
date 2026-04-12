@@ -54,7 +54,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
             FREQ frequency = null;
             if (identity.isPresent() && EffectiveSide.get().isServer()) {
                 //Only try to look up the frequency on the server
-                frequency = frequencyType.getManager(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
+                frequency = frequencyType.getLookup(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
             }
             return new FrequencyAware<>(identity, Optional.ofNullable(frequency));
         }));
@@ -67,7 +67,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
                 //Only try to look up the frequency on the server
                 //Note: This will almost always be false
                 //TODO - 1.21: Do we want to remove this branch and have the optional always be empty when transmitting via stream?
-                frequency = frequencyType.getManager(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
+                frequency = frequencyType.getLookup(identity.get(), identity.get().ownerUUID()).getFrequency(identity.get().key());
             }
             return new FrequencyAware<>(identity, Optional.ofNullable(frequency));
         }, FrequencyAware::identity);
@@ -115,7 +115,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
         FrequencyLookup<FREQ> manager;
         FREQ freq = null;
         if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
-            manager = frequencyType.getManager(data, data.ownerUUID());
+            manager = frequencyType.getLookup(data, data.ownerUUID());
             freq = manager.getFrequency(data.key());
             if (freq == null) {
                 //Frequency doesn't exist, update the data to having the player as the owner
@@ -124,7 +124,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
         }
         if (freq == null) {
             //If the player is the owner, or is trying to create a new trusted frequency, create it for this player instead
-            manager = frequencyType.getManager(data, player);
+            manager = frequencyType.getLookup(data, player);
             freq = manager.getOrCreateFrequency(data, player);
         }
         return new FrequencyAware<>(Optional.of(freq.getIdentity()), Optional.of(freq));

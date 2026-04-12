@@ -140,7 +140,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
             List<FREQ> trustedFrequencies = new ArrayList<>(frequencies.values());
             //TODO: Try to come up with a better way of doing this that allows us to cache this
             FrequencyLookup<SecurityFrequency> securityLookup = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC);
-            for (FrequencyLookup<FREQ> trustedLookup : frequencyType.getManagerWrapper().getTrustedLookups()) {
+            for (FrequencyLookup<FREQ> trustedLookup : frequencyType.getController().getTrustedLookups()) {
                 if (!ownerUUID.equals(trustedLookup.ownerUUID)) {
                     //Add any frequencies that the owner has access to because of being trusted by the other player
                     SecurityFrequency frequency = securityLookup.getFrequency(trustedLookup.ownerUUID);

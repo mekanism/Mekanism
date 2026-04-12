@@ -163,7 +163,7 @@ public class TileComponentFrequency implements ITileComponent {
         FrequencyLookup<FREQ> manager = null;
         FREQ freq = null;
         if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
-            manager = type.getManager(data, data.ownerUUID());
+            manager = type.getLookup(data, data.ownerUUID());
             freq = manager.getFrequency(data.key());
             if (freq == null) {
                 //Frequency doesn't exist, update the data to having the player as the owner
@@ -172,7 +172,7 @@ public class TileComponentFrequency implements ITileComponent {
         }
         if (freq == null) {
             //If the player is the owner, or is trying to create a new trusted frequency, create it for this player instead
-            manager = type.getManager(data, player);
+            manager = type.getLookup(data, player);
             freq = manager.getOrCreateFrequency(data, player);
         }
         if (!freq.equals(oldFrequency)) {
@@ -186,7 +186,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
-        FrequencyLookup<?> manager = type.getManager(data, data.ownerUUID() == null ? player : data.ownerUUID());
+        FrequencyLookup<?> manager = type.getLookup(data, data.ownerUUID() == null ? player : data.ownerUUID());
         if (manager != null && manager.remove(data.key(), player)) {
             FrequencyData frequencyData = getFrequencyData(type);
             if (frequencyData != null) {
@@ -209,7 +209,7 @@ public class TileComponentFrequency implements ITileComponent {
                     }
                 }
                 if (unsetFrequency) {
-                    FrequencyLookup<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
+                    FrequencyLookup<FREQ> manager = type.getFrequencyLookup((FREQ) frequencyData.selectedFrequency);
                     if (manager != null) {
                         manager.deactivate(frequencyData.selectedFrequency, tile);
                     }
@@ -219,7 +219,7 @@ public class TileComponentFrequency implements ITileComponent {
                 //Note: We don't need to update the frequency for this block as in cases when it isn't invalid we do it immediately
             } else {
                 FREQ frequency = (FREQ) frequencyData.selectedFrequency;
-                FrequencyLookup<FREQ> manager = type.getFrequencyManager(frequency);
+                FrequencyLookup<FREQ> manager = type.getFrequencyLookup(frequency);
                 if (manager == null) {
                     frequencyData.clearFrequency();
                 } else {
@@ -239,7 +239,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type, FrequencyData frequencyData) {
         if (frequencyData.selectedFrequency != null) {
-            FrequencyLookup<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
+            FrequencyLookup<FREQ> manager = type.getFrequencyLookup((FREQ) frequencyData.selectedFrequency);
             if (manager != null) {
                 manager.deactivate(frequencyData.selectedFrequency, tile);
             }
@@ -438,12 +438,12 @@ public class TileComponentFrequency implements ITileComponent {
             container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), privateSetter));
             container.track(SyncableFrequencyList.create(type, () -> getTrustedCache(type), trustedSetter));
         } else {
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicLookup().getFrequencies(), publicSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getController().getPublicLookup().getFrequencies(), publicSetter));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
             // the private frequencies of the player who opened the container rather than the private
             // frequencies of the owner of the tile
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateLookup(container.getPlayerUUID()).getFrequencies(), privateSetter));
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getTrustedLookup(container.getPlayerUUID()).getFrequencies(), trustedSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getController().getPrivateLookup(container.getPlayerUUID()).getFrequencies(), privateSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getController().getTrustedLookup(container.getPlayerUUID()).getFrequencies(), trustedSetter));
         }
     }
 
