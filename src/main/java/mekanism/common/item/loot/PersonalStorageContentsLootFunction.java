@@ -1,5 +1,6 @@
 package mekanism.common.item.loot;
 
+import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
@@ -14,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.neoforged.fml.util.thread.EffectiveSide;
 
@@ -26,6 +26,7 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 public class PersonalStorageContentsLootFunction implements LootItemFunction {
 
     public static final PersonalStorageContentsLootFunction INSTANCE = new PersonalStorageContentsLootFunction();
+    public static final MapCodec<PersonalStorageContentsLootFunction> MAP_CODEC = MapCodec.unit(INSTANCE);
 
     private PersonalStorageContentsLootFunction() {
     }
@@ -35,8 +36,8 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     }
 
     @Override
-    public LootItemFunctionType<PersonalStorageContentsLootFunction> getType() {
-        return MekanismLootFunctions.PERSONAL_STORAGE.get();
+    public MapCodec<? extends LootItemFunction> codec() {
+        return MAP_CODEC;
     }
 
     @Override

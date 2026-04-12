@@ -13,7 +13,7 @@ import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.DeltaTracker;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,7 +77,7 @@ public class WTHITTooltipRenderer implements IBlockComponentProvider, IEntityCom
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int x, int y, DeltaTracker delta) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y, DeltaTracker delta) {
             if (text != null) {
                 element.drawScrollingString(guiGraphics, text, x, y + 3, TextAlignment.LEFT, 0xFFFFFF, 4, false);
                 y += 13;

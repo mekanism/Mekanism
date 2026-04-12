@@ -7,6 +7,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -58,41 +59,41 @@ public interface IFancyFontRenderer {
         return SpecialColors.TEXT_INACTIVE_BUTTON.argb();
     }
 
-    default void drawTitleText(GuiGraphics graphics, Component text, int y) {
+    default void drawTitleText(GuiGraphicsExtractor graphics, Component text, int y) {
         drawScrollingString(graphics, text, 0, y, TextAlignment.CENTER, titleTextColor(), 4, false);
     }
 
-    default void drawTitleTextTextWithOffset(GuiGraphics graphics, Component text, int x, int y, int end) {
+    default void drawTitleTextTextWithOffset(GuiGraphicsExtractor graphics, Component text, int x, int y, int end) {
         drawTitleTextTextWithOffset(graphics, text, x, y, end, 4, TextAlignment.CENTER);
     }
 
-    default void drawTitleTextTextWithOffset(GuiGraphics graphics, Component text, int x, int y, int end, int maxLengthPad, TextAlignment alignment) {
+    default void drawTitleTextTextWithOffset(GuiGraphicsExtractor graphics, Component text, int x, int y, int end, int maxLengthPad, TextAlignment alignment) {
         drawScrollingString(graphics, text, x, y, alignment, titleTextColor(), end - x, maxLengthPad, false);
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow) {
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow) {
         drawScrollingString(graphics, text, x, y, alignment, color, maxLengthPad, shadow, getTimeOpened());
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow, long msVisible) {
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow, long msVisible) {
         drawScrollingString(graphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, msVisible);
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow) {
         drawScrollingString(graphics, text, x, y, alignment, color, width, maxLengthPad, shadow, getTimeOpened());
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow,
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad, boolean shadow,
           long msVisible) {
         drawScrollingString(graphics, text, x, y, alignment, color, width, font().lineHeight, maxLengthPad, shadow, msVisible);
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
           boolean shadow, long msVisible) {
         drawScrollingString(graphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + height, alignment, color, shadow, msVisible);
     }
 
-    default void drawScrollingString(GuiGraphics graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
+    default void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
           long msVisible) {
         Font font = font();
         int textWidth = font.width(text);
@@ -100,45 +101,45 @@ public interface IFancyFontRenderer {
         boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
         // That way if min and max are not just lineHeight away they will be more accurate, and otherwise it won't render one line below where it should be
-        float targetY = (minY + maxY - font.lineHeight) / 2F;
-        float targetX;
+        int targetY = (minY + maxY - font.lineHeight) / 2;
+        int targetX;
         if (isScrolling) {
             targetX = prepScrollingString(graphics, font, textWidth, areaWidth, minX, minY, maxX, maxY, Util.getMillis() - msVisible);
         } else {
             targetX = alignment.getTarget(font, minX, maxX, textWidth);
         }
-        graphics.drawString(font, text.getVisualOrderText(), targetX, targetY, color, shadow);
+        graphics.text(font, text.getVisualOrderText(), targetX, targetY, color, shadow);
         if (isScrolling) {
             graphics.disableScissor();
         }
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow,
           float scale) {
         drawScaledScrollingString(graphics, text, x, y, alignment, color, maxLengthPad, shadow, scale, getTimeOpened());
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int maxLengthPad, boolean shadow,
           float scale, long msVisible) {
         drawScaledScrollingString(graphics, text, x, y, alignment, color, getXSize(), maxLengthPad, shadow, scale, msVisible);
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
           boolean shadow, float scale) {
         drawScaledScrollingString(graphics, text, x, y, alignment, color, width, maxLengthPad, shadow, scale, getTimeOpened());
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int maxLengthPad,
           boolean shadow, float scale, long msVisible) {
         drawScaledScrollingString(graphics, text, x, y, alignment, color, width, font().lineHeight, maxLengthPad, shadow, scale, msVisible);
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
           boolean shadow, float scale, long msVisible) {
         drawScaledScrollingString(graphics, text, x + maxLengthPad, y, x + width - maxLengthPad, y + height, alignment, color, shadow, scale, msVisible);
     }
 
-    default void drawScaledScrollingString(GuiGraphics graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
+    default void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int minX, int minY, int maxX, int maxY, TextAlignment alignment, int color, boolean shadow,
           float scale, long msVisible) {
         if (scale == 1.0F) {
             drawScrollingString(graphics, text, minX, minY, maxX, maxY, alignment, color, shadow, msVisible);
@@ -158,7 +159,7 @@ public interface IFancyFontRenderer {
             targetX = alignment.getTarget(font, minX, maxX, textWidth);
         }
         Matrix3x2fStack matrix = prepTextScale(graphics, font, targetX, targetY, scale);
-        graphics.drawString(font, text, 0, 0, color, shadow);
+        graphics.text(font, text, 0, 0, color, shadow);
         matrix.popMatrix();
         if (isScrolling) {
             graphics.disableScissor();
@@ -167,13 +168,13 @@ public interface IFancyFontRenderer {
 
     /**
      * Based off the logic for calculating the scissor area and draw target that vanilla does in
-     * {@link AbstractWidget#renderScrollingString(GuiGraphics, Font, Component, int, int, int, int, int, int)}
+     * {@link AbstractWidget#renderScrollingString(GuiGraphicsExtractor, Font, Component, int, int, int, int, int, int)}
      *
      * @param visibleDuration Time in ms that this string has been visible for.
      *
-     * @apiNote Call {@link GuiGraphics#disableScissor()} after using this method
+     * @apiNote Call {@link GuiGraphicsExtractor#disableScissor()} after using this method
      */
-    private static float prepScrollingString(GuiGraphics graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
+    private static float prepScrollingString(GuiGraphicsExtractor graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
         //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
         // so we need to get the translations from our pose stack
         //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without all the extra allocations.
@@ -211,7 +212,7 @@ public interface IFancyFontRenderer {
     }
 
     //Note: As translate will implicitly cast x and y to being floats, we might as well pass these in as floats to reduce duplicate code
-    private static Matrix3x2fStack prepTextScale(GuiGraphics graphics, Font font, float x, float y, float scale) {
+    private static Matrix3x2fStack prepTextScale(GuiGraphicsExtractor graphics, Font font, float x, float y, float scale) {
         Matrix3x2fStack matrix = graphics.pose();
         matrix.pushMatrix();
         float halfLineHeight = font.lineHeight / 2F;
@@ -230,10 +231,10 @@ public interface IFancyFontRenderer {
          */
         RELATIVE;//TODO: Make use of this in various spots that make sense
 
-        public float getTarget(Font font, int minX, int maxX, float textWidth) {
+        public int getTarget(Font font, int minX, int maxX, int textWidth) {
             return switch (this) {
                 case LEFT -> minX;
-                case CENTER -> minX + ((maxX - minX) - textWidth) / 2F;
+                case CENTER -> minX + ((maxX - minX) - textWidth) / 2;
                 case RIGHT -> maxX - textWidth;
                 case RELATIVE -> font.isBidirectional() ? maxX - textWidth : minX;
             };
@@ -255,24 +256,24 @@ public interface IFancyFontRenderer {
             this.text = text;
         }
 
-        public void render(GuiGraphics graphics, int x, int y, int maxLength, TextAlignment alignment, int color) {
+        public void render(GuiGraphicsExtractor graphics, int x, int y, int maxLength, TextAlignment alignment, int color) {
             render(graphics, x, y, maxLength, alignment, color, 1);
         }
 
-        public int renderWithScale(GuiGraphics graphics, int x, int y, TextAlignment alignment, int color, int maxLength, float scale) {
+        public int renderWithScale(GuiGraphicsExtractor graphics, int x, int y, TextAlignment alignment, int color, int maxLength, float scale) {
             Matrix3x2fStack matrix = prepTextScale(graphics, fontRenderer.font(), x, y, scale);
             render(graphics, 0, 0, maxLength, alignment, color, scale);
             matrix.popMatrix();
             return linesToDraw.size();
         }
 
-        private void render(GuiGraphics graphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
+        private void render(GuiGraphicsExtractor graphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
             Font font = fontRenderer.font();
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(font, scale == 1 ? maxLength : Mth.floor(maxLength / scale));
             int maxX = x + maxLength;
             for (FormattedCharSequence line : linesToDraw) {
-                graphics.drawString(font, line, alignment.getTarget(font, x, maxX, scale * font.width(line)), startY, color, false);
+                graphics.text(font, line, alignment.getTarget(font, x, maxX, scale * font.width(line)), startY, color, false);
                 startY += font.lineHeight;
             }
         }
