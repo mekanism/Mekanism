@@ -5,7 +5,6 @@ import mekanism.api.text.IHasTranslationKey;
 import mekanism.common.registration.impl.SoundEventRegistryObject;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SoundDefinition;
 import net.neoforged.neoforge.common.data.SoundDefinitionsProvider;
 import org.jetbrains.annotations.NotNull;
@@ -14,8 +13,8 @@ public abstract class BaseSoundProvider extends SoundDefinitionsProvider {
 
     private final String modid;
 
-    protected BaseSoundProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
-        super(output, modid, existingFileHelper);
+    protected BaseSoundProvider(PackOutput output, String modid) {
+        super(output, modid);
         this.modid = modid;
     }
 

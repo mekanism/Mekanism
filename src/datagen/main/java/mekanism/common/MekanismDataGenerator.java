@@ -32,6 +32,8 @@ import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.registries.MekanismDatapackRegistryProvider;
 import mekanism.common.tag.MekanismTagProvider;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
@@ -82,26 +84,26 @@ public class MekanismDataGenerator {
         bootstrapIMC();
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
+        ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         gen.addProvider(true, new BasePackMetadataGenerator(output, MekanismLang.PACK_DESCRIPTION));
         //Client side data generators
-        gen.addProvider(event.includeClient(), new MekanismLangProvider(output));
-        gen.addProvider(event.includeClient(), new PrideRobitTextureProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new MekanismSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new MekanismSpriteSourceProvider(output, existingFileHelper, lookupProvider));
-        gen.addProvider(event.includeClient(), new MekanismItemModelProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new MekanismBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(true, new MekanismLangProvider(output));
+        gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
+        gen.addProvider(true, new MekanismSoundProvider(output));
+        gen.addProvider(true, new MekanismSpriteSourceProvider(output, lookupProvider));
+        gen.addProvider(true, new MekanismItemModelProvider(output, existingFileHelper));
+        gen.addProvider(true, new MekanismBlockStateProvider(output, existingFileHelper));
         //Server side data generators
-        gen.addProvider(event.includeServer(), new MekanismTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new MekanismLootProvider(output, lookupProvider));
-        gen.addProvider(event.includeServer(), drProvider);
-        gen.addProvider(event.includeServer(), new MekanismDataMapsProvider(output, lookupProvider));
+        gen.addProvider(true, new MekanismTagProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(true, new MekanismLootProvider(output, lookupProvider));
+        gen.addProvider(true, drProvider);
+        gen.addProvider(true, new MekanismDataMapsProvider(output, lookupProvider));
         MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, lookupProvider, existingFileHelper);
-        gen.addProvider(event.includeServer(), recipeProvider);
-        gen.addProvider(event.includeServer(), new MekanismAdvancementProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
+        gen.addProvider(true, recipeProvider);
+        gen.addProvider(true, new MekanismAdvancementProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(true, new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, recipeProvider.getDisabledCompats());

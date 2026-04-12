@@ -16,18 +16,17 @@ import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.common.data.SpriteSourceProvider;
+import net.minecraft.resources.ResourceKey;
+import net.neoforged.neoforge.client.data.SpriteSourceProvider;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public abstract class BaseSpriteSourceProvider extends SpriteSourceProvider {
 
     private final Set<Identifier> trackedSingles = new HashSet<>();
 
-    protected BaseSpriteSourceProvider(PackOutput output, String modid, ExistingFileHelper fileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, lookupProvider, modid, fileHelper);
+    protected BaseSpriteSourceProvider(PackOutput output, String modid, CompletableFuture<Provider> lookupProvider) {
+        super(output, lookupProvider, modid);
     }
 
     protected void addFiles(SourceList atlas, List<Identifier> resourceLocations) {

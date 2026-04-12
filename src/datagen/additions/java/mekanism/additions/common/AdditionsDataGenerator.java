@@ -38,8 +38,8 @@ public class AdditionsDataGenerator {
         gen.addProvider(true, new BasePackMetadataGenerator(output, AdditionsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(event.includeClient(), new AdditionsLangProvider(output));
-        gen.addProvider(event.includeClient(), new AdditionsSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
+        gen.addProvider(event.includeClient(), new AdditionsSoundProvider(output));
+        gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, lookupProvider));
         gen.addProvider(event.includeClient(), new AdditionsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
         //Server side data generators

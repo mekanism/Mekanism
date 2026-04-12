@@ -209,7 +209,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return containerCreator.initStorage(count);
     }
 
-    public ATTACHED getOrEmpty(ItemStack stack) {
+    public ATTACHED getOrEmpty(DataComponentGetter stack) {
         return stack.getOrDefault(component, emptyAttachment);
     }
 

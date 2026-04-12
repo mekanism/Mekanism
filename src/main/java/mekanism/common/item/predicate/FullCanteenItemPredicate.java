@@ -1,29 +1,47 @@
 package mekanism.common.item.predicate;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import java.util.List;
-import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.item.gear.ItemCanteen;
+import mekanism.common.attachments.containers.fluid.AttachedFluids;
+import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
-import net.minecraft.world.item.ItemStack;
+import mekanism.common.registries.MekanismItems;
+import net.minecraft.advancements.criterion.DataComponentMatchers;
+import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentGetter;
+import net.minecraft.core.component.predicates.DataComponentPredicate;
+import net.minecraft.core.registries.Registries;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-public class FullCanteenItemPredicate implements ItemSubPredicate {
+public class FullCanteenItemPredicate implements DataComponentPredicate {
+
+    public static ItemPredicate build(HolderLookup.Provider registry) {
+        return ItemPredicate.Builder.item()
+              .of(registry.lookupOrThrow(Registries.ITEM), MekanismItems.CANTEEN)
+              .withComponents(
+                    DataComponentMatchers.Builder.components()
+                          .partial(TYPE, INSTANCE)
+                          .build()
+              )
+              .build();
+    }
 
     public static final FullCanteenItemPredicate INSTANCE = new FullCanteenItemPredicate();
-    public static final Codec<FullCanteenItemPredicate> CODEC = Codec.unit(INSTANCE);
-    public static final ItemSubPredicate.Type<FullCanteenItemPredicate> TYPE = new ItemSubPredicate.Type<>(CODEC);
+    public static DataComponentPredicate.Type<FullCanteenItemPredicate> TYPE = new ConcreteType<>(MapCodec.unitCodec(INSTANCE));
 
     private FullCanteenItemPredicate() {
     }
 
     @Override
-    public boolean matches(@NotNull ItemStack stack) {
-        if (stack.getItem() instanceof ItemCanteen) {
-            List<IExtendedFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-            return !tanks.isEmpty() && tanks.stream().allMatch(tank -> tank.getNeeded() == 0 && tank.getFluid().is(MekanismFluids.NUTRITIONAL_PASTE));
-        }
-        return false;
+    public boolean matches(@NotNull DataComponentGetter stack) {
+        AttachedFluids attachedFluids = ContainerType.FLUID.getOrEmpty(stack);
+        List<FluidStack> tanks = attachedFluids.containers();
+        return !tanks.isEmpty() && tanks.stream().
+              allMatch(tank -> tank.amount() == MekanismConfig.gear.canteenMaxStorage.get() &&
+                               tank.typeHolder().is(MekanismFluids.NUTRITIONAL_PASTE.getKey())
+              );
     }
 }

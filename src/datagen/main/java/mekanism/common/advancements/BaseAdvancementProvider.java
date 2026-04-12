@@ -70,7 +70,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
         });
     }
 
-    protected abstract void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer);
+    protected abstract void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer);
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
         return ExtendedAdvancementBuilder.advancement(advancement, existingFileHelper);

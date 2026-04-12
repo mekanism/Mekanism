@@ -1,12 +1,11 @@
 package mekanism.common.lib;
 
-import java.util.function.Supplier;
-import mekanism.common.Mekanism;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.world.level.storage.SavedDataStorage;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
 
@@ -17,23 +16,19 @@ public abstract class MekanismSavedData extends SavedData {
     /**
      * Note: This should only be called from the server side
      */
-    public static <DATA extends MekanismSavedData> DATA createSavedData(Supplier<DATA> createFunction, String name) {
+    public static <DATA extends SavedData> DATA createSavedData(SavedDataType<DATA> type) {
         MinecraftServer currentServer = ServerLifecycleHooks.getCurrentServer();
         if (currentServer == null) {
             throw new IllegalStateException("Current server is null");
         }
-        DimensionDataStorage dataStorage = currentServer.overworld().getDataStorage();
-        return createSavedData(dataStorage, new Factory<>(createFunction, (tag, provider) -> {
-            DATA handler = createFunction.get();
-            handler.load(tag, provider);
-            return handler;
-        }), name);
+        SavedDataStorage dataStorage = currentServer.getDataStorage();
+        return dataStorage.computeIfAbsent(type);
     }
 
     /**
      * Note: This should only be called from the server side
      */
-    public static <DATA extends MekanismSavedData> DATA createSavedData(DimensionDataStorage dataStorage, SavedData.Factory<DATA> factory, String name) {
-        return dataStorage.computeIfAbsent(factory, Mekanism.MODID + "_" + name);
+    public static <DATA extends SavedData> DATA createSavedData(SavedDataStorage dataStorage, SavedDataType<DATA> type) {
+        return dataStorage.computeIfAbsent(type);
     }
 }

@@ -34,7 +34,7 @@ public class ToolsDataGenerator {
         gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(event.includeClient(), new ToolsLangProvider(output));
-        gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
+        gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, lookupProvider));
         gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
         //Server side data generators
         gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));

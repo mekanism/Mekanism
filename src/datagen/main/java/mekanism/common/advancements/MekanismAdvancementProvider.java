@@ -19,6 +19,7 @@ import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.block.machine.ItemBlockFactory;
+import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
 import mekanism.common.item.predicate.MekanismItemPredicates;
@@ -36,11 +37,15 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.advancements.criterion.EntityPredicate;
+import net.minecraft.advancements.criterion.EntityTypePredicate;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.PlayerTrigger;
 import net.minecraft.advancements.criterion.SummonedEntityTrigger;
 import net.minecraft.advancements.criterion.UsingItemTrigger;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.RegistryLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
@@ -56,7 +61,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
     //TODO - 1.19: xp rewards for any of these?
     @Override
-    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
+    protected void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
         advancement(MekanismAdvancements.ROOT)
               .display(MekanismItems.ATOMIC_DISASSEMBLER, Mekanism.rl("textures/block/block_osmium.png"), AdvancementType.GOAL, false, false, false)
               .addCriterion("automatic", MekanismCriteriaTriggers.LOGGED_IN.createCriterion(new PlayerTrigger.TriggerInstance(Optional.empty())))
@@ -240,7 +245,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
         advancement(MekanismAdvancements.NUCLEOSYNTHESIZER)
               .displayAndCriterion(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER, AdvancementType.CHALLENGE, true)
               .save(consumer);
-        addExperiments(consumer);
+        addExperiments(registries, consumer);
 
         advancement(MekanismAdvancements.POLONIUM)
               .displayAndCriterion(MekanismItems.POLONIUM_PELLET, AdvancementType.TASK, true)
@@ -293,7 +298,10 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
         advancement(MekanismAdvancements.ROBIT)
               .display(MekanismItems.ROBIT, AdvancementType.GOAL, true)
-              .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(EntityPredicate.Builder.entity().of(MekanismEntityTypes.ROBIT.value())))
+              .addCriterion("summon", SummonedEntityTrigger.TriggerInstance.summonedEntity(
+                    EntityPredicate.Builder.entity()
+                          .entityType(new EntityTypePredicate(HolderSet.direct(MekanismEntityTypes.ROBIT)))
+              ))
               .save(consumer);
         ItemStack skinnedRobit = MekanismItems.ROBIT.asStack();
         skinnedRobit.set(MekanismDataComponents.ROBIT_SKIN, MekanismRobitSkins.PRIDE_SKINS.get(RobitPrideSkinData.TRANS));
@@ -335,8 +343,7 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
                                 MekanismItems.MEKASUIT_PANTS,
                                 MekanismItems.MEKASUIT_BOOTS,
                                 MekanismItems.MEKA_TOOL
-                          ).map(item -> ItemPredicate.Builder.item().withSubPredicate(MekanismItemPredicates.MAXED_MODULE_CONTAINER_ITEM.value(),
-                                new MaxedModuleContainerItemPredicate(item)).build())
+                          ).map(item -> MaxedModuleContainerItemPredicate.build(registries, item))
                           .toArray(ItemPredicate[]::new)
               )).save(consumer);
 
@@ -423,26 +430,27 @@ public class MekanismAdvancementProvider extends BaseAdvancementProvider {
               .save(consumer);
         advancement(MekanismAdvancements.FULL_CANTEEN)
               .display(MekanismItems.CANTEEN, null, AdvancementType.GOAL, true, true, true)
-              .addCriterion("full_canteen", hasItems(ItemPredicate.Builder.item().withSubPredicate(MekanismItemPredicates.FULL_CANTEEN.value(), FullCanteenItemPredicate.INSTANCE).build()))
+              .addCriterion("full_canteen", hasItems(FullCanteenItemPredicate.build(registries)))
               .save(consumer);
     }
 
-    private void addExperiments(@NotNull Consumer<AdvancementHolder> consumer) {
+    private void addExperiments(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
+        RegistryLookup<EntityType<?>> lookup = registries.lookupOrThrow(Registries.ENTITY_TYPE);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_CREEPER)
               .display(Items.CREEPER_HEAD, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(MekanismTags.Entities.CREEPERS))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, MekanismTags.Entities.CREEPERS))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_MOOSHROOM)
               .display(Items.MOOSHROOM_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.MOOSHROOM))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.MOOSHROOM))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_PIG)
               .display(Items.PIG_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.PIG))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.PIG))
               .save(consumer);
         advancement(MekanismAdvancements.SPS_EXPERIMENT_VILLAGER)
               .display(Items.VILLAGER_SPAWN_EGG, null, AdvancementType.CHALLENGE, true, true, true)
-              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(EntityType.VILLAGER))
+              .addCriterion("experiment", SPSExperimentTrigger.TriggerInstance.create(lookup, EntityType.VILLAGER))
               .save(consumer);
     }
 }

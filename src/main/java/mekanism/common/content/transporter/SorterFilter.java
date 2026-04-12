@@ -98,7 +98,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         if (sizeMode && !singleItem) {
             return TransitRequest.definedItem(itemHandler, min, max, getFinder(registries));
         }
-        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, getFinder());
+        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, getFinder(registries));
     }
 
     @Override

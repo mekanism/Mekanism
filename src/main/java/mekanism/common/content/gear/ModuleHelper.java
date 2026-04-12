@@ -26,6 +26,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
@@ -175,7 +176,11 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     @Override
     @Nullable
     public ModuleContainer getModuleContainer(ItemStack stack) {
-        return isModuleContainer(stack) ? stack.getOrDefault(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY) : null;
+        return isModuleContainer(stack) ? getModuleContainerUnsafe(stack) : null;
+    }
+
+    public ModuleContainer getModuleContainerUnsafe(DataComponentGetter dataComponentGetter) {
+        return dataComponentGetter.getOrDefault(MekanismDataComponents.MODULE_CONTAINER, ModuleContainer.EMPTY);
     }
 
     @Override

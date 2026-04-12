@@ -9,8 +9,8 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ToolsSpriteSourceProvider extends BaseSpriteSourceProvider {
 
-    public ToolsSpriteSourceProvider(PackOutput output, ExistingFileHelper fileHelper, CompletableFuture<Provider> lookupProvider) {
-        super(output, MekanismTools.MODID, fileHelper, lookupProvider);
+    public ToolsSpriteSourceProvider(PackOutput output, CompletableFuture<Provider> lookupProvider) {
+        super(output, MekanismTools.MODID, lookupProvider);
     }
 
     @Override

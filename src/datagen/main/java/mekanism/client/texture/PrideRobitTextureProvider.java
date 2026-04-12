@@ -11,6 +11,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -25,13 +26,13 @@ import org.jetbrains.annotations.NotNull;
 public class PrideRobitTextureProvider implements DataProvider {
 
     private final PackOutput output;
-    private final ExistingFileHelper helper;
+    private final ResourceManager resourceManager;
 
     private static final String ROBIT_SKIN_PATH = "textures/entity/robit";
 
-    public PrideRobitTextureProvider(PackOutput output, ExistingFileHelper helper) {
+    public PrideRobitTextureProvider(PackOutput output, ResourceManager resourceManager) {
         this.output = output;
-        this.helper = helper;
+        this.resourceManager = resourceManager;
     }
 
     @NotNull
@@ -41,7 +42,7 @@ public class PrideRobitTextureProvider implements DataProvider {
         return CompletableFuture.runAsync(() -> {
             PathProvider pathProvider = output.createPathProvider(Target.RESOURCE_PACK, ROBIT_SKIN_PATH);
             try {
-                Resource resource = helper.getResource(MekanismRobitSkins.BASE.identifier(), PackType.CLIENT_RESOURCES, ".png", ROBIT_SKIN_PATH);
+                Resource resource = resourceManager.getResourceOrThrow(MekanismRobitSkins.BASE.identifier().withSuffix(".png").withPrefix(ROBIT_SKIN_PATH));
                 try (InputStream inputStream = resource.open();
                      NativeImage sourceImage = NativeImage.read(inputStream);
                      NativeImage writableImage = new NativeImage(sourceImage.format(), sourceImage.getWidth(), sourceImage.getHeight(), false)) {

@@ -37,8 +37,8 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, new BasePackMetadataGenerator(output, GeneratorsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(event.includeClient(), new GeneratorsLangProvider(output));
-        gen.addProvider(event.includeClient(), new GeneratorsSoundProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, existingFileHelper, lookupProvider));
+        gen.addProvider(event.includeClient(), new GeneratorsSoundProvider(output));
+        gen.addProvider(event.includeClient(), new GeneratorsSpriteSourceProvider(output, lookupProvider));
         gen.addProvider(event.includeClient(), new GeneratorsItemModelProvider(output, existingFileHelper));
         gen.addProvider(event.includeClient(), new GeneratorsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
