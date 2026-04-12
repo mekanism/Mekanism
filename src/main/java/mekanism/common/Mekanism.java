@@ -105,7 +105,7 @@ import mekanism.common.tile.machine.TileEntityOredictionificator.ODConfigValueIn
 import mekanism.common.world.GenHandler;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.cauldron.CauldronInteraction;
+import net.minecraft.core.cauldron.CauldronInteractions;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
@@ -127,6 +127,7 @@ import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TagsUpdatedEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
 import net.neoforged.neoforge.registries.datamaps.DataMapsUpdatedEvent;
@@ -199,6 +200,7 @@ public class Mekanism {
         NeoForge.EVENT_BUS.addListener(this::onWorldLoad);
         NeoForge.EVENT_BUS.addListener(this::onWorldUnload);
         NeoForge.EVENT_BUS.addListener(this::registerCommands);
+        NeoForge.EVENT_BUS.addListener(this::serverStarted);
         NeoForge.EVENT_BUS.addListener(this::serverStopped);
         NeoForge.EVENT_BUS.addListener(EventPriority.LOWEST, this::addReloadListenersLowest);
         NeoForge.EVENT_BUS.addListener(this::onTagsReload);
@@ -309,6 +311,10 @@ public class Mekanism {
         event.getDispatcher().register(CommandMek.register());
     }
 
+    private void serverStarted(ServerStartedEvent event) {
+        QIOGlobalItemLookup.serverLoad(event.getServer());
+    }
+
     private void serverStopped(ServerStoppedEvent event) {
         //Clear all cache data, wait until server stopper though so that we make sure saving can use any data it needs
         playerState.clear(false);
@@ -318,7 +324,7 @@ public class Mekanism {
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers
-        QIOGlobalItemLookup.INSTANCE.reset();
+        QIOGlobalItemLookup.reset();
         PlayerExposure.clear();
         MultiblockManager.reset();
         FrequencyManager.reset();
@@ -399,9 +405,9 @@ public class Mekanism {
         for (BlockRegistryObject<?, ?> tank : tanks) {
             Item item = tank.getItemHolder().value();
             DispenserBlock.registerBehavior(item, FluidTankItemDispenseBehavior.INSTANCE);
-            CauldronInteraction.EMPTY.map().put(item, BasicCauldronInteraction.EMPTY);
-            CauldronInteraction.WATER.map().put(item, BasicDrainCauldronInteraction.WATER);
-            CauldronInteraction.LAVA.map().put(item, BasicDrainCauldronInteraction.LAVA);
+            CauldronInteractions.EMPTY.put(item, BasicCauldronInteraction.EMPTY);
+            CauldronInteractions.WATER.put(item, BasicDrainCauldronInteraction.WATER);
+            CauldronInteractions.LAVA.put(item, BasicDrainCauldronInteraction.LAVA);
         }
     }
 

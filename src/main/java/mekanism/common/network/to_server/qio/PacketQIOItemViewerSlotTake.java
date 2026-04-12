@@ -37,7 +37,7 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
         if (context.player().containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
-                HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
+                HashedItem itemType = QIOGlobalItemLookup.instance().getTypeByUUID(typeUUID);
                 if (itemType != null) {
                     ItemStack curStack = container.getCarried();
                     //Clamp amount to extract by max stack size in case something is wrong with the packet that got sent

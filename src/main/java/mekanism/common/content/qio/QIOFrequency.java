@@ -498,7 +498,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             Lazy<PacketUpdateItemViewer> lazyPacket = Lazy.of(() -> {
                 Object2LongMap<UUIDAwareHashedItem> map = new Object2LongOpenHashMap<>(updatedItems.size());
                 for (UUID uuid : updatedItems) {
-                    HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(uuid);
+                    HashedItem type = QIOGlobalItemLookup.instance().getTypeByUUID(uuid);
                     if (type != null) {//The type should never be null as we create a UUID if there isn't one before adding but validate it
                         QIOItemTypeData data = itemDataMap.get(type);
                         map.put(new UUIDAwareHashedItem(type, uuid), data == null ? 0 : data.count);
@@ -659,7 +659,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
             needsUpdate = true;
             if (changedItem != null) {
-                UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem);
+                UUID uuid = QIOGlobalItemLookup.instance().getUUIDForType(changedItem);
                 if (uuid != null) {
                     updatedItems.add(uuid);
                 }
@@ -669,7 +669,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     private void markForUpdate(HashedItem changedItem) {
         if (!playersViewingItems.isEmpty()) {//Skip marking for update if there are no players viewing the items
-            UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(changedItem);
+            UUID uuid = QIOGlobalItemLookup.instance().getUUIDForType(changedItem);
             if (uuid != null) {
                 updatedItems.add(uuid);
             }
@@ -771,7 +771,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         public UUID getItemUUID() {
             if (itemUUID == null) {
                 //Lazily cache what the uuid for the stack is
-                itemUUID = QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(itemType);
+                itemUUID = QIOGlobalItemLookup.instance().getOrTrackUUID(itemType);
             }
             return itemUUID;
         }

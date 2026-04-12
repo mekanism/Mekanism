@@ -173,7 +173,6 @@ public class CommonWorldTickHandler {
         if (!event.getLevel().isClientSide()) {
             FrequencyManager.load();
             MultiblockManager.createOrLoadAll();
-            QIOGlobalItemLookup.INSTANCE.createOrLoad();
         }
     }
 

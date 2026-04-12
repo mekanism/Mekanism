@@ -169,7 +169,7 @@ public class QIOServerCraftingTransferHandler {
             if (frequency == null) {
                 return fail("Received transfer request from: {}, for: {}, with a QIO source but no selected frequency.", player, recipeID);
             }
-            HashedItem storedItem = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(qioSource);
+            HashedItem storedItem = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
             if (storedItem == null) {
                 return fail("Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
             }
@@ -339,7 +339,7 @@ public class QIOServerCraftingTransferHandler {
                     }
                     if (frequency.isStoring(entry.getKey())) {
                         //It is stored, check to make sure it isn't a type we are removing fully
-                        UUID uuid = QIOGlobalItemLookup.INSTANCE.getUUIDForType(entry.getKey());
+                        UUID uuid = QIOGlobalItemLookup.instance().getUUIDForType(entry.getKey());
                         if (uuid != null) {
                             FrequencySlotData slotData = frequencyAvailableItems.get(uuid);
                             if (slotData != null && slotData.getAvailable() == 0) {
@@ -424,7 +424,7 @@ public class QIOServerCraftingTransferHandler {
                 if (slot == -1) {
                     UUID qioSource = source.getQioSource();
                     //Neither the source nor the frequency can be null here as we validated that during simulation
-                    HashedItem storedItem = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(qioSource);
+                    HashedItem storedItem = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
                     if (storedItem == null) {
                         bail(targetContents, "Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
                         return;

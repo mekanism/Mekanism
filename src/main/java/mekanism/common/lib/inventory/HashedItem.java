@@ -6,6 +6,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.common.util.StackUtils;
 import net.minecraft.core.UUIDUtil;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
  * @author aidancbrady
  */
 @NothingNullByDefault//TODO 26.1 - convert to use ItemStackTemplate?
-public class HashedItem implements IHashedItem {
+public class HashedItem implements IHashedItem, DataComponentHolder {
 
     /**
      * @implNote This codec does not copy any uuid information if the hashed item is a {@link UUIDAwareHashedItem}
@@ -79,6 +83,19 @@ public class HashedItem implements IHashedItem {
 
     public boolean isSameItemSameComponents(ItemStack other) {
         return ItemStack.isSameItemSameComponents(itemStack, other);
+    }
+
+    @Override
+    public DataComponentMap getComponents() {
+        return getInternalStack().getComponents();
+    }
+
+    public DataComponentPatch getComponentsPatch() {
+        DataComponentMap components = getComponents();
+        if (components instanceof PatchedDataComponentMap patched) {
+            return patched.asPatch();
+        }
+        return DataComponentPatch.EMPTY;
     }
 
     @Override

@@ -46,7 +46,7 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
         Object2LongSortedMap<UUID> namedItemMap = new Object2LongLinkedOpenHashMap<>(itemMap.size());
         for (ObjectIterator<Object2LongMap.Entry<HashedItem>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
             Object2LongMap.Entry<HashedItem> entry = iterator.next();
-            namedItemMap.put(QIOGlobalItemLookup.INSTANCE.getOrTrackUUID(entry.getKey()), entry.getLongValue());
+            namedItemMap.put(QIOGlobalItemLookup.instance().getOrTrackUUID(entry.getKey()), entry.getLongValue());
         }
         return new DriveContents(namedItemMap);
     }
@@ -55,7 +55,7 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
         Object2LongMap<HashedItem> itemMap = data.getItemMap();
         for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(namedItemMap); iterator.hasNext(); ) {
             Object2LongMap.Entry<UUID> entry = iterator.next();
-            HashedItem type = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(entry.getKey());
+            HashedItem type = QIOGlobalItemLookup.instance().getTypeByUUID(entry.getKey());
             if (type != null) {
                 //Only add the item if the item type is known. If it can't that means the mod adding the item was probably removed
                 //TODO: Eventually we may want to keep the UUID so that if the mod gets added back it exists again?
@@ -87,7 +87,7 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
         if (serializedItemMap.length > 0 && serializedItemMap.length % 3 == 0) {
             //Ensure we have valid data and not some value we don't know how to process
             Object2LongSortedMap<UUID> namedItemMap = new Object2LongLinkedOpenHashMap<>();
-            boolean hasAliases = QIOGlobalItemLookup.INSTANCE.hasAliases();
+            boolean hasAliases = QIOGlobalItemLookup.instance().hasAliases();
             for (int i = 0; i < serializedItemMap.length; i++) {
                 UUID savedUUID = new UUID(serializedItemMap[i++], serializedItemMap[i++]);
                 long storedCount = serializedItemMap[i];
@@ -96,7 +96,7 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
                     namedItemMap.put(savedUUID, storedCount);
                 } else {
                     //Note: getWinningId, will return the passed in id if there isn't an id to remap it to
-                    UUID winningId = QIOGlobalItemLookup.INSTANCE.getWinningId(savedUUID);
+                    UUID winningId = QIOGlobalItemLookup.instance().getWinningId(savedUUID);
                     //We merge regardless of if our item had an alias or not, so that we don't fail on the
                     // case where we load the alias version first, and then the one that is new might override it
                     namedItemMap.mergeLong(winningId, storedCount, SUM);

@@ -35,7 +35,7 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
         if (player.containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
-                HashedItem itemType = QIOGlobalItemLookup.INSTANCE.getTypeByUUID(typeUUID);
+                HashedItem itemType = QIOGlobalItemLookup.instance().getTypeByUUID(typeUUID);
                 if (itemType != null) {
                     ItemStack maxExtract = itemType.createStack(itemType.getMaxStackSize());
                     //Simulate how much room we have in the player's inventory before trying to extract anything from the frequency
