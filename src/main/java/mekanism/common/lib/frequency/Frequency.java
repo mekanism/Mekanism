@@ -73,7 +73,7 @@ public abstract class Frequency implements IFrequency {
 
     /**
      * @return {@code true} if persistent data was changed and the frequency needs to be saved.
-     */
+     *///todo split this out to TickableFrequency?
     public boolean tick(boolean tickingNormally) {
         return dirty;
     }

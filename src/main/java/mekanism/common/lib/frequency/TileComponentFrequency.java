@@ -204,7 +204,7 @@ public class TileComponentFrequency implements ITileComponent {
                     //If we aren't unsetting the frequency, check if it is a trusted frequency that we no longer have access to
                     UUID ownerUUID = tile.getOwnerUUID();
                     if (ownerUUID != null && !frequencyData.selectedFrequency.ownerMatches(ownerUUID)) {
-                        SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
+                        SecurityFrequency security = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(frequencyData.selectedFrequency.getOwner());
                         unsetFrequency = security != null && !security.isTrusted(ownerUUID);
                     }
                 }
@@ -438,12 +438,12 @@ public class TileComponentFrequency implements ITileComponent {
             container.track(SyncableFrequencyList.create(type, () -> getPrivateCache(type), privateSetter));
             container.track(SyncableFrequencyList.create(type, () -> getTrustedCache(type), trustedSetter));
         } else {
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicManager().getFrequencies(), publicSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPublicLookup().getFrequencies(), publicSetter));
             //Note: We take advantage of the fact that containers are one to one even on the server, and sync
             // the private frequencies of the player who opened the container rather than the private
             // frequencies of the owner of the tile
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateManager(container.getPlayerUUID()).getFrequencies(), privateSetter));
-            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getTrustedManager(container.getPlayerUUID()).getFrequencies(), trustedSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getPrivateLookup(container.getPlayerUUID()).getFrequencies(), privateSetter));
+            container.track(SyncableFrequencyList.create(type, () -> type.getManagerWrapper().getTrustedLookup(container.getPlayerUUID()).getFrequencies(), trustedSetter));
         }
     }
 

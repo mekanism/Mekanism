@@ -124,11 +124,11 @@ public class FrequencyType<FREQ extends Frequency> {
         return managerWrapper;
     }
 
-    public FrequencyLookup<FREQ> getManager(@Nullable UUID owner, SecurityMode securityMode) {
+    public FrequencyLookup<FREQ> getLookup(@Nullable UUID owner, SecurityMode securityMode) {
         return switch (securityMode) {
-            case PUBLIC -> getManagerWrapper().getPublicManager();
-            case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
-            case TRUSTED -> getManagerWrapper().getTrustedManager(owner);
+            case PUBLIC -> getManagerWrapper().getPublicLookup();
+            case PRIVATE -> getManagerWrapper().getPrivateLookup(owner);
+            case TRUSTED -> getManagerWrapper().getTrustedLookup(owner);
         };
     }
 
@@ -141,20 +141,20 @@ public class FrequencyType<FREQ extends Frequency> {
         FrequencyManagerWrapper<FREQ> manager = getManagerWrapper();
         if (freq.getType() == SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
-            return manager.getPublicManager();
+            return manager.getPublicLookup();
         }
         return switch (freq.getSecurity()) {
-            case PUBLIC -> manager.getPublicManager();
-            case PRIVATE -> manager.getPrivateManager(freq.getOwner());
-            case TRUSTED -> manager.getTrustedManager(freq.getOwner());
+            case PUBLIC -> manager.getPublicLookup();
+            case PRIVATE -> manager.getPrivateLookup(freq.getOwner());
+            case TRUSTED -> manager.getTrustedLookup(freq.getOwner());
         };
     }
 
     public FrequencyLookup<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
         return switch (identity.securityMode()) {
-            case PUBLIC -> getManagerWrapper().getPublicManager();
-            case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
-            case TRUSTED -> getManagerWrapper().getTrustedManager(owner);
+            case PUBLIC -> getManagerWrapper().getPublicLookup();
+            case PRIVATE -> getManagerWrapper().getPrivateLookup(owner);
+            case TRUSTED -> getManagerWrapper().getTrustedLookup(owner);
         };
     }
 

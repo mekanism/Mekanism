@@ -11,22 +11,22 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
     private final Type type;
     private final FrequencyType<FREQ> frequencyType;
-    private FrequencyLookup<FREQ> publicManager;
-    private Map<UUID, FrequencyLookup<FREQ>> privateManagers;
-    private Map<UUID, FrequencyLookup<FREQ>> trustedManagers;
+    private FrequencyLookup<FREQ> publicLookup;
+    private Map<UUID, FrequencyLookup<FREQ>> privateLookups;
+    private Map<UUID, FrequencyLookup<FREQ>> trustedLookups;
 
     private FrequencyManagerWrapper(Type type, FrequencyType<FREQ> frequencyType) {
         this.type = type;
         this.frequencyType = frequencyType;
 
         if (type.supportsPublic()) {
-            publicManager = new FrequencyLookup<>(frequencyType);
+            publicLookup = new FrequencyLookup<>(frequencyType);
         }
         if (type.supportsPrivate()) {
-            privateManagers = new Object2ObjectOpenHashMap<>();
+            privateLookups = new Object2ObjectOpenHashMap<>();
         }
         if (type.supportsTrusted()) {
-            trustedManagers = new Object2ObjectOpenHashMap<>();
+            trustedLookups = new Object2ObjectOpenHashMap<>();
         }
     }
 
@@ -34,60 +34,60 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         return new FrequencyManagerWrapper<>(type, frequencyType);
     }
 
-    public FrequencyLookup<FREQ> getPublicManager() {
+    public FrequencyLookup<FREQ> getPublicLookup() {
         if (!type.supportsPublic()) {
-            Mekanism.logger.error("Attempted to access public frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access public frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         }
 
-        return publicManager;
+        return publicLookup;
     }
 
-    public FrequencyLookup<FREQ> getPrivateManager(UUID ownerUUID) {
+    public FrequencyLookup<FREQ> getPrivateLookup(UUID ownerUUID) {
         if (!type.supportsPrivate()) {
-            Mekanism.logger.error("Attempted to access private frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access private frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
-            Mekanism.logger.error("Attempted to access private frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access private frequency lookup of type {} with no owner. This shouldn't happen!", frequencyType.getName());
             return null;
         }
 
-        FrequencyLookup<FREQ> manager = privateManagers.get(ownerUUID);
-        if (manager == null) {
-            manager = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
-            manager.createOrLoad();
-            privateManagers.put(ownerUUID, manager);
+        FrequencyLookup<FREQ> lookup = privateLookups.get(ownerUUID);
+        if (lookup == null) {
+            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
+            lookup.createOrLoad();
+            privateLookups.put(ownerUUID, lookup);
         }
-        return manager;
+        return lookup;
     }
 
-    public FrequencyLookup<FREQ> getTrustedManager(UUID ownerUUID) {
+    public FrequencyLookup<FREQ> getTrustedLookup(UUID ownerUUID) {
         if (!type.supportsTrusted()) {
-            Mekanism.logger.error("Attempted to access trusted frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access trusted frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
-            Mekanism.logger.error("Attempted to access trusted frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access trusted frequency lookup of type {} with no owner. This shouldn't happen!", frequencyType.getName());
             return null;
         }
-        FrequencyLookup<FREQ> manager = trustedManagers.get(ownerUUID);
-        if (manager == null) {
-            manager = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
-            manager.createOrLoad();
-            trustedManagers.put(ownerUUID, manager);
+        FrequencyLookup<FREQ> lookup = trustedLookups.get(ownerUUID);
+        if (lookup == null) {
+            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
+            lookup.createOrLoad();
+            trustedLookups.put(ownerUUID, lookup);
         }
-        return manager;
+        return lookup;
     }
 
-    public Collection<FrequencyLookup<FREQ>> getTrustedManagers() {
-        return trustedManagers.values();
+    public Collection<FrequencyLookup<FREQ>> getTrustedLookups() {
+        return trustedLookups.values();
     }
 
     public void clear() {
-        if (privateManagers != null) {
-            privateManagers.clear();
+        if (privateLookups != null) {
+            privateLookups.clear();
         }
-        if (trustedManagers != null) {
-            trustedManagers.clear();
+        if (trustedLookups != null) {
+            trustedLookups.clear();
         }
     }
 

@@ -481,7 +481,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?
-            SecurityFrequency security = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequency(getOwner());
+            SecurityFrequency security = FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
             if (security != null) {
                 for (ServerPlayer player : new HashSet<>(playersViewingItems)) {
                     if (!ownerMatches(player.getUUID()) && !security.isTrusted(player.getUUID()) && player.containerMenu instanceof QIOItemViewerContainer) {

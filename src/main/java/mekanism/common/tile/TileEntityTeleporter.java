@@ -689,7 +689,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<TeleporterFrequency> getFrequencies() {
-        return FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequencies();
+        return FrequencyType.TELEPORTER.getManagerWrapper().getPublicLookup().getFrequencies();
     }
 
     @ComputerMethod
@@ -710,7 +710,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
+        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicLookup().getFrequency(name);
         if (frequency == null) {
             throw new ComputerException("No public teleporter frequency with name '%s' found.", name);
         }
@@ -720,7 +720,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicManager().getFrequency(name);
+        TeleporterFrequency frequency = FrequencyType.TELEPORTER.getManagerWrapper().getPublicLookup().getFrequency(name);
         if (frequency != null) {
             throw new ComputerException("Unable to create public teleporter frequency with name '%s' as one already exists.", name);
         }

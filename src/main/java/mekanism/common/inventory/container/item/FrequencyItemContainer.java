@@ -82,9 +82,9 @@ public abstract class FrequencyItemContainer<FREQ extends Frequency> extends Mek
             //Server side sync handling
             //Note: It is important these are in the same order as the client side trackers
             track(SyncableFrequency.create(frequencyType, this::getFrequencyFromStack, this::setFrequency));
-            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(null, SecurityMode.PUBLIC).getFrequencies(), value -> publicCache = value));
-            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(getPlayerUUID(), SecurityMode.PRIVATE).getFrequencies(), value -> privateCache = value));
-            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getManager(getPlayerUUID(), SecurityMode.TRUSTED).getFrequencies(), value -> trustedCache = value));
+            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(null, SecurityMode.PUBLIC).getFrequencies(), value -> publicCache = value));
+            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(getPlayerUUID(), SecurityMode.PRIVATE).getFrequencies(), value -> privateCache = value));
+            track(SyncableFrequencyList.create(frequencyType, () -> frequencyType.getLookup(getPlayerUUID(), SecurityMode.TRUSTED).getFrequencies(), value -> trustedCache = value));
         }
     }
 }

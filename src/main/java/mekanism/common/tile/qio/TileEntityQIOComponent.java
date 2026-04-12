@@ -90,7 +90,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Lists public frequencies")
     Collection<QIOFrequency> getFrequencies() {
-        return FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequencies();
+        return FrequencyType.QIO.getManagerWrapper().getPublicLookup().getFrequencies();
     }
 
     @ComputerMethod
@@ -111,7 +111,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires a public frequency to exist")
     void setFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
+        QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicLookup().getFrequency(name);
         if (frequency == null) {
             throw new ComputerException("No public QIO frequency with name '%s' found.", name);
         }
@@ -121,7 +121,7 @@ public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFr
     @ComputerMethod(requiresPublicSecurity = true, methodDescription = "Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation")
     void createFrequency(String name) throws ComputerException {
         validateSecurityIsPublic();
-        QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicManager().getFrequency(name);
+        QIOFrequency frequency = FrequencyType.QIO.getManagerWrapper().getPublicLookup().getFrequency(name);
         if (frequency != null) {
             throw new ComputerException("Unable to create public QIO frequency with name '%s' as one already exists.", name);
         }

@@ -33,7 +33,7 @@ public record PacketBatchSecurityUpdate(Map<UUID, SecurityData> securityMap, Map
 
     public PacketBatchSecurityUpdate() {
         this(new Object2ObjectOpenHashMap<>(), new Object2ObjectOpenHashMap<>());
-        List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC).getFrequencies());
+        List<SecurityFrequency> frequencies = new ArrayList<>(FrequencyType.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequencies());
         for (SecurityFrequency frequency : frequencies) {
             UUID owner = frequency.getOwner();
             //In theory no owner should be null but just in case handle it anyway
