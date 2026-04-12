@@ -17,7 +17,7 @@ import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.security.SecurityFrequency;
 import mekanism.common.lib.security.SecurityUtils;
@@ -112,7 +112,7 @@ public record FrequencyAware<FREQ extends Frequency>(Optional<FrequencyIdentity>
         //Note: We don't bother validating if the frequency is public or not here, as if it isn't then
         // a new private frequency will just be created for the player who sent a packet they shouldn't
         // have been able to send due to not knowing what private frequencies exist for other players
-        FrequencyManager<FREQ> manager;
+        FrequencyLookup<FREQ> manager;
         FREQ freq = null;
         if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
             manager = frequencyType.getManager(data, data.ownerUUID());

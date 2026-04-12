@@ -124,7 +124,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return managerWrapper;
     }
 
-    public FrequencyManager<FREQ> getManager(@Nullable UUID owner, SecurityMode securityMode) {
+    public FrequencyLookup<FREQ> getManager(@Nullable UUID owner, SecurityMode securityMode) {
         return switch (securityMode) {
             case PUBLIC -> getManagerWrapper().getPublicManager();
             case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
@@ -134,7 +134,7 @@ public class FrequencyType<FREQ extends Frequency> {
 
     @Nullable
     @Contract("null -> null")
-    public FrequencyManager<FREQ> getFrequencyManager(@Nullable FREQ freq) {
+    public FrequencyLookup<FREQ> getFrequencyManager(@Nullable FREQ freq) {
         if (freq == null) {
             return null;
         }
@@ -150,7 +150,7 @@ public class FrequencyType<FREQ extends Frequency> {
         };
     }
 
-    public FrequencyManager<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
+    public FrequencyLookup<FREQ> getManager(FrequencyIdentity identity, UUID owner) {
         return switch (identity.securityMode()) {
             case PUBLIC -> getManagerWrapper().getPublicManager();
             case PRIVATE -> getManagerWrapper().getPrivateManager(owner);
@@ -160,7 +160,7 @@ public class FrequencyType<FREQ extends Frequency> {
 
     @Nullable
     public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
-        FrequencyManager<FREQ> manager;
+        FrequencyLookup<FREQ> manager;
         if (!Objects.equals(identity.ownerUUID(), owner) && SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), owner)) {
             manager = getManager(identity, identity.ownerUUID());
         } else {

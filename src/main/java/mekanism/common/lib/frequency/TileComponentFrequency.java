@@ -160,7 +160,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void setFrequencyFromData(FrequencyType<FREQ> type, FrequencyIdentity data, @NotNull UUID player, FrequencyData frequencyData) {
         Frequency oldFrequency = frequencyData.selectedFrequency;
-        FrequencyManager<FREQ> manager = null;
+        FrequencyLookup<FREQ> manager = null;
         FREQ freq = null;
         if (!Objects.equals(data.ownerUUID(), player) && SecurityUtils.get().isTrusted(data.securityMode(), data.ownerUUID(), player)) {
             manager = type.getManager(data, data.ownerUUID());
@@ -186,7 +186,7 @@ public class TileComponentFrequency implements ITileComponent {
     }
 
     public void removeFrequencyFromData(FrequencyType<?> type, FrequencyIdentity data, UUID player) {
-        FrequencyManager<?> manager = type.getManager(data, data.ownerUUID() == null ? player : data.ownerUUID());
+        FrequencyLookup<?> manager = type.getManager(data, data.ownerUUID() == null ? player : data.ownerUUID());
         if (manager != null && manager.remove(data.key(), player)) {
             FrequencyData frequencyData = getFrequencyData(type);
             if (frequencyData != null) {
@@ -209,7 +209,7 @@ public class TileComponentFrequency implements ITileComponent {
                     }
                 }
                 if (unsetFrequency) {
-                    FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
+                    FrequencyLookup<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
                     if (manager != null) {
                         manager.deactivate(frequencyData.selectedFrequency, tile);
                     }
@@ -219,7 +219,7 @@ public class TileComponentFrequency implements ITileComponent {
                 //Note: We don't need to update the frequency for this block as in cases when it isn't invalid we do it immediately
             } else {
                 FREQ frequency = (FREQ) frequencyData.selectedFrequency;
-                FrequencyManager<FREQ> manager = type.getFrequencyManager(frequency);
+                FrequencyLookup<FREQ> manager = type.getFrequencyManager(frequency);
                 if (manager == null) {
                     frequencyData.clearFrequency();
                 } else {
@@ -239,7 +239,7 @@ public class TileComponentFrequency implements ITileComponent {
 
     private <FREQ extends Frequency> void deactivate(FrequencyType<FREQ> type, FrequencyData frequencyData) {
         if (frequencyData.selectedFrequency != null) {
-            FrequencyManager<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
+            FrequencyLookup<FREQ> manager = type.getFrequencyManager((FREQ) frequencyData.selectedFrequency);
             if (manager != null) {
                 manager.deactivate(frequencyData.selectedFrequency, tile);
             }

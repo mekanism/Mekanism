@@ -24,7 +24,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.FrequencyItemContainer;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.frequency.IFrequencyHandler;
@@ -124,7 +124,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
             }));
         }
         frequencyField = addChild(new GuiTextField(frequencySelector, this, relativeX + 23, relativeY + 99, 98, 11));
-        frequencyField.setMaxLength(FrequencyManager.MAX_FREQ_LENGTH);
+        frequencyField.setMaxLength(FrequencyLookup.MAX_FREQ_LENGTH);
         frequencyField.setBackground(BackgroundType.INNER_SCREEN);
         frequencyField.setEnterHandler(this::setFrequency);
         frequencyField.setInputValidator(InputValidator.LETTER_OR_DIGIT.or(InputValidator.FREQUENCY_CHARS));

@@ -11,16 +11,16 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
 
     private final Type type;
     private final FrequencyType<FREQ> frequencyType;
-    private FrequencyManager<FREQ> publicManager;
-    private Map<UUID, FrequencyManager<FREQ>> privateManagers;
-    private Map<UUID, FrequencyManager<FREQ>> trustedManagers;
+    private FrequencyLookup<FREQ> publicManager;
+    private Map<UUID, FrequencyLookup<FREQ>> privateManagers;
+    private Map<UUID, FrequencyLookup<FREQ>> trustedManagers;
 
     private FrequencyManagerWrapper(Type type, FrequencyType<FREQ> frequencyType) {
         this.type = type;
         this.frequencyType = frequencyType;
 
         if (type.supportsPublic()) {
-            publicManager = new FrequencyManager<>(frequencyType);
+            publicManager = new FrequencyLookup<>(frequencyType);
         }
         if (type.supportsPrivate()) {
             privateManagers = new Object2ObjectOpenHashMap<>();
@@ -34,7 +34,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         return new FrequencyManagerWrapper<>(type, frequencyType);
     }
 
-    public FrequencyManager<FREQ> getPublicManager() {
+    public FrequencyLookup<FREQ> getPublicManager() {
         if (!type.supportsPublic()) {
             Mekanism.logger.error("Attempted to access public frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
@@ -43,7 +43,7 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
         return publicManager;
     }
 
-    public FrequencyManager<FREQ> getPrivateManager(UUID ownerUUID) {
+    public FrequencyLookup<FREQ> getPrivateManager(UUID ownerUUID) {
         if (!type.supportsPrivate()) {
             Mekanism.logger.error("Attempted to access private frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
@@ -52,16 +52,16 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             return null;
         }
 
-        FrequencyManager<FREQ> manager = privateManagers.get(ownerUUID);
+        FrequencyLookup<FREQ> manager = privateManagers.get(ownerUUID);
         if (manager == null) {
-            manager = new FrequencyManager<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
+            manager = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
             manager.createOrLoad();
             privateManagers.put(ownerUUID, manager);
         }
         return manager;
     }
 
-    public FrequencyManager<FREQ> getTrustedManager(UUID ownerUUID) {
+    public FrequencyLookup<FREQ> getTrustedManager(UUID ownerUUID) {
         if (!type.supportsTrusted()) {
             Mekanism.logger.error("Attempted to access trusted frequency manager of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
@@ -69,16 +69,16 @@ public class FrequencyManagerWrapper<FREQ extends Frequency> {
             Mekanism.logger.error("Attempted to access trusted frequency manager of type {} with no owner. This shouldn't happen!", frequencyType.getName());
             return null;
         }
-        FrequencyManager<FREQ> manager = trustedManagers.get(ownerUUID);
+        FrequencyLookup<FREQ> manager = trustedManagers.get(ownerUUID);
         if (manager == null) {
-            manager = new FrequencyManager<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
+            manager = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
             manager.createOrLoad();
             trustedManagers.put(ownerUUID, manager);
         }
         return manager;
     }
 
-    public Collection<FrequencyManager<FREQ>> getTrustedManagers() {
+    public Collection<FrequencyLookup<FREQ>> getTrustedManagers() {
         return trustedManagers.values();
     }
 

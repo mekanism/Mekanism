@@ -6,7 +6,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
-import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.IFrequencyItem;
 import mekanism.common.network.IMekanismPacket;
@@ -58,7 +58,7 @@ public record PacketSetItemFrequency(boolean set, TypedIdentity data, Interactio
                 stack.set(frequencyComponent, FrequencyAware.create(frequencyType, data.data(), player.getUUID()));
             } else {
                 FrequencyAware<FREQ> frequencyAware = stack.get(frequencyComponent);
-                FrequencyManager<?> manager = frequencyType.getManager(data.data(), data.data().ownerUUID() == null ? player.getUUID() : data.data().ownerUUID());
+                FrequencyLookup<?> manager = frequencyType.getManager(data.data(), data.data().ownerUUID() == null ? player.getUUID() : data.data().ownerUUID());
                 if (manager.remove(data.data().key(), player.getUUID()) && frequencyAware != null && frequencyAware.identity().filter(data.data()::equals).isPresent()) {
                     //If the frequency we are removing matches the stored frequency, remove it
                     stack.remove(frequencyComponent);

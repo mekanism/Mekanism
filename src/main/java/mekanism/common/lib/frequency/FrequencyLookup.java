@@ -17,7 +17,6 @@ import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,13 +27,14 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FrequencyManager<FREQ extends Frequency> {
+/// Stores a map of Identity to Frequency (Data)
+public class FrequencyLookup<FREQ extends Frequency> {
 
     public static final int MAX_FREQ_LENGTH = 16;
 
     private static boolean loaded;
 
-    private static final Set<FrequencyManager<?>> managers = new ObjectOpenHashSet<>();
+    private static final Set<FrequencyLookup<?>> managers = new ObjectOpenHashSet<>();
 
     private final Map<Object, FREQ> frequencies = new LinkedHashMap<>();
 
@@ -49,12 +49,12 @@ public class FrequencyManager<FREQ extends Frequency> {
     private final FrequencyType<FREQ> frequencyType;
     private SecurityMode securityMode = SecurityMode.PUBLIC;
 
-    public FrequencyManager(FrequencyType<FREQ> frequencyType) {
+    public FrequencyLookup(FrequencyType<FREQ> frequencyType) {
         this.frequencyType = frequencyType;
         managers.add(this);
     }
 
-    public FrequencyManager(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
+    public FrequencyLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
         this(frequencyType);
         ownerUUID = uuid;
         this.securityMode = securityMode;
@@ -71,7 +71,7 @@ public class FrequencyManager<FREQ extends Frequency> {
             // before we try to create or load each frequency, or they won't be properly loaded/saved on servers
             // as this happens on servers before the frequency types reliably have a chance to add their managers
             FrequencyType.init();
-            managers.forEach(FrequencyManager::createOrLoad);
+            managers.forEach(FrequencyLookup::createOrLoad);
         }
     }
 
@@ -79,13 +79,13 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (!loaded) {
             load();
         }
-        for (FrequencyManager<?> manager : managers) {
+        for (FrequencyLookup<?> manager : managers) {
             manager.tickSelf(tickingNormally);
         }
     }
 
     public static void reset() {
-        for (FrequencyManager<?> manager : managers) {
+        for (FrequencyLookup<?> manager : managers) {
             manager.frequencies.clear();
             manager.dataHandler = null;
         }
@@ -139,8 +139,8 @@ public class FrequencyManager<FREQ extends Frequency> {
         if (securityMode == SecurityMode.TRUSTED && ownerUUID != null) {
             List<FREQ> trustedFrequencies = new ArrayList<>(frequencies.values());
             //TODO: Try to come up with a better way of doing this that allows us to cache this
-            FrequencyManager<SecurityFrequency> securityManager = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC);
-            for (FrequencyManager<FREQ> trustedManager : frequencyType.getManagerWrapper().getTrustedManagers()) {
+            FrequencyLookup<SecurityFrequency> securityManager = FrequencyType.SECURITY.getManager(null, SecurityMode.PUBLIC);
+            for (FrequencyLookup<FREQ> trustedManager : frequencyType.getManagerWrapper().getTrustedManagers()) {
                 if (!ownerUUID.equals(trustedManager.ownerUUID)) {
                     //Add any frequencies that the owner has access to because of being trusted by the other player
                     SecurityFrequency frequency = securityManager.getFrequency(trustedManager.ownerUUID);

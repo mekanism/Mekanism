@@ -12,9 +12,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
-import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
-import mekanism.common.lib.frequency.FrequencyManager;
+import mekanism.common.lib.frequency.FrequencyLookup;
 import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.WorldUtils;
@@ -171,7 +170,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent
     public void worldLoadEvent(LevelEvent.Load event) {
         if (!event.getLevel().isClientSide()) {
-            FrequencyManager.load();
+            FrequencyLookup.load();
             MultiblockManager.createOrLoadAll();
         }
     }
@@ -179,7 +178,7 @@ public class CommonWorldTickHandler {
     @SubscribeEvent
     public void onTick(ServerTickEvent.Post event) {
         boolean tickingNormally = event.getServer().tickRateManager().runsNormally();
-        FrequencyManager.tick(tickingNormally);
+        FrequencyLookup.tick(tickingNormally);
     }
 
     @SubscribeEvent
