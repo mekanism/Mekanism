@@ -448,9 +448,10 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
+    exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
-    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
         it.forRepositories(handler.mavenCentral())
@@ -505,10 +506,19 @@ dependencies {
     compileOnly("mcjty.theoneprobe:theoneprobe:${top_version}:api")
     //TODO - 26.1: Re-enable when it updates
     //localRuntime("mcjty.theoneprobe:theoneprobe:${top_version}")
-    //TODO - 26.1 fix if jade has api jar again (remove non-api compile)
-    //compileOnly("curse.maven:jade-api-324717:${jade_api_id}")
-    compileOnly("curse.maven:jade-api-324717:${jade_id}")
-    localRuntime("curse.maven:jade-324717:${jade_id}")
+
+    //// Jade
+    /// - CF
+    //compileOnly("curse.maven:jade-api-324717:${jade_api_id}") - no longer on CF as such?
+    //compileOnly("curse.maven:jade-api-324717:${jade_id}")
+    //localRuntime("curse.maven:jade-324717:${jade_id}")
+    /// - Modrinth
+    //compileOnly("maven.modrinth:jade:${jade_version_modrinth}") // - no sources, despite being uploaded as additional file
+    //localRuntime("maven.modrinth:jade:${jade_version_modrinth}")
+    /// - Maven (gradle build with added publish block, upload)
+    compileOnly("snownee.jade:Jade:${jade_version}:api")
+    localRuntime("snownee.jade:Jade:${jade_version}")
+
     compileOnly("mcp.mobius.waila:wthit-api:neo-${wthit_version}")
     //localRuntime("mcp.mobius.waila:wthit:neo-${wthit_version}")
     //localRuntime('lol.bai:badpackets:neo-0.8.1')
