@@ -34,15 +34,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
 
     private static boolean loaded;
 
-    private static final Set<FrequencyLookup<?>> allLookups = new ObjectOpenHashSet<>();
-
     private final Map<Object, FREQ> frequencies = new LinkedHashMap<>();
-
-    /**
-     * Note: This can and will be null on the client side
-     */
-    @Nullable
-    private FrequencyDataHandler dataHandler;
 
     private UUID ownerUUID;
 
@@ -50,12 +42,11 @@ public class FrequencyLookup<FREQ extends Frequency> {
     private SecurityMode securityMode = SecurityMode.PUBLIC;
 
     public FrequencyLookup(FrequencyType<FREQ> frequencyType) {
-        this.frequencyType = frequencyType;
-        allLookups.add(this);
+        this(frequencyType, null, SecurityMode.PUBLIC);
     }
 
     public FrequencyLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
-        this(frequencyType);
+        this.frequencyType = frequencyType;
         ownerUUID = uuid;
         this.securityMode = securityMode;
     }
@@ -73,23 +64,6 @@ public class FrequencyLookup<FREQ extends Frequency> {
             FrequencyType.init();
             allLookups.forEach(FrequencyLookup::createOrLoad);
         }
-    }
-
-    public static void tick(boolean tickingNormally) {
-        if (!loaded) {
-            load();
-        }
-        for (FrequencyLookup<?> lookup : allLookups) {
-            lookup.tickSelf(tickingNormally);
-        }
-    }
-
-    public static void reset() {
-        for (FrequencyLookup<?> lookup : allLookups) {
-            lookup.frequencies.clear();
-            lookup.dataHandler = null;
-        }
-        loaded = false;
     }
 
     public boolean remove(Object key, UUID ownerUUID) {
@@ -183,7 +157,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
         return frequencyType;
     }
 
-    private void tickSelf(boolean tickingNormally) {
+    public void tickSelf(boolean tickingNormally) {
         boolean dirty = false;
         for (FREQ freq : frequencies.values()) {
             dirty |= freq.tick(tickingNormally);

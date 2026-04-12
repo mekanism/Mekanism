@@ -59,8 +59,7 @@ import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
-import mekanism.common.lib.frequency.FrequencyLookup;
-import mekanism.common.lib.frequency.FrequencyType;
+import mekanism.common.lib.frequency.FrequencyController;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.lib.multiblock.MultiblockManager;
@@ -320,14 +319,13 @@ public class Mekanism {
         playerState.clear(false);
         activeVibrators.clear();
         worldTickHandler.resetChunkData();
-        FrequencyType.clear();
         BoilerMultiblockData.hotMap.clear();
 
         //Reset consistent managers
         QIOGlobalItemLookup.reset();
         PlayerExposure.clear();
         MultiblockManager.reset();
-        FrequencyLookup.reset();
+        FrequencyController.reset();
         TransporterManager.reset();
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();

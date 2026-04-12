@@ -25,7 +25,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FrequencyType<FREQ extends Frequency> {
 
-    private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
+    protected static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
     private static int maxNameLength = 0;
 
     public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, registryMap::get);
@@ -175,12 +175,6 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public static <FREQ extends Frequency> FrequencyType<FREQ> load(CompoundTag tag) {
         return (FrequencyType<FREQ>) registryMap.get(tag.getString(SerializationConstants.TYPE));
-    }
-
-    public static void clear() {
-        for (FrequencyType<?> type : registryMap.values()) {
-            type.controller.clear();
-        }
     }
 
     @Override

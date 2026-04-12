@@ -1,13 +1,31 @@
 package mekanism.common.lib.frequency;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 
 public class FrequencyController<FREQ extends Frequency> {
+
+    //todo: migrate this further out
+    private static final Set<FrequencyLookup<?>> allLookups = new ObjectOpenHashSet<>();
+
+    public static void tick(boolean tickingNormally) {
+        for (FrequencyLookup<?> lookup : allLookups) {
+            lookup.tickSelf(tickingNormally);
+        }
+    }
+
+    public static void reset() {
+        allLookups.clear();
+        for (FrequencyType<?> type : FrequencyType.registryMap.values()) {
+            type.getController().clear();
+        }
+    }
 
     private final Type type;
     private final FrequencyType<FREQ> frequencyType;
@@ -21,6 +39,7 @@ public class FrequencyController<FREQ extends Frequency> {
 
         if (type.supportsPublic()) {
             publicLookup = new FrequencyLookup<>(frequencyType);
+            allLookups.add(publicLookup);
         }
         if (type.supportsPrivate()) {
             privateLookups = new Object2ObjectOpenHashMap<>();
@@ -72,6 +91,7 @@ public class FrequencyController<FREQ extends Frequency> {
         FrequencyLookup<FREQ> lookup = trustedLookups.get(ownerUUID);
         if (lookup == null) {
             lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
+            allLookups.add(lookup);
             lookup.createOrLoad();
             trustedLookups.put(ownerUUID, lookup);
         }
