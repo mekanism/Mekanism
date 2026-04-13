@@ -45,38 +45,29 @@ public class FrequencyController<FREQ extends Frequency> {
     }
 
     public FrequencyLookup<FREQ> getPrivateLookup(UUID ownerUUID) {
-        if (!type.supportsPrivate()) {
-            Mekanism.logger.error("Attempted to access private frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
-            return null;
-        } else if (ownerUUID == null) {
-            Mekanism.logger.error("Attempted to access private frequency lookup of type {} with no owner. This shouldn't happen!", frequencyType.getName());
-            return null;
-        }
-
-        FrequencyLookup<FREQ> lookup = privateLookups.get(ownerUUID);
-        if (lookup == null) {
-            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
-            FrequencyTypes.registerTickable(lookup);
-            lookup.createOrLoad();
-            privateLookups.put(ownerUUID, lookup);
-        }
-        return lookup;
+        SecurityMode securityMode = SecurityMode.PRIVATE;
+        return getOrCreateLookup(securityMode, ownerUUID, privateLookups);
     }
 
     public FrequencyLookup<FREQ> getTrustedLookup(UUID ownerUUID) {
-        if (!type.supportsTrusted()) {
-            Mekanism.logger.error("Attempted to access trusted frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
+        SecurityMode securityMode = SecurityMode.TRUSTED;
+        return getOrCreateLookup(securityMode, ownerUUID, trustedLookups);
+    }
+
+    private @Nullable FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, UUID ownerUUID, Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
+        if (!type.supports(securityMode)) {
+            Mekanism.logger.error("Attempted to access {} frequency lookup of type {}. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
-            Mekanism.logger.error("Attempted to access trusted frequency lookup of type {} with no owner. This shouldn't happen!", frequencyType.getName());
+            Mekanism.logger.error("Attempted to access {} frequency lookup of type {} with no owner. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());
             return null;
         }
-        FrequencyLookup<FREQ> lookup = trustedLookups.get(ownerUUID);
+        FrequencyLookup<FREQ> lookup = lookupsByOwner.get(ownerUUID);
         if (lookup == null) {
-            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.TRUSTED);
+            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, securityMode);
             FrequencyTypes.registerTickable(lookup);
             lookup.createOrLoad();
-            trustedLookups.put(ownerUUID, lookup);
+            lookupsByOwner.put(ownerUUID, lookup);
         }
         return lookup;
     }
@@ -99,16 +90,24 @@ public class FrequencyController<FREQ extends Frequency> {
         PRIVATE_ONLY,
         PUBLIC_PRIVATE_TRUSTED;
 
+        boolean supports(SecurityMode securityMode) {
+            return switch (securityMode) {
+                case PUBLIC -> this == PUBLIC_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
+                case PRIVATE -> this == PRIVATE_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
+                case TRUSTED -> this == PUBLIC_PRIVATE_TRUSTED;
+            };
+        }
+
         boolean supportsPublic() {
-            return this == PUBLIC_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
+            return supports(SecurityMode.PUBLIC);
         }
 
         boolean supportsTrusted() {
-            return this == PUBLIC_PRIVATE_TRUSTED;
+            return supports(SecurityMode.TRUSTED);
         }
 
         boolean supportsPrivate() {
-            return this == PRIVATE_ONLY || this == PUBLIC_PRIVATE_TRUSTED;
+            return supports(SecurityMode.PRIVATE);
         }
     }
 }
