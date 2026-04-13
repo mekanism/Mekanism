@@ -3,7 +3,6 @@ package mekanism.common.recipe.upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,7 +22,7 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+    public boolean applyToStack(ItemStack stack) {
         ComponentBackedBinInventorySlot slot = BinInventorySlot.getForStack(stack);
         if (slot == null) {
             return false;

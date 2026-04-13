@@ -28,7 +28,6 @@ import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +44,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
     /**
      * @return {@code false} if it failed to apply to the stack due to being invalid
      */
-    boolean applyToStack(HolderLookup.Provider provider, ItemStack stack);
+    boolean applyToStack(ItemStack stack);
 
     @NotNull
     static Set<RecipeUpgradeType> getSupportedTypes(ItemStack stack) {

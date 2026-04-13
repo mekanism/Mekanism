@@ -18,7 +18,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.util.thread.EffectiveSide;
 import org.jetbrains.annotations.NotNull;
@@ -86,7 +85,7 @@ public class PersonalStorageManager {
         return Optional.empty();
     }
 
-    public static boolean createInventoryFor(HolderLookup.Provider provider, ItemStack stack, List<IInventorySlot> contents) {
+    public static boolean createInventoryFor(ItemStack stack, List<IInventorySlot> contents) {
         UUID owner = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
         if (owner == null || contents.size() != 54) {
             //No owner or wrong number of slots, something went wrong
@@ -96,7 +95,7 @@ public class PersonalStorageManager {
         Optional<PersonalStorageData> data = forOwner(owner);
         //noinspection OptionalIsPresent - Capturing lambda
         if (data.isPresent()) {
-            data.get().addInventory(provider, getInventoryId(stack), contents);
+            data.get().addInventory(getInventoryId(stack), contents);
         }
         return true;
     }

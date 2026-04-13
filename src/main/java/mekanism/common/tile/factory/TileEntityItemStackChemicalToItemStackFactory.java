@@ -27,6 +27,7 @@ import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -54,7 +55,6 @@ import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -293,14 +293,13 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof AdvancedMachineUpgradeData data) {
             //Generic factory upgrade data handling
-            super.parseUpgradeData(provider, upgradeData);
-            //Copy the contents using NBT so that if it is not actually valid due to a reload we don't crash
+            super.parseUpgradeData(upgradeData);
             PathElement problemPath = problemPath();
-            NBTUtils.copyViaSerialization(problemPath, provider, data.stored, chemicalTank);
-            NBTUtils.copyViaSerialization(problemPath, provider, data.chemicalSlot, extraSlot);
+            ContainerType.CHEMICAL.copy(data.stored, chemicalTank);
+            ContainerType.ITEM.copy(data.chemicalSlot, extraSlot);
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());

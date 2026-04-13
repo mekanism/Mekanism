@@ -12,7 +12,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.lib.MekanismSavedData;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -28,14 +27,14 @@ class PersonalStorageData extends MekanismSavedData {
         return inventoriesById.computeIfAbsent(id, unused -> createInventory());
     }
 
-    PersonalStorageItemInventory addInventory(HolderLookup.Provider provider, UUID id, List<IInventorySlot> contents) {
+    PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
         PersonalStorageItemInventory inventory = inventoriesById.get(id);
         if (inventory == null) {
             inventory = createInventory();
             inventoriesById.put(id, inventory);
             List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
             for (int i = 0, slots = contents.size(); i < slots; i++) {
-                NBTUtils.copyViaSerialization(problemPath, provider, contents.get(i), inventorySlots.get(i));
+                ContainerType.ITEM.copy(contents.get(i), inventorySlots.get(i));
             }
             setDirty();
         }

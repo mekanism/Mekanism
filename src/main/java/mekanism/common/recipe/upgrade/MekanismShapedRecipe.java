@@ -69,7 +69,7 @@ public class MekanismShapedRecipe extends WrappedShapedRecipe {
             if (!upgradeData.isEmpty()) {
                 //Skip any empty data, even though we should never have any
                 RecipeUpgradeData<?> data = RecipeUpgradeData.mergeUpgradeData(upgradeData);
-                if (data == null || !data.applyToStack(provider, toReturn)) {
+                if (data == null || !data.applyToStack(toReturn)) {
                     //Fail, incompatible data
                     return ItemStack.EMPTY;
                 }

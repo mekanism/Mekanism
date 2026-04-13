@@ -3,7 +3,6 @@ package mekanism.generators.common.content.fission;
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -39,8 +38,8 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     }
 
     @Override
-    public void apply(HolderLookup.Provider provider, FissionReactorMultiblockData data) {
-        super.apply(provider, data);
+    public void apply(FissionReactorMultiblockData data) {
+        super.apply(data);
         data.reactorDamage = reactorDamage;
         data.rateLimit = Mth.clamp(getRateLimit(), 0, data.getMaxBurnRate());
         data.burnRemaining = burnRemaining;

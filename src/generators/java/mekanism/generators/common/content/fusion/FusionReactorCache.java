@@ -2,7 +2,6 @@ package mekanism.generators.common.content.fusion;
 
 import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -31,8 +30,8 @@ public class FusionReactorCache extends MultiblockCache<FusionReactorMultiblockD
     }
 
     @Override
-    public void apply(HolderLookup.Provider provider, FusionReactorMultiblockData data) {
-        super.apply(provider, data);
+    public void apply(FusionReactorMultiblockData data) {
+        super.apply(data);
         if (plasmaTemperature >= 0) {
             data.plasmaTemperature = plasmaTemperature;
         }

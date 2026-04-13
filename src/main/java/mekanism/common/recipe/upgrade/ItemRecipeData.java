@@ -10,7 +10,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import org.jetbrains.annotations.NotNull;
@@ -34,7 +33,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+    public boolean applyToStack(ItemStack stack) {
         if (slots.isEmpty()) {
             return true;
         }
@@ -57,7 +56,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             };
             if (applyToStack(outputHandler, slots)) {
                 //We managed to transfer it all into valid slots, so save it as a new inventory
-                return PersonalStorageManager.createInventoryFor(provider, stack, stackSlots);
+                return PersonalStorageManager.createInventoryFor(stack, stackSlots);
             }
             return false;
         }

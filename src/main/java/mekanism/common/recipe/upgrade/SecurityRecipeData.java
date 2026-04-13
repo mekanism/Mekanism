@@ -7,7 +7,6 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,7 +33,7 @@ public class SecurityRecipeData implements RecipeUpgradeData<SecurityRecipeData>
     }
 
     @Override
-    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+    public boolean applyToStack(ItemStack stack) {
         IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(stack);
         if (ownerObject != null) {
             ownerObject.setOwnerUUID(owner);

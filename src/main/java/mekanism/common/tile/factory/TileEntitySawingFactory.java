@@ -164,10 +164,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof SawmillUpgradeData) {
             //Validate we have the correct type of data before passing it upwards
-            super.parseUpgradeData(provider, upgradeData);
+            super.parseUpgradeData(upgradeData);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }

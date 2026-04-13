@@ -312,7 +312,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
@@ -320,10 +320,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             editMode = data.editMode;
             fluidTank.setStack(data.stored);
             for (ITileComponent component : getComponents()) {
-                component.read(data.components, provider);
+                component.read(data.components);
             }
         } else {
-            super.parseUpgradeData(provider, upgradeData);
+            super.parseUpgradeData(upgradeData);
         }
     }
 

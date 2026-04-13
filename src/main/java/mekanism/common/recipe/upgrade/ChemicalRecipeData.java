@@ -10,7 +10,6 @@ import mekanism.api.chemical.ChemicalUtils;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +31,7 @@ public class ChemicalRecipeData implements RecipeUpgradeData<ChemicalRecipeData>
     }
 
     @Override
-    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+    public boolean applyToStack(ItemStack stack) {
         if (this.tanks.isEmpty()) {
             return true;
         }

@@ -3,7 +3,6 @@ package mekanism.common.content.sps;
 import mekanism.api.SerializationConstants;
 import mekanism.api.math.MathUtils;
 import mekanism.common.lib.multiblock.MultiblockCache;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -28,8 +27,8 @@ public class SPSCache extends MultiblockCache<SPSMultiblockData> {
     }
 
     @Override
-    public void apply(HolderLookup.Provider provider, SPSMultiblockData data) {
-        super.apply(provider, data);
+    public void apply(SPSMultiblockData data) {
+        super.apply(data);
         data.progress = progress;
         data.inputProcessed = inputProcessed;
         data.couldOperate = couldOperate;

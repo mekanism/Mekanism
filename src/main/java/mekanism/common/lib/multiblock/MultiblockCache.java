@@ -20,12 +20,9 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -43,15 +40,14 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
-    public void apply(HolderLookup.Provider provider, T data) {
+    public void apply(T data) {
         for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
             List<? extends ValueIOSerializable> containers = type.getContainerList(data);
             if (containers != null) {
                 List<? extends ValueIOSerializable> cacheContainers = type.getContainerList(this);
                 for (int i = 0; i < cacheContainers.size(); i++) {
                     if (i < containers.size()) {
-                        //Copy it via NBT to ensure that we set it using the "unsafe" method in case there is a problem with the types somehow
-                        NBTUtils.copyViaSerialization(problemPath, provider, cacheContainers.get(i), containers.get(i));
+                        type.copy(cacheContainers.get(i), containers.get(i));
                     }
                 }
             }
@@ -264,6 +260,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
 
         public abstract void sync(ELEMENT cache, ELEMENT data);
+
+        public void copy(ELEMENT from, ELEMENT to) {
+            containerType.copy(from, to);
+        }
 
         public void preHandleMerge(MultiblockCache<?> cache, MultiblockCache<?> merge) {
             int diff = getContainerList(merge).size() - getContainerList(cache).size();

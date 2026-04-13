@@ -169,7 +169,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     }
 
     @Override
-    public void parseUpgradeData(HolderLookup.Provider provider, @NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
@@ -178,10 +178,10 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             dumping = data.dumping;
             getChemicalTank().setStack(data.storedChemical);
             for (ITileComponent component : getComponents()) {
-                component.read(data.components, provider);
+                component.read(data.components);
             }
         } else {
-            super.parseUpgradeData(provider, upgradeData);
+            super.parseUpgradeData(upgradeData);
         }
     }
 

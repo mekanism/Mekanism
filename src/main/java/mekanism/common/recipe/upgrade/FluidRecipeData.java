@@ -9,7 +9,6 @@ import mekanism.api.fluid.ExtendedFluidHandlerUtils;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -32,7 +31,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
     }
 
     @Override
-    public boolean applyToStack(HolderLookup.Provider provider, ItemStack stack) {
+    public boolean applyToStack(ItemStack stack) {
         if (fluidTanks.isEmpty()) {
             return true;
         }

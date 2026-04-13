@@ -4,7 +4,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.lib.multiblock.MultiblockCache;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.NBTUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -20,8 +19,8 @@ public class TurbineCache extends MultiblockCache<TurbineMultiblockData> {
     }
 
     @Override
-    public void apply(HolderLookup.Provider provider, TurbineMultiblockData data) {
-        super.apply(provider, data);
+    public void apply(TurbineMultiblockData data) {
+        super.apply(data);
         data.dumpMode = dumpMode;
     }
 
