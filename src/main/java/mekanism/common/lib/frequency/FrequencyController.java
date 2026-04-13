@@ -1,11 +1,16 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 
 public class FrequencyController<FREQ extends Frequency> {
 
@@ -15,20 +20,40 @@ public class FrequencyController<FREQ extends Frequency> {
     private Map<UUID, FrequencyLookup<FREQ>> privateLookups;
     private Map<UUID, FrequencyLookup<FREQ>> trustedLookups;
 
+    private final Codec<FrequencyLookup<FREQ>> publicCodec;
+    private final Codec<FrequencyLookup<FREQ>> trustedCodec;
+    private final Codec<FrequencyLookup<FREQ>> privateCodec;
+
     private FrequencyController(Type type, FrequencyType<FREQ> frequencyType) {
         this.type = type;
         this.frequencyType = frequencyType;
 
+        Codec<Pair<UUID, List<FREQ>>> baseCodec = FrequencyLookup.baseCodec(frequencyType);
+
         if (type.supportsPublic()) {
-            publicLookup = new FrequencyLookup<>(frequencyType);
-            FrequencyTypes.registerTickable(publicLookup);
+            publicLookup = createLookup(frequencyType, null, SecurityMode.PUBLIC);
+            publicCodec = FrequencyLookup.codec(frequencyType, baseCodec, SecurityMode.PUBLIC);
+        } else {
+            publicCodec = null;
         }
         if (type.supportsPrivate()) {
             privateLookups = new Object2ObjectOpenHashMap<>();
+            privateCodec = FrequencyLookup.codec(frequencyType, baseCodec, SecurityMode.PRIVATE);
+        } else {
+            privateCodec = null;
         }
         if (type.supportsTrusted()) {
             trustedLookups = new Object2ObjectOpenHashMap<>();
+            trustedCodec = FrequencyLookup.codec(frequencyType, baseCodec, SecurityMode.TRUSTED);
+        } else {
+            trustedCodec = null;
         }
+    }
+
+    private static <FREQ extends Frequency> @NonNull FrequencyLookup<FREQ> createLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
+        FrequencyLookup<FREQ> lookup = new FrequencyLookup<>(frequencyType, uuid, securityMode);
+        FrequencyTypes.registerTickable(lookup);
+        return lookup;
     }
 
     public static <FREQ extends Frequency> FrequencyController<FREQ> create(FrequencyType<FREQ> frequencyType, Type type) {
@@ -64,8 +89,7 @@ public class FrequencyController<FREQ extends Frequency> {
         }
         FrequencyLookup<FREQ> lookup = lookupsByOwner.get(ownerUUID);
         if (lookup == null) {
-            lookup = new FrequencyLookup<>(frequencyType, ownerUUID, securityMode);
-            FrequencyTypes.registerTickable(lookup);
+            lookup = createLookup(frequencyType, ownerUUID, securityMode);
             lookup.createOrLoad();
             lookupsByOwner.put(ownerUUID, lookup);
         }
