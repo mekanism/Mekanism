@@ -61,7 +61,7 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.Nullable;
 
-public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency {
+public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
 
     private static final RandomSource rand = RandomSource.create();
     public static final Codec<QIOFrequency> CODEC = RecordCodecBuilder.create(instance -> baseCodec(instance)
@@ -110,7 +110,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     /** If we need to send a packet to viewing clients with changed item data. */
     private boolean needsUpdate;
     /** If we have new item changes that haven't been saved. */
-    private boolean isDirty;
+    private boolean isDirty;//todo rename this so it's clearer what the difference is from Frequency.dirty
 
     private long totalCount, totalCountCapacity;
     private int totalTypeCapacity;
@@ -477,8 +477,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Override
     public boolean tick(boolean tickingNormally) {
-        boolean superDirty = super.tick(tickingNormally);
-
         if (getSecurity() == SecurityMode.TRUSTED && !playersViewingItems.isEmpty()) {
             //TODO - 1.20.4: Only perform every so often?
             SecurityFrequency security = FrequencyTypes.SECURITY.getLookup(null, SecurityMode.PUBLIC).getFrequency(getOwner());
@@ -537,7 +535,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 tagLookupMap.putAll(TagCache.getItemTags(item.itemType.getInternalStack()), item.itemType);
             }
         }
-        return superDirty;
+        return dirty;
     }
 
     @Override

@@ -28,32 +28,36 @@ public class FrequencyTypes {
           TeleporterFrequency.CODEC,
           TeleporterFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
+          IdentitySerializer.NAME,
+          false);
     public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
           (key, uuid, securityMode) -> new InventoryFrequency((String) key, uuid, securityMode),
           InventoryFrequency.CODEC,
           InventoryFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
+          IdentitySerializer.NAME,
+          false);
     public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
           (key, uuid, securityMode) -> new SecurityFrequency(uuid, securityMode),
           SecurityFrequency.CODEC,
           SecurityFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_ONLY,
-          IdentitySerializer.UUID);
+          IdentitySerializer.UUID,
+          false);
     public static final FrequencyType<QIOFrequency> QIO = register("QIO",
           (key, uuid, securityMode) -> new QIOFrequency((String) key, uuid, securityMode),
           QIOFrequency.CODEC,
           QIOFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
-          IdentitySerializer.NAME);
+          IdentitySerializer.NAME,
+          true);
 
     public static void init() {
     }
 
     private static <FREQ extends Frequency> FrequencyType<FREQ> register(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec,
-          StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec, FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
-        FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, codec, streamCodec, managerType, identitySerializer);
+          StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec, FrequencyController.Type managerType, IdentitySerializer identitySerializer, boolean needsTick) {
+        FrequencyType<FREQ> type = new FrequencyType<>(name, creationFunction, codec, streamCodec, managerType, identitySerializer, needsTick);
         registryMap.put(name, type);
         return type;
     }
@@ -72,7 +76,9 @@ public class FrequencyTypes {
     }
 
     public static void registerTickable(FrequencyLookup<?> lookup) {
-        tickableLookups.add(lookup);
+        if (lookup.getFrequencyType().needsTick()) {
+            tickableLookups.add(lookup);
+        }
     }
 
     public static void tick(boolean tickingNormally) {

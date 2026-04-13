@@ -56,6 +56,7 @@ public class FrequencyController<FREQ extends Frequency> {
         FrequencyLookup<FREQ> lookup = privateLookups.get(ownerUUID);
         if (lookup == null) {
             lookup = new FrequencyLookup<>(frequencyType, ownerUUID, SecurityMode.PRIVATE);
+            FrequencyTypes.registerTickable(lookup);
             lookup.createOrLoad();
             privateLookups.put(ownerUUID, lookup);
         }

@@ -1,25 +1,32 @@
 package mekanism.common.lib.frequency;
 
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
+import mekanism.common.content.qio.TickableFrequency;
 import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -34,19 +41,34 @@ public class FrequencyLookup<FREQ extends Frequency> {
 
     private final Map<Object, FREQ> frequencies = new LinkedHashMap<>();
 
-    private UUID ownerUUID;
+    private final UUID ownerUUID;
 
     private final FrequencyType<FREQ> frequencyType;
-    private SecurityMode securityMode = SecurityMode.PUBLIC;
+    private final SecurityMode securityMode;
 
     public FrequencyLookup(FrequencyType<FREQ> frequencyType) {
         this(frequencyType, null, SecurityMode.PUBLIC);
     }
 
     public FrequencyLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
+        this(frequencyType, uuid, securityMode, Collections.emptyList());
+    }
+
+    private FrequencyLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode, List<FREQ> loadedFrequencies) {
         this.frequencyType = frequencyType;
         ownerUUID = uuid;
         this.securityMode = securityMode;
+        for (FREQ loadedFrequency : loadedFrequencies) {
+            frequencies.put(loadedFrequency.getKey(), loadedFrequency);
+        }
+    }
+
+    public UUID getOwnerUUID() {
+        return ownerUUID;
+    }
+
+    public FrequencyType<FREQ> getFrequencyType() {
+        return frequencyType;
     }
 
     /**
@@ -158,11 +180,24 @@ public class FrequencyLookup<FREQ extends Frequency> {
     public void tickSelf(boolean tickingNormally) {
         boolean dirty = false;
         for (FREQ freq : frequencies.values()) {
-            dirty |= freq.tick(tickingNormally);
+            dirty |= ((TickableFrequency) freq).tick(tickingNormally);
         }
         if (dirty) {
             markDirty();
         }
+    }
+
+    public static Identifier getId(@Nullable UUID ownerUUID, SecurityMode securityMode, FrequencyType<?> frequencyType) {
+        StringBuilder path = new StringBuilder();
+        if (ownerUUID != null) {
+            path.append(ownerUUID).append("/");
+        }
+        path.append(frequencyType.getName()).append("/");
+        if (securityMode != SecurityMode.PUBLIC) {
+            path.append(securityMode.name()).append("/");
+        }
+        path.append("FrequencyHandler");
+        return Mekanism.rl(path.toString());
     }
 
     public String getName() {
@@ -173,52 +208,19 @@ public class FrequencyLookup<FREQ extends Frequency> {
         return owner + frequencyType.getName() + "FrequencyHandler";
     }
 
-    public class FrequencyDataHandler extends MekanismSavedData {
+    private static final Consumer<String> frequencyError = err -> Mekanism.logger.error("Failed to load some frequencies: {}", err);
 
-        public HashList<FREQ> loadedFrequencies;
-        public UUID loadedOwner;
+    public static <FREQ extends Frequency> Codec<Pair<UUID, List<FREQ>>> baseCodec(FrequencyType<FREQ> frequencyType) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+              UUIDUtil.CODEC.fieldOf(SerializationConstants.OWNER_UUID).forGetter(Pair::getFirst),
+              frequencyType.codec().listOf().promotePartial(frequencyError).fieldOf(SerializationConstants.FREQUENCY_LIST).forGetter(Pair::getSecond)
+        ).apply(instance, Pair::new));
+    }
 
-        public void syncLookup() {
-            if (loadedFrequencies != null) {
-                for (FREQ freq : loadedFrequencies) {
-                    frequencies.put(freq.getKey(), freq);
-                }
-                ownerUUID = loadedOwner;
-            }
-        }
-
-        @Override
-        public void load(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-            if (nbtTags.hasUUID(SerializationConstants.OWNER_UUID)) {
-                loadedOwner = nbtTags.getUUID(SerializationConstants.OWNER_UUID);
-            }
-            ListTag list = nbtTags.getListOrEmpty(SerializationConstants.FREQUENCY_LIST);
-            loadedFrequencies = new HashList<>();
-            Codec<FREQ> codec = frequencyType.codec();
-            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-            for (int i = 0; i < list.size(); i++) {
-                DataResult<FREQ> parsed = codec.parse(registryOps, list.getCompoundOrEmpty(i));
-                parsed.ifSuccess(loadedFrequencies::add);
-                parsed.ifError(error -> Mekanism.logger.warn("Failed to deserialize frequency: {}", error.message()));
-            }
-        }
-
-        @NotNull
-        @Override
-        public CompoundTag save(@NotNull CompoundTag nbtTags, @NotNull HolderLookup.Provider provider) {
-            if (ownerUUID != null) {
-                nbtTags.putUUID(SerializationConstants.OWNER_UUID, ownerUUID);
-            }
-            Codec<FREQ> codec = frequencyType.codec();
-            RegistryOps<Tag> registryOps = provider.createSerializationContext(NbtOps.INSTANCE);
-            ListTag list = new ListTag(frequencies.size());
-            for (FREQ freq : frequencies.values()) {
-                DataResult<Tag> encoded = codec.encodeStart(registryOps, freq);
-                encoded.ifSuccess(list::add);
-                encoded.ifError(error -> Mekanism.logger.warn("Failed to serialize frequency: {}", error.message()));
-            }
-            nbtTags.put(SerializationConstants.FREQUENCY_LIST, list);
-            return nbtTags;
-        }
+    public static <FREQ extends Frequency> Codec<FrequencyLookup<FREQ>> codec(FrequencyType<FREQ> frequencyType, Codec<Pair<UUID, List<FREQ>>> baseCodec, SecurityMode securityMode) {
+        return baseCodec.xmap(
+              pair -> new FrequencyLookup<>(frequencyType, pair.getFirst(), securityMode, pair.getSecond()),
+              lookup -> Pair.of(lookup.getOwnerUUID(), new ArrayList<>(lookup.frequencies.values()))
+        );
     }
 }

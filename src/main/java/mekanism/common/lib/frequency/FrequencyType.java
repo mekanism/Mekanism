@@ -35,15 +35,17 @@ public class FrequencyType<FREQ extends Frequency> {
     private final StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec;
     private final IdentitySerializer identitySerializer;
     private final FrequencyController<FREQ> controller;
+    private final boolean needsTick;
 
     public FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
-          FrequencyController.Type managerType, IdentitySerializer identitySerializer) {
+          FrequencyController.Type managerType, IdentitySerializer identitySerializer, boolean needsTick) {
         this.name = name;
         this.creationFunction = creationFunction;
         this.codec = codec;
         this.streamCodec = streamCodec;
         this.controller = FrequencyController.create(this, managerType);
         this.identitySerializer = identitySerializer;
+        this.needsTick = needsTick;
     }
 
     public String getName() {
@@ -141,4 +143,7 @@ public class FrequencyType<FREQ extends Frequency> {
         return super.equals(obj) || (obj instanceof FrequencyType<?> other && Objects.equals(name, other.name));
     }
 
+    public boolean needsTick() {
+        return needsTick;
+    }
 }
