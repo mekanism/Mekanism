@@ -36,16 +36,16 @@ public class FrequencyType<FREQ extends Frequency> {
     private final Codec<FREQ> codec;
     private final StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec;
     private final IdentitySerializer identitySerializer;
-    private final FrequencyController.Type managerType;
+    private final FrequencyController.Type controllerType;
     private final boolean needsTick;
 
     public FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
-          FrequencyController.Type managerType, IdentitySerializer identitySerializer, boolean needsTick) {
+          FrequencyController.Type controllerType, IdentitySerializer identitySerializer, boolean needsTick) {
         this.name = name;
         this.creationFunction = creationFunction;
         this.codec = codec;
         this.streamCodec = streamCodec;
-        this.managerType = managerType;
+        this.controllerType = controllerType;
         this.identitySerializer = identitySerializer;
         this.needsTick = needsTick;
     }
@@ -62,8 +62,8 @@ public class FrequencyType<FREQ extends Frequency> {
         return codec;
     }
 
-    public Type getManagerType() {
-        return managerType;
+    public Type getControllerType() {
+        return controllerType;
     }
 
     @Nullable
@@ -99,15 +99,15 @@ public class FrequencyType<FREQ extends Frequency> {
         if (freq == null) {
             return null;
         }
-        FrequencyController<FREQ> manager = getController();
+        FrequencyController<FREQ> controller = getController();
         if (freq.getType() == FrequencyTypes.SECURITY) {
             //Frequency#getSecurity means something slightly different for security frequencies. They are always public
-            return manager.getPublicLookup();
+            return controller.getPublicLookup();
         }
         return switch (freq.getSecurity()) {
-            case PUBLIC -> manager.getPublicLookup();
-            case PRIVATE -> manager.getPrivateLookup(freq.getOwner());
-            case TRUSTED -> manager.getTrustedLookup(freq.getOwner());
+            case PUBLIC -> controller.getPublicLookup();
+            case PRIVATE -> controller.getPrivateLookup(freq.getOwner());
+            case TRUSTED -> controller.getTrustedLookup(freq.getOwner());
         };
     }
 
@@ -121,13 +121,13 @@ public class FrequencyType<FREQ extends Frequency> {
 
     @Nullable
     public FREQ getFrequency(FrequencyIdentity identity, UUID owner) {
-        FrequencyLookup<FREQ> manager;
+        FrequencyLookup<FREQ> lookup;
         if (!Objects.equals(identity.ownerUUID(), owner) && SecurityUtils.get().isTrusted(identity.securityMode(), identity.ownerUUID(), owner)) {
-            manager = getLookup(identity, identity.ownerUUID());
+            lookup = getLookup(identity, identity.ownerUUID());
         } else {
-            manager = getLookup(identity, owner);
+            lookup = getLookup(identity, owner);
         }
-        return manager.getFrequency(identity.key());
+        return lookup.getFrequency(identity.key());
     }
 
     public IdentitySerializer getIdentitySerializer() {

@@ -24,7 +24,7 @@ public class FrequencyController<FREQ extends Frequency> {
 
     private FrequencyController(FrequencyType<FREQ> frequencyType) {
         this.frequencyType = frequencyType;
-        Type type = frequencyType.getManagerType();
+        Type type = frequencyType.getControllerType();
 
         Codec<Pair<UUID, List<FREQ>>> baseCodec = FrequencyLookup.baseCodec(frequencyType);
 
@@ -61,7 +61,7 @@ public class FrequencyController<FREQ extends Frequency> {
     }
 
     public FrequencyLookup<FREQ> getPublicLookup() {
-        if (!frequencyType.getManagerType().supportsPublic()) {
+        if (!frequencyType.getControllerType().supportsPublic()) {
             Mekanism.logger.error("Attempted to access public frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         }
@@ -80,7 +80,7 @@ public class FrequencyController<FREQ extends Frequency> {
     }
 
     private @Nullable FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, UUID ownerUUID, Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
-        if (!frequencyType.getManagerType().supports(securityMode)) {
+        if (!frequencyType.getControllerType().supports(securityMode)) {
             Mekanism.logger.error("Attempted to access {} frequency lookup of type {}. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
