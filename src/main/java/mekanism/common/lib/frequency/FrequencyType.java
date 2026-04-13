@@ -7,6 +7,7 @@ import java.util.Objects;
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
+import mekanism.common.lib.frequency.FrequencyController.Type;
 import mekanism.common.lib.frequency.FrequencyTypes.FrequencyConstructor;
 import mekanism.common.lib.security.SecurityUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FrequencyType<FREQ extends Frequency> {
 
+    //todo 26.1 - investigate no usages
     public static final Codec<FrequencyType<?>> CODEC = Codec.stringResolver(FrequencyType::getName, FrequencyTypes::byName);
     public static final StreamCodec<ByteBuf, FrequencyType<?>> STREAM_CODEC = NeoForgeStreamCodecs.lazy(() -> ByteBufCodecs.stringUtf8(255).map(
           name -> {
@@ -34,7 +36,7 @@ public class FrequencyType<FREQ extends Frequency> {
     private final Codec<FREQ> codec;
     private final StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec;
     private final IdentitySerializer identitySerializer;
-    private final FrequencyController<FREQ> controller;
+    private final FrequencyController.Type managerType;
     private final boolean needsTick;
 
     public FrequencyType(String name, FrequencyConstructor<FREQ> creationFunction, Codec<FREQ> codec, StreamCodec<? super RegistryFriendlyByteBuf, FREQ> streamCodec,
@@ -43,7 +45,7 @@ public class FrequencyType<FREQ extends Frequency> {
         this.creationFunction = creationFunction;
         this.codec = codec;
         this.streamCodec = streamCodec;
-        this.controller = FrequencyController.create(this, managerType);
+        this.managerType = managerType;
         this.identitySerializer = identitySerializer;
         this.needsTick = needsTick;
     }
@@ -58,6 +60,10 @@ public class FrequencyType<FREQ extends Frequency> {
 
     public Codec<FREQ> codec() {
         return codec;
+    }
+
+    public Type getManagerType() {
+        return managerType;
     }
 
     @Nullable
@@ -76,7 +82,7 @@ public class FrequencyType<FREQ extends Frequency> {
     }
 
     public FrequencyController<FREQ> getController() {
-        return controller;
+        return FrequencyControllerManager.getController(this);
     }
 
     public FrequencyLookup<FREQ> getLookup(@Nullable UUID owner, SecurityMode securityMode) {

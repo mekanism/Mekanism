@@ -9,12 +9,10 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
-import org.jspecify.annotations.NonNull;
 import org.jspecify.annotations.Nullable;
 
 public class FrequencyController<FREQ extends Frequency> {
 
-    private final Type type;
     private final FrequencyType<FREQ> frequencyType;
     private FrequencyLookup<FREQ> publicLookup;
     private Map<UUID, FrequencyLookup<FREQ>> privateLookups;
@@ -24,15 +22,15 @@ public class FrequencyController<FREQ extends Frequency> {
     private final Codec<FrequencyLookup<FREQ>> trustedCodec;
     private final Codec<FrequencyLookup<FREQ>> privateCodec;
 
-    private FrequencyController(Type type, FrequencyType<FREQ> frequencyType) {
-        this.type = type;
+    private FrequencyController(FrequencyType<FREQ> frequencyType) {
         this.frequencyType = frequencyType;
+        Type type = frequencyType.getManagerType();
 
         Codec<Pair<UUID, List<FREQ>>> baseCodec = FrequencyLookup.baseCodec(frequencyType);
 
         if (type.supportsPublic()) {
-            publicLookup = createLookup(frequencyType, null, SecurityMode.PUBLIC);
             publicCodec = FrequencyLookup.codec(frequencyType, baseCodec, SecurityMode.PUBLIC);
+            publicLookup = FrequencyControllerManager.createLookup(frequencyType, null, SecurityMode.PUBLIC, publicCodec);
         } else {
             publicCodec = null;
         }
@@ -50,18 +48,20 @@ public class FrequencyController<FREQ extends Frequency> {
         }
     }
 
-    private static <FREQ extends Frequency> @NonNull FrequencyLookup<FREQ> createLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
-        FrequencyLookup<FREQ> lookup = new FrequencyLookup<>(frequencyType, uuid, securityMode);
-        FrequencyTypes.registerTickable(lookup);
-        return lookup;
+    public Codec<FrequencyLookup<FREQ>> codecForMode(SecurityMode mode) {
+        return switch (mode) {
+            case PUBLIC -> publicCodec;
+            case PRIVATE -> privateCodec;
+            case TRUSTED -> trustedCodec;
+        };
     }
 
-    public static <FREQ extends Frequency> FrequencyController<FREQ> create(FrequencyType<FREQ> frequencyType, Type type) {
-        return new FrequencyController<>(type, frequencyType);
+    public static <FREQ extends Frequency> FrequencyController<FREQ> create(FrequencyType<FREQ> frequencyType) {
+        return new FrequencyController<>(frequencyType);
     }
 
     public FrequencyLookup<FREQ> getPublicLookup() {
-        if (!type.supportsPublic()) {
+        if (!frequencyType.getManagerType().supportsPublic()) {
             Mekanism.logger.error("Attempted to access public frequency lookup of type {}. This shouldn't happen!", frequencyType.getName());
             return null;
         }
@@ -80,7 +80,7 @@ public class FrequencyController<FREQ extends Frequency> {
     }
 
     private @Nullable FrequencyLookup<FREQ> getOrCreateLookup(SecurityMode securityMode, UUID ownerUUID, Map<UUID, FrequencyLookup<FREQ>> lookupsByOwner) {
-        if (!type.supports(securityMode)) {
+        if (!frequencyType.getManagerType().supports(securityMode)) {
             Mekanism.logger.error("Attempted to access {} frequency lookup of type {}. This shouldn't happen!", securityMode.getSerializedName(), frequencyType.getName());
             return null;
         } else if (ownerUUID == null) {
@@ -89,8 +89,7 @@ public class FrequencyController<FREQ extends Frequency> {
         }
         FrequencyLookup<FREQ> lookup = lookupsByOwner.get(ownerUUID);
         if (lookup == null) {
-            lookup = createLookup(frequencyType, ownerUUID, securityMode);
-            lookup.createOrLoad();
+            lookup = FrequencyControllerManager.createLookup(frequencyType, ownerUUID, securityMode, codecForMode(securityMode));
             lookupsByOwner.put(ownerUUID, lookup);
         }
         return lookup;

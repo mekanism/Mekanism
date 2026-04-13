@@ -15,20 +15,18 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.TickableFrequency;
-import mekanism.common.lib.MekanismSavedData;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.saveddata.SavedData;
 import org.jetbrains.annotations.Nullable;
 
 /// Stores a map of Identity to Frequency (Data)
-public class FrequencyLookup<FREQ extends Frequency> {
+public class FrequencyLookup<FREQ extends Frequency> extends SavedData {
 
     public static final int MAX_FREQ_LENGTH = 16;
-
-    private static boolean loaded;
 
     private final Map<Object, FREQ> frequencies = new LinkedHashMap<>();
 
@@ -58,27 +56,12 @@ public class FrequencyLookup<FREQ extends Frequency> {
         return frequencyType;
     }
 
-    /**
-     * Note: This should only be called from the server side
-     */
-    public static void load() {
-        if (!loaded) {
-            loaded = true;
-            //Ensure that the frequency types have been initialized so can add their looksups
-            // This is needed as it is statically initialized, and we need to make sure that it gets initialized
-            // before we try to create or load each frequency, or they won't be properly loaded/saved on servers
-            // as this happens on servers before the frequency types reliably have a chance to add their lookups
-            FrequencyTypes.init();
-            allLookups.forEach(FrequencyLookup::createOrLoad);
-        }
-    }
-
     public boolean remove(Object key, UUID ownerUUID) {
         FREQ freq = getFrequency(key);
         if (freq != null && freq.ownerMatches(ownerUUID)) {
             freq.onRemove();
             frequencies.remove(key);
-            markDirty();
+            setDirty();
             return true;
         }
         return false;
@@ -86,7 +69,7 @@ public class FrequencyLookup<FREQ extends Frequency> {
 
     public void deactivate(@Nullable Frequency freq, BlockEntity tile) {
         if (freq != null && freq.onDeactivate(tile)) {
-            markDirty();
+            setDirty();
         }
     }
 
@@ -94,26 +77,14 @@ public class FrequencyLookup<FREQ extends Frequency> {
         FREQ storedFreq = frequencies.get(freq.getKey());
         if (storedFreq == null) {
             freq.setValid(true);
-            markDirty();
+            setDirty();
             frequencies.put(freq.getKey(), freq);
             storedFreq = freq;
         }
         if (storedFreq.update(tile)) {
-            markDirty();
+            setDirty();
         }
         return storedFreq;
-    }
-
-    /**
-     * Note: This should only be called from the server side
-     */
-    public void createOrLoad() {
-        if (dataHandler == null) {
-            String name = getName();
-            //Always associate the world with the over world as the frequencies are global
-            dataHandler = MekanismSavedData.createSavedData(FrequencyDataHandler::new, name);
-            dataHandler.syncLookup();
-        }
     }
 
     public Collection<FREQ> getFrequencies() {
@@ -144,20 +115,14 @@ public class FrequencyLookup<FREQ extends Frequency> {
         if (freq == null) {
             freq = frequencyType.create(identity.key(), ownerUUID, identity.securityMode());
             frequencies.put(identity.key(), freq);
-            markDirty();
+            setDirty();
         }
         return freq;
     }
 
     public void addFrequency(FREQ freq) {
         frequencies.put(freq.getKey(), freq);
-        markDirty();
-    }
-
-    protected void markDirty() {
-        if (dataHandler != null) {
-            dataHandler.setDirty();
-        }
+        setDirty();
     }
 
     public FrequencyType<FREQ> getType() {
@@ -170,29 +135,18 @@ public class FrequencyLookup<FREQ extends Frequency> {
             dirty |= ((TickableFrequency) freq).tick(tickingNormally);
         }
         if (dirty) {
-            markDirty();
+            setDirty();
         }
     }
 
     public static Identifier getId(@Nullable UUID ownerUUID, SecurityMode securityMode, FrequencyType<?> frequencyType) {
-        StringBuilder path = new StringBuilder();
+        StringBuilder path = new StringBuilder("frequency/");
+        path.append(frequencyType.getName()).append("/");
         if (ownerUUID != null) {
             path.append(ownerUUID).append("/");
         }
-        path.append(frequencyType.getName()).append("/");
-        if (securityMode != SecurityMode.PUBLIC) {
-            path.append(securityMode.name()).append("/");
-        }
-        path.append("FrequencyHandler");
+        path.append(securityMode.name());
         return Mekanism.rl(path.toString());
-    }
-
-    public String getName() {
-        String owner = ownerUUID == null ? "" : ownerUUID + "_";
-        if (securityMode != SecurityMode.PUBLIC) {
-            return owner + frequencyType.getName() + securityMode.name() + "FrequencyHandler";
-        }
-        return owner + frequencyType.getName() + "FrequencyHandler";
     }
 
     private static final Consumer<String> frequencyError = err -> Mekanism.logger.error("Failed to load some frequencies: {}", err);

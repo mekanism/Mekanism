@@ -59,6 +59,7 @@ import mekanism.common.item.loot.MekanismLootFunctions;
 import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.lib.MekAnnotationScanner;
 import mekanism.common.lib.Version;
+import mekanism.common.lib.frequency.FrequencyControllerManager;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.multiblock.MultiblockCache;
@@ -214,6 +215,7 @@ public class Mekanism {
         modEventBus.addListener(this::imcQueue);
         modEventBus.addListener(this::imcHandle);
         addRegistrationListeners(modEventBus);
+        FrequencyTypes.init();
         packetHandler = new PacketHandler(modEventBus, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);
@@ -312,6 +314,7 @@ public class Mekanism {
 
     private void serverStarted(ServerStartedEvent event) {
         QIOGlobalItemLookup.serverLoad(event.getServer());
+        FrequencyControllerManager.serverLoad(event.getServer());
     }
 
     private void serverStopped(ServerStoppedEvent event) {
@@ -325,7 +328,7 @@ public class Mekanism {
         QIOGlobalItemLookup.reset();
         PlayerExposure.clear();
         MultiblockManager.reset();
-        FrequencyTypes.reset();
+        FrequencyControllerManager.reset();
         TransporterManager.reset();
         PathfinderCache.reset();
         TransmitterNetworkRegistry.reset();
