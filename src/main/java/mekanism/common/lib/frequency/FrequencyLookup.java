@@ -2,7 +2,6 @@ package mekanism.common.lib.frequency;
 
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -17,19 +16,11 @@ import mekanism.api.security.SecurityMode;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.TickableFrequency;
 import mekanism.common.lib.MekanismSavedData;
-import mekanism.common.lib.collection.HashList;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.lib.security.SecurityFrequency;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /// Stores a map of Identity to Frequency (Data)
@@ -45,10 +36,6 @@ public class FrequencyLookup<FREQ extends Frequency> {
 
     private final FrequencyType<FREQ> frequencyType;
     private final SecurityMode securityMode;
-
-    public FrequencyLookup(FrequencyType<FREQ> frequencyType) {
-        this(frequencyType, null, SecurityMode.PUBLIC);
-    }
 
     public FrequencyLookup(FrequencyType<FREQ> frequencyType, UUID uuid, SecurityMode securityMode) {
         this(frequencyType, uuid, securityMode, Collections.emptyList());
