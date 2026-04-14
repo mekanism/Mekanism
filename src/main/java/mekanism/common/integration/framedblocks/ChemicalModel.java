@@ -10,6 +10,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.Variant.SimpleModelState;
 import net.minecraft.client.renderer.rendertype.RenderType;
@@ -21,13 +22,14 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 
-final class ChemicalModel implements BakedModel {
+final class ChemicalModel implements BlockStateModel {
 
     private static final ModelState SIMPLE_STATE = new SimpleModelState(Transformation.identity());
-    static final ModelResourceLocation BARE_MODEL = ModelResourceLocation.standalone(FramedBlocksIntegration.Constants.CHEMICAL_DUMMY_MODEL);
+    static final StandaloneModelKey BARE_MODEL = new StandaloneModelKey<>(FramedBlocksIntegration.Constants.CHEMICAL_DUMMY_MODEL);
 
     private final RenderType renderType;
     private final ChunkRenderTypeSet renderTypeSet;

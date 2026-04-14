@@ -1,5 +1,7 @@
 package mekanism.common.integration.framedblocks;
 
+import mekanism.api.annotations.MethodsAreNotNullByDefault;
+import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.registration.impl.FluidDeferredRegister;
@@ -10,7 +12,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.util.TriState;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.level.BlockAndTintGetter;
+import net.minecraft.world.level.BlockAndLightGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.LevelReader;
@@ -20,9 +22,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.Nullable;
-import xfacthd.framedblocks.api.camo.CamoClientHandler;
-import xfacthd.framedblocks.api.camo.CamoContent;
+import io.github.xfacthd.framedblocks.api.camo.CamoContentClientHandler;
+import io.github.xfacthd.framedblocks.api.camo.CamoContent;
 
+@ParametersAreNotNullByDefault
+@MethodsAreNotNullByDefault
 final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     private final Holder<Chemical> chemicalHolder;
@@ -38,7 +42,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
-    public boolean propagatesSkylightDown(BlockGetter level, BlockPos pos) {
+    public boolean propagatesSkylightDown() {
         return true;
     }
 
@@ -68,6 +72,11 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
+    public boolean isIgnitedByLava(BlockGetter blockGetter, BlockPos blockPos, Direction direction) {
+        return false;
+    }
+
+    @Override
     public int getLightEmission() {
         // TODO: light level is currently not forwarded from ChemicalConstants to the registered Chemical
         return 0;
@@ -84,7 +93,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
-    public boolean shouldDisplayFluidOverlay(BlockAndTintGetter level, BlockPos pos, FluidState fluidState) {
+    public boolean shouldDisplayFluidOverlay(BlockAndLightGetter level, BlockPos pos, FluidState fluidState) {
         return true;
     }
 
@@ -109,8 +118,8 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
         return mapColor;
     }
 
-    @Override
-    public int getTintColor(BlockAndTintGetter blockAndTintGetter, BlockPos pos, int tintIdx) {
+    //TODO 26.1 @Override
+    public int getTintColor(BlockAndLightGetter blockAndTintGetter, BlockPos pos, int tintIdx) {
         return chemicalHolder.value().getTint();
     }
 
@@ -120,7 +129,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
-    public boolean isSolid(BlockGetter level, BlockPos pos) {
+    public boolean isSolid() {
         return false;
     }
 
@@ -140,17 +149,17 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
-    public boolean isOccludedBy(BlockState adjState, BlockGetter level, BlockPos pos, BlockPos adjPos) {
-        return adjState.isSolidRender(level, pos);
+    public boolean isOccludedBy(BlockState adjState, BlockGetter level, BlockPos pos, BlockPos adjPos, Direction direction) {
+        return adjState.isSolidRender();
     }
 
     @Override
-    public boolean isOccludedBy(CamoContent<?> adjCamo, BlockGetter level, BlockPos pos, BlockPos adjPos) {
-        return adjCamo.isSolid(level, pos) || equals(adjCamo);
+    public boolean isOccludedBy(CamoContent<?> adjCamo, BlockGetter level, BlockPos pos, BlockPos adjPos, Direction direction) {
+        return adjCamo.isSolid() || equals(adjCamo);
     }
 
     @Override
-    public boolean occludes(BlockState adjState, BlockGetter level, BlockPos pos, BlockPos adjPos) {
+    public boolean occludes(BlockState adjState, BlockGetter level, BlockPos pos, BlockPos adjPos, Direction direction) {
         return false;
     }
 
@@ -170,7 +179,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     }
 
     @Override
-    public CamoClientHandler<ChemicalCamoContent> getClientHandler() {
+    public CamoContentClientHandler<ChemicalCamoContent> getClientHandler() {
         return ChemicalCamoClientHandler.INSTANCE;
     }
 
@@ -183,7 +192,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
     public boolean equals(Object obj) {
         if (obj == this) return true;
         if (obj == null || obj.getClass() != ChemicalCamoContent.class) return false;
-        return chemicalHolder.is(((ChemicalCamoContent) obj).chemicalHolder);
+        return chemicalHolder.is(((ChemicalCamoContent) obj).chemicalHolder.getKey());
     }
 
     @Override

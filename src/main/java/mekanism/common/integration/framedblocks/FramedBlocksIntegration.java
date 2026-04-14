@@ -11,8 +11,8 @@ import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
-import xfacthd.framedblocks.api.camo.CamoContainerFactory;
-import xfacthd.framedblocks.api.util.FramedConstants;
+import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
+import io.github.xfacthd.framedblocks.api.util.FramedConstants;
 
 public final class FramedBlocksIntegration {
 

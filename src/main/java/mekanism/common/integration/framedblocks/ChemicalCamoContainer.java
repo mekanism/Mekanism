@@ -3,8 +3,8 @@ package mekanism.common.integration.framedblocks;
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
 import org.jetbrains.annotations.Nullable;
-import xfacthd.framedblocks.api.camo.CamoContainer;
-import xfacthd.framedblocks.api.camo.CamoContainerFactory;
+import io.github.xfacthd.framedblocks.api.camo.CamoContainer;
+import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
 
 final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, ChemicalCamoContainer> {
 

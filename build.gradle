@@ -451,7 +451,7 @@ repositories { RepositoryHandler handler ->
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
     exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n', 'team.chisel.ctm')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
-    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade')
+    exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade', 'io.github.xfacthd.framedblocks')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
     handler.exclusiveContent {
         it.forRepositories(handler.mavenCentral())
@@ -545,7 +545,8 @@ dependencies {
     compileOnly("cc.tweaked:cc-tweaked-1.21-forge-api:${cc_tweaked_version}")
     //localRuntime("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
-    compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
+    //compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
+    compileOnly("io.github.xfacthd.framedblocks:FramedBlocks-26.1:${framedblocks_version}")
 
     //Dependencies for data generators for mod compat reference
     datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")

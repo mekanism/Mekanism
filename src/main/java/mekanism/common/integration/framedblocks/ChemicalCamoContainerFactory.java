@@ -22,10 +22,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
-import xfacthd.framedblocks.api.camo.CamoContainerFactory;
-import xfacthd.framedblocks.api.camo.TriggerRegistrar;
-import xfacthd.framedblocks.api.util.CamoMessageVerbosity;
-import xfacthd.framedblocks.api.util.ConfigView;
+import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
+import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
+import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
+import io.github.xfacthd.framedblocks.api.util.ConfigView;
 
 final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCamoContainer> {
 

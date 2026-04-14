@@ -8,10 +8,10 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
 import org.jetbrains.annotations.NotNull;
 
@@ -41,7 +41,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
     @Override
     protected SingleQuadParticle.Layer getLayer() {
         //TODO - 1.21.11: Validate this
-        return SingleQuadParticle.Layer.TERRAIN;
+        return SingleQuadParticle.Layer.TRANSLUCENT_TERRAIN;
     }
 
     @Override
@@ -65,10 +65,10 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
     }
 
     @Override
-    public int getLightColor(float partialTick) {
-        int light = WorldUtils.isChunkLoaded(level, pos) ? LevelRenderer.getLightColor(level, pos) : 0;
-        int block = Math.max(brightness, LightTexture.block(light));
-        return LightTexture.pack(block, LightTexture.sky(light));
+    public int getLightCoords(float partialTick) {
+        int light = WorldUtils.isChunkLoaded(level, pos) ? LevelRenderer.getLightCoords(level, pos) : 0;
+        int block = Math.max(brightness, LightCoordsUtil.block(light));
+        return LightCoordsUtil.pack(block, LightCoordsUtil.sky(light));
     }
 
     static final class Provider implements ParticleProvider<ChemicalParticleOptions> {
