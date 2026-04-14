@@ -49,7 +49,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void setStructure(MultiblockManager<?> manager, Structure structure) {
+    public void setStructure(@Nullable MultiblockManager<?> manager, Structure structure) {
         structures.put(manager, structure);
     }
 

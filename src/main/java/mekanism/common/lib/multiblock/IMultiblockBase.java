@@ -5,6 +5,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.Nullable;
 
 public interface IMultiblockBase extends ITileWrapper {
 
@@ -28,9 +29,10 @@ public interface IMultiblockBase extends ITileWrapper {
 
     boolean hasStructure(Structure structure);
 
-    void setStructure(MultiblockManager<?> manager, Structure structure);
+    void setStructure(@Nullable MultiblockManager<?> manager, Structure structure);
 
-    default Structure resetStructure(MultiblockManager<?> manager) {
+    //IStructuralMultiblock receives null
+    default Structure resetStructure(@Nullable MultiblockManager<?> manager) {
         Structure structure = new Structure(this);
         setStructure(manager, structure);
         return structure;

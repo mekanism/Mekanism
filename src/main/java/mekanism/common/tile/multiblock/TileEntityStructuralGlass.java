@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.Locale;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
@@ -26,7 +25,7 @@ public class TileEntityStructuralGlass extends TileEntityStructuralMultiblock {
     }
 
     @Override
-    public boolean canInterface(MultiblockManager<?> manager) {
-        return !isReactor(manager.getMultiblockType());
+    public boolean canInterface(MultiblockType<?> multiblockType) {
+        return !isReactor(multiblockType);
     }
 }

@@ -39,6 +39,7 @@ public class FormationProtocol<T extends MultiblockData> {
     private final IMultiblock<T> pointer;
     private final Structure structure;
     private final MultiblockManager<T> manager;
+    private final MultiblockType<T> multiblockType;
 
     public final Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
@@ -47,6 +48,7 @@ public class FormationProtocol<T extends MultiblockData> {
 
     public FormationProtocol(IMultiblock<T> tile, Structure structure) {
         pointer = tile;
+        multiblockType = tile.getMultiblockType();
         this.structure = structure;
         manager = tile.getManager();
     }
@@ -74,9 +76,9 @@ public class FormationProtocol<T extends MultiblockData> {
      * Runs the protocol and updates all nodes that make a part of the multiblock.
      */
     public FormationResult doUpdate() {
-        IStructureValidator<T> validator = manager.createValidator();
+        IStructureValidator<T> validator = multiblockType.createValidator();
         Level world = pointer.getLevel();
-        validator.init(world, manager, structure);
+        validator.init(world, manager, multiblockType, structure);
         if (!validator.precheck()) {
             return FormationResult.FAIL;
         }
@@ -132,7 +134,7 @@ public class FormationProtocol<T extends MultiblockData> {
             }
             boolean trackCache = cache == null;
             if (trackCache) {
-                cache = manager.createCache();
+                cache = multiblockType.createCache();
             }
 
             cache.apply(structureFound);

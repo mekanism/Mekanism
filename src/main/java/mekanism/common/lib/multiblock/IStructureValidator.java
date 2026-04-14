@@ -8,7 +8,7 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 
 public interface IStructureValidator<T extends MultiblockData> {
 
-    void init(Level world, MultiblockManager<T> manager, Structure structure);
+    void init(Level world, MultiblockManager<T> manager, MultiblockType<T> multiblockType, Structure structure);
 
     boolean precheck();
 

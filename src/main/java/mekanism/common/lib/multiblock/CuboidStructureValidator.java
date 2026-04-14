@@ -29,6 +29,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
 
     protected Level world;
     protected MultiblockManager<T> manager;
+    protected MultiblockType<T> multiblockType;
 
     public CuboidStructureValidator() {
         this(new VoxelCuboid(3, 3, 3), new VoxelCuboid(18, 18, 18));
@@ -40,8 +41,9 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     }
 
     @Override
-    public void init(Level world, MultiblockManager<T> manager, Structure structure) {
+    public void init(Level world, MultiblockManager<T> manager, MultiblockType<T> multiblockType, Structure structure) {
         this.world = world;
+        this.multiblockType = multiblockType;
         this.manager = manager;
         this.structure = structure;
     }
@@ -100,7 +102,7 @@ public abstract class CuboidStructureValidator<T extends MultiblockData> impleme
     protected abstract CasingType getCasingType(BlockState state);
 
     protected boolean isFrameCompatible(BlockEntity tile) {
-        if (tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(manager)) {
+        if (multiblockType != null && tile instanceof IStructuralMultiblock multiblock && multiblock.canInterface(multiblockType)) {
             return true;
         }
         return manager.isCompatible(tile);

@@ -38,10 +38,9 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     void setStructure(Structure structure);
 
-    //todo 26.1: do these need to get both type and manager? if they're in different Levels something is seriously bonkers
     @Override
-    default void setStructure(MultiblockManager<?> manager, Structure structure) {
-        if (manager.getMultiblockType() == getMultiblockType() && manager == getManager()) {
+    default void setStructure(@Nullable MultiblockManager<?> manager, Structure structure) {
+        if ((manager == null || manager.getMultiblockType() == getMultiblockType()) && manager == getManager()) {
             setStructure(structure);
         }
     }

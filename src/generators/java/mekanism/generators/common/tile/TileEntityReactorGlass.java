@@ -1,6 +1,6 @@
 package mekanism.generators.common.tile;
 
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -13,7 +13,7 @@ public class TileEntityReactorGlass extends TileEntityStructuralMultiblock {
     }
 
     @Override
-    public boolean canInterface(MultiblockManager<?> manager) {
+    public boolean canInterface(MultiblockType<?> multiblockType) {
         return true;
     }
 }

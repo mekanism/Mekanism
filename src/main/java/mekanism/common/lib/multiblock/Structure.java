@@ -23,6 +23,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import org.jetbrains.annotations.Nullable;
 
 public class Structure {
 
@@ -40,6 +41,8 @@ public class Structure {
 
     private MultiblockData multiblockData;
     private IMultiblock<?> controller;
+    @Nullable
+    private MultiblockType<?> multiblockType;
 
     private Structure() {
     }
@@ -55,8 +58,11 @@ public class Structure {
         for (Axis axis : Axis.AXES) {
             getMinorAxisMap(axis).put(axis.getCoord(pos), new VoxelPlane(axis, pos, node instanceof IMultiblock));
         }
-        if (node instanceof IMultiblock<?> multiblock && (getController() == null || multiblock.canBeMaster())) {
-            controller = multiblock;
+        if (node instanceof IMultiblock<?> multiblock) {
+            multiblockType = multiblock.getMultiblockType();
+            if (getController() == null || multiblock.canBeMaster()) {
+                controller = multiblock;
+            }
         }
     }
 
@@ -79,8 +85,14 @@ public class Structure {
         return controller;
     }
 
+    @Nullable
     public MultiblockManager<?> getManager() {
         return getController() != null && valid ? getController().getManager() : null;
+    }
+
+    @Nullable
+    public MultiblockType<?> multiblockType() {
+        return getController() != null && valid ? multiblockType : null;
     }
 
     public IMultiblockBase getTile(BlockPos pos) {
@@ -137,6 +149,7 @@ public class Structure {
                 //If the controller of the other structure isn't null, and it can be a master block override our structure's controller
                 // if our structure's controller is only the controller because of lack of a better and more proper one
                 controller = s.getController();
+                multiblockType = s.multiblockType;
             }
             //Merge nodes, and update their structure to point to our structure
             MultiblockManager<?> manager = getManager();
@@ -240,7 +253,7 @@ public class Structure {
                 multiblock.resetStructure(multiblock.getManager());
             }
         } else if (node instanceof IStructuralMultiblock) {
-            node.resetStructure(null);
+            node.resetStructure(null);//todo 26.1: why null???
         }
         FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
             if (pos.equals(start)) {
@@ -320,21 +333,25 @@ public class Structure {
     }
 
     private static boolean isCompatible(IMultiblockBase node, IMultiblockBase other) {
-        MultiblockManager<?> manager = getManager(node), otherManager = getManager(other);
-        if (manager != null && otherManager != null) {
-            return manager == otherManager;
-        } else if (manager == null && otherManager == null) {
+        MultiblockType<?> typeA = getMultiblockType(node), typeB = getMultiblockType(other);
+        if (typeA != null && typeB != null) {
+            return typeA == typeB;
+        } else if (typeA == null && typeB == null) {
             return true;
-        } else if (manager == null && node instanceof IStructuralMultiblock multiblock) {
-            return multiblock.canInterface(otherManager);
-        } else if (otherManager == null && other instanceof IStructuralMultiblock multiblock) {
-            return multiblock.canInterface(manager);
+        } else if (typeA == null && node instanceof IStructuralMultiblock multiblock) {
+            return multiblock.canInterface(typeB);
+        } else if (typeB == null && other instanceof IStructuralMultiblock multiblock) {
+            return multiblock.canInterface(typeA);
         }
         return false;
     }
 
     private static MultiblockManager<?> getManager(IMultiblockBase node) {
         return node instanceof IMultiblock<?> multiblock ? multiblock.getManager() : null;
+    }
+
+    private static MultiblockType<?> getMultiblockType(IMultiblockBase node) {
+        return node instanceof IMultiblock<?> multiblock ? multiblock.getMultiblockType() : null;
     }
 
     public enum Axis {

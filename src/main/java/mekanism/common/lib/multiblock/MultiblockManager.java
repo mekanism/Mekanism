@@ -50,14 +50,6 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
     }
 
     /**
-     * Note: It is important that callers also call {@link #trackCache(UUID, MultiblockCache)} after initializing any data the cache might require.
-     */
-    @Deprecated//use MultiblockType
-    public MultiblockCache<T> createCache() {
-        return multiblockType.createCache();
-    }
-
-    /**
      * Adds a cache as tracked and marks the manager as dirty.
      */
     public void trackCache(UUID id, MultiblockCache<T> cache) {
@@ -70,16 +62,6 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
         return caches.get(multiblockID);
     }
 
-    @Deprecated//use MultiblockType
-    public IStructureValidator<T> createValidator() {
-        return multiblockType.createValidator();
-    }
-
-    @Deprecated//use MultiblockType identifier
-    public String getNameLower() {
-        return multiblockType.id().toString();
-    }
-
     @Override
     public String toString() {
         return multiblockType.id().toString();
@@ -87,7 +69,7 @@ public class MultiblockManager<T extends MultiblockData> implements ValueIOSeria
 
     public boolean isCompatible(BlockEntity tile) {
         if (tile instanceof IMultiblock<?> multiblock) {
-            return multiblock.getManager() == this;
+            return multiblock.getMultiblockType() == this.multiblockType;
         }
         return false;
     }

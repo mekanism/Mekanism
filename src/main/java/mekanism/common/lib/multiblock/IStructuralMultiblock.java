@@ -4,7 +4,7 @@ import java.util.Map;
 
 public interface IStructuralMultiblock extends IMultiblockBase {
 
-    boolean canInterface(MultiblockManager<?> manager);
+    boolean canInterface(MultiblockType<?> multiblockType);
 
     Map<MultiblockManager<?>, Structure> getStructureMap();
 
