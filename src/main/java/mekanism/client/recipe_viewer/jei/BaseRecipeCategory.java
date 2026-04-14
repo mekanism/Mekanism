@@ -39,7 +39,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
@@ -178,7 +178,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
     }
 
     @Override
-    public void draw(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Translate back by our offset so that we are effectively rendering the foreground starting at 0, 0
         // This is needed to make sure that we render things like crystallizer text in the correct spot
         // If this ends up causing issues elsewhere we will need to look into it further
@@ -189,7 +189,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         matrix.popMatrix();
     }
 
-    protected void renderElements(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
+    protected void renderElements(RECIPE recipe, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, int x, int y) {
         Matrix3x2fStack matrix = guiGraphics.pose();
         for (GuiElement guiElement : guiElements) {
             guiElement.renderShifted(guiGraphics, x, y, 0);

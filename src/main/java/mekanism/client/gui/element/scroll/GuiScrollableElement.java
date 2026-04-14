@@ -3,7 +3,7 @@ package mekanism.client.gui.element.scroll;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiTexturedElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -121,7 +121,7 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
         return false;
     }
 
-    protected void drawScrollBar(GuiGraphics guiGraphics, int textureWidth, int textureHeight) {
+    protected void drawScrollBar(GuiGraphicsExtractor guiGraphics, int textureWidth, int textureHeight) {
         Identifier texture = getResource();
         //Top border
         guiGraphics.blit(texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);

@@ -4,7 +4,7 @@ import java.util.function.Supplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
@@ -39,13 +39,13 @@ public class GuiEntityPreview extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         LivingEntity preview = this.preview.get();
         float oldBodyRot = preview.yBodyRot;

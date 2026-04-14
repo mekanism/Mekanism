@@ -14,7 +14,7 @@ import mekanism.common.integration.lookingat.FluidElement;
 import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;

@@ -8,7 +8,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.robit.PacketRobitName;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiRobitRename extends GuiWindow {
 
@@ -38,7 +38,7 @@ public class GuiRobitRename extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.ROBIT_RENAME.translate(), 7);
     }

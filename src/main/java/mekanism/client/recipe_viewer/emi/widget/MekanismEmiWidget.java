@@ -8,7 +8,7 @@ import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.gui.element.GuiElement;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.input.KeyEvent;
@@ -35,7 +35,7 @@ public class MekanismEmiWidget extends Widget {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float delta) {
+    public void render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float delta) {
         Matrix3x2fStack pose = guiGraphics.pose();
         pose.pushMatrix();
         pose.translate(element.getGuiLeft(), element.getGuiTop(), 0);

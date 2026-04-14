@@ -29,7 +29,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -177,7 +177,7 @@ public class GuiSecurityDesk extends GuiMekanismTile<TileEntitySecurityDesk, Mek
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         Component ownerComponent = OwnerDisplay.of(tile.getOwnerUUID(), tile.getOwnerName()).getTextComponent();
         renderInventoryTextAndOther(guiGraphics, ownerComponent);

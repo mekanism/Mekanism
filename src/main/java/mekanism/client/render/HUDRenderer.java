@@ -22,7 +22,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
@@ -55,7 +55,7 @@ public class HUDRenderer {
     private float prevRotationYaw;
     private float prevRotationPitch;
 
-    public void renderHUD(Minecraft minecraft, GuiGraphics guiGraphics, Font font, List<DelayedString> delayedDraws, DeltaTracker delta, int screenWidth, int screenHeight,
+    public void renderHUD(Minecraft minecraft, GuiGraphicsExtractor guiGraphics, Font font, List<DelayedString> delayedDraws, DeltaTracker delta, int screenWidth, int screenHeight,
           int maxTextHeight, boolean reverseHud) {
         Player player = minecraft.player;
         update(minecraft.level, player);
@@ -97,7 +97,7 @@ public class HUDRenderer {
         return val < 0 ? -ret : ret;
     }
 
-    private void renderMekaSuitEnergyIcons(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws) {
+    private void renderMekaSuitEnergyIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws) {
         Matrix3x2fStack pose = guiGraphics.pose();
         pose.pushMatrix();
         pose.translate(10, 10);
@@ -114,7 +114,7 @@ public class HUDRenderer {
         pose.popMatrix();
     }
 
-    private int renderEnergyIcon(Player player, Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, Identifier icon,
+    private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, Identifier icon,
           EquipmentSlot slot, Predicate<Item> showPercent) {
         ItemStack stack = player.getItemBySlot(slot);
         if (showPercent.test(stack.getItem())) {
@@ -125,7 +125,7 @@ public class HUDRenderer {
         return 0;
     }
 
-    private void renderMekaSuitModuleIcons(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws, int screenWidth, int screenHeight,
+    private void renderMekaSuitModuleIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, int screenWidth, int screenHeight,
           boolean reverseHud, int subtitlesWidth) {
         int startX = screenWidth - 10;
         int curY = screenHeight - 10;
@@ -151,7 +151,7 @@ public class HUDRenderer {
     }
 
     /**
-     * Based on how {@link SubtitleOverlay#render(GuiGraphics)} calculates the width
+     * Based on how {@link SubtitleOverlay#render(GuiGraphicsExtractor)} calculates the width
      */
     private int getAudibleSubtitlesWidth(Minecraft minecraft, Font font) {
         if (!minecraft.options.showSubtitles().get() || minecraft.gui.subtitleOverlay.audibleSubtitles.isEmpty()) {
@@ -174,7 +174,7 @@ public class HUDRenderer {
         return lastSubtitleWidth;
     }
 
-    private void renderHUDElement(Font font, GuiGraphics guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
+    private void renderHUDElement(Font font, GuiGraphicsExtractor guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
           boolean iconRight) {
         int color = element.getColor();
         RenderSystem.enableBlend();
@@ -185,7 +185,7 @@ public class HUDRenderer {
         delayedDraws.add(new DelayedString(matrix, element.getText(), iconRight ? x : x + 18, y + 5, color, false));
     }
 
-    private void renderCompass(Player player, Font font, GuiGraphics guiGraphics, List<DelayedString> delayedDraws, DeltaTracker delta, int screenWidth,
+    private void renderCompass(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, DeltaTracker delta, int screenWidth,
           int screenHeight, int maxTextHeight, boolean reverseHud, int audibleSubtitlesWidth) {
         int color = HUDColor.REGULAR.getColorARGB();
         //Reversed hud causes the compass to render on the right side of the screen
@@ -220,7 +220,7 @@ public class HUDRenderer {
         pose.popPose();
     }
 
-    private void rotateStr(GuiGraphics guiGraphics, List<DelayedString> delayedDraws, ILangEntry langEntry, float rotation, float shift, int color) {
+    private void rotateStr(GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, ILangEntry langEntry, float rotation, float shift, int color) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.mulPose(Axis.ZP.rotationDegrees(shift));

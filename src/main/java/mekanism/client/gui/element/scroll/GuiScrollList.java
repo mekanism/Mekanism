@@ -3,7 +3,7 @@ package mekanism.client.gui.element.scroll;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -36,10 +36,10 @@ public abstract class GuiScrollList extends GuiScrollableElement {
 
     public abstract void clearSelection();
 
-    protected abstract void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks);
+    protected abstract void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks);
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the background
         renderBackgroundTexture(guiGraphics, background, backgroundSideSize, backgroundSideSize);

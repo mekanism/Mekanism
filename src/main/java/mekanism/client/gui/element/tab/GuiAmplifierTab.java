@@ -16,7 +16,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.tile.laser.TileEntityLaserAmplifier.RedstoneOutput;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -60,7 +60,7 @@ public class GuiAmplifierTab extends GuiInsetElement<TileEntityLaserAmplifier> {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_LASER_AMPLIFIER);
     }
 }

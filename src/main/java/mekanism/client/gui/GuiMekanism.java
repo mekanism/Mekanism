@@ -37,7 +37,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
@@ -180,35 +180,35 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         return lastMSInitialized;
     }
 
-    protected void renderTitleText(GuiGraphics guiGraphics) {
+    protected void renderTitleText(GuiGraphicsExtractor guiGraphics) {
         drawTitleText(guiGraphics, title, titleLabelY);
     }
 
-    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x) {
+    protected void renderTitleTextWithOffset(GuiGraphicsExtractor guiGraphics, int x) {
         renderTitleTextWithOffset(guiGraphics, x, getXSize());
     }
 
-    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end) {
+    protected void renderTitleTextWithOffset(GuiGraphicsExtractor guiGraphics, int x, int end) {
         drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end);
     }
 
-    protected void renderTitleTextWithOffset(GuiGraphics guiGraphics, int x, int end, int maxLengthPad, TextAlignment alignment) {
+    protected void renderTitleTextWithOffset(GuiGraphicsExtractor guiGraphics, int x, int end, int maxLengthPad, TextAlignment alignment) {
         drawTitleTextTextWithOffset(guiGraphics, title, x, titleLabelY, end, maxLengthPad, alignment);
     }
 
-    protected void renderInventoryText(GuiGraphics guiGraphics) {
+    protected void renderInventoryText(GuiGraphicsExtractor guiGraphics) {
         renderInventoryText(guiGraphics, getXSize());
     }
 
-    protected void renderInventoryText(GuiGraphics guiGraphics, int end) {
+    protected void renderInventoryText(GuiGraphicsExtractor guiGraphics, int end) {
         drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), end - inventoryLabelX - 6, 0, false);
     }
 
-    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText) {
+    protected void renderInventoryTextAndOther(GuiGraphicsExtractor guiGraphics, Component rightAlignedText) {
         renderInventoryTextAndOther(guiGraphics, rightAlignedText, 0);
     }
 
-    protected void renderInventoryTextAndOther(GuiGraphics guiGraphics, Component rightAlignedText, int rightEndPad) {
+    protected void renderInventoryTextAndOther(GuiGraphicsExtractor guiGraphics, Component rightAlignedText, int rightEndPad) {
         drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 53, 0, false);
         int rightStart = inventoryLabelX + 51;
         drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
@@ -368,7 +368,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         //Shift forward as far as tooltips get shifted so that we don't risk intersecting the rendered items
@@ -434,7 +434,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
      * @implNote Copy of super, but adjusts the z value for tooltip rendering
      */
     @Override
-    public final void renderWithTooltip(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+    public final void renderWithTooltip(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in renderLabels
         // then we make sure to clean them up here
         PoseStack pose = graphics.pose();
@@ -449,7 +449,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         pose.popPose();
     }
 
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     }
 
     @NotNull
@@ -712,7 +712,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor(guiGraphics);

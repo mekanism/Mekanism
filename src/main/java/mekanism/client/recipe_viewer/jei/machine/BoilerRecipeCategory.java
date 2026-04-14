@@ -25,7 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -64,7 +64,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     }
 
     @Override
-    public void draw(BoilerRecipeViewerRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(BoilerRecipeViewerRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Update what the current recipe is so that we have the proper values for temperature and the like
         this.recipe = recipe;
         super.draw(recipe, recipeSlotView, guiGraphics, mouseX, mouseY);
@@ -72,7 +72,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
     }
 
     @Override
-    protected void renderElements(BoilerRecipeViewerRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
+    protected void renderElements(BoilerRecipeViewerRecipe recipe, IRecipeSlotsView recipeSlotView, GuiGraphicsExtractor guiGraphics, int x, int y) {
         super.renderElements(recipe, recipeSlotView, guiGraphics, x, y);
         if (recipe.superHeatedCoolant() == null) {
             superHeatedCoolantTank.drawBarOverlay(guiGraphics);

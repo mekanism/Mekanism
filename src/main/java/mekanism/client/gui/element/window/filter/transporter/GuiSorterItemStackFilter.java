@@ -8,7 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStackFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
@@ -57,7 +57,7 @@ public class GuiSorterItemStackFilter extends GuiItemStackFilter<SorterItemStack
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         renderSorterForeground(guiGraphics);
         drawScrollingString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), 159, 71, TextAlignment.LEFT, titleTextColor(), width - 159, 2, false);

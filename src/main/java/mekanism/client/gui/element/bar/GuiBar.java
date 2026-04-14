@@ -10,7 +10,7 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -47,7 +47,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Render the bar
         renderExtendedTexture(guiGraphics, BAR, 2, 2);
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
@@ -60,7 +60,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         drawContentsChecked(guiGraphics, mouseX, mouseY, partialTicks, handler.getLevel(), warning);
     }
 
-    void drawContentsChecked(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
+    void drawContentsChecked(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel, boolean warning) {
         //If there are any contents render them
         if (handlerLevel > 0) {
             renderBarOverlay(guiGraphics, mouseX, mouseY, partialTicks, handlerLevel);
@@ -79,7 +79,7 @@ public abstract class GuiBar<INFO extends IBarInfoHandler> extends GuiTexturedEl
         }
     }
 
-    protected abstract void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel);
+    protected abstract void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel);
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {

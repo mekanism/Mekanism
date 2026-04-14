@@ -16,7 +16,7 @@ import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -60,7 +60,7 @@ public class GuiContainerEditModeTab<TILE extends TileEntityMekanism & IFluidCon
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_CONTAINER_EDIT_MODE);
     }
 }

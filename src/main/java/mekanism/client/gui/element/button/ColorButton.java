@@ -7,7 +7,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.common.MekanismLang;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class ColorButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         EnumColor color = colorSupplier.get();
         if (color != null) {
             guiGraphics.fill(getButtonX(), getButtonY(), getButtonX() + getButtonWidth(), getButtonY() + getButtonHeight(), color.getPackedColor());

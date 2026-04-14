@@ -23,7 +23,7 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -82,7 +82,7 @@ public class GuiFissionReactorStats extends GuiMekanismTile<TileEntityFissionRea
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         FissionReactorMultiblockData multiblock = tile.getMultiblock();
         // heat stats

@@ -24,7 +24,7 @@ import mekanism.common.network.to_server.configuration_update.PacketInputColor;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfiguration> extends GuiWindow {
 
@@ -72,7 +72,7 @@ public class GuiTransporterConfig<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.TRANSPORTER_CONFIG.translate(), 5);
         drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 18, 105, TextAlignment.CENTER, subheadingTextColor(), 68, 0, false);

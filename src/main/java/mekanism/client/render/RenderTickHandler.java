@@ -154,7 +154,7 @@ public class RenderTickHandler {
         if (event.getScreen() instanceof GuiMekanism) {
             //Translate forward how far we go, so that things like recipe viewers draw far enough forward
             // Note: We will pop this in a listener at the lowest priority
-            PoseStack pose = event.getGuiGraphics().pose();
+            PoseStack pose = event.getGuiGraphicsExtractor().pose();
             pose.pushPose();
             pose.translate(0, 0, GuiMekanism.maxZOffset);
         }
@@ -164,7 +164,7 @@ public class RenderTickHandler {
     public void renderPostLowest(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiMekanism) {
             //Matching pop to the push we did in renderPostHighest
-            event.getGuiGraphics().pose().popPose();
+            event.getGuiGraphicsExtractor().pose().popPose();
         }
     }
 

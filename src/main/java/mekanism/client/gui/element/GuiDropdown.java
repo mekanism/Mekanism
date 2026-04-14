@@ -11,7 +11,7 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.Identifier;
@@ -68,7 +68,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawOptionName(guiGraphics, curType.get(), 2, true);
         if (isOpen) {
@@ -78,7 +78,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
         }
     }
 
-    private void drawOptionName(GuiGraphics guiGraphics, TYPE option, int y, boolean alwaysDisplayed) {
+    private void drawOptionName(GuiGraphicsExtractor guiGraphics, TYPE option, int y, boolean alwaysDisplayed) {
         //Note: We add one for if we are rendering with an icon so that we allow going closer to the icon
         int maxWidth = option.getIcon() == null ? getWidth() : getWidth() - ICON_OFFSET + 1;
         drawScaledScrollingString(guiGraphics, option.getShortName(), 0, y, TextAlignment.LEFT, screenTextColor(), maxWidth, 10, 3, false,
@@ -86,7 +86,7 @@ public class GuiDropdown<TYPE extends Enum<TYPE> & IDropdownEnum<TYPE>> extends 
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(guiGraphics, getResource(), GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
 

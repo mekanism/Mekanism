@@ -36,7 +36,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.OwnerDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import org.jetbrains.annotations.Nullable;
@@ -208,7 +208,7 @@ public class GuiFrequencySelector<FREQ extends Frequency> extends GuiElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         FREQ frequency = frequencySelector.getFrequency();
         Object frequencyName;

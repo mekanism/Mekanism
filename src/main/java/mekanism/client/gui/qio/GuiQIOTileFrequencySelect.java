@@ -14,7 +14,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.button.PacketTileButtonPress;
 import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTileButton;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +43,7 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 17);//Adjust spacing for back button
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

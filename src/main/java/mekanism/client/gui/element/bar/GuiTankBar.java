@@ -17,7 +17,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketDropperUse;
 import mekanism.common.network.to_server.PacketDropperUse.DropperAction;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -68,12 +68,12 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
         return tooltips;
     }
 
-    protected abstract void applyRenderColor(GuiGraphics guiGraphics, STACK stack);
+    protected abstract void applyRenderColor(GuiGraphicsExtractor guiGraphics, STACK stack);
 
     protected abstract TextureAtlasSprite getIcon(STACK stack);
 
     @Override
-    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         STACK stored = getHandler().getStack();
         if (!isEmpty(stored)) {
             int displayInt = (int) (handlerLevel * ((horizontal ? width : height) - 2));

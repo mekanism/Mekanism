@@ -5,7 +5,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiTagFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
@@ -52,7 +52,7 @@ public class GuiSorterTagFilter extends GuiTagFilter<SorterTagFilter, TileEntity
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         renderSorterForeground(guiGraphics);
     }

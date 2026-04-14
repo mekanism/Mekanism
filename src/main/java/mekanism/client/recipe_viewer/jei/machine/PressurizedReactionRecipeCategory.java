@@ -24,7 +24,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +54,7 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     }
 
     @Override
-    protected void renderElements(RecipeHolder<PressurizedReactionRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, int x, int y) {
+    protected void renderElements(RecipeHolder<PressurizedReactionRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, int x, int y) {
         super.renderElements(recipeHolder, recipeSlotsView, guiGraphics, x, y);
         if (recipeSlotsView.findSlotByName(OUTPUT_CHEMICAL).isEmpty()) {
             //If we don't have an output chemical at all for this recipe, draw the bar overlay manually

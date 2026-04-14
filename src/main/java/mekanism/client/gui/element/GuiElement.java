@@ -22,7 +22,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
@@ -275,7 +275,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public final void onRenderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY, int zOffset, int totalOffset) {
+    public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int zOffset, int totalOffset) {
         if (visible) {
             PoseStack pose = guiGraphics.pose();
             pose.translate(0, 0, zOffset);
@@ -301,11 +301,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         }
     }
 
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         drawButtonText(guiGraphics, mouseX, mouseY);
     }
 
-    public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     }
 
     public void openPinnedWindows() {
@@ -313,7 +313,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     //TODO: Evaluate if we can somehow move the remaining uses to the new tooltip system
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         updateTooltip(mouseX, mouseY);
         //If there is a tooltip, update it for the next render pass
         // We also call it regardless of whether the backing tooltip is null so that we properly mark wasDisplayed as false
@@ -532,7 +532,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     /**
-     * Override this if you do not want {@link #drawButton(GuiGraphics, int, int)} to reset the color before drawing.
+     * Override this if you do not want {@link #drawButton(GuiGraphicsExtractor, int, int)} to reset the color before drawing.
      */
     protected boolean resetColorBeforeRender() {
         return true;
@@ -575,19 +575,19 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return isHovering;
     }
 
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (buttonBackground != ButtonBackground.NONE) {
             drawButton(guiGraphics, mouseX, mouseY);
         }
     }
 
-    public final void onDrawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public final void onDrawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (visible) {
             drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
-    public final void renderShifted(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public final void renderShifted(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Copy of super.render, except doesn't update the tooltip for the next render pass, as we handle that via renderTooltip
         if (this.visible) {
             //TODO - 1.21: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
@@ -598,7 +598,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
         if (visible) {
             Matrix3x2fStack matrix = guiGraphics.pose();
@@ -611,7 +611,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
@@ -630,7 +630,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         return true;
     }
 
-    protected void drawButtonText(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawButtonText(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         Component text = getMessage();
         //Only attempt to draw the message if we have a message to draw
         if (!text.getString().isEmpty()) {
@@ -654,7 +654,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     /**
      * Based on the code in AbstractButton#renderWidget
      */
-    protected void drawButton(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor(guiGraphics);
         }
@@ -668,11 +668,11 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
               BUTTON_INDIVIDUAL_TEX_Y, 0, i * 20, BUTTON_TEX_X, BUTTON_TEX_Y);
     }
 
-    protected void renderExtendedTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
+    protected void renderExtendedTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
         GuiUtils.renderExtendedTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
-    protected void renderBackgroundTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
+    protected void renderBackgroundTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight) {
         GuiUtils.renderBackgroundTexture(guiGraphics, resource, sideWidth, sideHeight, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 256, 256);
     }
 
@@ -692,7 +692,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
         soundHandler.play(SimpleSoundInstance.forUI(sound.get(), 1.0F, clickVolume));
     }
 
-    protected void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+    protected void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           TilingDirection tilingDirection) {
         GuiUtils.drawTiledSprite(guiGraphics, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, 16, 16, 0, tilingDirection);
     }
@@ -703,13 +703,13 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     @Override
-    public final void drawScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+    public final void drawScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
           boolean shadow, long msVisible) {
         IFancyFontRenderer.super.drawScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, msVisible);
     }
 
     @Override
-    public final void drawScaledScrollingString(GuiGraphics graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
+    public final void drawScaledScrollingString(GuiGraphicsExtractor graphics, Component text, int x, int y, TextAlignment alignment, int color, int width, int height, int maxLengthPad,
           boolean shadow, float scale, long msVisible) {
         IFancyFontRenderer.super.drawScaledScrollingString(graphics, text, relativeX + x, relativeY + y, alignment, color, width, height, maxLengthPad, shadow, scale, msVisible);
     }

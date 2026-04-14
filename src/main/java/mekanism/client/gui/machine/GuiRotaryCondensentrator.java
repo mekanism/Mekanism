@@ -22,7 +22,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityRotaryCondensentrator;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -81,7 +81,7 @@ public class GuiRotaryCondensentrator extends GuiConfigurableTile<TileEntityRota
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         ILangEntry modeLang = tile.getMode() ? MekanismLang.DECONDENSENTRATING : MekanismLang.CONDENSENTRATING;
         drawScrollingString(guiGraphics, modeLang.translate(), 4, imageHeight - 92, TextAlignment.LEFT, titleTextColor(), energyBar.getRelativeX() - 4, 2, false);

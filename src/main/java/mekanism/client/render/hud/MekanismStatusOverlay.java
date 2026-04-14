@@ -7,7 +7,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
@@ -32,7 +32,7 @@ public class MekanismStatusOverlay implements GuiLayer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
+    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         if (modeSwitchTimer > 1 && minecraft.player != null && minecraft.gameMode.getPlayerMode() != GameType.SPECTATOR && !minecraft.options.hideGui) {
             ItemStack stack = minecraft.player.getMainHandItem();

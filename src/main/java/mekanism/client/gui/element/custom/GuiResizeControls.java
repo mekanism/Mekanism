@@ -12,7 +12,7 @@ import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
@@ -55,7 +55,7 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawScaledScrollingString(guiGraphics, MekanismLang.HEIGHT.translate(), 0, 16, TextAlignment.CENTER, titleTextColor(), 4, false, 0.6F);
     }
@@ -69,7 +69,7 @@ public class GuiResizeControls extends GuiSideHolder {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_RESIZE_CONTROLS);
     }
 

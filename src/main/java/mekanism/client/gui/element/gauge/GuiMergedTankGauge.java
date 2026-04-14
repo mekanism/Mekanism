@@ -9,7 +9,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.lib.transmitter.TransmissionType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -68,7 +68,7 @@ public class GuiMergedTankGauge<HANDLER extends IMekanismFluidHandler & IMekanis
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphics guiGraphics) {
+    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
         GuiTankGauge<?, ?> currentGauge = getCurrentGaugeNoFallback();
         if (currentGauge != null) {
             currentGauge.applyRenderColor(guiGraphics);

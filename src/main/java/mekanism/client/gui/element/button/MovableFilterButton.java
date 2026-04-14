@@ -16,7 +16,7 @@ import mekanism.common.content.filter.IFilter;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.content.filter.ITagFilter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.item.ItemStack;
@@ -78,7 +78,7 @@ public class MovableFilterButton extends FilterButton {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         IFilter<?> filter = getFilter();
         EnumColor color = switch (filter) {

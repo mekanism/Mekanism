@@ -13,7 +13,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteractionEntity;
 import mekanism.common.network.to_server.robit.PacketRobitSkin;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.ResourceKey;
 
 public class GuiRobitSkinSelect extends GuiWindow {
@@ -45,7 +45,7 @@ public class GuiRobitSkinSelect extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.ROBIT_SKIN_SELECT.translate(), 7);
     }

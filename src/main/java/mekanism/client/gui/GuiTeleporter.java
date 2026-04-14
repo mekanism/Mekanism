@@ -12,7 +12,7 @@ import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -40,7 +40,7 @@ public class GuiTeleporter extends GuiMekanismTile<TileEntityTeleporter, Mekanis
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, status.getRelativeRight(), tile.getEnergySlotX());
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

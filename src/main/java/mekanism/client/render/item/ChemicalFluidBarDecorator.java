@@ -12,7 +12,7 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -36,7 +36,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     }
 
     @Override
-    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+    public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (!visibleFor.test(stack)) {
             return false;
         }
@@ -64,16 +64,16 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         return true;
     }
 
-    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
+    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
         renderBar(guiGraphics, stackXPos, yPos, tank.getStored(), tank.getCapacity(), tank.getStack().getChemicalColorRepresentation());
     }
 
-    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, IExtendedFluidTank tank) {
+    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IExtendedFluidTank tank) {
         FluidStack fluid = tank.getFluid();
         renderBar(guiGraphics, stackXPos, yPos, fluid.getAmount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid));
     }
 
-    protected static void renderBar(GuiGraphics guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
+    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {
         int pixelWidth = convertWidth(StorageUtils.getRatio(amount, capacity));
         GuiUtils.fill(guiGraphics, stackXPos + 2 + pixelWidth, yPos, 13 - pixelWidth, 1, 0xFF000000);
         GuiUtils.fill(guiGraphics, stackXPos + 2, yPos, pixelWidth, 1, color | 0xFF000000);

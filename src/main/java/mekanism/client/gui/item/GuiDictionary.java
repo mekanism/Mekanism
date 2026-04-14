@@ -12,7 +12,7 @@ import mekanism.client.gui.element.slot.SlotType;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.container.item.DictionaryContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -60,7 +60,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, target.getRelativeRight());
         renderInventoryTextAndOther(guiGraphics, MekanismLang.DICTIONARY_TAG_TYPE.translate(), imageWidth - dropdown.getRelativeX() - 5);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

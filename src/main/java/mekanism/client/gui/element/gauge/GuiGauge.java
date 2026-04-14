@@ -19,7 +19,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -72,11 +72,11 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         return gaugeType.getGaugeInfo();
     }
 
-    protected void applyRenderColor(GuiGraphics guiGraphics) {
+    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         GaugeInfo color = getGaugeColor();
         renderExtendedTexture(guiGraphics, color.getResourceLocation(), color.getSideWidth(), color.getSideHeight());
@@ -85,7 +85,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         }
     }
 
-    public void renderContents(GuiGraphics guiGraphics) {
+    public void renderContents(GuiGraphicsExtractor guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
@@ -109,7 +109,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         drawBarOverlay(guiGraphics);
     }
 
-    public void drawBarOverlay(GuiGraphics guiGraphics) {
+    public void drawBarOverlay(GuiGraphicsExtractor guiGraphics) {
         GaugeOverlay gaugeOverlay = getGaugeOverlay();
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, getWidth() - 2, getHeight() - 2, 0, 0, gaugeOverlay.getWidth(), gaugeOverlay.getHeight(), gaugeOverlay.getWidth(), gaugeOverlay.getHeight());
     }

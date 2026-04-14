@@ -24,7 +24,7 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -101,7 +101,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
@@ -124,7 +124,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphics guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {
         super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
         //TODO: Gui element
         SlotOverlay overlay = tile.hasRecipe() ? SlotOverlay.CHECK : SlotOverlay.X;

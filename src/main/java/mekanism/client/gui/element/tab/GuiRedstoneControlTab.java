@@ -15,7 +15,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -60,12 +60,12 @@ public class GuiRedstoneControlTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_REDSTONE_CONTROL);
     }
 
     @Override
-    protected void drawBackgroundOverlay(@NotNull GuiGraphics guiGraphics) {
+    protected void drawBackgroundOverlay(@NotNull GuiGraphicsExtractor guiGraphics) {
         if (dataSource.getControlType() == RedstoneControl.PULSE) {
             guiGraphics.blit(getButtonX() + 1, getButtonY() + 1, 0, innerWidth - 2, innerHeight - 2, MekanismRenderer.redstonePulse);
         } else {

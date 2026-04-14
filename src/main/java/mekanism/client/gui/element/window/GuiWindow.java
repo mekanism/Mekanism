@@ -21,7 +21,7 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.AbstractContainerMenu;
@@ -154,7 +154,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
             //TODO - 1.21.11: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
@@ -197,7 +197,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
         }
     }
 
-    public void renderBlur(GuiGraphics guiGraphics) {
+    public void renderBlur(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.3F);
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
@@ -240,7 +240,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     @Override
-    public void drawTitleText(GuiGraphics guiGraphics, Component text, int y) {
+    public void drawTitleText(GuiGraphicsExtractor guiGraphics, Component text, int y) {
         if (isFocusOverlay()) {
             super.drawTitleText(guiGraphics, text, y);
         } else {

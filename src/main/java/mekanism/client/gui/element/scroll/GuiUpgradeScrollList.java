@@ -14,7 +14,7 @@ import mekanism.common.tile.component.TileComponentUpgrade;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UpgradeUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.resources.Identifier;
@@ -54,7 +54,7 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
     }
 
     @Override
-    protected void drawName(GuiGraphics guiGraphics, Upgrade upgrade, int y) {
+    protected void drawName(GuiGraphicsExtractor guiGraphics, Upgrade upgrade, int y) {
         drawNameText(guiGraphics, y, upgrade.getTranslatedName(), titleTextColor(), 1F);
     }
 
@@ -93,7 +93,7 @@ public class GuiUpgradeScrollList extends GuiInstallableScrollList<Upgrade> {
     }
 
     @Override
-    public void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
         if (hasSelection() && component.getUpgrades(getSelection()) == 0) {
             clearSelection();

@@ -15,7 +15,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -45,7 +45,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
     }
 
     @Override
-    public void drawStack(GuiGraphics graphics, int mouseX, int mouseY, float delta) {
+    public void drawStack(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float delta) {
         EmiIngredient ingredient = getStack();
         List<EmiStack> stacks = ingredient.getEmiStacks();
         EmiStack stack = stacks.isEmpty() ? EmiStack.EMPTY : RecipeViewerUtils.getCurrent(stacks);

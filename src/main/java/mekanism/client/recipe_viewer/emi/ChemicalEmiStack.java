@@ -17,7 +17,7 @@ import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Holder;
@@ -59,7 +59,7 @@ public class ChemicalEmiStack extends EmiStack {
     }
 
     @Override
-    public void render(GuiGraphics graphics, int x, int y, float delta, int flags) {
+    public void render(GuiGraphicsExtractor graphics, int x, int y, float delta, int flags) {
         if ((flags & RENDER_ICON) != 0) {
             int color = MekanismRenderer.getTint(chemical);
             TextureAtlasSprite sprite = MekanismRenderer.getChemicalTexture(chemical);

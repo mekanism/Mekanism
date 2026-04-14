@@ -31,7 +31,7 @@ import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -85,7 +85,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
               (element, event, isDoubleClick) -> PacketUtils.sendToServer(new PacketGeneratorsGuiInteract(GeneratorsGuiInteraction.FISSION_ACTIVE,
                     ((GuiFissionReactor) element.gui()).tile, 1)), () -> EnumColor.DARK_GREEN) {
             @Override
-            public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+            public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
                 super.renderForeground(guiGraphics, mouseX, mouseY);
                 if (!active && tile.getMultiblock().isForceDisabled()) {
                     active = true;
@@ -132,7 +132,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         updateButtons();
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);

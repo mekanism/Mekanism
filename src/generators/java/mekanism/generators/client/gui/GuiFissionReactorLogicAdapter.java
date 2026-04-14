@@ -13,7 +13,7 @@ import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract;
 import mekanism.generators.common.network.to_server.PacketGeneratorsGuiInteract.GeneratorsGuiInteraction;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorLogicAdapter.FissionReactorLogic;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -47,7 +47,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(tile.logicType.getColor(), tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
         drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.getStatus()), 0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);

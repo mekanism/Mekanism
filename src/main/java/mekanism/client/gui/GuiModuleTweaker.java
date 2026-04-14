@@ -27,7 +27,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StackUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -148,7 +148,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 24);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

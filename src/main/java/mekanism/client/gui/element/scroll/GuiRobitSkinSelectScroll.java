@@ -22,7 +22,7 @@ import mekanism.common.entity.EntityRobit;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -77,7 +77,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
@@ -108,12 +108,12 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
     }
 
-    private static void renderSlotBackground(@NotNull GuiGraphics guiGraphics, int slotX, int slotY, Identifier resource, int size) {
+    private static void renderSlotBackground(@NotNull GuiGraphicsExtractor guiGraphics, int slotX, int slotY, Identifier resource, int size) {
         GuiUtils.renderBackgroundTexture(guiGraphics, resource, size, size, slotX, slotY, SLOT_DIMENSIONS, SLOT_DIMENSIONS, 256, 256);
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
@@ -191,7 +191,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         return null;
     }
 
-    private void renderRobit(GuiGraphics guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
+    private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
         List<Identifier> textures = skinLookup.textures();
         if (textures.isEmpty()) {

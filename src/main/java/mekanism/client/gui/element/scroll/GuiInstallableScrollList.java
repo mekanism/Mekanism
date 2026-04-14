@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -32,7 +32,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
 
     protected abstract List<TYPE> getCurrentInstalled();
 
-    protected abstract void drawName(GuiGraphics guiGraphics, TYPE type, int multipliedElement);
+    protected abstract void drawName(GuiGraphicsExtractor guiGraphics, TYPE type, int multipliedElement);
 
     protected abstract ItemStack getRenderStack(TYPE type);
 
@@ -69,7 +69,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         int currentSelection = getCurrentSelection();
         List<TYPE> currentInstalled = getCurrentInstalled();
@@ -79,7 +79,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
         }
     }
 
-    protected void drawNameText(GuiGraphics guiGraphics, int y, Component name, int color, float scale) {
+    protected void drawNameText(GuiGraphicsExtractor guiGraphics, int y, Component name, int color, float scale) {
         drawScaledScrollingString(guiGraphics, name, 13, y, TextAlignment.LEFT, color, barXShift - 16, 0, false, scale);
     }
 
@@ -95,7 +95,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
     }
 
     @Override
-    public void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw elements
         List<TYPE> currentInstalled = getCurrentInstalled();
         int currentSelection = getCurrentSelection();

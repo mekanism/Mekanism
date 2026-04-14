@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.custom.module;
 
 import mekanism.api.gear.config.ModuleConfig;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 abstract class MiniElement<TYPE> {
@@ -19,9 +19,9 @@ abstract class MiniElement<TYPE> {
         this.yPos = yPos;
     }
 
-    protected abstract void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY);
+    protected abstract void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
 
-    protected abstract void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY);
+    protected abstract void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
 
     protected abstract void click(double mouseX, double mouseY);
 

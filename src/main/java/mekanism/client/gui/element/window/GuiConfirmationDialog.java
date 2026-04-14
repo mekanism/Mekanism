@@ -6,7 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.button.TranslationButton;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class GuiConfirmationDialog extends GuiWindow {
@@ -35,7 +35,7 @@ public class GuiConfirmationDialog extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         wrappedTextRenderer.render(guiGraphics, relativeX + PADDING, relativeY + 6, width - 2 * PADDING, TextAlignment.CENTER, titleTextColor());
     }

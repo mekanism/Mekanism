@@ -4,7 +4,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.render.IFancyFontRenderer;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
@@ -20,7 +20,7 @@ public abstract class LookingAtElement implements ILookingAtElement, IFancyFontR
         this.textColor = textColor;
     }
 
-    public void render(@NotNull GuiGraphics guiGraphics, int x, int y) {
+    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int x, int y) {
         int width = getWidth();
         int height = getHeight();
         guiGraphics.fill(x, y, x + width - 1, y + 1, borderColor);
@@ -62,7 +62,7 @@ public abstract class LookingAtElement implements ILookingAtElement, IFancyFontR
 
     public abstract Component getText();
 
-    protected boolean applyRenderColor(GuiGraphics guiGraphics) {
+    protected boolean applyRenderColor(GuiGraphicsExtractor guiGraphics) {
         return false;
     }
 }

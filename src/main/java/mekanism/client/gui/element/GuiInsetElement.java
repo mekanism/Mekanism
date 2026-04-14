@@ -7,7 +7,7 @@ import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -72,7 +72,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
     }
 
     @Override
-    protected void draw(@NotNull GuiGraphics guiGraphics) {
+    protected void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
         boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
         if (warning) {
             drawUncolored(guiGraphics);
@@ -87,7 +87,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         //Draw the button background
         if (buttonBackground != ButtonBackground.NONE) {
@@ -97,7 +97,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
         drawBackgroundOverlay(guiGraphics);
     }
 
-    protected void drawBackgroundOverlay(@NotNull GuiGraphics guiGraphics) {
+    protected void drawBackgroundOverlay(@NotNull GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blit(getOverlay(), getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

@@ -25,7 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.ingredients.ITypedIngredient;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -52,7 +52,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
     }
 
     @Override
-    public void draw(RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ChemicalCrystallizerRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our ore info
         oreInfo.currentRecipe = recipeHolder.value();
         oreInfo.ingredient = (ChemicalStack) recipeSlotsView.findSlotByName(CHEMICAL_INPUT)

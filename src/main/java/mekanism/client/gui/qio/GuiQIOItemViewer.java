@@ -34,7 +34,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -114,7 +114,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryTextAndOther(guiGraphics, MekanismLang.LIST_SORT.translate(), imageWidth - searchDropdown.getRelativeX() - 5);
         drawScrollingString(guiGraphics, MekanismLang.LIST_SEARCH.translate(), 4, 31, TextAlignment.RIGHT, titleTextColor(), searchField.getRelativeX() - 4, 3, false);

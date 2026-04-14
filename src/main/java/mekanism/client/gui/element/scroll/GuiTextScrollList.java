@@ -6,7 +6,7 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,7 +58,7 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         if (!textEntries.isEmpty()) {
             //Render the text into the entries
@@ -76,7 +76,7 @@ public class GuiTextScrollList extends GuiScrollList {
     }
 
     @Override
-    public void renderElements(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderElements(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         //Draw Selected
         int scrollIndex = getCurrentSelection();
         if (selected != -1 && selected >= scrollIndex && selected <= scrollIndex + getFocusedElements() - 1) {

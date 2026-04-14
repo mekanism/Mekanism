@@ -8,7 +8,7 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
@@ -46,7 +46,7 @@ public class GuiGasMode extends MekanismImageButton {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         //Draw the text next to the button
         int start = textSide == TextAlignment.RIGHT ? -69 : getWidth();
         drawScrollingString(guiGraphics, gasModeSupplier.get().getTextComponent(), start, 1, textSide, titleTextColor(), 69, 2, false);

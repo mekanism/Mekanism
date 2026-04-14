@@ -13,7 +13,7 @@ import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.button.PacketItemButtonPress;
 import mekanism.common.network.to_server.button.PacketItemButtonPress.ClickedItemButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -37,7 +37,7 @@ public class GuiQIOItemFrequencySelect extends GuiMekanism<QIOFrequencySelectIte
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, 17);//Adjust spacing for back button
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

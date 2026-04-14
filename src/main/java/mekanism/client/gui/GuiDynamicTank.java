@@ -19,7 +19,7 @@ import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -72,7 +72,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

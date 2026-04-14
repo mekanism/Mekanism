@@ -6,7 +6,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +32,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         boolean state = stateSupplier.getAsBoolean();
         guiGraphics.blit(getResource(), relativeX + type.switchX, relativeY + type.switchY, 0, state ? 0 : BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y, BUTTON_SIZE_X, BUTTON_SIZE_Y * 2);
@@ -41,7 +41,7 @@ public class GuiDigitalSwitch extends GuiTexturedElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawScaledScrollingString(guiGraphics, MekanismLang.ON.translate(), type.switchX, type.switchY, TextAlignment.CENTER, 0x101010, BUTTON_SIZE_X, 1, false, 0.5F);
         drawScaledScrollingString(guiGraphics, MekanismLang.OFF.translate(), type.switchX, type.switchY + BUTTON_SIZE_Y + 1, TextAlignment.CENTER, 0x101010, BUTTON_SIZE_X, 1, false, 0.5F);

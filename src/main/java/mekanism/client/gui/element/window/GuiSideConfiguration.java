@@ -35,7 +35,7 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.Nullable;
 
@@ -172,7 +172,7 @@ public class GuiSideConfiguration<TILE extends TileEntityMekanism & ISideConfigu
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.CONFIG_TYPE.translate(currentType), 5);
         drawScrollingString(guiGraphics, MekanismLang.SLOTS.translate(), 0, 120, TextAlignment.CENTER, subheadingTextColor(), 4, false);

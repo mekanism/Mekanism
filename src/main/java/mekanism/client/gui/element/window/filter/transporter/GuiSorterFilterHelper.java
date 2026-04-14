@@ -21,7 +21,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.world.item.Item;
 
@@ -79,7 +79,7 @@ public interface GuiSorterFilterHelper extends GuiFilterHelper<TileEntityLogisti
         return new GuiSorterFilerSelect(gui, tile);
     }
 
-    default void renderSorterForeground(GuiGraphics guiGraphics) {
+    default void renderSorterForeground(GuiGraphicsExtractor guiGraphics) {
         SorterFilter<?> filter = getFilter();
         int screenEnd = 30 + getScreenWidth();
         drawScrollingString(guiGraphics, OnOff.of(filter.allowDefault).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), getXSize() - 161, 2, false);

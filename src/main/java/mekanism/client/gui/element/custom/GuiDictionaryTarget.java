@@ -25,7 +25,7 @@ import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
@@ -74,7 +74,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (target instanceof ItemStack stack) {
             gui().renderItem(guiGraphics, stack, relativeX, relativeY);
         } else if (target instanceof FluidStack stack) {
@@ -89,7 +89,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         if (target instanceof ItemStack stack) {
             //TODO - 1.21.11: Validate this (and all other places we now use setTooltipForNextFrame) is an acceptable replacement for the old setTooltip,

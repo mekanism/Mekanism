@@ -16,7 +16,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
 import mezz.jei.api.ingredients.IIngredientRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
@@ -50,7 +50,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, ChemicalStack stack) {
+    public void render(@NotNull GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
         if (!stack.isEmpty()) {
             int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
             if (desiredHeight < MIN_CHEMICAL_HEIGHT) {

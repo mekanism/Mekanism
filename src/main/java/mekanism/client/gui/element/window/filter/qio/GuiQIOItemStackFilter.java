@@ -7,7 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.tile.qio.TileEntityQIOFilterHandler;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter, TileEntityQIOFilterHandler> implements GuiQIOFilterHelper {
@@ -44,7 +44,7 @@ public class GuiQIOItemStackFilter extends GuiItemStackFilter<QIOItemStackFilter
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawScrollingString(guiGraphics, OnOff.of(filter.fuzzyMode).getTextComponent(), 159, 20, TextAlignment.LEFT, titleTextColor(), width - 161, 2, false);
     }

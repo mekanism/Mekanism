@@ -15,7 +15,7 @@ import mekanism.common.content.matrix.MatrixMultiblockData;
 import mekanism.common.inventory.container.tile.EmptyTileContainer;
 import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.util.text.EnergyDisplay;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +78,7 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         MatrixMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 45, 26, TextAlignment.LEFT, subheadingTextColor(), getXSize() - 54, 8, false);

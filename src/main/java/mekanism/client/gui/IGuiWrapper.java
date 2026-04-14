@@ -9,7 +9,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
@@ -56,15 +56,15 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         return warningSupplier;
     }
 
-    default void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
+    default void renderItem(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis) {
         renderItem(guiGraphics, stack, xAxis, yAxis, 1);
     }
 
-    default void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale) {
+    default void renderItem(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale) {
         GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, font(), null, false);
     }
 
-    default void renderItemTooltipWithExtra(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
+    default void renderItemTooltipWithExtra(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, List<Component> toAppend) {
         if (toAppend.isEmpty()) {
             guiGraphics.setTooltipForNextFrame(font(), stack, xAxis, yAxis);
         } else {
@@ -74,7 +74,7 @@ public interface IGuiWrapper extends ContainerEventHandler, IFancyFontRenderer {
         }
     }
 
-    default void renderItemWithOverlay(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
+    default void renderItemWithOverlay(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, @Nullable String text) {
         GuiUtils.renderItem(guiGraphics, stack, xAxis, yAxis, scale, font(), text, true);
     }
 

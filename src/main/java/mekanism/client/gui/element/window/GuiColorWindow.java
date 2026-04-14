@@ -22,7 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
@@ -123,14 +123,14 @@ public class GuiColorWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, MekanismLang.COLOR_PICKER.translate(), 6);
         ILangEntry entry = handlesAlpha ? MekanismLang.RGBA : MekanismLang.RGB;
         drawScrollingString(guiGraphics, entry.translate(), 2, height - 18, TextAlignment.RIGHT, titleTextColor(), textField.getRelativeX() - relativeX - 2, 2, false);
     }
 
-    private void drawTiledGradient(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+    private void drawTiledGradient(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         int tileWidth = Math.round((float) width / S_TILES);
         int tileHeight = Math.round((float) height / V_TILES);
         for (int i = 0; i < 10; i++) {
@@ -143,8 +143,8 @@ public class GuiColorWindow extends GuiWindow {
         }
     }
 
-    //Based on GuiGraphics#fillGradient
-    private void drawGradient(GuiGraphics guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
+    //Based on GuiGraphicsExtractor#fillGradient
+    private void drawGradient(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
         VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         buffer.addVertex(matrix4f, x, y + height, 0).setColor(bl.argb());
@@ -203,20 +203,20 @@ public class GuiColorWindow extends GuiWindow {
         return val >= 0 && val <= 255;
     }
 
-    private void drawColorBar(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+    private void drawColorBar(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         for (int i = 0; i < width; i++) {
             GuiUtils.fill(guiGraphics, x + i, y, 1, height, Color.hsv(((float) i / width) * 360F, 1, 1).argb());
         }
     }
 
-    private void drawAlphaBar(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+    private void drawAlphaBar(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         Color hsv = Color.hsv(hue, saturation, value);
         for (int i = 0; i < width; i++) {
             GuiUtils.fill(guiGraphics, x + i, y, 1, height, hsv.alpha((float) i / width).argb());
         }
     }
 
-    private void drawTransparencyGrid(GuiGraphics guiGraphics, int x, int y, int width, int height) {
+    private void drawTransparencyGrid(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         if (handlesAlpha) {
             guiGraphics.blit(TRANSPARENCY_GRID, x, y, 0, 0, width, height);
         }
@@ -271,7 +271,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             drawTransparencyGrid(guiGraphics, relativeX, relativeY, width, height);
             Color c = getColor();
@@ -310,7 +310,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             drawTiledGradient(guiGraphics, relativeX, relativeY, width, height);
             int posX = relativeX + Math.round(GuiColorWindow.this.saturation * width) - 2;
@@ -338,7 +338,7 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             drawColorBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
@@ -364,14 +364,14 @@ public class GuiColorWindow extends GuiWindow {
         }
 
         @Override
-        public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
             //Draw transparency checkerboard
             drawTransparencyGrid(guiGraphics, relativeX, relativeY, width, height);
         }
 
         @Override
-        public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+        public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
             super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
             //Draw alpha bar
             drawAlphaBar(guiGraphics, relativeX, relativeY, width, height);

@@ -5,7 +5,7 @@ import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.client.gui.element.window.filter.GuiModIDFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.tile.TileEntityLogisticalSorter;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, TileEntityLogisticalSorter> implements GuiSorterFilterHelper {
@@ -52,7 +52,7 @@ public class GuiSorterModIDFilter extends GuiModIDFilter<SorterModIDFilter, Tile
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         renderSorterForeground(guiGraphics);
     }

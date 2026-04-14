@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.button;
 
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
@@ -36,7 +36,7 @@ public class MekanismImageButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 0, 0, textureWidth, textureHeight, textureWidth, textureHeight);
     }

@@ -7,7 +7,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.registries.MekanismSounds;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +28,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
         guiGraphics.blit(type.getIcon(), relativeX + 3, relativeY + 3, 0, 0, width - 6, height - 6, 6, 6);

@@ -18,7 +18,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -70,11 +70,11 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
         }
     }
 
-    protected void drawScreenText(GuiGraphics guiGraphics, Component text, int y) {
+    protected void drawScreenText(GuiGraphicsExtractor guiGraphics, Component text, int y) {
         drawScreenText(guiGraphics, text, 0, y);
     }
 
-    protected void drawScreenText(GuiGraphics guiGraphics, Component text, int x, int y) {
+    protected void drawScreenText(GuiGraphicsExtractor guiGraphics, Component text, int x, int y) {
         //TODO: Do we want to make usages of this method eventually set the text to be rendered within the gui element for the screen?
         if (leftScreen != null) {//Validate it was properly set
             leftScreen.drawScaledScrollingString(guiGraphics, text, x, y, TextAlignment.LEFT, screenTextColor(), leftScreen.getXSize() - x, 5, false, 0.8F);
@@ -113,7 +113,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     protected abstract List<ItemStack> getModIDStacks(String tagName);
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         renderInventoryText(guiGraphics);
     }

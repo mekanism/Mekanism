@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInsetElement;
 import mekanism.client.gui.tooltip.TooltipUtils;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public abstract class GuiTabElementType<TILE extends BlockEntity, TAB extends En
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, tabType.getTabColor());
     }
 }

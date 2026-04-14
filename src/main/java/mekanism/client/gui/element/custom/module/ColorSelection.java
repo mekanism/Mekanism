@@ -17,7 +17,7 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -52,7 +52,7 @@ class ColorSelection extends MiniElement<Integer> {
     }
 
     @Override
-    protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int xTarget = getRelativeX() + OFFSET_X;
         int yTarget = getRelativeY() + OFFSET_Y;
         GuiUtils.drawOutline(guiGraphics, xTarget, yTarget, 18, 18, GuiTextField.SCREEN_COLOR.getAsInt());
@@ -63,7 +63,7 @@ class ColorSelection extends MiniElement<Integer> {
     }
 
     @Override
-    protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
         parent.drawScaledScrollingString(guiGraphics, description, xPos, yPos, TextAlignment.LEFT, textColor, OFFSET_X, 3, false, 0.8F);
         String hex;

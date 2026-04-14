@@ -20,7 +20,7 @@ import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.core.SectionPos;
 import net.minecraft.network.chat.CommonComponents;
@@ -134,7 +134,7 @@ public class GuiDimensionalStabilizer extends GuiMekanismTile<TileEntityDimensio
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         drawScrollingString(guiGraphics, MekanismLang.NORTH_SHORT.translate(), 49, 41, TextAlignment.CENTER, titleTextColor(), 15, 2, false);

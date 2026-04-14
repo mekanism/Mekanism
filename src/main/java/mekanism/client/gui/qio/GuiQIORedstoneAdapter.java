@@ -22,7 +22,7 @@ import mekanism.common.registries.MekanismSounds;
 import mekanism.common.tile.qio.TileEntityQIORedstoneAdapter;
 import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
@@ -99,7 +99,7 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         renderItem(guiGraphics, tile.getItemType(), 8, 31);

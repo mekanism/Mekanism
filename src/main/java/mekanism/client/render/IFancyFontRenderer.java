@@ -6,7 +6,7 @@ import mekanism.client.SpecialColors;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
@@ -175,7 +175,7 @@ public interface IFancyFontRenderer {
      * @apiNote Call {@link GuiGraphicsExtractor#disableScissor()} after using this method
      */
     private static float prepScrollingString(GuiGraphicsExtractor graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
-        //Note: We are drawing in relative coordinates, but GuiGraphics#enableScissor, is expecting absolute coordinates,
+        //Note: We are drawing in relative coordinates, but GuiGraphicsExtractor#enableScissor, is expecting absolute coordinates,
         // so we need to get the translations from our pose stack
         //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without all the extra allocations.
         Matrix4f matrix4f = graphics.pose().last().pose();

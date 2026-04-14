@@ -26,7 +26,7 @@ import mekanism.common.network.to_server.filter.PacketEditFilter;
 import mekanism.common.network.to_server.filter.PacketNewFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -215,7 +215,7 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
     protected abstract List<ItemStack> getRenderStacks();
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         drawTitleText(guiGraphics, (isNew ? MekanismLang.FILTER_NEW : MekanismLang.FILTER_EDIT).translate(filterName), 6);
     }

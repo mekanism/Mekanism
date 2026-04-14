@@ -6,7 +6,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.Color.ColorFunction;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
@@ -27,7 +27,7 @@ public class GuiDynamicHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * (width - 2));
         if (displayInt > 0) {
             for (int i = 0; i < displayInt; i++) {

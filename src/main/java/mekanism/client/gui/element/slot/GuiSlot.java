@@ -25,7 +25,7 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.ISideConfiguration;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
@@ -137,20 +137,20 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(guiGraphics);
         }
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (renderAboveSlots) {
             draw(guiGraphics);
         }
     }
 
-    private void draw(@NotNull GuiGraphics guiGraphics) {
+    private void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
         Identifier texture;
         if (warningSupplier != null && warningSupplier.getAsBoolean()) {
             texture = slotType.getWarningTexture();
@@ -167,7 +167,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         drawContents(guiGraphics);
     }
 
-    protected void drawContents(@NotNull GuiGraphics guiGraphics) {
+    protected void drawContents(@NotNull GuiGraphicsExtractor guiGraphics) {
         if (validityCheck != null) {
             ItemStack invalid = validityCheck.get();
             if (!invalid.isEmpty()) {
@@ -185,7 +185,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         boolean hovered = checkWindows(mouseX, mouseY, isHovered());
         if (renderHover && hovered) {
             int xPos = relativeX + 1;

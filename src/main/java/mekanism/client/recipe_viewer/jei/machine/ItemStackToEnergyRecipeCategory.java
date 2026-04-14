@@ -21,7 +21,7 @@ import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -48,7 +48,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
     }
 
     @Override
-    protected void renderElements(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotView, GuiGraphics guiGraphics, int x, int y) {
+    protected void renderElements(RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, IRecipeSlotsView recipeSlotView, GuiGraphicsExtractor guiGraphics, int x, int y) {
         super.renderElements(recipeHolder, recipeSlotView, guiGraphics, x, y);
         if (getOutputEnergy(recipeHolder, recipeSlotView) != 0L) {
             //Manually draw the contents of the recipe

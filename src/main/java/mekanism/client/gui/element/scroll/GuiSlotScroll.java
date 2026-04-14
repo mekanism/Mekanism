@@ -19,7 +19,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -54,7 +54,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
         guiGraphics.blit(list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
@@ -72,7 +72,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         int xAxis = mouseX - getGuiLeft(), yAxis = mouseY - getGuiTop();
         int slotX = (xAxis - relativeX) / 18, slotY = (yAxis - relativeY) / 18;
@@ -85,7 +85,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     @Override
-    public void renderToolTip(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderToolTip(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderToolTip(guiGraphics, mouseX, mouseY);
         IScrollableSlot slot = getSlot(mouseX, mouseY);
         if (slot != null) {
@@ -133,7 +133,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         return list.get(slot);
     }
 
-    private void renderSlot(GuiGraphics guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlot(GuiGraphicsExtractor guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
         ItemStack stack = slot.getInternalStack();
         if (stack.isEmpty()) {//Sanity check
             return;
@@ -143,7 +143,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         Component text = null;
         if (count == 0) {
             //If there is no items stored, display the text in yellow, similar to what mojang does when it has to display a zero count
-            // See: AbstractContainerScreen#render(GuiGraphics, int, int, float) and rendering the dragging item
+            // See: AbstractContainerScreen#render(GuiGraphicsExtractor, int, int, float) and rendering the dragging item
             text = ZERO;
         } else if (count > 1) {
             //Note: For cases like 9,999,999 we intentionally display as 9999.9K instead of 10M so that people
@@ -159,7 +159,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         }
     }
 
-    private void renderSlotTooltip(GuiGraphics guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
+    private void renderSlotTooltip(GuiGraphicsExtractor guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
         ItemStack stack = slot.getInternalStack();
         if (stack.isEmpty()) {//Sanity check
             return;
@@ -174,7 +174,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
         }
     }
 
-    private void renderSlotText(GuiGraphics guiGraphics, Component text, int x, int y) {
+    private void renderSlotText(GuiGraphicsExtractor guiGraphics, Component text, int x, int y) {
         float scale = 0.6F;
         float scaledWidth = font().width(text) * scale;
         if (scaledWidth >= 16) {

@@ -22,7 +22,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.content.gear.Module;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -188,7 +188,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mx, int my, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mx, int my, float partialTicks) {
         super.drawBackground(guiGraphics, mx, my, partialTicks);
         renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE);
         drawScrollBar(guiGraphics, GuiScrollList.TEXTURE_WIDTH, GuiScrollList.TEXTURE_HEIGHT);
@@ -197,7 +197,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mx, int my) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mx, int my) {
         super.renderForeground(guiGraphics, mx, my);
         scissorScreen(guiGraphics, mx, my, (g, mouseX, mouseY, module, shift) -> {
             int startY = ELEMENT_SPACER + 1;
@@ -221,7 +221,7 @@ public class GuiModuleScreen extends GuiScrollableElement {
         }, MiniElement::renderForeground);
     }
 
-    private void scissorScreen(GuiGraphics guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
+    private void scissorScreen(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, ScissorRender renderer, ScissorMiniElementRender miniElementRender) {
         //Note: Scissor width at edge of monitor to make it, so we effectively only are scissoring height
         guiGraphics.enableScissor(0, getY() + 1, guiGraphics.guiWidth(), getBottom() - 1);
         Matrix3x2fStack matrix = guiGraphics.pose();
@@ -252,12 +252,12 @@ public class GuiModuleScreen extends GuiScrollableElement {
     @FunctionalInterface
     private interface ScissorRender {
 
-        int render(GuiGraphics guiGraphics, int mouseX, int mouseY, @Nullable IModule<?> module, int shift);
+        int render(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, @Nullable IModule<?> module, int shift);
     }
 
     @FunctionalInterface
     private interface ScissorMiniElementRender {
 
-        void render(MiniElement<?> element, GuiGraphics guiGraphics, int mouseX, int mouseY);
+        void render(MiniElement<?> element, GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY);
     }
 }

@@ -1,7 +1,7 @@
 package mekanism.client.gui.element;
 
 import mekanism.client.gui.IGuiWrapper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +18,7 @@ public abstract class GuiScalableElement extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         renderBackgroundTexture(guiGraphics, getResource(), sideWidth, sideHeight);
     }

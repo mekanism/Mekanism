@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import net.minecraft.ChatFormatting;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -57,7 +57,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderFloatingItem(@NotNull GuiGraphics guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
+    protected final void renderFloatingItem(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
             //Note: We ignore if the virtual slot is not actually available as we still want to transition back to the spot
             // it was in visually
@@ -85,7 +85,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
 
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected final void renderSlot(@NotNull GuiGraphics graphics, @NotNull Slot slot) {
+    protected final void renderSlot(@NotNull GuiGraphicsExtractor graphics, @NotNull Slot slot) {
         if (!(slot instanceof IVirtualSlot virtualSlot)) {
             //If we are not a virtual slot, the super method is good enough
             super.renderSlot(graphics, slot);

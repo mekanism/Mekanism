@@ -18,7 +18,7 @@ import mekanism.common.tile.laser.TileEntityLaserAmplifier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.InputValidator;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -54,7 +54,7 @@ public class GuiLaserAmplifier extends GuiMekanismTile<TileEntityLaserAmplifier,
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, energyGauge.getRelativeRight());
         renderInventoryText(guiGraphics);
         int start = energyGauge.getRelativeRight();

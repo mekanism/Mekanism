@@ -13,7 +13,7 @@ import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
@@ -54,7 +54,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             Identifier resource = getResource();
@@ -112,7 +112,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         return recipeCategories;
     }
 
-    private void blit(GuiGraphics guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
+    private void blit(GuiGraphicsExtractor guiGraphics, Identifier resource, int x, int y, float uOffset, float vOffset, int width, int height, int textureWidth, int textureHeight, double progress,
           boolean warning) {
         if (warning || colorDetails == null) {
             //If we are drawing a warning or don't have any color details just draw it normally

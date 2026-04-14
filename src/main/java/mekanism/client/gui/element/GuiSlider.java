@@ -5,7 +5,7 @@ import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -35,7 +35,7 @@ public class GuiSlider extends GuiElement {
     }
 
     @Override
-    public void renderBackgroundOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
         GuiUtils.fill(guiGraphics, relativeX + 2, relativeY + 3, width - 4, 6, 0xFF555555);
         int posX = (int) (value * (width - 6));

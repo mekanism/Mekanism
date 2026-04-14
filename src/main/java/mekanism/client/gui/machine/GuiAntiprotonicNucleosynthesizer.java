@@ -25,7 +25,7 @@ import mekanism.common.lib.effect.BoltEffect.FadeFunction;
 import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -80,7 +80,7 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         screen.drawScrollingString(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 0,

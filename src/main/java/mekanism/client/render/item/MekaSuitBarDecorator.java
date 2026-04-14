@@ -12,7 +12,7 @@ import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
 
@@ -24,7 +24,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
     }
 
     @Override
-    public boolean render(GuiGraphics guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
+    public boolean render(GuiGraphicsExtractor guiGraphics, Font font, ItemStack stack, int xOffset, int yOffset) {
         if (stack.isEmpty() || !(stack.getItem() instanceof ItemMekaSuitArmor armor)) {
             return false;
         }
@@ -47,7 +47,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private boolean tryRender(GuiGraphics guiGraphics, ItemStack stack, int xOffset, int yOffset, List<ChemicalTankSpec> chemicalTankSpecs) {
+    private boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xOffset, int yOffset, List<ChemicalTankSpec> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty()) {
             List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
             int tank = getDisplayTank(chemicalTankSpecs, stack, tanks.size());

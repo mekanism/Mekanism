@@ -4,7 +4,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 
 public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
@@ -18,7 +18,7 @@ public class GuiHorizontalRateBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
         int displayInt = (int) (handlerLevel * texWidth);
         if (displayInt > 0) {
             guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1, 0, 0, displayInt, texHeight, texWidth, texHeight);

@@ -33,7 +33,7 @@ import mekanism.common.network.to_server.PacketItemGuiInteract.ItemGuiInteractio
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.OwnerDisplay;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
@@ -83,7 +83,7 @@ public class GuiSecurityTab extends GuiInsetElement<SecurityInfoProvider<?>> {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_SECURITY);
     }
 

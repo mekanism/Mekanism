@@ -8,7 +8,7 @@ import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.world.item.ItemStack;
@@ -46,7 +46,7 @@ public class GuiVirtualSlot extends GuiSlot implements IRecipeViewerIngredientHe
     }
 
     @Override
-    protected void drawContents(@NotNull GuiGraphics guiGraphics) {
+    protected void drawContents(@NotNull GuiGraphicsExtractor guiGraphics) {
         if (virtualSlot != null) {
             ItemStack stack = virtualSlot.getStackToRender();
             if (!stack.isEmpty()) {

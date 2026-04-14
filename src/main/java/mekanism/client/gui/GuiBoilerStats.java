@@ -17,7 +17,7 @@ import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -45,7 +45,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         BoilerMultiblockData multiblock = tile.getMultiblock();
         drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCapacity())), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);

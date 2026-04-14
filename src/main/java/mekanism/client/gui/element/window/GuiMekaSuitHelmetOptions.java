@@ -8,7 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiMekaSuitHelmetOptions extends GuiWindow {
 
@@ -55,7 +55,7 @@ public class GuiMekaSuitHelmetOptions extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
 
         drawTitleText(guiGraphics, MekanismLang.HELMET_OPTIONS.translate(), 6);

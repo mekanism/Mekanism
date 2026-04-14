@@ -12,7 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
@@ -39,7 +39,7 @@ public class GuiConfigTypeTab extends GuiInsetElement<Void> {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, switch (transmission) {
             case ENERGY -> SpecialColors.TAB_ENERGY_CONFIG;
             case FLUID -> SpecialColors.TAB_FLUID_CONFIG;

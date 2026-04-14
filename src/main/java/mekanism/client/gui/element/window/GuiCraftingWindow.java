@@ -14,7 +14,7 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.qio.PacketQIOClearCraftingWindow;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiCraftingWindow extends GuiWindow {
 
@@ -61,7 +61,7 @@ public class GuiCraftingWindow extends GuiWindow {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         //Increment index by one, so we show: 1, 2, and 3 instead of 0, 1, and 2
         drawTitleText(guiGraphics, MekanismLang.CRAFTING_WINDOW.translate(index + 1), 6);

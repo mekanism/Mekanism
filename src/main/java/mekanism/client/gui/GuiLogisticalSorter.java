@@ -27,7 +27,7 @@ import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.tile.TileEntityLogisticalSorter;
 import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -67,7 +67,7 @@ public class GuiLogisticalSorter extends GuiFilterHolder<SorterFilter<?>, TileEn
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
         // Write to info display
         renderTitleText(guiGraphics);

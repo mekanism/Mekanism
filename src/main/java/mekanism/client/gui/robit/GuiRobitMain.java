@@ -25,7 +25,7 @@ import mekanism.common.network.to_server.button.PacketEntityButtonPress;
 import mekanism.common.network.to_server.button.PacketEntityButtonPress.ClickedEntityButton;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -110,7 +110,7 @@ public class GuiRobitMain extends GuiMekanism<MainRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

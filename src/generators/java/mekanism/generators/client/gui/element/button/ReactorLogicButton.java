@@ -15,7 +15,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
@@ -58,7 +58,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             MekanismRenderer.color(guiGraphics, mode.getColor());
@@ -68,7 +68,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             gui().renderItem(guiGraphics, mode.getRenderStack(), relativeX + 3, relativeY + 3);

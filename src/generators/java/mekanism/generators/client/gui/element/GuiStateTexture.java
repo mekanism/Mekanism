@@ -5,7 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.generators.common.MekanismGenerators;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,7 +25,7 @@ public class GuiStateTexture extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         guiGraphics.blit(getResource(), relativeX, relativeY, 0, 0, width, height, width, height);
         Identifier resource = onSupplier.getAsBoolean() ? onTexture : offTexture;
         guiGraphics.blit(resource, relativeX + 2, relativeY + 2, 0, 0, width - 4, height - 4, width - 4, height - 4);

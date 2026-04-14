@@ -18,7 +18,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -154,7 +154,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         //TODO - V11: Eventually instead of just rendering the item stacks, it would be nice to be able to render the actual vertical column of blocks
         //Render the item stacks or fluids
         int currentLayer = getCurrentLayer();
@@ -194,7 +194,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
 
     private record BlockInfo<TYPE>(BlockState state, TYPE type, RenderTarget<TYPE> renderTarget) {
 
-        public void render(GuiGraphics guiGraphics, int x, int y) {
+        public void render(GuiGraphicsExtractor guiGraphics, int x, int y) {
             renderTarget.render(guiGraphics, type, x, y);
         }
     }
@@ -202,6 +202,6 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     @FunctionalInterface
     private interface RenderTarget<TYPE> {
 
-        void render(GuiGraphics guiGraphics, TYPE type, int x, int y);
+        void render(GuiGraphicsExtractor guiGraphics, TYPE type, int x, int y);
     }
 }

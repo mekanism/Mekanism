@@ -39,7 +39,7 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.block.FluidStateModelSet;
 import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
@@ -166,43 +166,43 @@ public class MekanismRenderer {
     }
 
     //Color
-    public static void resetColor(GuiGraphics guiGraphics) {
+    public static void resetColor(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.setColor(1, 1, 1, 1);
     }
 
-    public static void color(GuiGraphics guiGraphics, int color) {
+    public static void color(GuiGraphicsExtractor guiGraphics, int color) {
         color(guiGraphics, color, ARGB.alphaFloat(color));
     }
 
-    public static void color(GuiGraphics guiGraphics, int color, float alpha) {
+    public static void color(GuiGraphicsExtractor guiGraphics, int color, float alpha) {
         guiGraphics.setColor(ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), alpha);
     }
 
-    public static void color(GuiGraphics guiGraphics, ColorRegistryObject colorRO) {
+    public static void color(GuiGraphicsExtractor guiGraphics, ColorRegistryObject colorRO) {
         color(guiGraphics, colorRO.get());
     }
 
-    public static void color(GuiGraphics guiGraphics, Color color) {
+    public static void color(GuiGraphicsExtractor guiGraphics, Color color) {
         guiGraphics.setColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
-    public static void color(GuiGraphics guiGraphics, @NotNull FluidStack fluid) {
+    public static void color(GuiGraphicsExtractor guiGraphics, @NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
             color(guiGraphics, IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
         }
     }
 
-    public static void color(GuiGraphics guiGraphics, @NotNull ChemicalStack chemicalStack) {
+    public static void color(GuiGraphicsExtractor guiGraphics, @NotNull ChemicalStack chemicalStack) {
         if (!chemicalStack.isEmpty()) {
             color(guiGraphics, chemicalStack.getChemicalTint(), 1F);
         }
     }
 
-    public static void color(GuiGraphics guiGraphics, @Nullable SupportsColorMap color) {
+    public static void color(GuiGraphicsExtractor guiGraphics, @Nullable SupportsColorMap color) {
         color(guiGraphics, color, 1.0F);
     }
 
-    public static void color(GuiGraphics guiGraphics, @Nullable SupportsColorMap color, float alpha) {
+    public static void color(GuiGraphicsExtractor guiGraphics, @Nullable SupportsColorMap color, float alpha) {
         if (color != null) {
             guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
         }
@@ -263,7 +263,7 @@ public class MekanismRenderer {
         return (combinedLight & 0xFFFF0000) | Math.max(Math.min(glow, 15) << 4, combinedLight & 0xFFFF);
     }
 
-    public static void renderColorOverlay(GuiGraphics guiGraphics, int x, int y, int color) {
+    public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
         //TODO - 1.21.11: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }

@@ -9,7 +9,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.network.to_server.PacketDropperUse.TankType;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item.TooltipContext;
@@ -42,7 +42,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
     }
 
     @Override
-    protected void applyRenderColor(GuiGraphics guiGraphics, ChemicalStack stack) {
+    protected void applyRenderColor(GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
         MekanismRenderer.color(guiGraphics, stack);
     }
 

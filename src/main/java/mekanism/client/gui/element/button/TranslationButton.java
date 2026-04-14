@@ -5,7 +5,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +25,7 @@ public class TranslationButton extends MekanismButton {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (colorSupplier == null) {
             MekanismRenderer.resetColor(guiGraphics);
             super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);

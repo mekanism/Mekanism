@@ -1,7 +1,7 @@
 package mekanism.client.recipe_viewer.jei;
 
 import mezz.jei.api.gui.drawable.IDrawable;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public record NOOPDrawable(int width, int height) implements IDrawable {
 
@@ -16,7 +16,7 @@ public record NOOPDrawable(int width, int height) implements IDrawable {
     }
 
     @Override
-    public void draw(GuiGraphics guiGraphics, int xOffset, int yOffset) {
+    public void draw(GuiGraphicsExtractor guiGraphics, int xOffset, int yOffset) {
         //NO-OP
     }
 }

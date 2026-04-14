@@ -10,7 +10,7 @@ import mekanism.client.render.IFancyFontRenderer.TextAlignment;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -41,14 +41,14 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     }
 
     @Override
-    protected void renderBackground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int center = optionDistance * data.get().ordinal();
         guiGraphics.blit(SLIDER, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 0, 0, 5, 6, 8, 8);
         guiGraphics.blit(SLIDER, getRelativeX() + BAR_START, getRelativeY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
     }
 
     @Override
-    protected void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int textColor = parent.screenTextColor();
         Component description = this.description;
         if (usesIcons) {

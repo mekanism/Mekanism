@@ -19,7 +19,7 @@ import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
@@ -102,7 +102,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     }
 
     @Override
-    protected void drawName(GuiGraphics guiGraphics, ModuleData<?> module, int y) {
+    protected void drawName(GuiGraphicsExtractor guiGraphics, ModuleData<?> module, int y) {
         IModule<?> instance = getModule(module);
         if (instance != null) {
             boolean enabled = instance.isEnabled();
@@ -117,7 +117,7 @@ public class GuiModuleScrollList extends GuiInstallableScrollList<ModuleData<?>>
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         recheckItem();
         super.renderForeground(guiGraphics, mouseX, mouseY);
     }

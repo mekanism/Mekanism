@@ -7,7 +7,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 
@@ -20,7 +20,7 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     public static GuiSideHolder create(IGuiWrapper gui, int x, int y, int height, boolean left, boolean slotHolder, ColorRegistryObject tabColor) {
         return new GuiSideHolder(gui, x, y, height, left, slotHolder) {
             @Override
-            protected void colorTab(GuiGraphics guiGraphics) {
+            protected void colorTab(GuiGraphicsExtractor guiGraphics) {
                 MekanismRenderer.color(guiGraphics, tabColor);
             }
         };
@@ -44,10 +44,10 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
         }
     }
 
-    protected abstract void colorTab(GuiGraphics guiGraphics);
+    protected abstract void colorTab(GuiGraphicsExtractor guiGraphics);
 
     @Override
-    public void renderWidget(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
@@ -56,20 +56,20 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     }
 
     @Override
-    public void drawBackground(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (!this.slotHolder) {
             draw(guiGraphics);
         }
     }
 
-    protected void draw(@NotNull GuiGraphics guiGraphics) {
+    protected void draw(@NotNull GuiGraphicsExtractor guiGraphics) {
         colorTab(guiGraphics);
         drawUncolored(guiGraphics);
         MekanismRenderer.resetColor(guiGraphics);
     }
 
-    protected void drawUncolored(@NotNull GuiGraphics guiGraphics) {
+    protected void drawUncolored(@NotNull GuiGraphicsExtractor guiGraphics) {
         GuiUtils.blitNineSlicedSized(guiGraphics, getResource(), relativeX, relativeY, width, height, 4, TEXTURE_WIDTH, TEXTURE_HEIGHT, 0, 0, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 }

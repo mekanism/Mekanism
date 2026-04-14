@@ -23,7 +23,7 @@ import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -47,7 +47,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
     }
 
     @Override
-    public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         colorDetails.setIngredient(getDisplayedStack(recipeSlotsView, CHEMICAL_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         super.draw(recipeHolder, recipeSlotsView, guiGraphics, mouseX, mouseY);

@@ -20,7 +20,7 @@ import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 
 public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingWindowTab> {
@@ -49,7 +49,7 @@ public class GuiCraftingWindowTab extends GuiWindowCreatorTab<Void, GuiCraftingW
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_CRAFTING_WINDOW.get());
     }
 

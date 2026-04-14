@@ -2,7 +2,7 @@ package mekanism.client.gui.robit;
 
 import mekanism.client.gui.element.GuiRightArrow;
 import mekanism.common.inventory.container.entity.robit.CraftingRobitContainer;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ public class GuiRobitCrafting extends GuiRobit<CraftingRobitContainer> {
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);

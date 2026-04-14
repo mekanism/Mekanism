@@ -15,7 +15,7 @@ import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.Font.DisplayMode;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -43,7 +43,7 @@ public class GuiUtils {
     // Note: Does not validate that the passed in dimensions are valid
     // this strategy starts with a small texture and will expand it (by scaling) to meet the size requirements. good for small widgets
     // where the background texture is a single color
-    public static void renderExtendedTexture(GuiGraphics guiGraphics, Identifier resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
+    public static void renderExtendedTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int sideWidth, int sideHeight, int left, int top, int width, int height) {
         int textureWidth = 2 * sideWidth + 1;
         int textureHeight = 2 * sideHeight + 1;
         blitNineSlicedSized(guiGraphics, resource, left, top, width, height, sideWidth, sideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
@@ -51,12 +51,12 @@ public class GuiUtils {
 
     // this strategy starts with a large texture and will scale it down or tile it if necessary. good for larger widgets, but requires a large texture;
     // small textures will tank FPS due to tiling
-    public static void renderBackgroundTexture(GuiGraphics guiGraphics, Identifier resource, int texSideWidth, int texSideHeight, int left, int top, int width,
+    public static void renderBackgroundTexture(GuiGraphicsExtractor guiGraphics, Identifier resource, int texSideWidth, int texSideHeight, int left, int top, int width,
           int height, int textureWidth, int textureHeight) {
         blitNineSlicedSized(guiGraphics, resource, left, top, width, height, texSideWidth, texSideHeight, textureWidth, textureHeight, 0, 0, textureWidth, textureHeight);
     }
 
-    public static void drawOutline(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
+    public static void drawOutline(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int color) {
         fill(guiGraphics, x, y, width, 1, color);
         fill(guiGraphics, x, y + height - 1, width, 1, color);
         if (height > 2) {
@@ -65,23 +65,23 @@ public class GuiUtils {
         }
     }
 
-    public static void fill(GuiGraphics guiGraphics, RenderPipeline pipeline, int x, int y, int width, int height, int color) {
+    public static void fill(GuiGraphicsExtractor guiGraphics, RenderPipeline pipeline, int x, int y, int width, int height, int color) {
         if (width != 0 && height != 0) {
             guiGraphics.fill(pipeline, x, y, x + width, y + height, color);
         }
     }
 
-    public static void fill(GuiGraphics guiGraphics, int x, int y, int width, int height, int color) {
+    public static void fill(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, int color) {
         if (width != 0 && height != 0) {
             guiGraphics.fill(x, y, x + width, y + height, color);
         }
     }
 
-    public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int alpha) {
+    public static void drawBackdrop(GuiGraphicsExtractor guiGraphics, Minecraft minecraft, int x, int y, int width, int alpha) {
         drawBackdrop(guiGraphics, minecraft, x, y, width, minecraft.font.lineHeight, alpha);
     }
 
-    public static void drawBackdrop(GuiGraphics guiGraphics, Minecraft minecraft, int x, int y, int width, int height, int alpha) {
+    public static void drawBackdrop(GuiGraphicsExtractor guiGraphics, Minecraft minecraft, int x, int y, int width, int height, int alpha) {
         //Slightly modified copy of Gui#drawBackdrop so that we can support it in places that can't directly call it
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
@@ -91,12 +91,12 @@ public class GuiUtils {
         }
     }
 
-    public static void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection) {
         drawTiledSprite(guiGraphics, xPosition, yPosition, yOffset, desiredWidth, desiredHeight, sprite, textureWidth, textureHeight, zLevel, tilingDirection, true);
     }
 
-    public static void drawTiledSprite(GuiGraphics guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
+    public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
           int textureWidth, int textureHeight, int zLevel, TilingDirection tilingDirection, boolean blend) {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
@@ -117,7 +117,7 @@ public class GuiUtils {
         if (blend) {
             RenderSystem.enableBlend();
         }
-        //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does
+        //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does
         BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         for (int xTile = 0; xTile <= xTileCount; xTile++) {
@@ -260,17 +260,17 @@ public class GuiUtils {
         boolean test(ELEMENT element, CharacterEvent event);
     }
 
-    public static int drawStringNoFlush(GuiGraphics graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+    public static int drawStringNoFlush(GuiGraphicsExtractor graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
         return drawStringNoFlush(graphics, graphics.pose().last().pose(), font, component, x, y, color, drawShadow);
     }
 
-    public static int drawStringNoFlush(GuiGraphics graphics, Matrix4f matrix, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-        //Copy of GuiGraphics#drawString(Font, FormattedCharSequence, float, float, int, boolean) but without the flush at the end
+    public static int drawStringNoFlush(GuiGraphicsExtractor graphics, Matrix4f matrix, Font font, Component component, float x, float y, int color, boolean drawShadow) {
+        //Copy of GuiGraphicsExtractor#drawString(Font, FormattedCharSequence, float, float, int, boolean) but without the flush at the end
         return font.drawInBatch(component.getVisualOrderText(), x, y, color, drawShadow, matrix, graphics.bufferSource(),
               DisplayMode.NORMAL, 0, LightCoordsUtil.FULL_BRIGHT);
     }
 
-    public static void renderItem(GuiGraphics guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
+    public static void renderItem(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
                 PoseStack pose = guiGraphics.pose();
@@ -297,7 +297,7 @@ public class GuiUtils {
         }
     }
 
-    public static void renderBorder(GuiGraphics guiGraphics, int x, int y, int boxWidth, int boxHeight, int color) {
+    public static void renderBorder(GuiGraphicsExtractor guiGraphics, int x, int y, int boxWidth, int boxHeight, int color) {
         guiGraphics.hLine(x, x + boxWidth, y, color);
         guiGraphics.hLine(x, x + boxWidth, y + boxHeight, color);
         guiGraphics.vLine(x, y, y + boxHeight, color);
@@ -335,7 +335,7 @@ public class GuiUtils {
     }
 
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
-    public static void blitNineSlicedSized(GuiGraphics guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+    public static void blitNineSlicedSized(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         ProfilerFiller profiler = Profiler.get();
         profiler.push("blit setup");
         RenderSystem.setShaderTexture(0, texture);
@@ -384,7 +384,7 @@ public class GuiUtils {
         profiler.pop();
     }
 
-    public static void blitNineSlicedSized(GuiGraphics guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
+    public static void blitNineSlicedSized(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
         blitNineSlicedSized(guiGraphics, texture, x, y, width, height, sliceSize, sliceSize, uWidth, vHeight, uOffset, vOffset, textureWidth, textureHeight);
     }
 

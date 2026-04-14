@@ -21,7 +21,7 @@ import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.tile.TileEntityTeleporter.TeleporterStatus;
 import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -85,7 +85,7 @@ public class GuiPortableTeleporter extends GuiMekanism<PortableTeleporterContain
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleTextWithOffset(guiGraphics, status.getRelativeRight());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }

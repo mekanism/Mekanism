@@ -4,7 +4,7 @@ import java.util.function.BiConsumer;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public enum BackgroundType {
     INNER_SCREEN((field, guiGraphics) -> GuiUtils.renderBackgroundTexture(guiGraphics, GuiInnerScreen.SCREEN, GuiInnerScreen.SCREEN_SIZE, GuiInnerScreen.SCREEN_SIZE, field.getRelativeX() - 1, field.getRelativeY() - 1, field.getWidth() + 2, field.getHeight() + 2, 256, 256)),
@@ -20,13 +20,13 @@ public enum BackgroundType {
     NONE((field, guiGraphics) -> {
     });
 
-    private final BiConsumer<GuiTextField, GuiGraphics> renderFunction;
+    private final BiConsumer<GuiTextField, GuiGraphicsExtractor> renderFunction;
 
-    BackgroundType(BiConsumer<GuiTextField, GuiGraphics> renderFunction) {
+    BackgroundType(BiConsumer<GuiTextField, GuiGraphicsExtractor> renderFunction) {
         this.renderFunction = renderFunction;
     }
 
-    public void render(GuiTextField field, GuiGraphics guiGraphics) {
+    public void render(GuiTextField field, GuiGraphicsExtractor guiGraphics) {
         renderFunction.accept(field, guiGraphics);
     }
 }

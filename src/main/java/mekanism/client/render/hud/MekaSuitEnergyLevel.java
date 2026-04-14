@@ -11,7 +11,7 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -27,7 +27,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics graphics, @NotNull DeltaTracker delta) {
+    public void render(@NotNull GuiGraphicsExtractor graphics, @NotNull DeltaTracker delta) {
         Minecraft minecraft = Minecraft.getInstance();
         if (!minecraft.gameMode.canHurtPlayer() || minecraft.options.hideGui || !MekanismConfig.client.hudRenderMekaSuitEnergyBar.get()) {
             //canHurtPlayer is a copy of vanilla check for if the armor level can render

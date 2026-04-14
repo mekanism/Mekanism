@@ -25,7 +25,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
@@ -85,7 +85,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     }
 
     @Override
-    public void render(EmiRecipe recipe, EmiCraftContext<CONTAINER> context, List<Widget> widgets, GuiGraphics graphics) {
+    public void render(EmiRecipe recipe, EmiCraftContext<CONTAINER> context, List<Widget> widgets, GuiGraphicsExtractor graphics) {
         //Based on StandardRecipeHandler#renderMissing, except with our own logic for determining what ingredients are missing
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {

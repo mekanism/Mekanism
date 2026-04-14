@@ -8,7 +8,7 @@ import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mezz.jei.api.gui.ingredient.IRecipeSlotsView;
 import mezz.jei.api.helpers.IGuiHelper;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipeCategory {
@@ -24,7 +24,7 @@ public class PigmentMixerRecipeCategory extends ChemicalChemicalToChemicalRecipe
     }
 
     @Override
-    public void draw(RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphics guiGraphics, double mouseX, double mouseY) {
+    public void draw(RecipeHolder<ChemicalChemicalToChemicalRecipe> recipeHolder, IRecipeSlotsView recipeSlotsView, GuiGraphicsExtractor guiGraphics, double mouseX, double mouseY) {
         //Set what the "current" recipe is for our color details, before bothering to draw the arrow
         leftColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, LEFT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));
         rightColorDetails.setIngredient(getDisplayedStack(recipeSlotsView, RIGHT_INPUT, MekanismJEI.TYPE_CHEMICAL, ChemicalStack.EMPTY));

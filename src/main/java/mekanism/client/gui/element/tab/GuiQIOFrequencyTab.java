@@ -13,7 +13,7 @@ import mekanism.common.network.to_server.button.PacketTileButtonPress.ClickedTil
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +39,7 @@ public class GuiQIOFrequencyTab extends GuiInsetElement<TileEntityMekanism> {
     }
 
     @Override
-    protected void colorTab(GuiGraphics guiGraphics) {
+    protected void colorTab(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, SpecialColors.TAB_QIO_FREQUENCY);
     }
 

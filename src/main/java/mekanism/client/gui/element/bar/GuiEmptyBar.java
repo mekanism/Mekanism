@@ -2,7 +2,7 @@ package mekanism.client.gui.element.bar;
 
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.bar.GuiBar.IBarInfoHandler;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 
 public class GuiEmptyBar extends GuiBar<IBarInfoHandler> {
 
@@ -14,6 +14,6 @@ public class GuiEmptyBar extends GuiBar<IBarInfoHandler> {
     }
 
     @Override
-    protected void renderBarOverlay(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
+    protected void renderBarOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks, double handlerLevel) {
     }
 }

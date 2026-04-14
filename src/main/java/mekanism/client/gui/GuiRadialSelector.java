@@ -25,7 +25,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StatUtils;
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -73,14 +73,14 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = guiGraphics.guiWidth() / 2F;
         float centerY = guiGraphics.guiHeight() / 2F;
         render(guiGraphics, mouseX, mouseY, centerX, centerY, radialData);
     }
 
-    private <MODE extends IRadialMode> void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
+    private <MODE extends IRadialMode> void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
         int activeModes = modes.size();
@@ -248,13 +248,13 @@ public class GuiRadialSelector extends Screen {
         return false;
     }
 
-    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float red, float green, float blue, float alpha) {
+    private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float red, float green, float blue, float alpha) {
         drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
     }
 
-    private void drawTorus(GuiGraphics guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
+    private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
         RenderSystem.setShader(GameRenderer::getPositionColorShader);
-        //Note: We still use the tesselator as that is what GuiGraphics#innerBlit does, and we also need to be able to use a custom vertex mode
+        //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode
         BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);

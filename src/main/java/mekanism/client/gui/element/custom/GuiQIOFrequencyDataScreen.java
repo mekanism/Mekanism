@@ -9,7 +9,7 @@ import mekanism.client.gui.element.bar.GuiDigitalBar;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.util.text.TextUtils;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 
 public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
@@ -51,7 +51,7 @@ public class GuiQIOFrequencyDataScreen extends GuiInnerScreen {
     }
 
     @Override
-    public void renderForeground(GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    public void renderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         super.renderForeground(guiGraphics, mouseX, mouseY);
         QIOFrequency freq = frequencySupplier.get();
         if (freq != null) {

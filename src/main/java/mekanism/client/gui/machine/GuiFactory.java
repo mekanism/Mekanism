@@ -16,7 +16,7 @@ import mekanism.common.tile.factory.TileEntityFactory;
 import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactory;
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +74,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     }
 
     @Override
-    protected void drawForegroundText(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY) {
+    protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         renderInventoryText(guiGraphics, dumpButton == null ? getXSize() : dumpButton.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
