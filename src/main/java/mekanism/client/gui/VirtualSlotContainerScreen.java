@@ -10,7 +10,7 @@ import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -28,7 +28,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
     @Nullable
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected Slot findSlot(double mouseX, double mouseY) {
+    protected Slot getHoveredSlot(double mouseX, double mouseY) {
         for (Slot slot : menu.slots) {
             //Like super.getSelectedSlot except uses our isMouseOverSlot so
             // that our redirection doesn't break this
@@ -144,12 +144,12 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
             } else if (!this.isQuickCrafting) {
                 if (menu.getCarried().isEmpty()) {
                     if (pickBlockButton) {
-                        this.slotClicked(slot, slot.index, button, ClickType.CLONE);
+                        this.slotClicked(slot, slot.index, button, ContainerInput.CLONE);
                     } else {
-                        ClickType clicktype = ClickType.PICKUP;
+                        ContainerInput clicktype = ContainerInput.PICKUP;
                         if (hasShiftDown) {
                             this.lastQuickMoved = slot.hasItem() ? slot.getItem().copy() : ItemStack.EMPTY;
-                            clicktype = ClickType.QUICK_MOVE;
+                            clicktype = ContainerInput.QUICK_MOVE;
                         }
                         this.slotClicked(slot, slot.index, button, clicktype);
                     }

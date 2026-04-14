@@ -2,6 +2,7 @@ package mekanism.client;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
+import java.util.List;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
@@ -23,6 +24,7 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
@@ -160,20 +162,20 @@ public class ClientRegistrationUtil {
         ItemProperties.register(item.value(), override, propertyGetter);
     }
 
-    public static void registerItemColorHandler(RegisterColorHandlersEvent.Item event, ItemColor itemColor, ItemLike... items) {
+    public static void registerItemColorHandler(RegisterColorHandlersEvent.ItemTintSources event, ItemColor itemColor, ItemLike... items) {
         for (ItemLike itemProvider : items) {
             event.register(itemColor, itemProvider);
         }
     }
 
     @SafeVarargs
-    public static void registerBlockColorHandler(RegisterColorHandlersEvent.Block event, BlockColor blockColor, Holder<Block>... blocks) {
+    public static void registerBlockColorHandler(RegisterColorHandlersEvent.BlockTintSources event, List<BlockTintSource> tintSources, Holder<Block>... blocks) {
         for (Holder<Block> blockProvider : blocks) {
-            event.register(blockColor, blockProvider.value());
+            event.register(tintSources, blockProvider.value());
         }
     }
 
-    public static void registerBucketColorHandler(RegisterColorHandlersEvent.Item event, FluidDeferredRegister register) {
+    public static void registerBucketColorHandler(RegisterColorHandlersEvent.ItemTintSources event, FluidDeferredRegister register) {
         for (Holder<Item> bucket : register.getBucketEntries()) {
             event.register(BUCKET_ITEM_COLOR, bucket.value());
         }

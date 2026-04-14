@@ -14,11 +14,11 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
@@ -75,7 +75,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
 
     //TODO - 1.21.11: Should we no-op all the cases of scale == 0
     protected int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, VertexConsumer buffer, int overlay, float scale) {
-        int glow = data.calculateGlowLight(LightTexture.FULL_SKY);
+        int glow = data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
         matrix.pushPose();
         matrix.translate(data.location.getX() - rendererPos.getX(), data.location.getY() - rendererPos.getY(), data.location.getZ() - rendererPos.getZ());
         MekanismRenderer.renderObject(object, matrix, buffer, data.getColorARGB(scale), glow, overlay, getFaceDisplay(camPos, data, object), camPos, data.location);

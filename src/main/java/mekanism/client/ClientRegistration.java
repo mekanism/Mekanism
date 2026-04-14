@@ -554,7 +554,7 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
+    public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
         ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {

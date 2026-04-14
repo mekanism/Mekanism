@@ -561,7 +561,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     @Nullable
     @Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
-    protected Slot findSlot(double mouseX, double mouseY) {
+    protected Slot getHoveredSlot(double mouseX, double mouseY) {
         //We override the implementation we have in VirtualSlotContainerScreen so that we can cache getting our window
         // and have some general performance improvements given we can batch a bunch of lookups together
         boolean checkedWindow = false;
