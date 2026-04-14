@@ -2,9 +2,9 @@ package mekanism.generators.common.tile.fusion;
 
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.MekanismGeneratorsMultiblocks;
 import mekanism.generators.common.content.fusion.FusionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsContainerTypes;
@@ -30,8 +30,8 @@ public class TileEntityFusionReactorBlock extends TileEntityMultiblock<FusionRea
     }
 
     @Override
-    public MultiblockManager<FusionReactorMultiblockData> getManager() {
-        return MekanismGenerators.fusionReactorManager;
+    public MultiblockType<FusionReactorMultiblockData> getMultiblockType() {
+        return MekanismGeneratorsMultiblocks.FUSION_REACTOR;
     }
 
     @Override

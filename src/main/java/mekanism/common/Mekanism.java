@@ -29,24 +29,13 @@ import mekanism.common.command.builders.Builders.SPSBuilder;
 import mekanism.common.command.builders.Builders.TankBuilder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
-import mekanism.common.content.boiler.BoilerValidator;
-import mekanism.common.content.evaporation.EvaporationMultiblockData;
-import mekanism.common.content.evaporation.EvaporationValidator;
 import mekanism.common.content.gear.MekaSuitDispenseBehavior;
 import mekanism.common.content.gear.ModuleDispenseBehavior;
 import mekanism.common.content.gear.ModuleHelper;
-import mekanism.common.content.matrix.MatrixMultiblockData;
-import mekanism.common.content.matrix.MatrixValidator;
 import mekanism.common.content.network.ChemicalNetwork.ChemicalTransferEvent;
 import mekanism.common.content.network.EnergyNetwork.EnergyTransferEvent;
 import mekanism.common.content.network.FluidNetwork.FluidTransferEvent;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
-import mekanism.common.content.sps.SPSCache;
-import mekanism.common.content.sps.SPSMultiblockData;
-import mekanism.common.content.sps.SPSValidator;
-import mekanism.common.content.tank.TankCache;
-import mekanism.common.content.tank.TankMultiblockData;
-import mekanism.common.content.tank.TankValidator;
 import mekanism.common.content.transporter.PathfinderCache;
 import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.MekanismHooks;
@@ -62,8 +51,7 @@ import mekanism.common.lib.Version;
 import mekanism.common.lib.frequency.FrequencyControllerManager;
 import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import mekanism.common.lib.multiblock.MultiblockCache;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.radiation.PlayerExposure;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
@@ -161,14 +149,7 @@ public class Mekanism {
      * Mekanism version number
      */
     public final Version versionNumber;
-    /**
-     * MultiblockManagers for various structures
-     */
-    public static final MultiblockManager<TankMultiblockData> tankManager = new MultiblockManager<>("dynamicTank", TankCache::new, TankValidator::new);
-    public static final MultiblockManager<MatrixMultiblockData> matrixManager = new MultiblockManager<>("inductionMatrix", MultiblockCache::new, MatrixValidator::new);
-    public static final MultiblockManager<BoilerMultiblockData> boilerManager = new MultiblockManager<>("thermoelectricBoiler", MultiblockCache::new, BoilerValidator::new);
-    public static final MultiblockManager<EvaporationMultiblockData> evaporationManager = new MultiblockManager<>("evaporation", MultiblockCache::new, EvaporationValidator::new);
-    public static final MultiblockManager<SPSMultiblockData> spsManager = new MultiblockManager<>("sps", SPSCache::new, SPSValidator::new);
+
     /**
      * List of Mekanism modules loaded
      */
@@ -216,6 +197,7 @@ public class Mekanism {
         modEventBus.addListener(this::imcHandle);
         addRegistrationListeners(modEventBus);
         FrequencyTypes.init();
+        MekanismMultiblocks.register(NeoForge.EVENT_BUS);
         packetHandler = new PacketHandler(modEventBus, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);
@@ -327,7 +309,6 @@ public class Mekanism {
         //Reset consistent managers
         QIOGlobalItemLookup.reset();
         PlayerExposure.clear();
-        MultiblockManager.reset();
         FrequencyControllerManager.reset();
         TransporterManager.reset();
         PathfinderCache.reset();

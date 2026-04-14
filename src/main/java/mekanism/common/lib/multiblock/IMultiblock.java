@@ -19,7 +19,11 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
     @Override
     T getDefaultData();
 
-    MultiblockManager<T> getManager();
+    MultiblockType<T> getMultiblockType();
+
+    default MultiblockManager<T> getManager() {
+        return MultiblockManager.get(getLevel(), getMultiblockType());
+    }
 
     @Nullable
     UUID getCacheID();
@@ -34,16 +38,17 @@ public interface IMultiblock<T extends MultiblockData> extends IMultiblockBase {
 
     void setStructure(Structure structure);
 
+    //todo 26.1: do these need to get both type and manager? if they're in different Levels something is seriously bonkers
     @Override
     default void setStructure(MultiblockManager<?> manager, Structure structure) {
-        if (manager == getManager()) {
+        if (manager.getMultiblockType() == getMultiblockType() && manager == getManager()) {
             setStructure(structure);
         }
     }
 
     @Override
     default Structure getStructure(MultiblockManager<?> manager) {
-        if (manager == getManager()) {
+        if (manager.getMultiblockType() == getMultiblockType() && manager == getManager()) {
             return getStructure();
         }
         return null;

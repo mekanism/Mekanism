@@ -2,7 +2,9 @@ package mekanism.common.tile.multiblock;
 
 import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.lib.multiblock.MekanismMultiblocks;
 import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -56,8 +58,8 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
     }
 
     @Override
-    public MultiblockManager<TankMultiblockData> getManager() {
-        return Mekanism.tankManager;
+    public MultiblockType<TankMultiblockData> getMultiblockType() {
+        return MekanismMultiblocks.TANK;
     }
 
     @Override

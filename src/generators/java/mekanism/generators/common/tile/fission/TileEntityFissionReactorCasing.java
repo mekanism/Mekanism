@@ -3,9 +3,9 @@ package mekanism.generators.common.tile.fission;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.generators.common.MekanismGenerators;
+import mekanism.generators.common.content.MekanismGeneratorsMultiblocks;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -74,8 +74,8 @@ public class TileEntityFissionReactorCasing extends TileEntityMultiblock<Fission
     }
 
     @Override
-    public MultiblockManager<FissionReactorMultiblockData> getManager() {
-        return MekanismGenerators.fissionReactorManager;
+    public MultiblockType<FissionReactorMultiblockData> getMultiblockType() {
+        return MekanismGeneratorsMultiblocks.FISSION_REACTOR;
     }
 
     @Override

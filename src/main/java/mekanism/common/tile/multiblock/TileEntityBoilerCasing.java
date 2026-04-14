@@ -1,12 +1,12 @@
 package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
-import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
 import mekanism.common.content.boiler.BoilerMultiblockData;
-import mekanism.common.lib.multiblock.MultiblockManager;
+import mekanism.common.lib.multiblock.MekanismMultiblocks;
+import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import net.minecraft.core.BlockPos;
@@ -32,8 +32,8 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     }
 
     @Override
-    public MultiblockManager<BoilerMultiblockData> getManager() {
-        return Mekanism.boilerManager;
+    public MultiblockType<BoilerMultiblockData> getMultiblockType() {
+        return MekanismMultiblocks.BOILER;
     }
 
     @NotNull
