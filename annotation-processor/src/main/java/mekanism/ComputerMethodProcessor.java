@@ -11,7 +11,6 @@ import javax.annotation.processing.AbstractProcessor;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -23,7 +22,6 @@ import mekanism.builder.ComputerHandlerBuilder;
  * <p>
  * Technically we violate this with the Wrapping methods, but if new methods are added to a wrapper, a manually triggered full rebuild should catch it.
  */
-@SupportedSourceVersion(SourceVersion.RELEASE_21)
 @SupportedAnnotationTypes({
       MekAnnotationProcessors.ANNOTATION_COMPUTER_METHOD,
       MekAnnotationProcessors.ANNOTATION_SYNTHETIC_COMPUTER_METHOD,
@@ -57,5 +55,10 @@ public class ComputerMethodProcessor extends AbstractProcessor {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
     }
 }
