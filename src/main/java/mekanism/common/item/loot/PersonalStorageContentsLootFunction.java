@@ -2,6 +2,7 @@ package mekanism.common.item.loot;
 
 import com.mojang.serialization.MapCodec;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -49,7 +50,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
             if (EffectiveSide.get().isClient()) {
                 destInv = new ClientSidePersonalStorageInventory();
             } else {
-                destInv = PersonalStorageManager.getInventoryFor(stack).orElseThrow(() -> new IllegalStateException("Inventory not available?!"));
+                destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available?!");
             }
             for (int i = 0; i < tileSlots.size(); i++) {
                 IInventorySlot tileSlot = tileSlots.get(i);

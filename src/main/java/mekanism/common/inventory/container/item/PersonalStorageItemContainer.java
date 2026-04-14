@@ -1,6 +1,7 @@
 package mekanism.common.inventory.container.item;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
@@ -22,7 +23,9 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     public PersonalStorageItemContainer(int id, Inventory inv, InteractionHand hand, ItemStack stack, boolean isRemote) {
         super(MekanismContainerTypes.PERSONAL_STORAGE_ITEM, id, inv, hand, stack);
         //We have to initialize this before actually adding the slots
-        itemInventory = isRemote ? new ClientSidePersonalStorageInventory() : PersonalStorageManager.getInventoryFor(stack).orElseThrow(() -> new IllegalStateException("Inventory not available"));
+        itemInventory = isRemote ?
+                        new ClientSidePersonalStorageInventory() :
+                        Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available");
         super.addSlotsAndOpen();
     }
 

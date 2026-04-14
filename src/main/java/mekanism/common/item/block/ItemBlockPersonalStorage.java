@@ -12,6 +12,7 @@ import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.lib.security.ItemSecurityUtils;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registries.MekanismContainerTypes;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
@@ -40,8 +41,9 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
     @Override
     public InteractionResult use(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
         return ItemSecurityUtils.get().claimOrOpenGui(world, player, hand, (p, h, s) -> {
-            if (!world.isClientSide()) {
-                PersonalStorageManager.getInventoryFor(s);
+            if (PersonalStorageManager.getInventoryFor(s) == null) {
+                //todo 26.1 make translated
+                p.sendSystemMessage(Component.literal("Couldn't access Personal Storage inventory. Please ask your server admin to check the logs."), true);
             }
             getContainerType().tryOpenGui(p, h, s);
             p.awardStat(Stats.CUSTOM.get(openStat));
@@ -77,7 +79,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         super.onDestroyed(item, damageSource);
         if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();
-            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack).orElse(null);
+            AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
             if (inventory != null && inventory.isInventoryEmpty()) {
                 //If the inventory was actually empty we can prune the data from the storage manager
                 // (if it isn't empty we want to persist it so that server admins can recover their items)
@@ -88,9 +90,11 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
 
     @Override
     public List<IInventorySlot> getDroppedSlots(ItemStack stack) {
-        return PersonalStorageManager.getInventoryIfPresent(stack)
-              .map(inventory -> inventory.getInventorySlots(null))
-              .orElse(Collections.emptyList());
+        AbstractPersonalStorageItemInventory itemInventory = PersonalStorageManager.getInventoryIfPresent(stack);
+        if (itemInventory == null) {
+            return Collections.emptyList();
+        }
+        return itemInventory.getInventorySlots(null);
     }
 
     @Override

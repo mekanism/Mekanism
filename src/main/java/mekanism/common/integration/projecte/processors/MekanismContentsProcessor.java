@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.Reference2LongMaps;
 import it.unimi.dsi.fastutil.objects.Reference2LongOpenHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.ToLongFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.Upgrade;
@@ -63,9 +62,9 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
             //Something that is stored cannot be converted into EMC
             return 0;
         }
-        Optional<AbstractPersonalStorageItemInventory> personalStorage = PersonalStorageManager.getInventoryIfPresent(stack);
-        if (personalStorage.isPresent()) {//Items stored in a personal chest or barrel
-            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.get().getInventorySlots(null));
+        AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(stack);
+        if (personalStorage != null) {//Items stored in a personal chest or barrel
+            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getInventorySlots(null));
             if (currentEMC == 0) {
                 //Something that is stored cannot be converted into EMC
                 return 0;

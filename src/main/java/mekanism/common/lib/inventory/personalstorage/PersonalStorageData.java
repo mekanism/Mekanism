@@ -1,32 +1,50 @@
 package mekanism.common.lib.inventory.personalstorage;
 
-import java.io.File;
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import com.mojang.serialization.Codec;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
-import mekanism.api.SerializationConstants;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.lib.MekanismSavedData;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
+import net.minecraft.core.UUIDUtil;
+import net.minecraft.world.level.saveddata.SavedData;
+import net.minecraft.world.level.saveddata.SavedDataType;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-class PersonalStorageData extends MekanismSavedData {
+class PersonalStorageData extends SavedData {
+    
+    private static final Codec<Map<UUID, PersonalStorageItemInventory>> MAP_CODEC = Codec.unboundedMap(
+          UUIDUtil.CODEC,
+          PersonalStorageItemInventory.CODEC
+    ).promotePartial(error -> Mekanism.logger.error("Some Personal Storage items failed: {}", error));
+
+    public static final Codec<PersonalStorageData> CODEC = MAP_CODEC.xmap(PersonalStorageData::new, it -> it.inventoriesById);
 
     private final Map<UUID, PersonalStorageItemInventory> inventoriesById = new HashMap<>();
+    private final IContentsListener contentsListener = this::setDirty;
+
+    PersonalStorageData() {
+    }
+
+    private PersonalStorageData(Map<UUID, PersonalStorageItemInventory> loadedMap) {
+        for (var entry : loadedMap.entrySet()) {
+            var value = entry.getValue();
+            value.setParent(contentsListener);
+            inventoriesById.put(entry.getKey(), value);
+        }
+    }
 
     PersonalStorageItemInventory getOrAddInventory(UUID id) {
         return inventoriesById.computeIfAbsent(id, unused -> createInventory());
     }
 
+    @CanIgnoreReturnValue
     PersonalStorageItemInventory addInventory(UUID id, List<IInventorySlot> contents) {
         PersonalStorageItemInventory inventory = inventoriesById.get(id);
         if (inventory == null) {
@@ -49,51 +67,11 @@ class PersonalStorageData extends MekanismSavedData {
 
     @NotNull
     private PersonalStorageItemInventory createInventory() {
-        return new PersonalStorageItemInventory(this::setDirty);
+        return new PersonalStorageItemInventory(contentsListener);
     }
 
-    /**
-     * {
-     *     [NBTConstants.DATA]: [
-     *          {
-     *              [NBTConstants.PERSONAL_STORAGE_ID]: UUID,
-     *              [NBTConstants.ITEMS]: PersonalStorageItemInventory
-     *          }
-     *     ]
-     * }
-     */
-    @Override
-    public void load(@NotNull CompoundTag nbt, @NotNull HolderLookup.Provider provider) {
-        ListTag entries = nbt.getList(SerializationConstants.DATA, Tag.TAG_COMPOUND);
-        for (int i = 0; i < entries.size(); i++) {
-            CompoundTag entry = entries.getCompound(i);
-            PersonalStorageItemInventory inv = createInventory();
-            ContainerType.ITEM.readFrom(provider, entry, inv.getInventorySlots(null));
-            inventoriesById.put(entry.getUUID(SerializationConstants.PERSONAL_STORAGE_ID), inv);
-        }
-    }
 
-    @Override
-    public CompoundTag save(CompoundTag compoundTag, @NotNull HolderLookup.Provider provider) {
-        ListTag entries = new ListTag(inventoriesById.size());
-        for (Entry<UUID, PersonalStorageItemInventory> entry : inventoriesById.entrySet()) {
-            CompoundTag nbtEntry = new CompoundTag();
-            nbtEntry.putUUID(SerializationConstants.PERSONAL_STORAGE_ID, entry.getKey());
-            ContainerType.ITEM.saveTo(provider, nbtEntry, entry.getValue().getInventorySlots(null));
-            entries.add(nbtEntry);
-        }
-        compoundTag.put(SerializationConstants.DATA, entries);
-        return compoundTag;
-    }
-
-    @Override
-    public void save(File file, @NotNull HolderLookup.Provider provider) {
-        if (isDirty()) {
-            File folder = file.getParentFile();
-            if (!folder.exists() && !folder.mkdirs()) {
-                Mekanism.logger.error("Could not create personal storage directory, saves may fail");
-            }
-        }
-        super.save(file, provider);
+    public static SavedDataType<PersonalStorageData> createType(UUID id) {
+        return new SavedDataType<>(Mekanism.rl("personal_storage/" + id), PersonalStorageData::new, CODEC);
     }
 }

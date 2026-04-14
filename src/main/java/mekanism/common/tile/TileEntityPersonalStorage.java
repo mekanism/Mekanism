@@ -121,7 +121,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
             UUID owner = input.get(MekanismDataComponents.OWNER);
             if (owner != null) {
                 AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(
-                      input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner).orElse(null);
+                      input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner);
                 if (storageItemInventory != null) {
                     List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots(null);
                     for (int i = 0; i < inventorySlots.size(); i++) {
