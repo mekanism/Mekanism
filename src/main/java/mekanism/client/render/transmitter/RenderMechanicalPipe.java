@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -19,17 +18,15 @@ import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
 import mekanism.common.base.ProfilerConstants;
-import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
