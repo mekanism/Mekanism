@@ -1,6 +1,7 @@
 package mekanism.common.registries;
 
 import com.mojang.serialization.Codec;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.common.Mekanism;
@@ -23,14 +24,14 @@ public class MekanismAttachmentTypes {
     //Note: We do not specify copy on death as we want radiation to reset to baseline on death
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<Double>> RADIATION = ATTACHMENT_TYPES.register("radiation",
           () -> AttachmentType.builder(IRadiationManager.INSTANCE::baselineRadiation)
-                .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
+                .serialize(Codec.doubleRange(IRadiationManager.INSTANCE.baselineRadiation(), Double.MAX_VALUE).fieldOf(SerializationConstants.RADIATION), radiation -> radiation > IRadiationManager.INSTANCE.baselineRadiation())
                 .copyHandler((radiation, holder, provider) -> radiation > IRadiationManager.INSTANCE.baselineRadiation() ? radiation : null)
                 .build()
     );
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<FlamethrowerMode>> FLAMETHROWER_MODE = ATTACHMENT_TYPES.register("flamethrower_mode", () ->
           AttachmentType.builder(() -> FlamethrowerMode.COMBAT)
-                .serialize(FlamethrowerMode.CODEC, mode -> mode != FlamethrowerMode.COMBAT)
+                .serialize(FlamethrowerMode.CODEC.fieldOf(SerializationConstants.MODE), mode -> mode != FlamethrowerMode.COMBAT)
                 .build());
 
     public static final DeferredHolder<AttachmentType<?>, AttachmentType<MeltdownLevelData>> MELTDOWN_DATA = ATTACHMENT_TYPES.register("meltdown_data", () -> AttachmentType.serializable(MeltdownLevelData::new).build());

@@ -99,7 +99,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
         if (hasChemical(stack)) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
     }
