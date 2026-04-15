@@ -7,15 +7,14 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.model.geom.EntityModelSet;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.Unit;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.21.11: Remove this in favor of just rendering a model part?
-public class ModelEnergyCore extends MekanismJavaModel<Unit> {
+public class ModelEnergyCore extends MekanismJavaModel<Integer> {
 
     private static final Identifier CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");
 
@@ -23,10 +22,15 @@ public class ModelEnergyCore extends MekanismJavaModel<Unit> {
     public static final RenderType RENDER_TYPE = MekanismRenderType.STANDARD.apply(CORE_TEXTURE);
 
     public ModelEnergyCore(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(RenderEnergyCube.CORE_LAYER), MekanismRenderType.STANDARD);
+        super(entityModelSet.bakeLayer(RenderEnergyCube.CORE_LAYER));
     }
 
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, int overlayLight, BaseTier baseTier, float energyPercentage) {
-        renderToBuffer(matrix, renderer.getBuffer(RENDER_TYPE), light, overlayLight, baseTier.getPackedColor(ARGB.as8BitChannel(energyPercentage)));
+    @Override
+    public void collect(Integer color, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, color, null, hasEffect);
+    }
+
+    public static Integer getState(BaseTier baseTier, float energyPercentage) {
+        return baseTier.getPackedColor(ARGB.as8BitChannel(energyPercentage));
     }
 }

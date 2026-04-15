@@ -2,7 +2,9 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
@@ -18,27 +20,48 @@ import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3fc;
+import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
-public class RenderEnergyCubeItem extends MekanismISTER {
+@NullMarked
+public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.CubeState> {
 
     public static final RenderEnergyCubeItem RENDERER = new RenderEnergyCubeItem();
-    private ModelEnergyCore core;
+    private final ModelEnergyCore core = new ModelEnergyCore(getEntityModels());
 
     @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-        core = new ModelEnergyCore(getEntityModels());
+    public void submit(@Nullable CubeState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+        if (state == null) {
+            return;
+        }
+        //todo 26.1 rendering
+        //renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
+        if (state.energyRatio > 0) {
+            float scaledTicks = 4 * state.ticks();
+            poseStack.pushPose();
+            poseStack.translate(0.5, 0.5, 0.5);
+            poseStack.scale(0.4F, 0.4F, 0.4F);
+            poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
+            poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
+            poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
+            core.collect(ModelEnergyCore.getState(state.baseTier, state.energyRatio), poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords, false);
+            poseStack.popPose();
+        }
     }
 
     @Override
-    public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight) {
+    public void getExtents(Consumer<Vector3fc> output) {
+        //TODO 26.1 getExtents
+    }
+
+    @Nullable
+    @Override
+    public CubeState extractArgument(ItemStack stack) {
         EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
         CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
         AttachedSideConfig fallback = tier == EnergyCubeTier.CREATIVE ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
@@ -52,19 +75,10 @@ public class RenderEnergyCubeItem extends MekanismISTER {
             sideStates[side.ordinal()] = state;
         }
         ModelData modelData = ModelData.of(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates);
-        renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
-        double energyPercentage = StorageUtils.getEnergyRatio(stack);
-        if (energyPercentage > 0) {
-            float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
-            float scaledTicks = 4 * ticks;
-            matrix.pushPose();
-            matrix.translate(0.5, 0.5, 0.5);
-            matrix.scale(0.4F, 0.4F, 0.4F);
-            matrix.translate(0, Math.sin(Math.toRadians(3 * ticks)) / 7, 0);
-            matrix.mulPose(Axis.YP.rotationDegrees(scaledTicks));
-            matrix.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.render(matrix, renderer, LightCoordsUtil.FULL_BRIGHT, overlayLight, tier.getBaseTier(), (float) energyPercentage);
-            matrix.popPose();
-        }
+        float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
+        float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
+        return new CubeState(modelData, tier.getBaseTier(), energyRatio, ticks, stack.hasFoil());
     }
+
+    public record CubeState(ModelData blockData, BaseTier baseTier, float energyRatio, float ticks, boolean hasFoil) {}
 }

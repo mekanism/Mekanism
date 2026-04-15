@@ -9,11 +9,11 @@ import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelFreeRunners.FreeRunnerRenderState;
 import mekanism.client.render.item.MekanismISTER;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import org.joml.Vector3fc;
 
 @NothingNullByDefault
-public class RenderFreeRunners extends MekanismISTER {
+public class RenderFreeRunners implements NoDataSpecialModelRenderer {
 
     public static final RenderFreeRunners RENDERER = new RenderFreeRunners(false);
     public static final RenderFreeRunners ARMORED_RENDERER = new RenderFreeRunners(true);
@@ -22,29 +22,19 @@ public class RenderFreeRunners extends MekanismISTER {
 
     private RenderFreeRunners(boolean armored) {
         if (armored) {
-            freeRunners = new ModelArmoredFreeRunners(getEntityModels());
+            freeRunners = new ModelArmoredFreeRunners(MekanismISTER.getEntityModels());
         } else {
-            freeRunners = new ModelFreeRunners(getEntityModels());
+            freeRunners = new ModelFreeRunners(MekanismISTER.getEntityModels());
         }
     }
 
     @Override
-    public void submit(ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
         poseStack.translate(0, -1, 0);
-        //TODO - 1.21.11: Do we need to pass the texture as well?
-        nodeCollector.submitModel(
-              this.freeRunners,
-              FreeRunnerRenderState.RIGHT_ONLY,
-              poseStack,
-              this.freeRunners.getRenderType(),
-              lightCoords,
-              overlayCoords,
-              outlineColor,
-              null
-        );
+        this.freeRunners.collect(FreeRunnerRenderState.BOTH, poseStack, nodeCollector, lightCoords, overlayCoords, hasFoil);
         poseStack.popPose();
     }
 

@@ -1,49 +1,37 @@
 package mekanism.client;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.lang.ref.WeakReference;
+import java.util.Collections;
 import java.util.List;
-import mekanism.api.text.EnumColor;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
-import mekanism.common.item.interfaces.IColoredItem;
 import mekanism.common.registration.impl.BlockDeferredRegister;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ContainerTypeRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType;
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
-import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
-import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
-import net.minecraft.client.renderer.fog.FogRenderer;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.PreparableReloadListener;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -51,22 +39,21 @@ import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
-import net.neoforged.neoforge.client.model.item.DynamicFluidContainerModel;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 public class ClientRegistrationUtil {
 
-    private static final BlockColor COLORED_BLOCK_COLOR = (state, world, pos, tintIndex) -> {
+    private static final List<BlockTintSource> COLORED_BLOCK_COLOR = Collections.singletonList((state) -> {
         Block block = state.getBlock();
         if (block instanceof IColoredBlock coloredBlock) {
             return coloredBlock.getColor().getPackedColor();
         }
         return -1;
-    };
-    private static final ItemColor COLORED_BLOCK_ITEM_COLOR = (stack, tintIndex) -> {
+    });
+    //TODO 26.1 item models
+    /*private static final ItemColor COLORED_BLOCK_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
         if (item instanceof BlockItem blockItem) {
             Block block = blockItem.getBlock();
@@ -87,8 +74,8 @@ public class ClientRegistrationUtil {
             return ARGB.color(255, rgbCode[0], rgbCode[1], rgbCode[2]);
         }
         return -1;
-    };
-    private static final ItemColor BUCKET_ITEM_COLOR = new DynamicFluidContainerModel.Colors();
+    };*/
+    //private static final ItemColor BUCKET_ITEM_COLOR = new DynamicFluidContainerModel.Colors();
 
     private ClientRegistrationUtil() {
     }
@@ -127,12 +114,6 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerClientReloadListeners(AddClientReloadListenersEvent event, PreparableReloadListener... listeners) {
-        for (PreparableReloadListener listener : listeners) {
-            event.addListener(listener);
-        }
-    }
-
     public static <C extends AbstractContainerMenu, U extends Screen & MenuAccess<C>> void registerScreen(RegisterMenuScreensEvent event,
           ContainerTypeRegistryObject<C> type, ScreenConstructor<C, U> factory) {
         event.register(type.get(), factory);
@@ -158,15 +139,6 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void setPropertyOverride(Holder<Item> item, Identifier override, ItemPropertyFunction propertyGetter) {
-        ItemProperties.register(item.value(), override, propertyGetter);
-    }
-
-    public static void registerItemColorHandler(RegisterColorHandlersEvent.ItemTintSources event, ItemColor itemColor, ItemLike... items) {
-        for (ItemLike itemProvider : items) {
-            event.register(itemColor, itemProvider);
-        }
-    }
 
     @SafeVarargs
     public static void registerBlockColorHandler(RegisterColorHandlersEvent.BlockTintSources event, List<BlockTintSource> tintSources, Holder<Block>... blocks) {
@@ -175,22 +147,19 @@ public class ClientRegistrationUtil {
         }
     }
 
-    public static void registerBucketColorHandler(RegisterColorHandlersEvent.ItemTintSources event, FluidDeferredRegister register) {
+    /*public static void registerBucketColorHandler(RegisterColorHandlersEvent.ItemTintSources event, FluidDeferredRegister register) {
         for (Holder<Item> bucket : register.getBucketEntries()) {
             event.register(BUCKET_ITEM_COLOR, bucket.value());
         }
-    }
+    }*/
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
-        if (event instanceof RegisterColorHandlersEvent.Block blockEvent) {
+        if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
-        } else if (event instanceof RegisterColorHandlersEvent.Item itemEvent) {
+        }//TODO 26.1 item colours
+        /* else if (event instanceof RegisterColorHandlersEvent.ItemTintSources itemEvent) {
             registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
-        }
-    }
-
-    public static void registerIColoredItemHandler(RegisterColorHandlersEvent.Item event, ItemLike... items) {
-        registerItemColorHandler(event, COLORED_ITEM_COLOR, items);
+        }*/
     }
 
     public static void registerItemExtensions(RegisterClientExtensionsEvent event, IClientItemExtensions extension, ItemLike... items) {
@@ -211,7 +180,8 @@ public class ClientRegistrationUtil {
         for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
             if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
-                    @NotNull
+                    //TODO 26.1 fluid models
+                    /*@NotNull
                     @Override
                     public Identifier getStillTexture() {
                         return fluidType.stillTexture;
@@ -226,7 +196,7 @@ public class ClientRegistrationUtil {
                     @Override
                     public Identifier getOverlayTexture() {
                         return fluidType.overlayTexture;
-                    }
+                    }*/
 
                     @Nullable
                     @Override
@@ -234,7 +204,8 @@ public class ClientRegistrationUtil {
                         return fluidType.renderOverlayTexture;
                     }
 
-                    @NotNull
+                    //todo 26.1 fluid model/properties
+                    /*@NotNull
                     @Override
                     public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,
                           @NotNull Vector3f fluidFogColor) {
@@ -259,7 +230,7 @@ public class ClientRegistrationUtil {
                     @Override
                     public int getTintColor() {
                         return fluidType.color;
-                    }
+                    }*/
                 }, fluidType);
             }
         }

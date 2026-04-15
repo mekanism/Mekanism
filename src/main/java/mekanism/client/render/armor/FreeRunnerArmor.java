@@ -11,7 +11,6 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -45,49 +44,18 @@ public class FreeRunnerArmor implements ICustomArmor, ResourceManagerReloadListe
         }
         poseStack.pushPose();
         if (state.isBaby) {
-            float f1 = 1.0F / state.babyBodyScale;
+            float f1 = 1.0F / BABY_MODEL_TRANSFORM.babyBodyScale();
             poseStack.scale(f1, f1, f1);
-            poseStack.translate(0.0D, state.bodyYOffset / 16.0F, 0.0D);
+            poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.bodyYOffset() / 16.0F, 0.0D);
         }
+        FreeRunnerRenderState renderState = FreeRunnerRenderState.choose(baseModel.leftLeg.visible, baseModel.rightLeg.visible);
         if (baseModel.leftLeg.visible) {
             poseStack.pushPose();
             baseModel.leftLeg.translateAndRotate(poseStack);
             poseStack.translate(0, 0, 0.06);
             poseStack.scale(1.02F, 1.02F, 1.02F);
             poseStack.translate(-0.1375, -0.75, -0.0625);
-            //TODO - 1.21.11: Figure out how to get the foil render types and how to make it render?
-            nodeCollector.submitModel(
-                  this.model,
-                  FreeRunnerRenderState.LEFT_ONLY,
-                  poseStack,
-                  this.model.getRenderType(),
-                  //TODO - 1.21.11: Figure out how to have the lit parts of the model be rendered as full bright
-                  lightCoords,
-                  OverlayTexture.NO_OVERLAY,
-                  state.outlineColor,
-                  null
-            );
-
-            poseStack.popPose();
-        }
-        if (baseModel.rightLeg.visible) {
-            poseStack.pushPose();
-            baseModel.rightLeg.translateAndRotate(poseStack);
-            poseStack.translate(0, 0, 0.06);
-            poseStack.scale(1.02F, 1.02F, 1.02F);
-            poseStack.translate(0.1375, -0.75, -0.0625);
-            //TODO - 1.21.11: Figure out how to get the foil render types and how to make it render?
-            nodeCollector.submitModel(
-                  this.model,
-                  FreeRunnerRenderState.RIGHT_ONLY,
-                  poseStack,
-                  this.model.getRenderType(),
-                  //TODO - 1.21.11: Figure out how to have the lit parts of the model be rendered as full bright
-                  lightCoords,
-                  OverlayTexture.NO_OVERLAY,
-                  state.outlineColor,
-                  null
-            );
+            this.model.collect(renderState, poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, stack.hasFoil());
             poseStack.popPose();
         }
         poseStack.popPose();

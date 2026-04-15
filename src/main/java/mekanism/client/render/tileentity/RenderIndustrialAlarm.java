@@ -98,27 +98,16 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
             }
         }
         //TODO - 1.21.11: Validate this render type and that the texture is accessible
+        //TODO 26.1 crumble - add support to MekJavaModel if it's needed
+        this.model.collect(state.modelState, poseStack, nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false);
         RenderType renderType = this.model.getRenderType();
-        nodeCollector.submitModel(
-              this.model,
-              state.modelState,
-              poseStack,
-              renderType,
-              //TODO - 1.21.11: Why isn't this (and the model part below) using state.lightCoords for the light
-              LightCoordsUtil.FULL_BRIGHT,
-              OverlayTexture.NO_OVERLAY,
-              state.modelState.getTint(),
-              null,//TODO - 1.21.11: Do we need to specify the texture again
-              0,//No outline
-              state.breakProgress//TODO - 1.21.11: I am guessing one of these things we don't want the break overlay to go on, which is it
-        );
         nodeCollector.submitModelPart(
               this.lightBox,
               poseStack,
               renderType,
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              null//TODO - 1.21.11: Texture?
+              null
         );
         poseStack.popPose();
     }

@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.common.Mekanism;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -8,12 +9,13 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Unit;
+import org.jetbrains.annotations.NotNull;
 
-public class ModelScubaTank extends MekanismJavaModel<Unit> {
+public class ModelScubaTank extends MekanismJavaModel.NoState {
 
     public static final ModelLayerLocation TANK_LAYER = new ModelLayerLocation(Mekanism.rl("scuba_tank"), "main");
     private static final Identifier TANK_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "scuba_set.png");
@@ -57,13 +59,19 @@ public class ModelScubaTank extends MekanismJavaModel<Unit> {
         return createLayerDefinition(128, 64, TANK_L, TANK_R, TANK_DOCK, CAP_L, CAP_R, TANK_BRIDGE, TANK_PIPE_LOWER, TANK_PIPE_UPPER, TANK_BACK_BRACE);
     }
 
-    private final RenderType RENDER_TYPE = renderType(TANK_TEXTURE);
+    private final RenderType RENDER_TYPE = RenderTypes.entitySolid(TANK_TEXTURE);
 
     public ModelScubaTank(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(TANK_LAYER), RenderTypes::entitySolid);
+        super(entityModelSet.bakeLayer(TANK_LAYER));
+    }
+
+    @Override
+    public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 
     public RenderType getRenderType() {
         return RENDER_TYPE;
     }
+
 }

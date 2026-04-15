@@ -7,33 +7,32 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelAtomicDisassembler;
 import mekanism.client.render.item.MekanismISTER;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.util.Unit;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import org.joml.Vector3fc;
 
 @NothingNullByDefault
-public class RenderAtomicDisassembler extends MekanismISTER {
+public class RenderAtomicDisassembler implements NoDataSpecialModelRenderer {
 
     public static final RenderAtomicDisassembler RENDERER = new RenderAtomicDisassembler();
     private final ModelAtomicDisassembler atomicDisassembler;
 
     public RenderAtomicDisassembler() {
-        atomicDisassembler = new ModelAtomicDisassembler(getEntityModels());
+        atomicDisassembler = new ModelAtomicDisassembler(MekanismISTER.getEntityModels());
     }
 
     @Override
-    public void submit(ItemDisplayContext type, PoseStack poseStack, SubmitNodeCollector nodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        atomicDisassembler.render(poseStack, renderer, lightCoords, overlayCoords, hasFoil);
+        atomicDisassembler.collect(null, poseStack, submitNodeCollector, lightCoords, overlayCoords, hasFoil);
         poseStack.popPose();
     }
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
         PoseStack poseStack = new PoseStack();
-        this.atomicDisassembler.setupAnim(Unit.INSTANCE);
+        this.atomicDisassembler.setupAnim();
         this.atomicDisassembler.root().getExtentsForGui(poseStack, output);
     }
 }

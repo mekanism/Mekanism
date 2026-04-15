@@ -1,7 +1,5 @@
 package mekanism.client.render;
 
-import mekanism.client.render.armor.ICustomArmor;
-import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.block.BlockBounding;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -16,8 +14,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.client.extensions.common.IClientBlockExtensions;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
-import org.jetbrains.annotations.NotNull;
 
 //This class is used to prevent class loading issues on the server without having to use OnlyIn hacks
 public class RenderPropertiesProvider {
@@ -37,9 +33,9 @@ public class RenderPropertiesProvider {
                         if (!mainState.isAir()) {
                             //Copy of ParticleManager#addBlockHitEffects except using the block state for the main position
                             AABB axisalignedbb = state.getShape(world, pos).bounds();
-                            double x = pos.getX() + world.random.nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX - 0.2) + 0.1 + axisalignedbb.minX;
-                            double y = pos.getY() + world.random.nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - 0.2) + 0.1 + axisalignedbb.minY;
-                            double z = pos.getZ() + world.random.nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - 0.2) + 0.1 + axisalignedbb.minZ;
+                            double x = pos.getX() + world.getRandom().nextDouble() * (axisalignedbb.maxX - axisalignedbb.minX - 0.2) + 0.1 + axisalignedbb.minX;
+                            double y = pos.getY() + world.getRandom().nextDouble() * (axisalignedbb.maxY - axisalignedbb.minY - 0.2) + 0.1 + axisalignedbb.minY;
+                            double z = pos.getZ() + world.getRandom().nextDouble() * (axisalignedbb.maxZ - axisalignedbb.minZ - 0.2) + 0.1 + axisalignedbb.minZ;
                             Direction side = blockTarget.getDirection();
                             switch (side) {
                                 case DOWN -> y = pos.getY() + axisalignedbb.minY - 0.1;
@@ -60,7 +56,8 @@ public class RenderPropertiesProvider {
         };
     }
 
-    public record MekRenderProperties(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
+    //todo 26.1 renderers
+    /*public record MekRenderProperties(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
 
         @NotNull
         @Override
@@ -76,7 +73,7 @@ public class RenderPropertiesProvider {
         public BlockEntityWithoutLevelRenderer getCustomRenderer() {
             return renderer;
         }
-    }
+    }*/
 
     public static final IClientBlockExtensions PARTICLE_HANDLER = new IClientBlockExtensions() {
         @Override

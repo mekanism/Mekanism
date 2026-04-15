@@ -9,35 +9,63 @@ import java.util.Set;
 import java.util.function.Function;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.lib.Outlines.Line;
-import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.ModelPart.Cube;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
 
-public abstract class MekanismJavaModel<STATE> extends Model<STATE> {
+public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
 
-    public MekanismJavaModel(ModelPart root, Function<Identifier, RenderType> renderType) {
-        super(root, renderType);
+    protected final ModelPart root;
+    protected final List<ModelPart> allParts;
+
+    public MekanismJavaModel(ModelPart root) {
+        this.root = root;
+        this.allParts = root.getAllParts();
     }
 
-    public static VertexConsumer getVertexConsumer(@NotNull MultiBufferSource renderer, @NotNull RenderType renderType, boolean hasEffect) {
-        return ItemRenderer.getFoilBuffer(renderer, renderType, false, hasEffect);
+    @Deprecated//TODO 26.1 remove when unused
+    public MekanismJavaModel(ModelPart root, Function<Identifier, RenderType> renderType) {
+        this(root);
+    }
+
+    //TODO 26.1 outlines??
+    public abstract void collect(STATE state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
+
+    public void setupAnim(STATE state) {
+        this.resetPose();
+    }
+
+    public final void resetPose() {
+        for (ModelPart part : this.allParts) {
+            part.resetPose();
+        }
+    }
+
+    public ModelPart root() {
+        return root;
     }
 
     protected static void renderPartsToBuffer(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int argb) {
         for (ModelPart part : parts) {
             part.render(poseStack, vertexConsumer, light, overlayLight, argb);
+        }
+    }
+
+    protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, @NotNull SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite, boolean hasFoil) {
+        for (ModelPart part : parts) {
+            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, false, hasFoil);
         }
     }
 
@@ -111,5 +139,23 @@ public abstract class MekanismJavaModel<STATE> extends Model<STATE> {
 
     private static void setVectorFromVertex(ModelPart.Vertex vertex, Vector3f vector) {
         vector.set(vertex.worldX(), vertex.worldY(), vertex.worldZ());
+    }
+
+    public abstract static class NoState extends MekanismJavaModel<Void> {
+
+        public NoState(ModelPart root) {
+            super(root);
+        }
+
+        public void setupAnim() {
+            setupAnim(null);
+        }
+
+        @Override
+        public final void collect(Void unused, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+            collect(poseStack, submitNodeCollector, light, overlayLight, hasEffect);
+        }
+
+        public abstract void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil);
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -10,6 +9,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -90,12 +90,12 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
-        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, color);
-        if (left) {
-            renderPartsToBuffer(litLeftParts, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
+    public void collect(FreeRunnerRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        super.collect(state, poseStack, submitNodeCollector, light, overlayLight, hasEffect);
+        if (state.leftVisible()) {
+            collectParts(litLeftParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasEffect);
         } else {
-            renderPartsToBuffer(litRightParts, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
+            collectParts(litRightParts, poseStack, getRenderType(), submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasEffect);
         }
     }
 

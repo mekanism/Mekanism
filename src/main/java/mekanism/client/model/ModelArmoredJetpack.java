@@ -1,7 +1,6 @@
 package mekanism.client.model;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.common.Mekanism;
 import net.minecraft.client.model.geom.EntityModelSet;
@@ -10,6 +9,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.util.LightCoordsUtil;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,18 +70,19 @@ public class ModelArmoredJetpack extends ModelJetpack {
 
     private ModelArmoredJetpack(ModelPart root) {
         super(root);
-        //Note: Parts are gotten by name and given our parts we override for super have the same name, we don't have to inject them elsewhere
+        //Note: Parts are retrieved by name and given our parts we override for super have the same name, we don't have to inject them elsewhere
         armoredParts = getRenderableParts(root, CHESTPLATE, LEFT_GUARD_TOP, RIGHT_GUARD_TOP, MIDDLE_PLATE, RIGHT_GUARD_BOT, LEFT_GUARD_BOT);
         armoredLights = getRenderableParts(root, RIGHT_LIGHT, LEFT_LIGHT);
     }
 
     @Override
-    public void renderToBuffer(@NotNull PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, int light, int overlayLight, int color) {
-        super.renderToBuffer(poseStack, vertexConsumer, light, overlayLight, color);
+    public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+        super.collect(poseStack, collector, light, overlayLight, hasFoil);
         poseStack.pushPose();
         poseStack.translate(0, 0, -0.0625);
-        renderPartsToBuffer(armoredParts, poseStack, vertexConsumer, light, overlayLight, color);
-        renderPartsToBuffer(armoredLights, poseStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
+        collectParts(armoredParts, poseStack, frameRenderType, collector, light, overlayLight, -1, null, hasFoil);
+        collectParts(armoredLights, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasFoil);
         poseStack.popPose();
     }
+
 }

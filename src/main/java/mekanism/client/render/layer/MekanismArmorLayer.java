@@ -31,6 +31,10 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
         renderArmorPart(poseStack, nodeCollector, state.headEquipment, EquipmentSlot.HEAD, state, lightCoords);
     }
 
+    //copied from super private method
+    private A getArmorModel(STATE state, EquipmentSlot slot) {
+        return (state.isBaby ? this.babyModelSet : this.modelSet).get(slot);
+    }
     
     //PoseStack poseStack, SubmitNodeCollector submitNodeCollector, ItemStack itemStack, EquipmentSlot slot, int lightCoords, S state
     private void renderArmorPart(PoseStack poseStack, SubmitNodeCollector nodeCollector, ItemStack stack, EquipmentSlot slot, STATE state, int lightCoords) {
@@ -40,10 +44,8 @@ public class MekanismArmorLayer<STATE extends HumanoidRenderState, MODEL extends
             ICustomArmor model = specialGear.gearModel();
             //TODO - 1.21.11: Fix this as it seems baby models now get handled via this
             //TODO - 1.21.11: Figure out baby vs not
-            A coreModel = getArmorModel(state, slot);// slot == EquipmentSlot.LEGS ? innerModel : outerModel;
-            //EquipmentClientInfo.LayerType layerType = slot == EquipmentSlot.LEGS ? EquipmentClientInfo.LayerType.HUMANOID_LEGGINGS : EquipmentClientInfo.LayerType.HUMANOID;
+            A coreModel = getArmorModel(state, slot);
             model.render(coreModel, poseStack, nodeCollector, lightCoords, state, stack);
-            //this.equipmentRenderer.renderLayers(layerType, equippable.assetId().orElseThrow(), model, state, stack, poseStack, nodeCollector, lightCoords, state.outlineColor);
         }
     }
 }

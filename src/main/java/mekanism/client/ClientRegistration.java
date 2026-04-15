@@ -1,12 +1,8 @@
 package mekanism.client;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Table.Cell;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
-import java.util.concurrent.ConcurrentHashMap;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.EnumColor;
@@ -81,17 +77,13 @@ import mekanism.client.model.MekanismModelCache;
 import mekanism.client.model.ModelArmoredFreeRunners;
 import mekanism.client.model.ModelArmoredJetpack;
 import mekanism.client.model.ModelAtomicDisassembler;
-import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.model.ModelFlamethrower;
 import mekanism.client.model.ModelFreeRunners;
 import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.baked.DigitalMinerBakedModel;
-import mekanism.client.model.baked.DriveArrayBakedModel;
 import mekanism.client.model.baked.EnergyCubeModel;
-import mekanism.client.model.baked.ExtensionBakedModel.LightedBakedModel;
 import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
@@ -100,8 +92,6 @@ import mekanism.client.particle.LaserParticle;
 import mekanism.client.particle.RadiationParticle;
 import mekanism.client.particle.ScubaBubbleParticle;
 import mekanism.client.render.RenderPropertiesProvider;
-import mekanism.client.render.RenderPropertiesProvider.MekCustomArmorRenderProperties;
-import mekanism.client.render.RenderPropertiesProvider.MekRenderProperties;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.armor.FreeRunnerArmor;
 import mekanism.client.render.armor.JetpackArmor;
@@ -117,12 +107,6 @@ import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
-import mekanism.client.render.item.block.RenderEnergyCubeItem;
-import mekanism.client.render.item.block.RenderFluidTankItem;
-import mekanism.client.render.item.gear.RenderAtomicDisassembler;
-import mekanism.client.render.item.gear.RenderFlameThrower;
-import mekanism.client.render.item.gear.RenderFreeRunners;
-import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.item.gear.RenderScubaMask;
 import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
@@ -159,7 +143,6 @@ import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
@@ -182,17 +165,18 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
-import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -200,7 +184,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelType;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
@@ -224,12 +207,6 @@ import org.jetbrains.annotations.NotNull;
 
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class ClientRegistration {
-
-    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
-          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
-    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
-          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "perspectives", ImmutableMap::of);
-    private static final Map<Identifier, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
@@ -297,8 +274,9 @@ public class ClientRegistration {
             });
         });
 
-        addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
-        addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
+        //TODO 26.1 models
+        //addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
+        //addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
 
         addLitModel(MekanismItems.MEKA_TOOL);
     }
@@ -382,14 +360,24 @@ public class ClientRegistration {
     public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
         //Robit Texture Atlas
         event.addListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
-        ClientRegistrationUtil.registerClientReloadListeners(event,
-              //ISTERs
-              RenderEnergyCubeItem.RENDERER, RenderJetpack.ARMORED_RENDERER, RenderAtomicDisassembler.RENDERER, RenderFlameThrower.RENDERER, RenderFreeRunners.RENDERER,
-              RenderFreeRunners.ARMORED_RENDERER, RenderJetpack.RENDERER, RenderScubaMask.RENDERER, RenderScubaTank.RENDERER,
-              //Custom Armor
-              JetpackArmor.ARMORED_JETPACK, JetpackArmor.JETPACK, FreeRunnerArmor.ARMORED_FREE_RUNNERS, FreeRunnerArmor.FREE_RUNNERS, ScubaMaskArmor.SCUBA_MASK,
-              ScubaTankArmor.SCUBA_TANK
-        );
+        //ISTERs
+        //TODO 26.1 check if these need to be listening here to avoid races with layer definitions
+        //event.addListener(Mekanism.rl("render_energy_cube_item"), RenderEnergyCubeItem.RENDERER);
+        //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.ARMORED_RENDERER);
+        //event.addListener(Mekanism.rl("render_atomic_disassembler"), RenderAtomicDisassembler.RENDERER);
+        //event.addListener(Mekanism.rl("render_flame_thrower"), RenderFlameThrower.RENDERER);
+        //event.addListener(Mekanism.rl("render_free_runners"), RenderFreeRunners.RENDERER);
+        //event.addListener(Mekanism.rl("render_free_runners_armored"), RenderFreeRunners.ARMORED_RENDERER);
+        //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.RENDERER);
+        event.addListener(Mekanism.rl("render_scuba_mask"), RenderScubaMask.RENDERER);
+        event.addListener(Mekanism.rl("render_scuba_tank"), RenderScubaTank.RENDERER);
+        //Custom Armor
+        event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
+        event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
+        event.addListener(Mekanism.rl("free_runner_armor_armored"), FreeRunnerArmor.ARMORED_FREE_RUNNERS);
+        event.addListener(Mekanism.rl("free_runner_armor"), FreeRunnerArmor.FREE_RUNNERS);
+        event.addListener(Mekanism.rl("scuba_mask_armor"), ScubaMaskArmor.SCUBA_MASK);
+        event.addListener(Mekanism.rl("scuba_tank_armor"), ScubaTankArmor.SCUBA_TANK);
     }
 
     @SubscribeEvent
@@ -563,7 +551,7 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
+        //TODO 26.1 fluid models ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
         for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             int tint = item.getColumnKey().getTint();
             ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, item.getValue());
@@ -602,54 +590,58 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
-        event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK);
-        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
-        event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
-        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK);
-        event.registerItem(new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
-        event.registerItem(new MekRenderProperties(RenderAtomicDisassembler.RENDERER), MekanismItems.ATOMIC_DISASSEMBLER);
-        event.registerItem(new MekRenderProperties(RenderFlameThrower.RENDERER), MekanismItems.FLAMETHROWER);
+        //todo 26.1 renderers
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK);
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.RENDERER, FreeRunnerArmor.FREE_RUNNERS), MekanismItems.FREE_RUNNERS);
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderScubaMask.RENDERER, ScubaMaskArmor.SCUBA_MASK), MekanismItems.SCUBA_MASK);
+        //event.registerItem(new MekCustomArmorRenderProperties(RenderScubaTank.RENDERER, ScubaTankArmor.SCUBA_TANK), MekanismItems.SCUBA_TANK);
+        //event.registerItem(new MekRenderProperties(RenderAtomicDisassembler.RENDERER), MekanismItems.ATOMIC_DISASSEMBLER);
+        //event.registerItem(new MekRenderProperties(RenderFlameThrower.RENDERER), MekanismItems.FLAMETHROWER);
 
         event.registerItem(MekaSuitArmor.HELMET, MekanismItems.MEKASUIT_HELMET);
         event.registerItem(MekaSuitArmor.BODYARMOR, MekanismItems.MEKASUIT_BODYARMOR);
         event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS);
         event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS);
 
-        ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
+        //todo 26.1 renderers
+        /*ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
               MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
         ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderFluidTankItem.RENDERER), MekanismBlocks.BASIC_FLUID_TANK,
               MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK, MekanismBlocks.CREATIVE_FLUID_TANK);
-
+*/
         event.registerBlock(RenderPropertiesProvider.boundingParticles(), MekanismBlocks.BOUNDING_BLOCK);
         ClientRegistrationUtil.registerBlockExtensions(event, MekanismBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, MekanismFluids.FLUIDS);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     @SubscribeEvent
     public static void addLayers(EntityRenderersEvent.AddLayers event) {
         //Add our own custom armor and elytra layer to the various player renderers
         for (PlayerModelType skin : event.getSkins()) {
-            //Note: We expect this to always be an instanceof PlayerRenderer, but we just bother checking if it is a LivingEntityRenderer
-            if (event.getPlayerRenderer(skin) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
-                addCustomLayers(EntityType.PLAYER, renderer, event.getContext());
+            AvatarRenderer<AbstractClientPlayer> playerRenderer = event.getPlayerRenderer(skin);
+            if (playerRenderer != null) {
+                addCustomLayers(EntityType.PLAYER, playerRenderer, event.getContext());
             }
         }
         //Add our own custom armor and elytra layer to everything that has an armor layer
         //Note: This includes any modded mobs that have vanilla's HumanoidArmorLayer or ElytraLayer added to them
         for (EntityType<?> entityType : event.getEntityTypes()) {
             if (event.getRenderer(entityType) instanceof LivingEntityRenderer<?, ?, ?> renderer) {
-                addCustomLayers(entityType, renderer, event.getContext());
+                addCustomLayers(entityType, (LivingEntityRenderer) renderer, event.getContext());
             }
         }
     }
 
-    private static <STATE extends LivingEntityRenderState, MODEL extends EntityModel<? super STATE>> void addCustomLayers(@NotNull EntityType<?> type,
+    private static <STATE extends HumanoidRenderState, MODEL extends EntityModel<STATE>> void addCustomLayers(@NotNull EntityType<?> type,
           @NotNull LivingEntityRenderer<?, STATE, MODEL> renderer, @NotNull EntityRendererProvider.Context context) {
         int layerTypes = 2;
         Map<String, RenderLayer<STATE, MODEL>> layersToAdd = new HashMap<>(layerTypes);
         for (RenderLayer<STATE, MODEL> layerRenderer : renderer.layers) {
             //Validate against the layer render being null, as it seems like some mods do stupid things and add in null layers
+            //noinspection ConstantValue
             if (layerRenderer != null) {
                 //Only allow an exact class match, so we don't add to modded entities that only have a modded extended armor or elytra layer
                 Class<?> layerClass = layerRenderer.getClass();
@@ -677,15 +669,24 @@ public class ClientRegistration {
         }
     }
 
-    public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
+    //TODO 26.1 baked models
+    /*public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
         customModels.put(provider.getId(), object);
-    }
+    }*/
 
     public static void addLitModel(INamedEntry... entries) {
-        for (INamedEntry namedEntry : entries) {
+        //TODO 26.1 baked models
+        /*for (INamedEntry namedEntry : entries) {
             addCustomModel(namedEntry, (orig, evt) -> lightBakedModel(orig));
-        }
+        }*/
     }
+
+    //TODO 26.1 baked models
+    /*private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
+          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
+    private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
+          new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "perspectives", ImmutableMap::of);
+    private static final Map<Identifier, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
 
     private static BakedModel lightBakedModel(BakedModel orig) {
         if (orig instanceof SeparateTransformsModel.Baked separatePerspectiveModel) {
@@ -702,5 +703,5 @@ public class ClientRegistration {
     public interface CustomModelRegistryObject {
 
         BakedModel createModel(BakedModel original, ModelEvent.ModifyBakingResult event);
-    }
+    }*/
 }

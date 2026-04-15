@@ -9,7 +9,6 @@ import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.ResourceManagerReloadListener;
-import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,23 +35,13 @@ public class ScubaTankArmor implements ICustomArmor, ResourceManagerReloadListen
         }
         poseStack.pushPose();
         if (state.isBaby) {
-            float f1 = 1.0F / state.babyBodyScale;
+            float f1 = 1.0F / BABY_MODEL_TRANSFORM.babyBodyScale();
             poseStack.scale(f1, f1, f1);
-            poseStack.translate(0.0D, baseModel.bodyYOffset / 16.0F, 0.0D);
+            poseStack.translate(0.0D, BABY_MODEL_TRANSFORM.bodyYOffset() / 16.0F, 0.0D);
         }
         baseModel.body.translateAndRotate(poseStack);
         poseStack.translate(0, 0, 0.06);
-        //TODO - 1.21.11: Figure out how to get the foil render types and how to make it render?
-        nodeCollector.submitModel(
-              this.model,
-              Unit.INSTANCE,
-              poseStack,
-              this.model.getRenderType(),
-              lightCoords,
-              OverlayTexture.NO_OVERLAY,
-              state.outlineColor,
-              null
-        );
+        this.model.collect(poseStack, nodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, stack.hasFoil());
         poseStack.popPose();
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.model.ModelIndustrialAlarm.IndustrialAlarmRenderState;
 import mekanism.client.render.MekanismRenderType;
 import mekanism.common.Mekanism;
@@ -10,10 +11,12 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
+import org.jetbrains.annotations.NotNull;
 
 public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRenderState> {
 
@@ -32,10 +35,10 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
         return createLayerDefinition(64, 64, BULB, AURA);
     }
 
-    private final RenderType RENDER_TYPE = renderType(TEXTURE_ACTIVE);
+    private final RenderType RENDER_TYPE = MekanismRenderType.ALARM.apply(TEXTURE_ACTIVE);
 
     public ModelIndustrialAlarm(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(ALARM_LAYER), MekanismRenderType.ALARM);
+        super(entityModelSet.bakeLayer(ALARM_LAYER));
     }
 
     public RenderType getRenderType() {
@@ -50,6 +53,11 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
         /*float yRot = state.rotation * Mth.DEG_TO_RAD;
         aura.setRotation(0, yRot, 0);
         bulb.setRotation(0, yRot, 0);*/
+    }
+
+    public void collect(IndustrialAlarmRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+        setupAnim(state);
+        collectParts(allParts, poseStack, RENDER_TYPE, collector, light, overlayLight, 0xFFFFFFFF, null, hasFoil);
     }
 
     public static class IndustrialAlarmRenderState {
