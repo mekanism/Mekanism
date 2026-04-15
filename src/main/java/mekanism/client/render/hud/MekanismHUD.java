@@ -163,6 +163,12 @@ public class MekanismHUD implements GuiLayer {
 
     public record DelayedString(Matrix4f matrix, Component component, float x, float y, int color, boolean dropShadow) {
 
+        public DelayedString {
+            if ((color & 0xFF000000) == 0) {
+                Mekanism.logger.warn("Possible missed alpha?", new Exception());
+            }
+        }
+
         public DelayedString(PoseStack pose, Component component, float x, float y, int color, boolean dropShadow) {
             this(new Matrix4f(pose.last().pose()), component, x, y, color, dropShadow);
         }
