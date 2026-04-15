@@ -151,7 +151,7 @@ public class HUDRenderer {
     }
 
     /**
-     * Based on how {@link SubtitleOverlay#render(GuiGraphicsExtractor)} calculates the width
+     * Based on how {@link SubtitleOverlay#extractRenderState(GuiGraphicsExtractor)} calculates the width
      */
     private int getAudibleSubtitlesWidth(Minecraft minecraft, Font font) {
         if (!minecraft.options.showSubtitles().get() || minecraft.gui.subtitleOverlay.audibleSubtitles.isEmpty()) {

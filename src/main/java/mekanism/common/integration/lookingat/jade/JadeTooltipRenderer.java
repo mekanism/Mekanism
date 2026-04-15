@@ -127,9 +127,9 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
         }
 
         @Override
-        public void extractRenderState(GuiGraphicsExtractor guiGraphics, float rawX, float rawY, float maxX, float maxY) {
-            int x = Mth.floor(rawX);
-            int y = Mth.floor(rawY);
+        public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+            int x = getX();
+            int y = getY();
             if (text != null) {
                 element.drawScrollingString(guiGraphics, text, x,y + 3, TextAlignment.LEFT, 0xFFFFFF, 4, false);
                 y += 13;

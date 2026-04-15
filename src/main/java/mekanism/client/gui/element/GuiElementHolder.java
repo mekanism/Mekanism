@@ -23,7 +23,7 @@ public class GuiElementHolder extends GuiScalableElement {
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         renderBackgroundTexture(guiGraphics, getResource(), sideWidth, sideHeight);
     }
 

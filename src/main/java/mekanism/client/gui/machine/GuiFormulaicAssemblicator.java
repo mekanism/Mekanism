@@ -124,8 +124,8 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {
-        super.renderBg(guiGraphics, partialTick, mouseX, mouseY);
+    protected void extractMenuBackground(@NotNull GuiGraphicsExtractor guiGraphics) {
+        super.extractMenuBackground(guiGraphics);
         //TODO: Gui element
         SlotOverlay overlay = tile.hasRecipe() ? SlotOverlay.CHECK : SlotOverlay.X;
         guiGraphics.blit(overlay.getTexture(), leftPos + 88, topPos + 22, 0, 0, overlay.getWidth(), overlay.getHeight(),

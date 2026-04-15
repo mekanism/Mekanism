@@ -47,8 +47,8 @@ public abstract class GuiSideHolder extends GuiTexturedElement {
     protected abstract void colorTab(GuiGraphicsExtractor guiGraphics);
 
     @Override
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        super.renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
+    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+        super.extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         if (this.slotHolder) {
             //Slot holders need to draw here to render behind the slots instead of in front of them
             draw(guiGraphics);

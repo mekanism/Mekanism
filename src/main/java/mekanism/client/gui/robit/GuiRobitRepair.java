@@ -120,7 +120,7 @@ public class GuiRobitRepair extends GuiRobit<RepairRobitContainer> implements Co
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractMenuBackground(@NotNull GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ANVIL_LOCATION, leftPos, topPos, 0, 0, imageWidth, imageHeight, BACKGROUND_TEXTURE_WIDTH, BACKGROUND_TEXTURE_HEIGHT);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.menu.getSlot(0).hasItem() ? TEXT_FIELD_SPRITE : TEXT_FIELD_DISABLED_SPRITE, this.leftPos + 59, this.topPos + 20, 110, 16);
         if ((menu.getSlot(0).hasItem() || menu.getSlot(1).hasItem()) && !menu.getSlot(2).hasItem()) {

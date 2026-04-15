@@ -137,7 +137,7 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
     }
 
     @Override
-    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         if (!renderAboveSlots) {
             draw(guiGraphics);
         }

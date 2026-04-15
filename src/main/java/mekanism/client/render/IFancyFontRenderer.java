@@ -3,6 +3,7 @@ package mekanism.client.render;
 import java.util.Collections;
 import java.util.List;
 import mekanism.client.SpecialColors;
+import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
@@ -268,12 +269,15 @@ public interface IFancyFontRenderer {
         }
 
         private void render(GuiGraphicsExtractor graphics, int x, int startY, int maxLength, TextAlignment alignment, int color, float scale) {
+            if ((color & 0xFF000000) == 0) {
+                Mekanism.logger.warn("Alpha not supplied?", new Exception());
+            }
             Font font = fontRenderer.font();
             //Divide by scale for calculating actual max length so that when the text is scaled it has the proper total space available
             calculateLines(font, scale == 1 ? maxLength : Mth.floor(maxLength / scale));
             int maxX = x + maxLength;
             for (FormattedCharSequence line : linesToDraw) {
-                graphics.text(font, line, alignment.getTarget(font, x, maxX, scale * font.width(line)), startY, color, false);
+                graphics.text(font, line, alignment.getTarget(font, x, maxX, Math.round(scale * font.width(line))), startY, color, false);
                 startY += font.lineHeight;
             }
         }

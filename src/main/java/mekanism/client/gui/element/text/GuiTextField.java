@@ -2,10 +2,10 @@ package mekanism.client.gui.element.text;
 
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.function.Consumer;
+import java.util.function.IntPredicate;
 import java.util.function.IntSupplier;
+import java.util.function.IntUnaryOperator;
 import java.util.function.UnaryOperator;
-import mekanism.api.functions.CharPredicate;
-import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
@@ -16,7 +16,6 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
@@ -44,8 +43,8 @@ public class GuiTextField extends GuiElement {
     private ContainerEventHandler parent;
 
     private Runnable enterHandler;
-    private CharPredicate inputValidator;
-    private CharUnaryOperator inputTransformer;
+    private IntPredicate inputValidator;
+    private IntUnaryOperator inputTransformer;
     private UnaryOperator<String> pasteTransformer;
     private Consumer<String> responder;
 
@@ -130,12 +129,12 @@ public class GuiTextField extends GuiElement {
         return this;
     }
 
-    public GuiTextField setInputValidator(CharPredicate inputValidator) {
+    public GuiTextField setInputValidator(IntPredicate inputValidator) {
         this.inputValidator = inputValidator;
         return this;
     }
 
-    public GuiTextField setInputTransformer(CharUnaryOperator inputTransformer) {
+    public GuiTextField setInputTransformer(IntUnaryOperator inputTransformer) {
         this.inputTransformer = inputTransformer;
         return this;
     }
@@ -217,14 +216,14 @@ public class GuiTextField extends GuiElement {
         //Translate to the top left before attempting to render the text field as vanilla renders widgets from the top left
         matrix.translate(-getGuiLeft(), -getGuiTop());
         if (textScale == 1F) {
-            textField.render(guiGraphics, mouseX, mouseY, partialTicks);
+            textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         } else {
             // hacky. we should write our own renderer at some point.
             float reverse = (1 - textScale) / textScale;
             matrix.scale(textScale, textScale);
             //Note: We use 4 instead of half line height (4.5) as text fields use 8 for calculating text positioning
             matrix.translate(textField.getX() * reverse, (textField.getY() + 4) * reverse);
-            textField.render(guiGraphics, mouseX, mouseY, partialTicks);
+            textField.extractRenderState(guiGraphics, mouseX, mouseY, partialTicks);
         }
         matrix.popMatrix();
         if (iconType != null) {
@@ -268,22 +267,23 @@ public class GuiTextField extends GuiElement {
                     text = pasteTransformer.apply(text);
                 }
                 if (inputTransformer != null || inputValidator != null) {
-                    boolean transformed = false;
-                    char[] charArray = text.toCharArray();
-                    for (int i = 0; i < charArray.length; i++) {
-                        char c = charArray[i];
+                    boolean wasTransformed = false;
+                    int strLen = text.length();
+                    StringBuilder transformed = new StringBuilder(strLen);
+                    for (int i = 0; i < strLen; i++) {
+                        int codepoint = text.codePointAt(i);
                         if (inputTransformer != null) {
-                            c = inputTransformer.applyAsChar(c);
-                            charArray[i] = c;
-                            transformed = true;
+                            codepoint = inputTransformer.applyAsInt(codepoint);
+                            transformed.appendCodePoint(codepoint);
+                            wasTransformed = true;
                         }
-                        if (inputValidator != null && !inputValidator.test(c)) {
+                        if (inputValidator != null && !inputValidator.test(codepoint)) {
                             //Contains an invalid character fail
                             return false;
                         }
                     }
-                    if (transformed) {
-                        text = String.copyValueOf(charArray);
+                    if (wasTransformed) {
+                        text = transformed.toString();
                     }
                 }
                 textField.insertText(text);
@@ -298,10 +298,15 @@ public class GuiTextField extends GuiElement {
     @Override
     public boolean charTyped(@NotNull CharacterEvent event) {
         if (canWrite()) {
+            int initialCodepoint = event.codepoint();
+            int codepointUsed = initialCodepoint;
             if (inputTransformer != null) {
-                c = inputTransformer.applyAsChar(c);
+                codepointUsed = inputTransformer.applyAsInt(initialCodepoint);
             }
-            if (inputValidator == null || inputValidator.test(c)) {
+            if (inputValidator == null || inputValidator.test(codepointUsed)) {
+                if (codepointUsed != initialCodepoint) {
+                    event = new CharacterEvent(codepointUsed);
+                }
                 return textField.charTyped(event);
             }
             return false;

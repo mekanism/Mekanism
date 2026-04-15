@@ -150,10 +150,21 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     /**
      * Like {@link #addRenderableWidget(GuiEventListener)}, except doesn't add the element as narratable.
      */
+    @SuppressWarnings("unchecked")//todo AT the children list or use addWidget
     protected <T extends GuiElement> T addElement(T element) {
         renderables.add(element);
         ((List<GuiEventListener>) children()).add(element);
         return element;
+    }
+
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        renderables.forEach(action -> {
+            if (action instanceof GuiElement guiElement) {
+                guiElement.updateBeforeExtract();
+            }
+        });
+        super.extractRenderState(graphics, mouseX, mouseY, a);
     }
 
     protected <T extends GuiElement> T addRenderableWidget(T element) {
@@ -368,7 +379,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
+    protected void extractLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         //Shift forward as far as tooltips get shifted so that we don't risk intersecting the rendered items
@@ -416,7 +427,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         pose.translate(0, 0, maxZOffset);
 
         pose.pushPose();
-        //Note: Because we are doing this from renderLabels instead of as part of a render override,
+        //Note: Because we are doing this from extractLabels instead of as part of a render override,
         // we need to unshift back to the position the other methods expect to be called from
         pose.translate(-leftPos, -topPos, 0);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
@@ -435,7 +446,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
      */
     @Override
     public final void renderWithTooltip(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
-        //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in renderLabels
+        //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in extractLabels
         // then we make sure to clean them up here
         PoseStack pose = graphics.pose();
         pose.pushPose();
@@ -712,7 +723,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void renderBg(@NotNull GuiGraphicsExtractor guiGraphics, float partialTick, int mouseX, int mouseY) {
+    protected void extractMenuBackground(@NotNull GuiGraphicsExtractor guiGraphics) {
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor(guiGraphics);

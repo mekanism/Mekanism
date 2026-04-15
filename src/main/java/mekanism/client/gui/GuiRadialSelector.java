@@ -73,7 +73,7 @@ public class GuiRadialSelector extends Screen {
     }
 
     @Override
-    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         // center of screen
         float centerX = guiGraphics.guiWidth() / 2F;
         float centerY = guiGraphics.guiHeight() / 2F;

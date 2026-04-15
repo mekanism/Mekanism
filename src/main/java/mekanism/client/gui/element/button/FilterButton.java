@@ -113,10 +113,8 @@ public class FilterButton extends MekanismButton {
         this.toggleButton.visible = visible;
     }
 
-    @Override
-    public void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
+    public void updateBeforeExtract() {
         setVisibility(getFilter() != null);
-        super.render(guiGraphics, mouseX, mouseY, partialTicks);
     }
 
     @Override
