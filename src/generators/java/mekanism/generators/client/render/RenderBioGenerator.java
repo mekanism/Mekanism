@@ -16,7 +16,6 @@ import mekanism.common.util.EnumUtils;
 import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
-import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
