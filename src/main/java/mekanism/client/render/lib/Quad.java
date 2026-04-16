@@ -9,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.Color;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
@@ -16,6 +17,7 @@ import net.minecraft.util.ARGB;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
+//todo 26.1 - can we get rid of these?
 public class Quad {
 
     private final Vertex[] vertices;
@@ -40,10 +42,10 @@ public class Quad {
 
     public Quad(BakedQuad quad) {
         side = quad.direction();
-        sprite = quad.sprite();
-        tintIndex = quad.tintIndex();
-        shade = quad.shade();
-        hasAmbientOcclusion = quad.hasAmbientOcclusion();
+        sprite = quad.materialInfo().sprite();
+        tintIndex = quad.materialInfo().tintIndex();
+        shade = quad.materialInfo().shade();
+        hasAmbientOcclusion = quad.materialInfo().ambientOcclusion();
         BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
         //TODO - 1.21.11: Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
         unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY);
@@ -114,7 +116,7 @@ public class Quad {
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
         quadBaker.setShade(shade);
-        quadBaker.setHasAmbientOcclusion(hasAmbientOcclusion);
+        quadBaker.setAmbientOcclusion(hasAmbientOcclusion);
         for (Vertex vertex : vertices) {
             vertex.write(quadBaker);
         }

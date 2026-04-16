@@ -147,6 +147,11 @@ public class ClientRegistrationUtil {
         }
     }
 
+    @SafeVarargs
+    public static void registerBlockColorHandler(RegisterColorHandlersEvent.BlockTintSources event, BlockTintSource tintSource, Holder<Block>... blocks) {
+        registerBlockColorHandler(event, Collections.singletonList(tintSource), blocks);
+    }
+
     /*public static void registerBucketColorHandler(RegisterColorHandlersEvent.ItemTintSources event, FluidDeferredRegister register) {
         for (Holder<Item> bucket : register.getBucketEntries()) {
             event.register(BUCKET_ITEM_COLOR, bucket.value());

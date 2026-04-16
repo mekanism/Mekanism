@@ -1,6 +1,7 @@
 package mekanism.client.model.baked;
 
-import mekanism.api.annotations.NothingNullByDefault;
+//TODO 26.1 - holiday skin
+/*import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.base.holiday.ClientHolidayInfo;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -27,4 +28,4 @@ public class DigitalMinerBakedModel extends ExtensionBakedModel<Void> {
     protected DigitalMinerBakedModel wrapModel(BakedModel model) {
         return new DigitalMinerBakedModel(model);
     }
-}
+}*/

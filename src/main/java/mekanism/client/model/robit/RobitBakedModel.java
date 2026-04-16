@@ -17,10 +17,12 @@ import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
+import net.minecraft.client.resources.model.sprite.SpriteGetter;
 import net.minecraft.core.RegistryAccess;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -38,15 +40,17 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<Identifier> {
     @Override
     public List<BakedQuad> createQuads(QuadsKey<Identifier> key) {
         List<BakedQuad> quads = key.getQuads();
-        if (RobitSpriteUploader.UPLOADER != null) {
+        //if (RobitSpriteUploader.UPLOADER != null) {
             Identifier selectedTexture = key.getData();
             //Only replace missing textures (which should in general be #robit in the actual json without a mapping to it)
             //TODO: This technically doesn't behave quite right for textures that are not replaced given the sprites on the
             // model likely are on a different atlas than the robit textures, so the render type will be wrong
-            QuadTransformation transformation = QuadTransformation.texture(RobitSpriteUploader.UPLOADER.getSprite(selectedTexture));
+        SpriteGetter spriteGetter = null;//todo 26.1 - bakery rewrite
+        TextureAtlasSprite sprite = spriteGetter.get(RobitSpriteUploader.getSpriteId(selectedTexture));
+        QuadTransformation transformation = QuadTransformation.texture(sprite);
             transformation = TextureFilteredTransformation.of(transformation, rl -> rl.getPath().equals("missingno"));
             quads = QuadUtils.transformBakedQuads(quads, transformation);
-        }
+        //}
         return quads;
     }
 

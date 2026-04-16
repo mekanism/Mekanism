@@ -3,8 +3,8 @@ package mekanism.client.render.lib;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.functions.ToFloatFunction;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 
 public class QuadUtils {
 

@@ -1,11 +1,8 @@
 package mekanism.client;
 
-import com.google.common.collect.Table.Cell;
 import java.util.HashMap;
 import java.util.Map;
-import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.gui.GuiBoilerStats;
 import mekanism.client.gui.GuiChemicalTank;
@@ -84,8 +81,6 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
-import mekanism.client.model.data.DataBasedModelLoader;
-import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -107,11 +102,8 @@ import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
-import mekanism.client.render.item.gear.RenderScubaMask;
-import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.layer.MekanismElytraLayer;
-import mekanism.client.render.obj.TransmitterLoader;
 import mekanism.client.render.tileentity.RenderBin;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer;
@@ -136,20 +128,11 @@ import mekanism.client.render.transmitter.RenderUniversalCable;
 import mekanism.client.render.transmitter.TransmitterRenderState.TransporterRenderState;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.block.attribute.Attribute;
-import mekanism.common.content.gear.shared.ModuleColorModulationUnit;
-import mekanism.common.item.ItemConfigurationCard;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
-import mekanism.common.item.block.machine.ItemBlockFluidTank;
-import mekanism.common.lib.radiation.ClientRadiation;
 import mekanism.common.registration.INamedEntry;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismContainerTypes;
-import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
@@ -158,15 +141,10 @@ import mekanism.common.registries.MekanismParticleTypes;
 import mekanism.common.registries.MekanismTileEntityTypes;
 import mekanism.common.resource.IResource;
 import mekanism.common.resource.PrimaryResource;
-import mekanism.common.resource.ResourceType;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporter;
-import mekanism.common.util.WorldUtils;
-import net.minecraft.SharedConstants;
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.ItemBlockRenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.layers.HumanoidArmorLayer;
@@ -174,17 +152,12 @@ import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.layers.WingsLayer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.Util;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.PlayerModelType;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -222,7 +195,8 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        event.enqueueWork(() -> {
+        //TODO 26.1 item models
+        /*event.enqueueWork(() -> {
             //Set fluids to a translucent render layer
             for (Holder<Fluid> fluid : MekanismFluids.FLUIDS.getFluidEntries()) {
                 ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
@@ -272,7 +246,7 @@ public class ClientRegistration {
                 }
                 return canFly ? 0.0F : 1.0F;
             });
-        });
+        });*/
 
         //TODO 26.1 models
         //addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
@@ -358,8 +332,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-        //Robit Texture Atlas
-        event.addListener(new RobitSpriteUploader(Minecraft.getInstance().getTextureManager()));
         //ISTERs
         //TODO 26.1 check if these need to be listening here to avoid races with layer definitions
         //event.addListener(Mekanism.rl("render_energy_cube_item"), RenderEnergyCubeItem.RENDERER);
@@ -369,8 +341,8 @@ public class ClientRegistration {
         //event.addListener(Mekanism.rl("render_free_runners"), RenderFreeRunners.RENDERER);
         //event.addListener(Mekanism.rl("render_free_runners_armored"), RenderFreeRunners.ARMORED_RENDERER);
         //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.RENDERER);
-        event.addListener(Mekanism.rl("render_scuba_mask"), RenderScubaMask.RENDERER);
-        event.addListener(Mekanism.rl("render_scuba_tank"), RenderScubaTank.RENDERER);
+        //event.addListener(Mekanism.rl("render_scuba_mask"), RenderScubaMask.RENDERER);
+        //event.addListener(Mekanism.rl("render_scuba_tank"), RenderScubaTank.RENDERER);
         //Custom Armor
         event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
         event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
@@ -464,23 +436,16 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(RegisterBlockStateModels event) {
-        event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
+        //todo 26.1 models
+        //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
-        event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
-        event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
+        //event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
+        //event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
 
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
         MekanismModelCache.INSTANCE.setup(event);
-    }
-
-    @SubscribeEvent
-    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
-        event.getModels().replaceAll((rl, model) -> {
-            CustomModelRegistryObject obj = customModels.get(rl.id());
-            return obj == null ? model : obj.createModel(model, event);
-        });
     }
 
     @SubscribeEvent
@@ -498,61 +463,43 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
-                  if (tintIndex == 1) {
-                      BaseTier tier = Attribute.getBaseTier(state.getBlockHolder());
-                      if (tier != null) {
-                          return tier.getPackedColor();
-                      }
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
+        //TODO 26.1 check these are the right tint index, or if they need an empty entry in the list??
+        ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> {
+                  BaseTier tier = Attribute.getBaseTier(state.typeHolder());
+                  if (tier != null) {
+                      return tier.getPackedColor();
                   }
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
-                  if (pos != null) {
-                      TileEntityQIOComponent tile = WorldUtils.getTileEntity(TileEntityQIOComponent.class, world, pos);
-                      if (tile != null) {
-                          EnumColor color = tile.getColor();
-                          return color == null ? -1 : color.getPackedColor();
-                      }
-                  }
-                  return -1;
-              }, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, TileEntityQIOComponent.TINT_SOURCE, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD, MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER,
               MekanismBlocks.QIO_REDSTONE_ADAPTER);
-        ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, tintIndex) -> {
-                  if (tintIndex == 1 && pos != null) {
-                      TileEntityLogisticalTransporter transporter = WorldUtils.getTileEntity(TileEntityLogisticalTransporter.class, world, pos);
-                      if (transporter != null) {
-                          EnumColor renderColor = transporter.getTransmitter().getColor();
-                          if (renderColor != null) {
-                              return renderColor.getPackedColor();
-                          }
-                      }
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
+        ClientRegistrationUtil.registerBlockColorHandler(event, TileEntityLogisticalTransporter.TINT_SOURCE, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER,
               MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             if (entry.getKey() instanceof PrimaryResource primaryResource) {
                 int tint = primaryResource.getTint();
-                ClientRegistrationUtil.registerBlockColorHandler(event, (state, world, pos, index) -> index == 1 ? tint : -1, entry.getValue());
+                ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> tint, entry.getValue());
             }
         }
     }
 
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
-        ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
+        //todo 26.1 item colours
+        /*ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {
                       return tank.getTier().getBaseTier().getPackedColor();
                   }
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
-              MekanismBlocks.CREATIVE_FLUID_TANK);
-        //TODO 26.1 fluid models ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
-        for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
+              MekanismBlocks.CREATIVE_FLUID_TANK);*/
+        //TODO 26.1 fluid models
+        //ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
+        //todo 26.1 item colours
+        /*for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             int tint = item.getColumnKey().getTint();
             ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, item.getValue());
         }
@@ -575,7 +522,7 @@ public class ClientRegistration {
                 int tint = primaryResource.getTint();
                 ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, entry.getValue());
             }
-        }
+        }*/
     }
 
     @SubscribeEvent
@@ -687,6 +634,14 @@ public class ClientRegistration {
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =
           new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "perspectives", ImmutableMap::of);
     private static final Map<Identifier, CustomModelRegistryObject> customModels = new ConcurrentHashMap<>();
+
+     @SubscribeEvent
+    public static void onModelBake(ModelEvent.ModifyBakingResult event) {
+        event.getModels().replaceAll((rl, model) -> {
+            CustomModelRegistryObject obj = customModels.get(rl.id());
+            return obj == null ? model : obj.createModel(model, event);
+        });
+    }
 
     private static BakedModel lightBakedModel(BakedModel orig) {
         if (orig instanceof SeparateTransformsModel.Baked separatePerspectiveModel) {

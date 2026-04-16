@@ -37,7 +37,7 @@ public interface QuadTransformation {
     }
 
     static QuadTransformation packedLight(int light) {
-        return new LightTransformation(LightTexture.block(light), LightTexture.sky(light));
+        return new LightTransformation(LightCoordsUtil.block(light), LightCoordsUtil.sky(light));
     }
 
     static QuadTransformation ambientShade(boolean ambientOcclusion, boolean shade) {

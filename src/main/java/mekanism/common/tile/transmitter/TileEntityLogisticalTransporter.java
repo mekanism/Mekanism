@@ -1,18 +1,43 @@
 package mekanism.common.tile.transmitter;
 
+import mekanism.api.text.EnumColor;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.content.network.transmitter.LogisticalTransporter;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.client.color.block.BlockTintSource;
+import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class TileEntityLogisticalTransporter extends TileEntityLogisticalTransporterBase {
+
+    public static final BlockTintSource TINT_SOURCE = new BlockTintSource() {
+        @Override
+        public int color(BlockState state) {
+            return -1;
+        }
+
+        @Override
+        public int colorInWorld(BlockState state, BlockAndTintGetter level, BlockPos pos) {
+            TileEntityLogisticalTransporter transporter = WorldUtils.getTileEntity(TileEntityLogisticalTransporter.class, level, pos);
+            if (transporter != null) {
+                EnumColor renderColor = transporter.getTransmitter().getColor();
+                if (renderColor != null) {
+                    return renderColor.getPackedColor();
+                }
+            }
+            return -1;
+        }
+    };
 
     public TileEntityLogisticalTransporter(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
