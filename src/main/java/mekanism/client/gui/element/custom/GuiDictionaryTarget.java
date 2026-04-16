@@ -179,7 +179,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                               .mapToObj(fluidHandler::getFluidInTank)
                               .filter(fluidInTank -> !fluidInTank.isEmpty())
-                              .flatMap(FluidStack::getTags)
+                              .flatMap(fs -> fs.typeHolder().tags())
                               .distinct()
                         ));
                     }

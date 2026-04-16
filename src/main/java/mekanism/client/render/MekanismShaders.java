@@ -1,6 +1,7 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
+//todo 26.1 shaders
+/*import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import java.io.IOException;
 import java.util.function.Supplier;
@@ -47,4 +48,4 @@ public class MekanismShaders {
             return instance;
         }
     }
-}
+}*/

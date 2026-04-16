@@ -1,35 +1,24 @@
 package mekanism.client.model.baked;
 
 //todo 26.1 - models, yeet this
-/*
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
-import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadUtils;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
+public class ExtensionBakedModel<T> /*extends BakedModelWrapper<BakedModel>*/ {
 
-    private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
+    /*private final LoadingCache<QuadsKey<T>, List<BakedQuad>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
         @Override
         public List<BakedQuad> load(QuadsKey<T> key) {
             return createQuads(key);
@@ -131,7 +120,7 @@ public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
         protected TransformedBakedModel<T> wrapModel(BakedModel model) {
             return new TransformedBakedModel<>(model, transform);
         }
-    }
+    }*/
 
     public static class QuadsKey<T> {
 
@@ -235,4 +224,3 @@ public class ExtensionBakedModel<T> extends BakedModelWrapper<BakedModel> {
         }
     }
 }
-*/
