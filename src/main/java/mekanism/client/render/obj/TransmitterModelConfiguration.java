@@ -1,5 +1,6 @@
 package mekanism.client.render.obj;
-
+//todo 26.1 models
+/*
 import java.util.Collections;
 import java.util.Objects;
 import mekanism.client.model.data.TransmitterModelData;
@@ -112,11 +113,9 @@ public class TransmitterModelConfiguration extends VisibleModelConfiguration {
             this.angle = angle * Mth.DEG_TO_RAD;
         }
 
-        /**
-         * Gets the angle in radians
-         */
+        /// Gets the angle in radians
         public float getAngle() {
             return angle;
         }
     }
-}
+}*/

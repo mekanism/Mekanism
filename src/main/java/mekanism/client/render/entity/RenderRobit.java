@@ -1,33 +1,29 @@
 package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.math.Axis;
 import mekanism.client.RobitSpriteUploader;
-import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
 import mekanism.client.render.entity.RenderRobit.RobitRenderState;
-import mekanism.common.Mekanism;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+//todo 26.1 robit model: not this... perhaps just manually submit(...)
+// or patch LivingEntityRenderer to use getModel() instead of direct field, override that
 public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, RobitModelWrapper> {
 
     public RenderRobit(EntityRendererProvider.Context context) {
-        super(context, new RobitModelWrapper(), 0.5F);
+        super(context, new RobitModelWrapper(null), 0.5F);
     }
 
     @Override
@@ -75,16 +71,18 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Robi
 
         @Override
         public void setupAnim(@NotNull RobitRenderState robit) {
-            this.robit = robit;
+            //this.robit = robit;
             super.setupAnim(robit);
         }
 
-        @Override
+        //todo 26.1 robit model
+        /*@Override
         public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, int color) {
             if (robit == null || robit.skinLookup == null) {
                 //Setup didn't happen right
                 return;
             }
+
             BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(robit.skinLookup);
             if (model == null) {
                 //No model means we can't render (this shouldn't happen as we try to fall back to the default skin)
@@ -105,6 +103,6 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Robi
             }
             //Clear current robit after rendering it
             robit = null;
-        }
+        }*/
     }
 }

@@ -1,5 +1,5 @@
 package mekanism.client.render.obj;
-
+/*
 import com.mojang.math.Transformation;
 import net.minecraft.client.renderer.block.model.ItemTransforms;
 import net.minecraft.client.resources.model.Material;
@@ -74,4 +74,4 @@ public class WrapperModelConfiguration implements IGeometryBakingContext {
     public RenderTypeGroup getRenderType(Identifier name) {
         return internal.getRenderType(name);
     }
-}
+}*/

@@ -1,5 +1,6 @@
 package mekanism.client.model.baked;
-
+//todo 26.1 models, yeet this
+/*
 import com.google.common.collect.ImmutableList;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
@@ -55,4 +56,4 @@ public class ExtensionOverrideBakedModel<T> extends ExtensionBakedModel<T> {
             return original.getOverrides();
         }
     }
-}
+}*/

@@ -5,22 +5,24 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModelPart;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import org.joml.Math;
 import org.joml.Vector3fc;
 
 public class Outlines {
 
-    public static List<Line> extract(Level level, BlockPos pos, BlockState state, BlockStateModel model) {
+    public static List<Line> extract(ClientLevel level, BlockPos pos, BlockState state, BlockStateModel model) {
         Set<Line> lines = new HashSet<>();
-        for (BlockModelPart part : model.collectParts(level, pos, state, level.random)) {
+        List<BlockStateModelPart> parts = new ArrayList<>();
+        model.collectParts(level, pos, state, level.getRandom(), parts);
+        for (BlockStateModelPart part : parts) {
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 for (BakedQuad quad : part.getQuads(direction)) {
                     unpackLines(quad, lines);

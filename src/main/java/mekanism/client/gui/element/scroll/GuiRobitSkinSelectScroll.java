@@ -1,21 +1,15 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.platform.Lighting;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.math.MathUtils;
 import mekanism.api.robit.RobitSkin;
-import mekanism.client.RobitSpriteUploader;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.client.model.MekanismModelCache;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
@@ -26,14 +20,9 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
-import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Quaternionf;
@@ -80,7 +69,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<ResourceKey<RobitSkin>> skins = getUnlockedSkins();
         if (skins != null) {
-            Lighting.setupForFlatItems();
+            //Lighting.setupForFlatItems();
             //Every ten ticks consider the skin to change
             int index = ticks / MekanismUtils.TICKS_PER_HALF_SECOND;
             float oldRot = rotation;
@@ -103,7 +92,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
                     renderSlotBackground(guiGraphics, slotX, slotY, GuiElementHolder.HOLDER, GuiElementHolder.HOLDER_SIZE);
                 }
             }
-            Lighting.setupFor3DItems();
+            //Lighting.setupFor3DItems();
         }
     }
 
@@ -197,7 +186,8 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.identifier());
             return;
         }
-        BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
+        //todo 26.1 robit model
+        /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {
             Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.identifier());
             return;
@@ -218,6 +208,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
         }
         buffer.endBatch(RobitSpriteUploader.RENDER_TYPE);
 
-        pose.popPose();
+        pose.popPose();*/
     }
 }

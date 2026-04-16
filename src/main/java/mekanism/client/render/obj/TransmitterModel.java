@@ -1,6 +1,6 @@
 package mekanism.client.render.obj;
 
-import java.util.function.Function;
+/*import java.util.function.Function;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.client.resources.model.ModelBaker;
@@ -34,4 +34,4 @@ public class TransmitterModel implements IUnbakedGeometry<TransmitterModel> {
             glass.resolveParents(modelGetter, context);
         }
     }
-}
+}*/

@@ -2,7 +2,6 @@ package mekanism.common.tile.qio;
 
 import java.util.Optional;
 import mekanism.api.SerializationConstants;
-import mekanism.client.model.data.DataBasedModelLoader;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -16,16 +15,16 @@ import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.redstone.Orientation;
+import net.minecraft.world.level.redstone.Orientation.SideBias;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
@@ -107,7 +106,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             isEmitting = shouldEmit;
             needsUpdate = true;
             //Update redstone on sides except the back
-            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection());
+            //todo 26.1 check Orientation
+            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(Direction.UP, getDirection(), SideBias.LEFT));
         }
         return needsUpdate;
     }
@@ -133,9 +133,10 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @NotNull
     @Override
     public ModelData getModelData() {
-        if (isEmitting) {
+        //todo 26.1 models
+        /*if (isEmitting) {
             return ModelData.of(DataBasedModelLoader.EMITTING, null);
-        }
+        }*/
         return super.getModelData();
     }
 

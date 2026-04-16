@@ -1,29 +1,20 @@
 package mekanism.additions.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.List;
 import mekanism.additions.client.model.AdditionsModelCache;
 import mekanism.additions.client.render.entity.RenderBalloon.BalloonRenderState;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.entity.EntityBalloon;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.text.EnumColor;
 import mekanism.client.model.BaseModelCache.JSONModelData;
 import net.minecraft.client.renderer.SubmitNodeCollector;
-import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -65,7 +56,8 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
 
         JSONModelData model = state.latched ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        List<BakedQuad> quads = model.getQuads(balloon.level().random);
+        //todo 26.1 balloon model
+        /*List<BakedQuad> quads = model.getQuads(balloon.level().random);
         RenderType renderType = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
         VertexConsumer builder = renderer.getBuffer(renderType);
         PoseStack.Pose last = poseStack.last();
@@ -73,7 +65,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
             int color = quad.tintIndex() == 0 ? state.balloonTint : 0xFFFFFFFF;
             builder.putBulkData(last, quad, ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), ARGB.alphaFloat(color), state.lightCoords, OverlayTexture.NO_OVERLAY);
         }
-        poseStack.popPose();
+        poseStack.popPose();*/
         super.submit(state, poseStack, nodeCollector, camera);
     }
 

@@ -1,30 +1,11 @@
 package mekanism.client.model;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-import mekanism.common.Mekanism;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.client.resources.model.Material;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelBakery;
-import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.client.resources.model.UnbakedModel;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.event.ModelEvent;
-import net.neoforged.neoforge.client.model.obj.ObjLoader;
-import net.neoforged.neoforge.client.model.obj.ObjModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.Nullable;
 
 public class BaseModelCache {
 
@@ -68,7 +49,7 @@ public class BaseModelCache {
         return register(rl, JSONModelData::new);
     }
 
-    protected JSONModelData registerJSONAndBake(Identifier rl) {
+    /*protected JSONModelData registerJSONAndBake(Identifier rl) {
         ModelManager modelManager = Minecraft.getInstance().getModelManager();
         ModelBakery modelBakery = modelManager.getModelBakery();
         StandaloneModelKey<?> mrl = ModelResourceLocation.standalone(rl);
@@ -84,7 +65,7 @@ public class BaseModelCache {
             data.model = blockModel.customData.getCustomGeometry();
         }
         return data;
-    }
+    }*/
 
     protected <DATA extends MekanismModelData> DATA register(Identifier rl, Function<Identifier, DATA> creator) {
         DATA data = creator.apply(rl);
@@ -92,44 +73,44 @@ public class BaseModelCache {
         return data;
     }
 
-    private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelBaker baker, ModelResourceLocation rl) {
+    /*private static UnbakedModel getUnbakedModel(ModelBakery modelBakery, ModelBaker baker, ModelResourceLocation rl) {
         UnbakedModel unbakedModel = baker.getTopLevelModel(rl);
         if (unbakedModel == null) {
             return modelBakery.getModel(rl.id());
         }
         return unbakedModel;
-    }
+    }*/
 
-    public static <MODEL> MODEL getBakedModel(ModelEvent.BakingCompleted evt, StandaloneModelKey<MODEL> rl) {
+    /*public static <MODEL> MODEL getBakedModel(ModelEvent.BakingCompleted evt, StandaloneModelKey<MODEL> rl) {
         MODEL model = evt.getBakingResult().standaloneModels().get(rl);
         if (model == null) {
             Mekanism.logger.error("Baked model doesn't exist: {}", rl);
             return evt.getModelManager().getMissingBlockStateModel();
         }
         return model;
-    }
+    }*/
 
     public static class MekanismModelData {
 
-        protected IUnbakedGeometry<?> model;
+        //protected IUnbakedGeometry<?> model;
 
         protected final Identifier rl;
         protected final StandaloneModelKey<?> mrl;
-        private final Map<IGeometryBakingContext, BakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
+        //private final Map<IGeometryBakingContext, BakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
 
         protected MekanismModelData(Identifier rl) {
             this.rl = rl;
-            this.mrl = ModelResourceLocation.standalone(rl);
+            this.mrl = null;//ModelResourceLocation.standalone(rl);
         }
 
         protected void reload(ModelEvent.BakingCompleted evt) {
-            bakedMap.clear();
+            //bakedMap.clear();
         }
 
         protected void setup(ModelEvent.RegisterStandalone event) {
         }
 
-        public BakedModel bake(IGeometryBakingContext config) {
+        /*public BakedModel bake(IGeometryBakingContext config) {
             BakedModel bakedModel = bakedMap.get(config);
             if (bakedModel == null) {
                 ModelBaker baker = Minecraft.getInstance().getModelManager().getModelBakery().new ModelBakerImpl(
@@ -144,7 +125,7 @@ public class BaseModelCache {
 
         public IUnbakedGeometry<?> getModel() {
             return model;
-        }
+        }*/
     }
 
     public static class OBJModelData extends MekanismModelData {
@@ -156,13 +137,13 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelEvent.BakingCompleted evt) {
             super.reload(evt);
-            model = ObjLoader.INSTANCE.loadModel(new ModelSettings(rl, true, useDiffuseLighting(), true, true, null));
+            //model = ObjLoader.INSTANCE.loadModel(new ModelSettings(rl, true, useDiffuseLighting(), true, true, null));
         }
 
-        @Override
+        /*@Override
         public ObjModel getModel() {
             return (ObjModel) super.getModel();
-        }
+        }*/
 
         protected boolean useDiffuseLighting() {
             return true;
@@ -171,7 +152,7 @@ public class BaseModelCache {
 
     public static class JSONModelData extends MekanismModelData {
 
-        private BakedModel bakedModel;
+        /*private BakedModel bakedModel;*/
 
         private JSONModelData(Identifier rl) {
             super(rl);
@@ -180,22 +161,22 @@ public class BaseModelCache {
         @Override
         protected void reload(ModelEvent.BakingCompleted evt) {
             super.reload(evt);
-            bakedModel = BaseModelCache.getBakedModel(evt, mrl);
+            /*bakedModel = BaseModelCache.getBakedModel(evt, mrl);
             ModelBaker baker = evt.getModelBakery().new ModelBakerImpl(
                   (modelLoc, material) -> material.sprite(),
                   mrl
             );
             if (getUnbakedModel(evt.getModelBakery(), baker, mrl) instanceof BlockModel blockModel) {
                 model = blockModel.customData.getCustomGeometry();
-            }
+            }*/
         }
 
         @Override
         protected void setup(ModelEvent.RegisterStandalone event) {
-            event.register(mrl);
+            //event.register(mrl);
         }
 
-        public List<BakedQuad> getQuads(RandomSource random) {
+        /*public List<BakedQuad> getQuads(RandomSource random) {
             //TODO: Decide if this should just redirect to the other get quads method (some impls might be different depending on if it gets data and render type vs not)
             return getBakedModel().getQuads(null, null, random);
         }
@@ -206,6 +187,6 @@ public class BaseModelCache {
 
         public BakedModel getBakedModel() {
             return bakedModel;
-        }
+        }*/
     }
 }

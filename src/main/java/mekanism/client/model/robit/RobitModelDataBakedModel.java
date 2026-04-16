@@ -1,5 +1,7 @@
 package mekanism.client.model.robit;
 
+//todo 26.1 robit model
+/*
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.RobitSpriteUploader;
@@ -21,4 +23,4 @@ public class RobitModelDataBakedModel extends ModelDataBakedModel {
         //TODO: Handle the original model being layered properly as currently we don't have any way to properly bounce them
         return RobitSpriteUploader.RENDER_TYPES;
     }
-}
+}*/

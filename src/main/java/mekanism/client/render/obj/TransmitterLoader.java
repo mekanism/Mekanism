@@ -1,13 +1,6 @@
 package mekanism.client.render.obj;
 
-import com.google.gson.JsonDeserializationContext;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import mekanism.api.SerializationConstants;
-import net.neoforged.neoforge.client.model.obj.ObjLoader;
-import net.neoforged.neoforge.client.model.obj.ObjModel;
-import org.jetbrains.annotations.NotNull;
-
+/*
 public class TransmitterLoader implements IGeometryLoader<TransmitterModel> {
 
     public static final TransmitterLoader INSTANCE = new TransmitterLoader();
@@ -26,4 +19,4 @@ public class TransmitterLoader implements IGeometryLoader<TransmitterModel> {
         }
         return new TransmitterModel(model, glass);
     }
-}
+}*/

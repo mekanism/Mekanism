@@ -1,5 +1,7 @@
 package mekanism.client.model.robit;
 
+//todo 26.1 models
+/*
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -25,12 +27,12 @@ public class RobitModel extends ElementsModel {
     public BakedModel bake(IGeometryBakingContext owner, ModelBaker baker, Function<Material, TextureAtlasSprite> spriteGetter, ModelState modelTransform,
           ItemOverrides overrides) {
         return new RobitBakedModel(super.bake(owner, baker, spriteGetter, modelTransform, overrides));
-    }
+    }*/
 
     /**
      * Mekanism model loader that gets automatically wrapped into a robit baked model
      */
-    public static class Loader implements IGeometryLoader<ElementsModel> {
+    /*public static class Loader implements IGeometryLoader<ElementsModel> {
 
         public static final Loader INSTANCE = new Loader();
 
@@ -50,4 +52,4 @@ public class RobitModel extends ElementsModel {
             return new RobitModel(elements);
         }
     }
-}
+}*/

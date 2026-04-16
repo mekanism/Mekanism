@@ -1,6 +1,7 @@
 package mekanism.common.integration.framedblocks;
 
-import com.google.common.base.Preconditions;
+//todo 26.1 models
+/*import com.google.common.base.Preconditions;
 import com.mojang.math.Transformation;
 import java.util.Collections;
 import java.util.EnumMap;
@@ -11,7 +12,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.block.model.Variant.SimpleModelState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -119,4 +120,4 @@ final class ChemicalModel implements BlockStateModel {
 
         return new ChemicalModel(layer, quads, sprite);
     }
-}
+}*/

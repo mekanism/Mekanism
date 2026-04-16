@@ -10,7 +10,7 @@ import mekanism.client.render.lib.Quad;
 import mekanism.common.lib.Color;
 import mekanism.generators.common.tile.fission.TileEntityFissionAssembly;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.state.BlockState;

@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.renderer.blockentity.state.ChestRenderState;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import org.jspecify.annotations.Nullable;
 
@@ -17,7 +18,7 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
 
     private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
     //TODO - 1.21.11: Validate this is properly grabbing the texture
-    private static final Material MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
+    private static final SpriteId MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
 
     public RenderPersonalChest(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -50,7 +51,7 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
 
     @Nullable
     @Override
-    protected Material getCustomMaterial(TileEntityPersonalChest chest, ChestRenderState state) {
+    protected SpriteId getCustomSprite(TileEntityPersonalChest chest, ChestRenderState state) {
         return MATERIAL;
     }
 

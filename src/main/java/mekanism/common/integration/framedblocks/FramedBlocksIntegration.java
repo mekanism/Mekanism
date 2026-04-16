@@ -58,7 +58,8 @@ public final class FramedBlocksIntegration {
         }
 
         private static void onRegisterAdditionalModels(ModelEvent.RegisterStandalone event) {
-            event.register(ChemicalModel.BARE_MODEL);
+            //todo 26.1 models
+            //event.register(ChemicalModel.BARE_MODEL);
         }
 
         private static void onModelLoadingCompleted(ModelEvent.BakingCompleted event) {

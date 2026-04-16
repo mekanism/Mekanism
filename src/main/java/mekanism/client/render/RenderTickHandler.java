@@ -1,6 +1,5 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Collection;
@@ -8,62 +7,32 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Objects;
-import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
-import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.lib.effect.BoltRenderer;
-import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
-import mekanism.common.base.ProfilerConstants;
-import mekanism.common.block.BlockBounding;
-import mekanism.common.block.attribute.Attribute;
-import mekanism.common.block.attribute.AttributeCustomSelectionBox;
-import mekanism.common.content.gear.IBlastingItem;
-import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.ItemConfigurator.ConfiguratorMode;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
-import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
-import mekanism.common.tile.component.TileComponentConfig;
-import mekanism.common.tile.component.config.ConfigInfo;
-import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
-import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BlockStateModel;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.state.LevelRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.core.Direction;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
-import net.minecraft.util.profiling.Profiler;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -72,14 +41,10 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.client.ClientHooks;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
@@ -87,9 +52,9 @@ import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
 import net.neoforged.neoforge.client.event.ScreenEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
-import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3f;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
@@ -153,9 +118,9 @@ public class RenderTickHandler {
         if (event.getScreen() instanceof GuiMekanism) {
             //Translate forward how far we go, so that things like recipe viewers draw far enough forward
             // Note: We will pop this in a listener at the lowest priority
-            PoseStack pose = event.getGuiGraphicsExtractor().pose();
-            pose.pushPose();
-            pose.translate(0, 0, GuiMekanism.maxZOffset);
+            Matrix3x2fStack pose = event.getGuiGraphics().pose();
+            pose.pushMatrix();
+            pose.translate(0, 0/* todo 26.1: , GuiMekanism.maxZOffset*/);
         }
     }
 
@@ -163,18 +128,18 @@ public class RenderTickHandler {
     public void renderPostLowest(ScreenEvent.Render.Post event) {
         if (event.getScreen() instanceof GuiMekanism) {
             //Matching pop to the push we did in renderPostHighest
-            event.getGuiGraphicsExtractor().pose().popPose();
+            event.getGuiGraphics().pose().popMatrix();
         }
     }
 
-    @SubscribeEvent
-    public void renderWorldAfterParticles(RenderLevelStageEvent.AfterParticles event) {
+    @SubscribeEvent//todo 26.1 is this a correct replacement?
+    public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
         if (boltRenderer.hasBoltsToRender()) {
             //TODO - 1.21.11: Figure out if this is still valid as the buffer
-            MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
+            /*MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             LevelRenderState levelState = event.getLevelRenderState();
-            boltRenderer.render(levelState.gameTime, deltaTracker.getGameTimeDeltaPartialTick(false), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
-            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+            boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
+            renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);*/
         }
     }
 
@@ -194,19 +159,21 @@ public class RenderTickHandler {
             MekaSuitArmor armor = (MekaSuitArmor) ((ISpecialGear) IClientItemExtensions.of(armorItem)).gearModel();
             AvatarRenderer<AbstractClientPlayer> renderer = (AvatarRenderer<AbstractClientPlayer>) Minecraft.getInstance().getEntityRenderDispatcher().getRenderer(player);
             PlayerModel model = renderer.getModel();
-            model.setAllVisible(true);
+            AvatarRenderState renderState = renderer.createRenderState();
+            renderer.extractRenderState(player, renderState, MekanismRenderer.getPartialTick());
+            //todo 26.1 model.setAllVisible(true);
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
             boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
             if (rightHand) {
-                model.rightArmPose = ArmPose.EMPTY;
+                renderState.rightArmPose = ArmPose.EMPTY;
             } else {
-                model.leftArmPose = ArmPose.EMPTY;
+                renderState.leftArmPose = ArmPose.EMPTY;
             }
-            model.attackTime = 0.0F;
-            model.crouching = false;
-            model.swimAmount = 0.0F;
-            model.setupAnim(player, 0.0F, 0.0F, 0.0F, 0.0F, 0.0F);
-            armor.renderArm(model, event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), player, chestStack, rightHand);
+            renderState.attackTime = 0.0F;
+            renderState.isCrouching = false;
+            renderState.swimAmount = 0.0F;
+            model.setupAnim(renderState);
+            armor.renderArm(model, event.getPoseStack(), event.getSubmitNodeCollector(), event.getPackedLight(), renderState, chestStack, rightHand);
             event.setCanceled(true);
         }
     }
@@ -264,7 +231,7 @@ public class RenderTickHandler {
         Pos3D playerPos = new Pos3D(p).translate(0, p.getEyeHeight(), 0);
         //TODO - 1.21: Figure out why this is incorrect for other clients when they are hovering
         Vec3 playerMotion = p.getDeltaMovement();
-        float random = (world.random.nextFloat() - 0.5F) * 0.1F;
+        float random = (world.getRandom().nextFloat() - 0.5F) * 0.1F;
         //This positioning code is somewhat cursed, but it seems to be mostly working and entity pose code seems cursed in general
         float xRot;
         if (p.isCrouching()) {
@@ -295,7 +262,7 @@ public class RenderTickHandler {
         renderJetpackSmoke(world, playerPos.translate(vLeft, playerMotion), vLeft.scale(0.2).translate(playerMotion, vLeft.scale(random)));
         Pos3D vRight = new Pos3D(0.43, -0.55, -0.54).xRot(xRot).yRot(p.yBodyRot);
         renderJetpackSmoke(world, playerPos.translate(vRight, playerMotion), vRight.scale(0.2).translate(playerMotion, vRight.scale(random)));
-        Pos3D vCenter = new Pos3D((world.random.nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
+        Pos3D vCenter = new Pos3D((world.getRandom().nextFloat() - 0.5) * 0.4, -0.86, -0.30).xRot(xRot).yRot(p.yBodyRot);
         renderJetpackSmoke(world, playerPos.translate(vCenter, playerMotion), vCenter.scale(0.2).translate(playerMotion));
     }
 
@@ -333,16 +300,17 @@ public class RenderTickHandler {
         return true;
     }
 
-    @SubscribeEvent
+    //todo 26.1 CustomBlockOutlineRenderer
+    /*@SubscribeEvent
     public void onBlockHover(RenderHighlightEvent.Block event) {
         //TODO - 1.21.11: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
-        Player player = minecraft.player;
+        LocalPlayer player = minecraft.player;
         if (player == null) {
             return;
         }
         BlockHitResult rayTraceResult = event.getTarget();
         if (rayTraceResult.getType() != Type.MISS) {
-            Level world = player.level();
+            ClientLevel world = (ClientLevel) player.level();
             BlockPos pos = rayTraceResult.getBlockPos();
             MultiBufferSource renderer = event.getMultiBufferSource();
             Camera info = event.getCamera();
@@ -466,9 +434,9 @@ public class RenderTickHandler {
                 event.setCanceled(true);
             }
         }
-    }
+    }*/
 
-    private void renderQuadsWireFrame(Level level, BlockPos pos, BlockState state, VertexConsumer buffer, PoseStack matrix) {
+    /*private void renderQuadsWireFrame(Level level, BlockPos pos, BlockState state, VertexConsumer buffer, PoseStack matrix) {
         List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {
             BlockStateModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
@@ -477,7 +445,7 @@ public class RenderTickHandler {
         }
         PoseStack.Pose pose = matrix.last();
         renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
-    }
+    }*/
 
     public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal) {
         //tmp variables to avoid allocating each loop

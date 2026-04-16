@@ -1,5 +1,6 @@
 package mekanism.client.render.obj;
-
+//todo 26.1 models
+/*
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -17,7 +18,7 @@ import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.block.model.Variant.SimpleModelState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -190,4 +191,4 @@ public class TransmitterBakedModel extends BakedModelWrapper<BakedModel> {
             return obj instanceof TransmitterDataKey other && renderGlass == other.renderGlass && data.getConnectionsMap().equals(other.data.getConnectionsMap());
         }
     }
-}
+}*/

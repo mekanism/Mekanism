@@ -1,20 +1,8 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.platform.DestFactor;
-import com.mojang.blaze3d.platform.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
-import java.util.function.Function;
-import java.util.function.UnaryOperator;
-import net.minecraft.util.Util;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-
 public class MekanismRenderType {
-
-    private static final RenderStateShard.TransparencyStateShard BLADE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_blade_transparency", () -> {
+//todo 26.1 render types
+    /*private static final RenderStateShard.TransparencyStateShard BLADE_TRANSPARENCY = new RenderStateShard.TransparencyStateShard("mek_blade_transparency", () -> {
         RenderSystem.enableBlend();
         RenderSystem.blendFunc(SourceFactor.ONE, DestFactor.ONE_MINUS_SRC_ALPHA);
     }, () -> {
@@ -102,5 +90,5 @@ public class MekanismRenderType {
               .setOutputState(RenderType.TRANSLUCENT_TARGET)
               .createCompositeState(false);
         return RenderType.create("mek_sps", DefaultVertexFormat.POSITION_TEX_COLOR, Mode.QUADS, 1_536, false, true, state);
-    });
+    });*/
 }

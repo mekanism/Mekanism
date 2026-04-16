@@ -1,6 +1,6 @@
 package mekanism.client.model.data;
 
-import com.google.gson.JsonDeserializationContext;
+/*import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import java.util.HashMap;
@@ -9,12 +9,13 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.GsonHelper;
 import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.client.model.geometry.IGeometryLoader;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.NotNull;*/
 
 /**
  * Mekanism model loader that properly loads models and switches between them based on the active model data
  */
-public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> {
+//TODO 26.1 models
+/*public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> {
 
     public static final ModelProperty<Void> EMITTING = new ModelProperty<>();
 
@@ -51,4 +52,4 @@ public class DataBasedModelLoader implements IGeometryLoader<DataBasedGeometry> 
         }
         return modelRl;
     }
-}
+}*/

@@ -9,15 +9,10 @@ import mekanism.api.gear.IModuleHelper;
 import mekanism.client.render.armor.MekaSuitArmor.ModuleOBJModelData;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
-import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.tile.qio.TileEntityQIODriveArray.DriveStatus;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent.BakingCompleted;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MekanismModelCache extends BaseModelCache {
 
@@ -42,7 +37,7 @@ public class MekanismModelCache extends BaseModelCache {
     public final JSONModelData[] QIO_DRIVES = new JSONModelData[EnumUtils.DRIVE_STATUSES.length];
     private final Map<Identifier, JSONModelData> CUSTOM_ROBIT_MODELS = new HashMap<>();
     private final Map<Identifier, JSONModelData> ROBIT_SKINS = new HashMap<>();
-    private BakedModel BASE_ROBIT;
+    //private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {
         super(Mekanism.MODID);
@@ -57,7 +52,7 @@ public class MekanismModelCache extends BaseModelCache {
     public void onBake(BakingCompleted evt) {
         super.onBake(evt);
         callbacks.forEach(Runnable::run);
-        BASE_ROBIT = getBakedModel(evt, ModelResourceLocation.inventory(Mekanism.rl("robit")));
+        //BASE_ROBIT = getBakedModel(evt, ModelResourceLocation.inventory(Mekanism.rl("robit")));
         //Clear old robit skin caches
         //Note: We don't clear the cached models as the old JSONModelDatas should be able to properly handle reloading,
         // and we only clear the skin cache in case the skin no longer has a custom model (even though this is highly unlikely)
@@ -68,7 +63,8 @@ public class MekanismModelCache extends BaseModelCache {
         callbacks.add(callback);
     }
 
-    @Nullable
+    //todo 26.1 robit models
+    /*@Nullable
     public BakedModel getRobitSkin(@NotNull SkinLookup skinLookup) {
         Identifier skinName = skinLookup.identifier();
         JSONModelData data;
@@ -85,7 +81,7 @@ public class MekanismModelCache extends BaseModelCache {
             ROBIT_SKINS.put(skinName, data);
         }
         return data == null ? BASE_ROBIT : data.getBakedModel();
-    }
+    }*/
 
     /**
      * Call via {@link IModuleHelper#addMekaSuitModuleModels(Identifier)}.

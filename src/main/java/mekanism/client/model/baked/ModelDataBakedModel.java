@@ -1,10 +1,11 @@
 package mekanism.client.model.baked;
 
-import com.mojang.blaze3d.vertex.PoseStack;
+//todo 26.1 models
+/*import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
@@ -56,4 +57,4 @@ public class ModelDataBakedModel extends BakedModelWrapper<BakedModel> {
         //Make sure our model is the one that gets rendered rather than the internal one
         return renderPasses;
     }
-}
+}*/
