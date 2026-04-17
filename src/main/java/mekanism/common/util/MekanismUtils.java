@@ -604,12 +604,14 @@ public final class MekanismUtils {
 
     public static boolean shouldSpeedUpEffect(MobEffectInstance effectInstance) {
         //Only allow speeding up effects that can be sped up by milk. Also validate it isn't blacklisted by the modpack
-        return effectInstance.getCures().contains(EffectCures.MILK) && !effectInstance.getEffect().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
+        //todo 26.1 milk now cures all effects, do we need to change anything?
+        return !effectInstance.getEffect().is(MekanismAPITags.MobEffects.SPEED_UP_BLACKLIST);
     }
 
     /**
      * Copy of {@link LivingEntity#onEffectUpdated(MobEffectInstance, boolean, Entity)} due to not being able to AT the method as it is protected.
      */
+    @SuppressWarnings("JavadocReference")
     private static void onChangedPotionEffect(LivingEntity entity, MobEffectInstance effectInstance, boolean reapply) {
         entity.effectsDirty = true;
         if (reapply && !entity.level().isClientSide()) {

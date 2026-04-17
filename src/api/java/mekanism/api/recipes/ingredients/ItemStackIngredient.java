@@ -95,7 +95,6 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
 
     @Override
     public boolean hasNoMatchingInstances() {
-        //TODO - 1.21.11: Figure out if this is the proper way to reimplement this, as there used to be a difference between isEmpty and has NoItems
         return ingredient.ingredient().isEmpty();
     }
 
