@@ -195,7 +195,7 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
                     FormationResult result = structure.runUpdate(this);
                     if (!result.isFormed() && result.getResultText() != null) {
                         player.sendSystemMessage(result.getResultText());
-                        return InteractionResult.sidedSuccess(isRemote());
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }

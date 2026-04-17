@@ -8,6 +8,8 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.level.storage.TagValueOutput;
 
 public class ChemicalTankUpgradeData implements IUpgradeData {
 
@@ -19,16 +21,17 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
     public final ChemicalStack storedChemical;
     public final CompoundTag components;
 
-    public ChemicalTankUpgradeData(HolderLookup.Provider provider, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot, GasMode dumping, ChemicalStack storedChemical, List<ITileComponent> components) {
+    public ChemicalTankUpgradeData(HolderLookup.Provider provider, ProblemReporter problemReporter, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot, GasMode dumping, ChemicalStack storedChemical, List<ITileComponent> components) {
         this.redstone = redstone;
         this.controlType = controlType;
         this.drainSlot = drainSlot;
         this.fillSlot = fillSlot;
         this.dumping = dumping;
         this.storedChemical = storedChemical;
-        this.components = new CompoundTag();
+        TagValueOutput output = TagValueOutput.createWithContext(problemReporter, provider);
         for (ITileComponent component : components) {
-            component.write(this.components, provider);
+            component.write(output);
         }
+        this.components = output.buildResult();
     }
 }

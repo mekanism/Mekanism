@@ -19,14 +19,12 @@ import mekanism.common.tile.component.config.DataType;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,7 +64,8 @@ public class SideDataButton extends BasicColorButton {
             BlockPos otherBlockPos = tile.getBlockPos().relative(globalSide);
             BlockState blockOnSide = tileWorld.getBlockState(otherBlockPos);
             if (!blockOnSide.isAir()) {
-                otherBlockItem = blockOnSide.getCloneItemStack(new BlockHitResult(otherBlockPos.getCenter().relative(globalSide.getOpposite(), 0.5), globalSide.getOpposite(), otherBlockPos, false), tileWorld, otherBlockPos, Minecraft.getInstance().player);
+                //todo 26.1 check that previous false was the same param, and if there's supposed to be a HitResult version???
+                otherBlockItem = blockOnSide.getCloneItemStack(otherBlockPos, tileWorld, false, Minecraft.getInstance().player);
             } else {
                 otherBlockItem = ItemStack.EMPTY;
             }

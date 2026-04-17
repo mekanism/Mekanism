@@ -1,7 +1,5 @@
 package mekanism.client.gui.element.window;
 
-import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.client.gui.GuiMekanism;
@@ -18,12 +16,12 @@ import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowPosition;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.lib.Color;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import org.jetbrains.annotations.NotNull;
 
@@ -156,12 +154,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     @Override
     public void renderBackgroundOverlay(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (isFocusOverlay()) {
-            //TODO - 1.21.11: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
+            //TODO - 26.1: This used to pass rgba instead of argb, which is wrong. See if the color overlay still renders as expected, or if we wanted the messed up values
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
             MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.75F);
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
+            //todo 26.1 RenderSystem.enableBlend();
+            //todo 26.1 RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
             MekanismRenderer.resetColor(guiGraphics);
         }
@@ -199,12 +197,12 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     public void renderBlur(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.3F);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.disableDepthTest();
+        //todo 26.1 RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+        //RenderSystem.disableDepthTest();
         GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);
         MekanismRenderer.resetColor(guiGraphics);
-        RenderSystem.enableDepthTest();
+        //RenderSystem.enableDepthTest();
     }
 
     public final boolean togglePinned(GuiElement toggler, MouseButtonEvent event, boolean isDoubleClick) {

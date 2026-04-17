@@ -48,6 +48,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentPatch;
@@ -59,12 +60,14 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -312,18 +315,21 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
             inputSlot.setStack(data.inputSlot.getStack());
             outputSlot.setStack(data.outputSlot.getStack());
             editMode = data.editMode;
             fluidTank.setStack(data.stored);
-            for (ITileComponent component : getComponents()) {
-                component.read(data.components);
+            try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
+                ValueInput input = TagValueInput.create(reporter, provider, data.components);
+                for (ITileComponent component : getComponents()) {
+                    component.read(input);
+                }
             }
         } else {
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(upgradeData, provider);
         }
     }
 

@@ -8,7 +8,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.ActiveTextCollector;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -16,9 +15,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
-import org.joml.Matrix4f;
 
 //TODO - 1.21: Document this class
+//todo 26.1 fixme
 public interface IFancyFontRenderer {
 
     int getXSize();
@@ -147,7 +146,7 @@ public interface IFancyFontRenderer {
             return;
         }
         Font font = font();
-        float textWidth = font.width(text) * scale;
+        int textWidth = (int) (font.width(text) * scale);
         int areaWidth = maxX - minX;
         boolean isScrolling = textWidth > areaWidth;
         //Note: Instead of doing what vanilla does, we divide to float, and don't add one
@@ -175,19 +174,19 @@ public interface IFancyFontRenderer {
      *
      * @apiNote Call {@link GuiGraphicsExtractor#disableScissor()} after using this method
      */
-    private static float prepScrollingString(GuiGraphicsExtractor graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
+    private static int prepScrollingString(GuiGraphicsExtractor graphics, Font font, double textWidth, int areaWidth, int minX, int minY, int maxX, int maxY, long visibleDuration) {
         //Note: We are drawing in relative coordinates, but GuiGraphicsExtractor#enableScissor, is expecting absolute coordinates,
         // so we need to get the translations from our pose stack
         //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without all the extra allocations.
-        Matrix4f matrix4f = graphics.pose().last().pose();
-        int left = (int) matrix4f.m30();
-        int top = (int) matrix4f.m31();
+        Matrix3x2fStack matrix4f = graphics.pose();
+        int left = 0;// todo 26.1 (int) matrix4f.m30();
+        int top = 0;// todo 26.1 (int) matrix4f.m31();
         graphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
         //TODO: Re-evaluate this, as for text (especially scaled text) when moving very slowly near the edges, it makes the text a bit blurry
         // Though maybe it is better to just make it not move so insanely slowly near the edges
         //Note: Vanilla casts overflowedBy to an int, as it only bothers drawing based on int pixels.
         // As we already handle and calculates with floats, casting to a float here provides a much smoother looking scroll
-        return minX - (float) getOverflowedBy(font, textWidth - areaWidth, visibleDuration);
+        return minX - (int) getOverflowedBy(font, textWidth - areaWidth, visibleDuration);
     }
 
     private static double getOverflowedBy(Font font, double overflowWidth, long visibleDuration) {

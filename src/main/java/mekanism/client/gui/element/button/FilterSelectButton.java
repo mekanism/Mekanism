@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.button;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
@@ -28,9 +27,10 @@ public class FilterSelectButton extends MekanismButton {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor(guiGraphics);
         }
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
+        //todo 26.1 Gui blend
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+        //RenderSystem.enableDepthTest();
         int width = getButtonWidth();
         int height = getButtonHeight();
         int x = getButtonX();

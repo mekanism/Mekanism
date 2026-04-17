@@ -37,7 +37,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import org.checkerframework.checker.units.qual.N;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
@@ -190,7 +189,8 @@ public class GuiRadialSelector extends Screen {
                 if (whiteRadialText) {
                     text = text.copy().withStyle(ChatFormatting.RESET);
                 }
-                GuiUtils.drawStringNoFlush(guiGraphics, font, text, -font.width(text) / 2F, 8, 0xCCFFFFFF, true);
+                float x = -font.width(text) / 2F;
+                guiGraphics.text(font, text, (int) x, (int) (float) 8, 0xCCFFFFFF, true);
                 matrix.popMatrix();
             }
             //Flush and actually render out the labels

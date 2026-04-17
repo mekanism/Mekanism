@@ -213,7 +213,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack) {
-        return IClientFluidTypeExtensions.of(fluidStack.getFluid()).getTintColor(fluidStack);
+        return getColorTint(fluidStack);
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {

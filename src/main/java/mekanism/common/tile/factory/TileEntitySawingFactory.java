@@ -37,7 +37,9 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -54,8 +56,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
             if (extra.isEmpty()) {
                 return true;
             }
-            ItemStack secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-            return secondaryOutput.isEmpty() || ItemStack.isSameItemSameComponents(secondaryOutput, extra);
+            ItemStackTemplate secondaryOutput = chanceOutput.getMaxSecondaryOutput();
+            return secondaryOutput == null || ItemStack.isSameItemSameComponents(extra, secondaryOutput);
         }
         return false;
     };
@@ -164,10 +166,10 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof SawmillUpgradeData) {
             //Validate we have the correct type of data before passing it upwards
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(upgradeData, provider);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }

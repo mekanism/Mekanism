@@ -25,6 +25,7 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
@@ -147,6 +148,13 @@ public final class InventoryUtils {
      */
     public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
         if (toInsert.isEmpty() || inSlot.isEmpty()) {
+            return true;
+        }
+        return ItemStack.isSameItemSameComponents(inSlot, toInsert);
+    }
+
+    public static boolean areItemsStackable(ItemStackTemplate toInsert, ItemStack inSlot) {
+        if (toInsert == null || inSlot.isEmpty()) {
             return true;
         }
         return ItemStack.isSameItemSameComponents(inSlot, toInsert);

@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import mekanism.api.gear.IModuleHelper;
@@ -24,7 +23,7 @@ public class ItemModule extends Item implements IModuleItem {
     private final Holder<ModuleData<?>> moduleData;
 
     public ItemModule(Holder<ModuleData<?>> moduleData, Properties properties) {
-        super(properties);
+        super(properties.overrideDescription(moduleData.value().getTranslationKey()));
         this.moduleData = moduleData;
     }
 
@@ -55,11 +54,5 @@ public class ItemModule extends Item implements IModuleItem {
             tooltipAdder.accept(MekanismLang.MODULE_STACKABLE.translateColored(EnumColor.GRAY, EnumColor.AQUA, data.getMaxStackSize()));
             tooltipAdder.accept(MekanismLang.HOLD_FOR_SUPPORTED_ITEMS.translateColored(EnumColor.GRAY, EnumColor.INDIGO, MekanismKeyHandler.detailsKey.getTranslatedKeyMessage()));
         }
-    }
-
-    @NotNull
-    @Override
-    public String getDescriptionId() {
-        return moduleData.value().getTranslationKey();
     }
 }

@@ -31,6 +31,7 @@ import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.Block;
@@ -139,10 +140,10 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public void parseUpgradeData(@NotNull IUpgradeData upgradeData) {
+    public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof CombinerUpgradeData data) {
             //Generic factory upgrade data handling
-            super.parseUpgradeData(upgradeData);
+            super.parseUpgradeData(upgradeData, provider);
             ContainerType.ITEM.copy(data.extraSlot, extraSlot);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());

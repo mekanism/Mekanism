@@ -174,7 +174,7 @@ public class MekanismHUD implements GuiLayer {
         }
 
         public void draw(GuiGraphicsExtractor graphics, Font font) {
-            GuiUtils.drawStringNoFlush(graphics, matrix, font, component, x, y, color, dropShadow);
+            graphics.text(font, component, (int) x, (int) y, color, dropShadow);
         }
     }
 }

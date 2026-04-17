@@ -1,12 +1,7 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.pipeline.RenderPipeline;
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import com.mojang.math.Divisor;
 import it.unimi.dsi.fastutil.ints.IntIterator;
 import java.util.List;
@@ -14,24 +9,19 @@ import java.util.function.Predicate;
 import mekanism.common.Mekanism;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.Font.DisplayMode;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
-import net.minecraft.util.profiling.Profiler;
-import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
 public class GuiUtils {
@@ -100,7 +90,8 @@ public class GuiUtils {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
+        //TODO 26.1 drawTiledSprite
+        /*RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         int xTileCount = desiredWidth / textureWidth;
         int xRemainder = desiredWidth - (xTileCount * textureWidth);
@@ -169,7 +160,7 @@ public class GuiUtils {
         BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
         if (blend) {
             RenderSystem.disableBlend();
-        }
+        }*/
     }
 
     // reverse-order iteration over children w/ built-in GuiElement check, runs a basic anyMatch with checker
@@ -259,37 +250,27 @@ public class GuiUtils {
         boolean test(ELEMENT element, CharacterEvent event);
     }
 
-    public static int drawStringNoFlush(GuiGraphicsExtractor graphics, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-        return drawStringNoFlush(graphics, graphics.pose().last().pose(), font, component, x, y, color, drawShadow);
-    }
-
-    public static int drawStringNoFlush(GuiGraphicsExtractor graphics, Matrix4f matrix, Font font, Component component, float x, float y, int color, boolean drawShadow) {
-        //Copy of GuiGraphicsExtractor#drawString(Font, FormattedCharSequence, float, float, int, boolean) but without the flush at the end
-        return font.drawInBatch(component.getVisualOrderText(), x, y, color, drawShadow, matrix, graphics.bufferSource(),
-              DisplayMode.NORMAL, 0, LightCoordsUtil.FULL_BRIGHT);
-    }
-
     public static void renderItem(GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int xAxis, int yAxis, float scale, Font font, @Nullable String text, boolean overlay) {
         if (!stack.isEmpty()) {
             try {
-                PoseStack pose = guiGraphics.pose();
-                pose.pushPose();
+                Matrix3x2fStack pose = guiGraphics.pose();
+                pose.pushMatrix();
                 if (scale != 1) {
                     //Translate before scaling, and then set xAxis and yAxis to zero so that we don't translate a second time
-                    pose.translate(xAxis, yAxis, 0);
-                    pose.scale(scale, scale, scale);
+                    pose.translate(xAxis, yAxis);
+                    pose.scale(scale, scale);
                     xAxis = 0;
                     yAxis = 0;
                 }
-                guiGraphics.renderItem(stack, xAxis, yAxis);
+                guiGraphics.item(stack, xAxis, yAxis);
                 if (overlay) {
                     //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
                     // for rendering the stored count so that it doesn't clip with later windows
-                    pose.translate(0, 0, -25);
-                    guiGraphics.renderItemDecorations(font, stack, xAxis, yAxis, text);
+                    //todo 26.1 check this - pose.translate(0, 0, -25);
+                    guiGraphics.itemDecorations(font, stack, xAxis, yAxis, text);
                 }
 
-                pose.popPose();
+                pose.popMatrix();
             } catch (Exception e) {
                 Mekanism.logger.error("Failed to render stack into gui: {}", stack, e);
             }
@@ -297,10 +278,10 @@ public class GuiUtils {
     }
 
     public static void renderBorder(GuiGraphicsExtractor guiGraphics, int x, int y, int boxWidth, int boxHeight, int color) {
-        guiGraphics.hLine(x, x + boxWidth, y, color);
-        guiGraphics.hLine(x, x + boxWidth, y + boxHeight, color);
-        guiGraphics.vLine(x, y, y + boxHeight, color);
-        guiGraphics.vLine(x + boxWidth, y, y + boxHeight, color);
+        guiGraphics.horizontalLine(x, x + boxWidth, y, color);
+        guiGraphics.horizontalLine(x, x + boxWidth, y + boxHeight, color);
+        guiGraphics.verticalLine(x, y, y + boxHeight, color);
+        guiGraphics.verticalLine(x + boxWidth, y, y + boxHeight, color);
     }
 
     /**
@@ -334,8 +315,10 @@ public class GuiUtils {
     }
 
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
+    @Deprecated
     public static void blitNineSlicedSized(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
-        ProfilerFiller profiler = Profiler.get();
+        //todo 26.1 replace with vanilla
+        /*ProfilerFiller profiler = Profiler.get();
         profiler.push("blit setup");
         RenderSystem.setShaderTexture(0, texture);
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -380,7 +363,7 @@ public class GuiUtils {
         profiler.push("drawing");
         BufferUploader.drawWithShader(buffer.buildOrThrow());
 
-        profiler.pop();
+        profiler.pop();*/
     }
 
     public static void blitNineSlicedSized(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceSize, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {

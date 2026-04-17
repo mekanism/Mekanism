@@ -1,7 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -283,8 +281,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
 
     public final void onRenderForeground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, int zOffset, int totalOffset) {
         if (visible) {
-            PoseStack pose = guiGraphics.pose();
-            pose.translate(0, 0, zOffset);
+            Matrix3x2fStack pose = guiGraphics.pose();
+            //todo 26.1 - zIndex
+            //pose.translate(0, 0, zOffset);
             // update the max total offset to prevent clashing of future overlays
             GuiMekanism.maxZOffset = Math.max(totalOffset, GuiMekanism.maxZOffset);
             // render background overlay and children above everything else
@@ -300,9 +299,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             // translate forward to render child foreground
             for (GuiElement child : children) {//Only apply the z shift to each child instead of having future children be translated by more as well
                 // Note: Does not apply to compounding with grandchildren as we want those to compound
-                pose.pushPose();
+                pose.pushMatrix();
                 child.onRenderForeground(guiGraphics, mouseX, mouseY, 50, totalOffset + 50);
-                pose.popPose();
+                pose.popMatrix();
             }
         }
     }
@@ -658,9 +657,9 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             MekanismRenderer.resetColor(guiGraphics);
         }
         Identifier texture = buttonBackground.getTexture();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.enableDepthTest();
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
+        //RenderSystem.enableDepthTest();
         int i = getButtonTextureY(isMouseOverCheckWindows(mouseX, mouseY));
         //Note: SliceWidth and sliceHeight are copied from AbstractButton
         GuiUtils.blitNineSlicedSized(guiGraphics, texture, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight(), 20, 4, BUTTON_TEX_X,
