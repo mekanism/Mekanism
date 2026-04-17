@@ -31,7 +31,9 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -41,6 +43,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,6 +93,10 @@ public class RecipeViewerUtils {
 
     public static Identifier synthetic(ResourceKey<Recipe<?>> key, String prefix) {
         return synthetic(key.identifier(), prefix);
+    }
+
+    public static ResourceKey<Recipe<?>> syntheticKey(ResourceKey<Recipe<?>> key, String prefix) {
+        return ResourceKey.create(key.registryKey(), synthetic(key.identifier(), prefix));
     }
 
     public static Identifier synthetic(Identifier id, String prefix) {

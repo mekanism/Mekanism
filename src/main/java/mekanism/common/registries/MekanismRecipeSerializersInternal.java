@@ -32,6 +32,7 @@ import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ClearConfigurationRecipe;
+import mekanism.common.recipe.WrappedSmelterRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
 import mekanism.common.recipe.serializer.MekanismRecipeSerializer;
@@ -108,4 +109,5 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new CustomRecipe.Serializer<>(ClearConfigurationRecipe::new));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new CustomRecipe.Serializer<>(BinInsertRecipe::new));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new CustomRecipe.Serializer<>(BinExtractRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<WrappedSmelterRecipe>> WRAPPED_SMELTER = RECIPE_SERIALIZERS.register("wrapped_smelter", () -> WrappedSmelterRecipe.SERIALIZER);
 }

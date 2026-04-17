@@ -25,9 +25,6 @@ import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.SawmillRecipe;
-import mekanism.api.recipes.basic.BasicSmeltingRecipe;
-import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.api.recipes.vanilla_input.BiChemicalRecipeInput;
 import mekanism.api.recipes.vanilla_input.ReactionRecipeInput;
 import mekanism.api.recipes.vanilla_input.RotaryRecipeInput;
@@ -51,14 +48,11 @@ import mekanism.common.recipe.lookup.cache.RotaryInputRecipeCache;
 import mekanism.common.registration.impl.RecipeTypeDeferredRegister;
 import mekanism.common.registration.impl.RecipeTypeRegistryObject;
 import net.minecraft.core.Holder;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -69,7 +63,6 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.item.crafting.SmeltingRecipe;
 import net.minecraft.world.level.Level;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.NotNull;
@@ -160,7 +153,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         boolean foundIncompleteRecipes = false;
         for (DeferredHolder<RecipeType<?>, ? extends RecipeType<?>> holder : RECIPE_TYPES.getEntries()) {
             MekanismRecipeType<?, ?, ?> recipeType = (MekanismRecipeType<?, ?, ?>) holder.value();
-            foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager, registryAccess);
+            foundIncompleteRecipes |= recipeType.checkMyIncompleteRecipes(recipeManager);
         }
         return foundIncompleteRecipes;
     }
@@ -240,20 +233,15 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
             //If we failed, then return no recipes
             return Collections.emptyList();
         }
-        return getRecipes(recipeManager, registryAccess);
-    }
-
-    @Override
-    public @NotNull List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager) {
-        return getRecipes(recipeManager, tryGetRegistryAccess());
+        return getRecipes(recipeManager);
     }
 
     @NotNull
-    @Override//todo 26.1 recipeManager _is_ a registry access now
-    public List<RecipeHolder<RECIPE>> getRecipes(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+    @Override
+    public List<RecipeHolder<RECIPE>> getRecipes(@NotNull RecipeManager recipeManager) {
         if (cachedRecipes.isEmpty()) {
             //Note: This is a fresh immutable list that gets returned
-            Collection<RecipeHolder<RECIPE>> recipes = getRecipesUncached(recipeManager, registryAccess);
+            Collection<RecipeHolder<RECIPE>> recipes = getRecipesUncached(recipeManager);
             //Make the list of cached recipes immutable and filter out any incomplete recipes
             // as there is no reason to potentially look the partial complete piece up if
             // the other portion of the recipe is incomplete
@@ -268,32 +256,23 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      * Get a list of recipes directly from the manager
      *
      * @param recipeManager  The manager to query
-     * @param registryAccess Registry access to use (for Smelting only). Call {@link #tryGetRegistryAccess()} if none directly available
      */
     @NotNull
-    private Collection<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager, @Nullable RegistryAccess registryAccess) {
+    private Collection<RecipeHolder<RECIPE>> getRecipesUncached(@NotNull RecipeManager recipeManager) {
         RecipeMap recipeMap = recipeManager.recipeMap();
         Collection<RecipeHolder<RECIPE>> recipes = recipeMap.byType(this);
         if (this == SMELTING.get()) {
-            if (registryAccess == null) {
-                //If we failed, then only return the recipes that are for the base type
-                return recipes;
-            }
             //Ensure the recipes can be modified
             recipes = new ArrayList<>(recipes);
-            for (RecipeHolder<SmeltingRecipe> smeltingRecipe : recipeMap.byType(RecipeType.SMELTING)) {
-                ItemStack recipeOutput = smeltingRecipe.value().result().getResultItem(registryAccess);
-                if (!smeltingRecipe.value().isSpecial() && !smeltingRecipe.value().isIncomplete() && !recipeOutput.isEmpty()) {
-                    //TODO: Can Smelting recipes even be "special", if so can we add some sort of checker to make getOutput return the correct result
-                    NonNullList<Ingredient> ingredients = smeltingRecipe.value().getIngredients();
-                    if (ingredients.isEmpty()) {
-                        //Something went wrong
-                        continue;
-                    }
-                    ItemStackIngredient input = IngredientCreatorAccess.item().from(CompoundIngredient.of(ingredients.toArray(Ingredient[]::new)));
-                    recipes.add(new RecipeHolder<>(RecipeViewerUtils.synthetic(smeltingRecipe.id(), "mekanism_generated"),
-                          castRecipe(new BasicSmeltingRecipe(input, recipeOutput))));
+            for (RecipeHolder<SmeltingRecipe> recipeHolder : recipeMap.byType(RecipeType.SMELTING)) {
+                SmeltingRecipe smeltingRecipe = recipeHolder.value();
+                if (smeltingRecipe.input().isEmpty()) {
+                    continue;
                 }
+                ItemStackToItemStackRecipe possiblyUnwrapped = WrappedSmelterRecipe.tryUnwrap(smeltingRecipe);
+                ResourceKey<Recipe<?>> generateId = RecipeViewerUtils.syntheticKey(recipeHolder.id(), "mekanism_generated");
+                recipes.add(new RecipeHolder<>(generateId, castRecipe(possiblyUnwrapped)));
+
             }
         }
         return recipes;
@@ -307,9 +286,9 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         return (RECIPE) o;
     }
 
-    private boolean checkMyIncompleteRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
+    private boolean checkMyIncompleteRecipes(RecipeManager recipeManager) {
         boolean incomplete = false;
-        for (RecipeHolder<RECIPE> holder : getRecipesUncached(recipeManager, registryAccess)) {
+        for (RecipeHolder<RECIPE> holder : getRecipesUncached(recipeManager)) {
             if (!holder.value().isIncomplete()) {
                 continue;
             }
@@ -332,7 +311,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
         return serverLevel.recipeAccess().getRecipeFor(recipeType, input, level)
-              .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
+              /*.filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete())*/;
     }
 
     /**
@@ -346,6 +325,6 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
         // and special recipes return that they are not complete
         return serverLevel.recipeAccess().byKey(id)
-              .filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete());
+              /*.filter(recipe -> recipe.value().isSpecial() || !recipe.value().isIncomplete())*/;
     }
 }

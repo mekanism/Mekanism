@@ -5,7 +5,6 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -45,11 +44,6 @@ public interface IMekanismRecipeTypeProvider<VANILLA_INPUT extends RecipeInput, 
     @NotNull
     default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager) {
         return getRecipeType().getRecipes(recipeManager);
-    }
-
-    @NotNull
-    default List<RecipeHolder<RECIPE>> getRecipes(RecipeManager recipeManager, RegistryAccess registryAccess) {
-        return getRecipeType().getRecipes(recipeManager, registryAccess);
     }
 
     default Stream<RecipeHolder<RECIPE>> stream(@Nullable Level world) {
