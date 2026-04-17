@@ -144,7 +144,7 @@ public class ItemTierInstaller extends Item {
                         if (tile instanceof ITileDirectional directional && directional.isDirectional()) {
                             upgradedTile.setFacing(directional.getDirection(), false);
                         }
-                        upgradedTile.parseUpgradeData(upgradeData, );
+                        upgradedTile.parseUpgradeData(upgradeData, world.registryAccess());
                         upgradedTile.resyncMasterToBounding();
                         upgradedTile.sendUpdatePacket();
                         upgradedTile.setChanged();
