@@ -6,12 +6,10 @@ import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySl
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -88,15 +86,6 @@ public class BinExtractRecipe extends BinRecipe {
             }
         }
         return remaining;
-    }
-
-    @Override
-    public PlacementInfo placementInfo() {
-        if (this.placementInfo == null) {
-            this.placementInfo = PlacementInfo.create(this.input);//todo bin ingredient??
-        }
-
-        return this.placementInfo;
     }
 
     @Override

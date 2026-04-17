@@ -13,13 +13,11 @@ import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySl
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
@@ -66,7 +64,7 @@ public class BinInsertRecipe extends BinRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput inv) {
         ItemStack binStack = ItemStack.EMPTY;
         ItemStack foundType = ItemStack.EMPTY;
         List<ItemStack> foundItems = new ArrayList<>();
@@ -169,12 +167,6 @@ public class BinInsertRecipe extends BinRecipe {
             }
         }
         return remainingItems;
-    }
-
-    @Override//todo placement info / bin ingredient
-    public boolean canCraftInDimensions(int width, int height) {
-        //Require at least two slots as we have to represent at least the bin and the stack we are adding to it
-        return width * height >= 2;
     }
 
     @Override
