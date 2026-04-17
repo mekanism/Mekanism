@@ -208,7 +208,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     }
 
     @Override
-    public String getTranslationKey() {
+    public final String getTranslationKey() {
         if (translationKey == null) {
             translationKey = Util.makeDescriptionId("module", MekanismAPI.MODULE_REGISTRY.getKeyOrNull(this));
         }
@@ -223,7 +223,7 @@ public class ModuleData<MODULE extends ICustomModule<MODULE>> implements IHasTra
     /**
      * Gets the translation key for the description of this module type.
      */
-    public String getDescriptionTranslationKey() {
+    public final String getDescriptionTranslationKey() {
         if (descriptionTranslationKey == null) {
             descriptionTranslationKey = Util.makeDescriptionId("description", MekanismAPI.MODULE_REGISTRY.getKeyOrNull(this));
         }
