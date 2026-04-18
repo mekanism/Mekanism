@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.function.Function;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
@@ -18,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements IItemStackFilter<QIOItemStackFilter> {
 
     public static final MapCodec<QIOItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseQIOCodec(instance)
-          .and(ItemStack.SINGLE_ITEM_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
+          .and(ItemStackTemplateHelper.NO_COUNT_ITEMSTACK.fieldOf(SerializationConstants.TARGET_STACK).forGetter(QIOItemStackFilter::getItemStack))
           .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, QIOItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, QIOItemStackFilter> STREAM_CODEC = StreamCodec.composite(

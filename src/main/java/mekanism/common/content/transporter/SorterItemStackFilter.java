@@ -5,6 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.Function;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
@@ -20,7 +21,7 @@ import org.jetbrains.annotations.NotNull;
 public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> implements IItemStackFilter<SorterItemStackFilter> {
 
     public static final MapCodec<SorterItemStackFilter> CODEC = RecordCodecBuilder.mapCodec(instance -> baseSorterCodec(instance)
-          .and(ItemStack.SINGLE_ITEM_CODEC.fieldOf(SerializationConstants.TARGET_STACK).forGetter(SorterItemStackFilter::getItemStack))
+          .and(ItemStackTemplateHelper.NO_COUNT_ITEMSTACK.fieldOf(SerializationConstants.TARGET_STACK).forGetter(SorterItemStackFilter::getItemStack))
           .and(Codec.BOOL.optionalFieldOf(SerializationConstants.FUZZY, false).forGetter(filter -> filter.fuzzyMode))
           .apply(instance, SorterItemStackFilter::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, SorterItemStackFilter> STREAM_CODEC = StreamCodec.composite(
