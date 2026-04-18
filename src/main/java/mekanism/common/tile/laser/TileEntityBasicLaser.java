@@ -1,5 +1,6 @@
 package mekanism.common.tile.laser;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import mekanism.api.Action;
@@ -28,16 +29,21 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.component.BlocksAttacks;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -119,7 +125,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //If we have a smaller AABB than we started with, make sure the entity still is getting hit by the laser
                         // before we do any processing related to behavior when hit
                         continue;
-                    } else if (entity.isInvulnerableTo(MekanismDamageTypes.LASER.source(level))) {
+                    } else if (isInvulnerableToLaser(entity, level)) {
                         //The entity can absorb all the energy because they are immune to the damage
                         remainingEnergy = 0L;
                         //Update the position that the laser is going to
@@ -157,7 +163,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //After our shield checks see if the armor the entity is wearing can dissipate or refract lasers
                         double dissipationPercent = 0;
                         double refractionPercent = 0;
-                        for (ItemStack armor : livingEntity.getArmorSlots()) {
+                        for (ItemStack armor : getArmorSlots(livingEntity)) {
                             if (!armor.isEmpty()) {
                                 ILaserDissipation laserDissipation = armor.getCapability(Capabilities.LASER_DISSIPATION);
                                 if (laserDissipation != null) {
@@ -308,6 +314,25 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
+    private static Iterable<ItemStack> getArmorSlots(LivingEntity livingEntity) {
+        return Arrays.asList(
+              livingEntity.getItemBySlot(EquipmentSlot.HEAD),
+              livingEntity.getItemBySlot(EquipmentSlot.BODY),//animals
+              livingEntity.getItemBySlot(EquipmentSlot.CHEST),
+              livingEntity.getItemBySlot(EquipmentSlot.LEGS),
+              livingEntity.getItemBySlot(EquipmentSlot.FEET)
+        );
+    }
+
+    private static boolean isInvulnerableToLaser(Entity entity, ServerLevel level) {
+        DamageSource lasers = MekanismDamageTypes.LASER.source(level);
+        if (entity instanceof LivingEntity livingEntity) {
+            return livingEntity.isInvulnerableTo(level, lasers);
+        }
+        //fall back to the normally protected method, which fires an event
+        return entity.isInvulnerableToBase(lasers);
+    }
+
     private AABB getLaserBox(Direction direction, Vec3 from, Vec3 to, float energyScale) {
         AABB aabb = new AABB(from, to);
         double halfDiameter = energyScale / 2;
@@ -342,6 +367,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
      * @param damage Damage to do
      *
      * @return The amount of damage that was blocked
+     *
+     * @implNote most logic copied from {@link net.minecraft.world.entity.LivingEntity#applyItemBlocking}
      */
     private float damageShield(Level level, LivingEntity livingEntity, Pos3D from, float damage) {
         DamageSource source = MekanismDamageTypes.LASER.source(level, from);
@@ -349,21 +376,46 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
         DamageContainer damageContainer = new DamageContainer(source, damage);
         //Note: Even though we fire this even here manually, it doesn't cause issues with the damage pipeline
         // as if we do block damage, then we won't end up firing the normal pipeline
-        LivingShieldBlockEvent event = CommonHooks.onDamageBlock(livingEntity, damageContainer, livingEntity.isDamageSourceBlocked(source));
-        if (event.isCanceled() || !event.getBlocked()) {
+        ItemStack blockingWith = livingEntity.getItemBlockingWith();
+        if (blockingWith == null) {
+            return 0;
+        }
+        BlocksAttacks blocksAttacks = blockingWith.get(DataComponents.BLOCKS_ATTACKS);
+        if (blocksAttacks == null) {
+            return 0;
+        }
+        HolderSet<DamageType> bypassedBy = blocksAttacks.bypassedBy().orElse(null);
+        boolean originallyBlocked = bypassedBy != null && !bypassedBy.contains(source.typeHolder());
+        float damageBlocked = 0;
+        //assuming if it was bypassed we don't need to calculate this?
+        if (originallyBlocked) {
+            double angle = getAngle(livingEntity, from);
+            damageBlocked = blocksAttacks.resolveBlockedDamage(source, damage, angle);
+        }
+        LivingShieldBlockEvent event = CommonHooks.onDamageBlock(livingEntity, damageContainer, damageBlocked, originallyBlocked);
+        if (!event.getBlocked()) {
             //Blocking was not allowed, return we didn't block any damage
             return 0;
         }
-        float shieldDamage = event.shieldDamage();
+        int shieldDamage = event.shieldDamage();
         if (shieldDamage > 0) {
             //Only damage the shield if the shield isn't setup to block damage for free
-            livingEntity.hurtCurrentlyUsedShield(shieldDamage);
+            blocksAttacks.hurtBlockingItem(level, blockingWith, livingEntity, livingEntity.getUsedItemHand(), damageBlocked, shieldDamage);
         }
-        float damageBlocked = event.getBlockedDamage();
+        damageBlocked = event.getBlockedDamage();
         if (livingEntity instanceof ServerPlayer player && damageBlocked > 0 && damageBlocked < 3.4028235E37F) {
             player.awardStat(Stats.DAMAGE_BLOCKED_BY_SHIELD, Math.round(damageBlocked * 10F));
         }
         return damageBlocked;
+    }
+
+    private static double getAngle(LivingEntity livingEntity, Pos3D from) {
+        double angle;
+        Vec3 viewVector = livingEntity.calculateViewVector(0.0F, livingEntity.getYHeadRot());
+        Vec3 vectorTo = from.subtract(livingEntity.position());
+        vectorTo = new Vec3(vectorTo.x, 0.0, vectorTo.z).normalize();
+        angle = Math.acos(vectorTo.dot(viewVector));
+        return angle;
     }
 
     private float getEnergyScale(long energy) {
