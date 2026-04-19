@@ -6,6 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -159,7 +160,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         super.serialize(output);
         if (isLocked()) {
             //TODO - 1.21.11: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
-            output.store(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC, lockStack);
+            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK, lockStack);
             //nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
     }
@@ -167,7 +168,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 1.21.11: Does this properly handle the behavior of when things are empty
-        this.lockStack = input.read(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC).orElse(ItemStack.EMPTY);
+        this.lockStack = input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK).orElse(ItemStack.EMPTY);
         //NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserialize(input);
     }

@@ -3,6 +3,7 @@ package mekanism.common.attachments.containers.item;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -105,14 +106,14 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         ItemStack lockStack = getLockStack();
         if (!lockStack.isEmpty()) {
             //TODO - 1.21.11: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
-            output.store(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC, lockStack);
+            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK, lockStack);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 1.21.11: Does this properly handle the behavior of when things are empty
-        setLockStack(input.read(SerializationConstants.LOCK_STACK, ItemStack.SINGLE_ITEM_CODEC).orElse(ItemStack.EMPTY));
+        setLockStack(input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK).orElse(ItemStack.EMPTY));
         super.deserialize(input);
     }
 }

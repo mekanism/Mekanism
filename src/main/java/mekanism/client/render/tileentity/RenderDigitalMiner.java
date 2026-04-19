@@ -10,17 +10,14 @@ import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderSt
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -76,8 +73,9 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               state.blockPos.getX() - state.radius, state.minY, state.blockPos.getZ() - state.radius,
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-        MekanismRenderer.renderObject(model.get(), poseStack, Sheets.translucentCullBlockSheet(), colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-              faceDisplay, camPos);
+        //todo 26.1 rendering
+        //MekanismRenderer.renderObject(model.get(), poseStack, nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
+        //      faceDisplay, camPos);
         poseStack.popPose();
     }
 

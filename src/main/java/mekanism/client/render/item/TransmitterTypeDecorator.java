@@ -1,6 +1,5 @@
 package mekanism.client.render.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -30,11 +29,11 @@ public class TransmitterTypeDecorator implements IItemDecorator {
         if (stack.isEmpty()) {
             return false;
         }
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 200);
+        //PoseStack pose = guiGraphics.pose();
+        //pose.pushPose();
+        //pose.translate(0, 0, 200);
         guiGraphics.blit(texture, xOffset, yOffset, 0, 0, 16, 16, 16, 16);
-        pose.popPose();
+        //pose.popPose();
         return true;
     }
 }
