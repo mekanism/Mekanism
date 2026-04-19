@@ -61,7 +61,7 @@ public final class TagCache {
     }
 
     public static List<String> getItemTags(@NotNull ItemStack check) {
-        return getTagsAsStrings(check.getTags());
+        return getTagsAsStrings(check.tags());
     }
 
     public static List<String> getTileEntityTypeTags(@NotNull Block block) {

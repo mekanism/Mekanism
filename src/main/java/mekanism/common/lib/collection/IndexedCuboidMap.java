@@ -79,7 +79,7 @@ public class IndexedCuboidMap<VALUE> {
         int maxChunkZ = SectionPos.blockToSectionCoord(box.maxZ());
 
         if (minChunkX == maxChunkX && minChunkZ == maxChunkZ) {
-            chunkIndex.put(ChunkPos.asLong(minChunkX, minChunkZ), box);
+            chunkIndex.put(ChunkPos.pack(minChunkX, minChunkZ), box);
         } else {
             chunkIndex.putAll(ChunkUtils.rangeClosed(minChunkX, minChunkZ, maxChunkX, maxChunkZ), box);
         }
@@ -182,7 +182,7 @@ public class IndexedCuboidMap<VALUE> {
      * @return an iterator of matching values
      */
     public Iterator<VALUE> allCenteredInChunk(int chunkX, int chunkZ) {
-        return allCenteredInChunk(ChunkPos.asLong(chunkX, chunkZ));
+        return allCenteredInChunk(ChunkPos.pack(chunkX, chunkZ));
     }
 
     /**

@@ -79,7 +79,7 @@ public class ChunkCommand {
             }
             String name = hasName ? StringArgumentType.getString(ctx, NAME_PARAM) : null;
             ChunkWatchSettings settings = new ChunkWatchSettings(name, chunkPos);
-            chunkWatchers.put(ChunkPos.asLong(chunkPos.x, chunkPos.z), settings);
+            chunkWatchers.put(chunkPos.pack(), settings);
             ctx.getSource().sendSuccess(() -> settings.translate(WATCH), true);
             return Command.SINGLE_SUCCESS;
         }
@@ -101,9 +101,9 @@ public class ChunkCommand {
         }
 
         private static int unwatch(CommandSourceStack source, ChunkPos chunkPos) {
-            ChunkWatchSettings settings = chunkWatchers.remove(ChunkPos.asLong(chunkPos.x, chunkPos.z));
+            ChunkWatchSettings settings = chunkWatchers.remove(chunkPos.pack());
             if (settings == null) {
-                source.sendFailure(MekanismLang.COMMAND_ERROR_NOT_WATCHED.translate(MekanismLang.GENERIC_WITH_COMMA.translate(chunkPos.x, chunkPos.z)));
+                source.sendFailure(MekanismLang.COMMAND_ERROR_NOT_WATCHED.translate(MekanismLang.GENERIC_WITH_COMMA.translate(chunkPos.x(), chunkPos.z())));
                 return 0;
             }
             source.sendSuccess(() -> settings.translate(UNWATCH), true);
@@ -189,7 +189,7 @@ public class ChunkCommand {
     private record ChunkWatchSettings(Component name, Component position) {
 
         private ChunkWatchSettings(@Nullable String name, ChunkPos pos) {
-            this(name == null ? CommonComponents.EMPTY : TextComponentUtil.getString(name), MekanismLang.GENERIC_WITH_COMMA.translate(pos.x, pos.z));
+            this(name == null ? CommonComponents.EMPTY : TextComponentUtil.getString(name), MekanismLang.GENERIC_WITH_COMMA.translate(pos.x(), pos.z()));
         }
 
         public Component translate(LangData langData) {

@@ -118,7 +118,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             int xChunkOffset = piece.x - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             int zChunkOffset = piece.z - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             ChunkPos startChunk = new ChunkPos(chunkX + xChunkOffset, chunkZ + zChunkOffset);
-            ChunkPos endChunk = new ChunkPos(startChunk.x + piece.xLength - 1, startChunk.z + piece.zLength - 1);
+            ChunkPos endChunk = new ChunkPos(startChunk.x() + piece.xLength - 1, startChunk.z() + piece.zLength - 1);
             //Adjust translation and scale ever so slightly so that no z-fighting happens at the edges if there are blocks there
             double xShift = 0.01, zShift = 0.01;
             float xScaleShift = 0.02F, zScaleShift = 0.02F;

@@ -31,6 +31,7 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -142,8 +143,9 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         }
                     }
                     //Entity type tags
-                    if (item instanceof SpawnEggItem spawnEggItem) {
-                        tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(spawnEggItem.getType(stack).getTags()));
+                    EntityType<?> type = SpawnEggItem.getType(stack);
+                    if (type != null) {
+                        tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(type.getTags()));
                     }
                     //Enchantment tags
                     ItemEnchantments enchantments = stack.getEnchantments();

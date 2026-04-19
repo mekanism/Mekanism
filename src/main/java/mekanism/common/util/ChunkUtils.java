@@ -22,7 +22,7 @@ public class ChunkUtils {
         int i = 0;
 
         do {
-            positions[i++] = ChunkPos.asLong(posX, posZ);
+            positions[i++] = ChunkPos.pack(posX, posZ);
             int prevX = posX;
             int prevZ = posZ;
             if (prevX == endX) {
@@ -42,13 +42,13 @@ public class ChunkUtils {
     }
 
     /**
-     * {@link ChunkPos#asLong(BlockPos)} but with a packed Block pos
+     * {@link ChunkPos#pack(BlockPos)} but with a packed Block pos
      *
      * @param packedBlock packed blockpos ({@link BlockPos#asLong()})
      *
      * @return a packed Chunk pos
      */
     public static long packedBlockToChunk(long packedBlock) {
-        return ChunkPos.asLong(SectionPos.blockToSectionCoord(BlockPos.getX(packedBlock)), SectionPos.blockToSectionCoord(BlockPos.getZ(packedBlock)));
+        return ChunkPos.pack(SectionPos.blockToSectionCoord(BlockPos.getX(packedBlock)), SectionPos.blockToSectionCoord(BlockPos.getZ(packedBlock)));
     }
 }

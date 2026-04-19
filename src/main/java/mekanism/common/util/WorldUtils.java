@@ -209,7 +209,7 @@ public class WorldUtils {
         }
         int chunkX = SectionPos.blockToSectionCoord(pos.getX());
         int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
-        long combinedChunk = ChunkPos.asLong(chunkX, chunkZ);
+        long combinedChunk = ChunkPos.pack(chunkX, chunkZ);
         //We get the chunk rather than the world, so we can cache the chunk improving the overall
         // performance for retrieving a bunch of chunks in the general vicinity
         ChunkAccess chunk = chunkMap.get(combinedChunk);
@@ -665,8 +665,8 @@ public class WorldUtils {
      */
     public static boolean isChunkVibrated(ChunkPos chunk, Level world) {
         for (GlobalPos coord : Mekanism.activeVibrators) {
-            if (coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x &&
-                SectionPos.blockToSectionCoord(coord.pos().getZ()) == chunk.z) {
+            if (coord.dimension() == world.dimension() && SectionPos.blockToSectionCoord(coord.pos().getX()) == chunk.x() &&
+                SectionPos.blockToSectionCoord(coord.pos().getZ()) == chunk.z()) {
                 return true;
             }
         }

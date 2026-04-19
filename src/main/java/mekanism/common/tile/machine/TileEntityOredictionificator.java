@@ -119,7 +119,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     }
 
     private boolean hasFilterableTags(ItemStack stack) {
-        return stack.getTags().anyMatch(tag -> isPossibleFilter(tag.location()));
+        return stack.tags().anyMatch(tag -> isPossibleFilter(tag.location()));
     }
 
     private static boolean isPossibleFilter(Identifier resource) {

@@ -70,8 +70,8 @@ public class ItemDictionary extends Item {
                     FluidState fluidState = blockState.getFluidState();
                     Stream<TagKey<BlockEntityType<?>>> tileTags = tile == null ? Stream.empty() : RegistryUtils.getBEHolder(tile.getType()).tags();
                     //Note: We handle checking they are not empty in sendTagsToPlayer, so that we only display one if one is empty
-                    if (!sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockState.getTags()) &
-                        !sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags()) &
+                    if (!sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_TAGS_FOUND, blockState.tags()) &
+                        !sendTagsToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags()) &
                         !sendTagsToPlayer(player, MekanismLang.DICTIONARY_BLOCK_ENTITY_TYPE_TAGS_FOUND, tileTags)) {
                         //Note: If none of the tag types were present log that there was no key. We check using bitwise AND to ensure we print all
                         // types we find rather than stopping evaluation after the first one that we have no tags for
@@ -111,7 +111,7 @@ public class ItemDictionary extends Item {
                 FluidState fluidState = world.getFluidState(result.getBlockPos());
                 if (!fluidState.isEmpty()) {
                     if (!world.isClientSide()) {
-                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.getTags());
+                        sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags());
                     }
                     return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
                 }
