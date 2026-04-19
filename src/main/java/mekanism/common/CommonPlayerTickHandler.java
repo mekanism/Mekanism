@@ -168,7 +168,7 @@ public class CommonPlayerTickHandler {
         if (!event.isInvulnerable() && event.getEntity() instanceof LivingEntity entity) {
             if (MekanismDamageTypes.RADIATION.is(event.getSource())) {
                 //Note: As we only enter this block if it isn't invulnerable, there is no chance that this call makes it go from invulnerable to not
-                event.setInvulnerable(entity.getType().is(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE));
+                event.setInvulnerable(entity.is(MekanismAPITags.Entities.MEK_RADIATION_IMMUNE));
             }
         }
     }

@@ -410,7 +410,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @NotNull
     @Override
-    public InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
+    protected InteractionResult mobInteract(@NotNull Player player, @NotNull InteractionHand hand) {
         //TODO - 26.1: Should we be overriding Mob#mobInteract instead?? That is what horses use to open the gui
         if (!IEntitySecurityUtils.INSTANCE.canAccessOrDisplayError(player, this)) {
             return InteractionResult.FAIL;

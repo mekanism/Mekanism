@@ -130,6 +130,7 @@ public abstract class BlockMekanism extends Block {
         return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
+    //TODO - 26.1: Update comparators for anything that supports them in affectNeighborsAfterRemoval like chests do
     @Override
     protected void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         if (!state.is(newState.getBlock())) {
