@@ -473,7 +473,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 } else if (currentChunk == null) {
                     //Lazy init the current chunk so that if it is empty, and we are just going to remove it
                     // we don't need to try and load it
-                    updateTargetChunk(currentChunk = new ChunkPos(chunk));
+                    updateTargetChunk(currentChunk = ChunkPos.unpack(chunk));
                     target = chunk;
                 }
                 BlockPos pos = getOffsetForIndex(startingPos, diameter, index);
@@ -1194,10 +1194,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         ChunkPos minerChunk = ChunkPos.containing(worldPosition);
         if (targetChunk != null) {
             //If we have a target check to make sure it is in the radius (most likely it is)
-            if (SectionPos.blockToSectionCoord(worldPosition.getX() - radius) <= targetChunk.x &&
-                targetChunk.x <= SectionPos.blockToSectionCoord(worldPosition.getX() + radius) &&
-                SectionPos.blockToSectionCoord(worldPosition.getZ() - radius) <= targetChunk.z &&
-                targetChunk.z <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
+            if (SectionPos.blockToSectionCoord(worldPosition.getX() - radius) <= targetChunk.x() &&
+                targetChunk.x() <= SectionPos.blockToSectionCoord(worldPosition.getX() + radius) &&
+                SectionPos.blockToSectionCoord(worldPosition.getZ() - radius) <= targetChunk.z() &&
+                targetChunk.z() <= SectionPos.blockToSectionCoord(worldPosition.getZ() + radius)) {
                 // if it is, return the chunks we should be loading, provide the chunk the miner is in
                 // and the chunk that the miner is currently mining
                 //TODO: At some point we may want to change the ticket of the chunk the miner is mining to be
