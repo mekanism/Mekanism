@@ -31,7 +31,7 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
                 return InteractionResult.SUCCESS_SERVER;
             }
         }
-        //TODO - 1.21.11: Don't call super on the client side if it was successful?
+        //TODO - 26.1: Don't call super on the client side if it was successful?
         return super.onRightClick(player);
     }
 

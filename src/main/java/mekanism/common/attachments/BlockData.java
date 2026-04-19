@@ -118,7 +118,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
     public void addToTooltip(TooltipContext context, Consumer<Component> tooltipAdder, TooltipFlag flag, DataComponentGetter componentGetter) {
         Block block = blockState.getBlock();
         tooltipAdder.accept(MekanismLang.BLOCK.translateColored(EnumColor.INDIGO, EnumColor.GRAY, block));
-        //TODO - 1.21.11: Test this and figure out if there is a reason/way to support the tooltip display stuff for proxied components
+        //TODO - 26.1: Test this and figure out if there is a reason/way to support the tooltip display stuff for proxied components
         if (blockEntityTag != null) {
             tooltipAdder.accept(MekanismLang.BLOCK_ENTITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
                   RegistryUtils.getHolderById(blockEntityTag, BuiltInRegistries.BLOCK_ENTITY_TYPE)
@@ -127,7 +127,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
             ));
             if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
                 String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
-                //TODO - 1.21.11: Figure this out
+                //TODO - 26.1: Figure this out
                 //TypedEntityData<BlockEntityType<?>> typedEntityData = blockEntityTag.get(DataComponents.BLOCK_ENTITY_DATA);
                 //Spawner.appendHoverText(typedEntityData, tooltipAdder, "SpawnData");
                 CompoundTag spawnData = blockEntityTag.getCompound(key);
@@ -140,7 +140,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
                 }
             } else if (block instanceof DecoratedPotBlock) {
                 //Based off ItemStack#addToTooltip, but using the values we already have
-                //TODO - 1.21.11: Fix this, I am guessing that the component getter we are using isn't actually correct as we want to grab it from the block entity tag
+                //TODO - 26.1: Fix this, I am guessing that the component getter we are using isn't actually correct as we want to grab it from the block entity tag
                 PotDecorations decorations = blockEntityTag.get(DataComponents.POT_DECORATIONS);
                 if (decorations != null) {// && tooltipDisplay.shows(DataComponents.POT_DECORATIONS)
                     Consumer<Component> tooltipListAdder = decoration -> {

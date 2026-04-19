@@ -17,14 +17,14 @@ import org.jspecify.annotations.Nullable;
 public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> {
 
     private static final Identifier TEXTURE = MekanismUtils.getResource(ResourceType.TEXTURE_BLOCKS, "models/personal_chest.png");
-    //TODO - 1.21.11: Validate this is properly grabbing the texture
+    //TODO - 26.1: Validate this is properly grabbing the texture
     private static final SpriteId MATERIAL = Sheets.BLOCKS_MAPPER.apply(TEXTURE);
 
     public RenderPersonalChest(BlockEntityRendererProvider.Context context) {
         super(context);
     }
 
-    //TODO - 1.21.11: Evaluate if we have to do anything or if it works fine even though it isn't a ChestBlockEntity
+    //TODO - 26.1: Evaluate if we have to do anything or if it works fine even though it isn't a ChestBlockEntity
     /*@Override
     public void extractRenderState(TileEntityPersonalChest chest, ChestRenderState state, float partialTicks, Vec3 cameraPosition, ModelFeatureRenderer.@Nullable CrumblingOverlay breakProgress) {
         super.extractRenderState(chest, state, partialTicks, cameraPosition, breakProgress);
@@ -55,7 +55,7 @@ public class RenderPersonalChest extends ChestRenderer<TileEntityPersonalChest> 
         return MATERIAL;
     }
 
-    //@Override//TODO - 1.21.11: Figure out if we need to setup profiling for this again?
+    //@Override//TODO - 26.1: Figure out if we need to setup profiling for this again?
     protected String getProfilerSection() {
         return ProfilerConstants.PERSONAL_CHEST;
     }

@@ -62,7 +62,7 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     public List<ItemStack> getOutputDefinition() {
         List<ItemStack> list = new ArrayList<>();
         for (RecipeDisplay display : wrapped.display()) {
-            //TODO 26.1 can we get a level here and use SlotDisplayContext.fromLevel()?
+            //TODO - 26.1 can we get a level here and use SlotDisplayContext.fromLevel()?
             list.addAll(display.result().resolveForStacks(ContextMap.EMPTY));
         }
         return list;

@@ -33,7 +33,7 @@ import net.neoforged.neoforge.event.EventHooks;
 
 public class Meltdown {
 
-    //TODO - 1.21.11: Should we have validation bounds on any of these things?
+    //TODO - 26.1: Should we have validation bounds on any of these things?
     public static final Codec<Meltdown> CODEC = RecordCodecBuilder.create(in -> in.group(
           BlockPos.CODEC.fieldOf(SerializationConstants.MIN).forGetter(meltdown -> meltdown.minPos),
           BlockPos.CODEC.fieldOf(SerializationConstants.MAX).forGetter(meltdown -> meltdown.maxPos),

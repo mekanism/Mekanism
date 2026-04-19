@@ -39,7 +39,7 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         if (state == null) {
             return;
         }
-        //todo 26.1 rendering
+        //TODO - 26.1 rendering
         //renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
         if (state.energyRatio > 0) {
             float scaledTicks = 4 * state.ticks();
@@ -56,7 +56,7 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
-        //TODO 26.1 getExtents
+        //TODO - 26.1 getExtents
     }
 
     @Nullable

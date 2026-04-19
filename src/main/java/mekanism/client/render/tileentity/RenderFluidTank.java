@@ -53,7 +53,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
-        //TODO - 1.21.11: Should we by copying the fluid stacks?
+        //TODO - 26.1: Should we by copying the fluid stacks?
         state.fluid = tank.fluidTank.getFluid();
         state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
@@ -119,7 +119,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     public static class FluidTankRenderState extends BlockEntityRenderState {
 
-        //TODO - 1.21.11: Store the textures instead of the fluid stacks
+        //TODO - 26.1: Store the textures instead of the fluid stacks
         public FluidStack fluid = FluidStack.EMPTY;
         public int fluidTint = 0xFFFFFFFF;
         public int fluidGlow;

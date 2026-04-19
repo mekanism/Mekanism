@@ -79,7 +79,7 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
     @Override
     public void setupAnim(TurbineBladeRenderState state) {
         super.setupAnim(state);
-        //TODO - 1.21.11: Can we rotate it here instead of having to do so to the pose stack?
+        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
         root().rotateBy(Axis.YP.rotationDegrees(state.rotation));
         float scale = state.index * 0.5F;
         float adjustedScale = scale / 16;
@@ -90,9 +90,9 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
     }
 
     private void setupAnim(ModelPart blade, int index, float scaleX, float scaleZ, float transX, float transZ) {
-        //TODO - 1.21.11: Can we rotate it here instead of having to do so to the pose stack?
+        //TODO - 26.1: Can we rotate it here instead of having to do so to the pose stack?
         blade.rotateBy(Axis.YP.rotationDegrees(5 * index));
-        //TODO - 1.21.11: Validate that this is equivalent to the transforms that we previously had
+        //TODO - 26.1: Validate that this is equivalent to the transforms that we previously had
         /*poseStack.translate(transX, 0, transZ);
         poseStack.scale(1 + scaleX, 1, 1 + scaleZ);
         poseStack.translate(-transX, 0, -transZ);*/

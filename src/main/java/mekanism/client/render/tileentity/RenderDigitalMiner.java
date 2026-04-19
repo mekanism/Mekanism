@@ -73,7 +73,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               state.blockPos.getX() - state.radius, state.minY, state.blockPos.getZ() - state.radius,
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-        //todo 26.1 rendering
+        //TODO - 26.1 rendering
         //MekanismRenderer.renderObject(model.get(), poseStack, nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
         //      faceDisplay, camPos);
         poseStack.popPose();

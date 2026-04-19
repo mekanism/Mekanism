@@ -66,7 +66,7 @@ public class FissionReactorCache extends MultiblockCache<FissionReactorMultibloc
     @Override
     public void load(@NotNull ValueInput input) {
         super.load(input);
-        //TODO - 1.21.11: These (except injection rate) used to just get instead of only getting if present, should the fallback be zero or the existing value?
+        //TODO - 26.1: These (except injection rate) used to just get instead of only getting if present, should the fallback be zero or the existing value?
         reactorDamage = input.getDoubleOr(SerializationConstants.REACTOR_DAMAGE, reactorDamage);
         rateLimit = input.getDoubleOr(SerializationConstants.INJECTION_RATE, rateLimit);
         burnRemaining = input.getDoubleOr(SerializationConstants.BURN_TIME, burnRemaining);

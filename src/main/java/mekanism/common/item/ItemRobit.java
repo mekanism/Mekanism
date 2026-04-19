@@ -96,7 +96,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
         if (chargepad != null && !chargepad.getActive()) {
             if (world instanceof ServerLevel level) {
                 ItemStack stack = context.getItemInHand();
-                //TODO - 1.21.11: Determine how we want to set the y offset
+                //TODO - 26.1: Determine how we want to set the y offset
                 //EntityRobit robit = EntityRobit.create(world, pos.getX() + 0.5, pos.getY() + 0.1, pos.getZ() + 0.5);
                 EntityRobit spawnedRobit = MekanismEntityTypes.ROBIT.get().spawn(level, robit -> {
                     robit.setHome(chargepad.getTileGlobalPos());
@@ -143,7 +143,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     return InteractionResult.FAIL;
                 }
                 world.gameEvent(player, GameEvent.ENTITY_PLACE, spawnedRobit.blockPosition());
-                //TODO - 1.21.11: Do we want this to be consume?
+                //TODO - 26.1: Do we want this to be consume?
                 stack.shrink(1);
                 CriteriaTriggers.SUMMONED_ENTITY.trigger((ServerPlayer) player, spawnedRobit);
             }

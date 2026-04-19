@@ -44,7 +44,7 @@ public class BoltRenderer {
     }
 
     public void render(long gameTime, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, @Nullable Vec3 cameraPos) {
-        VertexConsumer buffer = bufferIn.getBuffer(null/*MekanismRenderType.MEK_LIGHTNING*/);// todo 26.1: rendering.
+        VertexConsumer buffer = bufferIn.getBuffer(null/*MekanismRenderType.MEK_LIGHTNING*/);// TODO - 26.1: rendering.
         Matrix4f matrix = matrixStack.last().pose();
         Timestamp timestamp = new Timestamp(gameTime, partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));
@@ -83,7 +83,7 @@ public class BoltRenderer {
         }
     }
 
-    @Deprecated//TODO - 1.21.11: Try to replace all usages of this with one that gets the game time from a render state
+    @Deprecated//TODO - 26.1: Try to replace all usages of this with one that gets the game time from a render state
     public void update(Object owner, BoltEffect newBoltData, float partialTicks) {
         if (minecraft.level == null) {
             return;

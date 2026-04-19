@@ -49,7 +49,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
     public void setupAnim(IndustrialAlarmRenderState state) {
         super.setupAnim(state);
         root.setRotation(0, state.rotation * Mth.DEG_TO_RAD, 0);
-        //TODO - 1.21.11: Validate that we can just rotate the root and have it work for both the bulb and the aura
+        //TODO - 26.1: Validate that we can just rotate the root and have it work for both the bulb and the aura
         /*float yRot = state.rotation * Mth.DEG_TO_RAD;
         aura.setRotation(0, yRot, 0);
         bulb.setRotation(0, yRot, 0);*/
@@ -68,7 +68,7 @@ public class ModelIndustrialAlarm extends MekanismJavaModel<IndustrialAlarmRende
         public void setRotation(float rotation) {
             this.rotation = rotation;
             //Apply a changing alpha based on how far it is through the rotation
-            //TODO - 1.21.11: See if there is a helper in Mth to do this calculation with
+            //TODO - 26.1: See if there is a helper in Mth to do this calculation with
             this.tint = ARGB.white(0.3F + 0.7F * (Math.abs(((this.rotation * 2) % 360) - 180F) / 180F));
         }
 

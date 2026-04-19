@@ -36,8 +36,8 @@ public enum Upgrade implements IHasEnumNameTranslationKey, StringRepresentable {
      * @since 10.6.0
      */
     public static final Codec<Upgrade> CODEC = StringRepresentable.fromEnum(Upgrade::values);
-    //TODO - 1.21.11: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
-    //TODO - 1.21.11: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
+    //TODO - 26.1: Validate there are no cases where a zero value is stored in an upgrade map as our positive int will error for that
+    //TODO - 26.1: Make sure this is lenient so if there are invalid amounts or unknown upgrades then it skips them. Maybe just LenientUnboundedMapCodec ?
     private static final Codec<Map<Upgrade, Integer>> UPGRADE_MAP_CODEC = Codec.unboundedMap(CODEC, ExtraCodecs.POSITIVE_INT);
 
     /**

@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jspecify.annotations.NullMarked;
 
-//TODO - 1.21.11: Figure out if this should be a no data special model renderer or what data we want to be including
+//TODO - 26.1: Figure out if this should be a no data special model renderer or what data we want to be including
 @NullMarked
 public abstract class MekanismISTER<MODEL_DATA> implements SpecialModelRenderer<MODEL_DATA> {
 
@@ -35,7 +35,7 @@ public abstract class MekanismISTER<MODEL_DATA> implements SpecialModelRenderer<
      */
     protected void renderBlockItem(ItemStack stack, ItemDisplayContext displayContext, PoseStack matrix, MultiBufferSource renderer,
           int light, int overlayLight, ModelData modelData) {
-        //TODO 26.1 item rendering
+        //TODO - 26.1 item rendering
         /*if (!(stack.getItem() instanceof BlockItem blockItem)) {
             return;
         }

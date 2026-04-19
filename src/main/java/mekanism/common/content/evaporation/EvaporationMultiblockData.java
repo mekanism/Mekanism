@@ -175,7 +175,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
         input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(inputTank::setStack);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         readValves(input);

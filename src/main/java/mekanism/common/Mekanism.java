@@ -281,7 +281,7 @@ public class Mekanism {
 
     private void addReloadListenersLowest(AddServerReloadListenersEvent event) {
         //Note: We register reload listeners here which we want to make sure run after CraftTweaker or any other mods that may modify recipes or loot tables
-        //TODO - 1.21.11: Evaluate the dependency system and what we want the id of this to be
+        //TODO - 26.1: Evaluate the dependency system and what we want the id of this to be
         event.addListener(rl("recipe_cache_manager"), getRecipeCacheManager());
     }
 

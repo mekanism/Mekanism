@@ -20,7 +20,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderState> {
 
-    //TODO - 1.21.11: Figure out how to specify the texture
+    //TODO - 26.1: Figure out how to specify the texture
     public static final Identifier BALLOON_TEXTURE = MekanismAdditions.rl("textures/item/balloon.png");
 
     public RenderBalloon(EntityRendererProvider.Context context) {
@@ -56,7 +56,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
 
         JSONModelData model = state.latched ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
 
-        //todo 26.1 balloon model
+        //TODO - 26.1 balloon model
         /*List<BakedQuad> quads = model.getQuads(balloon.level().random);
         RenderType renderType = RenderType.entityTranslucent(TextureAtlas.LOCATION_BLOCKS);
         VertexConsumer builder = renderer.getBuffer(renderType);

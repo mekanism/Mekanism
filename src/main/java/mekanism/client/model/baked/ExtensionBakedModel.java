@@ -1,6 +1,6 @@
 package mekanism.client.model.baked;
 
-//todo 26.1 - models, yeet this
+//TODO - 26.1 - models, yeet this
 
 import java.util.List;
 import java.util.Objects;

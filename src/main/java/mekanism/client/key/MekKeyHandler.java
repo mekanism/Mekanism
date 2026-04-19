@@ -35,7 +35,7 @@ public class MekKeyHandler {
                 if (key.getType() == InputConstants.Type.KEYSYM) {
                     return InputConstants.isKeyDown(window, keyCode);
                 } else if (key.getType() == InputConstants.Type.MOUSE) {
-                    //TODO - 1.21.11: Figure out how to replace this so that it doesn't need to directly access GLFW
+                    //TODO - 26.1: Figure out how to replace this so that it doesn't need to directly access GLFW
                     return GLFW.glfwGetMouseButton(window.handle(), keyCode) == InputConstants.PRESS;
                 }
             } catch (Exception ignored) {

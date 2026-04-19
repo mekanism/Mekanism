@@ -24,7 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector3f;
 
-//todo 26.1 models
+//TODO - 26.1 models
 @NothingNullByDefault
 public abstract class RenderTransmitterBase<TRANSMITTER extends TileEntityTransmitter, STATE extends TransmitterRenderState> extends MekanismTileEntityRenderer<TRANSMITTER, STATE> {
 

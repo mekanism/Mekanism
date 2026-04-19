@@ -14,7 +14,7 @@ public class NBTUtils {
     private NBTUtils() {
     }
 
-    //TODO - 1.21.11: Re-evaluate all these enum related methods and what cases should be replaced to use names instead of ordinals
+    //TODO - 26.1: Re-evaluate all these enum related methods and what cases should be replaced to use names instead of ordinals
     @Nullable
     public static <ENUM extends Enum<ENUM>> ENUM getEnum(ValueInput input, String key, IntFunction<ENUM> indexLookup) {
         Optional<Integer> value = input.getInt(key);

@@ -362,7 +362,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         transit.clear();
         ValueInputList itemInputs = input.childrenListOrEmpty(SerializationConstants.ITEMS);
         for (ValueInput itemInput : itemInputs) {
-            //TODO - 1.21.11: How do we want to handle if the item input doesn't contain an index?
+            //TODO - 26.1: How do we want to handle if the item input doesn't contain an index?
             addStack(itemInput.getIntOr(SerializationConstants.INDEX, 0), TransporterStack.readFromUpdate(itemInput));
         }
         return refreshModelData;

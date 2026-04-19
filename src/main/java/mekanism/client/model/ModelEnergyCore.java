@@ -13,7 +13,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 
-//TODO - 1.21.11: Remove this in favor of just rendering a model part?
+//TODO - 26.1: Remove this in favor of just rendering a model part?
 public class ModelEnergyCore extends MekanismJavaModel<Integer> {
 
     private static final Identifier CORE_TEXTURE = MekanismUtils.getResource(ResourceType.RENDER, "energy_core.png");

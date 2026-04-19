@@ -106,7 +106,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             isEmitting = shouldEmit;
             needsUpdate = true;
             //Update redstone on sides except the back
-            //todo 26.1 check Orientation
+            //TODO - 26.1 check Orientation
             level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(Direction.UP, getDirection(), SideBias.LEFT));
         }
         return needsUpdate;
@@ -133,7 +133,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @NotNull
     @Override
     public ModelData getModelData() {
-        //todo 26.1 models
+        //TODO - 26.1 models
         /*if (isEmitting) {
             return ModelData.of(DataBasedModelLoader.EMITTING, null);
         }*/

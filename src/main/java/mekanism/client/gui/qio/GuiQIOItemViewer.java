@@ -144,7 +144,7 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
     }
 
-    //todo 26.1 review this - currently anything outside the BMP is not allowed
+    //TODO - 26.1 review this - currently anything outside the BMP is not allowed
     private boolean isValidSearchChar(int c) {
         return (Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c)) || Character.isDigit(c) || Character.isAlphabetic(c);
     }

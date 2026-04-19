@@ -56,7 +56,7 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
-        //TODO 26.1 fluid models
+        //TODO - 26.1 fluid models
         /*event.enqueueWork(() -> {
             //Set fluids to a translucent render layer
             for (Holder<Fluid> fluid : GeneratorsFluids.FLUIDS.getFluidEntries()) {
@@ -64,7 +64,7 @@ public class GeneratorsClientRegistration {
             }
         });*/
 
-        //TODO 26.1 Models
+        //TODO - 26.1 Models
         // adv solar gen requires to be translated up 1 block, so handle the model separately
         /*ClientRegistration.addCustomModel(GeneratorsBlocks.ADVANCED_SOLAR_GENERATOR, (orig, evt) -> new TransformedBakedModel<Void>(orig,
               QuadTransformation.translate(0, 1, 0)));*/
@@ -125,7 +125,7 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.registerScreen(event, GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
     }
 
-    //@SubscribeEvent TODO 26.1 Is this needed?
+    //@SubscribeEvent TODO - 26.1 Is this needed?
     //public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
     //    ClientRegistrationUtil.registerBucketColorHandler(event, GeneratorsFluids.FLUIDS);
     //}
@@ -143,7 +143,7 @@ public class GeneratorsClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        //TODO 26.1 models
+        //TODO - 26.1 models
         //event.registerItem(new MekRenderProperties(RenderWindGeneratorItem.RENDERER), GeneratorsBlocks.WIND_GENERATOR.getItemHolder());
         ClientRegistrationUtil.registerBlockExtensions(event, GeneratorsBlocks.BLOCKS);
         ClientRegistrationUtil.registerFluidExtensions(event, GeneratorsFluids.FLUIDS);

@@ -175,7 +175,7 @@ public class MekanismHUD implements GuiLayer {
         }
 
         public void draw(GuiGraphicsExtractor graphics, Font font) {
-            //todo 26.1: use the matrix? yeet Delayed String completely?
+            //TODO - 26.1: use the matrix? yeet Delayed String completely?
             graphics.text(font, component, (int) x, (int) y, color, dropShadow);
         }
     }

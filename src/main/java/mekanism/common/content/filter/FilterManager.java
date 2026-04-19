@@ -161,7 +161,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         }));
     }
 
-    //TODO - 1.21.11: Test this and deserialization
+    //TODO - 26.1: Test this and deserialization
     public void serialize(@NotNull ValueOutput output) {
         if (!filters.isEmpty()) {
             TypedOutputList<IFilter<?>> filtersOutput = output.list(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC);
@@ -176,7 +176,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
         //Instantiate an empty cache for enabled filters so that when we add enabled filters
         // we can also add them to the enabled ones, and also overwrite our old cache
         enabledFilters = new ArrayList<>();
-        //TODO - 1.21.11: Validate this behaves appropriately with partial loading. We might have to treat it as a child list and deserialize one element at a time
+        //TODO - 26.1: Validate this behaves appropriately with partial loading. We might have to treat it as a child list and deserialize one element at a time
         // Also check other places where we go based on the list instead of a child list
         for (IFilter<?> filter : input.listOrEmpty(SerializationConstants.FILTERS, BaseFilter.GENERIC_CODEC)) {
             tryAddFilter(filter, false);

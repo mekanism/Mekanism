@@ -97,31 +97,31 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
         if (sps.orbitEffects.size() > targetEffectCount) {
             sps.orbitEffects.poll();
         } else if (sps.orbitEffects.size() < targetEffectCount && rand.nextDouble() < 0.5) {
-            //TODO - 1.21.11: Do we want to just use the level's random instead?
+            //TODO - 26.1: Do we want to just use the level's random instead?
             sps.orbitEffects.add(new SPSOrbitEffect(multiblock, state.center));
         }
     }
 
     @Override
     public void submit(SPSRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 1.21.11: Figure out how to render these things, should they potentially use the CustomGeometryRenderer thing?
+        //TODO - 26.1: Figure out how to render these things, should they potentially use the CustomGeometryRenderer thing?
         // I think the billboarding effects might be able to use a model part, which then might let them be ordered properly in terms of transparency
         bolts.render(partialTick, poseStack, renderer);
 
         poseStack.pushPose();
         //Because our center points are the center of the multiblock, we translate back to 0,0,0
-        //TODO - 1.21.11: Test this is the proper way to handle that we used to shift the billboarding effect renderer by the camera position
+        //TODO - 26.1: Test this is the proper way to handle that we used to shift the billboarding effect renderer by the camera position
         // when we were batching rendering of billboarding effects
         poseStack.translate(-state.blockPos.getX(), -state.blockPos.getY(), -state.blockPos.getZ());
 
         if (state.processed > 0 && state.center != null) {
-            //TODO - 1.21.11: ProfilerConstants.SPS_CORE ?
+            //TODO - 26.1: ProfilerConstants.SPS_CORE ?
             CORE.setPos(state.center);
             CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
             BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
         }
 
-        //TODO - 1.21.11: ProfilerConstants.SPS_ORBIT ?
+        //TODO - 26.1: ProfilerConstants.SPS_ORBIT ?
         for (SPSOrbitEffect effect : sps.orbitEffects) {
             BillboardingEffectRenderer.render(effect, camera, renderer, poseStack, renderTick, partialTick);
         }

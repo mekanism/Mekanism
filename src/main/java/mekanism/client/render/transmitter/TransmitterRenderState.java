@@ -11,7 +11,7 @@ import net.minecraft.client.resources.model.sprite.SpriteId;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
-//TODO - 1.21.11: Do we want to override fillCrashReportCategory to add more details to it?
+//TODO - 26.1: Do we want to override fillCrashReportCategory to add more details to it?
 @NothingNullByDefault
 public class TransmitterRenderState extends BlockEntityRenderState {
 

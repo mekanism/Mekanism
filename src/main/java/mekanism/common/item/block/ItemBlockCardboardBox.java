@@ -46,9 +46,9 @@ public class ItemBlockCardboardBox extends ItemBlockMekanism<BlockCardboardBox> 
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         BlockData existingData = stack.get(MekanismDataComponents.BLOCK_DATA);
-        //TODO - 1.21.11: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
+        //TODO - 26.1: Can we somehow move whether it has block data or not to the data component? Likely would require adding a default component for NO block data
         tooltipAdder.accept(MekanismLang.BLOCK_DATA.translateColored(EnumColor.INDIGO, YesNo.of(existingData != null, true)));
-        //TODO - 1.21.11: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
+        //TODO - 26.1: Make a Neo PR adding a supplier variant of this? so that mods don't have to call get?
         stack.addToTooltip(MekanismDataComponents.BLOCK_DATA.get(), context, tooltipDisplay, tooltipAdder, flag);
     }
 

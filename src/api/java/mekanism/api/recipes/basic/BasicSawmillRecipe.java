@@ -63,7 +63,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
         return new BasicChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }
 
-    @Override// todo 26.1 - see if template can be used
+    @Override// TODO - 26.1 - see if template can be used
     public List<ItemStack> getMainOutputDefinition() {
         return mainOutput == null ? Collections.emptyList() : Collections.singletonList(mainOutput.create());
     }

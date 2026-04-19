@@ -299,7 +299,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         for (Entry<TransmissionType, ConfigInfo> entry : configInfo.entrySet()) {
             TransmissionType type = entry.getKey();
             ConfigInfo info = entry.getValue();
-            //TODO - 1.21.11: Do we want to replace it using the ordinal with using a serialized name as part of the key?
+            //TODO - 26.1: Do we want to replace it using the ordinal with using a serialized name as part of the key?
             // Or maybe better yet, just have it be a input.child(type) and then have sub parts of the ejecting and side data?
             int ordinalToUse = type.ordinal();
             info.setEjecting(configInput.getBooleanOr(SerializationConstants.EJECT + ordinalToUse, info.isEjecting()));

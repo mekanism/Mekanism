@@ -11,14 +11,14 @@ import net.minecraft.world.item.crafting.RecipeInput;
 /**
  * Base class for helping wrap our recipes into IRecipes.
  */
-@NothingNullByDefault//todo 26.1 implement display()?
+@NothingNullByDefault//TODO - 26.1 implement display()?
 public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recipe<INPUT> {
     //TODO: Should we make implementations override equals and hashcode?
 
     private final String group;
 
     protected MekanismRecipe() {
-        this("");//TODO - 1.21.11: Remove this constructor and force usage of groups
+        this("");//TODO - 26.1: Remove this constructor and force usage of groups
     }
 
     protected MekanismRecipe(String group) {
@@ -38,8 +38,8 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
     }
 
     //Force implementation of this method as our ingredients is always empty so the super implementation would have all ours as incomplete
-    //@Override//TODO - 1.21.11: Re-evaluate this, we might want to keep some form of it?
-    public abstract boolean isIncomplete();//TODO - 1.21.11: This is now part of PlacementInfo#isImpossibleToPlace ??
+    //@Override//TODO - 26.1: Re-evaluate this, we might want to keep some form of it?
+    public abstract boolean isIncomplete();//TODO - 26.1: This is now part of PlacementInfo#isImpossibleToPlace ??
 
     public abstract void logMissingTags();
 
@@ -48,7 +48,7 @@ public abstract class MekanismRecipe<INPUT extends RecipeInput> implements Recip
         return ItemStack.EMPTY;
     }
 
-    public ItemStack getToastSymbol() {//TODO - 1.21.11: Remove this after removing the things that use it
+    public ItemStack getToastSymbol() {//TODO - 26.1: Remove this after removing the things that use it
         return ItemStack.EMPTY;
     }
 

@@ -47,7 +47,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         FusionReactorMultiblockData multiblock = controller.getMultiblock();
         state.scaledTemp = Math.round(multiblock.getLastPlasmaTemp() / SCALE);
-        //TODO - 1.21.11: Is this what we should be using in BERs or should we use the game time?
+        //TODO - 26.1: Is this what we should be using in BERs or should we use the game time?
         state.ticks = Minecraft.getInstance().levelRenderer.getTicks() + partialTick;
     }
 
@@ -65,7 +65,7 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         renderPart(state, poseStack, nodeCollector, EnumColor.ORANGE, scale, 5, -3, -35, 106);
 
         poseStack.popPose();
-        //TODO - 1.21.11: We used to force end and draw the buffer, I am guessing that is no longer something that we want to be doing
+        //TODO - 26.1: We used to force end and draw the buffer, I am guessing that is no longer something that we want to be doing
         //endIfNeeded(renderer, ModelEnergyCore.RENDER_TYPE);
     }
 
@@ -87,12 +87,12 @@ public class RenderFusionReactor extends MultiblockTileEntityRenderer<FusionReac
         nodeCollector.submitModelPart(
               this.energyCore,
               poseStack,
-              //TODO - 1.21.11: Figure out the render type
+              //TODO - 26.1: Figure out the render type
               ModelEnergyCore.RENDER_TYPE,
-              //TODO - 1.21.11: Do we want to be using the state's light level instead?
+              //TODO - 26.1: Do we want to be using the state's light level instead?
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              null,//TODO - 1.21.11: Do we need to specify the texture or is doing so in the render type good enough?
+              null,//TODO - 26.1: Do we need to specify the texture or is doing so in the render type good enough?
               color.getPackedColor(),
               null//No break overlay for the core
         );

@@ -132,7 +132,7 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    @Deprecated(forRemoval = true)//TODO - 1.21.11: Remove this
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, float angle, int light, int overlayLight, boolean hasEffect) {
         WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState();
         state.angle = angle;

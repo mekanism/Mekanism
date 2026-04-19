@@ -120,7 +120,7 @@ public class RenderTickHandler {
             // Note: We will pop this in a listener at the lowest priority
             Matrix3x2fStack pose = event.getGuiGraphics().pose();
             pose.pushMatrix();
-            pose.translate(0, 0/* todo 26.1: , GuiMekanism.maxZOffset*/);
+            pose.translate(0, 0/* TODO - 26.1: , GuiMekanism.maxZOffset*/);
         }
     }
 
@@ -132,10 +132,10 @@ public class RenderTickHandler {
         }
     }
 
-    @SubscribeEvent//todo 26.1 is this a correct replacement?
+    @SubscribeEvent//TODO - 26.1 is this a correct replacement?
     public void renderWorldAfterParticles(RenderLevelStageEvent.AfterTranslucentParticles event) {
         if (boltRenderer.hasBoltsToRender()) {
-            //TODO - 1.21.11: Figure out if this is still valid as the buffer
+            //TODO - 26.1: Figure out if this is still valid as the buffer
             /*MultiBufferSource.BufferSource renderer = minecraft.renderBuffers().bufferSource();
             LevelRenderState levelState = event.getLevelRenderState();
             boltRenderer.render(levelState.gameTime, MekanismRenderer.getPartialTick(), event.getPoseStack(), renderer, levelState.cameraRenderState.pos);
@@ -161,7 +161,7 @@ public class RenderTickHandler {
             PlayerModel model = renderer.getModel();
             AvatarRenderState renderState = renderer.createRenderState();
             renderer.extractRenderState(player, renderState, MekanismRenderer.getPartialTick());
-            //todo 26.1 model.setAllVisible(true);
+            //TODO - 26.1 model.setAllVisible(true);
             //Note: We just want it to act as empty even if there is a map as it looks a lot better
             boolean rightHand = event.getArm() == HumanoidArm.RIGHT;
             if (rightHand) {
@@ -300,10 +300,10 @@ public class RenderTickHandler {
         return true;
     }
 
-    //todo 26.1 CustomBlockOutlineRenderer
+    //TODO - 26.1 CustomBlockOutlineRenderer
     /*@SubscribeEvent
     public void onBlockHover(RenderHighlightEvent.Block event) {
-        //TODO - 1.21.11: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
+        //TODO - 26.1: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         LocalPlayer player = minecraft.player;
         if (player == null) {
             return;

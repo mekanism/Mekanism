@@ -76,9 +76,9 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
             if (blockState.isEmpty() || !blockState.get().canOcclude() || !blockState.get().isFaceSturdy(level, coverPos, state.facing.getOpposite())) {
                 //Calculate lighting based on the light at the block the bin is facing
                 state.lightCoords = LevelRenderer.getLightCoords(level, coverPos);
-                //TODO - 1.21.11: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
+                //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
                 int seed = MathUtils.clampToInt(state.blockPos.asLong());
-                //TODO - 1.21.11: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item
+                //TODO - 26.1: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item
                 this.itemModelResolver.updateForTopItem(state.item, binSlot.getRenderStack(), ItemDisplayContext.GUI, level, null, seed);
                 if (bin.getTier() == BinTier.CREATIVE) {
                     state.displayCount = MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
@@ -86,7 +86,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                     state.displayCount = TextComponentUtil.build(binSlot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, binSlot.getCount());
                 }
             } else {
-                //TODO - 1.21.11: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,
+                //TODO - 26.1: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,
                 // but we should see if we can just put some of this stuff in the should render?
                 state.facing = null;
             }
@@ -171,7 +171,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                       false,
                       DisplayMode.POLYGON_OFFSET,
                       state.lightCoords,
-                      0xFFFFFFFF,//TODO - 1.21.11: What color do we want to be using?
+                      0xFFFFFFFF,//TODO - 26.1: What color do we want to be using?
                       0,
                       0
 

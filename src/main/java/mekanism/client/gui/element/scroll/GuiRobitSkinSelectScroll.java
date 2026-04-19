@@ -186,7 +186,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
             Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.identifier());
             return;
         }
-        //todo 26.1 robit model
+        //TODO - 26.1 robit model
         /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {
             Mekanism.logger.warn("Failed to render skin: {} as it does not have a model.", skinLookup.identifier());

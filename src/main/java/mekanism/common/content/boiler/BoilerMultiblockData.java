@@ -244,7 +244,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE_ALT, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
         input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
-        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
         input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(waterTank::setStack);
         input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(steamTank::setStack);
         input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);

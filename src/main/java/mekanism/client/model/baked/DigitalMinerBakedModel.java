@@ -1,6 +1,6 @@
 package mekanism.client.model.baked;
 
-//TODO 26.1 - holiday skin
+//TODO - 26.1 - holiday skin
 /*import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.common.base.holiday.ClientHolidayInfo;

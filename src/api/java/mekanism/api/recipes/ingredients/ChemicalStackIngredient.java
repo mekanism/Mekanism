@@ -153,7 +153,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
 
     @Override
     public List<ChemicalStack> getRepresentations(ContextMap context) {
-        //TODO - 1.21.11: Refactor this to be based off the display
+        //TODO - 26.1: Refactor this to be based off the display
         if (this.representations == null) {
             this.representations = ingredient.getChemicalHolders().stream()
                   .map(chemical -> new ChemicalStack(chemical, amount))

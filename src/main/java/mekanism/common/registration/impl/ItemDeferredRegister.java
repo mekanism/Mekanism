@@ -117,7 +117,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
     public ItemRegistryObject<SpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider,
           int primaryColor, int secondaryColor) {
-        //todo 26.1 primaryColor, secondaryColor?
+        //TODO - 26.1 primaryColor, secondaryColor?
         return registerItem(entityTypeProvider.getName() + "_spawn_egg", props -> new SpawnEggItem(props.spawnEgg(entityTypeProvider.get())));
     }
 

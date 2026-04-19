@@ -123,7 +123,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         yo = getY();
         zo = getZ();
 
-        //TODO - 1.21.11: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
+        //TODO - 26.1: Re-evaluate all these cases where we have getMaxY() + 1, to make sure the logic makes sense having the +1
         if (getY() >= level().getMaxY() + 1) {
             pop();
             return;

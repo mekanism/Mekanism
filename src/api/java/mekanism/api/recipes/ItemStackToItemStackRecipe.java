@@ -75,7 +75,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
      * For JEI, gets the output representations to display.
      *
      * @return Representation of the output, <strong>MUST NOT</strong> be modified.
-     * TODO 26.1 - can this use ItemStackTemplate?
+     * TODO - 26.1 - can this use ItemStackTemplate?
      */
     public abstract List<ItemStack> getOutputDefinition();
 

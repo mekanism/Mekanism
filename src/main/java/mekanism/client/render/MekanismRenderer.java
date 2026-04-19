@@ -83,7 +83,7 @@ public class MekanismRenderer {
      * @param type  Still or Flowing
      *
      * @return the sprite, or missing sprite if not found
-     *///todo 26.1 - is this still what should be done?
+     *///TODO - 26.1 - is this still what should be done?
     public static TextureAtlasSprite getBaseFluidTexture(@NotNull Fluid fluid, @NotNull FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
@@ -264,7 +264,7 @@ public class MekanismRenderer {
     }
 
     public static void renderColorOverlay(GuiGraphicsExtractor guiGraphics, int x, int y, int color) {
-        //TODO - 1.21.11: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
+        //TODO - 26.1: Go through all our GUIs and make sure that our things that previously used gui overlay render as expected
         guiGraphics.fill(x, y, guiGraphics.guiWidth(), guiGraphics.guiHeight(), color);
     }
 
@@ -274,7 +274,7 @@ public class MekanismRenderer {
     }
 
     public static float getPartialTick() {
-        //TODO - 1.21.11: Re-evaluate callers and see if any have access to the delta tracker through non static means
+        //TODO - 26.1: Re-evaluate callers and see if any have access to the delta tracker through non static means
         return Minecraft.getInstance().getDeltaTracker().getGameTimeDeltaPartialTick(false);
     }
 

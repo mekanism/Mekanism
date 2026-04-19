@@ -158,7 +158,7 @@ public class FissionReactorValidator extends CuboidStructureValidator<FissionRea
 
     public record FormedAssembly(BlockPos pos, int height) {
 
-        //TODO - 1.21.11: Do we want more validation for the height part of the codec?
+        //TODO - 26.1: Do we want more validation for the height part of the codec?
         public static final Codec<FormedAssembly> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(FormedAssembly::pos),
               ExtraCodecs.NON_NEGATIVE_INT.fieldOf(SerializationConstants.HEIGHT).forGetter(FormedAssembly::height)

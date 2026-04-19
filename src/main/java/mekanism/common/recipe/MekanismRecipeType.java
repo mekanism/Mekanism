@@ -214,7 +214,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
             if (FMLEnvironment.getDist().isClient()) {
                 Level clientWorld = MekanismClient.tryGetClientWorld();
                 if (clientWorld != null) {
-                    //TODO 26.1 unpossible?
+                    //TODO - 26.1 unpossible?
                     //recipeManager = clientWorld.recipeAccess();
                     registryAccess = clientWorld.registryAccess();
                 }
@@ -305,7 +305,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
     public static <I extends RecipeInput, RECIPE_TYPE extends Recipe<I>> Optional<RecipeHolder<RECIPE_TYPE>> getRecipeFor(RecipeType<RECIPE_TYPE> recipeType, I input,
           Level level) {
         if (!(level instanceof ServerLevel serverLevel)) {
-            //TODO - 1.21.11: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
+            //TODO - 26.1: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
             return Optional.empty();
         }
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types
@@ -319,7 +319,7 @@ public class MekanismRecipeType<VANILLA_INPUT extends RecipeInput, RECIPE extend
      */
     public static Optional<RecipeHolder<?>> byKey(Level level, ResourceKey<Recipe<?>> id) {
         if (!(level instanceof ServerLevel serverLevel)) {
-            //TODO - 1.21.11: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
+            //TODO - 26.1: Re-evaluate callers and see what we can do for client side that might want to know that recipes exist
             return Optional.empty();
         }
         //Only allow looking up complete recipes or special recipes as we only use this method for vanilla recipe types

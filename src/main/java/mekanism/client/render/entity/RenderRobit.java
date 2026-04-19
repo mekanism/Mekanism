@@ -18,7 +18,7 @@ import net.neoforged.neoforge.model.data.ModelData;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//todo 26.1 robit model: not this... perhaps just manually submit(...)
+//TODO - 26.1 robit model: not this... perhaps just manually submit(...)
 // or patch LivingEntityRenderer to use getModel() instead of direct field, override that
 public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, RobitModelWrapper> {
 
@@ -41,7 +41,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Robi
     @Override
     public void submit(@NotNull RobitRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector nodeCollector, @NotNull CameraRenderState camera) {
         if (state.skinLookup != null) {
-            //TODO - 1.21.11: Replace the model here, and don't capture the state as part of setupAnim
+            //TODO - 26.1: Replace the model here, and don't capture the state as part of setupAnim
             //this.model = new RobitModelWrapper(state);
             super.submit(state, poseStack, nodeCollector, camera);
         }
@@ -75,7 +75,7 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Robi
             super.setupAnim(robit);
         }
 
-        //todo 26.1 robit model
+        //TODO - 26.1 robit model
         /*@Override
         public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, int color) {
             if (robit == null || robit.skinLookup == null) {

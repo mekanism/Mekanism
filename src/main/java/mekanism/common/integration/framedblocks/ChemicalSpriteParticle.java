@@ -40,7 +40,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
     @NotNull
     @Override
     protected SingleQuadParticle.Layer getLayer() {
-        //TODO - 1.21.11: Validate this
+        //TODO - 26.1: Validate this
         return SingleQuadParticle.Layer.TRANSLUCENT_TERRAIN;
     }
 

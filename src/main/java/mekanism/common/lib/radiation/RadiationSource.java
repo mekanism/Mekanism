@@ -12,7 +12,7 @@ import net.minecraft.core.BlockPos;
 @NothingNullByDefault
 public class RadiationSource implements IRadiationSource {
 
-    //TODO - 1.21.11: Should we apply bounds to what is valid as the radiation level
+    //TODO - 26.1: Should we apply bounds to what is valid as the radiation level
     public static final Codec<RadiationSource> CODEC = RecordCodecBuilder.create(in -> in.group(
           BlockPos.CODEC.fieldOf(SerializationConstants.POS).forGetter(RadiationSource::getPosition),
           Codec.DOUBLE.fieldOf(SerializationConstants.RADIATION).forGetter(RadiationSource::getMagnitude)

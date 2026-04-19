@@ -100,7 +100,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         }
 
         if (multiblock.isBurning()) {
-            //TODO - 1.21.11: Do we need to copy this like this?
+            //TODO - 26.1: Do we need to copy this like this?
             state.assemblies.addAll(multiblock.assemblies);
         }
     }
@@ -109,7 +109,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
     public void submit(FissionRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         BlockPos pos = state.blockPos;
         if (!state.assemblies.isEmpty()) {
-            //TODO - 1.21.11: Profiler?
+            //TODO - 26.1: Profiler?
             //profiler.push(GeneratorsProfilerConstants.FISSION_FUEL_ASSEMBLY);
             Model3D model = glowModel.get();
             for (FormedAssembly assembly : state.assemblies) {

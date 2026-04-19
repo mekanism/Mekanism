@@ -61,7 +61,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
               MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
               Unit.INSTANCE,
               poseStack,
-              Sheets.solidBlockSheet(),//TODO - 1.21.11: Test this
+              Sheets.solidBlockSheet(),//TODO - 26.1: Test this
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
               0,//No outline

@@ -80,7 +80,7 @@ public abstract class BlockMekanism extends Block {
     @Override
     public ItemStack getCloneItemStack(@NotNull LevelReader world, @NotNull BlockPos pos, @NotNull BlockState state, boolean includeData, @NotNull Player player) {
         ItemStack stack = super.getCloneItemStack(world, pos, state, includeData, player);
-        //TODO - 1.21.11: Do we also want to check the includeData field in this if statement?
+        //TODO - 26.1: Do we also want to check the includeData field in this if statement?
         if (MekanismConfig.common.copyBlockData.get()) {
             TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
             if (tile != null) {
@@ -207,7 +207,7 @@ public abstract class BlockMekanism extends Block {
 
     @Override
     protected int getAnalogOutputSignal(@NotNull BlockState blockState, @NotNull Level world, @NotNull BlockPos pos, @NotNull Direction direction) {
-        //TODO - 1.21.11: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
+        //TODO - 26.1: Should we add support for direction? Maybe for multiblocks to not output one inside the multiblock or something
         if (hasAnalogOutputSignal(blockState)) {
             BlockEntity tile = WorldUtils.getTileEntity(world, pos);
             //Double-check the tile actually has comparator support

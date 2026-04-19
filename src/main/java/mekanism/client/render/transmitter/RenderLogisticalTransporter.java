@@ -51,7 +51,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
         MeshDefinition mesh = new MeshDefinition();
         PartDefinition root = mesh.getRoot();
         root.addOrReplaceChild("box", CubeListBuilder.create().addBox(0F, 0F, 0F, 7, 7, 7),
-              //TODO - 1.21.11: Do we need the offset, or can we just move the origin?
+              //TODO - 26.1: Do we need the offset, or can we just move the origin?
               PartPose.offset(-3.5F, 0, -3.5F)
         );
         return LayerDefinition.create(mesh, 64, 64);
@@ -90,7 +90,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                     //We use add to check if it already contained the value, so that we only have to query the set once
                     Vector3f stackPos = TransporterUtils.getStackPosition(transmitter, stack, partial);
                     TransporterStackRenderState stackRenderState = new TransporterStackRenderState(stackPos, stack.color);
-                    //TODO - 1.21.11: Do we need to do any sort of seed?
+                    //TODO - 26.1: Do we need to do any sort of seed?
                     this.itemModelResolver.updateForTopItem(stackRenderState.item(), stack.itemStack, ItemDisplayContext.GROUND, level, null, 0);
                     state.stacks.add(stackRenderState);
                 }
@@ -109,18 +109,18 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                     nodeCollector.submitModelPart(
                           this.modelBox,
                           poseStack,
-                          //TODO - 1.21.11: Is this the correct render type to be using? I believe it is what we used to use, so it probably is fine
+                          //TODO - 26.1: Is this the correct render type to be using? I believe it is what we used to use, so it probably is fine
                           RenderTypes.entityCutoutNoCull(BOX_TEXTURE),
-                          //TODO - 1.21.11: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
+                          //TODO - 26.1: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
                           LightCoordsUtil.FULL_BRIGHT,
                           OverlayTexture.NO_OVERLAY,
-                          //TODO - 1.21.11: Do we need to pass the texture here as well, or not?
+                          //TODO - 26.1: Do we need to pass the texture here as well, or not?
                           null,
                           stackRenderState.color().getPackedColor(),
-                          null//TODO - 1.21.11: Should we render the crumbling progress onto the box around the item inside the transporter? Probably not
+                          null//TODO - 26.1: Should we render the crumbling progress onto the box around the item inside the transporter? Probably not
                     );
                 }
-                //TODO - 1.21.11: We used to render the item before the box, but doing it after lets us skip an extra push/pop.
+                //TODO - 26.1: We used to render the item before the box, but doing it after lets us skip an extra push/pop.
                 // Does this still render as we expect it to?
                 //Render the item at the center of the block, this translation used to be handled by the item entity's position
                 poseStack.translate(0.5, 0.5, 0.5);

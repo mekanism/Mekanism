@@ -378,7 +378,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
             if (upgraded > 0) {
                 //Invalidate the network so that it properly has new references to everything
                 transmitterNetwork.invalidate(null);
-                //TODO - 1.21.11: Figure out what other uses of ItemStack#shrink should be replaced with ItemStack#consume
+                //TODO - 26.1: Figure out what other uses of ItemStack#shrink should be replaced with ItemStack#consume
                 stack.consume(1, player);
                 if (player instanceof ServerPlayer serverPlayer) {
                     MekanismCriteriaTriggers.ALLOY_UPGRADE.value().trigger(serverPlayer);

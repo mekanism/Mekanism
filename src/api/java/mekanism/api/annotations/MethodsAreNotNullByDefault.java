@@ -14,5 +14,5 @@ import org.jetbrains.annotations.NotNull;
 @Nonnull//Note: Must use the javax nonnull for intellij to recognize it properly in warnings
 @TypeQualifierDefault(ElementType.METHOD)
 @Retention(RetentionPolicy.CLASS)
-public @interface MethodsAreNotNullByDefault {//TODO - 1.21.11: Replace this and the other ones with appropriate package infos and jspecify usage?
+public @interface MethodsAreNotNullByDefault {//TODO - 26.1: Replace this and the other ones with appropriate package infos and jspecify usage?
 }

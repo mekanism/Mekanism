@@ -64,7 +64,7 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(alarm, state, partialTick, cameraPosition, breakProgress);
         state.direction = alarm.getDirection();
-        //TODO - 1.21.11: Do we want to use game time as a basis or some other value?
+        //TODO - 26.1: Do we want to use game time as a basis or some other value?
         state.modelState.setRotation((alarm.getLevel().getGameTime() + partialTick) * ROTATE_SPEED % 360);
     }
 
@@ -97,8 +97,8 @@ public class RenderIndustrialAlarm extends MekanismTileEntityRenderer<TileEntity
                 poseStack.mulPose(Axis.ZP.rotationDegrees(90));
             }
         }
-        //TODO - 1.21.11: Validate this render type and that the texture is accessible
-        //TODO 26.1 crumble - add support to MekJavaModel if it's needed
+        //TODO - 26.1: Validate this render type and that the texture is accessible
+        //TODO - 26.1 crumble - add support to MekJavaModel if it's needed
         this.model.collect(state.modelState, poseStack, nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, false);
         RenderType renderType = this.model.getRenderType();
         nodeCollector.submitModelPart(

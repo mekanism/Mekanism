@@ -84,7 +84,7 @@ public class ModelArmoredFreeRunners extends ModelFreeRunners {
         super(root);
         leftParts.addAll(getRenderableParts(root, PLATE_L, TOP_PLATE_L, CONNECTION_L, ARMORED_BRACE_L));
         rightParts.addAll(getRenderableParts(root, PLATE_R, TOP_PLATE_R, CONNECTION_R, ARMORED_BRACE_R));
-        //TODO - 1.21.11: Figure out how to have the lit parts of the model be rendered as full bright
+        //TODO - 26.1: Figure out how to have the lit parts of the model be rendered as full bright
         litLeftParts = getRenderableParts(root, BATTERY_L);
         litRightParts = getRenderableParts(root, BATTERY_R);
     }

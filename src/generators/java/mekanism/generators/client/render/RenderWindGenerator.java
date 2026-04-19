@@ -62,9 +62,9 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
                   this.model,
                   state.rotation,
                   poseStack,
-                  //TODO - 1.21.11: Figure out/at least cleanup the name
+                  //TODO - 26.1: Figure out/at least cleanup the name
                   this.model.RENDER_TYPE,
-                  //TODO - 1.21.11: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
+                  //TODO - 26.1: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
                   0,//No outline

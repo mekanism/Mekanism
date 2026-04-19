@@ -67,7 +67,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     private static final List<ContainerType<?, ?, ?>> TYPES_INTERNAL = new ArrayList<>();
     public static final List<ContainerType<?, ?, ?>> TYPES = Collections.unmodifiableList(TYPES_INTERNAL);
 
-    //todo 26.1 - these collect/apply methods should be static, they don't actually use the tile. QIO has an item override, but other than that the inheritance is irrelevant
+    //TODO - 26.1 - these collect/apply methods should be static, they don't actually use the tile. QIO has an item override, but other than that the inheritance is irrelevant
     //possibly change to use copy?
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
           SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
@@ -309,7 +309,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     public void readFrom(ValueInput input, List<CONTAINER> containers) {
-        //TODO - 1.21.11: Should this not be orEmpty?
+        //TODO - 26.1: Should this not be orEmpty?
         DataHandlerUtils.readContents(input.childrenListOrEmpty(containerTag), containerKey, containers);
     }
 

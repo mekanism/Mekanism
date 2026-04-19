@@ -31,7 +31,7 @@ public interface Finder {
         return ItemStack.isSameItemSameComponents(itemType, toCheck);
     }
 
-    //todo 26.1 instance of WildcardMatcher/predicate param (stored on filter upon tag change)
+    //TODO - 26.1 instance of WildcardMatcher/predicate param (stored on filter upon tag change)
     static boolean tag(String tagName, ItemStack toCheck) {
         return !toCheck.isEmpty() && toCheck.tags().anyMatch(tag -> WildcardMatcher.matches(tagName, tag));
     }

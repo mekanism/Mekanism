@@ -65,7 +65,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         super.extractRenderState(pipe, state, partialTick, cameraPosition, breakProgress);
         MechanicalPipe transmitter = pipe.getTransmitter();
         FluidNetwork network = transmitter.getTransmitterNetwork();
-        if (network == null) {//TODO - 1.21.11: Does this race condition still exist?
+        if (network == null) {//TODO - 26.1: Does this race condition still exist?
             return;//race conditions, yay
         }
         FluidStack fluidStack = network.lastFluid;
@@ -77,7 +77,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
-        //TODO - 1.21.11: Should we overwrite lightCoords with glow?
+        //TODO - 26.1: Should we overwrite lightCoords with glow?
         int glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
 
 

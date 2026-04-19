@@ -61,7 +61,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     @Override
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.model != null) {
-            //TODO - 1.21.11: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
+            //TODO - 26.1: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
             MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), state.tint, LightCoordsUtil.FULL_BRIGHT,
                   OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
         }

@@ -71,7 +71,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 int fuel = fuelValue.applyAsInt(current);
                 if (fuel > 0 && fuel <= needed) {
                     UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
-                    //TODO - 1.21.11: Should we also validate that the remainder isn't the existing stack?
+                    //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
                     boolean hasContainer = remainder != null;
                     if (hasContainer && current.getCount() > 1) {
                         //If we have a container but have more than a single stack of it somehow just exit

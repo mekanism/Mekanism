@@ -28,7 +28,7 @@ final class ChemicalCamoClientHandler extends CamoContentClientHandler<ChemicalC
     //    return ModelUtils.TRANSLUCENT;
     //}
 
-    @Override//todo 26.1 models
+    @Override//TODO - 26.1 models
     public BlockStateModel getOrCreateModel(ChemicalCamoContent camo) {
         throw new UnsupportedOperationException("TODO");
         //return CHEMICAL_MODEL_CACHE.computeIfAbsent(camo.getChemicalHolder().value(), ChemicalModel::create);

@@ -11,7 +11,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 
-//TODO 26.1 - should it still use Item or should we use holders?
+//TODO - 26.1 - should it still use Item or should we use holders?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
 
     public ItemInputCache() {

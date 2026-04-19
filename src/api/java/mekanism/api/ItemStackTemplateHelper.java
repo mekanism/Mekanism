@@ -24,7 +24,7 @@ public class ItemStackTemplateHelper {
                 .apply(i, ItemStackTemplate::new));
     public static final Codec<ItemStackTemplate> NO_COUNT_CODEC = NO_COUNT_MAPCODEC.codec();
 
-    //TODO 26.1 These should probably be moved to ItemStackTemplate + NO_COUNT_CODEC ?
+    //TODO - 26.1 These should probably be moved to ItemStackTemplate + NO_COUNT_CODEC ?
     public static final Codec<ItemStack> NO_COUNT_ITEMSTACK = RecordCodecBuilder.create(
           i -> i.group(
                       Item.CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),

@@ -105,7 +105,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             return super.mouseReleased(event);
         }
         super.mouseReleased(event);
-        //TODO - 1.21.11: Evaluate if we just want to pass the mouse button event directly?
+        //TODO - 26.1: Evaluate if we just want to pass the mouse button event directly?
         clickHandler.onClick(() -> getSlot(event.x(), event.y()), event.button(), event.hasShiftDown(), gui().getCarriedItem());
         return true;
     }

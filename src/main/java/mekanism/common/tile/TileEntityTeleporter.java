@@ -760,7 +760,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     @ComputerMethod
     String getStatus() {
         if (hasFrequency()) {
-            //TODO - 1.21.11: Evaluate making it so that these cases get handled automatically with it just being an enum?
+            //TODO - 26.1: Evaluate making it so that these cases get handled automatically with it just being an enum?
             return switch (status) {
                 case READY -> "ready";
                 case NO_FRAME -> "no frame";

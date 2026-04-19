@@ -16,7 +16,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
-//todo 26.1 - can we get rid of these?
+//TODO - 26.1 - can we get rid of these?
 public class Quad {
 
     private final Vertex[] vertices;
@@ -111,7 +111,7 @@ public class Quad {
 
     public BakedQuad bake() {
         QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
-        //todo 26.1 quadBaker.setSprite(sprite);
+        //TODO - 26.1 quadBaker.setSprite(sprite);
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
         quadBaker.setShade(shade);
@@ -201,7 +201,7 @@ public class Quad {
 
         @Override
         public VertexConsumer setLineWidth(float width) {
-            //TODO - 1.21.11: Do we need to be implementing this? I doubt it actually gets called for the usage, but we need to make sure
+            //TODO - 26.1: Do we need to be implementing this? I doubt it actually gets called for the usage, but we need to make sure
             return this;
         }
 

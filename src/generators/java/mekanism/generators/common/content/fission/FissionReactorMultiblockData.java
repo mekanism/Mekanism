@@ -262,7 +262,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        //TODO - 1.21.11: Should this be an orElse empty and then set it regardless?
+        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
         input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(coolantTank.getFluidTank()::setStack);
         input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(fuelTank::setStack);
         input.read(SerializationConstants.CHEMICAL_STORED_ALT, ChemicalStack.OPTIONAL_CODEC).ifPresent(heatedCoolantTank::setStack);

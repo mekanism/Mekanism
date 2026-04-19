@@ -87,7 +87,7 @@ public class ModelFreeRunners extends MekanismJavaModel<FreeRunnerRenderState> {
         }
     }
 
-    //TODO - 1.21.11: Do we want a static field for the various states?
+    //TODO - 26.1: Do we want a static field for the various states?
     public record FreeRunnerRenderState(boolean leftVisible, boolean rightVisible) {
 
         /// Don't call this with both false....

@@ -78,7 +78,7 @@ public class GuiSupportedUpgrades extends GuiElement {
             gui().renderItem(guiGraphics, UpgradeUtils.getStack(upgrade), xPos, yPos, 0.75F);
             if (!supportedUpgrades.contains(upgrade)) {
                 //Make the upgrade appear faded if it is not supported
-                //TODO - 1.21.11: Figure out if we need a new version of RenderType.guiGhostRecipeOverlay(), or if it just supports it natively now
+                //TODO - 26.1: Figure out if we need a new version of RenderType.guiGhostRecipeOverlay(), or if it just supports it natively now
                 guiGraphics.fill(xPos, yPos, xPos + ELEMENT_SIZE, yPos + ELEMENT_SIZE, backgroundColor);
             }
         }

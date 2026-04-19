@@ -93,7 +93,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     public ItemAtomicDisassembler(Properties properties) {
-        //TODO - 1.21.11: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
+        //TODO - 26.1: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
         super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
               .component(DataComponents.TOOL, new Tool(List.of(

@@ -159,7 +159,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         // the tile copy the lock stack as a component
         super.serialize(output);
         if (isLocked()) {
-            //TODO - 1.21.11: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
+            //TODO - 26.1: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
             output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK, lockStack);
             //nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
@@ -167,7 +167,7 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 1.21.11: Does this properly handle the behavior of when things are empty
+        //TODO - 26.1: Does this properly handle the behavior of when things are empty
         this.lockStack = input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK).orElse(ItemStack.EMPTY);
         //NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserialize(input);

@@ -50,12 +50,12 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
         UUID multiblockUUID = rotor.getMultiblockUUID();
         if (multiblockUUID != null) {
             //We are rendering inside the multiblock, use full-bright for the textures
-            //TODO - 1.21.11: Validate that this works
+            //TODO - 26.1: Validate that this works
             state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
         }
 
         int baseIndex = rotor.getPosition() * 2;
-        if (isTickingNormally(rotor)) {//TODO - 1.21.11: Re-evaluate where these calculations should be done
+        if (isTickingNormally(rotor)) {//TODO - 26.1: Re-evaluate where these calculations should be done
             if (multiblockUUID != null && TurbineMultiblockData.clientRotationMap.containsKey(multiblockUUID)) {
                 float rotateSpeed = TurbineMultiblockData.clientRotationMap.getFloat(multiblockUUID) * BASE_SPEED;
                 rotor.rotationLower += rotateSpeed / (baseIndex + 1);
@@ -97,7 +97,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
               bladeState,
               poseStack,
               this.model.getRenderType(),
-              //TODO - 1.21.11: Do we need to calculate lighting differently for if the blades are very long?
+              //TODO - 26.1: Do we need to calculate lighting differently for if the blades are very long?
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
               0,//No outline
@@ -117,7 +117,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
 
     @Override
     public boolean shouldRender(TileEntityTurbineRotor tile, Vec3 camera) {
-        //TODO - 1.21.11: See if this renders fine, we used to only use this for when there was no multiblock and had the multiblock render
+        //TODO - 26.1: See if this renders fine, we used to only use this for when there was no multiblock and had the multiblock render
         // delegate to this renderer with a full bright for when it is formed
         return /*tile.getMultiblockUUID() == null &&*/ tile.getHousedBlades() > 0 && super.shouldRender(tile, camera);
     }

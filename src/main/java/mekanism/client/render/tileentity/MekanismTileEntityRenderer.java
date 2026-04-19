@@ -22,12 +22,12 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.Vec3;
 
-@NothingNullByDefault//TODO - 1.21.11: Test all our renderers, and figure out if/how to get profiling per type working again
+@NothingNullByDefault//TODO - 26.1: Test all our renderers, and figure out if/how to get profiling per type working again
 public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE extends BlockEntityRenderState> implements BlockEntityRenderer<TILE, STATE> {
 
     protected final BlockEntityRendererProvider.Context context;
 
-    //TODO - 1.21.11: do we want to be passing context all the way up, or just grab what we need where we need it? I think probably the latter
+    //TODO - 26.1: do we want to be passing context all the way up, or just grab what we need where we need it? I think probably the latter
     protected MekanismTileEntityRenderer(BlockEntityRendererProvider.Context context) {
         this.context = context;
     }
@@ -73,7 +73,7 @@ public abstract class MekanismTileEntityRenderer<TILE extends BlockEntity, STATE
         return renderObject(camPos, data, rendererPos, ModelRenderer.getModel(data, scale), matrix, buffer, overlay, scale);
     }
 
-    //TODO - 1.21.11: Should we no-op all the cases of scale == 0
+    //TODO - 26.1: Should we no-op all the cases of scale == 0
     protected int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, VertexConsumer buffer, int overlay, float scale) {
         int glow = data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
         matrix.pushPose();

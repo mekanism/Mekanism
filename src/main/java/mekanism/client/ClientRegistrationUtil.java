@@ -52,7 +52,7 @@ public class ClientRegistrationUtil {
         }
         return -1;
     });
-    //TODO 26.1 item models
+    //TODO - 26.1 item models
     /*private static final ItemColor COLORED_BLOCK_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
         if (item instanceof BlockItem blockItem) {
@@ -161,7 +161,7 @@ public class ClientRegistrationUtil {
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
-        }//TODO 26.1 item colours
+        }//TODO - 26.1 item colours
         /* else if (event instanceof RegisterColorHandlersEvent.ItemTintSources itemEvent) {
             registerItemColorHandler(itemEvent, COLORED_BLOCK_ITEM_COLOR, blocks);
         }*/
@@ -185,7 +185,7 @@ public class ClientRegistrationUtil {
         for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
             if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
                 event.registerFluidType(new IClientFluidTypeExtensions() {
-                    //TODO 26.1 fluid models
+                    //TODO - 26.1 fluid models
                     /*@NotNull
                     @Override
                     public Identifier getStillTexture() {
@@ -209,7 +209,7 @@ public class ClientRegistrationUtil {
                         return fluidType.renderOverlayTexture;
                     }
 
-                    //todo 26.1 fluid model/properties
+                    //TODO - 26.1 fluid model/properties
                     /*@NotNull
                     @Override
                     public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,

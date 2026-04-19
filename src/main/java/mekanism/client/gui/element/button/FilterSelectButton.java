@@ -27,7 +27,7 @@ public class FilterSelectButton extends MekanismButton {
         if (resetColorBeforeRender()) {
             MekanismRenderer.resetColor(guiGraphics);
         }
-        //todo 26.1 Gui blend
+        //TODO - 26.1 Gui blend
         //RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();
         //RenderSystem.enableDepthTest();

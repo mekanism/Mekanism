@@ -42,19 +42,19 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
     public void submit(ConductorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
-        //TODO - 1.21.11: What submit do we want to be using
+        //TODO - 26.1: What submit do we want to be using
         nodeCollector.submitModelPart(
               this.model,
               poseStack,
-              //TODO - 1.21.11: Is this the correct render type to be using? It used to be translucent cull
+              //TODO - 26.1: Is this the correct render type to be using? It used to be translucent cull
               RenderTypes.entityTranslucent(MekanismRenderer.heatIcon.contents().name()),
-              //TODO - 1.21.11: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
+              //TODO - 26.1: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
               LightCoordsUtil.FULL_BRIGHT,
               OverlayTexture.NO_OVERLAY,
-              //TODO - 1.21.11: Do we need to pass the texture here as well, or not?
+              //TODO - 26.1: Do we need to pass the texture here as well, or not?
               MekanismRenderer.heatIcon,
               state.tempColor,
-              state.breakProgress//TODO - 1.21.11: Should we be rendering the crumbling overlay here?
+              state.breakProgress//TODO - 26.1: Should we be rendering the crumbling overlay here?
         );
         poseStack.popPose();
     }

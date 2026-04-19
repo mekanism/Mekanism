@@ -78,7 +78,7 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
             //Copy the data we need and have from the server and pass it on to the tooltip rendering
             ListTag list = optionalData.get();
             for (int i = 0; i < list.size(); i++) {
-                //TODO - 1.21.11: Make this non capturing if jade doesn't end up switching to value inputs/outputs and we have to stay with using compound tags
+                //TODO - 26.1: Make this non capturing if jade doesn't end up switching to value inputs/outputs and we have to stay with using compound tags
                 Optional<ILookingAtElement> lookingAtElement = list.getCompound(i).flatMap(compound -> ELEMENT_CODEC.parse(registryOps, compound).result());
                 if (lookingAtElement.isEmpty()) {
                     //Error deserializing, skip it

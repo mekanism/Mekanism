@@ -22,7 +22,7 @@ public record StabilizedChunks(byte[] chunks) {
         }
         return NONE;
     }, chunks -> ByteBuffer.wrap(chunks.chunks()));
-    @Deprecated//TODO - 1.21.11: Do we want to just full on remove this old codec? or do we want to make thins use withAlternative?
+    @Deprecated//TODO - 26.1: Do we want to just full on remove this old codec? or do we want to make thins use withAlternative?
     public static final Codec<StabilizedChunks> LEGACY_CODEC = Codec.BYTE.listOf(TileEntityDimensionalStabilizer.ARRAY_SIZE, TileEntityDimensionalStabilizer.ARRAY_SIZE).xmap(bytes -> {
         byte[] chunks = new byte[TileEntityDimensionalStabilizer.ARRAY_SIZE];
         for (int i = 0; i < TileEntityDimensionalStabilizer.ARRAY_SIZE; i++) {

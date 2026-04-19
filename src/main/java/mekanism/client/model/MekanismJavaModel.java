@@ -35,12 +35,12 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         this.allParts = root.getAllParts();
     }
 
-    @Deprecated//TODO 26.1 remove when unused
+    @Deprecated//TODO - 26.1 remove when unused
     public MekanismJavaModel(ModelPart root, Function<Identifier, RenderType> renderType) {
         this(root);
     }
 
-    //TODO 26.1 outlines??
+    //TODO - 26.1 outlines??
     public abstract void collect(STATE state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
 
     public void setupAnim(STATE state) {

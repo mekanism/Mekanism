@@ -118,7 +118,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
         return mapColor;
     }
 
-    //TODO 26.1 @Override
+    //TODO - 26.1 @Override
     public int getTintColor(BlockAndLightGetter blockAndTintGetter, BlockPos pos, int tintIdx) {
         return chemicalHolder.value().getTint();
     }

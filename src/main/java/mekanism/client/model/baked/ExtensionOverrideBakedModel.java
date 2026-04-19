@@ -1,5 +1,5 @@
 package mekanism.client.model.baked;
-//todo 26.1 models, yeet this
+//TODO - 26.1 models, yeet this
 /*
 import com.google.common.collect.ImmutableList;
 import java.util.function.BiFunction;

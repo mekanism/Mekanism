@@ -17,7 +17,7 @@ import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2fStack;
 
 //TODO - 1.21: Document this class
-//todo 26.1 fixme
+//TODO - 26.1 fixme
 public interface IFancyFontRenderer {
 
     int getXSize();
@@ -179,8 +179,8 @@ public interface IFancyFontRenderer {
         // so we need to get the translations from our pose stack
         //Note: This is equivalent to what Matrix4f#getTranslation(Vector3f) would do, without all the extra allocations.
         Matrix3x2fStack matrix4f = graphics.pose();
-        int left = 0;// todo 26.1 (int) matrix4f.m30();
-        int top = 0;// todo 26.1 (int) matrix4f.m31();
+        int left = 0;// TODO - 26.1 (int) matrix4f.m30();
+        int top = 0;// TODO - 26.1 (int) matrix4f.m31();
         graphics.enableScissor(left + minX, top + minY, left + maxX, top + maxY);
         //TODO: Re-evaluate this, as for text (especially scaled text) when moving very slowly near the edges, it makes the text a bit blurry
         // Though maybe it is better to just make it not move so insanely slowly near the edges

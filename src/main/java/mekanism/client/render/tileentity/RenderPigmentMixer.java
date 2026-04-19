@@ -78,7 +78,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
               renderType,
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
-              0,//TODO - 1.21.11: Test that this works as no outline, and if it doesn't fix all the other places we pass zero for the outline color
+              0,//TODO - 26.1: Test that this works as no outline, and if it doesn't fix all the other places we pass zero for the outline color
               state.breakProgress
         );
         poseStack.popPose();

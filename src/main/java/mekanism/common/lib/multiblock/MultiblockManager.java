@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO 26.1: rewrite multiblocks to have the MultiblockData ticked here, without a Cache middleman
+//TODO - 26.1: rewrite multiblocks to have the MultiblockData ticked here, without a Cache middleman
 // MultiblockData should possibly be renamed MultiblockEntity as it's like a BE, but multi
 @EventBusSubscriber(modid = Mekanism.MODID)
 public class MultiblockManager<T extends MultiblockData> implements ValueIOSerializable {

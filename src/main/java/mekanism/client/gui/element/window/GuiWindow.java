@@ -158,8 +158,8 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             MekanismRenderer.renderColorOverlay(guiGraphics, -getGuiLeft(), -getGuiTop(), OVERLAY_COLOR.argb());
         } else {
             MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.75F);
-            //todo 26.1 RenderSystem.enableBlend();
-            //todo 26.1 RenderSystem.defaultBlendFunc();
+            //TODO - 26.1 RenderSystem.enableBlend();
+            //TODO - 26.1 RenderSystem.defaultBlendFunc();
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
             MekanismRenderer.resetColor(guiGraphics);
         }
@@ -197,7 +197,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
 
     public void renderBlur(GuiGraphicsExtractor guiGraphics) {
         MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.3F);
-        //todo 26.1 RenderSystem.enableBlend();
+        //TODO - 26.1 RenderSystem.enableBlend();
         //RenderSystem.defaultBlendFunc();
         //RenderSystem.disableDepthTest();
         GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.BLUR, 4, 4, relativeX, relativeY, width, height, 256, 256);

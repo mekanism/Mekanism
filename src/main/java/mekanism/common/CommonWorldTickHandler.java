@@ -47,7 +47,7 @@ public class CommonWorldTickHandler {
 
     //TODO: I believe this may be fine as is with just the load and save methods being synchronized
     // but there is a chance this is not the case in which case we should adjust how this is done
-    private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//todo 26.1 move this to chunk attachment
+    private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//TODO - 26.1 move this to chunk attachment
     private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
@@ -111,7 +111,7 @@ public class CommonWorldTickHandler {
         }
     }
 
-    //todo 26.1 move this to chunk attachment
+    //TODO - 26.1 move this to chunk attachment
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void chunkSave(ChunkDataEvent.Save event) {
         LevelAccessor world = event.getLevel();
@@ -125,7 +125,7 @@ public class CommonWorldTickHandler {
         }
     }
 
-    //todo 26.1 move this to chunk attachment
+    //TODO - 26.1 move this to chunk attachment
     @SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide()) {
@@ -149,7 +149,7 @@ public class CommonWorldTickHandler {
         }
     }
 
-    //todo 26.1 move this to chunk attachment
+    //TODO - 26.1 move this to chunk attachment
     @SubscribeEvent
     public void chunkUnloadEvent(ChunkEvent.Unload event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
@@ -161,7 +161,7 @@ public class CommonWorldTickHandler {
         }
     }
 
-    //todo 26.1 move this to chunk attachment
+    //TODO - 26.1 move this to chunk attachment
     @SubscribeEvent
     public void worldUnloadEvent(LevelEvent.Unload event) {
         LevelAccessor world = event.getLevel();

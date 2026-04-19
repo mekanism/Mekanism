@@ -277,7 +277,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
         super.handleUpdateTag(input);
         isMaster = input.getBooleanOr(SerializationConstants.RENDERING, isMaster);
         T multiblock = getMultiblock();
-        //TODO - 1.21.11: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
+        //TODO - 26.1: Re-evaluate the following line about how we decide to be setting the multiblock as formed (and namely the fallback default value)
         multiblock.setFormedForce(input.getBooleanOr(SerializationConstants.HAS_STRUCTURE, multiblock.isFormed()));
         if (isMaster()) {
             if (multiblock.isFormed()) {

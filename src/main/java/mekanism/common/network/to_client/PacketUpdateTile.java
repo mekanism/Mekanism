@@ -45,7 +45,7 @@ public record PacketUpdateTile(BlockPos pos, CompoundTag updateTag) implements I
                 Mekanism.logger.warn("Update tile packet received for position: {} in world: {}, but no valid tile was found.", pos,
                       world.dimension().identifier());
             } else {
-                //TODO - 1.21.11: Is this fine for how to create the problem reporter?
+                //TODO - 26.1: Is this fine for how to create the problem reporter?
                 try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(tile.problemPath(), Mekanism.logger)) {
                     tile.handleUpdateTag(TagValueInput.create(reporter, world.registryAccess(), updateTag));
                 }

@@ -82,7 +82,7 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
 
     /**
      * @apiNote Fluid must be present, but the item may be empty.
-     *///todo 26.1 FluidInstance/template
+     *///TODO - 26.1 FluidInstance/template
     public record FluidOptionalItemOutput(FluidStack fluid, @Nullable ItemStackTemplate optionalItem) {
 
         FluidOptionalItemOutput(FluidStack fluid, Optional<ItemStackTemplate> optionalItem) {

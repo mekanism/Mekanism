@@ -60,7 +60,7 @@ public class MekanismKeyHandler {
                   PacketUtils.sendToServer(new PacketOpenGui(GuiType.MODULE_TWEAKER));
               }
           }).build();
-    //TODO - 1.21.11: Evaluate control vs command for macs
+    //TODO - 26.1: Evaluate control vs command for macs
     public static final KeyMapping boostKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_BOOST).conflictInGame().keyCode(InputConstants.KEY_LCONTROL)
           .onKeyDown((kb, isRepeat) -> MekanismClient.updateKey(kb, KeySync.BOOST)).onKeyUp(kb -> MekanismClient.updateKey(kb, KeySync.BOOST)).build();
     public static final KeyMapping hudKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HUD).conflictInGame().keyCode(InputConstants.KEY_H)

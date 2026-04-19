@@ -71,7 +71,7 @@ public class CommandMek {
                       MinecraftServer server = source.getServer();
                       GameRules rules = source.getLevel().getGameRules();
                       rules.set(GameRules.KEEP_INVENTORY, true, server);
-                      //TODO - 1.21.11: Should this be SPAWN_MONSTERS?
+                      //TODO - 26.1: Should this be SPAWN_MONSTERS?
                       rules.set(GameRules.SPAWN_MOBS, false, server);
                       rules.set(GameRules.ADVANCE_TIME, false, server);
                       rules.set(GameRules.ADVANCE_WEATHER, false, server);

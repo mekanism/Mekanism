@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
  *
  * @author aidancbrady
  */
-@NothingNullByDefault//TODO 26.1 - convert to use ItemStackTemplate?
+@NothingNullByDefault//TODO - 26.1 - convert to use ItemStackTemplate?
 public class HashedItem implements IHashedItem, DataComponentHolder {
 
     /**

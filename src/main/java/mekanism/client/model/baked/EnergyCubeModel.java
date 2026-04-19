@@ -82,7 +82,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         }
         //Note: We intentionally ignore the state and use null here to minimize cache size as it doesn't actually matter
         // or get used for energy cube models
-        //TODO - 1.21.11: Replace this quads key with a more reasonable key that just handles the side data
+        //TODO - 26.1: Replace this quads key with a more reasonable key that just handles the side data
         QuadsKey<CubeSideState[]> key = new QuadsKey<>(null, null, random, null, Collections.emptyList());
         key.data(sideStates, Arrays.hashCode(sideStates), DATA_EQUALITY_CHECK);
         parts.addAll(cache.getUnchecked(key));
@@ -122,8 +122,8 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         return frame.materialFlags();
     }
 
-    //TODO - 1.21.11: Figure this out https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/26.1/src/client/java/appeng/client/render/model/DriveModel.java
-    //TODO - 1.21.11: Look into data genning the block state files for the energy cubes?
+    //TODO - 26.1: Figure this out https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/26.1/src/client/java/appeng/client/render/model/DriveModel.java
+    //TODO - 26.1: Look into data genning the block state files for the energy cubes?
     //Once you've done that, I'd highly recommend data-genning your blockstate files (if you don't already do that), because you can use that Unbaked record as-is to have it generate the correct blockstate file with your custom properties.
     //i.e. using blockStateOutput.accept(createSimpleBlock(block, MultiVariant.of(new CustomBlockStateModelBuilder.Simple(new EnergyCube.Unbaked(... your props ...)))
     public record Unbaked(Variant frame, Map<RelativeSide, Variant> leds, Map<RelativeSide, Variant> ports) implements CustomUnbakedBlockStateModel {
@@ -165,7 +165,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         }
 
         public BlockStateModelPart transform(ModelBaker baker, BlockStateModelPart variant, QuadTransformation transformation) {
-            //TODO - 1.21.11: Make this into more of a proper helper?
+            //TODO - 26.1: Make this into more of a proper helper?
             QuadCollection.Builder builder = new QuadCollection.Builder();
             for (BakedQuad quad : QuadUtils.transformBakedQuads(variant.getQuads(null), transformation)) {
                 builder.addUnculledFace(quad);
@@ -175,8 +175,8 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
                     builder.addCulledFace(direction, quad);
                 }
             }
-            //TODO - 1.21.11: Do we need to somehow actually bake it so that it has a different name and such?
-            //TODO - 1.21.11: Figure out the render type to pass?
+            //TODO - 26.1: Do we need to somehow actually bake it so that it has a different name and such?
+            //TODO - 26.1: Figure out the render type to pass?
             return new SimpleModelWrapper(builder.build(), variant.useAmbientOcclusion(), variant.particleMaterial());
             //return SimpleModelWrapper.bake(baker, variant.modelLocation(), variant.modelState().asModelState());
         }
@@ -188,7 +188,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
 
         @Override
         public void resolveDependencies(ResolvableModel.Resolver resolver) {
-            //TODO - 1.21.11: Figure out the dependencies?
+            //TODO - 26.1: Figure out the dependencies?
         }
     }
 }

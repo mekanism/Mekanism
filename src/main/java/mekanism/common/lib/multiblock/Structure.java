@@ -253,7 +253,7 @@ public class Structure {
                 multiblock.resetStructure(multiblock.getManager());
             }
         } else if (node instanceof IStructuralMultiblock) {
-            node.resetStructure(null);//todo 26.1: why null???
+            node.resetStructure(null);//TODO - 26.1: why null???
         }
         FormationProtocol.explore(node.getLevel(), chunkMap, node.getBlockPos(), node, (level, chunks, start, n, pos) -> {
             if (pos.equals(start)) {

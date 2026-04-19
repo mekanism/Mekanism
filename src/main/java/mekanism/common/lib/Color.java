@@ -18,7 +18,7 @@ public class Color {
     }
 
     public int r() {
-        //TODO - 1.21.11: Should this use ARGB.as8BitChannel() to be consistent with it flooring instead of what we are doing which is rounding?
+        //TODO - 26.1: Should this use ARGB.as8BitChannel() to be consistent with it flooring instead of what we are doing which is rounding?
         return (int) Math.round(r * 255D);
     }
 

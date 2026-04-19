@@ -95,7 +95,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
      * @since 10.8.0
      */
     protected void ensureValid(ResourceKey<Recipe<?>> id) {
-        //TODO - 1.21.11: Re-evaluate implementations, as it seems that vanilla changed what they are validating
+        //TODO - 26.1: Re-evaluate implementations, as it seems that vanilla changed what they are validating
     }
 
     /**
@@ -154,7 +154,7 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
         return ResourceKey.create(Registries.RECIPE, fluid.typeHolder().unwrapKey().orElseThrow().identifier());
     }
 
-    //TODO 26.1 - probably needs to not be a chemical stack?
+    //TODO - 26.1 - probably needs to not be a chemical stack?
     public static ResourceKey<Recipe<?>> getDefaultRecipeId(ChemicalStack stack) {
         return ResourceKey.create(Registries.RECIPE, chemicalId(stack));
     }

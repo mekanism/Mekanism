@@ -130,7 +130,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @NotNull
     @Override
     public final CompoundTag getUpdateTag(@NotNull HolderLookup.Provider provider) {
-        //TODO - 1.21.11: Is this fine for how to create the problem reporter?
+        //TODO - 26.1: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
             writeUpdatedTag(output);
@@ -151,9 +151,9 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     /**
      * Similar to {@link #getUpdateTag(HolderLookup.Provider)} but with reduced information for when we are doing our own syncing.
      */
-    @NotNull//TODO - 1.21.11: Re-evaluate this method and if we want to just inline this into the one caller
+    @NotNull//TODO - 26.1: Re-evaluate this method and if we want to just inline this into the one caller
     public final CompoundTag getReducedUpdateTag(@NotNull HolderLookup.Provider provider) {
-        //TODO - 1.21.11: Is this fine for how to create the problem reporter?
+        //TODO - 26.1: Is this fine for how to create the problem reporter?
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
             writeReducedUpdatedTag(output);
@@ -164,7 +164,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     @Override
     public void onDataPacket(@NotNull Connection net, @NotNull ValueInput input) {
         //Handle the update tag when we are on the client
-        //TODO - 1.21.11: Do we need to check if it is empty in any way?
+        //TODO - 26.1: Do we need to check if it is empty in any way?
         /*CompoundTag tag = pkt.getTag();
         if (!tag.isEmpty()) {*/
         handleUpdateTag(input);

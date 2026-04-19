@@ -95,7 +95,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         }
         ItemStack stack = liquifier.getRenderStack();
         if (!stack.isEmpty()) {
-            //TODO - 1.21.11: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
+            //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
             int seed = MathUtils.clampToInt(state.blockPos.asLong());
             this.itemModelResolver.updateForTopItem(state.item, stack, ItemDisplayContext.GROUND, level, null, seed);
         }
@@ -136,7 +136,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             state.item.submit(poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
             poseStack.popPose();
             if (state.active && Minecraft.getInstance().options.particles().get() != ParticleStatus.MINIMAL) {
-                //TODO - 1.21.11: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
+                //TODO - 26.1: Can this be transitioned to being a nodeCollector.submitParticleGroup call?
                 //Render eating particles
                 PseudoParticleData pseudoParticles = particles.computeIfAbsent(tile, t -> new PseudoParticleData());
                 if (isTickingNormally(tile)) {

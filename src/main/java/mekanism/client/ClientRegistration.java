@@ -195,7 +195,7 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        //TODO 26.1 item models
+        //TODO - 26.1 item models
         /*event.enqueueWork(() -> {
             //Set fluids to a translucent render layer
             for (Holder<Fluid> fluid : MekanismFluids.FLUIDS.getFluidEntries()) {
@@ -248,7 +248,7 @@ public class ClientRegistration {
             });
         });*/
 
-        //TODO 26.1 models
+        //TODO - 26.1 models
         //addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
         //addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
 
@@ -333,7 +333,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
         //ISTERs
-        //TODO 26.1 check if these need to be listening here to avoid races with layer definitions
+        //TODO - 26.1 check if these need to be listening here to avoid races with layer definitions
         //event.addListener(Mekanism.rl("render_energy_cube_item"), RenderEnergyCubeItem.RENDERER);
         //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.ARMORED_RENDERER);
         //event.addListener(Mekanism.rl("render_atomic_disassembler"), RenderAtomicDisassembler.RENDERER);
@@ -436,7 +436,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerModelLoaders(RegisterBlockStateModels event) {
-        //todo 26.1 models
+        //TODO - 26.1 models
         //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
         //event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
@@ -464,7 +464,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
-        //TODO 26.1 check these are the right tint index, or if they need an empty entry in the list??
+        //TODO - 26.1 check these are the right tint index, or if they need an empty entry in the list??
         ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> {
                   BaseTier tier = Attribute.getBaseTier(state.typeHolder());
                   if (tier != null) {
@@ -487,7 +487,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
-        //todo 26.1 item colours
+        //TODO - 26.1 item colours
         /*ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
                   Item item = stack.getItem();
                   if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {
@@ -496,9 +496,9 @@ public class ClientRegistration {
                   return -1;
               }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
               MekanismBlocks.CREATIVE_FLUID_TANK);*/
-        //TODO 26.1 fluid models
+        //TODO - 26.1 fluid models
         //ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
-        //todo 26.1 item colours
+        //TODO - 26.1 item colours
         /*for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
             int tint = item.getColumnKey().getTint();
             ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, item.getValue());
@@ -537,7 +537,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientExtensions(RegisterClientExtensionsEvent event) {
-        //todo 26.1 renderers
+        //TODO - 26.1 renderers
         //event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.ARMORED_RENDERER, JetpackArmor.ARMORED_JETPACK), MekanismItems.ARMORED_JETPACK);
         //event.registerItem(new MekCustomArmorRenderProperties(RenderJetpack.RENDERER, JetpackArmor.JETPACK), MekanismItems.JETPACK);
         //event.registerItem(new MekCustomArmorRenderProperties(RenderFreeRunners.ARMORED_RENDERER, FreeRunnerArmor.ARMORED_FREE_RUNNERS), MekanismItems.ARMORED_FREE_RUNNERS);
@@ -552,7 +552,7 @@ public class ClientRegistration {
         event.registerItem(MekaSuitArmor.PANTS, MekanismItems.MEKASUIT_PANTS);
         event.registerItem(MekaSuitArmor.BOOTS, MekanismItems.MEKASUIT_BOOTS);
 
-        //todo 26.1 renderers
+        //TODO - 26.1 renderers
         /*ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderEnergyCubeItem.RENDERER), MekanismBlocks.BASIC_ENERGY_CUBE,
               MekanismBlocks.ADVANCED_ENERGY_CUBE, MekanismBlocks.ELITE_ENERGY_CUBE, MekanismBlocks.ULTIMATE_ENERGY_CUBE, MekanismBlocks.CREATIVE_ENERGY_CUBE);
         ClientRegistrationUtil.registerItemExtensions(event, new MekRenderProperties(RenderFluidTankItem.RENDERER), MekanismBlocks.BASIC_FLUID_TANK,
@@ -616,19 +616,19 @@ public class ClientRegistration {
         }
     }
 
-    //TODO 26.1 baked models
+    //TODO - 26.1 baked models
     /*public static void addCustomModel(INamedEntry provider, CustomModelRegistryObject object) {
         customModels.put(provider.getId(), object);
     }*/
 
     public static void addLitModel(INamedEntry... entries) {
-        //TODO 26.1 baked models
+        //TODO - 26.1 baked models
         /*for (INamedEntry namedEntry : entries) {
             addCustomModel(namedEntry, (orig, evt) -> lightBakedModel(orig));
         }*/
     }
 
-    //TODO 26.1 baked models
+    //TODO - 26.1 baked models
     /*private static final FieldReflectionHelper<SeparateTransformsModel.Baked, BakedModel> SEPARATE_PERSPECTIVE_BASE_MODEL =
           new FieldReflectionHelper<>(SeparateTransformsModel.Baked.class, "baseModel", () -> null);
     private static final FieldReflectionHelper<SeparateTransformsModel.Baked, ImmutableMap<ItemDisplayContext, BakedModel>> SEPARATE_PERSPECTIVE_PERSPECTIVES =

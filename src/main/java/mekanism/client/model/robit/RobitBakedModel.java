@@ -1,6 +1,6 @@
 package mekanism.client.model.robit;
 
-//todo 26.1 robit model
+//TODO - 26.1 robit model
 /*import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -46,7 +46,7 @@ public class RobitBakedModel extends ExtensionOverrideBakedModel<Identifier> {
             //Only replace missing textures (which should in general be #robit in the actual json without a mapping to it)
             //TODO: This technically doesn't behave quite right for textures that are not replaced given the sprites on the
             // model likely are on a different atlas than the robit textures, so the render type will be wrong
-        SpriteGetter spriteGetter = null;//todo 26.1 - bakery rewrite
+        SpriteGetter spriteGetter = null;//TODO - 26.1 - bakery rewrite
         TextureAtlasSprite sprite = spriteGetter.get(RobitSpriteUploader.getSpriteId(selectedTexture));
         QuadTransformation transformation = QuadTransformation.texture(sprite);
             transformation = TextureFilteredTransformation.of(transformation, rl -> rl.getPath().equals("missingno"));

@@ -75,7 +75,7 @@ public class GuiUtils {
         int backgroundColor = minecraft.options.getBackgroundColor(0.0F);
         if (backgroundColor != 0) {
             int argb = ARGB.white(alpha);
-            //TODO - 1.21.11: Can we merge the multiply and argb calls into one?
+            //TODO - 26.1: Can we merge the multiply and argb calls into one?
             guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
     }
@@ -90,7 +90,7 @@ public class GuiUtils {
         if (desiredWidth == 0 || desiredHeight == 0 || textureWidth == 0 || textureHeight == 0) {
             return;
         }
-        //TODO 26.1 drawTiledSprite
+        //TODO - 26.1 drawTiledSprite
         /*RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderTexture(0, sprite.atlasLocation());
         int xTileCount = desiredWidth / textureWidth;
@@ -266,7 +266,7 @@ public class GuiUtils {
                 if (overlay) {
                     //When we render items ourselves in virtual slots or scroll slots we want to compress the z scale
                     // for rendering the stored count so that it doesn't clip with later windows
-                    //todo 26.1 check this - pose.translate(0, 0, -25);
+                    //TODO - 26.1 check this - pose.translate(0, 0, -25);
                     guiGraphics.itemDecorations(font, stack, xAxis, yAxis, text);
                 }
 
@@ -317,7 +317,7 @@ public class GuiUtils {
     // like guiGraphics.blitNineSlicedSized but uses one BufferBuilder
     @Deprecated
     public static void blitNineSlicedSized(GuiGraphicsExtractor guiGraphics, Identifier texture, int x, int y, int width, int height, int sliceWidth, int sliceHeight, int uWidth, int vHeight, int uOffset, int vOffset, int textureWidth, int textureHeight) {
-        //todo 26.1 replace with vanilla
+        //TODO - 26.1 replace with vanilla
         /*ProfilerFiller profiler = Profiler.get();
         profiler.push("blit setup");
         RenderSystem.setShaderTexture(0, texture);

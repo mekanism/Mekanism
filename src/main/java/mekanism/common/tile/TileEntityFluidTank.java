@@ -363,7 +363,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
-        //TODO - 1.21.11: Does the following encoding even make any sense if we are using value output for writing it? Given at that point we are sort of using a codec anyway
+        //TODO - 26.1: Does the following encoding even make any sense if we are using value output for writing it? Given at that point we are sort of using a codec anyway
         // Though vanilla doesn't currently use value output to write the update tags
         //TODO - 1.21: Re-evaluate this alternate encoding further
         CompoundTag fluidData = new CompoundTag();
@@ -411,7 +411,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 lightUpdateDelay = prevScale == 0 ? 1 : MekanismConfig.general.blockDeactivationDelay.get();
             }
         }
-        //TODO - 1.21.11: Should we only update this when the scale has changed? And/or if we had updated the light level?
+        //TODO - 26.1: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
         boolean unsetFluid = true;

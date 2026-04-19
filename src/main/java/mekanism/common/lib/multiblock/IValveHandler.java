@@ -51,7 +51,7 @@ public interface IValveHandler {
 
     class ValveData {
 
-        //TODO - 1.21.11: Re-evaluate how we get the side, do we want to just store the side itself?
+        //TODO - 26.1: Re-evaluate how we get the side, do we want to just store the side itself?
         public static final Codec<ValveData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
               BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(data -> data.location),
               Direction.LEGACY_ID_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(data -> data.side)

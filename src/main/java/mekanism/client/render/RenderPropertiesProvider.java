@@ -56,7 +56,7 @@ public class RenderPropertiesProvider {
         };
     }
 
-    //todo 26.1 renderers
+    //TODO - 26.1 renderers
     /*public record MekRenderProperties(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
 
         @NotNull
