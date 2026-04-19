@@ -12,6 +12,7 @@ import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 
 public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDFilter<QIOModIDFilter> {
 
@@ -43,8 +44,8 @@ public class QIOModIDFilter extends QIOFilter<QIOModIDFilter> implements IModIDF
     }
 
     @Override
-    public Finder getFinder() {
-        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess, "Registry access not set up"));
+    public boolean test(ItemStack toCheck) {
+        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess, "Registry access not set up"), toCheck);
     }
 
     @Override

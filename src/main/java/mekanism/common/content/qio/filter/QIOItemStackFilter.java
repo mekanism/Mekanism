@@ -51,8 +51,8 @@ public class QIOItemStackFilter extends QIOFilter<QIOItemStackFilter> implements
     }
 
     @Override
-    public Finder getFinder() {
-        return fuzzyMode ? Finder.item(itemType) : Finder.strict(itemType);
+    public boolean test(ItemStack toCheck) {
+        return fuzzyMode ? Finder.item(itemType, toCheck) : Finder.strict(itemType, toCheck);
     }
 
     @Override

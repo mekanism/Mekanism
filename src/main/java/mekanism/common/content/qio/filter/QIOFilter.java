@@ -7,8 +7,8 @@ import io.netty.buffer.ByteBuf;
 import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.lib.inventory.Finder;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 
 public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -34,7 +34,7 @@ public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFi
         super(filter);
     }
 
-    public abstract Finder getFinder();
+    public abstract boolean test(ItemStack toCheck);
 
     @Override
     @ComputerMethod(threadSafe = true)
