@@ -62,7 +62,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave, this::getWorldNN);
     private final Finder strictFinder = stack -> {
         for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
-            if (!filter.allowDefault && filter.getFinder().test(stack)) {
+            if (!filter.allowDefault && filter.test(stack)) {
                 return false;
             }
         }

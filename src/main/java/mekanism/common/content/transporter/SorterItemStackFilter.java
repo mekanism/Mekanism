@@ -54,8 +54,8 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     }
 
     @Override
-    public Finder getFinder() {
-        return fuzzyMode ? Finder.item(itemType) : Finder.strict(itemType);
+    public boolean test(ItemStack stack) {
+        return fuzzyMode ? Finder.item(itemType, stack) : Finder.strict(itemType, stack);
     }
 
     @Override

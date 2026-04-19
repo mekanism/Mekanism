@@ -24,7 +24,7 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> {
+public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> implements Finder {
 
     public static final int MAX_LENGTH = 48;
 
@@ -90,13 +90,11 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         max = filter.max;
     }
 
-    public abstract Finder getFinder();
-
     public TransitRequest mapInventory(IItemHandler itemHandler, boolean singleItem) {
         if (sizeMode && !singleItem) {
-            return TransitRequest.definedItem(itemHandler, min, max, getFinder());
+            return TransitRequest.definedItem(itemHandler, min, max, this);
         }
-        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, getFinder());
+        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, this);
     }
 
     @Override

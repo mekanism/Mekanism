@@ -12,8 +12,10 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.world.item.ItemStack;
 
 public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
 
@@ -46,8 +48,9 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     }
 
     @Override
-    public Finder getFinder() {
-        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess, "Registry access not supplied"));
+    public boolean test(ItemStack stack) {
+        Provider registries = Objects.requireNonNull(this.registryAccess, "Registry access not supplied");
+        return Finder.modID(modID, registries, stack);
     }
 
     @Override
