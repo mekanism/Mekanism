@@ -312,7 +312,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 // if we still meet the requirements for a meltdown
                 setForceDisable(false);
                 createMeltdown(world);
-            } else if (world.random.nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
+            } else if (world.getRandom().nextDouble() < (reactorDamage / MAX_DAMAGE) * MekanismGeneratorsConfig.generators.fissionMeltdownChance.get()) {
                 // Otherwise, if our chance is hit either create a meltdown if it is enabled in the config, or force disable the reactor
                 if (MekanismGeneratorsConfig.generators.fissionMeltdownsEnabled.get()) {
                     createMeltdown(world);

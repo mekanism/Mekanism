@@ -18,6 +18,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
+import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
@@ -69,10 +70,11 @@ public class Meltdown {
     public boolean update(ServerLevel world) {
         ticksExisted++;
 
-        if (world.random.nextInt() % MekanismUtils.TICKS_PER_HALF_SECOND == 0 && world.random.nextDouble() < magnitude * chance) {
-            int x = Mth.nextInt(world.random, minPos.getX(), maxPos.getX());
-            int y = Mth.nextInt(world.random, minPos.getY(), maxPos.getY());
-            int z = Mth.nextInt(world.random, minPos.getZ(), maxPos.getZ());
+        RandomSource random = world.getRandom();
+        if (random.nextInt() % MekanismUtils.TICKS_PER_HALF_SECOND == 0 && random.nextDouble() < magnitude * chance) {
+            int x = Mth.nextInt(random, minPos.getX(), maxPos.getX());
+            int y = Mth.nextInt(random, minPos.getY(), maxPos.getY());
+            int z = Mth.nextInt(random, minPos.getZ(), maxPos.getZ());
             Explosion.BlockInteraction mode = world.getGameRules().get(GameRules.BLOCK_EXPLOSION_DROP_DECAY) ? Explosion.BlockInteraction.DESTROY_WITH_DECAY
                                                                                                                          : Explosion.BlockInteraction.DESTROY;
             createExplosion(world, x, y, z, radius, true, mode);
@@ -103,7 +105,7 @@ public class Meltdown {
                         d0 = d0 / d3;
                         d1 = d1 / d3;
                         d2 = d2 / d3;
-                        float f = radius * (0.7F + world.random.nextFloat() * 0.6F);
+                        float f = radius * (0.7F + world.getRandom().nextFloat() * 0.6F);
                         double d4 = x;
                         double d6 = y;
                         double d8 = z;
@@ -140,7 +142,7 @@ public class Meltdown {
         //Next go through the different locations that were inside our reactor that should have exploded and make sure
         // that if they didn't explode that we manually run the logic to make them "explode" so that the reactor stops
         //Note: Shuffle so that the drops don't end up all in one corner of an explosion
-        Util.shuffle(toBlow, world.random);
+        Util.shuffle(toBlow, world.getRandom());
         List<Pair<ItemStack, BlockPos>> drops = new ArrayList<>();
         for (BlockPos toExplode : toBlow) {
             world.getBlockState(toExplode)

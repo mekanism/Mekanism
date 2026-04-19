@@ -165,7 +165,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
             ResourceKey<RobitSkin> skin = stack.get(MekanismDataComponents.ROBIT_SKIN);
             if (skin == null || skin == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
-                stack.set(MekanismDataComponents.ROBIT_SKIN, HolidayManager.getRandomBaseSkin(level.random));
+                stack.set(MekanismDataComponents.ROBIT_SKIN, HolidayManager.getRandomBaseSkin(level.getRandom()));
             }
         }
     }

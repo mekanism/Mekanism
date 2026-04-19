@@ -75,7 +75,7 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
                 // end up adding any Easter egg skins that aren't unlocked by default, to still
                 // be able to equip them. We already validate the player can access the robit
                 // above before setting the name
-                Optional<ResourceKey<RobitSkin>> randomSkin = Util.getRandomSafe(EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList()), robit.level().random);
+                Optional<ResourceKey<RobitSkin>> randomSkin = Util.getRandomSafe(EASTER_EGGS.getOrDefault(name.toLowerCase(Locale.ROOT), Collections.emptyList()), robit.level().getRandom());
                 //noinspection OptionalIsPresent - Capturing lambda
                 if (randomSkin.isPresent()) {
                     robit.setSkin(randomSkin.get(), null);

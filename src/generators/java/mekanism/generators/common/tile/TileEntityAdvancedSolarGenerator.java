@@ -103,7 +103,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
         public AdvancedSolarCheck(Level world, BlockPos pos) {
             super(world, pos);
             //Recheck between every 10-30 ticks, to not end up checking each position each tick
-            recheckFrequency = Mth.nextInt(world.random, MekanismUtils.TICKS_PER_HALF_SECOND, MekanismUtils.TICKS_PER_HALF_SECOND + SharedConstants.TICKS_PER_SECOND);
+            recheckFrequency = Mth.nextInt(world.getRandom(), MekanismUtils.TICKS_PER_HALF_SECOND, MekanismUtils.TICKS_PER_HALF_SECOND + SharedConstants.TICKS_PER_SECOND);
         }
 
         @Override

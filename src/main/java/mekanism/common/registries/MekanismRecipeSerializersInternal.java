@@ -106,8 +106,8 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
     }
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekanismShapedRecipe>> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> MekanismRecipeSerializer.wrapped(MekanismShapedRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new CustomRecipe.Serializer<>(ClearConfigurationRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new CustomRecipe.Serializer<>(BinInsertRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new CustomRecipe.Serializer<>(BinExtractRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new RecipeSerializer<>(ClearConfigurationRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new RecipeSerializer<>(BinInsertRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new RecipeSerializer<>(BinExtractRecipe::new));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<WrappedSmelterRecipe>> WRAPPED_SMELTER = RECIPE_SERIALIZERS.register("wrapped_smelter", () -> WrappedSmelterRecipe.SERIALIZER);
 }

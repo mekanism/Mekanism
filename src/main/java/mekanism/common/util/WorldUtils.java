@@ -509,7 +509,7 @@ public class WorldUtils {
             if (entity instanceof Player player) {
                 for (ItemStack dropStack : getDrops(state, level, pos, tile, entity, tool)) {
                     if (player.addItem(dropStack)) {
-                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.random.nextFloat() - world.random.nextFloat()) * 1.4F + 2.0F);
+                        world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS, 0.2F, (world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 1.4F + 2.0F);
                     } else {
                         player.drop(dropStack, false);
                     }
@@ -543,9 +543,9 @@ public class WorldUtils {
                     double z = pos.getZ() + 0.5;
                     if (applyMomentum) {
                         //Apply momentum similar to Block#popResource
-                        x += Mth.nextDouble(level.random, -0.25, 0.25);
-                        y += Mth.nextDouble(level.random, -0.25, 0.25) - itemHeight;
-                        z += Mth.nextDouble(level.random, -0.25, 0.25);
+                        x += Mth.nextDouble(level.getRandom(), -0.25, 0.25);
+                        y += Mth.nextDouble(level.getRandom(), -0.25, 0.25) - itemHeight;
+                        z += Mth.nextDouble(level.getRandom(), -0.25, 0.25);
                     }
                     ItemEntity item = new ItemEntity(level, x, y, z, rawDrop);
                     item.setDefaultPickUpDelay();
