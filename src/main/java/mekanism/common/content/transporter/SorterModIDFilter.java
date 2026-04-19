@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import mekanism.api.SerializationConstants;
@@ -11,10 +12,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implements IModIDFilter<SorterModIDFilter> {
 
@@ -47,8 +46,8 @@ public class SorterModIDFilter extends SorterFilter<SorterModIDFilter> implement
     }
 
     @Override
-    public Finder getFinder(@NotNull HolderLookup.Provider registries) {
-        return Finder.modID(modID, registries);
+    public Finder getFinder() {
+        return Finder.modID(modID, Objects.requireNonNull(this.registryAccess, "Registry access not supplied"));
     }
 
     @Override

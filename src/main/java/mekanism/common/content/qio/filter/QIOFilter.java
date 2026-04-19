@@ -8,9 +8,7 @@ import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -36,7 +34,7 @@ public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFi
         super(filter);
     }
 
-    public abstract Finder getFinder(@NotNull HolderLookup.Provider registries);
+    public abstract Finder getFinder();
 
     @Override
     @ComputerMethod(threadSafe = true)

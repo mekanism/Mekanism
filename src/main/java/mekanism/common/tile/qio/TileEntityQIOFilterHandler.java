@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class TileEntityQIOFilterHandler extends TileEntityQIOComponent implements ITileFilterHolder<QIOFilter<?>> {
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private final SortableFilterManager<QIOFilter<?>> filterManager = new SortableFilterManager<QIOFilter<?>>((Class) QIOFilter.class, this::markForSave);
+    private final SortableFilterManager<QIOFilter<?>> filterManager = new SortableFilterManager<QIOFilter<?>>((Class) QIOFilter.class, this::markForSave, this::getWorldNN);
     private int maxTransitCount = 64;
     private int maxTransitTypes = 1;
 

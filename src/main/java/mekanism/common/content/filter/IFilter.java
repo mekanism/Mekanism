@@ -1,6 +1,7 @@
 package mekanism.common.content.filter;
 
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import net.minecraft.core.HolderLookup;
 
 public interface IFilter<FILTER extends IFilter<FILTER>> {
 
@@ -16,4 +17,6 @@ public interface IFilter<FILTER extends IFilter<FILTER>> {
 
     @ComputerMethod(threadSafe = true)
     void setEnabled(boolean enabled);
+
+    void setRegistryAccess(HolderLookup.Provider registryAccess);
 }

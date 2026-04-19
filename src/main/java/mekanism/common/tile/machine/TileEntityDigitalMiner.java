@@ -121,7 +121,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public static final int DEFAULT_RADIUS = 10;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
-    private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave);
+    private final SortableFilterManager<MinerFilter<?>> filterManager = new SortableFilterManager<MinerFilter<?>>((Class) MinerFilter.class, this::markForSave, this::getWorldNN);
     private Long2ObjectMap<BitSet> oresToMine = Long2ObjectMaps.emptyMap();
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 

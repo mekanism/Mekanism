@@ -43,7 +43,7 @@ import org.jetbrains.annotations.NotNull;
 //TODO - V11: Make this support other tag types, such as fluids
 public class TileEntityOredictionificator extends TileEntityConfigurableMachine implements ITileFilterHolder<OredictionificatorItemFilter> {
 
-    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave);
+    private final FilterManager<OredictionificatorItemFilter> filterManager = new FilterManager<>(OredictionificatorItemFilter.class, this::markForSave, this::getWorldNN);
     public boolean didProcess;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -112,7 +112,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
     private static List<Identifier> getFilterableTags(ItemStack stack) {
         //TODO: Cache this and hasFilterableTags?
         //For each tag that matches a tag that is filterable, add it to the resulting list
-        return stack.getTags()
+        return stack.typeHolder().tags()
               .map(TagKey::location)
               .filter(TileEntityOredictionificator::isPossibleFilter)
               .toList();

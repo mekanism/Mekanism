@@ -5,11 +5,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import mekanism.api.SerializationConstants;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.list.SyncableFilterList;
 import mekanism.common.lib.collection.HashList;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
@@ -24,10 +26,12 @@ public class FilterManager<FILTER extends IFilter<?>> {
     protected HashList<FILTER> filters = new HashList<>();
     @Nullable
     protected List<FILTER> enabledFilters = null;
+    protected final Supplier<Level> levelSupplier;
 
-    public FilterManager(Class<? extends FILTER> filterClass, Runnable markForSave) {
+    public FilterManager(Class<? extends FILTER> filterClass, Runnable markForSave, Supplier<Level> levelSupplier) {
         this.filterClass = filterClass;
         this.markForSave = markForSave;
+        this.levelSupplier = levelSupplier;
     }
 
     public final HashList<FILTER> getFilters() {
@@ -101,6 +105,7 @@ public class FilterManager<FILTER extends IFilter<?>> {
     }
 
     private boolean addFilter(FILTER filter, boolean save) {
+        filter.setRegistryAccess(this.levelSupplier.get().registryAccess());
         boolean result = filters.add(filter);
         if (save) {
             markForSave.run();

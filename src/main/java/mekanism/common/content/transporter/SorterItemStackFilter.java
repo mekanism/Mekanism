@@ -11,7 +11,6 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -55,7 +54,7 @@ public class SorterItemStackFilter extends SorterFilter<SorterItemStackFilter> i
     }
 
     @Override
-    public Finder getFinder(@NotNull HolderLookup.Provider registries) {
+    public Finder getFinder() {
         return fuzzyMode ? Finder.item(itemType) : Finder.strict(itemType);
     }
 

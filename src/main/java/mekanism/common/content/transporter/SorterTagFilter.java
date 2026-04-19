@@ -11,10 +11,8 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
 
@@ -47,7 +45,7 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     }
 
     @Override
-    public Finder getFinder(@NotNull HolderLookup.Provider registries) {
+    public Finder getFinder() {
         return Finder.tag(tagName);
     }
 

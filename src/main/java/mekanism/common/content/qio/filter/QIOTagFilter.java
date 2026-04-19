@@ -9,10 +9,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.common.content.filter.FilterType;
 import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import org.jetbrains.annotations.NotNull;
 
 public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
 
@@ -44,7 +42,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     }
 
     @Override
-    public Finder getFinder(@NotNull HolderLookup.Provider registries) {
+    public Finder getFinder() {
         return Finder.tag(tagName);
     }
 

@@ -17,9 +17,12 @@ import mekanism.common.content.qio.filter.QIOTagFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
 import mekanism.common.content.transporter.SorterModIDFilter;
 import mekanism.common.content.transporter.SorterTagFilter;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements IFilter<FILTER> {
 
@@ -43,6 +46,8 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
 
     //Enabled by default
     private boolean enabled = true;
+    @Nullable //late init, once added to a manager
+    protected Provider registryAccess;
 
     protected BaseFilter() {
     }
@@ -87,6 +92,11 @@ public abstract class BaseFilter<FILTER extends BaseFilter<FILTER>> implements I
     @Override
     public final void setEnabled(boolean enabled) {
         this.enabled = enabled;
+    }
+
+    @Override
+    public void setRegistryAccess(@NotNull Provider registryAccess) {
+        this.registryAccess = registryAccess;
     }
 
     public static IFilter<?> fromType(FilterType filterType) {
