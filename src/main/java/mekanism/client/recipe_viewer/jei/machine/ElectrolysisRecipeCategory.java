@@ -48,7 +48,7 @@ public class ElectrolysisRecipeCategory extends HolderRecipeCategory<Electrolysi
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ElectrolysisRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ElectrolysisRecipe recipe = recipeHolder.value();
-        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initFluid(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         List<ChemicalStack> leftDefinition = new ArrayList<>();
         List<ChemicalStack> rightDefinition = new ArrayList<>();
         for (ElectrolysisRecipeOutput output : recipe.getOutputDefinition()) {

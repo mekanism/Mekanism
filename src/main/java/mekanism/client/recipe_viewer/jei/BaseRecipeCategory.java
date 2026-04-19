@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.gui.IGuiWrapper;
@@ -39,12 +40,16 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import mezz.jei.api.recipe.category.IRecipeCategory;
 import mezz.jei.api.recipe.types.IRecipeType;
 import net.minecraft.SharedConstants;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.AbstractContainerEventHandler;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -93,6 +98,10 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         this.yOffset = yOffset;
         this.width = width;
         this.height = height;
+    }
+
+    protected static ContextMap getSlotDisplayContext() {
+        return SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
     }
 
     protected <ELEMENT extends GuiElement> ELEMENT addElement(ELEMENT element) {
@@ -216,7 +225,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
 
     @Nullable
     @Override
-    public abstract Identifier getRegistryName(RECIPE recipe);
+    public abstract Identifier getIdentifier(RECIPE recipe);
 
     @Override
     public abstract Codec<RECIPE> getCodec(ICodecHelper codecHelper, IRecipeManager recipeManager);
@@ -285,9 +294,18 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         return initItem(builder, role, slot.getX(), slot.getY(), stacks);
     }
 
+    protected IRecipeSlotBuilder initItems(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiSlot slot, List<ItemStackTemplate> stacks) {
+        return initItems(builder, role, slot.getX(), slot.getY(), stacks);
+    }
+
     protected IRecipeSlotBuilder initItem(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, List<ItemStack> stacks) {
         return builder.addSlot(role, x + 1, y + 1)
               .addItemStacks(stacks);
+    }
+
+    protected IRecipeSlotBuilder initItems(IRecipeLayoutBuilder builder, RecipeIngredientRole role, int x, int y, List<ItemStackTemplate> stacks) {
+        return builder.addSlot(role, x + 1, y + 1)
+              .addItemStacks(stacks.stream().map(ItemStackTemplate::create).toList());
     }
 
     protected IRecipeSlotBuilder initFluid(IRecipeLayoutBuilder builder, RecipeIngredientRole role, GuiGauge<?> gauge, List<FluidStack> stacks) {

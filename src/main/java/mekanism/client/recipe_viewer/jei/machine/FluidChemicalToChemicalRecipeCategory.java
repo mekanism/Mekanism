@@ -15,6 +15,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -37,8 +38,9 @@ public class FluidChemicalToChemicalRecipeCategory extends HolderRecipeCategory<
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<FluidChemicalToChemicalRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         FluidChemicalToChemicalRecipe recipe = recipeHolder.value();
-        initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations());
-        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput().getRepresentations());
+        ContextMap slotDisplayContext = getSlotDisplayContext();
+        initFluid(builder, RecipeIngredientRole.INPUT, fluidInput, recipe.getFluidInput().getRepresentations(slotDisplayContext));
+        initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, recipe.getChemicalInput().getRepresentations(slotDisplayContext));
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
     }
 }

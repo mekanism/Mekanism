@@ -38,14 +38,17 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.TimeUtil;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public class RecipeViewerUtils {
 
@@ -120,8 +123,14 @@ public class RecipeViewerUtils {
     }
 
     public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
-        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations().stream().map(ChemicalStack::getChemicalHolder).collect(Collectors.toSet());
+        ContextMap contextMap = getSlotDisplayContext();
+        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations(contextMap).stream().map(ChemicalStack::getChemicalHolder).collect(Collectors.toSet());
         return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
+    }
+
+    @NonNull
+    private static ContextMap getSlotDisplayContext() {
+        return SlotDisplayContext.fromLevel(Minecraft.getInstance().level);
     }
 
     private static List<ItemStack> getStacksFor(Set<Holder<Chemical>> supportedTypes, @Nullable IMekanismRecipeTypeProvider<?, ? extends ItemStackToChemicalRecipe, ?> recipeType) {
@@ -130,13 +139,14 @@ public class RecipeViewerUtils {
         for (Holder<Chemical> type : supportedTypes) {
             stacks.add(ChemicalUtil.getFullChemicalTank(ChemicalTankTier.BASIC, type));
         }
+        ContextMap slotDisplayContext = getSlotDisplayContext();
         //See if there are any chemical to item mappings
         if (recipeType != null) {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();
                 for (ChemicalStack output : recipe.getOutputDefinition()) {
                     if (anyMatch(supportedTypes, output.getChemicalHolder())) {
-                        stacks.addAll(recipe.getInput().getRepresentations());
+                        stacks.addAll(recipe.getInput().getRepresentations(slotDisplayContext));
                         break;
                     }
                 }

@@ -18,8 +18,8 @@ public abstract class HolderRecipeCategory<RECIPE extends Recipe<?>> extends Bas
 
     @NotNull
     @Override
-    public Identifier getRegistryName(RecipeHolder<RECIPE> recipe) {
-        return recipe.id();
+    public Identifier getIdentifier(RecipeHolder<RECIPE> recipe) {
+        return recipe.id().identifier();
     }
 
     @Override

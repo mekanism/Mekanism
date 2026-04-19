@@ -66,7 +66,7 @@ public class FissionReactorRecipeCategory extends BaseRecipeCategory<FissionReci
 
     @Nullable
     @Override
-    public Identifier getRegistryName(@NotNull FissionRecipeViewerRecipe recipe) {
+    public Identifier getIdentifier(@NotNull FissionRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 

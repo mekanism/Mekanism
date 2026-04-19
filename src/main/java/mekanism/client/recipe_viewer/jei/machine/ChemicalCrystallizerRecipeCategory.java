@@ -72,7 +72,7 @@ public class ChemicalCrystallizerRecipeCategory extends HolderRecipeCategory<Che
         ChemicalCrystallizerRecipe recipe = recipeHolder.value();
         initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
         ChemicalStackIngredient input = recipe.getInput();
-        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations())
+        initChemical(builder, RecipeIngredientRole.INPUT, gauge, input.getRepresentations(getSlotDisplayContext()))
               .setSlotName(CHEMICAL_INPUT);
         List<ItemStack> displayItems = RecipeViewerUtils.getDisplayItems(input);
         if (!displayItems.isEmpty()) {

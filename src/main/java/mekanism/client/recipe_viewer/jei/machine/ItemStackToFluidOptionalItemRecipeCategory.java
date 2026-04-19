@@ -76,7 +76,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Nullable
     @Override
-    public Identifier getRegistryName(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
+    public Identifier getIdentifier(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
         List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations();
         if (representations.size() == 1) {
             Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());

@@ -52,13 +52,13 @@ public class SPSRecipeCategory extends BaseRecipeCategory<SPSRecipeViewerRecipe>
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, SPSRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
-        initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations());
+        initChemical(builder, RecipeIngredientRole.INPUT, input, recipe.input().getRepresentations(getSlotDisplayContext()));
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, Collections.singletonList(recipe.output()));
     }
 
     @Nullable
     @Override
-    public Identifier getRegistryName(@NotNull SPSRecipeViewerRecipe recipe) {
+    public Identifier getIdentifier(@NotNull SPSRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 

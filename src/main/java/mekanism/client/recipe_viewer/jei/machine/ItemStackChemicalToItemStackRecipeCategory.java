@@ -18,6 +18,7 @@ import mezz.jei.api.gui.builder.IRecipeLayoutBuilder;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,15 +43,16 @@ public class ItemStackChemicalToItemStackRecipeCategory extends HolderRecipeCate
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackChemicalToItemStackRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         ItemStackChemicalToItemStackRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations());
-        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations();
+        ContextMap slotDisplayContext = getSlotDisplayContext();
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getItemInput().getRepresentations(slotDisplayContext));
+        List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
         if (recipe.perTickUsage()) {
             scaledChemicals = scaledChemicals.stream()
                   .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED))
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, chemicalInput, scaledChemicals);
-        initItem(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
-        initItem(builder, RecipeIngredientRole.CATALYST, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
+        initItems(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition());
+        initItem(builder, RecipeIngredientRole.CRAFTING_STATION, extra, RecipeViewerUtils.getStacksFor(recipe.getChemicalInput(), true));
     }
 }

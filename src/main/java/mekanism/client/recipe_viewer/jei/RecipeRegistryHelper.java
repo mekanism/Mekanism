@@ -3,6 +3,7 @@ package mekanism.client.recipe_viewer.jei;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.RotaryRecipe;
@@ -61,14 +62,15 @@ public class RecipeRegistryHelper {
         ItemStack damaged3 = new ItemStack(item);
         damaged3.setDamageValue(damaged3.getMaxDamage() * 2 / 4);
         //Two damaged items combine to undamaged
-        registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, List.of(damaged2), List.of(damaged3))));
+        Identifier itemId = Objects.requireNonNull(item.getKey(), "expected bound").identifier();
+        registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, List.of(damaged2), List.of(damaged3), itemId.withSuffix("_two_damaged"))));
         ItemStack[] repairStacks = repairMaterials.apply(item.value());
         //Damaged item + the repair material
         if (repairStacks != null && repairStacks.length > 0) {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
             ItemStack damaged1 = new ItemStack(item);
             damaged1.setDamageValue(damaged1.getMaxDamage());
-            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, List.of(repairStacks), List.of(damaged2))));
+            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, List.of(repairStacks), List.of(damaged2), itemId.withSuffix("_repair_material"))));
         }
     }
 }

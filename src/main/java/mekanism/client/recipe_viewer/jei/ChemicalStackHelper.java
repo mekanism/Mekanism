@@ -48,7 +48,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
     }
 
     @Override
-    public Identifier getResourceLocation(ChemicalStack ingredient) {
+    public Identifier getIdentifier(ChemicalStack ingredient) {
         return RegistryUtils.getName(ingredient.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY);
     }
 

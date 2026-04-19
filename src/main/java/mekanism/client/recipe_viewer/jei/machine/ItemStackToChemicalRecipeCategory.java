@@ -36,7 +36,7 @@ public class ItemStackToChemicalRecipeCategory<RECIPE extends ItemStackToChemica
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<RECIPE> recipeHolder, @NotNull IFocusGroup focusGroup) {
         RECIPE recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         initChemical(builder, RecipeIngredientRole.OUTPUT, output, recipe.getOutputDefinition())
               .setSlotName(CHEMICAL_INPUT);
     }

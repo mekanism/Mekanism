@@ -25,6 +25,7 @@ import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.recipe.IFocusGroup;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -65,13 +66,16 @@ public class PressurizedReactionRecipeCategory extends HolderRecipeCategory<Pres
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<PressurizedReactionRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
         PressurizedReactionRecipe recipe = recipeHolder.value();
-        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations());
-        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations());
-        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations());
+        ContextMap slotDisplayContext = getSlotDisplayContext();
+        initItem(builder, RecipeIngredientRole.INPUT, inputItem, recipe.getInputSolid().getRepresentations(slotDisplayContext));
+        initFluid(builder, RecipeIngredientRole.INPUT, inputFluid, recipe.getInputFluid().getRepresentations(slotDisplayContext));
+        initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, recipe.getInputChemical().getRepresentations(slotDisplayContext));
         List<ItemStack> itemOutputs = new ArrayList<>();
         List<ChemicalStack> chemicalOutputs = new ArrayList<>();
         for (PressurizedReactionRecipeOutput output : recipe.getOutputDefinition()) {
-            itemOutputs.add(output.item());
+            if (output.item() != null) {
+                itemOutputs.add(output.item().create());
+            }
             chemicalOutputs.add(output.chemical());
         }
         if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {

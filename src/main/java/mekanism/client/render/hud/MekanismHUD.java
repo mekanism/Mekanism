@@ -24,6 +24,7 @@ import net.neoforged.neoforge.client.gui.GuiLayer;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix3x2f;
 import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 
@@ -113,7 +114,7 @@ public class MekanismHUD implements GuiLayer {
                     GuiUtils.drawBackdrop(graphics, Minecraft.getInstance(), x, y, maxTextWidth, maxTextHeight, 0xFFFFFFFF);
                 }
 
-                Matrix4f matrix = new Matrix4f(pose.last().pose());
+                Matrix3x2f matrix = new Matrix3x2f(pose);
                 for (List<Component> group : renderStrings) {
                     for (Component text : group) {
                         int textWidth = font.width(text);

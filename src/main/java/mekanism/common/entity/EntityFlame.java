@@ -19,6 +19,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -66,7 +67,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
 
     @Nullable
     public static EntityFlame create(Level level, LivingEntity owner, InteractionHand hand, FlamethrowerMode mode) {
-        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(level);
+        EntityFlame flame = MekanismEntityTypes.FLAME.get().create(level, EntitySpawnReason.EVENT);
         if (flame == null) {
             return null;
         }
@@ -220,7 +221,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             SingleRecipeInput input = new SingleRecipeInput(stack);
             Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level);
             if (recipe.isPresent()) {
-                ItemStack result = recipe.get().value().assemble(input, level.registryAccess());
+                ItemStack result = recipe.get().value().assemble(input);
                 item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
                 item.tickCount = 0;
                 spawnParticlesAt(item.blockPosition());
@@ -252,7 +253,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
                     //We can't break the block exit
                     return;
                 }
-                ItemStack result = recipe.get().value().assemble(input, level().registryAccess());
+                ItemStack result = recipe.get().value().assemble(input);
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
                     level().removeBlock(blockPos, false);
                     ItemEntity item = new ItemEntity(level(), blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5, result.copy());

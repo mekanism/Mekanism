@@ -22,7 +22,6 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
@@ -43,7 +42,7 @@ public class ItemStackToEnergyRecipeCategory extends HolderRecipeCategory<ItemSt
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, RecipeHolder<ItemStackToEnergyRecipe> recipeHolder, @NotNull IFocusGroup focusGroup) {
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipeHolder.value().getInput().getRepresentations())
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipeHolder.value().getInput().getRepresentations(getSlotDisplayContext()))
               .setSlotName(INPUT);
     }
 

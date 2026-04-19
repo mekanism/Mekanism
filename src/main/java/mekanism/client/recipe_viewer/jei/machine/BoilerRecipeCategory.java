@@ -27,6 +27,7 @@ import mezz.jei.api.recipe.IRecipeManager;
 import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,7 +83,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
 
     @Nullable
     @Override
-    public Identifier getRegistryName(@NotNull BoilerRecipeViewerRecipe recipe) {
+    public Identifier getIdentifier(@NotNull BoilerRecipeViewerRecipe recipe) {
         return recipe.id();
     }
 
@@ -94,11 +95,12 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BoilerRecipeViewerRecipe recipe, @NotNull IFocusGroup focusGroup) {
-        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations());
+        ContextMap context = getSlotDisplayContext();
+        initFluid(builder, RecipeIngredientRole.INPUT, waterTank, recipe.water().getRepresentations(context));
         if (recipe.superHeatedCoolant() == null) {
             initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
         } else {
-            initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations());
+            initChemical(builder, RecipeIngredientRole.INPUT, superHeatedCoolantTank, recipe.superHeatedCoolant().getRepresentations(context));
             initChemical(builder, RecipeIngredientRole.OUTPUT, steamTank, Collections.singletonList(recipe.steam()));
             initChemical(builder, RecipeIngredientRole.OUTPUT, cooledCoolantTank, Collections.singletonList(recipe.cooledCoolant()));
         }
