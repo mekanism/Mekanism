@@ -25,8 +25,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiTurbineStats extends GuiMekanismTile<TileEntityTurbineCasing, EmptyTileContainer<TileEntityTurbineCasing>> {
 
     public GuiTurbineStats(EmptyTileContainer<TileEntityTurbineCasing> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth += 14;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 14, DEFAULT_IMAGE_HEIGHT);
     }
 
     @Override

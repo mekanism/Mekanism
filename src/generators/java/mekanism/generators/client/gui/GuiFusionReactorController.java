@@ -24,9 +24,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiFusionReactorController extends GuiMekanismTile<TileEntityFusionReactorController, MekanismTileContainer<TileEntityFusionReactorController>> {
 
     public GuiFusionReactorController(MekanismTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 10, DEFAULT_IMAGE_HEIGHT);
         dynamicSlots = true;
-        imageWidth += 10;
         inventoryLabelX += 5;
         titleLabelY = 5;
     }

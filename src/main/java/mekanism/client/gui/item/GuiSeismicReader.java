@@ -52,9 +52,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
     private GuiScrollBar scrollBar;
 
     public GuiSeismicReader(SeismicReaderContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth = 150;
-        imageHeight = 182;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH - 26, DEFAULT_IMAGE_HEIGHT + 16);
         Player player = inv.player;
         Level level = player.level();
         this.minHeight = level.getMinY();

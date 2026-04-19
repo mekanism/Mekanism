@@ -46,9 +46,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
     private GuiDoubleGraph heatGraph;
 
     public GuiFissionReactor(MekanismTileContainer<TileEntityFissionReactorCasing> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth = 195;
-        imageHeight += 89;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 19, DEFAULT_IMAGE_HEIGHT + 89);
         inventoryLabelX = 6;
         inventoryLabelY = imageHeight - 92;
         titleLabelY = 5;

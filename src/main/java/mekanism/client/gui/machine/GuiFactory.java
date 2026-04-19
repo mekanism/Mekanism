@@ -17,7 +17,6 @@ import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactor
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +29,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     private static int calcHeight(MekanismTileContainer<TileEntityFactory<?>> container) {
         TileEntityFactory<?> tile = container.getTileEntity();
-        int imageHeight = AbstractContainerScreen.DEFAULT_IMAGE_HEIGHT;
+        int imageHeight = DEFAULT_IMAGE_HEIGHT;
         if (tile.hasSecondaryResourceBar()) {
             imageHeight += 11;
         } else if (tile instanceof TileEntitySawingFactory) {
@@ -41,7 +40,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
 
     private static int calcWidth(MekanismTileContainer<TileEntityFactory<?>> container) {
         TileEntityFactory<?> tile = container.getTileEntity();
-        int imageWidth = AbstractContainerScreen.DEFAULT_IMAGE_WIDTH;
+        int imageWidth = DEFAULT_IMAGE_WIDTH;
         if (tile.tier == FactoryTier.ULTIMATE) {
             imageWidth += 34;
         }

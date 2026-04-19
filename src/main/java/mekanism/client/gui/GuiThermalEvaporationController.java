@@ -32,8 +32,7 @@ public class GuiThermalEvaporationController extends GuiMekanismTile<TileEntityT
     private GuiElement inputGauge, outputGauge;
 
     public GuiThermalEvaporationController(MekanismTileContainer<TileEntityThermalEvaporationController> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth += 20;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 20, DEFAULT_IMAGE_HEIGHT);
         inventoryLabelX += 10;
         inventoryLabelY += 2;
         dynamicSlots = true;

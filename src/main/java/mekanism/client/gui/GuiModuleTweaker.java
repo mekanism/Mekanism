@@ -55,7 +55,7 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
     private int selected = -1;
 
     public GuiModuleTweaker(ModuleTweakerContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 90, DEFAULT_IMAGE_HEIGHT + 20);
         saveCallback = configItem -> {
             if (moduleScreen != null) {
                 IModule<?> module = moduleScreen.getCurrentModule();
@@ -65,8 +65,6 @@ public class GuiModuleTweaker extends GuiMekanism<ModuleTweakerContainer> {
                 }
             }
         };
-        imageWidth = 266;
-        imageHeight += 20;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package mekanism.client.gui.element.window.filter;
 
 import java.util.Locale;
+import java.util.function.IntPredicate;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.functions.CharUnaryOperator;
 import mekanism.client.gui.IGuiWrapper;
@@ -40,7 +41,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
         }
     }
 
-    protected abstract CharPredicate getInputValidator();
+    protected abstract IntPredicate getInputValidator();
 
     @Nullable
     protected CharUnaryOperator getInputTransformer() {

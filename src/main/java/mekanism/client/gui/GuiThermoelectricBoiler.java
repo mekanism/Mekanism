@@ -33,9 +33,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiThermoelectricBoiler extends GuiMekanismTile<TileEntityBoilerCasing, MekanismTileContainer<TileEntityBoilerCasing>> {
 
     public GuiThermoelectricBoiler(MekanismTileContainer<TileEntityBoilerCasing> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 42, DEFAULT_IMAGE_HEIGHT);
         dynamicSlots = true;
-        imageWidth += 42;
         inventoryLabelX += 21;
         inventoryLabelY += 2;
         titleLabelY = 5;

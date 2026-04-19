@@ -27,8 +27,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class GuiFusionReactorInfo extends GuiMekanismTile<TileEntityFusionReactorController, EmptyTileContainer<TileEntityFusionReactorController>> {
 
     protected GuiFusionReactorInfo(EmptyTileContainer<TileEntityFusionReactorController> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth += 10;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 10, DEFAULT_IMAGE_HEIGHT);
         titleLabelY = 5;
     }
 

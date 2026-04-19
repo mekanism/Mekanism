@@ -49,10 +49,8 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
     private GuiInnerScreen screen;
 
     public GuiAntiprotonicNucleosynthesizer(MekanismTileContainer<TileEntityAntiprotonicNucleosynthesizer> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 20, DEFAULT_IMAGE_HEIGHT + 27);
         dynamicSlots = true;
-        imageHeight += 27;
-        imageWidth += 20;
         inventoryLabelY = imageHeight - 93;
     }
 

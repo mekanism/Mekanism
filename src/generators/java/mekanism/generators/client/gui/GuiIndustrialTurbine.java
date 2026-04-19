@@ -32,8 +32,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasing, MekanismTileContainer<TileEntityTurbineCasing>> {
 
     public GuiIndustrialTurbine(MekanismTileContainer<TileEntityTurbineCasing> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth += 14;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 14, DEFAULT_IMAGE_HEIGHT);
         inventoryLabelX += 7;
         inventoryLabelY += 2;
         titleLabelY = 5;

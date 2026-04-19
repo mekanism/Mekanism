@@ -32,7 +32,6 @@ import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.text.EnergyDisplay;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
@@ -49,7 +48,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
     private MekanismButton configButton;
 
     public GuiDigitalMiner(MekanismTileContainer<TileEntityDigitalMiner> container, Inventory inv, Component title) {
-        super(container, inv, title, AbstractContainerScreen.DEFAULT_IMAGE_WIDTH + 76, AbstractContainerScreen.DEFAULT_IMAGE_HEIGHT);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 76, DEFAULT_IMAGE_HEIGHT);
         inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }

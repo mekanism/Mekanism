@@ -2,6 +2,7 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.IntPredicate;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
@@ -31,7 +32,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     @Override
-    protected CharPredicate getInputValidator() {
+    protected IntPredicate getInputValidator() {
         return InputValidator.RL_NAMESPACE.or(InputValidator.WILDCARD_CHARS);
     }
 

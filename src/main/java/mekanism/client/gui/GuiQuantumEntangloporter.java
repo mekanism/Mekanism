@@ -25,8 +25,7 @@ public class GuiQuantumEntangloporter extends GuiConfigurableTile<TileEntityQuan
       implements ITileGuiFrequencySelector<InventoryFrequency, TileEntityQuantumEntangloporter> {
 
     public GuiQuantumEntangloporter(MekanismTileContainer<TileEntityQuantumEntangloporter> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageHeight += 74;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 74);
         titleLabelY = 4;
         inventoryLabelY = imageHeight - 93;
         dynamicSlots = true;

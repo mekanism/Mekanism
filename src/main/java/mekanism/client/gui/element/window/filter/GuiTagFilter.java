@@ -2,7 +2,7 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.functions.CharPredicate;
+import java.util.function.IntPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.MekanismLang;
@@ -24,7 +24,7 @@ public abstract class GuiTagFilter<FILTER extends ITagFilter<FILTER>, TILE exten
     }
 
     @Override
-    protected CharPredicate getInputValidator() {
+    protected IntPredicate getInputValidator() {
         return InputValidator.RESOURCE_LOCATION.or(InputValidator.WILDCARD_CHARS);
     }
 

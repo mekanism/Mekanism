@@ -27,9 +27,8 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
     private MekanismButton removeButton;
 
     public GuiModificationStation(MekanismTileContainer<TileEntityModificationStation> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
         dynamicSlots = true;
-        imageHeight += 64;
         inventoryLabelY = imageHeight - 92;
     }
 

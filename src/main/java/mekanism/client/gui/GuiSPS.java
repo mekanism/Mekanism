@@ -24,9 +24,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiSPS extends GuiMekanismTile<TileEntitySPSCasing, MekanismTileContainer<TileEntitySPSCasing>> {
 
     public GuiSPS(MekanismTileContainer<TileEntitySPSCasing> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 16);
         dynamicSlots = true;
-        imageHeight += 16;
         inventoryLabelY = imageHeight - 92;
     }
 

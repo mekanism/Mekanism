@@ -10,8 +10,7 @@ import org.jetbrains.annotations.NotNull;
 public class GuiPersonalStorageTile extends GuiMekanismTile<TileEntityPersonalStorage, MekanismTileContainer<TileEntityPersonalStorage>> {
 
     public GuiPersonalStorageTile(MekanismTileContainer<TileEntityPersonalStorage> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageHeight += 56;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 56);
         inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }

@@ -25,8 +25,7 @@ public class GuiFissionReactorLogicAdapter extends GuiMekanismTile<TileEntityFis
     private GuiScrollBar scrollBar;
 
     public GuiFissionReactorLogicAdapter(EmptyTileContainer<TileEntityFissionReactorLogicAdapter> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageWidth += 20;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 20, DEFAULT_IMAGE_HEIGHT);
     }
 
     @Override
