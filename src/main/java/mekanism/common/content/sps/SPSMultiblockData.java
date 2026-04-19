@@ -205,8 +205,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                 for (Entity entity : entitiesToDie) {
                     if (entity.hurtServer(world, damageSource, lastReceivedEnergy / 1_000F) && entity.isAlive()) {
                         //If the entity is still alive, see if there is any special handling we want to do
-                        EntityType<?> type = entity.getType();
-                        if (type.is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
+                        if (entity.typeHolder().is(MekanismTags.Entities.VALID_SPS_EXPERIMENT)) {
                             if (lightningBolt == null) {
                                 lightningBolt = new LightningBolt(EntityType.LIGHTNING_BOLT, world);
                                 //Set the damage to zero so when we call thunderHit we don't actually hurt the entity
@@ -228,7 +227,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
                                     }
                                 }
                                 for (ServerPlayer player : nearbyPlayers) {
-                                    MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, type);
+                                    MekanismCriteriaTriggers.SPS_EXPERIMENT.value().trigger(player, entity.typeHolder());
                                 }
                             }
                         }

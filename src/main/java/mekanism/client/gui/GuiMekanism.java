@@ -73,6 +73,10 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         super(container, inv, title);
     }
 
+    protected GuiMekanism(CONTAINER container, Inventory inv, Component title, int imageWidth, int imageHeight) {
+        super(container, inv, title, imageWidth, imageHeight);
+    }
+
     @NotNull
     @Override
     public BooleanSupplier trackWarning(@NotNull WarningType type, @NotNull BooleanSupplier warningSupplier) {

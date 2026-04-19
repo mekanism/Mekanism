@@ -40,6 +40,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -57,7 +58,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     );
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
-    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     private final IInputHandler<@NotNull ItemStack> inputHandler;
     private final IInputHandler<@NotNull ItemStack> extraInputHandler;
 

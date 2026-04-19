@@ -11,6 +11,7 @@ import net.minecraft.advancements.criterion.ContextAwarePredicate;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.advancements.criterion.EntityTypePredicate;
 import net.minecraft.advancements.criterion.SimpleCriterionTrigger;
+import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.TagKey;
@@ -25,7 +26,7 @@ public class SPSExperimentTrigger extends SimpleCriterionTrigger<TriggerInstance
         return TriggerInstance.CODEC;
     }
 
-    public void trigger(ServerPlayer player, EntityType<?> experimentedUpon) {
+    public void trigger(ServerPlayer player, Holder<EntityType<?>> experimentedUpon) {
         this.trigger(player, instance -> instance.entityType.matches(experimentedUpon));
     }
 

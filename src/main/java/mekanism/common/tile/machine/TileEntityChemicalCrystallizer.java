@@ -44,6 +44,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +65,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
                                                                                         "getInputFilledPercentage"}, docPlaceholder = "input tank")
     public IChemicalTank inputTank;
 
-    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     private final ILongInputHandler<@NotNull ChemicalStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;

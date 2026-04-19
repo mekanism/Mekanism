@@ -54,6 +54,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -81,7 +82,7 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
     private long usedSoFar;
 
-    protected final IOutputHandler<@NotNull ItemStack> outputHandler;
+    protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
     protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
 

@@ -23,6 +23,10 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         super(container, inv, titleIn);
     }
 
+    public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn, int imageWidth, int imageHeight) {
+        super(container, inv, titleIn, imageWidth, imageHeight);
+    }
+
     protected abstract boolean isMouseOverSlot(@NotNull Slot slot, double mouseX, double mouseY);
 
     @Nullable

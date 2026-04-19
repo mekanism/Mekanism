@@ -8,7 +8,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.client.render.MekanismRenderType;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.effect.BoltEffect.BoltQuads;
 import mekanism.common.lib.effect.BoltEffect.FadeFunction.RenderBounds;
@@ -45,7 +44,7 @@ public class BoltRenderer {
     }
 
     public void render(long gameTime, float partialTicks, PoseStack matrixStack, MultiBufferSource bufferIn, @Nullable Vec3 cameraPos) {
-        VertexConsumer buffer = bufferIn.getBuffer(MekanismRenderType.MEK_LIGHTNING);
+        VertexConsumer buffer = bufferIn.getBuffer(null/*MekanismRenderType.MEK_LIGHTNING*/);// todo 26.1: rendering.
         Matrix4f matrix = matrixStack.last().pose();
         Timestamp timestamp = new Timestamp(gameTime, partialTicks);
         boolean refresh = timestamp.isPassed(refreshTimestamp, (1 / REFRESH_TIME));

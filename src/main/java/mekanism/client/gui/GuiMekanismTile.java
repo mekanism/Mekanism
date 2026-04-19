@@ -8,6 +8,7 @@ import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +23,11 @@ public abstract class GuiMekanismTile<TILE extends TileEntityMekanism, CONTAINER
     private GuiUpgradeWindowTab upgradeWindowTab;
 
     protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title) {
-        super(container, inv, title);
+        this(container, inv, title, AbstractContainerScreen.DEFAULT_IMAGE_WIDTH, AbstractContainerScreen.DEFAULT_IMAGE_HEIGHT);
+    }
+
+    protected GuiMekanismTile(CONTAINER container, Inventory inv, Component title, int imageWidth, int imageHeight) {
+        super(container, inv, title, imageWidth, imageHeight);
         tile = container.getTileEntity();
     }
 
