@@ -34,10 +34,8 @@ public class GuiOredictionificator extends GuiConfigurableTile<TileEntityOredict
     private GuiScrollBar scrollBar;
 
     public GuiOredictionificator(MekanismTileContainer<TileEntityOredictionificator> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageHeight += 64;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH + 60, DEFAULT_IMAGE_HEIGHT + 64);
         inventoryLabelY = imageHeight - 94;
-        imageWidth += 60;
         inventoryLabelX += 30;
         dynamicSlots = true;
     }

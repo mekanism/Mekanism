@@ -38,15 +38,15 @@ public class FuelInventorySlot extends BasicInventorySlot {
         int burnTime = current.getBurnTime(null, fuelValues) / 2;
         if (burnTime != 0) {
             UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
-            //TODO - 1.21.11: Should we also validate that the remainder isn't the existing stack?
+            //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
             if (remainder != null) {
                 if (current.getCount() > 1) {
                     //If we have a container but have more than a single stack of it somehow just exit
-                    //TODO - 1.21.11: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
+                    //TODO - 26.1: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
                     return 0;
                 }
                 //If the item has a container, then replace it with the container
-                setStack(remainder.convertInto());
+                setStack(remainder.convertInto().create());
             } else {
                 //Otherwise, shrink the size of the stack by one
                 MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

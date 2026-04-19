@@ -1,12 +1,12 @@
 package mekanism.client.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.BubbleParticle;
 import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.RandomSource;
@@ -26,9 +26,9 @@ public class ScubaBubbleParticle extends BubbleParticle {
     }
 
     @Override
-    public void render(@NotNull VertexConsumer vertexBuilder, @NotNull Camera renderInfo, float partialTicks) {
+    public void extract(QuadParticleRenderState particleTypeRenderState, Camera camera, float partialTickTime) {
         if (age > 0) {
-            super.render(vertexBuilder, renderInfo, partialTicks);
+            super.extract(particleTypeRenderState, camera, partialTickTime);
         }
     }
 

@@ -1,7 +1,6 @@
 package mekanism.client.gui.qio;
 
 import com.google.common.collect.Sets;
-import com.mojang.blaze3d.platform.InputConstants;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -32,11 +31,11 @@ import mekanism.common.inventory.container.QIOItemViewerContainer.SortDirection;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
 
@@ -55,13 +54,19 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
     private boolean loadPinned = true;
 
     protected GuiQIOItemViewer(CONTAINER container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, calcWidth(), calcHeight());
         this.inv = inv;
-        imageWidth = 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
-        imageHeight = QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
         inventoryLabelY = imageHeight - 93;
         titleLabelY = 5;
         dynamicSlots = true;
+    }
+
+    private static int calcHeight() {
+        return QIOItemViewerContainer.SLOTS_START_Y + MekanismConfig.client.qioItemViewerSlotsY.get() * 18 + 96;
+    }
+
+    private static int calcWidth() {
+        return 16 + MekanismConfig.client.qioItemViewerSlotsX.get() * 18 + 18;
     }
 
     @Override
@@ -139,8 +144,9 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
         }
     }
 
-    private boolean isValidSearchChar(char c) {
-        return ALLOWED_SPECIAL_CHARS.contains(c) || Character.isDigit(c) || Character.isAlphabetic(c);
+    //todo 26.1 review this - currently anything outside the BMP is not allowed
+    private boolean isValidSearchChar(int c) {
+        return (Character.isBmpCodePoint(c) && ALLOWED_SPECIAL_CHARS.contains((char) c)) || Character.isDigit(c) || Character.isAlphabetic(c);
     }
 
     public abstract FrequencyIdentity getFrequency();
@@ -217,13 +223,8 @@ public abstract class GuiQIOItemViewer<CONTAINER extends QIOItemViewerContainer>
 
     @Override
     public boolean keyReleased(@NotNull KeyEvent event) {
-        //Note: We only want to unpause sorting if they aren't pressing shift. If they were pressing both shift keys and then released one
-        // we want to make sure it stays paused. We just pass the value of if the other key is pressed and let the code that handles
-        // pausing/unpausing on value change handle determining if we should stay paused
-        if (key == InputConstants.KEY_LSHIFT) {
-            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_RSHIFT));
-        } else if (key == InputConstants.KEY_RSHIFT) {
-            menu.pauseSorting(InputConstants.isKeyDown(getMinecraft().getWindow(), InputConstants.KEY_LSHIFT));
+        if (!event.hasShiftDown()) {
+            menu.pauseSorting(false);
         }
         return super.keyReleased(event);
     }

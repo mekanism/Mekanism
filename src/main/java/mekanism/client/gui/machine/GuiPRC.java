@@ -20,9 +20,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiPRC extends GuiConfigurableTile<TileEntityPressurizedReactionChamber, MekanismTileContainer<TileEntityPressurizedReactionChamber>> {
 
     public GuiPRC(MekanismTileContainer<TileEntityPressurizedReactionChamber> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 5);
         dynamicSlots = true;
-        imageHeight += 5;
         inventoryLabelY += 5;
     }
 

@@ -314,7 +314,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     CraftingInput input = MekanismUtils.getCraftingInputSlots(3, 3, craftingGridSlots, true).input();
                     isRecipe = recipe.value().matches(input, level);
                     if (isRecipe) {
-                        lastOutputStack = recipe.value().assemble(input, level.registryAccess());
+                        lastOutputStack = recipe.value().assemble(input);
                         lastRemainingItems = recipe.value().getRemainingItems(input);
                     } else {
                         //TODO: Do we need to clear the last remaining items?
@@ -331,7 +331,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 if (cachedRecipe == null) {
                     lastOutputStack = ItemStack.EMPTY;
                 } else {
-                    lastOutputStack = cachedRecipe.value().assemble(craftingInput, level.registryAccess());
+                    lastOutputStack = cachedRecipe.value().assemble(craftingInput);
                     //Note: Because we don't currently do any replacement of remaining items, we don't need to keep track of where the recipe
                     // was positioned for purposes of replacing things with the remaining items
                     lastRemainingItems = cachedRecipe.value().getRemainingItems(craftingInput);

@@ -56,6 +56,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -84,7 +85,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
     private long usedSoFar;
 
-    private final IOutputHandler<@NotNull ItemStack> outputHandler;
+    private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     private final ILongInputHandler<@NotNull ChemicalStack> infusionInputHandler;
     private final IInputHandler<@NotNull ItemStack> itemInputHandler;
 

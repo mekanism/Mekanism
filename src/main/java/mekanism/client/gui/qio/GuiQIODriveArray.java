@@ -13,9 +13,8 @@ import org.jetbrains.annotations.NotNull;
 public class GuiQIODriveArray extends GuiMekanismTile<TileEntityQIODriveArray, MekanismTileContainer<TileEntityQIODriveArray>> {
 
     public GuiQIODriveArray(MekanismTileContainer<TileEntityQIODriveArray> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 40);
         dynamicSlots = true;
-        imageHeight += 40;
         inventoryLabelY = imageHeight - 94;
     }
 

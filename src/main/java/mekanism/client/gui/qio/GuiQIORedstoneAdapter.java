@@ -34,9 +34,8 @@ public class GuiQIORedstoneAdapter extends GuiMekanismTile<TileEntityQIORedstone
     private GuiTextField text;
 
     public GuiQIORedstoneAdapter(MekanismTileContainer<TileEntityQIORedstoneAdapter> container, Inventory inv, Component title) {
-        super(container, inv, title);
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 26);
         dynamicSlots = true;
-        imageHeight += 26;
         inventoryLabelY = imageHeight - 94;
     }
 

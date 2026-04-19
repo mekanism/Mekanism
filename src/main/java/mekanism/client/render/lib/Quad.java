@@ -1,19 +1,18 @@
 package mekanism.client.render.lib;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.lib.Color;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Vec3i;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.neoforged.neoforge.client.model.pipeline.QuadBakingVertexConsumer;
 import org.joml.Vector3f;
 
@@ -47,8 +46,8 @@ public class Quad {
         shade = quad.materialInfo().shade();
         hasAmbientOcclusion = quad.materialInfo().ambientOcclusion();
         BakedQuadUnpacker unpacker = new BakedQuadUnpacker();
-        //TODO - 1.21.11: Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
-        unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY);
+        //TODO - 26.1: no existy. Hopefully yeet this class. Validate this properly works, it used to pass readAlpha as true, but that no longer is a parameter
+        //unpacker.putBulkData(new PoseStack().last(), quad, 1, 1, 1, 1, 0, OverlayTexture.NO_OVERLAY);
         vertices = unpacker.getVertices();
     }
 
@@ -112,7 +111,7 @@ public class Quad {
 
     public BakedQuad bake() {
         QuadBakingVertexConsumer quadBaker = new QuadBakingVertexConsumer();
-        quadBaker.setSprite(sprite);
+        //todo 26.1 quadBaker.setSprite(sprite);
         quadBaker.setDirection(side);
         quadBaker.setTintIndex(tintIndex);
         quadBaker.setShade(shade);
@@ -235,7 +234,7 @@ public class Quad {
         }
 
         public Builder light(int light) {
-            return light(LightTexture.block(light), LightTexture.sky(light));
+            return light(LightCoordsUtil.block(light), LightCoordsUtil.sky(light));
         }
 
         public Builder light(int u, int v) {

@@ -41,8 +41,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
     private MekanismButton autoModeButton;
 
     public GuiFormulaicAssemblicator(FormulaicAssemblicatorContainer container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageHeight += 64;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT + 64);
         inventoryLabelY = imageHeight - 94;
         dynamicSlots = true;
     }

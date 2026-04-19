@@ -23,8 +23,7 @@ public class GuiQIOTileFrequencySelect extends GuiMekanismTile<TileEntityQIOComp
       IGuiColorFrequencySelector<QIOFrequency>, ITileGuiFrequencySelector<QIOFrequency, TileEntityQIOComponent> {
 
     public GuiQIOTileFrequencySelect(EmptyTileContainer<TileEntityQIOComponent> container, Inventory inv, Component title) {
-        super(container, inv, title);
-        imageHeight -= 11;
+        super(container, inv, title, DEFAULT_IMAGE_WIDTH, DEFAULT_IMAGE_HEIGHT - 11);
         titleLabelY = 5;
     }
 

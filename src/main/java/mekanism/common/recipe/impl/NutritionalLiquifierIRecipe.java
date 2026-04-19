@@ -1,21 +1,21 @@
 package mekanism.common.recipe.impl;
 
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToFluidRecipe;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class NutritionalLiquifierIRecipe extends BasicItemStackToFluidOptionalItemRecipe {
 
-    public NutritionalLiquifierIRecipe(ItemStackIngredient input, FluidStack output, ItemStack emptyContainer) {
+    public NutritionalLiquifierIRecipe(ItemStackIngredient input, FluidStack output, @Nullable ItemStackTemplate emptyContainer) {
         super(input, new FluidOptionalItemOutput(output, emptyContainer));
         //TODO - V11: Make the recipe system support a concept similar to vanilla's "special recipe". The backend already exists
         // but we don't currently have a way for it to get registered and added to the list. getType and getSerializer are nonnull,

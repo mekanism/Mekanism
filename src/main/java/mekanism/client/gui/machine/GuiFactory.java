@@ -17,6 +17,7 @@ import mekanism.common.tile.factory.TileEntityItemStackChemicalToItemStackFactor
 import mekanism.common.tile.factory.TileEntitySawingFactory;
 import mekanism.common.tile.interfaces.IHasDumpButton;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import org.jetbrains.annotations.NotNull;
@@ -27,19 +28,36 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Nullable
     private GuiDumpButton<?> dumpButton;
 
-    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
-        super(container, inv, title);
+    private static int calcHeight(MekanismTileContainer<TileEntityFactory<?>> container) {
+        TileEntityFactory<?> tile = container.getTileEntity();
+        int imageHeight = AbstractContainerScreen.DEFAULT_IMAGE_HEIGHT;
         if (tile.hasSecondaryResourceBar()) {
             imageHeight += 11;
-            inventoryLabelY = 85;
         } else if (tile instanceof TileEntitySawingFactory) {
             imageHeight += 21;
+        }
+        return imageHeight;
+    }
+
+    private static int calcWidth(MekanismTileContainer<TileEntityFactory<?>> container) {
+        TileEntityFactory<?> tile = container.getTileEntity();
+        int imageWidth = AbstractContainerScreen.DEFAULT_IMAGE_WIDTH;
+        if (tile.tier == FactoryTier.ULTIMATE) {
+            imageWidth += 34;
+        }
+        return imageWidth;
+    }
+
+    public GuiFactory(MekanismTileContainer<TileEntityFactory<?>> container, Inventory inv, Component title) {
+        super(container, inv, title, calcWidth(container), calcHeight(container));
+        if (tile.hasSecondaryResourceBar()) {
+            inventoryLabelY = 85;
+        } else if (tile instanceof TileEntitySawingFactory) {
             inventoryLabelY = 95;
         } else {
             inventoryLabelY = 75;
         }
         if (tile.tier == FactoryTier.ULTIMATE) {
-            imageWidth += 34;
             inventoryLabelX = 26;
         }
         titleLabelY = 4;

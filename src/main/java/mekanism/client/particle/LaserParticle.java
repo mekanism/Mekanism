@@ -7,9 +7,9 @@ import mekanism.common.particle.LaserParticleData;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleProvider;
-import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.particle.SpriteSet;
+import net.minecraft.client.renderer.state.level.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
@@ -20,7 +20,9 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.jspecify.annotations.NullMarked;
 
+@NullMarked
 public class LaserParticle extends SingleQuadParticle {
 
     private static final float RADIAN_45 = 45 * Mth.DEG_TO_RAD;
@@ -50,23 +52,27 @@ public class LaserParticle extends SingleQuadParticle {
     }
 
     @Override
-    public void render(@NotNull VertexConsumer vertexBuilder, Camera renderInfo, float partialTicks) {
+    public void extract(QuadParticleRenderState particleTypeRenderState, Camera renderInfo, float partialTicks) {
+        //extractRotatedQuad(QuadParticleRenderState particleTypeRenderState, Camera camera, Quaternionf rotation, float partialTickTime)
         Vec3 view = renderInfo.position();
         float newX = (float) (Mth.lerp(partialTicks, xo, x) - view.x());
         float newY = (float) (Mth.lerp(partialTicks, yo, y) - view.y());
         float newZ = (float) (Mth.lerp(partialTicks, zo, z) - view.z());
+        //
+
         float uMin = getU0();
         float uMax = getU1();
         float vMin = getV0();
         float vMax = getV1();
-        int light = getLightColor(partialTicks);
+        int light = getLightCoords(partialTicks);
         float quadSize = getQuadSize(partialTicks);
         Quaternionf quaternion = direction.getRotation();
         quaternion.mul(Axis.YP.rotation(RADIAN_45));
-        drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
-        Quaternionf quaternion2 = new Quaternionf(quaternion);
-        quaternion2.mul(Axis.YP.rotation(RADIAN_90));
-        drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
+        //todo 26.1 make this not a SingleQuadParticle - SQP render the quad with all 4 vertices the same position, this does not
+        //drawComponent(vertexBuilder, getResultVector(quaternion, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
+        //Quaternionf quaternion2 = new Quaternionf(quaternion);
+        //quaternion2.mul(Axis.YP.rotation(RADIAN_90));
+        //drawComponent(vertexBuilder, getResultVector(quaternion2, newX, newY, newZ, quadSize), uMin, uMax, vMin, vMax, light);
     }
 
     private Vector3f[] getResultVector(Quaternionf quaternion, float newX, float newY, float newZ, float quadSize) {
@@ -139,8 +145,8 @@ public class LaserParticle extends SingleQuadParticle {
         });
     }
 
-    @NotNull
-    @Override
+    //todo 26.1 this
+    //@Override
     public AABB getRenderBoundingBox(float partialTicks) {
         return getBoundingBox();
     }

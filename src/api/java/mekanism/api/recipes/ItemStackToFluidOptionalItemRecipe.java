@@ -96,7 +96,6 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
 
         public FluidOptionalItemOutput {
             Objects.requireNonNull(fluid, "Fluid output cannot be null.");
-            Objects.requireNonNull(optionalItem, "Item output cannot be null.");
             if (fluid.isEmpty()) {
                 throw new IllegalArgumentException("Fluid output cannot be empty.");
             }
