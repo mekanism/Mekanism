@@ -16,13 +16,6 @@ public interface Finder {
     Finder ANY = stack -> true;
     Finder NONE = stack -> false;
 
-    static Finder item(Item itemType) {
-        if (itemType == Items.AIR) {
-            return NONE;
-        }
-        return stack -> stack.is(itemType);
-    }
-
     static boolean item(Item itemType, ItemStack toCheck) {
         if (itemType == Items.AIR) {
             return false;

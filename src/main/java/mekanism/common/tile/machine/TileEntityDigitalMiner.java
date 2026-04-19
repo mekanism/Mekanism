@@ -628,7 +628,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
             IItemHandler pullInv = pullInventory.getCapability();
             if (pullInv != null) {
-                TransitRequest request = TransitRequest.definedItem(pullInv, 1, Finder.item(replaceTarget));
+                //Todo: can we do this without a capturing lambda? or at least store it somewhere
+                // replace stacks could be stored as an itemstack filter instead of item?
+                TransitRequest request = TransitRequest.definedItem(pullInv, 1, toCheck -> Finder.item(replaceTarget, toCheck));
                 if (!request.isEmpty()) {
                     TransitResponse response = request.createSimpleResponse();
                     if (response.useAll().isEmpty()) {
