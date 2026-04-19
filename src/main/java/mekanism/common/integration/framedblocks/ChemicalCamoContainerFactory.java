@@ -65,7 +65,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
         for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
             ChemicalStack chemical = handler.getChemicalInTank(tank);
-            Holder<Chemical> chemicalHolder = chemical.getChemicalHolder();
+            Holder<Chemical> chemicalHolder = chemical.typeHolder();
             if (!isValidChemical(chemicalHolder, player)) {
                 continue;
             }
@@ -118,7 +118,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
                 continue;
             }
             ChemicalStack inTank = handler.getChemicalInTank(tank);
-            if (inTank.isEmpty() || inTank.is(chemical.getChemicalHolder())) {
+            if (inTank.isEmpty() || inTank.is(chemical.typeHolder())) {
                 return true;
             }
         }

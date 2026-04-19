@@ -34,7 +34,7 @@ public class ChemicalEmiStack extends EmiStack {
     private final Holder<Chemical> chemical;
 
     public ChemicalEmiStack(ChemicalStack stack) {
-        this(stack.getChemicalHolder(), stack.getAmount());
+        this(stack.typeHolder(), stack.getAmount());
     }
 
     public ChemicalEmiStack(Chemical chemical, DataComponentPatch ignored, long amount) {

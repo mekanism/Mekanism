@@ -195,7 +195,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     private static Holder<Chemical> getBufferOrFallback(PressurizedTube tube) {
-        Holder<Chemical> buffer = tube.getBufferWithFallback().getChemicalHolder();
+        Holder<Chemical> buffer = tube.getBufferWithFallback().typeHolder();
         if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && tube.hasTransmitterNetwork() && tube.getTransmitterNetwork().getPrevTransferAmount() > 0) {
             return tube.getTransmitterNetwork().lastChemical;
         }

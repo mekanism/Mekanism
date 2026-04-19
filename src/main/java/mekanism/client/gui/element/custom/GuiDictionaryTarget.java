@@ -191,7 +191,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.getChemicalTanks())
                               .mapToObj(chemicalHandler::getChemicalInTank)
                               .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                              .flatMap(ChemicalStack::getTags)
+                              .flatMap(ChemicalStack::tags)
                               .distinct()
                         ));
                     }
@@ -211,7 +211,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     setTarget(null);
                 } else {
                     setTarget(chemicalStack.copy());
-                    tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(chemicalStack.getChemicalHolder()));
+                    tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(chemicalStack.typeHolder()));
                 }
             }
             default -> {

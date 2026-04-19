@@ -83,7 +83,7 @@ public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this
      * @since 10.2.3
      */
     default boolean process(ChemicalStack stack) {
-        return process(stack.getChemicalHolder());
+        return process(stack.typeHolder());
     }
 
     /**

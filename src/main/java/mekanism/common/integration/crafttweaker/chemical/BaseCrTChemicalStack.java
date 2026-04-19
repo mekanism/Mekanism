@@ -20,7 +20,7 @@ public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
         return new StringBuilder().append('<')
               .append(CrTConstants.BRACKET_CHEMICAL)
               .append(':')
-              .append(RegistryUtils.getName(stack.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY))
+              .append(RegistryUtils.getName(stack.typeHolder(), MekanismAPI.CHEMICAL_REGISTRY))
               .append('>');
     }
 

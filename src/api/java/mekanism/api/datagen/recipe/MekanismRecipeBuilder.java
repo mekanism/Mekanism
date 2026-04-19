@@ -160,6 +160,6 @@ public abstract class MekanismRecipeBuilder<BUILDER extends MekanismRecipeBuilde
     }
 
     public static Identifier chemicalId(ChemicalStack stack) {
-        return stack.getChemicalHolder().unwrapKey().orElseThrow().identifier();
+        return stack.typeHolder().unwrapKey().orElseThrow().identifier();
     }
 }

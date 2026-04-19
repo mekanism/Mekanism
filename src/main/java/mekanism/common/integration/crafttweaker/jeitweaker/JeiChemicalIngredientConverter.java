@@ -43,6 +43,6 @@ class JeiChemicalIngredientConverter implements JeiIngredientConverter<ChemicalS
 
     @Override
     public Identifier toRegistryNameFromJei(ChemicalStack jeiType) {
-        return RegistryUtils.getName(jeiType.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY);
+        return RegistryUtils.getName(jeiType.typeHolder(), MekanismAPI.CHEMICAL_REGISTRY);
     }
 }

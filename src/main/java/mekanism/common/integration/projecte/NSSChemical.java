@@ -31,7 +31,7 @@ public final class NSSChemical extends AbstractNSSTag<Chemical> {
     @NotNull
     public static NSSChemical createChemical(@NotNull ChemicalStack stack) {
         //Don't bother checking if it is empty as getType returns EMPTY which will then fail anyway for being empty
-        return createChemical(stack.getChemicalHolder());
+        return createChemical(stack.typeHolder());
     }
 
     /**

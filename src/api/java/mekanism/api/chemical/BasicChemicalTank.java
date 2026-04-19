@@ -449,7 +449,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      */
     @Override
     public Holder<Chemical> getType() {
-        return stored.getChemicalHolder();
+        return stored.typeHolder();
     }
 
     /**

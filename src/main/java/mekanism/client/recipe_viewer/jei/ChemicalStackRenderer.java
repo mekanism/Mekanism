@@ -70,7 +70,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     @Override
     public List<Component> getTooltip(ChemicalStack stack, TooltipFlag tooltipFlag) {
         List<Component> tooltips = new ArrayList<>();
-        Holder<Chemical> chemical = stack.getChemicalHolder();
+        Holder<Chemical> chemical = stack.typeHolder();
         if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             tooltips.add(TextComponentUtil.build(chemical));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {

@@ -31,7 +31,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         private Holder<Chemical> buffer;
 
         public CompatibleChemicalTransmitterValidator(PressurizedTube transmitter) {
-            buffer = transmitter.getBufferWithFallback().getChemicalHolder();
+            buffer = transmitter.getBufferWithFallback().typeHolder();
         }
 
         private boolean compareBuffers(Holder<Chemical> otherBuffer) {
@@ -50,7 +50,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
                     //Null check it, but use instanceof to double-check it is actually the expected type
                     otherBuffer = validator.buffer;
                 } else {
-                    otherBuffer = network.getBuffer().getChemicalHolder();
+                    otherBuffer = network.getBuffer().typeHolder();
                     if (otherBuffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && network.getPrevTransferAmount() > 0) {
                         otherBuffer = network.lastChemical;
                     }
@@ -62,7 +62,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().getChemicalHolder());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().typeHolder());
         }
     }
 

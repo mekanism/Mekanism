@@ -114,7 +114,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     @Override
     public boolean testType(ChemicalStack stack) {
         Objects.requireNonNull(stack);
-        return testType(stack.getChemicalHolder());
+        return testType(stack.typeHolder());
     }
 
     /**

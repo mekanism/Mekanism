@@ -123,7 +123,7 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getChemicalTexture(@NotNull ChemicalStack stack) {
-        return getChemicalTexture(stack.getChemicalHolder());
+        return getChemicalTexture(stack.typeHolder());
     }
 
     public static TextureAtlasSprite getChemicalTexture(@NotNull Holder<Chemical> chemical) {
@@ -229,7 +229,7 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull ChemicalStack stack, float scale) {
-        return getColorARGB(stack.getChemicalHolder(), scale);
+        return getColorARGB(stack.typeHolder(), scale);
     }
 
     public static int getTint(@NotNull Holder<Chemical> chemical) {

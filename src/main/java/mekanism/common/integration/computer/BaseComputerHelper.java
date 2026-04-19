@@ -231,7 +231,7 @@ public abstract class BaseComputerHelper {
             return null;
         }
         Map<String, Object> wrapped = new HashMap<>(2);
-        wrapped.put(SerializationConstants.NAME, stack.getChemicalHolder().getRegisteredName());
+        wrapped.put(SerializationConstants.NAME, stack.typeHolder().getRegisteredName());
         wrapped.put(SerializationConstants.AMOUNT, stack.getAmount());
         return wrapped;
     }

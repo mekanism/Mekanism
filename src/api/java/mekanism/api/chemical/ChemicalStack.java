@@ -10,8 +10,6 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
-import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.SerializationConstants;
@@ -25,14 +23,13 @@ import mekanism.api.text.TextComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderSet;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
@@ -42,7 +39,7 @@ import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class ChemicalStack implements IHasTextComponent, IHasTranslationKey, IWithData<Chemical> {
+public final class ChemicalStack implements IHasTextComponent, IHasTranslationKey, IWithData<Chemical>, TypedInstance<Chemical> {
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
 
@@ -64,7 +61,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      */
     public static final MapCodec<ChemicalStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemicalHolder),
+          CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::typeHolder),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
     ).apply(instance, ChemicalStack::new));
     /**
@@ -105,7 +102,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
             buffer.writeVarLong(stack.getAmount());
             if (!stack.isEmpty()) {
-                Chemical.STREAM_CODEC.encode(buffer, stack.getChemicalHolder());
+                Chemical.STREAM_CODEC.encode(buffer, stack.typeHolder());
             }
         }
     };
@@ -142,7 +139,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      */
     public static Codec<ChemicalStack> fixedAmountCodec(long amount) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::getChemicalHolder)
+              CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::typeHolder)
         ).apply(instance, holder -> new ChemicalStack(holder, amount)));
     }
 
@@ -189,7 +186,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         if (isEmpty()) {
             return EMPTY;
         }
-        return new ChemicalStack(getChemicalHolder(), getAmount());
+        return new ChemicalStack(typeHolder(), getAmount());
     }
 
     /**
@@ -203,7 +200,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         if (isEmpty() || amount == 0) {
             return EMPTY;
         }
-        return new ChemicalStack(getChemicalHolder(), amount);
+        return new ChemicalStack(typeHolder(), amount);
     }
 
     /**
@@ -240,91 +237,18 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0 Previously was getType
      */
     public Chemical getChemical() {
-        return getChemicalHolder().value();
+        return typeHolder().value();
     }
 
     /**
      * Gets the holder for chemical represented by this stack.
      *
      * @return Backing chemical's holder.
-     *
-     * @since 10.6.0
      */
-    public Holder<Chemical> getChemicalHolder() {
+    @Override
+    public Holder<Chemical> typeHolder() {
         //Note: We know chemical is not null here as that gets checked as part of isEmpty
         return isEmpty() ? MekanismAPI.EMPTY_CHEMICAL_HOLDER : chemical;
-    }
-
-    /**
-     * Checks if the chemical for this stack is in the given tag.
-     *
-     * @return Tag to check.
-     *
-     * @since 10.6.0
-     */
-    public boolean is(TagKey<Chemical> tag) {
-        return getChemicalHolder().is(tag);
-    }
-
-    /**
-     * Whether this ChemicalStack's chemical type is equal to the other defined Chemical.
-     *
-     * @param chemical - Chemical to check
-     *
-     * @return if the ChemicalStack's type is the same as the given chemical
-     *
-     * @since 10.6.0 Previously was isTypeEqual
-     */
-    public boolean is(Chemical chemical) {
-        return getChemical() == chemical;
-    }
-
-    /**
-     * Whether this ChemicalStack's chemical type matches the given predicate.
-     *
-     * @param predicate - Predicate to test
-     *
-     * @return if the ChemicalStack's type matches the given predicate
-     *
-     * @since 10.6.0
-     */
-    public boolean is(Predicate<Holder<Chemical>> predicate) {
-        return predicate.test(getChemicalHolder());
-    }
-
-    /**
-     * Whether this ChemicalStack's chemical type is equal to the other holder's chemical.
-     *
-     * @param holder - Chemical holder to check
-     *
-     * @return if the ChemicalStack's type is the same as the given holder's chemical
-     *
-     * @since 10.6.0
-     */
-    public boolean is(Holder<Chemical> holder) {
-        return is(holder.value());
-    }
-
-    /**
-     * Checks if the chemical for this stack is part of the given holder set.
-     *
-     * @return Holder set to check.
-     *
-     * @since 10.6.0
-     */
-    public boolean is(HolderSet<Chemical> holderSet) {
-        return holderSet.contains(getChemicalHolder());
-    }
-
-    /**
-     * Gets the tags that this chemical is a part of.
-     *
-     * @return All the tags this chemical is a part of.
-     *
-     * @since 10.6.0
-     */
-    public Stream<TagKey<Chemical>> getTags() {
-        return getChemicalHolder().tags();
     }
 
     /**
@@ -481,7 +405,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.7.11
      */
     public void appendHoverText(TooltipContext context, List<Component> tooltips, TooltipFlag tooltipFlag) {
-        Holder<Chemical> chemicalHolder = getChemicalHolder();
+        Holder<Chemical> chemicalHolder = typeHolder();
         if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             return;
         }
@@ -491,7 +415,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         }
         if (tooltipFlag.isAdvanced()) {
             //If advanced tooltips are on, display the registry name
-            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, getChemicalHolder().getRegisteredName()));
+            tooltips.add(TextComponentUtil.build(ChatFormatting.DARK_GRAY, typeHolder().getRegisteredName()));
         }
     }
 
@@ -499,7 +423,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     @Override
     public <T> T getData(DataMapType<Chemical, T> type) {
         //Note: We only accept reference holders, and reference holders can be queried directly for data
-        return getChemicalHolder().getData(type);
+        return typeHolder().getData(type);
     }
 
     @Override
@@ -521,12 +445,12 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             return false;
         }
         ChemicalStack other = (ChemicalStack) o;
-        return getAmount() == other.getAmount() && is(other.getChemicalHolder());
+        return getAmount() == other.getAmount() && is(other.typeHolder());
     }
 
     @Override
     public String toString() {
-        return getAmount() + " " + getChemicalHolder().getRegisteredName();
+        return getAmount() + " " + typeHolder().getRegisteredName();
     }
 
     @Override
@@ -549,7 +473,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0 Previously was isTypeEqual
      */
     public static boolean isSameChemical(ChemicalStack first, ChemicalStack second) {
-        return first.is(second.getChemicalHolder());
+        return first.is(second.typeHolder());
     }
 
     /**

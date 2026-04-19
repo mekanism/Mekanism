@@ -11,7 +11,7 @@ import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {
+public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {//TODO - 26.1: Add helpers that take TypedInstance?
 
     /**
      * Creates an Ingredient that matches a given stack.

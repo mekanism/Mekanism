@@ -103,7 +103,7 @@ public interface IChemicalIngredientCreator {
      * @param stack Chemical to match
      */
     default ChemicalIngredient of(ChemicalStack stack) {
-        return of(stack.getChemicalHolder());
+        return of(stack.typeHolder());
     }
 
     /**
@@ -129,7 +129,7 @@ public interface IChemicalIngredientCreator {
      * element, this will return a {@link mekanism.api.recipes.ingredients.chemical.SingleChemicalIngredient}.
      */
     default ChemicalIngredient of(ChemicalStack... chemicals) {
-        return of(Arrays.stream(chemicals).map(ChemicalStack::getChemicalHolder));
+        return of(Arrays.stream(chemicals).map(ChemicalStack::typeHolder));
     }
 
     /**

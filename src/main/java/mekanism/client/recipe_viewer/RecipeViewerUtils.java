@@ -124,7 +124,7 @@ public class RecipeViewerUtils {
 
     public static List<ItemStack> getStacksFor(ChemicalStackIngredient ingredient, boolean displayConversions) {
         ContextMap contextMap = getSlotDisplayContext();
-        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations(contextMap).stream().map(ChemicalStack::getChemicalHolder).collect(Collectors.toSet());
+        Set<Holder<Chemical>> chemicals = ingredient.getRepresentations(contextMap).stream().map(ChemicalStack::typeHolder).collect(Collectors.toSet());
         return getStacksFor(chemicals, displayConversions ? MekanismRecipeType.CHEMICAL_CONVERSION : null);
     }
 
@@ -145,7 +145,7 @@ public class RecipeViewerUtils {
             for (RecipeHolder<? extends ItemStackToChemicalRecipe> recipeHolder : recipeType.getRecipes()) {
                 ItemStackToChemicalRecipe recipe = recipeHolder.value();
                 for (ChemicalStack output : recipe.getOutputDefinition()) {
-                    if (anyMatch(supportedTypes, output.getChemicalHolder())) {
+                    if (anyMatch(supportedTypes, output.typeHolder())) {
                         stacks.addAll(recipe.getInput().getRepresentations(slotDisplayContext));
                         break;
                     }

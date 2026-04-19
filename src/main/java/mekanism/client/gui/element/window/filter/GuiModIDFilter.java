@@ -17,6 +17,7 @@ import mekanism.common.tile.interfaces.ITileFilterHolder;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -79,8 +80,10 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
                     }
                 } else if (ingredient instanceof ChemicalStack stack) {
                     if (!stack.isEmpty()) {
-                        registryName = RegistryUtils.getName(stack.getChemicalHolder());
+                        registryName = RegistryUtils.getName(stack.typeHolder());
                     }
+                } else if (ingredient instanceof TypedInstance<?> instance) {
+                    registryName = RegistryUtils.getName(instance.typeHolder());
                 } else {
                     registryName = RegistryUtils.getNameGeneric(ingredient);
                 }

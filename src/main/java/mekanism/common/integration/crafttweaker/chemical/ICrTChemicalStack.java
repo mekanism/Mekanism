@@ -167,7 +167,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
      * @since 10.7.11
      */
     default Holder<Chemical> getChemicalHolder() {
-        return getInternal().getChemicalHolder();
+        return getInternal().typeHolder();
     }
 
     /**

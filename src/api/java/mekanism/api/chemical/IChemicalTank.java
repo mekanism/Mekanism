@@ -283,7 +283,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * @since 10.7.11
      */
     default Holder<Chemical> getType() {
-        return getStack().getChemicalHolder();
+        return getStack().typeHolder();
     }
 
     /**

@@ -49,12 +49,12 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Identifier getIdentifier(ChemicalStack ingredient) {
-        return RegistryUtils.getName(ingredient.getChemicalHolder(), MekanismAPI.CHEMICAL_REGISTRY);
+        return RegistryUtils.getName(ingredient.typeHolder(), MekanismAPI.CHEMICAL_REGISTRY);
     }
 
     @Override
     public ItemStack getCheatItemStack(ChemicalStack ingredient) {
-        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), ingredient.getChemicalHolder());
+        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), ingredient.typeHolder());
     }
 
     @Override
@@ -72,7 +72,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         if (colorHelper == null) {
             return IIngredientHelper.super.getColors(ingredient);
         }
-        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.getChemicalHolder()), ingredient.getChemicalTint(), 1);
+        return colorHelper.getColors(MekanismRenderer.getChemicalTexture(ingredient.typeHolder()), ingredient.getChemicalTint(), 1);
     }
 
     @Override
@@ -87,7 +87,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public Stream<Identifier> getTagStream(ChemicalStack ingredient) {
-        return ingredient.getTags().map(TagKey::location);
+        return ingredient.tags().map(TagKey::location);
     }
 
     @Override
@@ -101,7 +101,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             return Optional.empty();
         }
         List<Holder<Chemical>> values = stacks.stream()
-              .map(ChemicalStack::getChemicalHolder)
+              .map(ChemicalStack::typeHolder)
               .distinct()
               .toList();
         int expected = values.size();
@@ -127,7 +127,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
             ingredient = ChemicalStack.EMPTY;
         }
         ToStringHelper toStringHelper = MoreObjects.toStringHelper(ChemicalStack.class);
-        Holder<Chemical> chemical = ingredient.getChemicalHolder();
+        Holder<Chemical> chemical = ingredient.typeHolder();
         toStringHelper.add("Chemical", chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? "none" : TextComponentUtil.build(chemical).getString());
         if (!ingredient.isEmpty()) {
             toStringHelper.add("Amount", ingredient.getAmount());
