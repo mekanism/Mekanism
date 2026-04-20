@@ -15,18 +15,15 @@ import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerR
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -69,10 +66,6 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
     public void extractRenderState(TileEntityDimensionalStabilizer stabilizer, StabilizerRenderState state, float partialTick, Vec3 cameraPosition,
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(stabilizer, state, partialTick, cameraPosition, breakProgress);
-    }
-
-    @Override
-    public void submit(StabilizerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         //Calculate the different sides that should be rendered, as a 3D array. The last parameter is of length 5 to support the four cardinal directions
         // PLUS a marker for if the chunk is loaded and should be rendered at all. As if a chunk is surrounded on all sides by other chunks, then none of
         // its sides will actually need to be drawn, but it still should be able to combine with neighboring pieces
@@ -104,20 +97,27 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         }
         Level level = stabilizer.getLevel();
         int minY = level.getMinY();
-        int height = level.getMaxY() - minY + 1;
+        state.minY = minY;
+        state.height = level.getMaxY() - minY + 1;
         BlockPos pos = state.blockPos;
-        int chunkX = SectionPos.blockToSectionCoord(pos.getX());
-        int chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
-        Model3D model = RenderDimensionalStabilizer.model.get();
-        for (RenderPiece piece : calculateRenderPieces(allRenderSides)) {
+        state.chunkX = SectionPos.blockToSectionCoord(pos.getX());
+        state.chunkZ = SectionPos.blockToSectionCoord(pos.getZ());
+        state.model = RenderDimensionalStabilizer.model.get();
+        state.renderPieces = calculateRenderPieces(allRenderSides);
+    }
+
+    @Override
+    public void submit(StabilizerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        BlockPos pos = state.blockPos;
+        for (RenderPiece piece : state.renderPieces) {
             //Set the visibility of the sides that are going to render for this piece
-            model.setSideRender(Direction.NORTH, piece.renderNorth)
+            state.model.setSideRender(Direction.NORTH, piece.renderNorth)
                   .setSideRender(Direction.EAST, piece.renderEast)
                   .setSideRender(Direction.SOUTH, piece.renderSouth)
                   .setSideRender(Direction.WEST, piece.renderWest);
             int xChunkOffset = piece.x - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
             int zChunkOffset = piece.z - TileEntityDimensionalStabilizer.MAX_LOAD_RADIUS;
-            ChunkPos startChunk = new ChunkPos(chunkX + xChunkOffset, chunkZ + zChunkOffset);
+            ChunkPos startChunk = new ChunkPos(state.chunkX + xChunkOffset, state.chunkZ + zChunkOffset);
             ChunkPos endChunk = new ChunkPos(startChunk.x() + piece.xLength - 1, startChunk.z() + piece.zLength - 1);
             //Adjust translation and scale ever so slightly so that no z-fighting happens at the edges if there are blocks there
             double xShift = 0.01, zShift = 0.01;
@@ -141,14 +141,16 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
                 zShift = -0.01;
                 zScaleShift = 0;
             }
-            poseStack.pushPose();
-            poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
-            poseStack.scale(16 * piece.xLength - xScaleShift, height, 16 * piece.zLength - zScaleShift);
             //If we are inside the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
             // we want to be able to see all faces easily
             FaceDisplay faceDisplay = isInsideBounds(camera.pos, startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
                   endChunk.getMaxBlockX() + 1, Double.POSITIVE_INFINITY, endChunk.getMaxBlockZ() + 1) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-            MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos);
+            poseStack.pushPose();
+            poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, state.minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
+            poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
+
+            //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds on block sized quads?
+            //MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos);
             poseStack.popPose();
         }
     }
@@ -273,10 +275,16 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
         return pieces;
     }
 
-    private record RenderPiece(int x, int xLength, int z, int zLength, boolean renderNorth, boolean renderSouth, boolean renderEast, boolean renderWest) {
+    public record RenderPiece(int x, int xLength, int z, int zLength, boolean renderNorth, boolean renderSouth, boolean renderEast, boolean renderWest) {
     }
     
     public static class StabilizerRenderState extends BlockEntityRenderState {
-        
+
+        public List<RenderPiece> renderPieces;
+        public Model3D model;
+        public int chunkX;
+        public int chunkZ;
+        public int minY;
+        public int height;
     }
 }
