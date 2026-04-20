@@ -1,6 +1,5 @@
 package mekanism.client.gui.element.scroll;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -20,11 +19,8 @@ import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -182,11 +178,12 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
             //Note: If it would still overflow, then we just let the scrolling text handle it
             scale = 0.5F;
         }
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 200);
+        //TODO - 26.1: gui zindex
+        //PoseStack pose = guiGraphics.pose();
+        //pose.pushPose();
+        //pose.translate(0, 0, 200);
         drawScaledScrollingString(guiGraphics, text, x, y + 9, TextAlignment.RIGHT, 0xFFFFFF, 16, 0, true, scale);
-        pose.popPose();
+        //pose.popPose();
     }
 
     @NotNull

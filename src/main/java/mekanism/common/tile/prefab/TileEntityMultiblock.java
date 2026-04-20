@@ -25,7 +25,6 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -34,7 +33,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.UUIDUtil;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -222,13 +220,15 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         InteractionResult result = openGui(player);
-        return switch (result) {
+        return result;
+        //TODO - 26.1: why are these being remapped??
+        /*return switch (result) {
             case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> InteractionResult.SUCCESS;
             case InteractionResult.CONSUME -> InteractionResult.CONSUME;
             case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
             case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
             case InteractionResult.FAIL -> InteractionResult.FAIL;
-        };
+        };*/
     }
 
     @Override

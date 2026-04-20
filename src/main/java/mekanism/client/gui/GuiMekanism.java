@@ -1,7 +1,6 @@
 package mekanism.client.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -31,10 +30,6 @@ import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
-import net.minecraft.client.input.CharacterEvent;
-import net.minecraft.client.input.KeyEvent;
-import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.util.Util;
 import net.minecraft.client.gui.ComponentPath;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -42,8 +37,12 @@ import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.navigation.FocusNavigationEvent;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.Slot;
@@ -200,7 +199,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderTitleTextWithOffset(GuiGraphicsExtractor guiGraphics, int x) {
-        renderTitleTextWithOffset(guiGraphics, x, getXSize());
+        renderTitleTextWithOffset(guiGraphics, x, getImageWidth());
     }
 
     protected void renderTitleTextWithOffset(GuiGraphicsExtractor guiGraphics, int x, int end) {
@@ -212,7 +211,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     protected void renderInventoryText(GuiGraphicsExtractor guiGraphics) {
-        renderInventoryText(guiGraphics, getXSize());
+        renderInventoryText(guiGraphics, getImageWidth());
     }
 
     protected void renderInventoryText(GuiGraphicsExtractor guiGraphics, int end) {
@@ -226,7 +225,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     protected void renderInventoryTextAndOther(GuiGraphicsExtractor guiGraphics, Component rightAlignedText, int rightEndPad) {
         drawScrollingString(guiGraphics, playerInventoryTitle, inventoryLabelX, inventoryLabelY, TextAlignment.LEFT, titleTextColor(), 53, 0, false);
         int rightStart = inventoryLabelX + 51;
-        drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getXSize() - rightStart - rightEndPad, 6, false);
+        drawScrollingString(guiGraphics, rightAlignedText, rightStart, inventoryLabelY, TextAlignment.RIGHT, titleTextColor(), getImageWidth() - rightStart - rightEndPad, 6, false);
     }
 
     protected Identifier getButtonLocation(String name) {
@@ -382,12 +381,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         }
     }
 
-    @Override
+    @Override//TODO - 26.1: review `pose` used for zindex stuff
     protected void extractLabels(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
+        //PoseStack pose = guiGraphics.pose();
+        //pose.pushPose();
         //Shift forward as far as tooltips get shifted so that we don't risk intersecting the rendered items
-        pose.translate(0, 0, 400);
+        //pose.translate(0, 0, 400);
         for (GuiEventListener c : children()) {
             if (c instanceof GuiElement element) {
                 element.onDrawBackground(guiGraphics, mouseX, mouseY, MekanismRenderer.getPartialTick());
@@ -396,12 +395,12 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         drawForegroundText(guiGraphics, mouseX, mouseY);
         // first render general foregrounds
         int zOffset = 200;
-        maxZOffset = zOffset;
+        //maxZOffset = zOffset;
         for (GuiEventListener widget : children()) {
             if (widget instanceof GuiElement element) {
-                pose.pushPose();
+                //pose.pushPose();
                 element.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
-                pose.popPose();
+                //pose.popPose();
             }
         }
 
@@ -413,27 +412,27 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             // we need to do this based on what the max is after having rendered the previous
             // window as while the windows don't necessarily overlap, if they do we want to
             // ensure that there is no clipping
-            zOffset = maxZOffset + 150;
-            pose.pushPose();
+            //zOffset = maxZOffset + 150;
+            //pose.pushPose();
             overlay.onRenderForeground(guiGraphics, mouseX, mouseY, zOffset, zOffset);
             if (iter.hasNext()) {
                 // if this isn't the focused window, render a 'blur' effect over it
                 overlay.renderBlur(guiGraphics);
             }
-            pose.popPose();
+            //pose.popPose();
         }
-        pose.popPose();
+        //pose.popPose();
         //Additionally hacky offset to make it so that we render above items in higher z-levels for things like tooltips and held items
         maxZOffset += 200;
         // then render tooltips, translating above max z offset to prevent clashing
         // It is IMPORTANT that we do this to ensure any delayed rendering we do the for the tooltip happens above the other things
         // and so that we let the translation leak out into the super method so that the carried item renders at the correct z level
-        pose.translate(0, 0, maxZOffset);
+        //pose.translate(0, 0, maxZOffset);
 
-        pose.pushPose();
+        //pose.pushPose();
         //Note: Because we are doing this from extractLabels instead of as part of a render override,
         // we need to unshift back to the position the other methods expect to be called from
-        pose.translate(-leftPos, -topPos, 0);
+        /*pose.translate(-leftPos, -topPos, 0);
         GuiElement tooltipElement = getWindowHovering(mouseX, mouseY);
         if (tooltipElement == null) {
             tooltipElement = (GuiElement) GuiUtils.findChild(children(), mouseX, mouseY, (child, x, y) -> child instanceof GuiElement && child.isMouseOver(x, y));
@@ -442,13 +441,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             tooltipElement.renderToolTip(guiGraphics, mouseX, mouseY);
         }
         renderTooltip(guiGraphics, mouseX, mouseY);
-        pose.popPose();
+        pose.popPose();*/
     }
 
     /**
      * @implNote Copy of super, but adjusts the z value for tooltip rendering
-     */
-    @Override
+     *///TODO - 26.1: tooltips?
+    /*@Override
     public final void renderWithTooltip(@NotNull GuiGraphicsExtractor graphics, int mouseX, int mouseY, float partialTick) {
         //Note: We wrap super with a push and pop, so that when we intentionally don't pop our changes in extractLabels
         // then we make sure to clean them up here
@@ -462,7 +461,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
             clearTooltipForNextRenderPass();
         }
         pose.popPose();
-    }
+    }*/
 
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
     }
@@ -731,7 +730,7 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
         //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
         // it in an unexpected state.
         MekanismRenderer.resetColor(guiGraphics);
-        if (getXSize() < 8 || getYSize() < 8) {
+        if (getImageWidth() < 8 || getImageHeight() < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }

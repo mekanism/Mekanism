@@ -5,7 +5,6 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiInnerScreen;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -53,7 +52,7 @@ public class GuiEntityPreview extends GuiElement {
         //Apply our rotation to the entity
         preview.yBodyRot = 180.0F + rotation * 20.0F;
         preview.setYRot(180.0F + rotation * 40.0F);
-        InventoryScreen.renderEntityInInventory(guiGraphics, relativeX + xOffset, relativeY + yOffset, scale, PREVIEW_TRANSLATION, PREVIEW_ANGLE, null, preview);
+        //TODO - 26.1: InventoryScreen.renderEntityInInventory(guiGraphics, relativeX + xOffset, relativeY + yOffset, scale, PREVIEW_TRANSLATION, PREVIEW_ANGLE, null, preview);
         //Reset the values to what they were before we applied the rotation, even though our one use case doesn't actually care
         // as we only use the preview entity for rendering, so the correct rotation gets set every time before it is rendered
         preview.yBodyRot = oldBodyRot;

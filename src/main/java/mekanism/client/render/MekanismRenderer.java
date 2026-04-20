@@ -29,7 +29,6 @@ import mekanism.client.render.tileentity.RenderNutritionalLiquifier;
 import mekanism.client.render.tileentity.RenderPigmentMixer;
 import mekanism.client.render.tileentity.RenderSeismicVibrator;
 import mekanism.client.render.tileentity.RenderTeleporter;
-import mekanism.client.render.transmitter.RenderDiversionTransporter;
 import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
@@ -67,13 +66,13 @@ import org.jspecify.annotations.NonNull;
 @EventBusSubscriber(modid = Mekanism.MODID, value = Dist.CLIENT)
 public class MekanismRenderer {
 
+    public static final Identifier REDSTONE_PULSE_ID = Mekanism.rl("icon/redstone_control_pulse");
     //TODO: Replace various usages of LightTexture.FULL_BRIGHT with the getter for calculating glow light, at least if we end up making it only
     // effect block light for the glow rather than having it actually become full light
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
     public static TextureAtlasSprite teleporterPortal;
-    public static TextureAtlasSprite redstonePulse;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
 
     /**
@@ -314,7 +313,6 @@ public class MekanismRenderer {
         whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
         energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
-        redstonePulse = map.getSprite(Mekanism.rl("icon/redstone_control_pulse"));
         teleporterPortal = map.getSprite(Mekanism.rl("block/teleporter_portal"));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached

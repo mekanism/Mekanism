@@ -4,7 +4,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.IntPredicate;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.functions.CharPredicate;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.MekanismClient;
 import mekanism.client.gui.IGuiWrapper;
@@ -14,7 +13,6 @@ import mekanism.common.base.TagCache;
 import mekanism.common.content.filter.IModIDFilter;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.text.InputValidator;
 import net.minecraft.core.TypedInstance;
@@ -58,7 +56,7 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     @Override
     protected List<ItemStack> getRenderStacks() {
         if (filter.hasFilter()) {
-            return TagCache.getItemModIDStacks(filter.getModID());
+            return TagCache.getItemModIDStacks(tile.getLevel().registryAccess(), filter.getModID());
         }
         return Collections.emptyList();
     }
@@ -138,6 +136,6 @@ public abstract class GuiModIDFilter<FILTER extends IModIDFilter<FILTER>, TILE e
     }
 
     protected boolean hasMatchingTargets(String name) {
-        return !TagCache.getItemModIDStacks(name).isEmpty();
+        return !TagCache.getItemModIDStacks(tile.getLevel().registryAccess(), name).isEmpty();
     }
 }

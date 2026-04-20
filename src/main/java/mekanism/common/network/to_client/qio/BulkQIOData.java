@@ -47,7 +47,7 @@ public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity,
             List<IScrollableSlot> itemList = new ReferenceArrayList<>(itemMapSize);
             Map<UUID, ItemSlotData> inventory = new Object2ObjectOpenHashMap<>(itemMapSize);
             for (int i = 0; i < itemMapSize; i++) {
-                ItemSlotData slotData = new ItemSlotData(UUIDAwareHashedItem.STREAM_CODEC.decode(buffer), buffer.readVarLong());
+                ItemSlotData slotData = new ItemSlotData(UUIDAwareHashedItem.STREAM_CODEC.decode(buffer), buffer.readVarLong(), buffer.registryAccess());
                 totalItems += slotData.count();
                 itemList.add(slotData);
                 inventory.put(slotData.itemUUID(), slotData);

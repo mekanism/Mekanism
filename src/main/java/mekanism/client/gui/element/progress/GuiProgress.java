@@ -1,10 +1,5 @@
 package mekanism.client.gui.element.progress;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.DefaultVertexFormat;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexFormat.Mode;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiTexturedElement;
@@ -14,13 +9,10 @@ import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.ARGB;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 public class GuiProgress extends GuiTexturedElement implements IRecipeViewerRecipeArea<GuiProgress>, ISupportsWarning<GuiProgress> {
 
@@ -119,7 +111,8 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
             guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, x, y, uOffset, vOffset, width, height, textureWidth, textureHeight);
             return;
         }
-        int colorFrom = colorDetails.getColorFrom();
+        //TODO - 26.1: rendering, possible PIP
+        /*int colorFrom = colorDetails.getColorFrom();
         int colorTo = colorDetails.getColorTo();
         if (colorFrom == 0xFFFFFFFF && colorTo == 0xFFFFFFFF) {
             //No coloring needed, just use the normal blit method
@@ -205,7 +198,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
 
         BufferUploader.drawWithShader(builder.buildOrThrow());
         //Reset blit and fill gradient states
-        RenderSystem.disableBlend();
+        RenderSystem.disableBlend();*/
     }
 
     public interface ColorDetails {

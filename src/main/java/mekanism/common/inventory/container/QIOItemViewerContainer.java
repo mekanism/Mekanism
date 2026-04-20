@@ -51,6 +51,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
@@ -415,7 +416,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 if (slotData == null) {
                     //If it is a new item, add the amount to the total items, and start tracking it
                     totalItems += value;
-                    slotData = new ItemSlotData(itemKey, value);
+                    slotData = new ItemSlotData(itemKey, value, getLevel().registryAccess());
                     itemList.add(slotData);
                     cachedInventory.put(itemUUID, slotData);
                     //Mark that we have some items that changed (which may affect the sort order)
@@ -723,9 +724,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         private final UUIDAwareHashedItem item;
         private long count;
 
-        public ItemSlotData(UUIDAwareHashedItem item, long count) {
+        private final HolderLookup.Provider registries;
+
+        public ItemSlotData(UUIDAwareHashedItem item, long count, HolderLookup.Provider registries) {
             this.item = item;
             this.count = count;
+            this.registries = registries;
         }
 
         @Override
@@ -747,6 +751,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         @Range(from = 0, to = Long.MAX_VALUE)
         public long count() {
             return count;
+        }
+
+        @Override
+        public String getModID() {
+            return MekanismUtils.getModId(registries, getInternalStack());
         }
 
         @Override

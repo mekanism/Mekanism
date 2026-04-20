@@ -192,7 +192,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 return stagedRecipe.forceAssemble(craftingInput, registryAccess);
             }
         }*/
-        return recipe.assemble(craftingInput, registryAccess);
+        return recipe.assemble(craftingInput);
     }
 
     public boolean canViewRecipe(@NotNull ServerPlayer player) {

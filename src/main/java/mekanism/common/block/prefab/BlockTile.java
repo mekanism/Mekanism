@@ -23,7 +23,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -57,7 +56,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.TRY_WITH_EMPTY_HAND;
         } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
@@ -100,7 +99,8 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         }
     }
 
-    @Override
+    //TODO - 26.1: neighborChanged split
+    /*@Override
     protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isClientSide()) {
@@ -109,7 +109,7 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
                 tile.onNeighborChange(neighborBlock, neighborPos);
             }
         }
-    }
+    }*/
 
     @Override
     protected boolean isSignalSource(@NotNull BlockState state) {

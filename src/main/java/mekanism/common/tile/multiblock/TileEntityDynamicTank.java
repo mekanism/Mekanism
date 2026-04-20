@@ -1,9 +1,7 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.common.Mekanism;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.lib.multiblock.MekanismMultiblocks;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.multiblock.MultiblockType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
@@ -36,16 +34,18 @@ public class TileEntityDynamicTank extends TileEntityMultiblock<TankMultiblockDa
             if (multiblock.isFormed()) {
                 if (manageInventory(multiblock, player, hand, stack)) {
                     player.getInventory().setChanged();
-                    return ItemInteractionResult.SUCCESS;
+                    return InteractionResult.SUCCESS_SERVER;
                 }
                 InteractionResult result = openGui(player);
-                return switch (result) {
+                return result;
+                //TODO - 26.1: why are these being remapped??
+                /*return switch (result) {
                     case InteractionResult.SUCCESS, InteractionResult.SUCCESS_NO_ITEM_USED -> ItemInteractionResult.SUCCESS;
                     case InteractionResult.CONSUME -> ItemInteractionResult.CONSUME;
                     case InteractionResult.CONSUME_PARTIAL -> ItemInteractionResult.CONSUME_PARTIAL;
                     case InteractionResult.PASS -> InteractionResult.TRY_WITH_EMPTY_HAND;
                     case InteractionResult.FAIL -> InteractionResult.FAIL;
-                };
+                };*/
             }
         }
         return InteractionResult.TRY_WITH_EMPTY_HAND;

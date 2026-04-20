@@ -1,8 +1,5 @@
 package mekanism.client.gui.element.graph;
 
-import com.mojang.blaze3d.platform.DestFactor;
-import com.mojang.blaze3d.platform.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.Collection;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.GuiInnerScreen;
@@ -58,8 +55,9 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
             int relativeHeight = getRelativeHeight(i, height);
             guiGraphics.blit(texture, x + i, y + height - relativeHeight, 0, 0, 1, 1, TEXTURE_WIDTH, TEXTURE_HEIGHT);
 
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
+            //TODO - 26.1: rendering
+            //RenderSystem.enableBlend();
+            //RenderSystem.blendFunc(SourceFactor.SRC_ALPHA, DestFactor.ONE_MINUS_SRC_ALPHA);
 
             MekanismRenderer.color(guiGraphics, 0xFFFFFF, 0.2F + 0.8F * i / size);
             guiGraphics.blit(texture, x + i, y + height - relativeHeight, 1, 0, 1, relativeHeight, TEXTURE_WIDTH, TEXTURE_HEIGHT);
@@ -75,7 +73,7 @@ public abstract class GuiGraph<COLLECTION extends Collection<?>, HANDLER extends
                 MekanismRenderer.resetColor(guiGraphics);
             }
 
-            RenderSystem.disableBlend();
+            //RenderSystem.disableBlend();
         }
     }
 

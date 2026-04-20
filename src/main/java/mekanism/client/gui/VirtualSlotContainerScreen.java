@@ -1,18 +1,11 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import mekanism.common.inventory.container.slot.IVirtualSlot;
-import net.minecraft.ChatFormatting;
-import net.minecraft.util.Util;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +52,8 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         return mouseOver;
     }
 
-    @Override
+    //TODO - 26.1: Review ATs, update render -> extract
+    /*@Override
     @Deprecated//Don't use directly, this is normally private in ContainerScreen
     protected final void renderFloatingItem(@NotNull GuiGraphicsExtractor guiGraphics, @NotNull ItemStack stack, int x, int y, @Nullable String altText) {
         if (!stack.isEmpty()) {
@@ -176,5 +170,5 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         this.lastClickTime = time;
         this.lastClickButton = button;
         return true;
-    }
+    }*/
 }

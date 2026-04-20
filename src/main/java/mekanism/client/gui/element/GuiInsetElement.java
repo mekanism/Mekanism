@@ -1,8 +1,5 @@
 package mekanism.client.gui.element;
 
-import com.mojang.blaze3d.platform.DestFactor;
-import com.mojang.blaze3d.platform.SourceFactor;
-import com.mojang.blaze3d.systems.RenderSystem;
 import java.util.function.BooleanSupplier;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.warning.ISupportsWarning;
@@ -77,10 +74,11 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
         if (warning) {
             drawUncolored(guiGraphics);
             //Draw the warning overlay (multiply-blended)
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(SourceFactor.DST_COLOR, DestFactor.ZERO);
+            //TODO - 26.1: blending
+            //RenderSystem.enableBlend();
+            //RenderSystem.blendFunc(SourceFactor.DST_COLOR, DestFactor.ZERO);
             guiGraphics.blit(WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
-            RenderSystem.disableBlend();
+            //RenderSystem.disableBlend();
         } else {
             super.draw(guiGraphics);
         }

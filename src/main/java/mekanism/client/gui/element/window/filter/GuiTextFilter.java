@@ -2,8 +2,7 @@ package mekanism.client.gui.element.window.filter;
 
 import java.util.Locale;
 import java.util.function.IntPredicate;
-import mekanism.api.functions.CharPredicate;
-import mekanism.api.functions.CharUnaryOperator;
+import java.util.function.IntUnaryOperator;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.gui.element.text.GuiTextField;
 import mekanism.common.content.filter.IFilter;
@@ -44,7 +43,7 @@ public abstract class GuiTextFilter<FILTER extends IFilter<FILTER>, TILE extends
     protected abstract IntPredicate getInputValidator();
 
     @Nullable
-    protected CharUnaryOperator getInputTransformer() {
+    protected IntUnaryOperator getInputTransformer() {
         //Force characters to become lowercase
         return c -> {
             if (c >= 'A' && c <= 'Z') {

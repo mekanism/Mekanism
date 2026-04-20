@@ -1,7 +1,6 @@
 package mekanism.client.gui.element.window;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;
@@ -24,17 +23,14 @@ import mekanism.common.util.text.InputValidator;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 
 public class GuiColorWindow extends GuiWindow {
 
@@ -145,14 +141,15 @@ public class GuiColorWindow extends GuiWindow {
 
     //Based on GuiGraphicsExtractor#fillGradient
     private void drawGradient(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height, Color tl, Color tr, Color bl, Color br) {
-        VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
+        //TODO - 26.1 GUI rendering
+        /*VertexConsumer buffer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
         Matrix4f matrix4f = guiGraphics.pose().last().pose();
         buffer.addVertex(matrix4f, x, y + height, 0).setColor(bl.argb());
         buffer.addVertex(matrix4f, x + width, y + height, 0).setColor(br.argb());
         buffer.addVertex(matrix4f, x + width, y, 0).setColor(tr.argb());
         buffer.addVertex(matrix4f, x, y, 0).setColor(tl.argb());
         //Note: This technically should probably be flushIfUnmanaged, but I believe we are always unmanaged here, so it is not worth ATing the method to call it
-        guiGraphics.flush();
+        guiGraphics.flush();*/
     }
 
     private void updateTextFromColor() {
@@ -218,7 +215,8 @@ public class GuiColorWindow extends GuiWindow {
 
     private void drawTransparencyGrid(GuiGraphicsExtractor guiGraphics, int x, int y, int width, int height) {
         if (handlesAlpha) {
-            guiGraphics.blit(TRANSPARENCY_GRID, x, y, 0, 0, width, height);
+            //TODO - 26.1: gui rendering
+            //guiGraphics.blit(TRANSPARENCY_GRID, x, y, 0, 0, width, height);
         }
     }
 

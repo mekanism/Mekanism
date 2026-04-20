@@ -4,7 +4,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.client.input.MouseButtonInfo;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,9 +34,7 @@ public interface ISlotClickHandler {
             return getInternalStack().getHoverName().getString();
         }
 
-        default String getModID() {
-            return MekanismUtils.getModId(getInternalStack());
-        }
+        String getModID();
 
         default ItemStack getInternalStack() {
             return item().getInternalStack();

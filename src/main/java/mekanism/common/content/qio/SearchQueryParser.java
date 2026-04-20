@@ -214,8 +214,8 @@ public class SearchQueryParser {
         },
         MOD_ID('@') {
             @Override
-            public boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack) {
-                return MekanismUtils.getModId(stack).toLowerCase(Locale.ROOT).contains(key);
+            public boolean matches(Level level, @Nullable Player player, String key, ItemStack stack) {
+                return MekanismUtils.getModId(level.registryAccess(), stack).toLowerCase(Locale.ROOT).contains(key);
             }
         },
         TOOLTIP('$') {
@@ -266,7 +266,7 @@ public class SearchQueryParser {
             this.prefix = prefix;
         }
 
-        public abstract boolean matches(@Nullable Level level, @Nullable Player player, String key, ItemStack stack);
+        public abstract boolean matches(Level level, @Nullable Player player, String key, ItemStack stack);
     }
 
     public static class SearchQuery implements ISearchQuery {
@@ -275,7 +275,7 @@ public class SearchQueryParser {
         private final Map<QueryType, List<String>> queryStrings = new EnumMap<>(QueryType.class);
 
         @Override
-        public boolean test(@Nullable Level level, @Nullable Player player, ItemStack stack) {
+        public boolean test(Level level, @Nullable Player player, ItemStack stack) {
             for (Map.Entry<QueryType, List<String>> entry : queryStrings.entrySet()) {
                 boolean hasNoMatch = true;
                 for (String key : entry.getValue()) {
