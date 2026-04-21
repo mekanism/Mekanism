@@ -46,6 +46,7 @@ public class MachineUpgradeData implements IUpgradeData {
         this.outputSlots = outputSlots;
         this.sorting = sorting;
 
+        //todo - 26.1 - make the constructor take a ProblemReporter.PathElement from the tile
         ProblemReporter.Collector reporter = new ProblemReporter.Collector();
         TagValueOutput output = TagValueOutput.createWithContext(reporter, provider);
         for (ITileComponent component : components) {

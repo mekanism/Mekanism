@@ -383,7 +383,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                 if (!fluid.isComponentsPatchEmpty()) {
                     //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
                     // does have component data
-                    DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(provider.createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
+                    DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(level.registryAccess().createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
                     if (componentData.isSuccess()) {
                         fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
                     } else {

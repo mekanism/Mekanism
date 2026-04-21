@@ -733,6 +733,11 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
+        private static Iterable<ItemStack> getItems(Ingredient ingredient) {
+            //todo - 26.1: unpack ingredients, check RecipeIndex(Cache)
+            return Collections.emptyList();
+        }
+
         public void findEquivalentItem(Level world, @NotNull QIOFrequency frequency, IInventorySlot slot, int index, ItemStack used) {
             mapRecipe(index, used);
             if (invalid) {
@@ -743,7 +748,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Validate the ingredient was valid for its spot, because if it isn't something went wrong and there is no point
             // in attempting to find a replacement
             if (usedIngredient != null && usedIngredient.test(used)) {
-                for (ItemStack item : usedIngredient.getItems()) {
+                for (ItemStack item : getItems(usedIngredient)) {
                     if (item.isEmpty()) {
                         //If for some reason the ingredient returns empty stacks, just skip those
                         continue;
@@ -820,7 +825,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     invalid = true;
                     return;
                 }
-                List<Ingredient> ingredients = lastRecipe.value().getIngredients();
+                List<Ingredient> ingredients = getIngredients(lastRecipe.value());
                 if (ingredients.isEmpty()) {
                     //Something went wrong
                     invalid = true;
@@ -835,6 +840,11 @@ public class QIOCraftingWindow implements IContentsListener {
                     mapShapelessRecipe(ingredients, index, used);
                 }
             }
+        }
+
+        //TODO - 26.1: Recipes. propbably use the display() and make it a util func
+        private static List<Ingredient> getIngredients(CraftingRecipe value) {
+            return Collections.emptyList();//value.getIngredients();
         }
 
         private ItemStack getItem(int i, int index, ItemStack used) {

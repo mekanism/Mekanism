@@ -119,11 +119,11 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         //Note: We don't include vanilla's no item icon rendering here as virtual slots can just have that set directly, and it simplifies our copy
         //If the slot is a virtual slot, have the GuiSlot that corresponds to it handle the rendering
         virtualSlot.updateRenderInfo(skipStackRendering ? ItemStack.EMPTY : currentStack, shouldDrawOverlay, s);
-    }
+    }*/
 
     public boolean slotClicked(@NotNull Slot slot, int button, boolean hasShiftDown) {
         //Copy of super.mouseClicked, minus the call to all the sub elements as we know how we are interacting with it
-        InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
+        /*InputConstants.Key mouseKey = InputConstants.Type.MOUSE.getOrCreate(button);
         boolean pickBlockButton = minecraft.options.keyPickItem.isActiveAndMatches(mouseKey);
         long time = Util.getMillis();
         this.doubleclick = this.lastClickSlot == slot && time - this.lastClickTime < 250L && this.lastClickButton == button;
@@ -169,6 +169,7 @@ public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu
         this.lastClickSlot = slot;
         this.lastClickTime = time;
         this.lastClickButton = button;
+        */
         return true;
-    }*/
+    }
 }

@@ -146,7 +146,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     @NotNull
     @Override
     public EnergyCubeUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new EnergyCubeUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents());
+        return new EnergyCubeUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), chargeSlot, dischargeSlot, getComponents(), problemPath());
     }
 
     public float getEnergyScale() {
