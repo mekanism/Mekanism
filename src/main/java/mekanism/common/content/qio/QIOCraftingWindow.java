@@ -820,7 +820,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     invalid = true;
                     return;
                 }
-                NonNullList<Ingredient> ingredients = lastRecipe.value().getIngredients();
+                List<Ingredient> ingredients = lastRecipe.value().getIngredients();
                 if (ingredients.isEmpty()) {
                     //Something went wrong
                     invalid = true;
@@ -846,7 +846,7 @@ public class QIOCraftingWindow implements IContentsListener {
             return ItemStack.EMPTY;
         }
 
-        private void mapShapedRecipe(ShapedRecipe shapedRecipe, NonNullList<Ingredient> ingredients, int index, ItemStack used) {
+        private void mapShapedRecipe(ShapedRecipe shapedRecipe, List<Ingredient> ingredients, int index, ItemStack used) {
             int recipeWidth = shapedRecipe.getWidth();
             int recipeHeight = shapedRecipe.getHeight();
             for (int columnStart = 0; columnStart <= 3 - recipeWidth; columnStart++) {
@@ -867,7 +867,7 @@ public class QIOCraftingWindow implements IContentsListener {
             invalid = true;
         }
 
-        private boolean mapShapedRecipe(NonNullList<Ingredient> ingredients, int columnStart, int rowStart, int recipeWidth, int recipeHeight, boolean mirrored,
+        private boolean mapShapedRecipe(List<Ingredient> ingredients, int columnStart, int rowStart, int recipeWidth, int recipeHeight, boolean mirrored,
               int index, ItemStack used) {
             for (int actualColumn = 0; actualColumn < 3; actualColumn++) {
                 for (int actualRow = 0; actualRow < 3; actualRow++) {
@@ -896,7 +896,7 @@ public class QIOCraftingWindow implements IContentsListener {
             return true;
         }
 
-        private void mapShapelessRecipe(NonNullList<Ingredient> ingredients, int index, ItemStack used) {
+        private void mapShapelessRecipe(List<Ingredient> ingredients, int index, ItemStack used) {
             //Note: We don't make use of the "simple" way of looking the ingredients up that Vanilla's Shapeless recipe uses,
             // when all the ingredients are simple, as we care about which slot the various things happens in, which is much
             // easier to grab from forge's RecipeMatcher which works for simple ingredients as well, and is just not used
