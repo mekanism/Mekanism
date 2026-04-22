@@ -36,7 +36,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 @NothingNullByDefault
 public class GeneratorsRecipeProvider extends BaseRecipeProvider {
@@ -90,7 +90,7 @@ public class GeneratorsRecipeProvider extends BaseRecipeProvider {
               IngredientCreatorAccess.fluid().from(, fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().from(, gasInput, 1),
               gas.asStack(1),
-              new FluidStack(fluidOutput, 1)
+              new FluidStackTemplate(fluidOutput, 1)
         ).save(output, MekanismGenerators.rl(basePath + gas.getName()));
     }
 

@@ -17,6 +17,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 
 class RotaryRecipeProvider implements ISubRecipeProvider {
 
@@ -47,7 +48,7 @@ class RotaryRecipeProvider implements ISubRecipeProvider {
               IngredientCreatorAccess.fluid().from(, fluidInput, 1),
               IngredientCreatorAccess.chemicalStack().fromHolder(gas, 1),
               gas.asStack(1),
-              new FluidStack(fluidOutput, 1)
+              new FluidStackTemplate(fluidOutput, 1)
         ).save(consumer, Mekanism.rl(basePath + gas.getName()));
     }
 }

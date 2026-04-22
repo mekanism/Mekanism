@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
+import java.util.Objects;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.basic.BasicCombinerRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -7,8 +8,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackLinkedSet;
 
 @RecipeTypeMapper
 public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerRecipe> {
@@ -26,7 +25,7 @@ public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerReci
                   recipe.getExtraInput()
             ));
         }
-        return addConversions(mapper, recipe.getMainInput(), recipe.getExtraInput(), recipe::getOutput, ItemStack::isEmpty,
-              fakeGroupHelper::forItems, fakeGroupHelper::forItems, ItemStackLinkedSet.TYPE_AND_TAG, TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, recipe.getMainInput(), recipe.getExtraInput(), recipe::getOutput, Objects::nonNull,
+              fakeGroupHelper::forItems, fakeGroupHelper::forItems, null, TypedMekanismRecipeMapper::addConversion);
     }
 }

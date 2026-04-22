@@ -37,11 +37,13 @@ import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,17 +110,17 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends Recipe<?>> implem
         return false;
     }
 
-    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, FluidStack output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
-        if (!output.isEmpty() && !recipeInput.isEmpty()) {
-            mapper.addConversion(output.getAmount(), NSSFluid.createFluid(output), recipeInput);
+    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, @Nullable FluidStackTemplate output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
+        if (output != null && !recipeInput.isEmpty()) {
+            mapper.addConversion(output.amount(), NSSFluid.createFluid(output.fluid(), output.components()), recipeInput);
             return true;
         }
         return false;
     }
 
-    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStack output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
-        if (!output.isEmpty() && !recipeInput.isEmpty()) {
-            mapper.addConversion(output.getCount(), NSSItem.createItem(output), recipeInput);
+    protected static boolean addConversion(IMappingCollector<NormalizedSimpleStack, Long> mapper, @Nullable ItemStackTemplate output, Object2IntMap<NormalizedSimpleStack> recipeInput) {
+        if (output != null && !recipeInput.isEmpty()) {
+            mapper.addConversion(output.count(), NSSItem.createItem(output.item(), output.components()), recipeInput);
             return true;
         }
         return false;
@@ -297,7 +299,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends Recipe<?>> implem
         }
 
         public Object2IntMap<NormalizedSimpleStack> forItems(SequencedCollection<ItemStack> representations) {
-            return forIngredient(representations, NSSItem::createItem, ItemStack::getCount);
+            return forIngredient(representations, NSSItem::createItem, ItemStack::count);
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(FluidStackIngredient ingredient) {
@@ -305,7 +307,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends Recipe<?>> implem
         }
 
         public Object2IntMap<NormalizedSimpleStack> forFluids(SequencedCollection<FluidStack> representations) {
-            return forIngredient(representations, NSSFluid::createFluid, FluidStack::getAmount);
+            return forIngredient(representations, NSSFluid::createFluid, FluidStack::amount);
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(ChemicalStackIngredient ingredient) {

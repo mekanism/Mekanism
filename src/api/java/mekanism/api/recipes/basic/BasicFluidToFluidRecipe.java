@@ -44,9 +44,9 @@ public class BasicFluidToFluidRecipe extends FluidToFluidRecipe {
     }
 
     @Override
-    @Contract(value = "_ ->new", pure = true)
-    public FluidStack getOutput(FluidStack input) {
-        return output.create();
+    @Contract(pure = true)
+    public FluidStackTemplate getOutput(FluidStack input) {
+        return output;
     }
 
     public FluidStackTemplate getOutputRaw() {

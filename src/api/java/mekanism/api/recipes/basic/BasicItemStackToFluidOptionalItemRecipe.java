@@ -26,7 +26,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     public BasicItemStackToFluidOptionalItemRecipe(ItemStackIngredient input, FluidOptionalItemOutput output) {
         this.input = Objects.requireNonNull(input, "Input cannot be null.");
         Objects.requireNonNull(output, "Output cannot be null.");
-        this.output = output.copy();
+        this.output = output;
     }
 
     @Override
@@ -42,7 +42,7 @@ public abstract class BasicItemStackToFluidOptionalItemRecipe extends ItemStackT
     @Override
     @Contract(value = "_ -> new", pure = true)
     public FluidOptionalItemOutput getOutput(ItemStack input) {
-        return output.copy();
+        return output;
     }
 
     public FluidOptionalItemOutput getOutputRaw() {

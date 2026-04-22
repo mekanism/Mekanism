@@ -203,7 +203,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         UseRemainder remainder = stack.get(DataComponents.USE_REMAINDER);
         return new NutritionalLiquifierIRecipe(
               IngredientCreatorAccess.item().from(stack, 1),
-              MekanismFluids.NUTRITIONAL_PASTE.asStack(food.nutrition() * 50),
+              MekanismFluids.NUTRITIONAL_PASTE.asTemplate(food.nutrition() * 50),
               //TODO - 26.1: Test that this is the right way to do this
               remainder == null ? null : remainder.convertInto()
         );

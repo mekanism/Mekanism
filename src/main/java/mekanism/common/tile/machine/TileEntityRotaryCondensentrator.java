@@ -64,6 +64,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -99,7 +100,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     private boolean mode;
 
     private final IOutputHandler<@NotNull ChemicalStack> gasOutputHandler;
-    private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
+    private final IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
 

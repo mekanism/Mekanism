@@ -13,7 +13,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 
 @RecipeTypeMapper
 public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<PressurizedReactionRecipe> {
@@ -31,9 +31,9 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
     protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicPressurizedReactionRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
-            ItemStack outputItem = basicRecipe.getOutputItem();
+            ItemStackTemplate outputItem = basicRecipe.getOutputItem();
             ChemicalStack outputChemical = basicRecipe.getOutputChemical();
-            if (outputItem.isEmpty() && outputChemical.isEmpty()) {
+            if (outputItem == null && outputChemical.isEmpty()) {
                 return false;
             }
             return addConversions(mapper, new PressurizedReactionRecipeOutput(outputItem, outputChemical), fakeGroupHelper.forIngredients(
@@ -52,9 +52,9 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
         if (inputs.isEmpty()) {
             return false;
         }
-        ItemStack outputItem = output.item();
+        ItemStackTemplate outputItem = output.item();
         ChemicalStack outputChemical = output.chemical();
-        if (outputItem.isEmpty()) {
+        if (outputItem == null) {
             return addConversion(mapper, outputChemical, inputs);
         } else if (outputChemical.isEmpty()) {
             return addConversion(mapper, outputItem, inputs);
@@ -67,7 +67,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
               NSSChemical.createChemical(outputChemical), (int) -outputChemical.getAmount()
         )) | addConversion(mapper, outputChemical, forIngredients(
               inputs,
-              NSSItem.createItem(outputItem), -outputItem.getCount()
+              NSSItem.createItem(outputItem.item(), outputItem.components()), -outputItem.count()
         ));
     }
 }

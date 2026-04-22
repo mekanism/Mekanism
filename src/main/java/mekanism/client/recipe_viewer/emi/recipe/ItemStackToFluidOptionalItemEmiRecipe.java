@@ -15,6 +15,7 @@ import mekanism.client.recipe_viewer.emi.MekanismEmiRecipeCategory;
 import mekanism.common.tile.component.config.DataType;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<BasicItemStackToFluidOptionalItemRecipe> {
@@ -29,8 +30,11 @@ public class ItemStackToFluidOptionalItemEmiRecipe extends MekanismEmiRecipe<Bas
         List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStack> itemOutputs = new ArrayList<>();
         for (FluidOptionalItemOutput output : outputDefinition) {
-            fluidOutputs.add(output.fluid());
-            itemOutputs.add(output.optionalItem());
+            fluidOutputs.add(output.fluid().create());
+            ItemStackTemplate optionalItem = output.optionalItem();
+            if (optionalItem != null) {
+                itemOutputs.add(optionalItem.create());
+            }
         }
         addFluidOutputDefinition(fluidOutputs);
         if (itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {

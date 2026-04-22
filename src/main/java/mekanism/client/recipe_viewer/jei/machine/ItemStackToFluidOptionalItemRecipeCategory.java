@@ -42,7 +42,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     private static final Codec<BasicItemStackToFluidOptionalItemRecipe> RECIPE_CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(BasicItemStackToFluidOptionalItemRecipe::getInput),
           FluidOptionalItemOutput.CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(BasicItemStackToFluidOptionalItemRecipe::getOutputRaw)
-    ).apply(instance, (input, output) -> new NutritionalLiquifierIRecipe(input, output.fluid(), output.optionalItem())));
+    ).apply(instance, NutritionalLiquifierIRecipe::new));
 
     private static final String OUTPUT_ITEM = "outputItem";
 
@@ -65,7 +65,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
         List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStack> itemOutputs = new ArrayList<>();
         for (FluidOptionalItemOutput output : outputDefinition) {
-            fluidOutputs.add(output.fluid());
+            fluidOutputs.add(output.fluid().create());
             ItemStackTemplate optionalItem = output.optionalItem();
             if (optionalItem != null) {
                 itemOutputs.add(optionalItem.create());

@@ -14,7 +14,9 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Base class to help implement handling of rotary recipes.
@@ -23,22 +25,23 @@ import org.jetbrains.annotations.NotNull;
 public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
 
     private final IOutputHandler<@NotNull ChemicalStack> chemicalOutputHandler;
-    private final IOutputHandler<@NotNull FluidStack> fluidOutputHandler;
+    private final IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler;
     private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
     private final IInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
     private final BooleanSupplier modeSupplier;
     private final Consumer<FluidStack> fluidInputSetter;
     private final Consumer<ChemicalStack> chemicalInputSetter;
-    private final Consumer<FluidStack> fluidOutputSetter;
+    private final Consumer<FluidStackTemplate> fluidOutputSetter;
     private final Consumer<ChemicalStack> chemicalOutputSetter;
     private final Supplier<FluidStackIngredient> fluidInputGetter;
     private final Supplier<ChemicalStackIngredient> chemicalInputGetter;
-    private final Function<ChemicalStack, FluidStack> fluidOutputGetter;
+    private final Function<ChemicalStack, FluidStackTemplate> fluidOutputGetter;
     private final Function<FluidStack, ChemicalStack> chemicalOutputGetter;
 
     private FluidStack recipeFluid = FluidStack.EMPTY;
     private ChemicalStack recipeChemical = ChemicalStack.EMPTY;
-    private FluidStack fluidOutput = FluidStack.EMPTY;
+    @Nullable
+    private FluidStackTemplate fluidOutput;
     private ChemicalStack chemicalOutput = ChemicalStack.EMPTY;
 
     /**
@@ -52,8 +55,8 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
      * @param modeSupplier          Machine handling mode. Returns {@code true} for fluid to chemical, and {@code false} for chemical to fluid.
      */
     public RotaryCachedRecipe(RotaryRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> fluidInputHandler,
-          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> chemicalOutputHandler, IOutputHandler<@NotNull FluidStack> fluidOutputHandler,
-          BooleanSupplier modeSupplier) {
+          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> chemicalOutputHandler,
+          IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler, BooleanSupplier modeSupplier) {
         super(recipe, recheckAllErrors);
         this.fluidInputHandler = Objects.requireNonNull(fluidInputHandler, "Fluid input handler cannot be null.");
         this.chemicalInputHandler = Objects.requireNonNull(chemicalInputHandler, "Chemical input handler cannot be null.");
@@ -122,7 +125,7 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
                 fluidInputHandler.use(recipeFluid, operations);
                 chemicalOutputHandler.handleOutput(chemicalOutput, operations);
             }
-        } else if (recipe.hasChemicalToFluid() && !recipeChemical.isEmpty() && !fluidOutput.isEmpty()) {
+        } else if (recipe.hasChemicalToFluid() && !recipeChemical.isEmpty() && fluidOutput != null) {
             //Validate something didn't go horribly wrong and the chemical is somehow empty
             chemicalInputHandler.use(recipeChemical, operations);
             fluidOutputHandler.handleOutput(fluidOutput, operations);

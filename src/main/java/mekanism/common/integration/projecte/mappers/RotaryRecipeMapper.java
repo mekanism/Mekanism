@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
+import java.util.Objects;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.basic.BasicRotaryRecipe;
@@ -8,8 +9,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 
 @RecipeTypeMapper
 public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> {
@@ -34,8 +33,8 @@ public class RotaryRecipeMapper extends TypedMekanismRecipeMapper<RotaryRecipe> 
                       TypedMekanismRecipeMapper::addConversion);
             }
             if (recipe.hasChemicalToFluid()) {
-                handled |= addConversions(mapper, recipe.getChemicalInput(), recipe::getFluidOutput, FluidStack::isEmpty, fakeGroupHelper::forChemicals,
-                      FluidStackLinkedSet.TYPE_AND_COMPONENTS, TypedMekanismRecipeMapper::addConversion);
+                handled |= addConversions(mapper, recipe.getChemicalInput(), recipe::getFluidOutput, Objects::nonNull, fakeGroupHelper::forChemicals,
+                      null, TypedMekanismRecipeMapper::addConversion);
             }
         }
         return handled;

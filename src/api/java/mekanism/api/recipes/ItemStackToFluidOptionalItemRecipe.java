@@ -14,7 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,33 +82,19 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
 
     /**
      * @apiNote Fluid must be present, but the item may be empty.
-     *///TODO - 26.1 FluidInstance/template
-    public record FluidOptionalItemOutput(FluidStack fluid, @Nullable ItemStackTemplate optionalItem) {
-
-        FluidOptionalItemOutput(FluidStack fluid, Optional<ItemStackTemplate> optionalItem) {
-            this(fluid, optionalItem.orElse(null));
-        }
+     */
+    public record FluidOptionalItemOutput(FluidStackTemplate fluid, @Nullable ItemStackTemplate optionalItem) {
 
         public static final Codec<FluidOptionalItemOutput> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              FluidStack.CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidOptionalItemOutput::fluid),
-              ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.ITEM).forGetter((t) -> Optional.ofNullable(t.optionalItem))
-        ).apply(instance, FluidOptionalItemOutput::new));
+              FluidStackTemplate.CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidOptionalItemOutput::fluid),
+              ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.ITEM).forGetter(output -> Optional.ofNullable(output.optionalItem))
+        ).apply(instance, (fluid, item) -> new FluidOptionalItemOutput(fluid, item.orElse(null))));
 
         public FluidOptionalItemOutput {
             Objects.requireNonNull(fluid, "Fluid output cannot be null.");
-            if (fluid.isEmpty()) {
-                throw new IllegalArgumentException("Fluid output cannot be empty.");
-            }
         }
 
-        /**
-         * Copies the backing objects of this output object.
-         */
-        public FluidOptionalItemOutput copy() {
-            return new FluidOptionalItemOutput(fluid.copy(), optionalItem);
-        }
-
-        @Override
+        @Override//TODO - 26.1: I am fairly certain we don't need to override equals and hashCode anymore
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -116,13 +102,13 @@ public abstract class ItemStackToFluidOptionalItemRecipe extends MekanismRecipe<
                 return false;
             }
             FluidOptionalItemOutput other = (FluidOptionalItemOutput) o;
-            return FluidStack.matches(fluid, other.fluid) && ItemStackTemplateHelper.matches(optionalItem, other.optionalItem);
+            return fluid.equals(other.fluid) && ItemStackTemplateHelper.matches(optionalItem, other.optionalItem);
         }
 
         @Override
         public int hashCode() {
-            int hash = FluidStack.hashFluidAndComponents(fluid);
-            hash = 31 * hash + fluid.getAmount();
+            //TODO - 26.1: Validate this is fine for hashing the fluid
+            int hash = fluid.hashCode();
             if (optionalItem != null) {
                 hash = 31 * hash + ItemStackTemplateHelper.hashItemAndComponents(optionalItem);
                 hash = 31 * hash + optionalItem.count();

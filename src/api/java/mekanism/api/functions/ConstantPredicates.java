@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -48,8 +49,8 @@ public class ConstantPredicates {
     /**
      * Represents a predicate that checks if an item stack produced by a template is empty (or the template is null).
      *
-     * @since 10.5.15
-     */
+     * @since 10.8.0
+     *///TODO - 26.1: I don't think the created stack can be empty? Because the record's constructor throws an exception if it is
     public static final Predicate<ItemStackTemplate> ITEM_TEMPLATE_EMPTY = template -> template == null || template.create().isEmpty();
 
     /**
@@ -58,6 +59,12 @@ public class ConstantPredicates {
      * @since 10.5.15
      */
     public static final Predicate<FluidStack> FLUID_EMPTY = FluidStack::isEmpty;
+    /**
+     * Represents a predicate that checks if a fluid stack produced by a template is empty (or the template is null).
+     *
+     * @since 10.8.0
+     *///TODO - 26.1: I don't think the created stack can be empty? Because the record's constructor throws an exception if it is
+    public static final Predicate<FluidStackTemplate> FLUID_TEMPLATE_EMPTY = template -> template == null || template.create().isEmpty();
     /**
      * Represents a predicate that checks if a chemical stack is empty.
      *

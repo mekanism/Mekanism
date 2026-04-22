@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Contract;
 
@@ -128,8 +129,8 @@ public abstract class RotaryRecipe extends MekanismRecipe<RotaryRecipeInput> {
      * outputs where things like NBT may be different.
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
-    @Contract(value = "_ -> new", pure = true)
-    public abstract FluidStack getFluidOutput(ChemicalStack input);
+    @Contract(pure = true)
+    public abstract FluidStackTemplate getFluidOutput(ChemicalStack input);
 
     @Override
     public boolean isIncomplete() {

@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
+import java.util.Objects;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.basic.BasicChemicalCrystallizerRecipe;
 import mekanism.common.config.MekanismConfigTranslations;
@@ -7,8 +8,6 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackLinkedSet;
 
 @RecipeTypeMapper
 public class ChemicalCrystallizerRecipeMapper extends TypedMekanismRecipeMapper<ChemicalCrystallizerRecipe> {
@@ -23,7 +22,6 @@ public class ChemicalCrystallizerRecipeMapper extends TypedMekanismRecipeMapper<
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput()));
         }
-        return addConversions(mapper, recipe.getInput(), recipe::getOutput, ItemStack::isEmpty, fakeGroupHelper::forChemicals, ItemStackLinkedSet.TYPE_AND_TAG,
-              TypedMekanismRecipeMapper::addConversion);
+        return addConversions(mapper, recipe.getInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion);
     }
 }

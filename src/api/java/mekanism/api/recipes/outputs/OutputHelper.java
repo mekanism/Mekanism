@@ -19,6 +19,7 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,18 +58,18 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull FluidStack> getOutputHandler(IExtendedFluidTank tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<@NotNull FluidStackTemplate> getOutputHandler(IExtendedFluidTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(FluidStack toOutput, int operations) {
+            public void handleOutput(FluidStackTemplate toOutput, int operations) {
                 OutputHelper.handleOutput(tank, toOutput, operations);
             }
 
             @Override
-            public void calculateOperationsCanSupport(OperationTracker tracker, FluidStack toOutput) {
+            public void calculateOperationsCanSupport(OperationTracker tracker, FluidStackTemplate toOutput) {
                 OutputHelper.calculateOperationsCanSupport(tracker, notEnoughSpaceError, tank, toOutput);
             }
         };
@@ -250,12 +251,12 @@ public class OutputHelper {
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(IExtendedFluidTank fluidTank, FluidStack toOutput, int operations) {
-        if (operations == 0) {
+    private static void handleOutput(IExtendedFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations) {
+        if (operations == 0 || toOutput == null) {
             //This should not happen
             return;
         }
-        fluidTank.insert(toOutput.copyWithAmount(toOutput.getAmount() * operations), Action.EXECUTE, AutomationType.INTERNAL);
+        fluidTank.insert(toOutput.withAmount(toOutput.amount() * operations).create(), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations) {
@@ -301,16 +302,16 @@ public class OutputHelper {
         }
     }
 
-    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IExtendedFluidTank tank, FluidStack toOutput) {
+    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IExtendedFluidTank tank, @Nullable FluidStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
-        if (!toOutput.isEmpty()) {
+        if (toOutput != null) {
             //Copy the stack and make it be max size
-            FluidStack maxOutput = toOutput.copyWithAmount(Integer.MAX_VALUE);
+            FluidStack maxOutput = toOutput.apply(Integer.MAX_VALUE, DataComponentPatch.EMPTY);
             //Then simulate filling the fluid tank, so we can see how much actually can fit
             FluidStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
             int amountUsed = maxOutput.getAmount() - remainder.getAmount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = amountUsed / toOutput.getAmount();
+            int operations = amountUsed / toOutput.amount();
             tracker.updateOperations(operations);
             if (operations == 0) {
                 if (amountUsed == 0 && tank.getNeeded() > 0) {

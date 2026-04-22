@@ -28,6 +28,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,7 +39,8 @@ import org.jetbrains.annotations.Nullable;
 public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
 
     private static final Predicate<ElectrolysisRecipeOutput> SEPARATOR_OUTPUT_EMPTY = output -> output.left().isEmpty() || output.right().isEmpty();
-    private static final Predicate<FluidOptionalItemOutput> FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY = output -> output.fluid().isEmpty();
+    //TODO - 26.1: Re-evaluate this as this is never null? So should this always just return false?
+    private static final Predicate<FluidOptionalItemOutput> FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY = output -> output.fluid() == null;
 
     private final IInputHandler<INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;
@@ -142,10 +144,10 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStack, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStackTemplate, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
-              ConstantPredicates.FLUID_EMPTY);
+              ConstantPredicates.FLUID_TEMPLATE_EMPTY);
     }
 
     /**

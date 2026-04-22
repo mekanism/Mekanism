@@ -10,6 +10,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -50,6 +51,11 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
 
     public FluidStack asStack(int amount) {
         return new FluidStack(get(), amount);
+    }
+
+    public FluidStackTemplate asTemplate(int amount) {
+        //TODO - 26.1: Should we pass get() or this to the template constructor?
+        return new FluidStackTemplate(get(), amount);
     }
 
     @Override

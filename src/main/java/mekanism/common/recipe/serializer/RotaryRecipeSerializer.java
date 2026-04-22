@@ -19,32 +19,26 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RotaryRecipeSerializer {
 
-    RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC.validate(
+    private static final RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC.validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(SerializationConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
-    RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(SerializationConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
-    RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> CHEMICAL_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
+    private static final RecordCodecBuilder<BasicRotaryRecipe, Optional<FluidStackTemplate>> FLUID_OUTPUT_FIELD = FluidStackTemplate.CODEC.optionalFieldOf(SerializationConstants.FLUID_OUTPUT)
+          .forGetter(recipe -> Optional.ofNullable(recipe.getFluidOutputRaw()));
+    private static final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> CHEMICAL_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
           ingredient -> ingredient == null ? DataResult.error(() -> "Chemical input may not be empty") : DataResult.success(ingredient)
     ).fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(BasicRotaryRecipe::getChemicalInputRaw);
-    RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.CHEMICAL_OUTPUT).forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
+    private static final RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.CHEMICAL_OUTPUT)
+          .forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
 
-    public static RecipeSerializer<BasicRotaryRecipe> create(Function4<FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack, BasicRotaryRecipe> bothWaysFactory,
+    public static RecipeSerializer<BasicRotaryRecipe> create(Function4<FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStackTemplate, BasicRotaryRecipe> bothWaysFactory,
           BiFunction<FluidStackIngredient, ChemicalStack, BasicRotaryRecipe> toChemicalFactory,
-          BiFunction<ChemicalStackIngredient, FluidStack, BasicRotaryRecipe> toFluidFactory) {
-        RecordCodecBuilder<BasicRotaryRecipe, FluidStackIngredient> FLUID_INPUT_FIELD = FluidStackIngredient.CODEC.validate(
-              ingredient -> ingredient == null ? DataResult.error(() -> "Fluid input may not be empty") : DataResult.success(ingredient)
-        ).fieldOf(SerializationConstants.FLUID_INPUT).forGetter(BasicRotaryRecipe::getFluidInputRaw);
-        RecordCodecBuilder<BasicRotaryRecipe, FluidStack> FLUID_OUTPUT_FIELD = FluidStack.CODEC.fieldOf(SerializationConstants.FLUID_OUTPUT).forGetter(BasicRotaryRecipe::getFluidOutputRaw);
-        RecordCodecBuilder<BasicRotaryRecipe, ChemicalStackIngredient> CHEMICAL_INPUT_FIELD = ChemicalStackIngredientCreator.INSTANCE.codec().validate(
-              ingredient -> ingredient == null ? DataResult.error(() -> "Chemical input may not be empty") : DataResult.success(ingredient)
-        ).fieldOf(SerializationConstants.CHEMICAL_INPUT).forGetter(BasicRotaryRecipe::getChemicalInputRaw);
-        RecordCodecBuilder<BasicRotaryRecipe, ChemicalStack> CHEMICAL_OUTPUT_FIELD = ChemicalStack.CODEC.fieldOf(SerializationConstants.CHEMICAL_OUTPUT).forGetter(BasicRotaryRecipe::getChemicalOutputRaw);
-
+          BiFunction<ChemicalStackIngredient, FluidStackTemplate, BasicRotaryRecipe> toFluidFactory) {
         return new RecipeSerializer<>(
               NeoForgeExtraCodecs.withAlternative(
                     RecordCodecBuilder.mapCodec(i -> i.group(
@@ -52,7 +46,8 @@ public class RotaryRecipeSerializer {
                           CHEMICAL_INPUT_FIELD,
                           CHEMICAL_OUTPUT_FIELD,
                           FLUID_OUTPUT_FIELD
-                    ).apply(i, bothWaysFactory)),
+                    ).apply(i, (fluidIn, chemicalIn, chemicalOut, fluidOut) ->
+                          bothWaysFactory.apply(fluidIn, chemicalIn, chemicalOut, fluidOut.orElse(null)))),
                     NeoForgeExtraCodecs.withAlternative(
                           RecordCodecBuilder.mapCodec(i -> i.group(
                                 FLUID_INPUT_FIELD,
@@ -61,7 +56,7 @@ public class RotaryRecipeSerializer {
                           RecordCodecBuilder.mapCodec(i -> i.group(
                                 CHEMICAL_INPUT_FIELD,
                                 FLUID_OUTPUT_FIELD
-                          ).apply(i, toFluidFactory))
+                          ).apply(i, (chemical, fluid) -> toFluidFactory.apply(chemical, fluid.orElse(null))))
                     )
               ),
               StreamCodec.composite(
@@ -99,20 +94,21 @@ public class RotaryRecipeSerializer {
         }
     }
 
-    private record ChemicalToFluid(ChemicalStackIngredient input, FluidStack output) {
+    private record ChemicalToFluid(ChemicalStackIngredient input, @Nullable FluidStackTemplate output) {
 
         //Note: This doesn't need to be optional fluid, as we only use this if we have a gas to fluid recipe
         public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalToFluid> STREAM_CODEC = StreamCodec.composite(
               IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalToFluid::input,
-              FluidStack.STREAM_CODEC, ChemicalToFluid::output,
-              ChemicalToFluid::new
+              ByteBufCodecs.optional(FluidStackTemplate.STREAM_CODEC), c -> Optional.ofNullable(c.output),
+              (in, out) -> new ChemicalToFluid(in, out.orElse(null))
         );
 
         private ChemicalToFluid(BasicRotaryRecipe recipe) {
             this(recipe.getChemicalInput(), recipe.getFluidOutputRaw());
         }
 
-        @Override
+        //TODO - 26.1: I am fairly certain we no longer need to override these manually, but we should double check
+        /*@Override
         public boolean equals(Object o) {
             if (o == this) {
                 return true;
@@ -120,15 +116,16 @@ public class RotaryRecipeSerializer {
                 return false;
             }
             ChemicalToFluid other = (ChemicalToFluid) o;
-            return FluidStack.matches(output, other.output) && input.equals(other.input);
+            return Objects.equals(output, other.output) && input.equals(other.input);
         }
 
         @Override
         public int hashCode() {
             int hash = input.hashCode();
-            hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
-            hash = 31 * hash + output.getAmount();
+            if (output != null) {//TODO - 26.1: Evaluate this
+                hash = 31 * hash + output.hashCode();
+            }
             return hash;
-        }
+        }*/
     }
 }

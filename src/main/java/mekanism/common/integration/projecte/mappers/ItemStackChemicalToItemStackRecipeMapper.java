@@ -1,5 +1,6 @@
 package mekanism.common.integration.projecte.mappers;
 
+import java.util.Objects;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.basic.BasicItemStackChemicalToItemStackRecipe;
@@ -11,8 +12,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackLinkedSet;
+import net.minecraft.world.item.ItemStackTemplate;
 
 @RecipeTypeMapper
 public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecipeMapper<ItemStackChemicalToItemStackRecipe> {
@@ -31,7 +31,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
         } else {
             scale = 1;
         }
-        ItemStack output = null;
+        ItemStackTemplate output = null;
         if (OPTIMIZE_BASIC) {
             if (recipe instanceof BasicItemStackChemicalToItemStackRecipe basicRecipe) {
                 //This will be the case for the majority of our recipes
@@ -48,7 +48,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
                   scale
             ));
         }
-        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, ItemStack::isEmpty,
-              fakeGroupHelper::forItems, fakeGroupHelper::forChemicals, ItemStackLinkedSet.TYPE_AND_TAG, TypedMekanismRecipeMapper::addConversion, scale);
+        return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forItems,
+              fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, scale);
     }
 }

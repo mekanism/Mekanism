@@ -1,5 +1,6 @@
 package mekanism.api.datagen.recipe.builder;
 
+import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.MekanismRecipeBuilder;
@@ -9,7 +10,7 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.crafting.Recipe;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -19,11 +20,11 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
     private final ChemicalStackIngredient chemicalInput;
     @Nullable
     private final FluidStackIngredient fluidInput;
-    private final FluidStack fluidOutput;
+    private final FluidStackTemplate fluidOutput;
     private final ChemicalStack chemicalOutput;
 
     protected RotaryRecipeBuilder(@Nullable FluidStackIngredient fluidInput, @Nullable ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput,
-          FluidStack fluidOutput) {
+          @Nullable FluidStackTemplate fluidOutput) {
         this.chemicalInput = chemicalInput;
         this.fluidInput = fluidInput;
         this.chemicalOutput = chemicalOutput;
@@ -41,14 +42,14 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
      * @param fluidInput     Input.
      * @param chemicalOutput Output.
      *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this method in combination with
-     * {@link #rotary(ChemicalStackIngredient, FluidStack)} if the conversion will be possible in both directions.
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStackTemplate)} over this method in combination with
+     * {@link #rotary(ChemicalStackIngredient, FluidStackTemplate)} if the conversion will be possible in both directions.
      */
     public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStack chemicalOutput) {
         if (chemicalOutput.isEmpty()) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty chemical output.");
         }
-        return new RotaryRecipeBuilder(fluidInput, null, chemicalOutput, FluidStack.EMPTY);
+        return new RotaryRecipeBuilder(fluidInput, null, chemicalOutput, null);
     }
 
     /**
@@ -57,13 +58,11 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
      * @param chemicalInput Input.
      * @param fluidOutput   Output.
      *
-     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStack)} over this method in combination with
+     * @apiNote It is recommended to use {@link #rotary(FluidStackIngredient, ChemicalStackIngredient, ChemicalStack, FluidStackTemplate)} over this method in combination with
      * {@link #rotary(FluidStackIngredient, ChemicalStack)} if the conversion will be possible in both directions.
      */
-    public static RotaryRecipeBuilder rotary(ChemicalStackIngredient chemicalInput, FluidStack fluidOutput) {
-        if (fluidOutput.isEmpty()) {
-            throw new IllegalArgumentException("This rotary condensentrator recipe requires a non empty fluid output.");
-        }
+    public static RotaryRecipeBuilder rotary(ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
+        Objects.requireNonNull(fluidOutput, "This rotary condensentrator recipe requires a non empty fluid output.");
         return new RotaryRecipeBuilder(null, chemicalInput, ChemicalStack.EMPTY, fluidOutput);
     }
 
@@ -75,8 +74,8 @@ public class RotaryRecipeBuilder extends MekanismRecipeBuilder<RotaryRecipeBuild
      * @param chemicalOutput Chemical Output. (For fluid to chemical)
      * @param fluidOutput    Fluid Output. (For chemical to fluid)
      */
-    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput, FluidStack fluidOutput) {
-        if (chemicalOutput.isEmpty() || fluidOutput.isEmpty()) {
+    public static RotaryRecipeBuilder rotary(FluidStackIngredient fluidInput, ChemicalStackIngredient chemicalInput, ChemicalStack chemicalOutput, FluidStackTemplate fluidOutput) {
+        if (chemicalOutput.isEmpty() || fluidOutput == null) {
             throw new IllegalArgumentException("This rotary condensentrator recipe requires non empty chemical and fluid outputs.");
         }
         return new RotaryRecipeBuilder(fluidInput, chemicalInput, chemicalOutput, fluidOutput);

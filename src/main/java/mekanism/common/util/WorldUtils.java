@@ -89,7 +89,7 @@ public class WorldUtils {
      */
     @Contract("null, _ -> false")
     public static boolean isChunkLoaded(@Nullable LevelReader world, ChunkPos chunkPos) {
-        return isChunkLoaded(world, chunkPos.x, chunkPos.z);
+        return isChunkLoaded(world, chunkPos.x(), chunkPos.z());
     }
 
     /**
