@@ -52,7 +52,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.util.BlockSnapshot;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -248,11 +248,12 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             return;
         }
         if (recipe.isPresent()) {
+            //TODO - 26.1: Do we need to be firing any of the place methods on the client side now that we also are firing this event on the client side?
+            if (NeoForge.EVENT_BUS.post(new BreakBlockEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
+                //We can't break the block exit
+                return;
+            }
             if (!level().isClientSide()) {
-                if (NeoForge.EVENT_BUS.post(new BlockEvent.BreakEvent(level(), blockPos, hitState, shooter)).isCanceled()) {
-                    //We can't break the block exit
-                    return;
-                }
                 ItemStack result = recipe.get().value().assemble(input);
                 if (!(result.getItem() instanceof BlockItem) || !tryPlace(shooter, blockPos, hitSide, Block.byItem(result.getItem()).defaultBlockState())) {
                     level().removeBlock(blockPos, false);

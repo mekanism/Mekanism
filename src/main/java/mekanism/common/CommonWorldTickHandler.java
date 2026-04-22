@@ -33,10 +33,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
 import net.neoforged.neoforge.event.level.ChunkDataEvent;
 import net.neoforged.neoforge.event.level.ChunkEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 import org.jetbrains.annotations.Nullable;
@@ -98,14 +98,13 @@ public class CommonWorldTickHandler {
     }
 
     @SubscribeEvent
-    public void onBlockBreak(BlockEvent.BreakEvent event) {
+    public void onBlockBreak(BreakBlockEvent event) {
         BlockState state = event.getState();
-        //Skip empty block, shouldn't be a null state but the BreakEvent still handles that as the empty block,
-        // so we need to skip handling it that way, and check if the player has access to destroy it
-        //Note: The level should always be an instance of Level based on what is passed to the constructor of BreakEvent,
+        //Skip empty block, and check if the player has access to destroy it
+        //Note: The level should always be an instance of Level based on what is passed to the constructor of BreakBlockEvent,
         // but we instance check it just to be safe
-        if (state != null && !state.isAir() && event.getLevel() instanceof Level level &&
-            !IBlockSecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos())) {
+        if (!state.isAir() && event.getLevel() instanceof Level level && !IBlockSecurityUtils.INSTANCE.canAccess(event.getPlayer(), level, event.getPos())) {
+            //TODO - 26.1 Do we need to use event.setNotifyClient ?
             //If they don't because it is something that is locked, then cancel the event
             event.setCanceled(true);
         }

@@ -61,7 +61,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make the laser "shrink" the further distance it goes, If above a certain energy level and in water makes it make a bubble stream
@@ -335,7 +335,8 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
     private void withFakePlayer(ServerLevel level, double x, double y, double z, BlockPos hitPos, BlockState hitState, Direction hitSide) {
         MekFakePlayer dummy = MekFakePlayer.setupFakePlayer(level, x, y, z);
         dummy.setEmulatingData(this);//pretend to be the owner
-        BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(level, hitPos, hitState, dummy);
+        //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+        BreakBlockEvent event = new BreakBlockEvent(level, hitPos, hitState, dummy);
         if (!NeoForge.EVENT_BUS.post(event).isCanceled()) {
             if (hitState.getBlock() instanceof TntBlock && hitState.isFlammable(level, hitPos, hitSide)) {
                 //Convert TNT that can be lit on fire into a tnt entity

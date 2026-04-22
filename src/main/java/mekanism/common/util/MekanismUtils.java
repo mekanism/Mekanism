@@ -91,7 +91,7 @@ import net.neoforged.fml.util.thread.EffectiveSide;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.UsernameCache;
-import net.neoforged.neoforge.event.level.BlockEvent;
+import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.IItemHandler;
@@ -829,7 +829,8 @@ public final class MekanismUtils {
                 // block hardness values in a modded context
                 continue;
             }
-            BlockEvent.BreakEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
+            //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+            BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
             if (event.isCanceled()) {
                 //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
                 continue;
