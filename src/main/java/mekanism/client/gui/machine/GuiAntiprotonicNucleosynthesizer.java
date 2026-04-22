@@ -1,6 +1,5 @@
 package mekanism.client.gui.machine;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.function.Supplier;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -11,8 +10,6 @@ import mekanism.client.gui.element.gauge.GaugeType;
 import mekanism.client.gui.element.gauge.GuiChemicalGauge;
 import mekanism.client.gui.element.gauge.GuiEnergyGauge;
 import mekanism.client.gui.element.tab.GuiEnergyTab;
-import mekanism.client.render.MekanismRenderType;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
@@ -26,7 +23,6 @@ import mekanism.common.lib.effect.BoltEffect.SpawnFunction;
 import mekanism.common.tile.machine.TileEntityAntiprotonicNucleosynthesizer;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Inventory;
@@ -84,16 +80,17 @@ public class GuiAntiprotonicNucleosynthesizer extends GuiConfigurableTile<TileEn
         screen.drawScrollingString(guiGraphics, MekanismLang.PROCESS_RATE.translate(TextUtils.getPercent(tile.getProcessRate())), 0,
               screen.getHeight() - font().lineHeight - 2, TextAlignment.CENTER, screenTextColor(), 2, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
-        PoseStack pose = guiGraphics.pose();
-        pose.pushPose();
-        pose.translate(0, 0, 100);
-        //TODO - 26.1: I think it is this?
-        //guiGraphics.submitGuiElementRenderState();
-        MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
-        float partialTicks = MekanismRenderer.getPartialTick();
-        bolt.update(this, boltSupplier.get(), partialTicks);
-        bolt.render(gameTime, partialTicks, pose, renderer);
-        renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
-        pose.popPose();
+        //TODO - 26.1: gui rendering
+        //PoseStack pose = guiGraphics.pose();
+        //pose.pushPose();
+        //pose.translate(0, 0, 100);
+        ////TODO - 26.1: I think it is this?
+        ////guiGraphics.submitGuiElementRenderState();
+        //MultiBufferSource.BufferSource renderer = guiGraphics.bufferSource();
+        //float partialTicks = MekanismRenderer.getPartialTick();
+        //bolt.update(this, boltSupplier.get(), partialTicks);
+        //bolt.render(gameTime, partialTicks, pose, renderer);
+        //renderer.endBatch(MekanismRenderType.MEK_LIGHTNING);
+        //pose.popPose();
     }
 }

@@ -33,8 +33,8 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     @Contract(value = "_ -> new", pure = true)
     @Override
-    public ItemStack getOutput(ChemicalStack input) {
-        return output.create();
+    public ItemStackTemplate getOutput(ChemicalStack input) {
+        return output;
     }
 
     @Override

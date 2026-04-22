@@ -12,6 +12,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -42,7 +43,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract ItemStack getOutput(ChemicalStack input);
+    public abstract ItemStackTemplate getOutput(ChemicalStack input);
 
     /**
      * For JEI, gets the output representations to display.
@@ -55,7 +56,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
     @Override
     public ItemStack assemble(SingleChemicalRecipeInput input) {
         if (!isIncomplete() && test(input.chemical())) {
-            return getOutput(input.chemical());
+            return getOutput(input.chemical()).create();
         }
         return ItemStack.EMPTY;
     }

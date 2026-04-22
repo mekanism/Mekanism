@@ -112,10 +112,10 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
      *
      * @since 10.7.0
      */
-    public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStack, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStackTemplate, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
-              ConstantPredicates.ITEM_EMPTY);
+              ConstantPredicates.ITEM_TEMPLATE_EMPTY);
     }
 
     /**

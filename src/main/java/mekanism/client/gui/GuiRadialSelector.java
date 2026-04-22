@@ -1,6 +1,5 @@
 package mekanism.client.gui;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
@@ -29,7 +28,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
-import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -79,6 +77,7 @@ public class GuiRadialSelector extends Screen {
         render(guiGraphics, mouseX, mouseY, centerX, centerY, radialData);
     }
 
+    //TODO - 26.1: rendering
     private <MODE extends IRadialMode> void render(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float centerX, float centerY, RadialData<MODE> radialData) {
         // Calculate number of available modes to switch between
         List<MODE> modes = radialData.getModes();
@@ -98,8 +97,8 @@ public class GuiRadialSelector extends Screen {
         Matrix3x2fStack matrix = guiGraphics.pose();
         matrix.pushMatrix();
         matrix.translate(centerX, centerY);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        //RenderSystem.enableBlend();
+        //RenderSystem.defaultBlendFunc();
 
         // draw base
         // Note: While there might be slightly better performance only drawing part of the Torus given
@@ -194,7 +193,7 @@ public class GuiRadialSelector extends Screen {
                 matrix.popMatrix();
             }
             //Flush and actually render out the labels
-            guiGraphics.flush();
+            //guiGraphics.flush();
         }
 
         matrix.popMatrix();
@@ -252,11 +251,12 @@ public class GuiRadialSelector extends Screen {
         drawTorus(guiGraphics, startAngle, sizeAngle, INNER, OUTER, red, green, blue, alpha);
     }
 
+    //TODO - 26.1: rendering
     private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
-        RenderSystem.setShader(GameRenderer::getPositionColorShader);
+        //RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode
         BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix4f = guiGraphics.pose().last().pose();
+        Matrix4f matrix4f = null;//FIXME guiGraphics.pose().last().pose();
         float draws = DRAWS * (sizeAngle / 360F);
         for (int i = 0; i <= draws; i++) {
             float degrees = startAngle + (i / DRAWS) * 360;
@@ -268,7 +268,7 @@ public class GuiRadialSelector extends Screen {
             vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
                   .setColor(red, green, blue, alpha);
         }
-        BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
+        //BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
     }
 
     @Nullable

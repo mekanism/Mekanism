@@ -39,7 +39,7 @@ public class TooltipUtils {
         for (ILangEntry langEntry : langEntries) {
             messages.add(langEntry.translate());
         }
-        return new MultiLineTooltip(List.copyOf(messages));
+        return MultiLineTooltip.create(messages);
     }
 
     public static Tooltip create(Component... messages) {
@@ -49,7 +49,7 @@ public class TooltipUtils {
             //Note: This should never happen unless we are manually called with an explicit array
             return create(messages[0]);
         }
-        return new MultiLineTooltip(List.of(messages));
+        return MultiLineTooltip.create(List.of(messages));
     }
 
     @Nullable
@@ -59,6 +59,6 @@ public class TooltipUtils {
         } else if (messages.size() == 1) {
             return create(messages.getFirst());
         }
-        return new MultiLineTooltip(List.copyOf(messages));
+        return MultiLineTooltip.create(messages);
     }
 }

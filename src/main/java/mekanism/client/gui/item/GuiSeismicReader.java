@@ -1,6 +1,5 @@
 package mekanism.client.gui.item;
 
-import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.objects.Reference2IntMap;
 import it.unimi.dsi.fastutil.objects.Reference2IntOpenHashMap;
 import java.util.ArrayList;
@@ -13,15 +12,12 @@ import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.button.MekanismButton;
 import mekanism.client.gui.element.button.MekanismImageButton;
 import mekanism.client.gui.element.scroll.GuiScrollBar;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.item.SeismicReaderContainer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
@@ -35,8 +31,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix3x2fStack;
@@ -66,7 +60,7 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
             Block block = state.getBlock();
             blockFrequencies.mergeInt(block, 1, Integer::sum);
             //Try to get the clone item stack as maybe it has one, though it might not have a corresponding block
-            ItemStack stack = state.getCloneItemStack(new BlockHitResult(p.getCenter().relative(Direction.UP, 0.5), Direction.UP, p, false), level, p, player);
+            ItemStack stack = state.getCloneItemStack(p, level, false, player);
             if (stack.isEmpty()) {
                 Fluid fluid = Fluids.EMPTY;
                 if (block instanceof LiquidBlock liquidBlock) {
@@ -79,11 +73,12 @@ public class GuiSeismicReader extends GuiMekanism<SeismicReaderContainer> {
                 } else {
                     FluidType fluidType = fluid.getFluidType();
                     blockList.add(new BlockInfo<>(state, fluidType, (graphics, f, x, y) -> {
-                        IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
-                        MekanismRenderer.color(graphics, properties.getTintColor());
-                        TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
-                        graphics.blit(x, y, 0, 16, 16, texture);
-                        MekanismRenderer.resetColor(graphics);
+                        //TODO - 26.1: fluid rendering
+                        //IClientFluidTypeExtensions properties = IClientFluidTypeExtensions.of(f);
+                        //MekanismRenderer.color(graphics, properties.getTintColor());
+                        //TextureAtlasSprite texture = MekanismRenderer.getSprite(properties.getStillTexture());
+                        //graphics.blit(x, y, 0, 16, 16, texture);
+                        //MekanismRenderer.resetColor(graphics);
                     }));
                     fluidFrequencies.mergeInt(fluidType, 1, Integer::sum);
                 }
