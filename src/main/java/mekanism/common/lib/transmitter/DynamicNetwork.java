@@ -151,7 +151,6 @@ public abstract class DynamicNetwork<ACCEPTOR, NETWORK extends DynamicNetwork<AC
         for (ObjectIterator<Long2ObjectMap.Entry<TRANSMITTER>> iterator = Long2ObjectMaps.fastIterator(net.positionedTransmitters); iterator.hasNext(); ) {
             Long2ObjectMap.Entry<TRANSMITTER> entry = iterator.next();
             TRANSMITTER transmitter = entry.getValue();
-            positionedTransmitters.put(entry.getLongKey(), transmitter);
             if (transmitter.setTransmitterNetwork(getNetwork(), false)) {
                 transmittersToUpdate.add(transmitter);
             }
