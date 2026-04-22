@@ -183,7 +183,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
     public void recalculateUpgrades(Upgrade upgrade) {
         super.recalculateUpgrades(upgrade);
         if (upgrade == Upgrade.SPEED) {
-            baselineMaxOperations = (int) Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
+            baselineMaxOperations = 1 << upgradeComponent.getUpgrades(Upgrade.SPEED);
         }
     }
 
