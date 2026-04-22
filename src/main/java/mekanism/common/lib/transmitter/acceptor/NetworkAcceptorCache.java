@@ -102,7 +102,11 @@ public class NetworkAcceptorCache<ACCEPTOR> {
 
     public int getAcceptorCount() {
         //Count multiple connections to the same position as multiple acceptors
-        return cachedAcceptors.values().stream().mapToInt(Map::size).sum();
+        int count = 0;
+        for (Map<Direction, ACCEPTOR> sides : cachedAcceptors.values()) {
+            count += sides.size();
+        }
+        return count;
     }
 
     public boolean hasAcceptor(BlockPos acceptorPos) {
@@ -115,7 +119,6 @@ public class NetworkAcceptorCache<ACCEPTOR> {
     }
 
     public Set<Direction> getAcceptorDirections(long pos) {
-        //TODO: Do this better?
-        return cachedAcceptors.get(pos).keySet();
+        return cachedAcceptors.getOrDefault(pos, Collections.emptyMap()).keySet();
     }
 }
