@@ -309,7 +309,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, usedSoFar, chemicalTank, extraSlot, energySlot,
-              inputSlots, outputSlots, isSorting(), getComponents());
+              inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 
     @Override

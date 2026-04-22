@@ -194,7 +194,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     @Override
     public AdvancedMachineUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new AdvancedMachineUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), usedSoFar, infusionTank,
-              infusionSlot, energySlot, inputSlot, outputSlot, getComponents());
+              infusionSlot, energySlot, inputSlot, outputSlot, getComponents(), problemPath());
     }
 
     public MachineEnergyContainer<TileEntityMetallurgicInfuser> getEnergyContainer() {

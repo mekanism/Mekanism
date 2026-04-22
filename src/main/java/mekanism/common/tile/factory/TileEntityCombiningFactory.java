@@ -153,6 +153,6 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @NotNull
     @Override
     public CombinerUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents());
+        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, extraSlot, inputSlots, outputSlots, isSorting(), getComponents(), problemPath());
     }
 }

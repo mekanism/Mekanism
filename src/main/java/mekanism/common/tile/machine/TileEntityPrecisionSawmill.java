@@ -147,7 +147,7 @@ public class TileEntityPrecisionSawmill extends TileEntityProgressMachine<Sawmil
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
         return new SawmillUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, inputSlot, outputSlot, secondaryOutputSlot,
-              getComponents());
+              getComponents(), problemPath());
     }
 
     public MachineEnergyContainer<TileEntityPrecisionSawmill> getEnergyContainer() {

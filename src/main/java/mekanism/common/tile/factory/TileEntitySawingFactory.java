@@ -178,7 +178,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     @NotNull
     @Override
     public SawmillUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new SawmillUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents());
+        return new SawmillUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), progress, energySlot, inputSlots, outputSlots, isSorting(), getComponents(), );
     }
 
     //Methods relating to IComputerTile

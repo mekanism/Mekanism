@@ -152,7 +152,7 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @NotNull
     @Override
     public CombinerUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents());
+        return new CombinerUpgradeData(provider, redstone, getControlType(), getEnergyContainer(), getOperatingTicks(), energySlot, extraInputSlot, mainInputSlot, outputSlot, getComponents(), problemPath());
     }
 
     public MachineEnergyContainer<TileEntityCombiner> getEnergyContainer() {

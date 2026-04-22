@@ -1,9 +1,8 @@
 package mekanism.common.tile;
 
-import com.mojang.serialization.DataResult;
+import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -41,22 +40,14 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
-import mekanism.common.util.RegistryUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -66,7 +57,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -77,6 +67,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
+
+    private static Codec<FluidStack> VALVE_FLUID_CODEC = FluidStack.fixedAmountCodec(1);
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                      "getFilledPercentage"}, docPlaceholder = "tank")
@@ -336,7 +328,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     public FluidTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents());
+        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents(), problemPath());
     }
 
     @Override
@@ -363,37 +355,13 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //updateTag.put(SerializationConstants.FLUID, fluidTank.getFluid().saveOptional(provider));
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
-        //TODO - 26.1: Does the following encoding even make any sense if we are using value output for writing it? Given at that point we are sort of using a codec anyway
-        // Though vanilla doesn't currently use value output to write the update tags
-        //TODO - 1.21: Re-evaluate this alternate encoding further
-        CompoundTag fluidData = new CompoundTag();
+        //TODO - 26.1: Re-evaluate this alternate encoding further (check history)
         FluidStack fluid = fluidTank.getFluid();
-        if (fluid.isEmpty()) {
-            fluid = valveFluid;
-        } else {
-            fluidData.putInt(SerializationConstants.AMOUNT, fluid.getAmount());
-        }
         if (!fluid.isEmpty()) {
-            Identifier key = RegistryUtils.getName(fluid.typeHolder());
-            if (key == null) {
-                //Note: This should never be null as it returns a reference holder, but if it is, log an error
-                Mekanism.logger.error("Attempted to sync a fluid tank that is storing an unregistered fluid. This should not happen, and likely indicates a porting bug.");
-            } else {
-                fluidData.putString(SerializationConstants.ID, key.toString());
-                if (!fluid.isComponentsPatchEmpty()) {
-                    //Note: This isn't necessarily optimal, but it does mean in general we can avoid codecs unless it happens to be a fluid that
-                    // does have component data
-                    DataResult<Tag> componentData = DataComponentPatch.CODEC.encodeStart(level.registryAccess().createSerializationContext(NbtOps.INSTANCE), fluid.getComponentsPatch());
-                    if (componentData.isSuccess()) {
-                        fluidData.put(SerializationConstants.DATA, componentData.getOrThrow());
-                    } else {
-                        componentData.ifError(error -> Mekanism.logger.error("Failed to encode fluid stack component data: {}", error.message()));
-                    }
-                }
-                fluidData.putBoolean(SerializationConstants.VALVE, !valveFluid.isEmpty());
-                //Skip adding it if the fluid isn't registered
-                updateTag.put(SerializationConstants.FLUID, fluidData);
-            }
+            output.store(SerializationConstants.FLUID, FluidStack.CODEC, fluid);
+        }
+        if (!valveFluid.isEmpty()) {
+            output.store(SerializationConstants.VALVE, VALVE_FLUID_CODEC, valveFluid);
         }
     }
 
@@ -414,49 +382,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //TODO - 26.1: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
-        boolean unsetFluid = true;
-        if (tag.contains(SerializationConstants.FLUID, Tag.TAG_COMPOUND)) {
-            CompoundTag fluidData = tag.getCompound(SerializationConstants.FLUID);
-            if (!fluidData.isEmpty()) {
-                String fluidId = fluidData.getString(SerializationConstants.ID);
-                Optional<Reference<Fluid>> holder = Optional.ofNullable(Identifier.tryParse(fluidId)).flatMap(BuiltInRegistries.FLUID::getHolder);
-                if (holder.isEmpty()) {
-                    Mekanism.logger.info("Received update packet for a fluid tank for an unregistered fluid with expected id: {}", fluidId);
-                } else {
-                    Reference<Fluid> fluidType = holder.get();
-                    DataComponentPatch patch = DataComponentPatch.EMPTY;
-                    int amount = fluidData.getInt(SerializationConstants.AMOUNT);
-                    if (fluidData.contains(SerializationConstants.DATA)) {
-                        DataResult<DataComponentPatch> componentPatch = DataComponentPatch.CODEC.parse(
-                              provider.createSerializationContext(NbtOps.INSTANCE),
-                              fluidData.get(SerializationConstants.DATA)
-                        );
-                        if (componentPatch.isSuccess()) {
-                            patch = componentPatch.getOrThrow();
-                        } else {
-                            componentPatch.ifError(error -> Mekanism.logger.info(
-                                  "Received update packet for a fluid tank storing {}, and could not decode the data component patch: {}", fluidId, error.message()));
-                        }
-                    }
-                    //We actually have something to set, so mark that we shouldn't reset the stored fluid data
-                    unsetFluid = false;
-                    if (amount == 0) {
-                        fluidTank.setEmpty();
-                    } else {
-                        fluidTank.setStack(new FluidStack(fluidType, amount, patch));
-                    }
-                    if (fluidData.getBoolean(SerializationConstants.VALVE)) {
-                        valveFluid = new FluidStack(fluidType, 1, patch);
-                    } else {
-                        valveFluid = FluidStack.EMPTY;
-                    }
-                }
-            }
-        }
-        if (unsetFluid) {
-            fluidTank.setEmpty();
-            valveFluid = FluidStack.EMPTY;
-        }
+        fluidTank.setStack(input.read(SerializationConstants.FLUID, FluidStack.CODEC).orElse(FluidStack.EMPTY));
+        valveFluid = input.read(SerializationConstants.VALVE, VALVE_FLUID_CODEC).orElse(FluidStack.EMPTY);
     }
 
     //Methods relating to IComputerTile

@@ -18,6 +18,7 @@ import net.minecraft.network.Connection;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.util.ProblemReporter.PathElement;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 /**
  * Extension of TileEntity that adds various helpers we use across the majority of our Tiles even those that are not an instance of TileEntityMekanism. Additionally, we
@@ -38,6 +40,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
     private boolean cacheCoord;
     private long lastSave;
     private final long worldPositionLong;
+    private PathElement cachedProblemPath = null;
 
     public TileEntityUpdateable(TileEntityTypeRegistryObject<?> type, BlockPos pos, BlockState state) {
         super(type.get(), pos, state);
@@ -138,6 +141,7 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         }
     }
 
+    //todo - 26.1 - did we _need_ to change this to ValueOutput?
     protected void writeUpdatedTag(@NotNull ValueOutput output) {
         writeReducedUpdatedTag(output);
     }
@@ -222,4 +226,11 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
         return worldPositionLong;
     }
 
+    @Override
+    public @NonNull PathElement problemPath() {
+        if (cachedProblemPath != null) {
+            return cachedProblemPath;
+        }
+        return cachedProblemPath = super.problemPath();
+    }
 }

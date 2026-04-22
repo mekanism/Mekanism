@@ -28,10 +28,6 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
         this.fillSlot = fillSlot;
         this.dumping = dumping;
         this.storedChemical = storedChemical;
-        TagValueOutput output = TagValueOutput.createWithContext(problemReporter, provider);
-        for (ITileComponent component : components) {
-            component.write(output);
-        }
-        this.components = output.buildResult();
+        this.components = IUpgradeData.readComponents(provider, components, problemPath);
     }
 }
