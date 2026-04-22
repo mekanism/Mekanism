@@ -54,6 +54,7 @@ ext {
     //Integrations that we sometimes have to disable compilation of when porting to newer mc versions
     disableCrT = true
     disableTOP = true
+    disableEMI = true
 }
 
 sourceSets {
@@ -72,6 +73,10 @@ sourceSets {
             if (disableTOP) {
                 println("Disabling compilation of The One Probe integration")
                 exclude('mekanism/common/integration/lookingat/theoneprobe/**')
+            }
+            if (disableEMI) {
+                println("Disabling compilation of EMI integration")
+                exclude('mekanism/client/recipe_viewer/emi/**')
             }
         }
         resources {
