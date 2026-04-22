@@ -252,7 +252,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @Override
     public boolean canSendHome(@NotNull ItemStack stack) {
         QIOFrequency frequency = getQIOFrequency();
-        return frequency != null && frequency.massInsert(stack, stack.getCount(), Action.SIMULATE) > 0;
+        return frequency != null && frequency.massInsert(stack, stack.count(), Action.SIMULATE) > 0;
     }
 
     @NotNull
@@ -362,7 +362,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                             break;
                         }
                     }
-                    toUse = TransporterManager.getToUse(origInsert, toInsert).getCount();
+                    toUse = TransporterManager.getToUse(origInsert, toInsert).count();
                 } else {
                     //Note: We just simplify the logic that we would have when sending to a transporter via the handler
                     // and add support for also performing round-robin distribution. We don't just use a custom transit request
@@ -388,8 +388,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 Object2IntMap.Entry<HashedItem> entry = iterator.next();
                 int amount = entry.getIntValue();
                 ItemStack ret = freq.removeByType(entry.getKey(), amount);
-                if (ret.getCount() != amount) {
-                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.getCount(), amount);
+                if (ret.count() != amount) {
+                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.count(), amount);
                 }
             }
         }

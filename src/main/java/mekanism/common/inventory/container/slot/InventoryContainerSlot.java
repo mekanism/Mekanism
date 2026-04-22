@@ -51,7 +51,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
     @Override
     public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
         ItemStack remainder = slot.insertItem(stack, action, AutomationType.MANUAL);
-        if (action.execute() && stack.getCount() != remainder.getCount()) {
+        if (action.execute() && stack.count() != remainder.count()) {
             setChanged();
         }
         return remainder;
@@ -64,7 +64,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         }
         if (slot.isEmpty()) {
             //If the slot is currently empty, just try simulating the insertion
-            return insertItem(stack, Action.SIMULATE).getCount() < stack.getCount();
+            return insertItem(stack, Action.SIMULATE).count() < stack.count();
         }
         //Otherwise, we need to check if we can extract the current item
         if (slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {

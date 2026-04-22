@@ -265,7 +265,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         if (currentSlot instanceof InventoryContainerSlot) {
             //Note: Because our InventoryContainerSlots only allow extracting items at their max stack size we need to sanitize the stack
             // if it is larger than its max stack size so that we don't cause any dupe bugs
-            if (slotStack.getCount() > slotStack.getMaxStackSize()) {
+            if (slotStack.count() > slotStack.getMaxStackSize()) {
                 //We do this by pretending we only have a single stack of it stored so that when we transfer it at the end
                 // and remove from the slot (which due to impl details is limited to max stack size)
                 stackToInsert = slotStack = slotStack.copyWithCount(slotStack.getMaxStackSize());
@@ -284,10 +284,10 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             //We are in the main inventory or the hot bar
             //Start by trying to insert it into the tile's inventory slots, first attempting to stack with other items
             stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, true, selectedWindow);
-            if (slotStack.getCount() == stackToInsert.getCount()) {
+            if (slotStack.count() == stackToInsert.count()) {
                 //Then as long as if we still have the same number of items (failed to insert), try to insert it into the tile's inventory slots allowing for empty items
                 stackToInsert = insertItem(inventoryContainerSlots, stackToInsert, false, selectedWindow);
-                if (slotStack.getCount() == stackToInsert.getCount()) {
+                if (slotStack.count() == stackToInsert.count()) {
                     //Else if we failed to do that also, try transferring to armor inventory, main inventory or the hot bar, depending on which one we currently are in
                     if (currentSlot instanceof ArmorSlot || currentSlot instanceof OffhandSlot) {
                         stackToInsert = insertItem(hotBarSlots, stackToInsert, true, selectedWindow);
@@ -306,7 +306,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
                 }
             }
         }
-        if (stackToInsert.getCount() == slotStack.getCount()) {
+        if (stackToInsert.count() == slotStack.count()) {
             //If nothing changed then return that fact
             return ItemStack.EMPTY;
         }
@@ -409,7 +409,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
 
     @NotNull
     protected ItemStack transferSuccess(@NotNull Slot currentSlot, @NotNull Player player, @NotNull ItemStack slotStack, @NotNull ItemStack stackToInsert) {
-        int difference = slotStack.getCount() - stackToInsert.getCount();
+        int difference = slotStack.count() - stackToInsert.count();
         ItemStack newStack = currentSlot.remove(difference);
         currentSlot.onTake(player, newStack);
         return newStack;

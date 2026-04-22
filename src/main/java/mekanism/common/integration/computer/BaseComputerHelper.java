@@ -240,14 +240,14 @@ public abstract class BaseComputerHelper {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.getAmount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable ItemStack stack) {
         if (stack == null) {
             return null;
         }
-        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.COUNT, stack.getCount(), stack.getComponentsPatch());
+        return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.COUNT, stack.count(), stack.getComponentsPatch());
     }
 
     public Object convert(@Nullable BlockState state) {

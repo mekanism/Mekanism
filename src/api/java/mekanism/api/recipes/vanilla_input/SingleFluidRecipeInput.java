@@ -42,6 +42,6 @@ public record SingleFluidRecipeInput(FluidStack fluid) implements FluidRecipeInp
     @Override
     public int hashCode() {
         int hash = FluidStack.hashFluidAndComponents(fluid);
-        return 31 * hash + fluid.getAmount();
+        return 31 * hash + fluid.amount();
     }
 }

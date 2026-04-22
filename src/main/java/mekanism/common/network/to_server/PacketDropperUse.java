@@ -173,14 +173,14 @@ public record PacketDropperUse(BlockPos pos, DropperAction action, TankType tank
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             FluidStack fluidInDrainTank = drainTank.getFluid();
             FluidStack simulatedRemainder = fillTank.insert(fluidInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            int remainder = simulatedRemainder.getAmount();
-            int amount = fluidInDrainTank.getAmount();
+            int remainder = simulatedRemainder.amount();
+            int amount = fluidInDrainTank.amount();
             if (remainder < amount) {
                 //We are able to fit at least some of the fluid from our drain tank into the fill tank
                 FluidStack extractedFluid = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extractedFluid.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
-                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
+                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedFluid, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
                     player.containerMenu.synchronizeCarriedToRemote();
                 }
             }

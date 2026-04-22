@@ -17,6 +17,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -34,7 +35,7 @@ public class ItemCraftingFormula extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         Map<HashedItem, Integer> stacks = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).nonEmptyItems()
-              .collect(Collectors.toMap(HashedItem::raw, ItemStack::getCount, Integer::sum, LinkedHashMap::new));
+              .collect(Collectors.toMap(HashedItem::raw, ItemInstance::count, Integer::sum, LinkedHashMap::new));
         if (!stacks.isEmpty()) {
             tooltipAdder.accept(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
             for (Entry<HashedItem, Integer> entry : stacks.entrySet()) {

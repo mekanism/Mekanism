@@ -260,7 +260,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (side == Direction.UP && action.execute() && remainder.getAmount() < stack.getAmount() && !isRemote()) {
+        if (side == Direction.UP && action.execute() && remainder.amount() < stack.amount() && !isRemote()) {
             if (valve == 0) {
                 //TODO - 1.21: Only mark it as needing a packet if our fluid tank volume is below a certain amount??
                 needsPacket = true;

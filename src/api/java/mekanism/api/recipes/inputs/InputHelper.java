@@ -55,7 +55,7 @@ public class InputHelper {
                     return;
                 }
                 if (!recipeInput.isEmpty()) {
-                    int amount = recipeInput.getCount() * operations;
+                    int amount = recipeInput.count() * operations;
                     logMismatchedStackSize(slot.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
@@ -69,7 +69,7 @@ public class InputHelper {
                     // where we may want to allow not having the input be required for recipe matching
                     if (!recipeInput.isEmpty()) {
                         //TODO: Simulate?
-                        int operations = getInput().getCount() / (recipeInput.getCount() * usageMultiplier);
+                        int operations = getInput().count() / (recipeInput.count() * usageMultiplier);
                         if (operations > 0) {
                             tracker.updateOperations(operations);
                             return;
@@ -148,7 +148,7 @@ public class InputHelper {
                 }
                 FluidStack inputFluid = getInput();
                 if (!inputFluid.isEmpty()) {
-                    int amount = recipeInput.getAmount() * operations;
+                    int amount = recipeInput.amount() * operations;
                     logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
                 }
             }
@@ -162,7 +162,7 @@ public class InputHelper {
                     // where we may want to allow not having the input be required for recipe matching
                     if (!recipeInput.isEmpty()) {
                         //TODO: Simulate the drain?
-                        int operations = getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier);
+                        int operations = getInput().amount() / (recipeInput.amount() * usageMultiplier);
                         if (operations > 0) {
                             tracker.updateOperations(operations);
                             return;

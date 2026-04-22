@@ -44,7 +44,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                         FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                         if (fluidInTank.isEmpty()) {
                             hasEmpty = true;
-                        } else if (!isDraining() && getFluidTank().insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                        } else if (!isDraining() && getFluidTank().insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
                             //If we support either mode and our container is not empty or currently being filled, then drain the item into the tank
                             fillTank(outputSlot);
                             return;
@@ -116,7 +116,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             FluidStack fluidInTank = getFluidTank().getFluid();
             if (!fluidInTank.isEmpty()) {
                 //If we have a fluid attempt to drain it into our item
-                FluidStack simulatedDrain = getFluidTank().extract(fluidInTank.getAmount(), Action.SIMULATE, AutomationType.INTERNAL);
+                FluidStack simulatedDrain = getFluidTank().extract(fluidInTank.amount(), Action.SIMULATE, AutomationType.INTERNAL);
                 if (simulatedDrain.isEmpty()) {
                     //If we cannot actually drain from our fluid handler then just exit early
                     return;
@@ -169,8 +169,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      */
     private boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
         FluidStack simulatedRemainder = getFluidTank().insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
-        int remainder = simulatedRemainder.getAmount();
-        int toTransfer = fluidToTransfer.getAmount();
+        int remainder = simulatedRemainder.amount();
+        int toTransfer = fluidToTransfer.amount();
         if (remainder == toTransfer) {
             //If we cannot actually fill our fluid handler then just exit early
             return false;
@@ -229,7 +229,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             outputSlot.setStack(stackToMove);
         } else {
             ItemStack outputStack = outputSlot.getStack();
-            if (!ItemStack.isSameItemSameComponents(outputStack, stackToMove) || outputStack.getCount() >= outputSlot.getLimit(outputStack)) {
+            if (!ItemStack.isSameItemSameComponents(outputStack, stackToMove) || outputStack.count() >= outputSlot.getLimit(outputStack)) {
                 //We won't be able to move our container to the output slot so exit
                 return false;
             }
@@ -302,7 +302,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                         knownFluids.put(copy, copy);
                     }
                 } else {
-                    knownFluid.grow(fluidInItem.getAmount());
+                    knownFluid.grow(fluidInItem.amount());
                 }
             }
         }
@@ -324,8 +324,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         if (!simulatedDrain.isEmpty()) {
             //Check how much of it we will be able to put into the handler we are filling
             FluidStack simulatedRemainder = getFluidTank().insert(simulatedDrain, Action.SIMULATE, AutomationType.INTERNAL);
-            int remainder = simulatedRemainder.getAmount();
-            int drained = simulatedDrain.getAmount();
+            int remainder = simulatedRemainder.amount();
+            int drained = simulatedDrain.amount();
             if (remainder < drained) {
                 //Drain the handler to drain, filling the handler to fill while we are at it
                 handlerToFill.insert(handlerToDrain.drain(fluid.copyWithAmount(drained - remainder), FluidAction.EXECUTE), Action.EXECUTE, AutomationType.INTERNAL);

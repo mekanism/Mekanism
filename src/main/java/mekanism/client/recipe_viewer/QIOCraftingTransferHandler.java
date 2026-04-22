@@ -397,7 +397,7 @@ public class QIOCraftingTransferHandler {
                 protected int getRemaining(int slot, ItemStack currentStored) {
                     HashedItemSource source = qioTransferHelper.getSource(HashedItem.raw(currentStored));
                     if (source == null) {
-                        return currentStored.getCount();
+                        return currentStored.count();
                     }
                     return source.getSlotRemaining((byte) (slot + 9));
                 }

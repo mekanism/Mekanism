@@ -21,19 +21,19 @@ public class InsertableSlot extends Slot implements IInsertableSlot {
             return stack;
         }
         ItemStack current = getItem();
-        int needed = getMaxStackSize(stack) - current.getCount();
+        int needed = getMaxStackSize(stack) - current.count();
         if (needed <= 0) {
             //Fail if we are a full slot
             return stack;
         }
         if (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack)) {
-            int toAdd = Math.min(stack.getCount(), needed);
+            int toAdd = Math.min(stack.count(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
                 //Set the stack to our new stack (we have no simple way to increment the stack size) so we have to set it instead of being able to just grow it
-                set(stack.copyWithCount(current.getCount() + toAdd));
+                set(stack.copyWithCount(current.count() + toAdd));
             }
-            return stack.copyWithCount(stack.getCount() - toAdd);
+            return stack.copyWithCount(stack.count() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;

@@ -267,7 +267,7 @@ public class OutputHelper {
         if (operations > 1) {
             //If we are doing more than one operation we need to make a copy of our stack and change the amount
             // that we are using the fill the tank with
-            output.setCount(output.getCount() * operations);
+            output.setCount(output.count() * operations);
         }
         inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
@@ -309,7 +309,7 @@ public class OutputHelper {
             FluidStack maxOutput = toOutput.apply(Integer.MAX_VALUE, DataComponentPatch.EMPTY);
             //Then simulate filling the fluid tank, so we can see how much actually can fit
             FluidStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-            int amountUsed = maxOutput.getAmount() - remainder.getAmount();
+            int amountUsed = maxOutput.amount() - remainder.amount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
             int operations = amountUsed / toOutput.amount();
             tracker.updateOperations(operations);
@@ -329,7 +329,7 @@ public class OutputHelper {
             //Make a copy of the stack we are outputting with its maximum size
             ItemStack output = toOutput.apply(toOutput.getMaxStackSize(), DataComponentPatch.EMPTY);
             ItemStack remainder = slot.insertItem(output, Action.SIMULATE, AutomationType.INTERNAL);
-            int amountUsed = output.getCount() - remainder.getCount();
+            int amountUsed = output.count() - remainder.count();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
             int operations = amountUsed / toOutput.count();
             tracker.updateOperations(operations);

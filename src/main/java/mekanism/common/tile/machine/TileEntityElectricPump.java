@@ -287,8 +287,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             pos = pos.immutable();
             recurringNodes.add(pos);
         }
-        int amountOffered = fluidStack.getAmount();
-        if (fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL).getAmount() != amountOffered) {
+        int amountOffered = fluidStack.amount();
+        if (fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL).amount() != amountOffered) {
             level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
         }
     }
@@ -298,7 +298,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             if (fluidTank.isEmpty()) {
                 return true;
             } else if (fluidTank.isFluidEqual(fluidStack)) {
-                return fluidStack.getAmount() <= fluidTank.getNeeded();
+                return fluidStack.amount() <= fluidTank.getNeeded();
             }
         }
         return false;

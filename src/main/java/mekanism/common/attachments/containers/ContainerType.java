@@ -244,10 +244,10 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         if (exposeWhenStacked) {
             return getCapabilityProvider(requiredConfigs);
         } else if (requiredConfigs.length == 0) {
-            return (stack, context) -> stack.getCount() == 1 ? createHandler(stack) : null;
+            return (stack, context) -> stack.count() == 1 ? createHandler(stack) : null;
         }
         //Only expose the capabilities if the required configs are loaded
-        return (stack, context) -> stack.getCount() == 1 && hasRequiredConfigs(requiredConfigs) ? createHandler(stack) : null;
+        return (stack, context) -> stack.count() == 1 && hasRequiredConfigs(requiredConfigs) ? createHandler(stack) : null;
     }
 
     protected ICapabilityProvider<ItemStack, Void, ? super HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {

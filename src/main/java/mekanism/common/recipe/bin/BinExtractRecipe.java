@@ -53,7 +53,7 @@ public class BinExtractRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty() || stackInSlot.getCount() > 1) {
+                    if (!binStack.isEmpty() || stackInSlot.count() > 1) {
                         //If we already have a bin, or our first bin has a stack size greater than one then this is not a bin recipe
                         return ItemStack.EMPTY;
                     }
@@ -79,7 +79,7 @@ public class BinExtractRecipe extends BinRecipe {
                 ItemStack bottomStack = slot.getBottomStack();
                 if (!bottomStack.isEmpty()) {
                     //Only attempt to do anything if there are items to try and remove
-                    MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.getCount(), Action.EXECUTE), bottomStack.getCount());
+                    MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.count(), Action.EXECUTE), bottomStack.count());
                     remaining.set(i, binStack);
                 }
                 break;

@@ -325,7 +325,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         @Override
         public void run() {
             if (getHandlerCount() > 0) {
-                storedFluid.extract(EmitUtils.sendToAcceptors(this, toSend.getAmount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
+                storedFluid.extract(EmitUtils.sendToAcceptors(this, toSend.amount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
             }
         }
 

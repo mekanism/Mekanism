@@ -79,7 +79,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = ItemStack.isSameItemSameComponents(getStack(), stack))) {
-            int toAdd = Math.min(stack.getCount(), needed);
+            int toAdd = Math.min(stack.count(), needed);
             if (action.execute()) {
                 //If we want to actually insert the item, then update the current item
                 if (sameType) {
@@ -92,7 +92,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
                     setStack(stack.copyWithCount(toAdd));
                 }
             }
-            return stack.copyWithCount(stack.getCount() - toAdd);
+            return stack.copyWithCount(stack.count() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;
@@ -124,7 +124,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
         ItemStack current = getStack();
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.getCount(), current.getMaxStackSize());
+        int currentAmount = Math.min(current.count(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -210,7 +210,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (stack.getCount() == amount || action.simulate()) {
+        if (stack.count() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -289,7 +289,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default int getCount() {
-        return getStack().getCount();
+        return getStack().count();
     }
 
     @Override

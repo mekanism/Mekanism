@@ -59,8 +59,8 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         }
 
         public void addSlot(int id, ItemStack stack) {
-            slotMap.put(id, stack.getCount());
-            totalCount += stack.getCount();
+            slotMap.put(id, stack.count());
+            totalCount += stack.count();
         }
 
         @Override
@@ -76,7 +76,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
                     int toUse = Math.min(amount, currentCount);
                     ItemStack ret = handler.extractItem(slot, toUse, false);
                     boolean stackable = InventoryUtils.areItemsStackable(itemStack, ret);
-                    if (!stackable || ret.getCount() != toUse) { // be loud if an InvStack's prediction doesn't line up
+                    if (!stackable || ret.count() != toUse) { // be loud if an InvStack's prediction doesn't line up
                         Mekanism.logger.warn("An inventory's returned content {} does not line up with HandlerTransitRequest's prediction.", stackable ? "count" : "type");
                         Mekanism.logger.warn("HandlerTransitRequest item: {}, toUse: {}, ret: {}, slot: {}", itemStack, toUse, ret, slot);
                         Mekanism.logger.warn("ItemHandler: {}", handler.getClass().getName());

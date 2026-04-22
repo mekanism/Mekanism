@@ -44,11 +44,11 @@ public class TransporterManager {
     }
 
     public static boolean didEmit(ItemStack stack, ItemStack returned) {
-        return returned.isEmpty() || returned.getCount() < stack.getCount();
+        return returned.isEmpty() || returned.count() < stack.count();
     }
 
     public static ItemStack getToUse(ItemStack stack, ItemStack returned) {
-        return returned.isEmpty() ? stack : StackUtils.size(stack, stack.getCount() - returned.getCount());
+        return returned.isEmpty() ? stack : StackUtils.size(stack, stack.count() - returned.count());
     }
 
     /**
@@ -115,14 +115,14 @@ public class TransporterManager {
                     // our stack a single time to resize it. We do however make sure to update
                     // the toAccept value again if it is needed.
                     if (count <= maxStackSize) {
-                        if (stack.getCount() <= maxStackSize) {
+                        if (stack.count() <= maxStackSize) {
                             stack = stack.copyWithCount(maxStackSize + 1);
                         }
                         //Update our amount that we expect to accept from simulation to represent the amount we actually
                         // are trying to insert this way if we can't accept it all then we know that the slot actually
                         // has a lower limit than it returned for getSlotLimit
-                        toAccept = stack.getCount();
-                    } else if (stack.getCount() <= maxStackSize) {
+                        toAccept = stack.count();
+                    } else if (stack.count() <= maxStackSize) {
                         //Note: If we have more we are trying to insert than the max stack size, just take the number we are trying to insert
                         // so that we have an accurate amount for checking the real slot stack size
                         stack = stack.copyWithCount(count);
@@ -142,7 +142,7 @@ public class TransporterManager {
             }
             if (needsSimulation) {
                 ItemStack simulatedRemainder = handler.insertItem(slot, stack, true);
-                int accepted = stack.getCount() - simulatedRemainder.getCount();
+                int accepted = stack.count() - simulatedRemainder.count();
                 if (accepted == 0) {
                     // Insert will fail; bail
                     continue;
@@ -218,9 +218,9 @@ public class TransporterManager {
                     // set to the same side config are "different" because of the side proxies) then
                     // we want to make sure we try to insert the in-flight stacks anyway so that if
                     // the slot is the same we fill it.
-                    int numLeftOver = simulateInsert(handler, inventoryInfo, stack.itemStack, stack.itemStack.getCount(), true);
+                    int numLeftOver = simulateInsert(handler, inventoryInfo, stack.itemStack, stack.itemStack.count(), true);
                     if (numLeftOver > 0) {
-                        if (numLeftOver == stack.itemStack.getCount()) {
+                        if (numLeftOver == stack.itemStack.count()) {
                             //If none of the stack could be inserted, check if we are attempting to insert it
                             // into the same side as the side we are predicting that we can insert into.
                             if (side != stack.getSideOfDest()) {
@@ -304,7 +304,7 @@ public class TransporterManager {
             for (int i = 0; i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
                 inventory[i] = stack;
-                actualStackSizes[i] = stackSizes[i] = stack.getCount();
+                actualStackSizes[i] = stackSizes[i] = stack.count();
             }
         }
 

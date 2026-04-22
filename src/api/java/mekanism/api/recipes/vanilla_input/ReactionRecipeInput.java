@@ -62,9 +62,9 @@ public record ReactionRecipeInput(ItemStack item, FluidStack fluid, ChemicalStac
     public int hashCode() {
         int hash = chemical.hashCode();
         hash = 31 * hash + ItemStack.hashItemAndComponents(item);
-        hash = 31 + hash + item.getCount();
+        hash = 31 + hash + item.count();
         hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
-        hash = 31 + hash + fluid.getAmount();
+        hash = 31 + hash + fluid.amount();
         return hash;
     }
 }

@@ -91,19 +91,19 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             return ItemStack.EMPTY;
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(stack) - current.getCount();
+        int needed = getLimit(stack) - current.count();
         if (needed <= 0 || !isItemValidForInsertion(stack, automationType)) {
             //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
             return stack;
         } else if (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack)) {
-            int toAdd = Math.min(stack.getCount(), needed);
+            int toAdd = Math.min(stack.count(), needed);
             if (action.execute()) {
                 //Note: We let setStack handle updating the backing holding stack
                 // We use current.getCount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                setContents(attachedItems, stack.copyWithCount(current.getCount() + toAdd));
+                setContents(attachedItems, stack.copyWithCount(current.count() + toAdd));
             }
-            return stack.copyWithCount(stack.getCount() - toAdd);
+            return stack.copyWithCount(stack.count() - toAdd);
         }
         //If we didn't accept this item, then just return the given stack
         return stack;
@@ -122,7 +122,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         }
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.getCount(), current.getMaxStackSize());
+        int currentAmount = Math.min(current.count(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -132,7 +132,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         ItemStack toReturn = current.copyWithCount(amount);
         if (action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedItems, current.copyWithCount(current.getCount() - amount));
+            setContents(attachedItems, current.copyWithCount(current.count() - amount));
         }
         return toReturn;
     }
@@ -166,7 +166,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (current.getCount() == amount || action.simulate()) {
+        if (current.count() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -179,7 +179,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         AttachedItems attachedItems = getAttached();
         //Avoid extra getStack lookup calls
         ItemStack stack = getContents(attachedItems);
-        int current = stack.getCount();
+        int current = stack.count();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
             return 0;

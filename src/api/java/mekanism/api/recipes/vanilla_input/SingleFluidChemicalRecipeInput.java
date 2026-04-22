@@ -53,7 +53,7 @@ public record SingleFluidChemicalRecipeInput(FluidStack fluid, ChemicalStack che
     public int hashCode() {
         int hash = chemical.hashCode();
         hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
-        hash = 31 * hash + fluid.getAmount();
+        hash = 31 * hash + fluid.amount();
         return hash;
     }
 }

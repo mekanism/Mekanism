@@ -65,7 +65,7 @@ public abstract class BasicItemStackToFluidRecipe extends ItemStackToFluidRecipe
     public int hashCode() {
         int hash = input.hashCode();
         hash = 31 * hash + FluidStack.hashFluidAndComponents(output);
-        hash = 31 * hash + output.getAmount();
+        hash = 31 * hash + output.amount();
         return hash;
     }
 }

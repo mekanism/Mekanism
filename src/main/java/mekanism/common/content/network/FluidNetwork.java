@@ -106,7 +106,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
             if (fluidTank.isEmpty()) {
                 fluidTank.setStack(fluid.copy());
             } else if (fluidTank.isFluidEqual(fluid)) {
-                int amount = fluid.getAmount();
+                int amount = fluid.amount();
                 MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
             }
         }
@@ -144,7 +144,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
         if (!isEmpty()) {
             FluidStack fluidType = fluidTank.getFluid();
             FluidTransmitterSaveTarget saveTarget = new FluidTransmitterSaveTarget(getTransmitters());
-            EmitUtils.sendToAcceptors(saveTarget, fluidType.getAmount(), fluidType);
+            EmitUtils.sendToAcceptors(saveTarget, fluidType.amount(), fluidType);
             saveTarget.saveShare();
         }
     }
@@ -163,7 +163,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, fluidToSend.getAmount(), fluidToSend);
+        return EmitUtils.sendToAcceptors(target, fluidToSend.amount(), fluidToSend);
     }
 
     @Override

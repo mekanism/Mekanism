@@ -52,7 +52,7 @@ public class CursedTransporterItemHandler implements IItemHandler {
     private TransitRequest getRequest(int limit, ItemStack stack) {
         //If the stack is already the correct size skip copying it and resizing by using the source stack
         // as our simple transit request won't have the stack get mutated
-        if (stack.getCount() <= limit) {
+        if (stack.count() <= limit) {
             return TransitRequest.simple(stack);
         }
         return TransitRequest.simple(stack.copyWithCount(limit));
@@ -120,10 +120,10 @@ public class CursedTransporterItemHandler implements IItemHandler {
         }
         ItemStack remainder = response.getRejected();
 
-        if (itemStack.getCount() > limit) {
+        if (itemStack.count() > limit) {
             //If we used a smaller stack due to our transporter's limit we need to make sure we include the amount we skipped
             // in the remainder
-            int extra = itemStack.getCount() - limit;
+            int extra = itemStack.count() - limit;
             if (remainder.isEmpty()) {
                 //Everything we tried to fit was accepted. Create a remainder out of the part we skipped
                 remainder = itemStack.copyWithCount(extra);

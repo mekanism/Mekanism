@@ -222,7 +222,7 @@ public class EntityFlame extends Projectile implements IEntityWithComplexSpawn {
             Optional<RecipeHolder<SmeltingRecipe>> recipe = MekanismRecipeType.getRecipeFor(RecipeType.SMELTING, input, level);
             if (recipe.isPresent()) {
                 ItemStack result = recipe.get().value().assemble(input);
-                item.setItem(result.copyWithCount(result.getCount() * stack.getCount()));
+                item.setItem(result.copyWithCount(result.count() * stack.count()));
                 item.tickCount = 0;
                 spawnParticlesAt(item.blockPosition());
                 playSound(SoundEvents.FIRE_EXTINGUISH, 1.0F, 1.0F);

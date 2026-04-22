@@ -13,7 +13,7 @@ public interface IDroppableContents {
     }
 
     default int getScalar(ItemStack stack) {
-        return stack.getCount();
+        return stack.count();
     }
 
     /**

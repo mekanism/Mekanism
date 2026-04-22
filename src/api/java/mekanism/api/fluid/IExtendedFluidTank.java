@@ -68,7 +68,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = FluidStack.isSameFluidSameComponents(stack, getFluid()))) {
-            int toAdd = Math.min(stack.getAmount(), needed);
+            int toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid
                 if (sameType) {
@@ -81,7 +81,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
                     setStack(stack.copyWithAmount(toAdd));
                 }
             }
-            return stack.copyWithAmount(stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -111,7 +111,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         FluidStack ret = getFluid().copyWithAmount(Math.min(getFluidAmount(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
-            shrinkStack(ret.getAmount(), action);
+            shrinkStack(ret.amount(), action);
         }
         return ret;
     }
@@ -238,7 +238,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
 
     @Override
     default int getFluidAmount() {
-        return getFluid().getAmount();
+        return getFluid().amount();
     }
 
     @Override
@@ -261,7 +261,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
     @Override
     @Deprecated
     default int fill(FluidStack stack, FluidAction action) {
-        return stack.getAmount() - insert(stack, Action.fromFluidAction(action), AutomationType.EXTERNAL).getAmount();
+        return stack.amount() - insert(stack, Action.fromFluidAction(action), AutomationType.EXTERNAL).amount();
     }
 
     /**
@@ -273,7 +273,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
     @Deprecated
     default FluidStack drain(FluidStack stack, FluidAction action) {
         if (!isEmpty() && isFluidEqual(stack)) {
-            return extract(stack.getAmount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
+            return extract(stack.amount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
         }
         return FluidStack.EMPTY;
     }

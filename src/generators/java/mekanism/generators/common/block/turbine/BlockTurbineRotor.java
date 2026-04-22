@@ -55,7 +55,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                 return ItemInteractionResult.CONSUME;
             }
         } else if (stack.getItem() instanceof ItemTurbineBlade) {
-            if (stack.getCount() < stack.getMaxStackSize()) {
+            if (stack.count() < stack.getMaxStackSize()) {
                 if (tile.removeBlade()) {
                     if (!player.isCreative()) {
                         stack.grow(1);

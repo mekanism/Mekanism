@@ -226,7 +226,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         if (hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitterNetwork();
             if (!network.fluidTank.isEmpty() && !saveShare.isEmpty()) {
-                int amount = saveShare.getAmount();
+                int amount = saveShare.amount();
                 MekanismUtils.logMismatchedStackSize(network.fluidTank.shrinkStack(amount, Action.EXECUTE), amount);
                 buffer.setStack(saveShare);
             }

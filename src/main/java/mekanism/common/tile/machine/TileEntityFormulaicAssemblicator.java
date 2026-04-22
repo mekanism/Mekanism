@@ -551,7 +551,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             if (!inputSlot.isEmpty()) {
                 ItemStack stack = inputSlot.getStack();
                 HashedItem hashed = HashedItem.create(stack);
-                storedMap.mergeInt(hashed, stack.getCount(), Integer::sum);
+                storedMap.mergeInt(hashed, stack.count(), Integer::sum);
             }
         }
         // place items into respective controlled slots

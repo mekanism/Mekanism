@@ -64,7 +64,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                     Upgrade type = getUpgradeType(stack);
                     if (component.supports(type)) {
                         if (!world.isClientSide()) {
-                            int added = component.addUpgrades(type, stack.getCount());
+                            int added = component.addUpgrades(type, stack.count());
                             if (added > 0) {
                                 stack.shrink(added);
                             }

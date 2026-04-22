@@ -50,6 +50,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -314,7 +315,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         int height = gauge.getHeight() - 2;
         //If we have no max (no fluids or just an empty fluid) we want to ensure the fluid renderer doesn't throw errors,
         // so we just return a capacity for the render of a bucket
-        int max = stacks.stream().mapToInt(FluidStack::getAmount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
+        int max = stacks.stream().mapToInt(FluidInstance::amount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
         return init(builder, NeoForgeTypes.FLUID_STACK, role, gauge, stacks)
               .setFluidRenderer(max, false, width, height);
     }

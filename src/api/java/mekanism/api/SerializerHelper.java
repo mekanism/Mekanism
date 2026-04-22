@@ -96,7 +96,7 @@ public class SerializerHelper {
      */
     public static final Codec<ItemStack> OVERSIZED_ITEM_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
           Item.CODEC.fieldOf(ItemInstance.FIELD_ID).forGetter(ItemStack::typeHolder),
-          ExtraCodecs.POSITIVE_INT.fieldOf(ItemInstance.FIELD_COUNT).orElse(1).forGetter(ItemStack::getCount),
+          ExtraCodecs.POSITIVE_INT.fieldOf(ItemInstance.FIELD_COUNT).orElse(1).forGetter(ItemInstance::count),
           DataComponentPatch.CODEC.optionalFieldOf(ItemInstance.FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(instance, ItemStack::new)));
 

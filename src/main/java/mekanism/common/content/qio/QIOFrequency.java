@@ -202,7 +202,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 itemDataMap.put(type, data);
             }
         }
-        return type.createStack(MathUtils.clampToInt(data.add(stack.getCount(), Action.EXECUTE)));
+        return type.createStack(MathUtils.clampToInt(data.add(stack.count(), Action.EXECUTE)));
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {

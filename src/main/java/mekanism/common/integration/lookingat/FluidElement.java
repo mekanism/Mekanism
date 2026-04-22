@@ -43,10 +43,10 @@ public class FluidElement extends LookingAtElement {
 
     @Override
     public int getScaledLevel(int level) {
-        if (capacity == 0 || stored.getAmount() == Integer.MAX_VALUE) {
+        if (capacity == 0 || stored.amount() == Integer.MAX_VALUE) {
             return level;
         }
-        return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.getAmount(), capacity));
+        return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.amount(), capacity));
     }
 
     @NotNull
@@ -65,7 +65,7 @@ public class FluidElement extends LookingAtElement {
 
     @Override
     public Component getText() {
-        int amount = stored.getAmount();
+        int amount = stored.amount();
         if (stored.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         } else if (amount == Integer.MAX_VALUE) {

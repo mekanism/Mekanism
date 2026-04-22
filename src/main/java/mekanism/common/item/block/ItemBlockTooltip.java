@@ -107,7 +107,7 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
         FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (!fluidStack.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.getAmount())));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
             tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));

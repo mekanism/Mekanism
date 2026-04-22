@@ -46,17 +46,17 @@ public final class StackUtils {
                 ItemStack toAddStack = toAddSlot.getStack();
                 if (origSlot.isEmpty()) {
                     int max = origSlot.getLimit(toAddStack);
-                    if (toAddStack.getCount() <= max) {
+                    if (toAddStack.count() <= max) {
                         origSlot.setStack(toAddStack);
                     } else {
                         origSlot.setStack(toAddStack.copyWithCount(max));
                         //Add any remainder to the rejects (if this is zero this will no-op
-                        addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - max));
+                        addStack(rejects, toAddStack.copyWithCount(toAddStack.count() - max));
                     }
                 } else if (ItemStack.isSameItemSameComponents(origSlot.getStack(), toAddStack)) {
-                    int added = origSlot.growStack(toAddStack.getCount(), Action.EXECUTE);
+                    int added = origSlot.growStack(toAddStack.count(), Action.EXECUTE);
                     //Add any remainder to the rejects (if this is zero this will no-op
-                    addStack(rejects, toAddStack.copyWithCount(toAddStack.getCount() - added));
+                    addStack(rejects, toAddStack.copyWithCount(toAddStack.count() - added));
                 } else {
                     addStack(rejects, toAddStack.copy());
                 }
@@ -70,10 +70,10 @@ public final class StackUtils {
     private static void addStack(List<ItemStack> stacks, ItemStack stack) {
         if (!stack.isEmpty()) {
             for (ItemStack existingStack : stacks) {
-                int needed = existingStack.getMaxStackSize() - existingStack.getCount();
+                int needed = existingStack.getMaxStackSize() - existingStack.count();
                 if (needed > 0 && ItemStack.isSameItemSameComponents(existingStack, stack)) {
                     //This stack needs some items and can stack with the one we are adding
-                    int toAdd = Math.min(needed, stack.getCount());
+                    int toAdd = Math.min(needed, stack.count());
                     //Add the amount we can
                     existingStack.grow(toAdd);
                     stack.shrink(toAdd);
@@ -85,7 +85,7 @@ public final class StackUtils {
             if (!stack.isEmpty()) {
                 //If we have any we weren't able to add to existing stacks, we need to go ahead and add it as new stacks
                 // making sure to split it if it is an oversized stack
-                int count = stack.getCount();
+                int count = stack.count();
                 int max = stack.getMaxStackSize();
                 if (count > max) {
                     //If we have more than a stack of the item stack counts,

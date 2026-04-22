@@ -34,14 +34,14 @@ public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket
                 //Count should always be greater than zero but validate against invalid packets
                 if (!curStack.isEmpty() && count > 0) {
                     ItemStack toAdd;
-                    if (count < curStack.getCount()) {//Only adding part of the stack
+                    if (count < curStack.count()) {//Only adding part of the stack
                         toAdd = curStack.copyWithCount(count);
                     } else {//Try to add the full held stack
                         toAdd = curStack;
                     }
                     ItemStack rejects = freq.addItem(toAdd);
                     //Calculate actual amount we were able to add of what we tried to add
-                    int placed = toAdd.getCount() - rejects.getCount();
+                    int placed = toAdd.count() - rejects.count();
                     if (placed > 0) {
                         //If we added any from the held stack, shrink the held stack (which will cause it to be updated on the client)
                         curStack.shrink(placed);

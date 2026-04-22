@@ -695,7 +695,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                 int limit = slot.getLimit(stack);
                 if (cachedItem.count < limit) {
                     //If we still have space left before this slot is full, try adding the stacks together
-                    cachedItem.count += stack.getCount();
+                    cachedItem.count += stack.count();
                     if (cachedItem.count <= limit) {
                         //If we can fit it all, return we have no remainder
                         return ItemStack.EMPTY;
@@ -712,11 +712,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             if (!cachedStacks.containsKey(i)) {
                 //We have no cache of this slot, which means that it is currently empty
                 IInventorySlot slot = mainSlots.get(i);
-                int stackSize = stack.getCount();
+                int stackSize = stack.count();
                 //Attempt to insert the stack into the slot, the expected outcome given our slots' restrictions is that
                 // this will succeed and insert the entire stack
                 stack = slot.insertItem(stack, Action.SIMULATE, AutomationType.INTERNAL);
-                int remainderSize = stack.getCount();
+                int remainderSize = stack.count();
                 if (remainderSize < stackSize) {
                     //If the slot accepted at least some item we are inserting, then cache the item type that we put into that slot
                     // Given the slot is empty the expected result is that we will always end up inserting into the first empty slot
@@ -750,7 +750,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             //Note: While we probably could get away by using a raw hashed item given we are removing the item entity for the stack
             // we don't bother in case any other mods are doing weird things with it as this is just an edge case handler so shouldn't
             // be a hotspot in regard to copying stacks
-            overflow.mergeInt(HashedItem.create(stack), stack.getCount(), Integer::sum);
+            overflow.mergeInt(HashedItem.create(stack), stack.count(), Integer::sum);
             //If we add something to the overflow map, mark that we have overflow
             hasOverflow = true;
             //Mark that we need to recheck if we can insert the overflow as we now have some
@@ -778,9 +778,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                     //We were able to fully fit the stack, so we can remove it from our list of overflow
                     iter.remove();
                     recheck = true;
-                } else if (stack.getCount() != amount) {
+                } else if (stack.count() != amount) {
                     //Some was able to fit, update the amount that is actually still part of the overflow
-                    entry.setValue(stack.getCount());
+                    entry.setValue(stack.count());
                 }
             }
             if (recheck) {

@@ -21,7 +21,7 @@ public class ItemEnergized extends Item implements ICustomCreativeTabContents {
     @Override
     public boolean isBarVisible(@NotNull ItemStack stack) {
         //If we are currently stacked, don't display the bar as it will overlap the stack count
-        return stack.getCount() == 1;
+        return stack.count() == 1;
     }
 
     @Override

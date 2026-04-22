@@ -56,9 +56,9 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
         // Note: Only bother making it a data component ingredient if the stack has non-default data, otherwise there is no point in doing the extra checks
         DataComponentExactPredicate predicate = IngredientCreatorAccess.getComponentPatchPredicate(instance.getComponentsPatch());
         if (predicate != null) {
-            return from(DataComponentFluidIngredient.of(false, predicate, instance.typeHolder()), instance.getAmount());
+            return from(DataComponentFluidIngredient.of(false, predicate, instance.typeHolder()), instance.amount());
         }
-        return from(SizedFluidIngredient.of(instance.getFluid(), instance.getAmount()));
+        return from(SizedFluidIngredient.of(instance.getFluid(), instance.amount()));
     }
 
     @Override

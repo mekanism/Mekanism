@@ -44,7 +44,7 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
                     // or multiple packets got sent before the server's response got to the client
                     //Note: Rather than checking if the cur stack is empty to know whether to grab the max stack size from it,
                     // we just assume they are the same type, as we will validate the type matches before actually extracting
-                    int toRemove = Math.min(count, itemType.getMaxStackSize() - curStack.getCount());
+                    int toRemove = Math.min(count, itemType.getMaxStackSize() - curStack.count());
                     //Check to make sure we actually have room in the carried stack for any more items
                     //Note: The current stack and the grabbed stack should always be stackable unless the client sent multiple packets
                     // before processing our response to the first one, but we need to validate it to make sure it can actually stack
@@ -56,7 +56,7 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
                                 container.setCarried(extracted);
                             } else {
                                 //If we removed any from the held stack, shrink the held stack (which will cause it to be updated on the client)
-                                curStack.grow(extracted.getCount());
+                                curStack.grow(extracted.count());
                             }
                         }
                     }

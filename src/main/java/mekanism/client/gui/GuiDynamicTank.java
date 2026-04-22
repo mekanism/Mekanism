@@ -22,7 +22,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidInstance;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, MekanismTileContainer<TileEntityDynamicTank>> {
@@ -48,7 +48,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
             switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY -> ret.add(MekanismLang.EMPTY.translate());
                 case FLUID -> {
-                    addStored(ret, multiblock.getFluidTank().getFluid(), FluidStack::getAmount);
+                    addStored(ret, multiblock.getFluidTank().getFluid(), FluidInstance::amount);
                     capacity = multiblock.getTankCapacity();
                 }
                 case CHEMICAL -> addStored(ret, multiblock.getChemicalTank());

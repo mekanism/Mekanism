@@ -357,16 +357,16 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                     for (IInventorySlot slot : inventoryContainerSlots) {
                         if (slot.isEmpty()) {
                             slot.setStack(item.getItem());
-                            take(item, item.getItem().getCount());
+                            take(item, item.getItem().count());
                             item.discard();
                             playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             break;
                         }
                         ItemStack itemStack = slot.getStack();
                         int maxSize = slot.getLimit(itemStack);
-                        if (ItemStack.isSameItemSameComponents(itemStack, item.getItem()) && itemStack.getCount() < maxSize) {
-                            int needed = maxSize - itemStack.getCount();
-                            int toAdd = Math.min(needed, item.getItem().getCount());
+                        if (ItemStack.isSameItemSameComponents(itemStack, item.getItem()) && itemStack.count() < maxSize) {
+                            int needed = maxSize - itemStack.count();
+                            int toAdd = Math.min(needed, item.getItem().count());
                             MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
                             item.getItem().shrink(toAdd);
                             take(item, toAdd);

@@ -53,7 +53,7 @@ public record SingleItemChemicalRecipeInput(ItemStack item, ChemicalStack chemic
     public int hashCode() {
         int hash = chemical.hashCode();
         hash = 31 * hash + ItemStack.hashItemAndComponents(item);
-        hash = 31 + hash + item.getCount();
+        hash = 31 + hash + item.count();
         return hash;
     }
 }

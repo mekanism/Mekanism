@@ -82,7 +82,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
                     int leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
                     FluidStack remainder = tileAbove.fluidTank.insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
-                    grownAmount += leftOverToInsert - remainder.getAmount();
+                    grownAmount += leftOverToInsert - remainder.amount();
                 }
             }
         }

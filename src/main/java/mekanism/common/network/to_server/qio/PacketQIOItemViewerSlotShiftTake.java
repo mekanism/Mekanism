@@ -41,7 +41,7 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
                     //Simulate how much room we have in the player's inventory before trying to extract anything from the frequency
                     ItemStack simulatedExcess = container.simulateInsertIntoPlayerInventory(player.getUUID(), maxExtract);
                     //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
-                    ItemStack extracted = freq.removeByType(itemType, maxExtract.getCount() - simulatedExcess.getCount());
+                    ItemStack extracted = freq.removeByType(itemType, maxExtract.count() - simulatedExcess.count());
                     if (!extracted.isEmpty()) {
                         ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), extracted);
                         //In theory this should never fail as we simulate above to make sure we don't try moving more than we can

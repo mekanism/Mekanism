@@ -148,10 +148,10 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (installed > 0) {
             int toRemove = removeAll ? installed : 1;
             ItemStack simulatedRemainder = upgradeOutputSlot.insertItem(UpgradeUtils.getStack(upgrade, toRemove), Action.SIMULATE, AutomationType.INTERNAL);
-            if (simulatedRemainder.getCount() < toRemove) {
+            if (simulatedRemainder.count() < toRemove) {
                 //We can fit at least one in the output slot
                 //Actually remove them and put them in the output slot
-                toRemove -= simulatedRemainder.getCount();
+                toRemove -= simulatedRemainder.count();
                 if (installed == toRemove) {
                     upgrades.remove(upgrade);
                 } else {

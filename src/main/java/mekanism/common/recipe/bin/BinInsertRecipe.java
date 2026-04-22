@@ -39,7 +39,7 @@ public class BinInsertRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty() || stackInSlot.getCount() > 1) {
+                    if (!binStack.isEmpty() || stackInSlot.count() > 1) {
                         //If we already have a bin, or our first bin has a stack size greater than one then this is not a bin recipe
                         return false;
                     }
@@ -73,7 +73,7 @@ public class BinInsertRecipe extends BinRecipe {
             ItemStack stackInSlot = inv.getItem(i);
             if (!stackInSlot.isEmpty()) {
                 if (stackInSlot.getItem() instanceof ItemBlockBin) {
-                    if (!binStack.isEmpty() || stackInSlot.getCount() > 1) {
+                    if (!binStack.isEmpty() || stackInSlot.count() > 1) {
                         //If we already have a bin, or our first bin has a stack size greater than one then this is not a bin recipe
                         return ItemStack.EMPTY;
                     }
@@ -188,16 +188,16 @@ public class BinInsertRecipe extends BinRecipe {
                     for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
                         ItemStack stack = craftingMatrix.getItem(i);
                         //Check remaining items
-                        if (stack.getCount() > 1 && ItemStack.isSameItemSameComponents(storedStack, stack)) {
+                        if (stack.count() > 1 && ItemStack.isSameItemSameComponents(storedStack, stack)) {
                             //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
-                            ItemStack toInsert = stack.copyWithCount(stack.getCount() - 1);
+                            ItemStack toInsert = stack.copyWithCount(stack.count() - 1);
                             ItemStack remaining = slot.insertItem(toInsert, Action.EXECUTE, AutomationType.MANUAL);
                             if (remaining.isEmpty()) {
                                 //Set it to the single item we skipped
                                 craftingMatrix.setItem(i, stack.copyWithCount(1));
-                            } else if (remaining.getCount() < toInsert.getCount()) {
+                            } else if (remaining.count() < toInsert.count()) {
                                 //Set the stack to whatever amount we were unable to insert
-                                craftingMatrix.setItem(i, stack.copyWithCount(remaining.getCount() + 1));
+                                craftingMatrix.setItem(i, stack.copyWithCount(remaining.count() + 1));
                             }
                         }
                     }

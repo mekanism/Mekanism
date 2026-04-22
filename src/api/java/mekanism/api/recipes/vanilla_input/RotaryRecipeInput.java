@@ -58,7 +58,7 @@ public record RotaryRecipeInput(Either<FluidStack, ChemicalStack> input) impleme
     public int hashCode() {
         return input.map(fluid -> {
             int hash = FluidStack.hashFluidAndComponents(fluid);
-            return 31 * hash + fluid.getAmount();
+            return 31 * hash + fluid.amount();
         }, ChemicalStack::hashCode);
     }
 }

@@ -229,7 +229,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                         if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                             //If we can accept it all, then add it and decrease our input
                             MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
-                            int amountUsed = itemInput.getCount();
+                            int amountUsed = itemInput.count();
                             MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                         }
                     }

@@ -192,7 +192,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = isFluidEqual(stack))) {
-            int toAdd = Math.min(stack.getAmount(), needed);
+            int toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid
                 if (sameType) {
@@ -206,7 +206,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
                     setStackUnchecked(stack.copyWithAmount(toAdd));
                 }
             }
-            return stack.copyWithAmount(stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -224,7 +224,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
         FluidStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            stored.shrink(ret.getAmount());
+            stored.shrink(ret.amount());
             onContentsChanged();
         }
         return ret;
@@ -304,7 +304,7 @@ public class BasicFluidTank implements IExtendedFluidTank {
      */
     @Override
     public int getFluidAmount() {
-        return stored.getAmount();
+        return stored.amount();
     }
 
     @Override

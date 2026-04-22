@@ -72,7 +72,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // they probably also cause duplication glitches with some of vanilla's slots as well.
         ItemStack extracted = getInventorySlot().getStack().copy();
         //Adjust amount crafted by the amount that would have actually been extracted
-        amountCrafted += extracted.getCount();
+        amountCrafted += extracted.count();
         return extracted;
     }
 

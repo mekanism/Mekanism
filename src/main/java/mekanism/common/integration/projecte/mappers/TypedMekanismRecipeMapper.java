@@ -36,12 +36,14 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.neoforged.neoforge.common.util.TriPredicate;
+import net.neoforged.neoforge.fluids.FluidInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -299,7 +301,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends Recipe<?>> implem
         }
 
         public Object2IntMap<NormalizedSimpleStack> forItems(SequencedCollection<ItemStack> representations) {
-            return forIngredient(representations, NSSItem::createItem, ItemStack::count);
+            return forIngredient(representations, NSSItem::createItem, ItemInstance::count);
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(FluidStackIngredient ingredient) {
@@ -307,7 +309,7 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends Recipe<?>> implem
         }
 
         public Object2IntMap<NormalizedSimpleStack> forFluids(SequencedCollection<FluidStack> representations) {
-            return forIngredient(representations, NSSFluid::createFluid, FluidStack::amount);
+            return forIngredient(representations, NSSFluid::createFluid, FluidInstance::amount);
         }
 
         public Object2IntMap<NormalizedSimpleStack> forIngredient(ChemicalStackIngredient ingredient) {

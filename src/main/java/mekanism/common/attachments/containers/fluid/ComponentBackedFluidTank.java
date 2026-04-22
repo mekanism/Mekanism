@@ -99,14 +99,14 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
             //Fail if we are a full tank or our rate is zero
             return stack;
         } else if (stored.isEmpty() || FluidStack.isSameFluidSameComponents(stored, stack)) {
-            int toAdd = Math.min(stack.getAmount(), needed);
+            int toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //Note: We let setStack handle updating the backing holding stack
                 // We use stored.getAmount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                setContents(attachedFluids, stack.copyWithAmount(stored.getAmount() + toAdd));
+                setContents(attachedFluids, stack.copyWithAmount(stored.amount() + toAdd));
             }
-            return stack.copyWithAmount(stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -129,11 +129,11 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        int size = Math.min(Math.min(getExtractRate(automationType), stored.getAmount()), amount);
+        int size = Math.min(Math.min(getExtractRate(automationType), stored.amount()), amount);
         FluidStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedFluids, stored.copyWithAmount(stored.getAmount() - ret.getAmount()));
+            setContents(attachedFluids, stored.copyWithAmount(stored.amount() - ret.amount()));
         }
         return ret;
     }
@@ -157,7 +157,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (stored.getAmount() == amount || action.simulate()) {
+        if (stored.amount() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -169,7 +169,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     public int growStack(int amount, Action action) {
         AttachedFluids attachedFluids = getAttached();
         FluidStack stored = getContents(attachedFluids);
-        int current = stored.getAmount();
+        int current = stored.amount();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
             return 0;
@@ -187,7 +187,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     protected int getNeeded(FluidStack stored) {
         //Skip the stack lookup for getNeeded
-        return Math.max(0, getCapacity() - stored.getAmount());
+        return Math.max(0, getCapacity() - stored.amount());
     }
 
     @Override
@@ -210,7 +210,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         AttachedFluids attachedFluids = getAttached();
         FluidStack stored = getContents(attachedFluids);
         if (!stored.isEmpty() && FluidStack.isSameFluidSameComponents(stored, stack)) {
-            return extract(attachedFluids, stored, stack.getAmount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
+            return extract(attachedFluids, stored, stack.amount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
         }
         return FluidStack.EMPTY;
     }

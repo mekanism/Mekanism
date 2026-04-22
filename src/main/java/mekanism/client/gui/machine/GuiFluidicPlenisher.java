@@ -43,7 +43,7 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             if (fluid.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, TextUtils.format(fluid.getAmount())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, TextUtils.format(fluid.amount())));
             }
             return list;
         }));

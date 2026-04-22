@@ -40,7 +40,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
             UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
             //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
             if (remainder != null) {
-                if (current.getCount() > 1) {
+                if (current.count() > 1) {
                     //If we have a container but have more than a single stack of it somehow just exit
                     //TODO - 26.1: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
                     return 0;

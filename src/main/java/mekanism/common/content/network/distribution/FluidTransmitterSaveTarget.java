@@ -44,7 +44,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         }
 
         protected void acceptAmount(SplitInfo splitInfo, @NotNull FluidStack resource, int amount) {
-            amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
+            amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.amount()));
             if (currentStored.isEmpty()) {
                 currentStored = resource.copyWithAmount(amount);
             } else {
@@ -57,7 +57,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
             if (!currentStored.isEmpty() && !FluidStack.isSameFluidSameComponents(currentStored, fluidStack)) {
                 return 0;
             }
-            return Math.min(fluidStack.getAmount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.getAmount()));
+            return Math.min(fluidStack.amount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.amount()));
         }
 
         protected void saveShare() {

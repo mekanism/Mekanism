@@ -81,7 +81,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (current.isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return current.copyWithCount(Math.min(current.getCount(), current.getMaxStackSize()));
+        return current.copyWithCount(Math.min(current.count(), current.getMaxStackSize()));
     }
 
     /**

@@ -138,12 +138,12 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
 
     @ComputerMethod
     long getNeeded() {
-        return getCapacity() - getBuffer().getAmount();
+        return getCapacity() - getBuffer().amount();
     }
 
     @ComputerMethod
     double getFilledPercentage() {
-        return getBuffer().getAmount() / (double) getCapacity();
+        return getBuffer().amount() / (double) getCapacity();
     }
     //End methods IComputerTile
 }

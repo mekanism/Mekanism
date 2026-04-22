@@ -543,7 +543,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 ItemStack inputStack = inputSlot.getStack();
                 RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputStack, i -> new RecipeProcessInfo<>());
                 recipeProcessInfo.processes.add(processInfo);
-                recipeProcessInfo.totalCount += inputStack.getCount();
+                recipeProcessInfo.totalCount += inputStack.count();
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload

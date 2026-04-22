@@ -254,7 +254,7 @@ public class ItemSlotsBuilder {
             IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
-                if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
                     //True if we can fill the tank with any of our contents
                     // Note: We need to recheck the fact the fluid is not empty and that it is valid,
                     // in case the item has multiple tanks and only some of the fluids are valid
@@ -299,7 +299,7 @@ public class ItemSlotsBuilder {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                     if (fluidInTank.isEmpty()) {
                         hasEmpty = true;
-                    } else if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                    } else if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
                         //True if the items contents are valid, and we can fill the tank with any of our contents
                         return true;
                     }
@@ -310,7 +310,7 @@ public class ItemSlotsBuilder {
                     return hasEmpty;
                 }
                 FluidStack fluid = fluidTank.getFluid();
-                if (fluid.getAmount() < FluidType.BUCKET_VOLUME) {
+                if (fluid.amount() < FluidType.BUCKET_VOLUME) {
                     //Workaround for buckets not being able to be filled until we have enough of our volume
                     fluid = fluid.copyWithAmount(FluidType.BUCKET_VOLUME);
                 } else {
@@ -338,7 +338,7 @@ public class ItemSlotsBuilder {
                             //Lazily initialize the tank
                             fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                         }
-                        if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < fluidInTank.getAmount()) {
+                        if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
                             //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
                             return mode;
                         }

@@ -122,7 +122,7 @@ public interface IExtendedFluidHandler extends IFluidHandler {
     @Override
     @Deprecated
     default int fill(FluidStack stack, FluidAction action) {
-        return stack.getAmount() - insertFluid(stack, Action.fromFluidAction(action)).getAmount();
+        return stack.amount() - insertFluid(stack, Action.fromFluidAction(action)).amount();
     }
 
     /**

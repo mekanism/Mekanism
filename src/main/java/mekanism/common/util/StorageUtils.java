@@ -91,7 +91,7 @@ public class StorageUtils {
                 return emptyLang.translateColored(EnumColor.GRAY);
             }
             return MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
-                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.getAmount())));
+                  MekanismLang.GENERIC_MB.translate(TextUtils.format(stored.amount())));
         });
     }
 
@@ -126,7 +126,7 @@ public class StorageUtils {
         long amount;
         if (!fluidStack.isEmpty()) {
             contents = fluidStack;
-            amount = fluidStack.getAmount();
+            amount = fluidStack.amount();
             type = MekanismLang.LIQUID;
         } else {
             contents = chemicalStack;
@@ -185,7 +185,7 @@ public class StorageUtils {
                     if (fluid.isEmpty()) {
                         fluid = tank.getFluid().copy();
                     } else if (tank.isFluidEqual(fluid)) {
-                        if (fluid.getAmount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
+                        if (fluid.amount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
                             fluid.grow(tank.getFluidAmount());
                         } else {
                             fluid.setAmount(Integer.MAX_VALUE);
@@ -349,7 +349,7 @@ public class StorageUtils {
     }
 
     public static int getBarWidth(ItemStack stack) {
-        if (stack.getCount() > 1) {
+        if (stack.count() > 1) {
             //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
             // but we may as well short circuit it here
             return 0;
@@ -368,14 +368,14 @@ public class StorageUtils {
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
         if (fluidHandlerItem != null) {
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).getAmount(), fluidHandlerItem.getTankCapacity(tank)));
+                bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).amount(), fluidHandlerItem.getTankCapacity(tank)));
             }
         }
         return 1 - bestRatio;
     }
 
     public static int getEnergyBarWidth(ItemStack stack) {
-        if (stack.getCount() > 1) {
+        if (stack.count() > 1) {
             //Note: Technically this is handled by the below check as the capability isn't exposed (so this isn't even visible),
             // but we may as well short circuit it here
             return 0;
@@ -408,18 +408,18 @@ public class StorageUtils {
                 FluidStack mergeStack = mergeTank.getFluid();
                 if (tank.isEmpty()) {
                     int capacity = tank.getCapacity();
-                    if (mergeStack.getAmount() <= capacity) {
+                    if (mergeStack.amount() <= capacity) {
                         tank.setStack(mergeStack);
                     } else {
                         tank.setStack(mergeStack.copyWithAmount(capacity));
-                        int remaining = mergeStack.getAmount() - capacity;
+                        int remaining = mergeStack.amount() - capacity;
                         if (remaining > 0) {
                             rejects.add(mergeStack.copyWithAmount(remaining));
                         }
                     }
                 } else if (tank.isFluidEqual(mergeStack)) {
-                    int amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
-                    int remaining = mergeStack.getAmount() - amount;
+                    int amount = tank.growStack(mergeStack.amount(), Action.EXECUTE);
+                    int remaining = mergeStack.amount() - amount;
                     if (remaining > 0) {
                         rejects.add(mergeStack.copyWithAmount(remaining));
                     }

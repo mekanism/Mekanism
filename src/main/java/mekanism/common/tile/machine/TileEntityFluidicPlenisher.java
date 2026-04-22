@@ -154,7 +154,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
     }
 
     private boolean canExtractBucket() {
-        return fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).getAmount() == FluidType.BUCKET_VOLUME;
+        return fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).amount() == FluidType.BUCKET_VOLUME;
     }
 
     private void doPlenish() {

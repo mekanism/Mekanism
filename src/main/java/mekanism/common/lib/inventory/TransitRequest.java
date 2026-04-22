@@ -47,7 +47,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
             if (!stack.isEmpty() && finder.test(stack)) {
                 HashedItem hashed = HashedItem.raw(stack);
-                int toUse = Math.min(stack.getCount(), max - ret.getCount(hashed));
+                int toUse = Math.min(stack.count(), max - ret.getCount(hashed));
                 if (toUse == 0) {
                     continue; // continue if we don't need any more of this item type
                 }
@@ -165,7 +165,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         }
 
         public int getSendingAmount() {
-            return inserted.getCount();
+            return inserted.count();
         }
 
         public ItemData getSlotData() {
@@ -209,7 +209,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         @Override
         public int hashCode() {
             int code = ItemStack.hashItemAndComponents(inserted);
-            code = 31 * code + inserted.getCount();
+            code = 31 * code + inserted.count();
             code = 31 * code + slotData.hashCode();
             return code;
         }
@@ -277,7 +277,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
                 //TODO: Can this use raw to avoid a copy? My intuition says yes as I don't think the item data stays around when the stack can mutate
                 // but this definitely needs more thought
                 super(HashedItem.create(stack));
-                totalCount = stack.getCount();
+                totalCount = stack.count();
             }
         }
     }

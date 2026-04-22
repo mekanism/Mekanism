@@ -54,7 +54,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         if (attachment != null) {
             FluidStack fluid = attachment.getFluidInTank(0);
             if (!fluid.isEmpty()) {
-                fluidScale = (float) fluid.getAmount() / attachment.getTankCapacity(0);
+                fluidScale = (float) fluid.amount() / attachment.getTankCapacity(0);
                 fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
                 fluidLight = fluid.getFluidType().getLightLevel(fluid);
                 fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);

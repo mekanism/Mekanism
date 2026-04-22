@@ -148,9 +148,9 @@ public class ExtendedFluidHandlerUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -200,9 +200,9 @@ public class ExtendedFluidHandlerUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -233,10 +233,10 @@ public class ExtendedFluidHandlerUtils {
             if (inTank.isEmpty() || !FluidStack.isSameFluidSameComponents(inTank, stack)) {
                 return FluidStack.EMPTY;
             }
-            return extractFluid.interact(0, stack.getAmount(), side, action);
+            return extractFluid.interact(0, stack.amount(), side, action);
         }
         FluidStack extracted = FluidStack.EMPTY;
-        int toDrain = stack.getAmount();
+        int toDrain = stack.amount();
         for (int tank = 0; tank < tanks; tank++) {
             if (FluidStack.isSameFluidSameComponents(stack, inTankGetter.getStored(tank, side))) {
                 //If there is fluid in the tank that matches the type we are trying to drain, try to drain from it
@@ -246,9 +246,9 @@ public class ExtendedFluidHandlerUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -288,10 +288,10 @@ public class ExtendedFluidHandlerUtils {
             if (tank.isEmpty() || !tank.isFluidEqual(stack)) {
                 return FluidStack.EMPTY;
             }
-            return tank.extract(stack.getAmount(), action, automationType);
+            return tank.extract(stack.amount(), action, automationType);
         }
         FluidStack extracted = FluidStack.EMPTY;
-        int toDrain = stack.getAmount();
+        int toDrain = stack.amount();
         for (IExtendedFluidTank fluidTank : fluidTanks) {
             if (fluidTank.isFluidEqual(stack)) {
                 //If there is fluid in the tank that matches the type we are trying to drain, try to drain from it
@@ -301,9 +301,9 @@ public class ExtendedFluidHandlerUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;

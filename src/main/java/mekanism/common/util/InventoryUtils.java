@@ -53,7 +53,7 @@ public final class InventoryUtils {
                 // otherwise, just check against there being no known player
                 return;
             }
-            int scalar = stack.getCount();
+            int scalar = stack.count();
             BlockPos blockPos = entity.blockPosition();
             ItemDropper dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
@@ -97,13 +97,13 @@ public final class InventoryUtils {
                 // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
                 // drop items past their max stack size
                 if (scalar > 1) {
-                    if (stackToDrop.getCount() > stackToDrop.getMaxStackSize()) {
+                    if (stackToDrop.count() > stackToDrop.getMaxStackSize()) {
                         //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
                         // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
                         // much in the first place.
-                        stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.getCount()));
+                        stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.count()));
                     } else {
-                        stackToDrop.setCount(scalar * stackToDrop.getCount());
+                        stackToDrop.setCount(scalar * stackToDrop.count());
                     }
                 }
                 //Copy the stack as the passed slot is likely to be the actual backing slot
@@ -119,7 +119,7 @@ public final class InventoryUtils {
      * @param dropper Called to drop the item.
      */
     public static void dropStack(Level level, BlockPos pos, Direction side, ItemStack stack, ItemDropper dropper) {
-        int count = stack.getCount();
+        int count = stack.count();
         int max = stack.getMaxStackSize();
         if (count > max) {
             //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing

@@ -121,7 +121,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
             for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
                 ItemStack stack = handler.getStackInSlot(i);
                 if (stack.is(item)) {
-                    found += stack.getCount();
+                    found += stack.count();
                 }
             }
             sameCount = found == count;

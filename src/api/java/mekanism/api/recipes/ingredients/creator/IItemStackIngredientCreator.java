@@ -29,7 +29,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     @Override
     default ItemStackIngredient from(ItemStack instance) {
         Objects.requireNonNull(instance, "ItemStackIngredients cannot be created from a null ItemStack.");
-        return from(instance, instance.getCount());
+        return from(instance, instance.count());
     }
 
     /**

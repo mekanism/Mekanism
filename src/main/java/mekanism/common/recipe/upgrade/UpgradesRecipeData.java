@@ -87,10 +87,10 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                     if (inputStack.isEmpty()) {
                         inputStack = slotInStack;
                         continue;
-                    } else if (inputStack.getCount() < inputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(inputStack, slotInStack)) {
-                        int needed = inputStack.getMaxStackSize() - inputStack.getCount();
-                        if (slotInStack.getCount() <= needed) {
-                            inputStack.grow(slotInStack.getCount());
+                    } else if (inputStack.count() < inputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(inputStack, slotInStack)) {
+                        int needed = inputStack.getMaxStackSize() - inputStack.count();
+                        if (slotInStack.count() <= needed) {
+                            inputStack.grow(slotInStack.count());
                             continue;
                         } else {
                             inputStack.grow(needed);
@@ -100,13 +100,13 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                 }
                 if (outputStack.isEmpty()) {
                     outputStack = slotInStack;
-                } else if (outputStack.getCount() < outputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(outputStack, slotInStack)) {
-                    int needed = outputStack.getMaxStackSize() - outputStack.getCount();
-                    if (slotInStack.getCount() > needed) {
+                } else if (outputStack.count() < outputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(outputStack, slotInStack)) {
+                    int needed = outputStack.getMaxStackSize() - outputStack.count();
+                    if (slotInStack.count() > needed) {
                         //Doesn't all fit
                         return false;
                     }
-                    outputStack.grow(outputStack.getCount());
+                    outputStack.grow(outputStack.count());
                 } else {
                     //Can't fit all the items
                     return false;

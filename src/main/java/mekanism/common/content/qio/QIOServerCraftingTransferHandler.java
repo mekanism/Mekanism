@@ -84,7 +84,7 @@ public class QIOServerCraftingTransferHandler {
             IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             if (!inputSlot.isEmpty()) {
                 ItemStack available = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
-                if (available.getCount() < inputSlot.getCount()) {
+                if (available.count() < inputSlot.getCount()) {
                     //TODO: Eventually it would be nice if we added in some support so that if an item is staying put in its crafting slot
                     // we don't actually need to do any validation of if it can be extracted from when it will just end up in the same spot anyways
                     // but for now this isn't that major of a concern as our slots don't actually have any restrictions on them in regards to extracting
@@ -304,7 +304,7 @@ public class QIOServerCraftingTransferHandler {
                 @Override
                 protected int getRemaining(int slot, ItemStack currentStored) {
                     SlotData slotData = availableItems.get((byte) (slot + 9));
-                    return slotData == null ? currentStored.getCount() : slotData.getAvailable();
+                    return slotData == null ? currentStored.count() : slotData.getAvailable();
                 }
             };
             Object2IntMap<HashedItem> stillLeftOver = simulatedInventory.shuffleInputs(leftOverInput, frequency != null);
@@ -438,10 +438,10 @@ public class QIOServerCraftingTransferHandler {
                         bail(targetContents, "Received transfer request from: {}, for: {}, but could not extract item: {} from the QIO.",
                               player, recipeID, storedItem);
                         return;
-                    } else if (stack.getCount() < source.getUsed()) {
+                    } else if (stack.count() < source.getUsed()) {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} of item: {} from the QIO. "
                                              + "This should not be possible as it should have been caught during simulation. Attempting to continue anyways with the actual "
-                                             + "extracted amount of {}.", player, recipeID, source.getUsed(), storedItem, stack.getCount());
+                                             + "extracted amount of {}.", player, recipeID, source.getUsed(), storedItem, stack.count());
                     }
                 } else {
                     int actualSlot;
@@ -463,19 +463,19 @@ public class QIOServerCraftingTransferHandler {
                         bail(targetContents, "Received transfer request from: {}, for: {}, could not extract item from {} slot: {}. "
                                              + "This likely means that more of it was requested than is stored.", player, recipeID, slotType, actualSlot);
                         return;
-                    } else if (stack.getCount() < source.getUsed()) {
+                    } else if (stack.count() < source.getUsed()) {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} from {} slot: {}. "
                                              + "This should not be possible as it should have been caught during simulation. Attempting to continue anyways with the "
-                                             + "actual extracted amount of {}.", player, recipeID, source.getUsed(), slotType, actualSlot, stack.getCount());
+                                             + "actual extracted amount of {}.", player, recipeID, source.getUsed(), slotType, actualSlot, stack.count());
                     }
                 }
                 byte targetSlot = entry.getByteKey();
                 if (targetContents.containsKey(targetSlot)) {
                     ItemStack existing = targetContents.get(targetSlot);
                     if (ItemStack.isSameItemSameComponents(existing, stack)) {
-                        int needed = existing.getMaxStackSize() - existing.getCount();
-                        if (stack.getCount() <= needed) {
-                            existing.grow(stack.getCount());
+                        int needed = existing.getMaxStackSize() - existing.count();
+                        if (stack.count() <= needed) {
+                            existing.grow(stack.count());
                         } else {
                             existing.grow(needed);
                             //Note: We can safely modify the stack as all our ways of extracting return a new stack
@@ -757,7 +757,7 @@ public class QIOServerCraftingTransferHandler {
         private final ItemStack stack;
 
         public SlotData(ItemStack stack) {
-            this(stack, stack.getCount());
+            this(stack, stack.count());
         }
 
         protected SlotData(ItemStack stack, int available) {

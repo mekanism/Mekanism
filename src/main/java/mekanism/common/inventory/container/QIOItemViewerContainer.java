@@ -329,7 +329,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 if (!slotStack.isEmpty()) {
                     //There is an item in the slot
                     ItemStack ret = frequency.addItem(slotStack);
-                    if (slotStack.getCount() != ret.getCount()) {
+                    if (slotStack.count() != ret.count()) {
                         //We were able to insert some of it
                         //Make sure that we copy it so that we aren't just pointing to the reference of it
                         setTransferTracker(slotStack.copy(), slotID);
@@ -367,7 +367,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 SelectedWindowData windowData = craftingWindow.getWindowData();
                 //Start by trying to stack it with other things and if that fails try to insert it into empty slots
                 stackToInsert = insertItem(craftingGridSlots, stackToInsert, windowData);
-                if (stackToInsert.getCount() != slotStack.getCount()) {
+                if (stackToInsert.count() != slotStack.count()) {
                     //If something changed, decrease the stack by the amount we inserted,
                     // and return it as a new stack for what is now in the slot
                     return Optional.of(transferSuccess(currentSlot, player, slotStack, stackToInsert));
@@ -712,7 +712,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), 1));
                 } else {
                     //Left click -> all held, right click -> single item
-                    int toAdd = button == InputConstants.MOUSE_BUTTON_LEFT ? heldItem.getCount() : 1;
+                    int toAdd = button == InputConstants.MOUSE_BUTTON_LEFT ? heldItem.count() : 1;
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotPlace(toAdd));
                 }
             }

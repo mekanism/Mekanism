@@ -137,7 +137,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
                         if (energyContainer.insert(output, Action.SIMULATE, AutomationType.MANUAL) == 0L) {
                             //If we can accept it all, then add it and decrease our input
                             MekanismUtils.logExpectedZero(energyContainer.insert(output, Action.EXECUTE, AutomationType.MANUAL));
-                            int amountUsed = itemInput.getCount();
+                            int amountUsed = itemInput.count();
                             MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                         }
                     }

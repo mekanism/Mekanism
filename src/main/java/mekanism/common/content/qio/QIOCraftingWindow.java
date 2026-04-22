@@ -255,7 +255,7 @@ public class QIOCraftingWindow implements IContentsListener {
      * Calculates absolute maximum of an output to attempt to craft, this may be higher than how much we have materials for
      */
     private int calculateMaxCraftAmount(@NotNull ItemStack stack, @Nullable QIOFrequency frequency) {
-        int outputSize = stack.getCount();
+        int outputSize = stack.count();
         //Note: We start at the absolute max stack size, rather than at integer max value just to be a little more accurate
         int inputSize = Item.ABSOLUTE_MAX_STACK_SIZE;
         for (IInventorySlot inputSlot : inputSlots) {
@@ -306,7 +306,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, true, windowData);
                         remainder = MekanismContainer.insertItem(hotBarSlots, remainder, false, windowData);
                         remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, false, windowData);
-                        inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                        inputSlot.extractItem(toTransfer.count() - remainder.count(), Action.EXECUTE, AutomationType.INTERNAL);
                     }
                 }
             }
@@ -319,7 +319,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
                         if (!toTransfer.isEmpty()) {
                             ItemStack remainder = frequency.addItem(toTransfer);
-                            inputSlot.extractItem(toTransfer.getCount() - remainder.getCount(), Action.EXECUTE, AutomationType.INTERNAL);
+                            inputSlot.extractItem(toTransfer.count() - remainder.count(), Action.EXECUTE, AutomationType.INTERNAL);
                         }
                     }
                 }
@@ -351,7 +351,7 @@ public class QIOCraftingWindow implements IContentsListener {
         resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
         int maxToCraft = calculateMaxCraftAmount(result, frequency);
-        int amountPerCraft = result.getCount();
+        int amountPerCraft = result.count();
         //Note: We initialized crafted here instead of in the for loop so that we can query how much was actually crafted
         int crafted = 0;
         remainderHelper.reset();
@@ -565,12 +565,12 @@ public class QIOCraftingWindow implements IContentsListener {
         // if everything fails do what vanilla does as fallback and just drops it on the ground as the player
         //Add the remaining stack for the slot back into the slot
         //Note: We don't bother checking if it is empty as insertItem will just short circuit if it is
-        int toInsert = remainder.getCount();
+        int toInsert = remainder.count();
         //Try inserting the item back into the slot it came from, this should only be able to actually insert it if it
         // is still valid for the recipe and the rest of the stack has been used completely
         remainder = slot.insertItem(remainder, Action.EXECUTE, AutomationType.INTERNAL);
         if (!remainder.isEmpty()) {
-            if (copyIfNeeded && toInsert == remainder.getCount()) {
+            if (copyIfNeeded && toInsert == remainder.count()) {
                 //If we plan on reusing the same stack of the remainder, and we didn't insert part of it into the slot,
                 // so we don't already have a copy of it, make a copy of the remainder to allow vanilla to safely modify
                 // it in addItemStackToInventory if it needs/wants to

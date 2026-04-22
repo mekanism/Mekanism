@@ -116,7 +116,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }
 
     private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (action.execute() && remainder.getAmount() < stack.getAmount()) {
+        if (action.execute() && remainder.amount() < stack.amount()) {
             getMultiblock().triggerValveTransfer(this);
         }
         return remainder;

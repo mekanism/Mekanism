@@ -54,7 +54,7 @@ public record PacketFluidNetworkContents(UUID networkID, FluidStack fluid) imple
     public int hashCode() {
         int hash = networkID.hashCode();
         hash = 31 * hash + FluidStack.hashFluidAndComponents(fluid);
-        hash = 31 * hash + fluid.getAmount();
+        hash = 31 * hash + fluid.amount();
         return hash;
     }
 }

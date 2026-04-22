@@ -123,7 +123,7 @@ public final class FluidUtils {
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, stack.getAmount(), toSend);
+        return EmitUtils.sendToAcceptors(target, stack.amount(), toSend);
     }
 
     public static boolean canFill(IFluidHandler handler, @NotNull FluidStack stack) {
@@ -154,9 +154,9 @@ public final class FluidUtils {
                     int filled = handler.fill(fluidTank.getFluid().copy(), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
                     ItemStack container = handler.getContainer();
                     if (filled > 0) {
-                        if (itemStack.getCount() == 1) {
+                        if (itemStack.count() == 1) {
                             player.setItemInHand(hand, container);
-                        } else if (itemStack.getCount() > 1 && player.getInventory().add(container)) {
+                        } else if (itemStack.count() > 1 && player.getInventory().add(container)) {
                             itemStack.shrink(1);
                         } else {
                             player.drop(container, false, true);
@@ -168,8 +168,8 @@ public final class FluidUtils {
                 }
             } else {
                 FluidStack simulatedRemainder = fluidTank.insert(fluidInItem, Action.SIMULATE, AutomationType.MANUAL);
-                int remainder = simulatedRemainder.getAmount();
-                int storedAmount = fluidInItem.getAmount();
+                int remainder = simulatedRemainder.amount();
+                int storedAmount = fluidInItem.amount();
                 if (remainder < storedAmount) {
                     boolean filled = false;
                     FluidStack drained = handler.drain(fluidInItem.copyWithAmount(storedAmount - remainder), player.isCreative() ? FluidAction.SIMULATE : FluidAction.EXECUTE);
@@ -178,7 +178,7 @@ public final class FluidUtils {
                         if (player.isCreative()) {
                             filled = true;
                         } else if (!container.isEmpty()) {
-                            if (itemStack.getCount() == 1) {
+                            if (itemStack.count() == 1) {
                                 player.setItemInHand(hand, container);
                                 filled = true;
                             } else if (player.getInventory().add(container)) {

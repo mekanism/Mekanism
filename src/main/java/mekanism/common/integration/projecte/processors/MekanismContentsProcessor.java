@@ -130,7 +130,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
                 if (itemEmc == 0) {
                     return 0;
                 }
-                currentEMC = addEmc(currentEMC, itemEmc, stack.getCount());
+                currentEMC = addEmc(currentEMC, itemEmc, stack.count());
             }
         }
         return currentEMC;

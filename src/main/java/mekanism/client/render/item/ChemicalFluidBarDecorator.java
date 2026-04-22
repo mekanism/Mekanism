@@ -70,7 +70,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IExtendedFluidTank tank) {
         FluidStack fluid = tank.getFluid();
-        renderBar(guiGraphics, stackXPos, yPos, fluid.getAmount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid));
+        renderBar(guiGraphics, stackXPos, yPos, fluid.amount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid));
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {

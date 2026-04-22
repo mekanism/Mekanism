@@ -65,7 +65,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     @Override
     public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving) {
         if (!world.isClientSide() && entityLiving instanceof Player player) {
-            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).getAmount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
+            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).amount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
                 IFluidHandlerItem handler = Capabilities.FLUID.getCapability(stack);
@@ -104,7 +104,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
         if (!MekanismUtils.isPlayingMode(player)) {
             return InteractionResult.PASS;
         }
-        if (player.canEat(false) && getFluid(item).getAmount() >= 50) {
+        if (player.canEat(false) && getFluid(item).amount() >= 50) {
             player.startUsingItem(hand);
             return InteractionResultHolder.consume(item);
         }
