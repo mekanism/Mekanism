@@ -54,7 +54,7 @@ public class BlockCardboardBox extends BlockMekanism implements IStateStorage, I
                 MekanismCriteriaTriggers.UNBOX_CARDBOARD_BOX.value().trigger((ServerPlayer) player);
             }
         }
-        return InteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     private static boolean canReplace(Level world, Player player, BlockPos pos, BlockState state) {

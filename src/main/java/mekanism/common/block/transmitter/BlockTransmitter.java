@@ -106,9 +106,11 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
 
     @NotNull
     @Override
-    protected VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
+    protected VoxelShape getOcclusionShape(@NotNull BlockState state) {
+        //TODO - 26.1: can we do this?
         //Override this so that we ALWAYS have the full collision box, even if a configurator is being held
-        return getRealShape(world, pos);
+        //return getRealShape(world, pos);
+        return getCenter();
     }
 
     @NotNull

@@ -85,7 +85,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return InteractionResult.TRY_WITH_EMPTY_HAND;
         }
         if (stack.isEmpty() && player.isShiftKeyDown()) {
-            return bin.toggleLock() ? InteractionResult.sidedSuccess(world.isClientSide()) : InteractionResult.FAIL;
+            return bin.toggleLock() ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
         } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
             ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();
@@ -96,7 +96,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
                         ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
-                        player.setItemInHand(hand, remain);
+                        player.setItemInHand(hand, remain);//TODO - 26.1: shouldn't this end up with returning SUCCESS_SERVER.heldItemTransformedTo() ? it does seem to have a fallback to getItemInHand, but...
                     }
                     //Note: We set the add ticks regardless so that we can allow double right-clicking to insert items from the player's inventory
                     // without requiring them to first be holding the same item
@@ -118,6 +118,6 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                 }
             }
         }
-        return ItemInteractionResult.sidedSuccess(world.isClientSide());
+        return InteractionResult.SUCCESS_SERVER;
     }
 }

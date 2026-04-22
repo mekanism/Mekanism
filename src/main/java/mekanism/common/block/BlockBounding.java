@@ -319,8 +319,10 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
 
     @NotNull
     @Override
-    protected VoxelShape getOcclusionShape(@NotNull BlockState state, @NotNull BlockGetter world, @NotNull BlockPos pos) {
-        return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
+    protected VoxelShape getOcclusionShape(@NotNull BlockState state) {
+        //Todo - 26.1: perhaps override getAppearance?
+        //return proxyShape(world, pos, null, (s, level, p, ctx) -> s.getOcclusionShape(level, p));
+        return super.getOcclusionShape(state);
     }
 
     @NotNull

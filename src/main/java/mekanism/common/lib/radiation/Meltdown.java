@@ -179,7 +179,7 @@ public class Meltdown {
 
         private final UUID multiblockID;
 
-        private MeltdownExplosion(Level world, double x, double y, double z, float radius, boolean causesFire, BlockInteraction mode, UUID multiblockID) {
+        private MeltdownExplosion(ServerLevel world, double x, double y, double z, float radius, boolean causesFire, BlockInteraction mode, UUID multiblockID) {
             super(world, null, x, y, z, radius, causesFire, mode);
             this.multiblockID = multiblockID;
         }

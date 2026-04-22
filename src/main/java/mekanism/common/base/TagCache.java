@@ -40,7 +40,7 @@ public final class TagCache {
     private TagCache() {
     }
 
-    private static final HolderSet.Named<Block> MINER_BLACKLIST_LOOKUP = BuiltInRegistries.BLOCK.getOrCreateTag(MekanismTags.Blocks.MINER_BLACKLIST);
+    private static final HolderSet.Named<Block> MINER_BLACKLIST_LOOKUP = BuiltInRegistries.BLOCK.getOrThrow(MekanismTags.Blocks.MINER_BLACKLIST);
 
     private static final Map<String, MatchingStacks> blockTagStacks = new Object2ObjectOpenHashMap<>();
     private static final Map<String, List<ItemStack>> itemTagStacks = new Object2ObjectOpenHashMap<>();

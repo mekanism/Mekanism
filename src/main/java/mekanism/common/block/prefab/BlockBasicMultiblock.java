@@ -33,7 +33,7 @@ public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends Block
           @NotNull InteractionHand hand, @NotNull BlockHitResult hit) {
         TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, pos);
         if (tile == null) {
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.FAIL;
         } else if (world.isClientSide()) {
             if (!MekanismUtils.canUseAsWrench(player.getItemInHand(hand))) {
                 if (!tile.hasGui() || !tile.getMultiblock().isFormed()) {
