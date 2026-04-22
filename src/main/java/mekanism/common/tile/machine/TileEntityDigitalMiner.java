@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -212,8 +211,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private void closeInvalidScreens() {
         if (getActive() && !playersUsing.isEmpty()) {
-            for (Player player : new HashSet<>(playersUsing)) {
+            List<Player> toClose = null;
+            for (Player player : playersUsing) {
                 if (player.containerMenu instanceof DigitalMinerConfigContainer) {
+                    if (toClose == null) {
+                        toClose = new ArrayList<>(2);
+                    }
+                    toClose.add(player);
+                }
+            }
+            if (toClose != null) {
+                for (Player player : toClose) {
                     player.closeContainer();
                 }
             }
