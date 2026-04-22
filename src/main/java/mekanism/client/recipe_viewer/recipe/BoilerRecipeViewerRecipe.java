@@ -16,20 +16,19 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
-import mekanism.client.recipe_viewer.emi.INamedRVRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import org.jetbrains.annotations.Nullable;
 
 public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient superHeatedCoolant, FluidStackIngredient water, ChemicalStack steam,
-                                       ChemicalStack cooledCoolant, double temperature) implements INamedRVRecipe {
+                                       ChemicalStack cooledCoolant, double temperature) /*TODO - 26.1 EMI implements INamedRVRecipe*/ {
 
     private static final int WATER_AMOUNT = 1;
     public static final Codec<BoilerRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(

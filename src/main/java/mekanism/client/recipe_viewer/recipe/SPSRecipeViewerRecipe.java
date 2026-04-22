@@ -9,14 +9,13 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
-import mekanism.client.recipe_viewer.emi.INamedRVRecipe;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.resources.Identifier;
 
 //TODO - V11: Make the SPS have a proper recipe type to allow for custom recipes
-public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input, ChemicalStack output) implements INamedRVRecipe {
+public record SPSRecipeViewerRecipe(Identifier id, ChemicalStackIngredient input, ChemicalStack output) /*TODO - 26.1: EMI implements INamedRVRecipe*/ {
 
     public static final Codec<SPSRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(SPSRecipeViewerRecipe::id),

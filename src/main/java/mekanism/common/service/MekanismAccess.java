@@ -7,7 +7,6 @@ import mekanism.api.recipes.ingredients.creator.IChemicalIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IChemicalStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IFluidStackIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
-import mekanism.client.recipe_viewer.emi.MekanismEmiHelper;
 import mekanism.client.recipe_viewer.jei.MekanismJEIHelper;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ingredients.ChemicalIngredientCreator;
@@ -27,9 +26,10 @@ public class MekanismAccess implements IMekanismAccess {
     }
 
     @Override
-    public IMekanismEmiHelper emiHelper() {
-        Mekanism.hooks.emi.assertLoaded();
-        return MekanismEmiHelper.INSTANCE;
+    public IMekanismEmiHelper emiHelper() {// TODO - 26.1: EMI
+        throw new IllegalStateException("EMI not included");
+        /*Mekanism.hooks.emi.assertLoaded();
+        return MekanismEmiHelper.INSTANCE;*/
     }
 
     @Override
