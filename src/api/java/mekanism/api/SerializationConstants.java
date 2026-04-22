@@ -15,14 +15,6 @@ public final class SerializationConstants {
     public static final String CUSTOM_NAME = "CustomName";
     public static final String ENTITY = "entity";
     public static final String ID = "id";
-    /**
-     * Used for TrialSpawnerBlock and other newer spawners
-     */
-    public static final String SPAWN_DATA = "spawn_data";
-    /**
-     * Used for SpawnerBlock
-     */
-    public static final String SPAWN_DATA_LEGACY = "SpawnData";
     public static final String X = "x";
     public static final String Y = "y";
     public static final String Z = "z";

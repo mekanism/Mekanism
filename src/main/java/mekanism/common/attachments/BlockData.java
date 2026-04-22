@@ -5,10 +5,10 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.util.RegistryUtils;
@@ -16,37 +16,37 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentGetter;
-import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.component.TooltipProvider;
-import net.minecraft.world.item.component.TypedEntityData;
+import net.minecraft.world.level.BaseSpawner;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.Spawner;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.DecoratedPotBlock;
 import net.minecraft.world.level.block.SpawnerBlock;
 import net.minecraft.world.level.block.TrialSpawnerBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.entity.DecoratedPotBlockEntity;
 import net.minecraft.world.level.block.entity.PotDecorations;
+import net.minecraft.world.level.block.entity.trialspawner.TrialSpawnerStateData;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
+import net.minecraft.world.level.storage.TagValueInput;
+import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -103,7 +103,10 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
             //And get the block entity and load it from the data
             BlockEntity tile = WorldUtils.getTileEntity(level, pos);
             if (tile != null) {
-                tile.loadWithComponents(blockEntityTag, level.registryAccess());
+                try (var problemRep = new ProblemReporter.ScopedCollector(tile.problemPath(), Mekanism.logger)) {
+                    ValueInput valueInput = TagValueInput.create(problemRep, level.registryAccess(), blockEntityTag);
+                    tile.loadWithComponents(valueInput);
+                }
             }
         }
         if (tryPickup != null) {
@@ -126,23 +129,20 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
                         .orElse(UNKNOWN)
             ));
             if (block instanceof SpawnerBlock || block instanceof TrialSpawnerBlock) {
-                String key = block instanceof SpawnerBlock ? SerializationConstants.SPAWN_DATA_LEGACY : SerializationConstants.SPAWN_DATA;
-                //TODO - 26.1: Figure this out
-                //TypedEntityData<BlockEntityType<?>> typedEntityData = blockEntityTag.get(DataComponents.BLOCK_ENTITY_DATA);
-                //Spawner.appendHoverText(typedEntityData, tooltipAdder, "SpawnData");
-                CompoundTag spawnData = blockEntityTag.getCompound(key);
-                if (spawnData.contains(SerializationConstants.ENTITY, Tag.TAG_COMPOUND)) {
+                String key = block instanceof SpawnerBlock ? BaseSpawner.SPAWN_DATA_TAG : TrialSpawnerStateData.TAG_SPAWN_DATA;
+                CompoundTag spawnData = blockEntityTag.getCompoundOrEmpty(key);
+                CompoundTag entityTag = spawnData.getCompoundOrEmpty(Entity.TAG_ID);
+                Optional<EntityType<?>> entityType = entityTag.read(Entity.TAG_ID, EntityType.CODEC);
+                if (entityType.isPresent()) {
                     tooltipAdder.accept(MekanismLang.BLOCK_ENTITY_SPAWN_TYPE.translateColored(EnumColor.INDIGO, EnumColor.GRAY,
-                          RegistryUtils.getHolderById(spawnData.getCompound(SerializationConstants.ENTITY), BuiltInRegistries.ENTITY_TYPE)
-                                .map(holder -> holder.value().getDescription())
-                                .orElse(UNKNOWN)
+                          entityType
+                                .get().getDescription()
                     ));
                 }
             } else if (block instanceof DecoratedPotBlock) {
                 //Based off ItemStack#addToTooltip, but using the values we already have
-                //TODO - 26.1: Fix this, I am guessing that the component getter we are using isn't actually correct as we want to grab it from the block entity tag
-                PotDecorations decorations = blockEntityTag.get(DataComponents.POT_DECORATIONS);
-                if (decorations != null) {// && tooltipDisplay.shows(DataComponents.POT_DECORATIONS)
+                PotDecorations decorations = blockEntityTag.read(DecoratedPotBlockEntity.TAG_SHERDS, PotDecorations.CODEC).orElse(PotDecorations.EMPTY);
+                if (decorations != PotDecorations.EMPTY) {// && tooltipDisplay.shows(DataComponents.POT_DECORATIONS)
                     Consumer<Component> tooltipListAdder = decoration -> {
                         if (decoration == CommonComponents.EMPTY) {
                             //If it is the blank line being added before the list of decorations, also add our section that displays it as being decorated
@@ -153,7 +153,7 @@ public record BlockData(BlockState blockState, @Nullable CompoundTag blockEntity
                             tooltipAdder.accept(MekanismLang.GENERIC_LIST.translateColored(EnumColor.INDIGO, EnumColor.GRAY, decoration));
                         }
                     };
-                    decorations.addToTooltip(context, tooltipListAdder, flag, blockEntityTag);
+                    decorations.addToTooltip(context, tooltipListAdder, flag, /*unused*/DataComponentMap.EMPTY);
                 }
             }
         }
