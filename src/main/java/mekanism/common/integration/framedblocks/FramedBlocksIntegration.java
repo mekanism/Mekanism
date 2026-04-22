@@ -17,7 +17,7 @@ import io.github.xfacthd.framedblocks.api.util.FramedConstants;
 public final class FramedBlocksIntegration {
 
     private static final DeferredRegister<CamoContainerFactory<?>> CAMO_FACTORIES = DeferredRegister.create(
-            FramedConstants.CAMO_CONTAINER_FACTORY_REGISTRY_KEY,
+            FramedConstants.Registries.CAMO_CONTAINER_FACTORY_REGISTRY_KEY,
             Mekanism.MODID
     );
     private static final DeferredRegister<ParticleType<?>> PARTICLE_TYPES = DeferredRegister.create(Registries.PARTICLE_TYPE, Mekanism.MODID);

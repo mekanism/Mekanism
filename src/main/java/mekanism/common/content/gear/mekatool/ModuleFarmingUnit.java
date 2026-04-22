@@ -40,6 +40,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -100,7 +101,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     @Override
-    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
+    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemInstance stack, ItemAbility action) {
         if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
             return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ItemAbilities.SHOVEL_FLATTEN) {

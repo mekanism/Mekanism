@@ -63,6 +63,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -114,7 +115,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
             IModuleContainer container = moduleContainer(stack);
             return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
@@ -130,7 +131,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemInstance stack, ItemAbility action) {
         return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
     }
 

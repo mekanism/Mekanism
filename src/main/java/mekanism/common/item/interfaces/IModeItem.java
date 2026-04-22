@@ -9,6 +9,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,7 +83,7 @@ public interface IModeItem {
 
         MODE getDefaultMode();
 
-        default MODE getMode(ItemStack stack) {
+        default MODE getMode(ItemInstance stack) {
             return stack.getOrDefault(getModeDataType(), getDefaultMode());
         }
 

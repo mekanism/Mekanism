@@ -1,6 +1,10 @@
 package mekanism.common.integration.framedblocks;
 
 import com.mojang.serialization.MapCodec;
+import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
+import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
+import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
+import io.github.xfacthd.framedblocks.api.util.ConfigView;
 import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -14,18 +18,16 @@ import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Holder.Reference;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
-import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
-import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
-import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
-import io.github.xfacthd.framedblocks.api.util.ConfigView;
 
 final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCamoContainer> {
 
@@ -40,24 +42,20 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     private static final Component MSG_HAS_SPECIAL_HANDLING = MekanismLang.FRAMEDBLOCKS_CAMO_HAS_SPECIAL_HANDLING.translate();
 
     @Override
-    protected void writeToNetwork(CompoundTag tag, ChemicalCamoContainer camo) {
+    protected void writeToNetwork(ValueOutput output, ChemicalCamoContainer camo) {
         Holder<Chemical> chemical = camo.getChemicalHolder();
-        tag.putInt(SerializationConstants.CHEMICAL, MekanismAPI.CHEMICAL_REGISTRY.getId(chemical.value()));
+        output.putInt(SerializationConstants.CHEMICAL, MekanismAPI.CHEMICAL_REGISTRY.getId(chemical.value()));
     }
 
     @Override
-    protected ChemicalCamoContainer readFromNetwork(CompoundTag tag) {
-        Optional<Reference<Chemical>> holder = tag.getInt(SerializationConstants.CHEMICAL).flatMap(MekanismAPI.CHEMICAL_REGISTRY::get);
-        //noinspection OptionalIsPresent
-        if (holder.isPresent()) {
-            return new ChemicalCamoContainer(holder.get());
-        }
-        return new ChemicalCamoContainer(MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+    protected ChemicalCamoContainer readFromNetwork(ValueInput input) {
+        Chemical chemical = MekanismAPI.CHEMICAL_REGISTRY.byId(input.getIntOr(SerializationConstants.CHEMICAL, -1));
+        return new ChemicalCamoContainer(MekanismAPI.CHEMICAL_REGISTRY.wrapAsHolder(chemical));
     }
 
     @Override
     @Nullable
-    public ChemicalCamoContainer applyCamo(Level level, BlockPos pos, Player player, ItemStack stack) {
+    public ChemicalCamoContainer applyCamo(Level level, BlockPos pos, Player player, ItemAccess itemAccess) {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
         if (handler == null || handler.getChemicalTanks() <= 0) {
             return null;
@@ -87,8 +85,8 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     }
 
     @Override
-    public boolean removeCamo(Level level, BlockPos pos, Player player, ItemStack stack, ChemicalCamoContainer camo) {
-        if (stack.isEmpty()) {
+    public boolean removeCamo(Level level, BlockPos pos, Player player, ItemAccess itemAccess, ChemicalCamoContainer camo) {
+        if (itemAccess.getResource().isEmpty()) {
             return false;
         }
 

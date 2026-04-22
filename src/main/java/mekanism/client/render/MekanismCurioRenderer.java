@@ -1,16 +1,26 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.client.render.armor.ICustomArmor;
+import net.minecraft.client.model.EntityModel;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.world.item.ItemStack;
+import top.theillusivec4.curios.api.SlotContext;
+import top.theillusivec4.curios.api.client.ICurioRenderer;
 
-//TODO - 26.1 curio render
-public record MekanismCurioRenderer(ICustomArmor model) {} /*implements ICurioRenderer {
+public record MekanismCurioRenderer(ICustomArmor model) implements ICurioRenderer {
 
     @Override
-    public <T extends EntityRenderState, M extends EntityModel<T>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
-          RenderLayerParent<T, M> renderLayerParent, MultiBufferSource renderTypeBuffer, int light, float limbSwing, float limbSwingAmount,
-          float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
+    public <S extends LivingEntityRenderState, M extends EntityModel<? super S>> void render(ItemStack stack, SlotContext slotContext, PoseStack matrixStack,
+          SubmitNodeCollector submitNodeCollector, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context,
+          float yRotation, float xRotation) {
         if (renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel) {
             this.model.render(humanoidModel, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasFoil(), slotContext.entity(), stack);
         }
     }
-}*/
+}
