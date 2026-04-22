@@ -5,23 +5,18 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.tileentity.RenderSeismicVibrator.VibratorRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -55,7 +50,8 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
 
     @Override
     public void submit(VibratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        poseStack.pushPose();
+        //TODO - 26.1: rendering
+        /*poseStack.pushPose();
         poseStack.translate(0, 0.625 * state.piston, 0);
         nodeCollector.submitModel(
               MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
@@ -67,7 +63,7 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
               0,//No outline
               state.breakProgress
         );
-        poseStack.popPose();
+        poseStack.popPose();*/
     }
 
     @Override
@@ -83,9 +79,10 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack poseStack, VertexConsumer buffer) {
         if (tile instanceof TileEntitySeismicVibrator vibrator) {
-            if (lines == null) {
+            //TODO - 26.1 rendering
+            /*if (lines == null) {
                 lines = Outlines.extract(tile.getLevel(), tile.getBlockPos(), state, MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel());
-            }
+            }*/
             poseStack.pushPose();
             float piston = Math.max(0, (float) Math.sin((vibrator.clientPiston + (vibrator.getActive() ? partialTick : 0)) / 5F));
             poseStack.translate(0, piston * 0.625, 0);

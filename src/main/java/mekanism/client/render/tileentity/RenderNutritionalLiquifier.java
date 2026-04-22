@@ -103,8 +103,9 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
 
     @Override
     public void submit(LiquifierRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.pasteModel != null) {
-            MekanismRenderer.renderObject(state.pasteModel, poseStack, Sheets.translucentCullBlockSheet(), state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY,
+        //TODO - 26.1: rendering
+        /*if (state.pasteModel != null) {
+            MekanismRenderer.renderObject(state.pasteModel, poseStack, Sheets.translucentBlockSheet(), state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY,
                   FaceDisplay.FRONT, camera.pos, state.blockPos);
         }
         if (state.active) {
@@ -162,7 +163,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             } else {
                 particles.remove(tile);
             }
-        }
+        }*/
     }
 
     @Override

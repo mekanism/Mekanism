@@ -6,9 +6,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
-import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.tileentity.RenderPigmentMixer.PigmentMixerRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -19,9 +17,7 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Unit;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -71,7 +67,8 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
         poseStack.translate(shift, 0, shift);
         poseStack.mulPose(Axis.YN.rotationDegrees(state.rotation));
         poseStack.translate(-shift, 0, -shift);
-        nodeCollector.submitModel(
+        //TODO - 26.1: rendering
+        /*nodeCollector.submitModel(
               MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel(),
               Unit.INSTANCE,
               poseStack,
@@ -80,7 +77,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
               OverlayTexture.NO_OVERLAY,
               0,//TODO - 26.1: Test that this works as no outline, and if it doesn't fix all the other places we pass zero for the outline color
               state.breakProgress
-        );
+        );*/
         poseStack.popPose();
     }
 
@@ -108,9 +105,10 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     @Override
     public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack poseStack, VertexConsumer buffer) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            if (lines == null) {
+            //TODO - 26.1: rendering
+            /*if (lines == null) {
                 lines = Outlines.extract(tile.getLevel(), tile.getBlockPos(), state, MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel());
-            }
+            }*/
             poseStack.pushPose();
             switch (mixer.getDirection()) {
                 case NORTH -> poseStack.translate(7 / 16F, 0, 6 / 16F);

@@ -8,13 +8,11 @@ import mekanism.client.render.tileentity.RenderThermoelectricBoiler.BoilerRender
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.boiler.BoilerMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,12 +57,13 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
 
     @Override
     public void submit(BoilerRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.waterScale > 0 && state.waterData != null) {
+        //todo - 26.1: rendering
+        /*if (state.waterScale > 0 && state.waterData != null) {
             renderObject(camera.pos, state.waterData, state.valves, state.blockPos, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.waterScale);
         }
         if (state.steamScale > 0 && state.steamData != null) {
             renderObject(camera.pos, state.steamData, state.blockPos, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.steamScale);
-        }
+        }*/
     }
 
     @Override

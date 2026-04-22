@@ -9,13 +9,10 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,13 +43,14 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
 
     @Override
     public void submit(TubeRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.chemicalTexture != null) {
+        //todo - 26.1: rendering
+        /*if (state.chemicalTexture != null) {
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             renderModel(state, poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()), state.chemicalTint, state.currentScale,
                   LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, state.chemicalTexture);
             poseStack.popPose();
-        }
+        }*/
     }
 
     @Override

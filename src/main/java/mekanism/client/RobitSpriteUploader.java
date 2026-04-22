@@ -5,14 +5,11 @@ import java.util.List;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.client.resources.model.sprite.AtlasManager.AtlasConfig;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: Maybe AtlasManager.AtlasConfig ?
@@ -33,7 +30,7 @@ public class RobitSpriteUploader {
         return new SpriteId(ATLAS_LOCATION, texture);
     }
 
-    public TextureAtlasSprite getSprite(@NotNull Identifier location) {
+    /*public TextureAtlasSprite getSprite(@NotNull Identifier location) {
         return super.getSprite(location);
-    }
+    }*/
 }

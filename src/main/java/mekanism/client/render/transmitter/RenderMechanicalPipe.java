@@ -15,7 +15,6 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
 import mekanism.client.render.ModelRenderer;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
@@ -27,11 +26,9 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
@@ -116,7 +113,8 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (state.fluidTexture == null) {
             return;
         }
-        for (Direction side : EnumUtils.DIRECTIONS) {
+        //todo - 26.1: rendering
+        /*for (Direction side : EnumUtils.DIRECTIONS) {
             ConnectionType connectionType = transmitter.getConnectionType(side);
             if (connectionType == ConnectionType.NORMAL) {
                 //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
@@ -131,7 +129,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                   ARGB.alphaFloat(state.fluidTint), glow, OverlayTexture.NO_OVERLAY,
                   state.fluidTexture, connectionContents);
             poseStack.popPose();
-        }
+        }*/
     }
 
     @Override

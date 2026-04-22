@@ -5,7 +5,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.lib.effect.BillboardingEffectRenderer;
 import mekanism.client.render.lib.effect.BoltRenderer;
 import mekanism.client.render.tileentity.RenderSPS.SPSRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -106,7 +105,7 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
     public void submit(SPSRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         //TODO - 26.1: Figure out how to render these things, should they potentially use the CustomGeometryRenderer thing?
         // I think the billboarding effects might be able to use a model part, which then might let them be ordered properly in terms of transparency
-        bolts.render(partialTick, poseStack, renderer);
+        //bolts.render(partialTick, poseStack, renderer);
 
         poseStack.pushPose();
         //Because our center points are the center of the multiblock, we translate back to 0,0,0
@@ -118,13 +117,13 @@ public class RenderSPS extends MultiblockTileEntityRenderer<SPSMultiblockData, T
             //TODO - 26.1: ProfilerConstants.SPS_CORE ?
             CORE.setPos(state.center);
             CORE.setScale(state.lerpEnergy(MIN_SCALE, MAX_SCALE));
-            BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
+            //BillboardingEffectRenderer.render(CORE, camera, renderer, poseStack, renderTick, partialTick);
         }
 
         //TODO - 26.1: ProfilerConstants.SPS_ORBIT ?
-        for (SPSOrbitEffect effect : sps.orbitEffects) {
+        /*for (SPSOrbitEffect effect : sps.orbitEffects) {
             BillboardingEffectRenderer.render(effect, camera, renderer, poseStack, renderTick, partialTick);
-        }
+        }*/
         poseStack.popPose();
     }
 

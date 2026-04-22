@@ -2,7 +2,6 @@ package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.transmitter.TransmitterRenderState.ConductorRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.ThermodynamicConductor;
@@ -11,10 +10,7 @@ import mekanism.common.util.HeatUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,7 +39,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
         poseStack.pushPose();
         poseStack.translate(0.5, 0.5, 0.5);
         //TODO - 26.1: What submit do we want to be using
-        nodeCollector.submitModelPart(
+        /*nodeCollector.submitModelPart(
               this.model,
               poseStack,
               //TODO - 26.1: Is this the correct render type to be using? It used to be translucent cull
@@ -55,7 +51,7 @@ public class RenderThermodynamicConductor extends RenderTransmitterBase<TileEnti
               MekanismRenderer.heatIcon,
               state.tempColor,
               state.breakProgress//TODO - 26.1: Should we be rendering the crumbling overlay here?
-        );
+        );*/
         poseStack.popPose();
     }
 

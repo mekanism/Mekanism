@@ -110,7 +110,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
                           this.modelBox,
                           poseStack,
                           //TODO - 26.1: Is this the correct render type to be using? I believe it is what we used to use, so it probably is fine
-                          RenderTypes.entityCutoutNoCull(BOX_TEXTURE),
+                          RenderTypes.entityCutout(BOX_TEXTURE),
                           //TODO - 26.1: I believe in the past we used LightTexture.FULL_BRIGHT for the model box, check which looks better state.lightCoords
                           LightCoordsUtil.FULL_BRIGHT,
                           OverlayTexture.NO_OVERLAY,
