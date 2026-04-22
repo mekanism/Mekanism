@@ -31,9 +31,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet.Named;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -44,7 +42,6 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
@@ -183,7 +180,7 @@ public class RecipeViewerUtils {
 
     public static List<ItemStack> getDisplayItems(ChemicalStackIngredient ingredient) {
         SequencedSet<Named<Item>> tags = new LinkedHashSet<>();
-        for (ChemicalStack chemicalStack : ingredient.getRepresentations()) {
+        for (ChemicalStack chemicalStack : ingredient.getRepresentations(getSlotDisplayContext())) {
             ChemicalSolidTag tag = chemicalStack.getData(IMekanismDataMapTypes.INSTANCE.chemicalSolidTag());
             if (tag != null) {
                 tag.lookupTag().ifPresent(tags::add);

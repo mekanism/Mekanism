@@ -1,6 +1,5 @@
 package mekanism.common.tile.laser;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import mekanism.api.Action;
@@ -25,6 +24,7 @@ import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,7 +37,6 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -163,7 +162,7 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                         //After our shield checks see if the armor the entity is wearing can dissipate or refract lasers
                         double dissipationPercent = 0;
                         double refractionPercent = 0;
-                        for (ItemStack armor : getArmorSlots(livingEntity)) {
+                        for (ItemStack armor : MekanismUtils.getArmorSlots(livingEntity)) {
                             if (!armor.isEmpty()) {
                                 ILaserDissipation laserDissipation = armor.getCapability(Capabilities.LASER_DISSIPATION);
                                 if (laserDissipation != null) {
@@ -312,16 +311,6 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
             }
         }
         return sendUpdatePacket;
-    }
-
-    private static Iterable<ItemStack> getArmorSlots(LivingEntity livingEntity) {
-        return Arrays.asList(
-              livingEntity.getItemBySlot(EquipmentSlot.HEAD),
-              livingEntity.getItemBySlot(EquipmentSlot.BODY),//animals
-              livingEntity.getItemBySlot(EquipmentSlot.CHEST),
-              livingEntity.getItemBySlot(EquipmentSlot.LEGS),
-              livingEntity.getItemBySlot(EquipmentSlot.FEET)
-        );
     }
 
     private static boolean isInvulnerableToLaser(Entity entity, ServerLevel level) {

@@ -34,7 +34,7 @@ public class MekaSuitEnergyLevel implements GuiLayer {
             return;
         }
         long capacity = 0L, stored = 0L;
-        for (ItemStack stack : minecraft.player.getArmorSlots()) {
+        for (ItemStack stack : MekanismUtils.getArmorSlots(minecraft.player)) {
             if (stack.getItem() instanceof ItemMekaSuitArmor) {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
                 if (container != null) {

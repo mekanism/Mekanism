@@ -1,7 +1,6 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.tileentity.RenderDynamicTank.DynamicTankRenderState;
@@ -9,13 +8,11 @@ import mekanism.common.base.ProfilerConstants;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.content.tank.TankMultiblockData;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -43,8 +40,9 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.renderData != null) {
-            VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            renderObject(camera.pos, state.renderData, state.valves, state.blockPos, poseStack, buffer, OverlayTexture.NO_OVERLAY, state.scale);
+            //TODO - 26.1 rendering
+            /*VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+            renderObject(camera.pos, state.renderData, state.valves, state.blockPos, poseStack, buffer, OverlayTexture.NO_OVERLAY, state.scale);*/
         }
     }
 

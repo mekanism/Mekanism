@@ -1,21 +1,13 @@
 package mekanism.client.render;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Axis;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.gear.IHUDElement;
-import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.text.ILangEntry;
 import mekanism.client.render.hud.MekanismHUD.DelayedString;
-import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.HUDElement.HUDColor;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
-import mekanism.common.item.gear.ItemMekaTool;
-import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import mekanism.common.util.StorageUtils;
@@ -24,8 +16,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
-import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -98,7 +88,8 @@ public class HUDRenderer {
     }
 
     private void renderMekaSuitEnergyIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws) {
-        Matrix3x2fStack pose = guiGraphics.pose();
+        //TODO - 26.1: rendering
+        /*Matrix3x2fStack pose = guiGraphics.pose();
         pose.pushMatrix();
         pose.translate(10, 10);
         Matrix4f matrix = new Matrix4f(pose.last().pose());
@@ -111,7 +102,7 @@ public class HUDRenderer {
         for (EquipmentSlot hand : EnumUtils.HAND_SLOTS) {
             posX += renderEnergyIcon(player, font, guiGraphics, matrix, delayedDraws, posX, TOOL_ICON, hand, showToolPercent);
         }
-        pose.popMatrix();
+        pose.popMatrix();*/
     }
 
     private int renderEnergyIcon(Player player, Font font, GuiGraphicsExtractor guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int posX, Identifier icon,
@@ -127,7 +118,8 @@ public class HUDRenderer {
 
     private void renderMekaSuitModuleIcons(Player player, Font font, GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, int screenWidth, int screenHeight,
           boolean reverseHud, int subtitlesWidth) {
-        int startX = screenWidth - 10;
+        //TODO - 26.1: rendering
+        /*int startX = screenWidth - 10;
         int curY = screenHeight - 10;
         Matrix4f matrix = new Matrix4f(guiGraphics.pose().last().pose());
         //Render any elements that might be on modules in the meka suit while worn or on the meka tool while held
@@ -147,7 +139,7 @@ public class HUDRenderer {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -176,9 +168,10 @@ public class HUDRenderer {
 
     private void renderHUDElement(Font font, GuiGraphicsExtractor guiGraphics, Matrix4f matrix, List<DelayedString> delayedDraws, int x, int y, IHUDElement element,
           boolean iconRight) {
+        //TODO - 26.1: rendering
         int color = element.getColor();
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        /*RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();*/
         MekanismRenderer.color(guiGraphics, color);
         guiGraphics.blit(element.getIcon(), iconRight ? x + font.width(element.getText()) + 2 : x, y, 0, 0, 16, 16, 16, 16);
         MekanismRenderer.resetColor(guiGraphics);
@@ -192,7 +185,8 @@ public class HUDRenderer {
         int posX = reverseHud ? screenWidth - 125 - audibleSubtitlesWidth : 25;
         //Pin the compass above the bottom of the screen and also above the text hud that may render below it
         int posY = Math.min(screenHeight - 20, maxTextHeight) - 80;
-        PoseStack pose = guiGraphics.pose();
+        //TODO - 26.1: rendering
+        /*PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.translate(posX + 50, posY + 50, 0);
         pose.pushPose();
@@ -217,16 +211,17 @@ public class HUDRenderer {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, COMPASS, -50, -50, 100, 100, 0, 0, 256, 256, 256, 256);
         MekanismRenderer.resetColor(guiGraphics);
         pose.popPose();
-        pose.popPose();
+        pose.popPose();*/
     }
 
     private void rotateStr(GuiGraphicsExtractor guiGraphics, List<DelayedString> delayedDraws, ILangEntry langEntry, float rotation, float shift, int color) {
-        PoseStack pose = guiGraphics.pose();
+        //TODO - 26.1: rendering
+        /*PoseStack pose = guiGraphics.pose();
         pose.pushPose();
         pose.mulPose(Axis.ZP.rotationDegrees(shift));
         pose.translate(0, -50, 0);
         pose.mulPose(Axis.ZP.rotationDegrees(-rotation - shift));
         delayedDraws.add(new DelayedString(pose, langEntry.translate(), -2.5F, -4, color, false));
-        pose.popPose();
+        pose.popPose();*/
     }
 }

@@ -100,6 +100,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         this.height = height;
     }
 
+    //TODO - 26.1 review that this is only used client side
     protected static ContextMap getSlotDisplayContext() {
         return SlotDisplayContext.fromLevel(Objects.requireNonNull(Minecraft.getInstance().level));
     }

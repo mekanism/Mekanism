@@ -121,7 +121,8 @@ public class MekanismHUD implements GuiLayer {
                         //Align text to right if hud is reversed, otherwise align to the left
                         //Note: that we always offset by 2 pixels from the edge of the screen regardless of how it is aligned
                         int x = reverseHud ? xScale - textWidth - 2 : 2;
-                        delayedDraws.add(new DelayedString(matrix, text, x, y, 0xFFC8C8C8, true));
+                        //TODO - 26.1: rendering
+                        //delayedDraws.add(new DelayedString(matrix, text, x, y, 0xFFC8C8C8, true));
                         y += 9;
                     }
                     y += 2;
@@ -141,7 +142,8 @@ public class MekanismHUD implements GuiLayer {
                     delayedDraw.draw(graphics, font);
                 }
                 //Flush once at the end of the draws
-                graphics.flush();
+                //TODO - 26.1: rendering
+                //graphics.flush();
             }
         }
     }

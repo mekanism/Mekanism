@@ -195,9 +195,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @NotNull
     @Override
     public ChemicalTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
-            return new ChemicalTankUpgradeData(provider, reporter, redstone, getControlType(), drainSlot, fillSlot, dumping, getChemicalTank().getStack(), getComponents());
-        }
+        return new ChemicalTankUpgradeData(provider, redstone, getControlType(), drainSlot, fillSlot, dumping, getChemicalTank().getStack(), getComponents(), problemPath());
     }
 
     @Override

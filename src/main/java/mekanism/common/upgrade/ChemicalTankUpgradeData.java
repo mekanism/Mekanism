@@ -6,10 +6,9 @@ import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IRedstoneControl.RedstoneControl;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.util.ProblemReporter.PathElement;
 
 public class ChemicalTankUpgradeData implements IUpgradeData {
 
@@ -21,7 +20,7 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
     public final ChemicalStack storedChemical;
     public final CompoundTag components;
 
-    public ChemicalTankUpgradeData(HolderLookup.Provider provider, ProblemReporter problemReporter, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot, GasMode dumping, ChemicalStack storedChemical, List<ITileComponent> components) {
+    public ChemicalTankUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot, GasMode dumping, ChemicalStack storedChemical, List<ITileComponent> components, PathElement problemPath) {
         this.redstone = redstone;
         this.controlType = controlType;
         this.drainSlot = drainSlot;

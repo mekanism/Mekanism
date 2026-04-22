@@ -16,6 +16,7 @@ import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSav
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
@@ -49,7 +50,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
 
     private void chargeSuit(Player player) {
         EnergySaveTarget<DelegateSaveHandler> saveTarget = new EnergySaveTarget<>(4);
-        for (ItemStack stack : player.getArmorSlots()) {
+        for (ItemStack stack : MekanismUtils.getArmorSlots(player)) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
                 saveTarget.addHandler(new DelegateSaveHandler(energyContainer));

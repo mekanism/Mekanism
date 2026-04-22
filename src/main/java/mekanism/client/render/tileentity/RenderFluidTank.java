@@ -10,18 +10,15 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -53,7 +50,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
-        //TODO - 26.1: Should we by copying the fluid stacks?
+        //TODO - 26.1: Should we by copying the fluid stacks? - Pup. I think we should pass the texture instead - thiakil
         state.fluid = tank.fluidTank.getFluid();
         state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
@@ -68,7 +65,8 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
 
     @Override
     public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        //todo - 26.1 rendering
+        /*buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
         if (state.fluidScale > 0) {
             MekanismRenderer.renderObject(getFluidModel(state.fluid, state.fluidScale), poseStack, buffer, state.fluidTint, state.fluidGlow,
                   OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
@@ -76,7 +74,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         if (!state.valveFluid.isEmpty()) {
             MekanismRenderer.renderObject(getValveModel(state.valveFluid, state.fluidScale), poseStack, buffer, state.valveTint, state.valveGlow,
                   OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
-        }
+        }*/
     }
 
     @Override

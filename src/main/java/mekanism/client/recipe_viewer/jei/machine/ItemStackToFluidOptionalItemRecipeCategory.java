@@ -31,6 +31,7 @@ import mezz.jei.api.recipe.RecipeIngredientRole;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,13 +60,16 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
 
     @Override
     public void setRecipe(@NotNull IRecipeLayoutBuilder builder, BasicItemStackToFluidOptionalItemRecipe recipe, @NotNull IFocusGroup focusGroup) {
-        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations());
+        initItem(builder, RecipeIngredientRole.INPUT, input, recipe.getInput().getRepresentations(getSlotDisplayContext()));
         List<FluidOptionalItemOutput> outputDefinition = recipe.getOutputDefinition();
         List<FluidStack> fluidOutputs = new ArrayList<>(outputDefinition.size());
         List<ItemStack> itemOutputs = new ArrayList<>();
         for (FluidOptionalItemOutput output : outputDefinition) {
             fluidOutputs.add(output.fluid());
-            itemOutputs.add(output.optionalItem());
+            ItemStackTemplate optionalItem = output.optionalItem();
+            if (optionalItem != null) {
+                itemOutputs.add(optionalItem.create());
+            }
         }
         initFluid(builder, RecipeIngredientRole.OUTPUT, outputTank, fluidOutputs);
         if (!itemOutputs.stream().allMatch(ConstantPredicates.ITEM_EMPTY)) {
@@ -77,7 +81,7 @@ public class ItemStackToFluidOptionalItemRecipeCategory extends BaseRecipeCatego
     @Nullable
     @Override
     public Identifier getIdentifier(@NotNull BasicItemStackToFluidOptionalItemRecipe recipe) {
-        List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations();
+        List<@NotNull ItemStack> representations = recipe.getInput().getRepresentations(getSlotDisplayContext());
         if (representations.size() == 1) {
             Identifier itemId = BuiltInRegistries.ITEM.getKeyOrNull(representations.getFirst().getItem());
             if (itemId != null) {

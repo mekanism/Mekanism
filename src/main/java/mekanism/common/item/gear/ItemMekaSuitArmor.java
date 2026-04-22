@@ -417,7 +417,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         float ratioAbsorbed = 0;
         List<FoundArmorDetails> armorDetails = new ArrayList<>();
         //Start by looping the armor, allowing modules to absorb damage if they can
-        for (ItemStack stack : player.getArmorSlots()) {
+        for (ItemStack stack : MekanismUtils.getArmorSlots(player)) {
             if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor armor) {
                 IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                 if (energyContainer != null) {
