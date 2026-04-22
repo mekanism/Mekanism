@@ -47,6 +47,10 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
     @Override
     public void onUpdate() {
         super.onUpdate();
+        int size = transmittersSize();
+        if (size == 0) {
+            return;
+        }
         double newSumTemp = 0, newHeatLost = 0, newHeatTransferred = 0;
         for (ThermodynamicConductor transmitter : getTransmitters()) {
             HeatTransfer transfer = transmitter.simulate();
@@ -62,7 +66,7 @@ public class HeatNetwork extends DynamicNetwork<IHeatHandler, HeatNetwork, Therm
         }
         heatLost = newHeatLost;
         heatTransferred = newHeatTransferred;
-        meanTemp = newSumTemp / transmittersSize();
+        meanTemp = newSumTemp / size;
     }
 
     @Override
