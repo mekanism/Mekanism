@@ -14,9 +14,10 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlot {
@@ -38,8 +39,8 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     @Override
     public ItemStack insertItem(AttachedItems attachedItems, ItemStack current, ItemStack stack, Action action, AutomationType automationType) {
         if (current.isEmpty()) {
-            ItemStack lockStack = getLockStack();
-            if (!lockStack.isEmpty() && !ItemStack.isSameItemSameComponents(lockStack, stack)) {
+            ItemStackTemplate lockStack = getLockStack();
+            if (lockStack != null && !ItemStack.isSameItemSameComponents(stack, lockStack)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return stack;
             } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
@@ -86,34 +87,33 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     /**
      * For use by upgrade recipes
      *
-     * @see BinInventorySlot#setLockStack(ItemStack)
+     * @see BinInventorySlot#setLockStack(ItemStackTemplate)
      */
-    public void setLockStack(@NotNull ItemStack stack) {
-        if (stack.isEmpty()) {
+    public void setLockStack(@Nullable ItemStackTemplate stack) {
+        if (stack == null) {
             attachedTo.remove(MekanismDataComponents.LOCK);
         } else {
             attachedTo.set(MekanismDataComponents.LOCK, LockData.create(stack));
         }
     }
 
-    public ItemStack getLockStack() {
+    public @Nullable ItemStackTemplate getLockStack() {
         return attachedTo.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
     }
 
     @Override
     public void serialize(ValueOutput output) {
         super.serialize(output);
-        ItemStack lockStack = getLockStack();
-        if (!lockStack.isEmpty()) {
-            //TODO - 26.1: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
-            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK, lockStack);
+        ItemStackTemplate lockStack = getLockStack();
+        if (lockStack != null) {
+            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_CODEC, lockStack);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 26.1: Does this properly handle the behavior of when things are empty
-        setLockStack(input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK).orElse(ItemStack.EMPTY));
+        setLockStack(input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_CODEC).orElse(null));
         super.deserialize(input);
     }
 }

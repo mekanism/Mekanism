@@ -15,6 +15,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +46,8 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
                     tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
             }
-            ItemStack lockStack = slot.getLockStack();
-            if (!lockStack.isEmpty()) {
+            ItemStackTemplate lockStack = slot.getLockStack();
+            if (lockStack != null) {
                 tooltipAdder.accept(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, lockStack));
             }
             if (tier == BinTier.CREATIVE) {

@@ -18,6 +18,7 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -51,6 +52,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     private final boolean isCreative;
+    /// NB this can remain as Stack for now due to rendering requiring it
     private ItemStack lockStack = ItemStack.EMPTY;
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
@@ -137,8 +139,15 @@ public class BinInventorySlot extends BasicInventorySlot {
     /**
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
-    public void setLockStack(@NotNull ItemStack stack) {
-        lockStack = stack.copyWithCount(1);
+    public void setLockStack(@Nullable ItemStackTemplate template) {
+        lockStack = template != null ? template.create() : ItemStack.EMPTY;
+    }
+
+    /**
+     * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
+     */
+    public void setLockStack(ItemStack template) {
+        lockStack = template;
     }
 
     public boolean isLocked() {
