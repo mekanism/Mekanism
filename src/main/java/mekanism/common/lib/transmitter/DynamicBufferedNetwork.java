@@ -130,7 +130,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         long sum = 0;
         for (TRANSMITTER transmitter : getTransmitters()) {
             long transmitterCapacity = transmitter.getCapacity();
-            if (transmitterCapacity > Long.MAX_VALUE - capacity) {
+            if (transmitterCapacity > Long.MAX_VALUE - sum) {
                 //Ensure we don't overflow
                 sum = Long.MAX_VALUE;
                 break;
