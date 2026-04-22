@@ -187,7 +187,7 @@ public class MekanismRenderer {
 
     public static void color(GuiGraphicsExtractor guiGraphics, @NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(guiGraphics, IClientFluidTypeExtensions.of(fluid.getFluid()).getTintColor(fluid));
+            color(guiGraphics, getColorTint(fluid));
         }
     }
 
