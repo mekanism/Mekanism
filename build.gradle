@@ -15,8 +15,8 @@ import java.util.function.Consumer
 
 plugins {
     id('org.ajoberstar.grgit.service')//Version declared in buildSrc
-    id('net.darkhax.curseforgegradle').version('1.1.28')
-    id('com.modrinth.minotaur').version('2.8.10')
+    id('net.darkhax.curseforgegradle').version('1.2.30')
+    id('com.modrinth.minotaur').version('2.9.0')
     id('java')
     id('eclipse')
     id('idea')
@@ -26,7 +26,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.2.1'
+    gradleVersion = '9.4.1'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -447,14 +447,13 @@ repositories { RepositoryHandler handler ->
     })
     exclusiveRepo(handler, 'https://maven.terraformersmc.com/', 'dev.emi')
     exclusiveRepo(handler, 'https://maven.theillusivec4.top/', 'top.theillusivec4.curios')
-    //TODO: Switch back to grabbing CTM from here instead of the mirror on modmaven once tterrag fixes his maven issues
-    //exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
-    exclusiveRepo(handler, 'https://squiddev.cc/maven/', 'cc.tweaked', 'org.squiddev')
+    exclusiveRepo(handler, 'https://maven.tterrag.com/', 'team.chisel.ctm')
+    exclusiveRepo(handler, 'https://maven.squiddev.cc', 'cc.tweaked')
     exclusiveRepo(handler, 'https://dogforce-games.com/maven/', 'dev.gigaherz.jsonthings')
     exclusiveRepo(handler, 'https://maven2.bai.lol', 'lol.bai', 'mcp.mobius.waila')//WTHIT
     exclusiveRepo(handler, 'https://www.cursemaven.com', 'curse.maven')
     exclusiveRepo(handler, 'https://api.modrinth.com/maven', 'maven.modrinth')
-    exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n', 'team.chisel.ctm')
+    exclusiveRepo(handler, 'https://modmaven.dev/', 'mcjty.theoneprobe', 'dev.technici4n')
     exclusiveRepo(handler, 'https://maven.minecraftforge.net/releases/', 'com.github.glitchfiend')
     exclusiveRepo(handler, 'https://maven.thiakil.com', 'com.thiakil', 'moze_intel.projecte', 'snownee.jade', 'io.github.xfacthd.framedblocks')
     exclusiveRepo(handler, 'https://maven.parchmentmc.org/', 'org.parchmentmc.data')
@@ -537,7 +536,7 @@ dependencies {
     //TODO: Re-enable when it updates
     //localRuntime(jeiTweaker)
 
-    compileOnly("dev.gigaherz.jsonthings:JsonThings-${major_minecraft_version}:${json_things_version}")
+    compileOnly("dev.gigaherz.jsonthings:JsonThings-${minecraft_version}:${json_things_version}")
 
     //Mods we have dependencies on but don't bother loading into the dev environment
     compileOnly("curse.maven:projecte-api-226410:${projecte_api_id}")
@@ -547,10 +546,10 @@ dependencies {
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
     //TODO - 26.1 fix to use mc version prop if it updates
-    compileOnly("cc.tweaked:cc-tweaked-1.21-forge-api:${cc_tweaked_version}")
-    //localRuntime("cc.tweaked:cc-tweaked-${previous_minor_minecraft_version}-forge:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-1.21.8-forge-api:${cc_tweaked_version}")
+    //localRuntime("cc.tweaked:cc-tweaked-1.21.8-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
-    //compileOnly("curse.maven:framedblocks-441647:${framedblocks_mod_id}")
+    //compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
     compileOnly("io.github.xfacthd.framedblocks:FramedBlocks-26.1:${framedblocks_version}")
 
     //Dependencies for data generators for mod compat reference
@@ -784,7 +783,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //World gen
                     'biomes-o-plenty', 'oh-the-biomes-weve-gone',
                     //Misc
-                    'applied-energistics-2', 'ctm', 'curios-continuation', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge', 'flux-networks',
+                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge', 'flux-networks',
                     'framedblocks', 'grandpower', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }
