@@ -472,7 +472,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             energySlot.deserializeNBT(provider, data.energySlot.serializeNBT(provider));
-            System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
+            System.arraycopy(data.progress, 0, progress, 0, Math.min(data.progress.length, progress.length));
             for (int i = 0; i < data.inputSlots.size(); i++) {
                 //Copy the stack using NBT so that if it is not actually valid due to a reload we don't crash
                 inputSlots.get(i).deserializeNBT(provider, data.inputSlots.get(i).serializeNBT(provider));
