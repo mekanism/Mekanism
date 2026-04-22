@@ -62,7 +62,7 @@ public final class FluidUtils {
         } else if (FMLEnvironment.getDist().isClient()) {
             //Note: We can only return an accurate result on the client side. This method should never be called from the server
             // but in case it is make sure we only run on the client side
-            return MekanismRenderer.getColorTint(stack);
+            return MekanismRenderer.getColorARGB(stack);
         }
         return 0xFFFFFFFF;
     }

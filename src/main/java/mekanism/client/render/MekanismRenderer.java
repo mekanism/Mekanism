@@ -56,7 +56,6 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -99,15 +98,6 @@ public class MekanismRenderer {
         } else {
             return fluidModel.flowingMaterial().sprite();
         }
-    }
-
-    public static int getColorTint(FluidStack stack) {
-        FluidModel fluidModel = getFluidModel(stack);
-        FluidTintSource tintSource = fluidModel.fluidTintSource();
-        if (tintSource == null) {
-            return 0xFFFFFFFF;
-        }
-        return tintSource.colorAsStack(stack);
     }
 
     private static @NonNull FluidModel getFluidModel(FluidStack stack) {
@@ -166,7 +156,8 @@ public class MekanismRenderer {
 
     //Color
     public static void resetColor(GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.setColor(1, 1, 1, 1);
+        //TODO - 26.1: inline color reset / remove
+        //guiGraphics.setColor(1, 1, 1, 1);
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, int color) {
@@ -174,7 +165,9 @@ public class MekanismRenderer {
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, int color, float alpha) {
-        guiGraphics.setColor(ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), alpha);
+        //TODO - 26.1: Inline color value
+        int TODO_COLOR = ARGB.color(alpha, color);
+        //guiGraphics.setColor(ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), alpha);
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, ColorRegistryObject colorRO) {
@@ -182,12 +175,14 @@ public class MekanismRenderer {
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, Color color) {
-        guiGraphics.setColor(color.rf(), color.gf(), color.bf(), color.af());
+        //TODO - 26.1: Inline color value
+        int TODO_COLOR = color.argb();
+        //guiGraphics.setColor(color.rf(), color.gf(), color.bf(), color.af());
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, @NotNull FluidStack fluid) {
         if (!fluid.isEmpty()) {
-            color(guiGraphics, getColorTint(fluid));
+            color(guiGraphics, getColorARGB(fluid));
         }
     }
 
@@ -198,12 +193,10 @@ public class MekanismRenderer {
     }
 
     public static void color(GuiGraphicsExtractor guiGraphics, @Nullable SupportsColorMap color) {
-        color(guiGraphics, color, 1.0F);
-    }
-
-    public static void color(GuiGraphicsExtractor guiGraphics, @Nullable SupportsColorMap color, float alpha) {
         if (color != null) {
-            guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), alpha);
+            //TODO - 26.1: Inline color value
+            int TODO_COLOR = color.getPackedColor();
+            //guiGraphics.setColor(color.getColor(0), color.getColor(1), color.getColor(2), 1.0F);
         }
     }
 
@@ -212,7 +205,12 @@ public class MekanismRenderer {
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack) {
-        return getColorTint(fluidStack);
+        FluidModel fluidModel = getFluidModel(fluidStack);
+        FluidTintSource tintSource = fluidModel.fluidTintSource();
+        if (tintSource == null) {
+            return 0xFFFFFFFF;
+        }
+        return tintSource.colorAsStack(fluidStack);
     }
 
     public static int getColorARGB(@NotNull FluidStack fluidStack, float fluidScale) {

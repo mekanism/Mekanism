@@ -23,7 +23,7 @@ public interface SupportsColorMap {
      *
      * @param alpha Alpha value to use when packing the color between zero and 255
      *
-     * @return the packed color
+     * @return the packed color (ARBG)
      *
      * @since 10.6.0
      */
@@ -34,7 +34,7 @@ public interface SupportsColorMap {
     /**
      * Gets the fully opaque packed color representation of this object.
      *
-     * @return the packed color
+     * @return the packed color (ARGB)
      *
      * @since 10.6.0
      */
