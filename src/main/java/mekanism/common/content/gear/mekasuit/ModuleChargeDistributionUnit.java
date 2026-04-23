@@ -13,7 +13,6 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
-import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
@@ -21,7 +20,6 @@ import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
 
 @ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
@@ -84,7 +82,8 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
                     }
                 }
             }
-            if (Mekanism.hooks.curios.isLoaded()) {
+            //todo - 26.1: resources
+            /*if (Mekanism.hooks.curios.isLoaded()) {
                 IItemHandler handler = CuriosIntegration.getCuriosInventory(player);
                 if (handler != null) {
                     for (int slot = 0, slots = handler.getSlots(); slot < slots; slot++) {
@@ -94,7 +93,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
                         }
                     }
                 }
-            }
+            }*/
         }
     }
 

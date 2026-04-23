@@ -67,7 +67,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
                         active = true;
                     } else if (Mekanism.hooks.curios.isLoaded()) {
                         //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
-                        if (chargeHandler(CuriosIntegration.getCuriosInventory(entity))) {
+                        //TODO - 26.1: Resources
+                        if (chargeHandler(IItemHandler.of(CuriosIntegration.getCuriosInventory(entity)))) {
                             active = true;
                         }
                     }

@@ -4,11 +4,11 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.gear.IModuleContainer;
-import mekanism.api.gear.IModuleHelper;
 import mekanism.client.gui.GuiUtils;
 import mekanism.client.render.HUDRenderer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
+import mekanism.common.content.gear.ModuleHelper;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.tags.MekanismTags;
@@ -16,12 +16,16 @@ import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.gui.GuiLayer;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix3x2f;
@@ -40,18 +44,18 @@ public class MekanismHUD implements GuiLayer {
     }
 
     @Nullable
-    private IItemHUDProvider getHudProvider(ItemStack stack) {
-        if (stack.getItem() instanceof IItemHUDProvider hudProvider) {
+    private <T extends TypedInstance<Item> & DataComponentGetter> IItemHUDProvider getHudProvider(T itemInstance) {
+        if (itemInstance.typeHolder().value() instanceof IItemHUDProvider hudProvider) {
             //mekanism does this
             return hudProvider;
         }
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
-        if (container != null) {
-            return (list, player, s, slotType) -> {
-                list.addAll(container.getHUDStrings(player, s));
-            };
+        if (!ModuleHelper.get().isModuleContainer(itemInstance)) {
+            return null;
         }
-        return null;
+        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(itemInstance);
+        return (list, player, s, slotType) -> {
+            list.addAll(container.getHUDStrings(player, s));
+        };
     }
 
     @Override
@@ -69,13 +73,13 @@ public class MekanismHUD implements GuiLayer {
                 }
             }
             if (Mekanism.hooks.curios.isLoaded()) {
-                IItemHandler inv = CuriosIntegration.getCuriosInventory(player);
+                ResourceHandler<ItemResource> inv = CuriosIntegration.getCuriosInventory(player);
                 if (inv != null) {
-                    for (int i = 0, slots = inv.getSlots(); i < slots; i++) {
-                        ItemStack stack = inv.getStackInSlot(i);
+                    for (int i = 0, slots = inv.size(); i < slots; i++) {
+                        ItemResource stack = inv.getResource(i);
                         IItemHUDProvider hudProvider = getHudProvider(stack);
                         if (hudProvider != null) {
-                            count += makeComponent(hudProvider, player, stack, null, renderStrings,
+                            count += makeComponent(hudProvider, player, stack.toStack(), null, renderStrings,
                                   (provider, l, plyr, s, ignored) -> provider.addCurioHUDStrings(l, plyr, s));
                         }
                     }

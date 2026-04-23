@@ -23,7 +23,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
@@ -128,7 +127,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return new BlockHitResult(location, hit.getDirection(), mainPos, hit.isInside());
     }
 
-    @Override
+    //TODO - 26.1: onRemove @Override
     protected void onRemove(BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
         //Remove the main block if a bounding block gets broken by being directly replaced
         // Note: We only do this if we don't go from bounding block to bounding block
@@ -141,7 +140,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
                     world.removeBlock(mainPos, false);
                 }
             }
-            super.onRemove(state, world, pos, newState, isMoving);
+            //TODO - 26.1: super.onRemove(state, world, pos, newState, isMoving);
         }
     }
 
@@ -232,7 +231,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         world.removeBlock(pos, false);
     }
 
-    @Override
+    //TODO - 26.1: neighborChanged @Override
     protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         if (!world.isClientSide()) {
@@ -243,7 +242,7 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         }
         BlockPos mainPos = getMainBlockPos(world, pos);
         if (mainPos != null) {
-            world.getBlockState(mainPos).handleNeighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
+            //TODO - 26.1: world.getBlockState(mainPos).handleNeighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
         }
     }
 

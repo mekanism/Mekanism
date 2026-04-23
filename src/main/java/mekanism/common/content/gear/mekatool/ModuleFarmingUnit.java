@@ -40,7 +40,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -56,6 +55,7 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 @ParametersAreNotNullByDefault
 public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomModule<ModuleFarmingUnit> {
@@ -101,7 +101,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
     }
 
     @Override
-    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, ItemInstance stack, ItemAbility action) {
+    public boolean canPerformAction(IModule<ModuleFarmingUnit> module, IModuleContainer moduleContainer, @UnknownNullability ItemStack stack, ItemAbility action) {
         if (action == ItemAbilities.AXE_STRIP || action == ItemAbilities.AXE_SCRAPE || action == ItemAbilities.AXE_WAX_OFF) {
             return module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaToolEnergyUsageAxe);
         } else if (action == ItemAbilities.SHOVEL_FLATTEN) {
@@ -311,7 +311,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             //Note: This may not be the most optimal way of checking this, but it gives a decent enough estimate of it
             //TODO - 1.21: Do we want to try and come up with a better tag or check for if it is a replaceable plant?
             if (aboveState.is(MekanismTags.Blocks.FARMING_OVERRIDE) || aboveState.canBeReplaced() && aboveState.is(BlockTags.REPLACEABLE_BY_TREES)) {
-                return aboveState.getFluidState().isEmpty() && !aboveState.isSolidRender(level, abovePos);
+                return aboveState.getFluidState().isEmpty() && !aboveState.isSolidRender();
             }
             return false;
         }

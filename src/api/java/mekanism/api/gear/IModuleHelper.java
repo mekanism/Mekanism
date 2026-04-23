@@ -11,6 +11,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,8 +20,10 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -200,6 +203,16 @@ public interface IModuleHelper {
     IModuleContainer getModuleContainer(ItemStack stack);
 
     /**
+     * @param itemResource Resource to check for being a module container and then to retrieve the container of.
+     *
+     * @return module container for the resource, or null if the resource is empty or not a module container. DO NOT ATTEMPT TO MODIFY.
+     *
+     * @since 10.8.0
+     */
+    @Nullable
+    IModuleContainer getModuleContainer(ItemResource itemResource);
+
+    /**
      * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the stack is empty or not a module container}
      *
      * @param entity Entity that has the stack.
@@ -226,6 +239,19 @@ public interface IModuleHelper {
      */
     default boolean isModuleContainer(ItemStack stack) {
         return !stack.isEmpty() && isModuleContainer(stack.typeHolder());
+    }
+
+    /**
+     * Checks if the item is a module container and can store modules.
+     *
+     * @param typedInstance Stack containing the item to check.
+     *
+     * @return {@code true} if the typedInstance is a module container.
+     *
+     * @since 10.8.0
+     */
+    default boolean isModuleContainer(TypedInstance<Item> typedInstance) {
+        return !typedInstance.is(Items.AIR) && isModuleContainer(typedInstance.typeHolder());
     }
 
     /**

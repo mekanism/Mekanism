@@ -16,13 +16,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 /**
  * Interface used to describe and implement custom modules. Instances of this should be returned via the {@link ModuleData}.
@@ -293,7 +293,7 @@ public interface ICustomModule<MODULE extends ICustomModule<MODULE>> {
      * @param stack           The stack this module is installed on.
      * @param ability         Item ability to check.
      */
-    default boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemInstance stack, ItemAbility ability) {
+    default boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, @UnknownNullability ItemStack stack, ItemAbility ability) {
         return false;
     }
 

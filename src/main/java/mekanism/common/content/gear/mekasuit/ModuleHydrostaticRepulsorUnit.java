@@ -7,6 +7,7 @@ import mekanism.api.gear.IModuleContainer;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -40,7 +41,8 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
 
     @Override
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        if (isSwimBoost(module, stack) && !player.getMaxHeightFluidType().isAir()) {
+        //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
+        if (isSwimBoost(module, stack) && player.isEyeInFluid(FluidTags.WATER)) {
             module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get());
         }
     }

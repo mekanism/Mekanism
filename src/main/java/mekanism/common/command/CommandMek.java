@@ -23,8 +23,9 @@ import net.minecraft.commands.arguments.coordinates.Vec3Argument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.clock.ClockTimeMarkers;
+import net.minecraft.world.clock.WorldClocks;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.phys.Vec3;
 
@@ -71,14 +72,19 @@ public class CommandMek {
                       MinecraftServer server = source.getServer();
                       GameRules rules = source.getLevel().getGameRules();
                       rules.set(GameRules.KEEP_INVENTORY, true, server);
-                      //TODO - 26.1: Should this be SPAWN_MONSTERS?
                       rules.set(GameRules.SPAWN_MOBS, false, server);
+                      rules.set(GameRules.SPAWN_MONSTERS, false, server);
+                      rules.set(GameRules.SPAWN_PATROLS, false, server);
+                      rules.set(GameRules.SPAWN_PHANTOMS, false, server);
+                      rules.set(GameRules.SPAWN_WANDERING_TRADERS, false, server);
                       rules.set(GameRules.ADVANCE_TIME, false, server);
                       rules.set(GameRules.ADVANCE_WEATHER, false, server);
                       rules.set(GameRules.MOB_GRIEFING, false, server);
-                      source.getLevel().setDayTime(2_000);
+                      //TODO - 26.1: check this is correct
+                      source.getLevel().clockManager().moveToTimeMarker(server.registryAccess().holderOrThrow(WorldClocks.OVERWORLD), ClockTimeMarkers.NOON);
                       //Act as if /weather clear was ran
-                      source.getLevel().setWeatherParameters(ServerLevel.RAIN_DELAY.sample(server.overworld().getRandom()), 0, false, false);
+                      source.getLevel().getWeatherData().setRaining(false);
+                      source.getLevel().getWeatherData().setThundering(false);
                       source.sendSuccess(() -> MekanismLang.COMMAND_TEST_RULES.translateColored(EnumColor.GRAY), true);
                       return Command.SINGLE_SUCCESS;
                   });

@@ -64,13 +64,15 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         return type.getTileType();
     }
 
-    @Override
+    //TODO - 26.1: neighborChanged @Override
     protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
           boolean isMoving) {
         TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
         if (tile != null) {
-            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ());
-            tile.onNeighborBlockChange(side);
+            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ(), null);
+            if (side != null) {
+                tile.onNeighborBlockChange(side);
+            }
         }
     }
 

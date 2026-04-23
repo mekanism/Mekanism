@@ -23,7 +23,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -37,6 +36,7 @@ import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 //TODO - 1.21: Look at ShearsItem#createToolProperties and see if we need to or can somehow apply those overrides?
 // Also double check the stuff we override as it looks like some of it might have changed in vanilla
@@ -46,7 +46,7 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     private static final Predicate<Entity> SHEARABLE = entity -> !entity.isSpectator() && entity instanceof IShearable;
 
     @Override
-    public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, ItemInstance stack, ItemAbility action) {
+    public boolean canPerformAction(IModule<ModuleShearingUnit> module, IModuleContainer container, @UnknownNullability ItemStack stack, ItemAbility action) {
         if (action == ItemAbilities.SHEARS_DISARM) {
             if (stack.is(MekanismItems.MEKA_TOOL)) {
                 //Only require energy if we are installed on a Meka-Tool and can thus calculate the energy required to break the block "safely"

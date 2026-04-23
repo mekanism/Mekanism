@@ -7,8 +7,8 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.item.ItemStack;
 import top.theillusivec4.curios.api.SlotContext;
 import top.theillusivec4.curios.api.client.ICurioRenderer;
@@ -20,7 +20,7 @@ public record MekanismCurioRenderer(ICustomArmor model) implements ICurioRendere
           SubmitNodeCollector submitNodeCollector, int packedLight, S renderState, RenderLayerParent<S, M> renderLayerParent, EntityRendererProvider.Context context,
           float yRotation, float xRotation) {
         if (renderLayerParent.getModel() instanceof HumanoidModel<?> humanoidModel) {
-            this.model.render(humanoidModel, matrixStack, renderTypeBuffer, light, OverlayTexture.NO_OVERLAY, partialTicks, stack.hasFoil(), slotContext.entity(), stack);
+            this.model.render((HumanoidModel) humanoidModel, matrixStack, submitNodeCollector, packedLight, (HumanoidRenderState) renderState, stack);
         }
     }
 }

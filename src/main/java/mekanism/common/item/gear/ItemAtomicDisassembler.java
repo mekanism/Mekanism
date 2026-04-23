@@ -114,8 +114,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
-        if (ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
+    public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
+        if (ALWAYS_SUPPORTED_ACTIONS.contains(action) && instance instanceof ItemStack stack) {
             IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
             if (energyContainer != null) {
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required

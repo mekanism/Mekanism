@@ -2,19 +2,16 @@ package mekanism.common;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectArrayMap;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 import java.util.function.Predicate;
-import mekanism.api.SerializationConstants;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.inventory.container.item.PortableQIODashboardContainer;
 import mekanism.common.lib.frequency.FrequencyControllerManager;
-import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.WorldUtils;
 import mekanism.common.world.GenHandler;
@@ -28,14 +25,10 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
-import net.neoforged.neoforge.event.level.ChunkDataEvent;
-import net.neoforged.neoforge.event.level.ChunkEvent;
-import net.neoforged.neoforge.event.level.LevelEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
@@ -48,7 +41,7 @@ public class CommonWorldTickHandler {
     //TODO: I believe this may be fine as is with just the load and save methods being synchronized
     // but there is a chance this is not the case in which case we should adjust how this is done
     private Map<Identifier, Object2IntMap<ChunkPos>> chunkVersions;//TODO - 26.1 move this to chunk attachment
-    private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;
+    private Map<Identifier, Queue<ChunkPos>> chunkRegenMap;//TODO - 26.1: move this to a level attachment
     public static boolean flushTagAndRecipeCaches;
     public static boolean monitoringCardboardBox;
     @Nullable
@@ -111,7 +104,7 @@ public class CommonWorldTickHandler {
     }
 
     //TODO - 26.1 move this to chunk attachment
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void chunkSave(ChunkDataEvent.Save event) {
         LevelAccessor world = event.getLevel();
         if (!world.isClientSide() && world instanceof Level level) {
@@ -122,10 +115,10 @@ public class CommonWorldTickHandler {
             }
             event.getData().putInt(SerializationConstants.WORLD_GEN_VERSION, chunkVersion);
         }
-    }
+    }*/
 
     //TODO - 26.1 move this to chunk attachment
-    @SubscribeEvent(priority = EventPriority.HIGHEST)
+    /*@SubscribeEvent(priority = EventPriority.HIGHEST)
     public synchronized void onChunkDataLoad(ChunkDataEvent.Load event) {
         if (event.getLevel() instanceof Level level && !level.isClientSide()) {
             int version = event.getData().getInt(SerializationConstants.WORLD_GEN_VERSION);
@@ -146,36 +139,7 @@ public class CommonWorldTickHandler {
                 }
             }
         }
-    }
-
-    //TODO - 26.1 move this to chunk attachment
-    @SubscribeEvent
-    public void chunkUnloadEvent(ChunkEvent.Unload event) {
-        if (event.getLevel() instanceof Level level && !level.isClientSide() && chunkVersions != null) {
-            //When a chunk unloads, free up the memory tracking what version it has
-            Object2IntMap<ChunkPos> levelMap = chunkVersions.get(level.dimension().identifier());
-            if (levelMap != null) {
-                levelMap.removeInt(event.getChunk().getPos());
-            }
-        }
-    }
-
-    //TODO - 26.1 move this to chunk attachment
-    @SubscribeEvent
-    public void worldUnloadEvent(LevelEvent.Unload event) {
-        LevelAccessor world = event.getLevel();
-        if (!world.isClientSide() && world instanceof Level level && chunkVersions != null) {
-            //When a world unloads, free up memory tracking the versions of the chunks in it
-            chunkVersions.remove(level.dimension().identifier());
-        }
-    }
-
-    @SubscribeEvent
-    public void worldLoadEvent(LevelEvent.Load event) {
-        if (!event.getLevel().isClientSide()) {
-            MultiblockManager.createOrLoadAll();
-        }
-    }
+    }*/
 
     @SubscribeEvent
     public void onTick(ServerTickEvent.Post event) {

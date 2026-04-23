@@ -37,6 +37,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -177,6 +178,12 @@ public class ModuleHelper implements IModuleHelper {//TODO - 1.22: Evaluate movi
     @Nullable
     public ModuleContainer getModuleContainer(ItemStack stack) {
         return isModuleContainer(stack) ? getModuleContainerUnsafe(stack) : null;
+    }
+
+    @Override
+    @Nullable
+    public ModuleContainer getModuleContainer(ItemResource itemResource) {
+        return isModuleContainer(itemResource) ? getModuleContainerUnsafe(itemResource) : null;
     }
 
     public ModuleContainer getModuleContainerUnsafe(DataComponentGetter dataComponentGetter) {
