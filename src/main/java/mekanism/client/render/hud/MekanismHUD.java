@@ -45,12 +45,13 @@ public class MekanismHUD implements GuiLayer {
             //mekanism does this
             return hudProvider;
         }
-        return (list, player, s, slotType) -> {
-            IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(s);
-            if (container != null) {
+        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
+        if (container != null) {
+            return (list, player, s, slotType) -> {
                 list.addAll(container.getHUDStrings(player, s));
-            }
-        };
+            };
+        }
+        return null;
     }
 
     @Override
