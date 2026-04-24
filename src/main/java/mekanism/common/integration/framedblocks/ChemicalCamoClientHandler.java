@@ -54,6 +54,11 @@ final class ChemicalCamoClientHandler extends CamoContentClientHandler<ChemicalC
         tintList.add(camo.getChemicalHolder().value().getTint());
     }
 
+    @Override
+    public int getParticleTintValue(ChemicalCamoContent camo) {
+        return camo.getChemicalHolder().value().getTint();
+    }
+
     static void clearModelCache() {
         CHEMICAL_MODEL_CACHE.clear();
     }

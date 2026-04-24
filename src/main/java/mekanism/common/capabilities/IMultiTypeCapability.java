@@ -14,6 +14,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ItemCapability;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -21,7 +22,7 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
 
     BlockCapability<HANDLER, @Nullable Direction> block();
 
-    ItemCapability<ITEM_HANDLER, Void> item();
+    ItemCapability<ITEM_HANDLER, ItemAccess> item();
 
     EntityCapability<HANDLER, ?> entity();
 
@@ -30,16 +31,16 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
     }
 
     @Nullable
-    default ITEM_HANDLER getCapability(ItemStack stack) {
+    default ITEM_HANDLER getCapability(ItemStack stack, ItemAccess access) {
         //Note: Safety handling of empty stack is done when looking up the provider inside getCapability's implementation
-        return stack.getCapability(item());
+        return stack.getCapability(item(), access);
     }
 
     /**
-     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemStack)} and null checking.
+     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemStack, ItemAccess)} and null checking.
      */
-    default boolean hasCapability(ItemStack stack) {
-        return getCapability(stack) != null;
+    default boolean hasCapability(ItemStack stack, ItemAccess access) {
+        return getCapability(stack, access) != null;
     }
 
     @Nullable

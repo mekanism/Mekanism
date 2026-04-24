@@ -34,6 +34,7 @@ import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 public class Capabilities {
@@ -44,7 +45,7 @@ public class Capabilities {
     public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
 
     private record FluidCapability(BlockCapability<IFluidHandler, @Nullable Direction> block,
-                                   ItemCapability<IFluidHandlerItem, Void> item,
+                                   ItemCapability<IFluidHandlerItem, ItemAccess> item,
                                    EntityCapability<IFluidHandler, @Nullable Direction> entity) implements IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> {
     }
 
@@ -52,7 +53,7 @@ public class Capabilities {
     public static final MultiTypeCapability<IEnergyStorage> ENERGY = new MultiTypeCapability<>(Mekanism.rl("legacy_energy"), IEnergyStorage.class);//new MultiTypeCapability<>(Energy.BLOCK, Energy.ITEM, Energy.ENTITY);
     public static final IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> FLUID = new FluidCapability(
           BlockCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class),
-          ItemCapability.createVoid(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class),
+          ItemCapability.create(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class, ItemAccess.class),
           EntityCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class));//new FluidCapability(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<IItemHandler> ITEM = new MultiTypeCapability<>(Mekanism.rl("legacy_item"), IItemHandler.class);//new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);

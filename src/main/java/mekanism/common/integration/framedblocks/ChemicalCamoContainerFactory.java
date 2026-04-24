@@ -5,7 +5,7 @@ import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
 import io.github.xfacthd.framedblocks.api.camo.TriggerRegistrar;
 import io.github.xfacthd.framedblocks.api.util.CamoMessageVerbosity;
 import io.github.xfacthd.framedblocks.api.util.ConfigView;
-import java.util.Optional;
+import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
@@ -17,7 +17,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
-import net.minecraft.core.Holder.Reference;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -56,7 +55,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     @Override
     @Nullable
     public ChemicalCamoContainer applyCamo(Level level, BlockPos pos, Player player, ItemAccess itemAccess) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL.item());
         if (handler == null || handler.getChemicalTanks() <= 0) {
             return null;
         }
@@ -90,7 +89,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             return false;
         }
 
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL.item());
         if (handler == null || handler.getChemicalTanks() <= 0) {
             return false;
         }
@@ -163,7 +162,8 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     @Override
     public void registerTriggerItems(TriggerRegistrar registrar) {
-        registrar.registerApplicationPredicate(Capabilities.CHEMICAL::hasCapability);
-        registrar.registerRemovalPredicate(Capabilities.CHEMICAL::hasCapability);
+        Predicate<ItemStack> predicate = stack -> ItemAccess.forStack(stack).getCapability(Capabilities.CHEMICAL.item()) != null;
+        registrar.registerApplicationPredicate(predicate);
+        registrar.registerRemovalPredicate(predicate);
     }
 }

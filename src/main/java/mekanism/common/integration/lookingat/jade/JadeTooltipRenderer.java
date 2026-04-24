@@ -15,7 +15,6 @@ import mekanism.common.integration.lookingat.ILookingAtElement;
 import mekanism.common.integration.lookingat.LookingAtElement;
 import mekanism.common.integration.lookingat.TextElement;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
-import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.NbtOps;
@@ -23,8 +22,6 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.util.Mth;
-import net.minecraft.world.phys.Vec2;
 import net.neoforged.neoforge.common.util.NeoForgeExtraCodecs;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.Accessor;
@@ -106,24 +103,30 @@ public class JadeTooltipRenderer<ACCESSOR extends Accessor<?>> implements ICompo
 
     private static class MekElement extends Element {
 
-        @Nullable
-        private final Component text;
-        private final LookingAtElement element;
-
-        public MekElement(@Nullable Component text, LookingAtElement element) {
-            this.element = element;
-            this.text = text;
-        }
-
-        @Override
-        public Vec2 getSize() {
+        public Element create(@Nullable Component text, LookingAtElement element) {
+            MekElement mekElement = new MekElement(text, element);
             int width = element.getWidth();
             int height = element.getHeight() + 2;
             if (text != null) {
                 width = Math.max(width, 96);
                 height += 14;
             }
-            return new Vec2(width, height);
+            return mekElement.size(width, height);
+        }
+
+        @Nullable
+        private final Component text;
+        private final LookingAtElement element;
+
+        private MekElement(@Nullable Component text, LookingAtElement element) {
+            this.element = element;
+            this.text = text;
+        }
+
+        @Override
+        @Nullable
+        public Component getNarration() {
+            return text;
         }
 
         @Override

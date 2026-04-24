@@ -106,7 +106,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
         }
         if (player.canEat(false) && getFluid(item).amount() >= 50) {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(item);
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.FAIL;
     }

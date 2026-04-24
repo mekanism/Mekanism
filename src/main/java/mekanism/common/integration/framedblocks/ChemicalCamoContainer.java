@@ -2,6 +2,7 @@ package mekanism.common.integration.framedblocks;
 
 import mekanism.api.chemical.Chemical;
 import net.minecraft.core.Holder;
+import net.minecraft.world.level.block.Rotation;
 import org.jetbrains.annotations.Nullable;
 import io.github.xfacthd.framedblocks.api.camo.CamoContainer;
 import io.github.xfacthd.framedblocks.api.camo.CamoContainerFactory;
@@ -47,5 +48,10 @@ final class ChemicalCamoContainer extends CamoContainer<ChemicalCamoContent, Che
     @Override
     public CamoContainerFactory<ChemicalCamoContainer> getFactory() {
         return FramedBlocksIntegration.CHEMICAL_FACTORY.get();
+    }
+
+    @Override
+    public ChemicalCamoContainer adjustForCarrierRotation(Rotation rotation) {
+        return this;
     }
 }

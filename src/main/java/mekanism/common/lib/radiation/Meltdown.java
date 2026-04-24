@@ -162,7 +162,7 @@ public class Meltdown {
         Vec3 center = explosion.center();
         for (ServerPlayer player : level.players()) {
             if (player.distanceToSqr(center.x, center.y, center.z) < 4096.0) {
-                player.connection.send(new ClientboundExplodePacket(center.x, center.y, center.z,
+                player.connection.send(new ClientboundExplodePacket(center,
                       explosion.radius(),
                       explosion.getToBlow(),
                       explosion.getHitPlayers().get(player),
