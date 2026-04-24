@@ -47,6 +47,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -71,7 +72,6 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
@@ -81,8 +81,9 @@ import org.jetbrains.annotations.NotNull;
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
 
     //All basic dig actions except shears
-    public static final Set<ItemAbility> ALWAYS_SUPPORTED_ACTIONS = Set.of(ItemAbilities.AXE_DIG, ItemAbilities.HOE_DIG, ItemAbilities.SHOVEL_DIG, ItemAbilities.PICKAXE_DIG,
-          ItemAbilities.SWORD_DIG);
+    //TODO - 26.1: review why these not longer exist
+    public static final Set<ItemAbility> ALWAYS_SUPPORTED_ACTIONS = Set.of(/*ItemAbilities.AXE_DIG, ItemAbilities.HOE_DIG, ItemAbilities.SHOVEL_DIG, ItemAbilities.PICKAXE_DIG,
+          ItemAbilities.SWORD_DIG*/);
     private static final Lazy<RadialData<DisassemblerMode>> LAZY_RADIAL_DATA = Lazy.of(() ->
           IRadialDataHelper.INSTANCE.dataForEnum(Mekanism.rl("disassembler_mode"), DisassemblerMode.NORMAL));
 
@@ -97,10 +98,10 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         //TODO - 26.1: Re-evaluate uses of setNoCombineRepair and see if any of them are not actually needed
         super(properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.DISASSEMBLER_MODE, DisassemblerMode.NORMAL)
-              .component(DataComponents.TOOL, new Tool(List.of(
-                    Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER),
+              .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
+                    Tool.Rule.deniesDrops(context.lookupOrThrow(Registries.BLOCK).getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_DISASSEMBLER)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
-              ), 1, 0))
+              ), 1, 0, true))
         );
     }
 
@@ -130,7 +131,8 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+        super.postHurtEnemy(stack, target, attacker);
         IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
         if (energyContainer != null && !energyContainer.isEmpty()) {
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
@@ -138,7 +140,6 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             // to the amount of damage we will actually do
             energyContainer.extract(MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), Action.EXECUTE, AutomationType.MANUAL);
         }
-        return true;
     }
 
     @Override
