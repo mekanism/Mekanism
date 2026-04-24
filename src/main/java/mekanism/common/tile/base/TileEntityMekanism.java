@@ -997,7 +997,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         radiationScale = input.getFloatOr(SerializationConstants.RADIATION, radiationScale);
     }
 
-    public void onNeighborChange(Block block, BlockPos neighborPos) {
+    public void onNeighborChange(BlockPos neighborPos) {
         if (!isRemote()) {
             updatePower();
         }

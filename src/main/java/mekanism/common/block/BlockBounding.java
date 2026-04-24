@@ -231,18 +231,17 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         world.removeBlock(pos, false);
     }
 
-    //TODO - 26.1: neighborChanged @Override
-    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
-          boolean isMoving) {
-        if (!world.isClientSide()) {
-            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, world, pos);
+    @Override
+    public void onNeighborChange(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
+        if (!level.isClientSide()) {
+            TileEntityBoundingBlock tile = WorldUtils.getTileEntity(TileEntityBoundingBlock.class, level, pos);
             if (tile != null) {
-                tile.onNeighborChange(world, neighborBlock, neighborPos);
+                tile.onNeighborChange(level, neighborPos);
             }
         }
-        BlockPos mainPos = getMainBlockPos(world, pos);
+        BlockPos mainPos = getMainBlockPos(level, pos);
         if (mainPos != null) {
-            //TODO - 26.1: world.getBlockState(mainPos).handleNeighborChanged(world, mainPos, neighborBlock, neighborPos, isMoving);
+            level.getBlockState(mainPos).onNeighborChange(level, mainPos, neighborPos);
         }
     }
 

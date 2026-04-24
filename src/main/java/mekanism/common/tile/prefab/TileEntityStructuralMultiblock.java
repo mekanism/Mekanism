@@ -161,8 +161,8 @@ public abstract class TileEntityStructuralMultiblock extends TileEntityMekanism 
     }
 
     @Override
-    public void onNeighborChange(Block block, BlockPos neighborPos) {
-        super.onNeighborChange(block, neighborPos);
+    public void onNeighborChange(BlockPos neighborPos) {
+        super.onNeighborChange(neighborPos);
         if (!isRemote()) {
             //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
             for (Structure s : structures.values()) {

@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
@@ -99,17 +100,15 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
         }
     }
 
-    //TODO - 26.1: neighborChanged split
-    /*@Override
-    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
-          boolean isMoving) {
-        if (!world.isClientSide()) {
-            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, world, pos);
+    @Override
+    public void onNeighborChange(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
+        if (!level.isClientSide()) {
+            TileEntityMekanism tile = WorldUtils.getTileEntity(TileEntityMekanism.class, level, pos);
             if (tile != null) {
-                tile.onNeighborChange(neighborBlock, neighborPos);
+                tile.onNeighborChange(neighborPos);
             }
         }
-    }*/
+    }
 
     @Override
     protected boolean isSignalSource(@NotNull BlockState state) {

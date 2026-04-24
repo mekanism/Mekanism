@@ -14,8 +14,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.Nameable;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
@@ -83,7 +82,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
         return main != null && main.triggerBoundingEvent(worldPosition.subtract(getMainPos()), id, param) || handled;
     }
 
-    public void onNeighborChange(Level level, Block block, BlockPos neighborPos) {
+    public void onNeighborChange(LevelReader level, BlockPos neighborPos) {
         if (!isRemote()) {
             int power = level.getBestNeighborSignal(getBlockPos());
             if (currentRedstoneLevel != power) {

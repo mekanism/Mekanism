@@ -34,8 +34,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void onNeighborChange(Block block, BlockPos neighborPos) {
-        super.onNeighborChange(block, neighborPos);
+    public void onNeighborChange(BlockPos neighborPos) {
+        super.onNeighborChange(neighborPos);
         if (!isRemote()) {
             updateRotors();
         }

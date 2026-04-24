@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.UnaryOperator;
+import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
 import mekanism.common.block.prefab.BlockBase.BlockBaseModel;
@@ -29,7 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
@@ -64,16 +65,23 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
         return type.getTileType();
     }
 
-    //TODO - 26.1: neighborChanged @Override
-    protected void neighborChanged(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull Block neighborBlock, @NotNull BlockPos neighborPos,
-          boolean isMoving) {
-        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, world, pos);
-        if (tile != null) {
-            Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ(), null);
-            if (side != null) {
-                tile.onNeighborBlockChange(side);
-            }
+    @Override
+    public void onNeighborChange(@NotNull BlockState state, @NotNull LevelReader level, @NotNull BlockPos pos, @NotNull BlockPos neighborPos) {
+        TileEntityTransmitter tile = WorldUtils.getTileEntity(TileEntityTransmitter.class, level, pos);
+        if (tile == null) {
+            return;
         }
+        Direction side = Direction.getNearest(neighborPos.getX() - pos.getX(), neighborPos.getY() - pos.getY(), neighborPos.getZ() - pos.getZ(), null);
+        if (side == null) {
+            Mekanism.logger.atError()
+                  .setMessage("Unable to find correct side during neighbor change. pos: {}, neighbor: {}")
+                  .addArgument(pos)
+                  .addArgument(neighborPos)
+                  .setCause(new Exception())
+                  .log();
+            return;
+        }
+        tile.onNeighborBlockChange(side);
     }
 
     @Override

@@ -347,8 +347,8 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     }
 
     @Override
-    public void onNeighborChange(Block block, BlockPos neighborPos) {
-        super.onNeighborChange(block, neighborPos);
+    public void onNeighborChange(BlockPos neighborPos) {
+        super.onNeighborChange(neighborPos);
         //TODO - V11: Make this properly support changing blocks inside the structure when they aren't touching any part of the multiblocks
         if (!isRemote()) {
             T multiblock = getMultiblock();
