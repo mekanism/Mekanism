@@ -162,8 +162,8 @@ public class TileEntityTurbineRotor extends TileEntityInternalMultiblock impleme
     }
 
     @Override
-    public void blockRemoved() {
-        super.blockRemoved();
+    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+        super.preRemoveSideEffects(pos, state);
         if (!isRemote()) {
             int amount = getHousedBlades();
             if (amount > 0) {

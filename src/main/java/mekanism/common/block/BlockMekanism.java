@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.Containers;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -130,22 +131,15 @@ public abstract class BlockMekanism extends Block {
         return super.updateShape(state, level, scheduledTickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
-    //TODO - 26.1: Update comparators for anything that supports them in affectNeighborsAfterRemoval like chests do
     @Override
-    protected void onRemove(@NotNull BlockState state, @NotNull Level world, @NotNull BlockPos pos, @NotNull BlockState newState, boolean isMoving) {
-        if (!state.is(newState.getBlock())) {
-            AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
-            if (hasBounding != null) {
-                hasBounding.removeBoundingBlocks(world, pos, state);
-            }
+    protected void affectNeighborsAfterRemoval(@NotNull BlockState state, @NotNull ServerLevel level, @NotNull BlockPos pos, boolean movedByPiston) {
+        super.affectNeighborsAfterRemoval(state, level, pos, movedByPiston);
+        AttributeHasBounding hasBounding = Attribute.get(state, AttributeHasBounding.class);
+        if (hasBounding != null) {
+            hasBounding.removeBoundingBlocks(level, pos, state);
         }
-        if (state.hasBlockEntity() && !state.is(newState.getBlock())) {
-            TileEntityUpdateable tile = WorldUtils.getTileEntity(TileEntityUpdateable.class, world, pos);
-            if (tile != null) {
-                tile.blockRemoved();
-            }
-        }
-        super.onRemove(state, world, pos, newState, isMoving);
+        Containers.updateNeighboursAfterDestroy(state, level, pos);
+
     }
 
     @Override

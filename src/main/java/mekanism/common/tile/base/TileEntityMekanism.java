@@ -707,8 +707,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Override
-    public void blockRemoved() {
-        super.blockRemoved();
+    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+        super.preRemoveSideEffects(pos, state);
         for (ITileComponent component : components) {
             component.removed();
         }

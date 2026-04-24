@@ -50,8 +50,8 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     }
 
     @Override
-    public void blockRemoved() {
-        super.blockRemoved();
+    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
+        super.preRemoveSideEffects(pos, state);
         if (!isRemote()) {
             LogisticalTransporterBase transporter = getTransmitter();
             if (!transporter.isUpgrading()) {

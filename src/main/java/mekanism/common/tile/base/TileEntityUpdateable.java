@@ -87,8 +87,8 @@ public abstract class TileEntityUpdateable extends BlockEntity implements ITileW
      * Called when the tile is permanently removed
      *
      * @implNote We only need to handle logic that happens when removed and not unloaded as if it happens for both then setRemoved will handle it
-     */
-    public void blockRemoved() {
+     *///TODO - 26.1: verify this works as intended - does the drop contain the contents?
+    public void preRemoveSideEffects(@NotNull BlockPos pos, @NotNull BlockState state) {
     }
 
     /**
