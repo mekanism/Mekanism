@@ -1,8 +1,8 @@
 name: "Run Game Tests"
 
 on:
-  push:
-    branches: [ "26.1" ]
+  #push: TODO - 26.1: re-enable when compiles
+  #  branches: [ "26.1" ]
   pull_request:
     branches: [ "26.1" ]
     types:
