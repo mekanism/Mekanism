@@ -320,7 +320,7 @@ public class MekanismItems {
                 DataComponents.EQUIPPABLE,
                 Equippable.builder(EquipmentSlot.CHEST)
                       .setEquipSound(SoundEvents.ARMOR_EQUIP_ELYTRA)
-                      .setAsset(MekanismEquipmentAssets.HDPE_ELYTRA)
+                      //TODO - 26.1: #blameSara .setAsset(MekanismEquipmentAssets.HDPE_ELYTRA)
                       .setDamageOnHurt(false)
                       .build()
           )

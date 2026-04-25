@@ -14,6 +14,8 @@ import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.ShapedRecipe;
@@ -116,15 +118,15 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
 
     @Override
     protected Recipe<?> asRecipe() {
-        return wrapRecipe(new ShapedRecipe(
+        return wrapRecipe(
               RecipeBuilder.createCraftingCommonInfo(this.showNotification),
               RecipeBuilder.createCraftingBookInfo(this.category, this.group),
               ShapedRecipePattern.of(this.key, this.pattern),
               resultStack()
-        ));
+        );
     }
 
-    protected Recipe<?> wrapRecipe(ShapedRecipe recipe) {
-        return recipe;
+    protected Recipe<?> wrapRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        return new ShapedRecipe(commonInfo, bookInfo, pattern, result);
     }
 }

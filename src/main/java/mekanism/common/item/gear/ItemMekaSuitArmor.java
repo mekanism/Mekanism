@@ -42,7 +42,6 @@ import mekanism.common.content.gear.IModuleContainerItem;
 import mekanism.common.content.gear.Module;
 import mekanism.common.content.gear.ModuleContainer;
 import mekanism.common.content.gear.ModuleHelper;
-import mekanism.common.content.gear.mekasuit.ModuleElytraUnit;
 import mekanism.common.content.gear.mekasuit.ModuleJetpackUnit;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
@@ -53,7 +52,6 @@ import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
-import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.network.chat.Component;
@@ -66,10 +64,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlot.Type;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -77,11 +74,10 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.item.equipment.ArmorType;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,11 +92,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final double laserDissipation;
     private final double laserRefraction;
+    private final ArmorType armorType;
 
     public ItemMekaSuitArmor(ArmorType armorType, Item.Properties properties) {
         super(MekanismArmorMaterials.MEKASUIT, armorType, IModuleHelper.INSTANCE.applyModuleContainerProperties(
               properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
         ));
+        this.armorType = armorType;
         switch (armorType) {
             case HELMET -> {
                 fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
@@ -168,13 +166,13 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public boolean isEnderMask(@NotNull ItemStack stack, @NotNull Player player, @NotNull EnderMan enderman) {
-        return type == ArmorType.HELMET;
+    public boolean isGazeDisguise(@NotNull ItemStack stack, @NotNull Player player, @Nullable LivingEntity entity) {
+        return true;//only called on helmet slot, no need to check type
     }
 
     @Override
     public boolean canWalkOnPowderedSnow(@NotNull ItemStack stack, @NotNull LivingEntity wearer) {
-        return type == ArmorType.BOOTS;
+        return armorType == ArmorType.BOOTS;
     }
 
     @Override
@@ -199,10 +197,10 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
         //Enchantments in our data
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
-        int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
+        IModuleContainer container = ModuleHelper.get().getModuleContainerUnsafe(stack);
+        int moduleLevel = container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
 
@@ -274,7 +272,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             if (!MekanismConfig.gear.isLoaded() || !isModuleEnabled(stack, MekanismModules.RADIATION_SHIELDING_UNIT)) {
                 return null;
             }
-            return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(getType()));
+            return RadiationShieldingHandler.create(ItemHazmatSuitArmor.getShieldingByArmor(armorType));
         }, this);
 
         event.registerItem(Capabilities.LASER_DISSIPATION, (stack, ctx) -> {
@@ -294,10 +292,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public boolean supportsSlotType(ItemStack stack, @NotNull EquipmentSlot slotType) {
         //Note: We ignore radial modes as those are just for the Meka-Tool currently
-        return slotType == getEquipmentSlot() && getModules(stack).stream().anyMatch(IModule::handlesModeChange);
+        return slotType == armorType.getSlot() && getModules(stack).stream().anyMatch(IModule::handlesModeChange);
     }
 
-    @Override
+    //TODO - 26.1 Elytra unit
+    /*@Override
     public boolean canElytraFly(ItemStack stack, LivingEntity entity) {
         if (getType() == ArmorType.CHESTPLATE && !entity.isShiftKeyDown()) {
             //Don't allow elytra flight if the player is sneaking. This lets the player exit elytra flight early
@@ -333,11 +332,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             }
         }
         return true;
-    }
+    }*/
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        if (type == ArmorType.CHESTPLATE) {
+        if (armorType == ArmorType.CHESTPLATE) {
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
                 return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN.get());
             }
@@ -380,7 +379,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void useJetpackFuel(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (gasHandlerItem != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
                 gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);
@@ -388,6 +387,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }
     }
 
+    /*TODO - 26.1: check that thse are handled by the item props
     @Override
     public int getDefense() {
         return getMaterial().value().getDefense(getType());
@@ -396,7 +396,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     @Override
     public float getToughness() {
         return getMaterial().value().toughness();
-    }
+    }*/
 
     @Override
     public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {

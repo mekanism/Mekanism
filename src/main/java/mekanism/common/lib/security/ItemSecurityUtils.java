@@ -1,6 +1,5 @@
 package mekanism.common.lib.security;
 
-import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -82,7 +81,7 @@ public class ItemSecurityUtils implements IItemSecurityUtils {
                 openGui.accept((ServerPlayer) player, hand, stack);
             }
         }
-        return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     public boolean tryClaimItem(Level level, Player player, ItemStack stack) {

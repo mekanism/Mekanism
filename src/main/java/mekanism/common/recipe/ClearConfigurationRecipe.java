@@ -6,12 +6,10 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -21,8 +19,7 @@ import net.minecraft.world.level.Level;
 @NothingNullByDefault
 public class ClearConfigurationRecipe extends CustomRecipe {
 
-    public ClearConfigurationRecipe(CraftingBookCategory category) {
-        super(category);
+    public ClearConfigurationRecipe() {
     }
 
     @Override
@@ -42,7 +39,7 @@ public class ClearConfigurationRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingInput input, HolderLookup.Provider provider) {
+    public ItemStack assemble(CraftingInput input) {
         ItemStack target = getTargetStack(input);
         if (target.isEmpty()) {
             //If we didn't find a singular block item our recipe can't possibly match

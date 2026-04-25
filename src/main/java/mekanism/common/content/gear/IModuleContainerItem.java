@@ -18,6 +18,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -29,6 +30,16 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
     @Nullable
     default IModuleContainer moduleContainer(ItemStack stack) {
         return IModuleHelper.INSTANCE.getModuleContainer(stack);
+    }
+
+    @Nullable
+    default IModuleContainer moduleContainer(ItemInstance instance) {
+        if (instance instanceof ItemStack stack) {
+            return moduleContainer(stack);
+        } else if (IModuleHelper.INSTANCE.isModuleContainer(instance)) {
+            return ModuleHelper.get().getModuleContainerUnsafe(instance);
+        }
+        return null;
     }
 
     default Collection<? extends IModule<?>> getModules(ItemStack stack) {

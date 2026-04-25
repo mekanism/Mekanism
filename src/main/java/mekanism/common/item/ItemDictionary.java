@@ -104,7 +104,7 @@ public class ItemDictionary extends Item {
             if (!world.isClientSide()) {
                 MekanismContainerTypes.DICTIONARY.tryOpenGui((ServerPlayer) player, hand, stack);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+            return InteractionResult.SUCCESS_SERVER;
         } else {
             BlockHitResult result = MekanismUtils.rayTrace(player, ClipContext.Fluid.ANY);
             if (result.getType() != Type.MISS) {
@@ -113,7 +113,7 @@ public class ItemDictionary extends Item {
                     if (!world.isClientSide()) {
                         sendTagsOrEmptyToPlayer(player, MekanismLang.DICTIONARY_FLUID_TAGS_FOUND, fluidState.tags());
                     }
-                    return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+                    return InteractionResult.SUCCESS_SERVER;
                 }
             }
         }

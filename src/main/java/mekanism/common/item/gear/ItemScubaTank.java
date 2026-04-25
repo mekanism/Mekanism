@@ -25,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider, IAttachmentBasedModeItem<Boolean> {
@@ -51,7 +52,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getMode(stack), true)));
             ChemicalStack stored = ChemicalStack.EMPTY;
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
             }

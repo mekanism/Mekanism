@@ -28,6 +28,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BowItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.TooltipFlag;
@@ -86,8 +87,8 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     }
 
     @Override
-    public int getEnchantmentLevel(@NotNull ItemStack stack, @NotNull Holder<Enchantment> enchantment) {
-        if (stack.isEmpty()) {
+    public int getEnchantmentLevel(@NotNull ItemInstance stack, @NotNull Holder<Enchantment> enchantment) {
+        if (stack instanceof ItemStack itemStack && itemStack.isEmpty()) {
             return 0;
         } else if (enchantment.is(Enchantments.FLAME) && getMode(stack)) {
             return Math.max(1, super.getEnchantmentLevel(stack, enchantment));

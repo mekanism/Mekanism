@@ -66,6 +66,7 @@ import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -153,7 +154,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         ItemStack stack = player.getItemInHand(hand);
         if (getMode(stack)) {
             if (ItemSecurityUtils.get().tryClaimItem(world, player, stack)) {
-                return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+                return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
             } else if (!IItemSecurityUtils.INSTANCE.canAccessOrDisplayError(player, stack)) {
                 return InteractionResult.FAIL;
             } else if (stack.count() > 1) {
@@ -212,7 +213,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             //Play the bucket fill sound
                             WorldUtils.playFillSound(player, world, pos, fluidStack, sound.orElse(null));
                             world.gameEvent(player, GameEvent.FLUID_PICKUP, pos);
-                            return InteractionResultHolder.success(stack);
+                            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
                         }
                         return InteractionResult.FAIL;
                     }
@@ -227,7 +228,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                             MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(FluidType.BUCKET_VOLUME, Action.EXECUTE), FluidType.BUCKET_VOLUME);
                         }
                         world.gameEvent(player, GameEvent.FLUID_PLACE, pos);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
                     }
                 }
             }
@@ -254,7 +255,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(stack);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
             return fluidHandler.getFluidTank(0, null);
         }

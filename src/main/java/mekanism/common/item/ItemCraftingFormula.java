@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -52,7 +51,7 @@ public class ItemCraftingFormula extends Item {
             if (!world.isClientSide()) {
                 stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
         }
         return InteractionResult.PASS;
     }

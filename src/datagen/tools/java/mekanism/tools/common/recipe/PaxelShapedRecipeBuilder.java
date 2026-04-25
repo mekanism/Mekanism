@@ -5,8 +5,10 @@ import mekanism.common.recipe.builder.ExtendedShapedRecipeBuilder;
 import net.minecraft.core.Holder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @NothingNullByDefault
 public class PaxelShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
@@ -25,7 +27,7 @@ public class PaxelShapedRecipeBuilder extends ExtendedShapedRecipeBuilder {
     }
 
     @Override
-    protected Recipe<?> wrapRecipe(ShapedRecipe recipe) {
-        return new PaxelRecipe(recipe);
+    protected Recipe<?> wrapRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        return new PaxelRecipe(commonInfo, bookInfo, pattern, result);
     }
 }

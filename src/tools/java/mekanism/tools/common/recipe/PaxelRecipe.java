@@ -4,31 +4,31 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @NothingNullByDefault
 public class PaxelRecipe extends WrappedShapedRecipe {
 
-    public PaxelRecipe(ShapedRecipe internal) {
-        super(internal);
+    public PaxelRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        super(commonInfo, bookInfo, pattern, result);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer) ToolsRecipeSerializers.PAXEL.get();
     }
 
     @Override
-    public RecipeSerializer<PaxelRecipe> getSerializer() {
-        return ToolsRecipeSerializers.PAXEL.get();
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        ItemStack resultItem = getResultItem(provider);
-        if (resultItem.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack toReturn = resultItem.copy();
+    public ItemStack assemble(CraftingInput inv) {
+        ItemStack toReturn = super.assemble(inv);
         if (!toReturn.isDamageableItem() || toReturn.isDamaged()) {
             //If the output can't be damaged or is already damaged because someone is using this recipe in a weird way, just return the output
             return toReturn;

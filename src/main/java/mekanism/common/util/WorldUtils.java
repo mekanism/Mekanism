@@ -831,7 +831,7 @@ public class WorldUtils {
             if (isBlockLoaded(world, offset)) {
                 BlockState offsetState = world.getBlockState(offset);
                 offsetState.onNeighborChange(world, offset, pos);
-                offsetState.handleNeighborChanged(world, offset, state.getBlock(), pos, false);
+                offsetState.handleNeighborChanged(world, offset, state.getBlock(), null, false);
                 if (offsetState.isRedstoneConductor(world, offset)) {
                     //If redstone can be conducted through it, forward the change along an extra spot
                     offset.move(dir);

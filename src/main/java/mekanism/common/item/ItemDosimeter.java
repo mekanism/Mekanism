@@ -39,7 +39,7 @@ public class ItemDosimeter extends Item {
                 sendDosimeterLevel(player, player, MekanismLang.RADIATION_EXPOSURE);
                 CriteriaTriggers.USING_ITEM.trigger((ServerPlayer) player, stack);
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+            return InteractionResult.SUCCESS_SERVER;
         }
         return InteractionResult.PASS;
     }

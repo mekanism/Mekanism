@@ -58,6 +58,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: move these to resource handlers?
@@ -75,7 +76,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         @Override
         @SuppressWarnings("unchecked")
         public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
-            EnergyCompatUtils.registerItemCapabilities(event, item, (ICapabilityProvider<ItemStack, Void, IStrictEnergyHandler>) getCapabilityProvider(exposeWhenStacked, requiredConfigs));
+            EnergyCompatUtils.registerItemCapabilities(event, item, (ICapabilityProvider<ItemStack, ItemAccess, IStrictEnergyHandler>) getCapabilityProvider(exposeWhenStacked, requiredConfigs));
         }
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
@@ -240,7 +241,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         throw new IllegalArgumentException("No known containers for item " + attachedTo.getItem());
     }
 
-    protected ICapabilityProvider<ItemStack, Void, ? super HANDLER> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
+    protected ICapabilityProvider<ItemStack, ItemAccess, ? super HANDLER> getCapabilityProvider(boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
         if (exposeWhenStacked) {
             return getCapabilityProvider(requiredConfigs);
         } else if (requiredConfigs.length == 0) {
@@ -250,7 +251,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return (stack, context) -> stack.count() == 1 && hasRequiredConfigs(requiredConfigs) ? createHandler(stack) : null;
     }
 
-    protected ICapabilityProvider<ItemStack, Void, ? super HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
+    protected ICapabilityProvider<ItemStack, ItemAccess, ? super HANDLER> getCapabilityProvider(IMekanismConfig... requiredConfigs) {
         if (requiredConfigs.length == 0) {
             return (stack, context) -> createHandler(stack);
         }

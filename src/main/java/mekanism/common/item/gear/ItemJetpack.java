@@ -27,6 +27,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
@@ -88,7 +89,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
             ChemicalStack stored = ChemicalStack.EMPTY;
             long capacity = 1;
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
                 capacity = gasHandlerItem.getChemicalTankCapacity(0);

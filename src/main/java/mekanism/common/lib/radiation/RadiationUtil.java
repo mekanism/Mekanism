@@ -13,7 +13,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.Nullable;
 
 public class RadiationUtil {
 
@@ -46,10 +48,10 @@ public class RadiationUtil {
             }
         }
         if (resistance < 1 && Mekanism.hooks.curios.isLoaded()) {
-            IItemHandler handler = CuriosIntegration.getCuriosInventory(entity);
+            @Nullable ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(entity);
             if (handler != null) {
-                for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                    ItemStack stack = handler.getStackInSlot(i);
+                for (int i = 0, slots = handler.size(); i < slots; i++) {
+                    ItemStack stack = handler.getResource(i).toStack();
                     IRadiationShielding shielding = stack.getCapability(Capabilities.RADIATION_SHIELDING);
                     if (shielding != null) {
                         resistance += shielding.getRadiationShielding();

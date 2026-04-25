@@ -9,31 +9,31 @@ import java.util.Set;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingInput;
+import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 
 @NothingNullByDefault
 public class MekanismShapedRecipe extends WrappedShapedRecipe {
 
-    public MekanismShapedRecipe(ShapedRecipe internal) {
-        super(internal);
+    public MekanismShapedRecipe(Recipe.CommonInfo commonInfo, CraftingRecipe.CraftingBookInfo bookInfo, ShapedRecipePattern pattern, ItemStackTemplate result) {
+        super(commonInfo, bookInfo, pattern, result);
+    }
+
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    @Override
+    public RecipeSerializer<ShapedRecipe> getSerializer() {
+        return (RecipeSerializer) MekanismRecipeSerializersInternal.MEK_DATA.get();
     }
 
     @Override
-    public RecipeSerializer<MekanismShapedRecipe> getSerializer() {
-        return MekanismRecipeSerializersInternal.MEK_DATA.get();
-    }
-
-    @Override
-    public ItemStack assemble(CraftingInput inv, HolderLookup.Provider provider) {
-        ItemStack resultItem = getResultItem(provider);
-        if (resultItem.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemStack toReturn = resultItem.copy();
+    public ItemStack assemble(CraftingInput inv) {
+        ItemStack toReturn = super.assemble(inv);
         List<ItemStack> componentInputs = new ArrayList<>();
         for (int i = 0; i < inv.size(); i++) {
             ItemStack stack = inv.getItem(i);

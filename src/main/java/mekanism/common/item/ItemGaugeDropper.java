@@ -1,6 +1,5 @@
 package mekanism.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemGaugeDropper extends Item {
@@ -70,20 +70,20 @@ public class ItemGaugeDropper extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
+                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
                 if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
                     for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                         fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
                     }
                 }
-                IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(stack);
+                IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
                 if (handler != null) {
                     for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                         handler.setChemicalInTank(tank, ChemicalStack.EMPTY);
                     }
                 }
             }
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
         }
         return InteractionResult.PASS;
     }

@@ -46,8 +46,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -89,12 +91,12 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     private static final Identifier RADIAL_ID = Mekanism.rl("meka_tool");
 
-    public ItemMekaTool(Properties properties) {
+    public ItemMekaTool(Properties properties) {//todo - 26.1 add WEAPON component, so net.minecraft.world.item.ItemStack.hurtEnemy works properly?
         super(IModuleHelper.INSTANCE.applyModuleContainerProperties(properties.rarity(Rarity.EPIC).setNoCombineRepair().stacksTo(1)
-              .component(DataComponents.TOOL, new Tool(List.of(
-                    Tool.Rule.deniesDrops(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL),
+              .delayedComponent(DataComponents.TOOL, context -> new Tool(List.of(
+                    Tool.Rule.deniesDrops(context.lookupOrThrow(Registries.BLOCK).getOrThrow(MekanismTags.Blocks.INCORRECT_FOR_MEKA_TOOL)),
                     new Tool.Rule(new AnyHolderSet<>(BuiltInRegistries.BLOCK), Optional.empty(), Optional.of(true))
-              ), 1, 0))
+              ), 1, 0, true))
         ));
     }
 
@@ -115,7 +117,10 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
+    public boolean canPerformAction(ItemInstance instance, ItemAbility action) {
+        if (!(instance instanceof ItemStack stack)) {
+            return false;
+        }
         if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
             IModuleContainer container = moduleContainer(stack);
             return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
@@ -131,7 +136,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         return false;
     }
 
-    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemInstance stack, ItemAbility action) {
+    private <MODULE extends ICustomModule<MODULE>> boolean canPerformAction(IModule<MODULE> module, IModuleContainer moduleContainer, ItemStack stack, ItemAbility action) {
         return module.getCustomInstance().canPerformAction(module, moduleContainer, stack, action);
     }
 
@@ -165,9 +170,9 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public int getEnchantmentLevel(ItemStack stack, Holder<Enchantment> enchantment) {
+    public int getEnchantmentLevel(ItemInstance stack, Holder<Enchantment> enchantment) {
         //Enchantments in our data
-        IModuleContainer container = IModuleHelper.INSTANCE.getModuleContainer(stack);
+        IModuleContainer container = moduleContainer(stack);
         int moduleLevel = container == null ? 0 : container.getModuleEnchantmentLevel(enchantment);
         return Math.max(moduleLevel, super.getEnchantmentLevel(stack, enchantment));
     }
@@ -283,7 +288,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
     }
 
     @Override
-    public boolean hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
+    public void hurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         IModule<ModuleAttackAmplificationUnit> attackAmplificationUnit = getEnabledModule(stack, MekanismModules.ATTACK_AMPLIFICATION_UNIT);
         if (attackAmplificationUnit != null) {
             //Note: We only have an energy cost if the damage is above base, so we can skip all those checks
@@ -299,7 +304,6 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                 }
             }
         }
-        return true;
     }
 
     @Override
@@ -396,7 +400,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         double targetX = pos.getX() + 0.5;
                         double targetY = pos.getY() + 1.5;
                         double targetZ = pos.getZ() + 0.5;
-                        MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, targetX, targetY, targetZ, stack, result);
+                        MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, (ServerLevel) player.level(), targetX, targetY, targetZ, stack, result);
                         if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
                             //Fail if the event was cancelled
                             return InteractionResult.FAIL;
@@ -411,7 +415,7 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         player.resetFallDistance();
                         PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
                         world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                        return InteractionResultHolder.success(stack);
+                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }

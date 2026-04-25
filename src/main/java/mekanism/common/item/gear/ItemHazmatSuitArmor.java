@@ -16,8 +16,11 @@ import org.jetbrains.annotations.NotNull;
 
 public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
 
+    private final ArmorType armorType;
+
     public ItemHazmatSuitArmor(ArmorType armorType, Item.Properties properties) {
         super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).humanoidArmor(MekanismArmorMaterials.HAZMAT.value(), armorType));
+        this.armorType = armorType;
     }
 
     public static double getShieldingByArmor(ArmorType type) {
@@ -32,7 +35,7 @@ public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> RadiationShieldingHandler.create(getShieldingByArmor(getType())), this);
+        event.registerItem(Capabilities.RADIATION_SHIELDING, (stack, ctx) -> RadiationShieldingHandler.create(getShieldingByArmor(armorType)), this);
     }
 
     @Override

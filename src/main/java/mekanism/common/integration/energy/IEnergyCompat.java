@@ -11,6 +11,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -86,7 +87,7 @@ public interface IEnergyCompat {
      */
     @Nullable
     default IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        Object capability = getCapability().getCapability(stack);
+        Object capability = getCapability().getCapability(ItemAccess.forStack(stack));//TODO - 26.1: Item access
         return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 
