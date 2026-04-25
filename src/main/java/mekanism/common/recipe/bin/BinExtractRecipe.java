@@ -8,21 +8,14 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
-import net.minecraft.world.item.crafting.PlacementInfo;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
-import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
 
-    private @Nullable PlacementInfo placementInfo;
-
-    public BinExtractRecipe(CraftingBookCategory category) {
-        super(category);
-    }
+    public static final BinExtractRecipe INSTANCE = new BinExtractRecipe();
 
     @Override
     public boolean matches(CraftingInput inv, Level world) {

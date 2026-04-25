@@ -10,7 +10,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
@@ -46,25 +45,20 @@ import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import mekanism.common.recipe.WrappedShapedRecipe;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jspecify.annotations.NonNull;
 
 public class MekanismRecipeSerializer {
 
-    public static <RECIPE extends WrappedShapedRecipe> RecipeSerializer<RECIPE> wrapped(Function<ShapedRecipe, RECIPE> wrapper) {
-        //noinspection deprecation
-        return new RecipeSerializer<>(
-              ShapedRecipe.SERIALIZER.codec().xmap(wrapper, WrappedShapedRecipe::getInternal),
-              ShapedRecipe.SERIALIZER.streamCodec().map(wrapper, WrappedShapedRecipe::getInternal)
-        );
+    public static <RECIPE extends Recipe<?>> RecipeSerializer<RECIPE> singleton(RECIPE instance) {
+        return new RecipeSerializer<>(MapCodec.unit(instance), StreamCodec.unit(instance));
     }
 
     public static <RECIPE extends BasicItemStackToItemStackRecipe> RecipeSerializer<RECIPE> itemToItem(BiFunction<ItemStackIngredient, ItemStackTemplate, RECIPE> factory) {

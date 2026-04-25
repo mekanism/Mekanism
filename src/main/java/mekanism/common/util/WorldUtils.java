@@ -22,6 +22,7 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
@@ -858,7 +859,7 @@ public class WorldUtils {
         if (blockState.isPresent() && world != null) {//World can't be null here but double check it
             BlockState state = blockState.get();
             state.onNeighborChange(world, pos, fromPos);
-            state.handleNeighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), fromPos, false);
+            state.handleNeighborChanged(world, pos, world.getBlockState(fromPos).getBlock(), null, false);
         }
     }
 
@@ -879,13 +880,17 @@ public class WorldUtils {
      * Vanilla copy of {@link net.minecraft.client.multiplayer.ClientLevel#getSkyDarken(float)} used to be World#getSunBrightness
      */
     public static float getSunBrightness(Level world, float partialTicks) {
-        float f = world.getTimeOfDay(partialTicks);
+        float envSunAngle = world.environmentAttributes().getDimensionValue(EnvironmentAttributes.SUN_ANGLE);//0 - 360? midday = 360, midnight = 0?
+        //todo - 26.1 work out what this should do now. Also review usages - this seems to apply rain, but some usages also add rain multipliers
+        //also, what is the range?? 0-1?
+        return 0;
+        /*float f = world.getTimeOfDay(partialTicks);
         float f1 = 1.0F - (Mth.cos(f * Mth.TWO_PI) * 2.0F + 0.2F);
         f1 = Mth.clamp(f1, 0.0F, 1.0F);
         f1 = 1.0F - f1;
         f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));
         f1 = (float) (f1 * (1.0D - world.getThunderLevel(partialTicks) * 5.0F / 16.0D));
-        return f1 * 0.8F + 0.2F;
+        return f1 * 0.8F + 0.2F;*/
     }
 
     /**

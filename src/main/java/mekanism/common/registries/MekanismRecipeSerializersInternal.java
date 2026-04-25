@@ -32,6 +32,7 @@ import mekanism.api.recipes.basic.BasicWashingRecipe;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ClearConfigurationRecipe;
+import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.recipe.WrappedSmelterRecipe;
 import mekanism.common.recipe.bin.BinExtractRecipe;
 import mekanism.common.recipe.bin.BinInsertRecipe;
@@ -41,7 +42,6 @@ import mekanism.common.recipe.serializer.SawmillRecipeSerializer;
 import mekanism.common.recipe.upgrade.MekanismShapedRecipe;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -105,9 +105,9 @@ public class MekanismRecipeSerializersInternal extends MekanismRecipeSerializers
 
     }
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekanismShapedRecipe>> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> MekanismRecipeSerializer.wrapped(MekanismShapedRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> new RecipeSerializer<>(ClearConfigurationRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> new RecipeSerializer<>(BinInsertRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> new RecipeSerializer<>(BinExtractRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekanismShapedRecipe>> MEK_DATA = RECIPE_SERIALIZERS.register("mek_data", () -> WrappedShapedRecipe.serializer(MekanismShapedRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<ClearConfigurationRecipe>> CLEAR_CONFIGURATION = RECIPE_SERIALIZERS.register("clear_configuration", () -> MekanismRecipeSerializer.singleton(ClearConfigurationRecipe.INSTANCE));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinInsertRecipe>> BIN_INSERT = RECIPE_SERIALIZERS.register("bin_insert", () -> MekanismRecipeSerializer.singleton(BinInsertRecipe.INSTANCE));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BinExtractRecipe>> BIN_EXTRACT = RECIPE_SERIALIZERS.register("bin_extract", () -> MekanismRecipeSerializer.singleton(BinExtractRecipe.INSTANCE));
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<WrappedSmelterRecipe>> WRAPPED_SMELTER = RECIPE_SERIALIZERS.register("wrapped_smelter", () -> WrappedSmelterRecipe.SERIALIZER);
 }

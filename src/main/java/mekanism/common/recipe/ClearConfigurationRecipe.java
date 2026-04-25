@@ -19,7 +19,9 @@ import net.minecraft.world.level.Level;
 @NothingNullByDefault
 public class ClearConfigurationRecipe extends CustomRecipe {
 
-    public ClearConfigurationRecipe() {
+    public static final ClearConfigurationRecipe INSTANCE = new ClearConfigurationRecipe();
+
+    private ClearConfigurationRecipe() {
     }
 
     @Override

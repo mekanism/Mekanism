@@ -16,7 +16,6 @@ import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
@@ -26,9 +25,7 @@ import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
 @NothingNullByDefault
 public class BinInsertRecipe extends BinRecipe {
 
-    public BinInsertRecipe(CraftingBookCategory category) {
-        super(category);
-    }
+    public static final BinInsertRecipe INSTANCE = new BinInsertRecipe();
 
     @Override
     public boolean matches(CraftingInput inv, Level world) {

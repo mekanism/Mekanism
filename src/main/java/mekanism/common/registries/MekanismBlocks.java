@@ -748,7 +748,7 @@ public class MekanismBlocks {
                       .addAttachmentOnlyContainers(ContainerType.HEAT, () -> HeatCapacitorsBuilder.builder()
                             .addBasic(TileEntityFuelwoodHeater.HEAT_CAPACITY, TileEntityFuelwoodHeater.INVERSE_CONDUCTION_COEFFICIENT, TileEntityFuelwoodHeater.INVERSE_INSULATION_COEFFICIENT)
                             .build()
-                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addFuelSlot().build())
+                      ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder().addBasic(1).build())
                 );
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.registerDetails("modification_station", () -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor())))
