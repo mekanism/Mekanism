@@ -8,6 +8,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.context.ContextMap;
 
 @RecipeTypeMapper
 public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerRecipe> {
@@ -17,15 +18,15 @@ public class CombinerRecipeMapper extends TypedMekanismRecipeMapper<CombinerReci
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, CombinerRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, CombinerRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicCombinerRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
             return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredients(
-                  recipe.getMainInput(),
+                  contextMap, recipe.getMainInput(),
                   recipe.getExtraInput()
             ));
         }
         return addConversions(mapper, recipe.getMainInput(), recipe.getExtraInput(), recipe::getOutput, Objects::nonNull,
-              fakeGroupHelper::forItems, fakeGroupHelper::forItems, null, TypedMekanismRecipeMapper::addConversion);
+              fakeGroupHelper::forItems, fakeGroupHelper::forItems, null, TypedMekanismRecipeMapper::addConversion, contextMap);
     }
 }

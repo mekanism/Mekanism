@@ -23,7 +23,6 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -148,7 +147,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         tags.put(DictionaryTagType.ENTITY_TYPE, TagCache.getTagsAsStrings(type.getTags()));
                     }
                     //Enchantment tags
-                    ItemEnchantments enchantments = stack.getEnchantments();
+                    ItemEnchantments enchantments = stack.getEnchantments();//TODO - 26.1: fix this
                     if (!enchantments.isEmpty()) {
                         tags.put(DictionaryTagType.ENCHANTMENT, TagCache.getTagsAsStrings(enchantments.keySet().stream().flatMap(Holder::tags).distinct()));
                     }
@@ -176,7 +175,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained fluids
-                    IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(stack);
+                    IFluidHandlerItem fluidHandler = null;//TODO - 26.1: Capabilities.FLUID.getCapability(stack);
                     if (fluidHandler != null) {
                         tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
                               .mapToObj(fluidHandler::getFluidInTank)
@@ -186,7 +185,7 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                         ));
                     }
                     //Get tags of any contained chemicals
-                    IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(stack);
+                    IChemicalHandler chemicalHandler = null;//TODO - 26.1: Capabilities.CHEMICAL.getCapability(stack);
                     if (chemicalHandler != null) {
                         tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.getChemicalTanks())
                               .mapToObj(chemicalHandler::getChemicalInTank)

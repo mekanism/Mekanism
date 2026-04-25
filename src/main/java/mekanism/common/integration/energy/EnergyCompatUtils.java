@@ -4,9 +4,7 @@ import java.util.List;
 import java.util.function.BiFunction;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.integration.energy.fluxnetworks.FNEnergyCompat;
 import mekanism.common.integration.energy.forgeenergy.ForgeEnergyCompat;
-import mekanism.common.integration.energy.grandpower.GPEnergyCompat;
 import mekanism.common.registration.impl.TileEntityTypeDeferredRegister.BlockEntityTypeBuilder;
 import mekanism.common.tile.base.CapabilityTileEntity;
 import net.minecraft.core.BlockPos;
@@ -23,6 +21,7 @@ import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,9 +34,9 @@ public class EnergyCompatUtils {
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
           //Note: We check the Grand Power capability above Forge's so that we allow it to use the higher throughput amount supported by Grand Power
-          new GPEnergyCompat(),
+          //TODO - 26.1: do we need this? new GPEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
-          new FNEnergyCompat(),
+          //TODO - 26.1: do we need this? new FNEnergyCompat(),
           new ForgeEnergyCompat()
     );
 
@@ -73,7 +72,7 @@ public class EnergyCompatUtils {
         return LOADED_ENERGY_CAPS;
     }
 
-    public static void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, ICapabilityProvider<ItemStack, Void, IStrictEnergyHandler> mekProvider) {
+    public static void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, ICapabilityProvider<ItemStack, ItemAccess, IStrictEnergyHandler> mekProvider) {
         for (IEnergyCompat energyCompat : energyCompats) {
             if (energyCompat.capabilityExists()) {
                 register(event, energyCompat.getCapability().item(), energyCompat.getProviderAs(mekProvider), item);
@@ -81,10 +80,11 @@ public class EnergyCompatUtils {
         }
     }
 
+    //TODO - 26.1: huh???
     //Note: This extra method is required so that the code can compile even though inlining without the cast doesn't display any errors until attempting to compile
     @SuppressWarnings("unchecked")
-    private static <CAP> void register(RegisterCapabilitiesEvent event, ItemCapability<CAP, Void> capability, ICapabilityProvider<ItemStack, Void, ?> provider, Item item) {
-        event.registerItem(capability, (ICapabilityProvider<ItemStack, Void, CAP>) provider, item);
+    private static <CAP> void register(RegisterCapabilitiesEvent event, ItemCapability<CAP, ItemAccess> capability, ICapabilityProvider<ItemStack, ItemAccess, ?> provider, Item item) {
+        event.registerItem(capability, (ICapabilityProvider<ItemStack, ItemAccess, CAP>) provider, item);
     }
 
     public static <ENTITY extends Entity> void registerEntityCapabilities(RegisterCapabilitiesEvent event, EntityType<ENTITY> entity,

@@ -60,7 +60,7 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault
+@NothingNullByDefault//TODO - 26.1: move these to resource handlers?
 public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>,
       HANDLER extends ComponentBackedHandler<?, CONTAINER, ATTACHED>> {
 
@@ -194,7 +194,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return attached.size();
     }
 
-    @Nullable//TODO - 1.21: Re-evaluate
+    @Nullable//TODO - 26.1: remove me, just use caps
     public HANDLER createHandlerIfData(ItemStack stack) {
         ATTACHED attached = getOrEmpty(stack);
         //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?

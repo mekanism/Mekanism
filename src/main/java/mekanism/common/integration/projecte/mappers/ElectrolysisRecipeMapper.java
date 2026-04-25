@@ -11,6 +11,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.context.ContextMap;
 
 @RecipeTypeMapper
 public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<ElectrolysisRecipe> {
@@ -20,7 +21,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicElectrolysisRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
             ChemicalStack leftOutput = basicRecipe.getLeftChemicalOutput();
@@ -28,7 +29,7 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
             if (leftOutput.isEmpty() || rightOutput.isEmpty()) {//Shouldn't be the case, but validate it just in case
                 return false;
             }
-            return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput()));
+            return addConversions(mapper, new ElectrolysisRecipeOutput(leftOutput, rightOutput), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
         return addConversions(mapper, recipe.getInput(), recipe::getOutput, output -> output.left().isEmpty() || output.right().isEmpty(),
               fakeGroupHelper::forFluids, null, ElectrolysisRecipeMapper::addConversions);

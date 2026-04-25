@@ -12,6 +12,7 @@ import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 
 @RecipeTypeMapper
@@ -24,7 +25,7 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackChemicalToItemStackRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         int scale;
         if (recipe.perTickUsage()) {
             scale = recipe instanceof NucleosynthesizingRecipe ? TileEntityAntiprotonicNucleosynthesizer.BASE_TICKS_REQUIRED : TileEntityAdvancedElectricMachine.BASE_TICKS_REQUIRED;
@@ -43,12 +44,12 @@ public class ItemStackChemicalToItemStackRecipeMapper extends TypedMekanismRecip
         }
         if (output != null) {
             return addConversion(mapper, output, forIngredients(
-                  fakeGroupHelper.forIngredient(recipe.getItemInput()),
-                  fakeGroupHelper.forIngredient(recipe.getChemicalInput()),
+                  fakeGroupHelper.forIngredient(recipe.getItemInput(), contextMap),
+                  fakeGroupHelper.forIngredient(recipe.getChemicalInput(), contextMap),
                   scale
             ));
         }
         return addConversions(mapper, recipe.getItemInput(), recipe.getChemicalInput(), recipe::getOutput, Objects::nonNull, fakeGroupHelper::forItems,
-              fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, scale);
+              fakeGroupHelper::forChemicals, null, TypedMekanismRecipeMapper::addConversion, scale, contextMap);
     }
 }

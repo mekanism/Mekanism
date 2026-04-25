@@ -13,6 +13,7 @@ import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemStackTemplate;
 
 @RecipeTypeMapper
@@ -28,7 +29,7 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicPressurizedReactionRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
             ItemStackTemplate outputItem = basicRecipe.getOutputItem();
@@ -37,14 +38,14 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
                 return false;
             }
             return addConversions(mapper, new PressurizedReactionRecipeOutput(outputItem, outputChemical), fakeGroupHelper.forIngredients(
-                  recipe.getInputSolid(),
+                  contextMap, recipe.getInputSolid(),
                   recipe.getInputFluid(),
                   recipe.getInputChemical()
             ));
         }
         return addConversions(mapper, recipe.getInputSolid(), recipe.getInputFluid(), recipe.getInputChemical(), recipe::getOutput,
               ConstantPredicates.alwaysFalse(), fakeGroupHelper::forItems, fakeGroupHelper::forFluids, fakeGroupHelper::forChemicals, null,
-              PressurizedReactionRecipeMapper::addConversions);
+              PressurizedReactionRecipeMapper::addConversions, contextMap);
     }
 
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, PressurizedReactionRecipeOutput output,

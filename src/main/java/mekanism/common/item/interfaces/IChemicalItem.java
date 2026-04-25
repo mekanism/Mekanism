@@ -9,13 +9,14 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.ChemicalUtil;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public interface IChemicalItem {
 
     @NotNull
     default ChemicalStack useChemical(ItemStack stack, long amount) {
-        IChemicalHandler chemicalHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+        IChemicalHandler chemicalHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
         if (chemicalHandlerItem != null) {
             if (chemicalHandlerItem instanceof IMekanismChemicalHandler chemicalHandler) {
                 //TODO: If we end up having more tanks than one in any IChemicalItem's just kill off this if branch

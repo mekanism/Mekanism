@@ -1,5 +1,5 @@
 package mekanism.common.integration.energy.grandpower;
-
+/*
 import dev.technici4n.grandpower.api.ILongEnergyStorage;
 import dev.technici4n.grandpower.impl.NonLongWrapper;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -69,4 +69,4 @@ public class GPEnergyCompat implements IEnergyCompat {
         }
         return new GPStrictEnergyHandler((ILongEnergyStorage) handler);
     }
-}
+}*/

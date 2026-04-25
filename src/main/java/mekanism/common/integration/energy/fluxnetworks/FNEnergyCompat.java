@@ -1,5 +1,5 @@
 package mekanism.common.integration.energy.fluxnetworks;
-
+/*
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
@@ -49,4 +49,4 @@ public class FNEnergyCompat implements IEnergyCompat {
     public IStrictEnergyHandler wrapAsStrictEnergyHandler(Object handler) {
         return new FNStrictEnergyHandler((IFNEnergyStorage) handler);
     }
-}
+}*/

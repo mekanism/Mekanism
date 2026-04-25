@@ -1,5 +1,5 @@
 package mekanism.common.integration.energy.fluxnetworks;
-
+/*
 import mekanism.common.capabilities.MultiTypeCapability;
 import sonar.fluxnetworks.api.FluxCapabilities;
 import sonar.fluxnetworks.api.energy.IFNEnergyStorage;
@@ -12,4 +12,4 @@ public class FNCapability {
           FluxCapabilities.ITEM,
           FluxCapabilities.ENTITY
     );
-}
+}*/

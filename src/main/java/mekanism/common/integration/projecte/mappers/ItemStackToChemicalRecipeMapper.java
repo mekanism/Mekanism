@@ -8,6 +8,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import moze_intel.projecte.api.mapper.collector.IMappingCollector;
 import moze_intel.projecte.api.mapper.recipe.RecipeTypeMapper;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
+import net.minecraft.util.context.ContextMap;
 
 @RecipeTypeMapper
 public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<ItemStackToChemicalRecipe> {
@@ -18,10 +19,10 @@ public class ItemStackToChemicalRecipeMapper extends TypedMekanismRecipeMapper<I
     }
 
     @Override
-    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe recipe, MekFakeGroupHelper fakeGroupHelper) {
+    protected boolean handleRecipe(IMappingCollector<NormalizedSimpleStack, Long> mapper, ItemStackToChemicalRecipe recipe, MekFakeGroupHelper fakeGroupHelper, ContextMap contextMap) {
         if (OPTIMIZE_BASIC && recipe instanceof BasicItemStackToChemicalRecipe basicRecipe) {
             //This will be the case for the majority of our recipes
-            return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput()));
+            return addConversion(mapper, basicRecipe.getOutputRaw(), fakeGroupHelper.forIngredient(recipe.getInput(), contextMap));
         }
         return addConversions(mapper, recipe.getInput(), recipe::getOutput, ChemicalStack::isEmpty, fakeGroupHelper::forItems, null,
               TypedMekanismRecipeMapper::addConversion);
