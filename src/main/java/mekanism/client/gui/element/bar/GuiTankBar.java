@@ -104,7 +104,7 @@ public abstract class GuiTankBar<STACK> extends GuiBar<TankInfoProvider<STACK>> 
                     } else { //InputConstants.MOUSE_BUTTON_RIGHT
                         action = DropperAction.DRAIN_DROPPER;
                     }
-                    PacketUtils.sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
+                    PacketUtils.sendToServer(new PacketDropperUse(action, tankType, index));
                 }
             }
         }

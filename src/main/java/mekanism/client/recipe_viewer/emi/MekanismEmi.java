@@ -83,6 +83,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
@@ -208,7 +209,8 @@ public class MekanismEmi implements EmiPlugin {
         for (Holder<Item> item : items) {
             //Handle items
             ItemStack stack = new ItemStack(item);
-            if (Capabilities.STRICT_ENERGY.hasCapability(stack) || Capabilities.CHEMICAL.hasCapability(stack) || Capabilities.FLUID.hasCapability(stack)) {
+            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
                 registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
             }
         }

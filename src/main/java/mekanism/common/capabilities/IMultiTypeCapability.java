@@ -6,7 +6,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -31,16 +30,16 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
     }
 
     @Nullable
-    default ITEM_HANDLER getCapability(ItemStack stack, ItemAccess access) {
+    default ITEM_HANDLER getCapability(ItemAccess access) {
         //Note: Safety handling of empty stack is done when looking up the provider inside getCapability's implementation
-        return stack.getCapability(item(), access);
+        return access.getCapability(item());
     }
 
     /**
-     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemStack, ItemAccess)} and null checking.
+     * @apiNote Only use this helper if you don't actually need the capability, otherwise prefer using {@link #getCapability(ItemAccess)} and null checking.
      */
-    default boolean hasCapability(ItemStack stack, ItemAccess access) {
-        return getCapability(stack, access) != null;
+    default boolean hasCapability(ItemAccess access) {
+        return getCapability(access) != null;
     }
 
     @Nullable

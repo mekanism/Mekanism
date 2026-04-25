@@ -7,7 +7,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
@@ -74,7 +73,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      */
     default void fillTank(IInventorySlot outputSlot) {
         //Try filling from the tank's item
-        IFluidHandlerItem itemFluidHandler = Capabilities.FLUID.getCapability(getStack());
+        //TODO - 26.1: adapt for ItemAccess
+        /*IFluidHandlerItem itemFluidHandler = Capabilities.FLUID.getCapability(getStack());
         if (itemFluidHandler != null) {
             int itemTanks = itemFluidHandler.getTanks();
             if (itemTanks == 1) {
@@ -101,7 +101,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -112,7 +112,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     default void drainTank(IInventorySlot outputSlot) {
         //Verify we have an item, we have tanks that may need to be drained, and that our item is a fluid handler
         // This handles making sure it has a fluid handler currently, even if it may have one when it isn't stacked
-        if (Capabilities.FLUID.hasCapability(getStack())) {
+        //TODO - 26.1: adapt for ItemAccess
+        /*if (Capabilities.FLUID.hasCapability(getStack())) {
             FluidStack fluidInTank = getFluidTank().getFluid();
             if (!fluidInTank.isEmpty()) {
                 //If we have a fluid attempt to drain it into our item
@@ -155,7 +156,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                 }
             }
-        }
+        }*/
     }
 
     /**
@@ -168,7 +169,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      * @return True if we can drain the fluid from the item and the item after being drained can (and was) moved to the output slot, false otherwise
      */
     private boolean drainItemAndMove(IInventorySlot outputSlot, FluidStack fluidToTransfer) {
-        FluidStack simulatedRemainder = getFluidTank().insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
+        //TODO - 26.1: adapt for ItemAccess
+        /*FluidStack simulatedRemainder = getFluidTank().insert(fluidToTransfer, Action.SIMULATE, AutomationType.INTERNAL);
         int remainder = simulatedRemainder.amount();
         int toTransfer = fluidToTransfer.amount();
         if (remainder == toTransfer) {
@@ -212,7 +214,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             //Actually fill our handler with the fluid
             getFluidTank().insert(drained, Action.EXECUTE, AutomationType.INTERNAL);
             return true;
-        }
+        }*/
         return false;
     }
 
@@ -244,7 +246,8 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      * Fills tank from slot, ensuring the stack's count is one, and does not move it to an output slot afterwards
      */
     default boolean fillTank() {
-        if (getCount() == 1) {
+        //TODO - 26.1: adapt for ItemAccess
+        /*if (getCount() == 1) {
             //Try filling from the tank's item
             IFluidHandlerItem itemFluidHandler = Capabilities.FLUID.getCapability(getStack());
             if (itemFluidHandler != null) {
@@ -281,7 +284,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                 }
             }
-        }
+        }*/
         return false;
     }
 

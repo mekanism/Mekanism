@@ -15,6 +15,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 26.1: make this implement/supply ItemAccess/ResourceHandler? It currently has a pseudo ItemHandler impl, so might be better to move everything away from single-slot context?
 @NothingNullByDefault
 public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
 

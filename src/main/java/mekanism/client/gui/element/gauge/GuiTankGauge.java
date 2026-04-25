@@ -62,7 +62,7 @@ public abstract class GuiTankGauge<T, TANK> extends GuiGauge<T> implements IReci
                 } else { //InputConstants.MOUSE_BUTTON_RIGHT
                     action = DropperAction.DRAIN_DROPPER;
                 }
-                PacketUtils.sendToServer(new PacketDropperUse(gui.getTileEntity().getBlockPos(), action, tankType, index));
+                PacketUtils.sendToServer(new PacketDropperUse(action, tankType, index));
             }
         }
     }
