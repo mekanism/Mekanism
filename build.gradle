@@ -55,6 +55,7 @@ ext {
     disableCrT = true
     disableTOP = true
     disableEMI = true
+    disableProjectE = true
 }
 
 sourceSets {
@@ -77,6 +78,10 @@ sourceSets {
             if (disableEMI) {
                 println("Disabling compilation of EMI integration")
                 exclude('mekanism/client/recipe_viewer/emi/**')
+            }
+            if (disableProjectE) {
+                println("Disabling compilation of ProjE integration")
+                exclude('mekanism/common/integration/projecte/**')
             }
         }
         resources {
