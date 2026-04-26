@@ -3,7 +3,6 @@ package mekanism.common;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.ILangEntry;
 import net.minecraft.util.Util;
-import net.minecraft.world.entity.EquipmentSlot;
 
 @NothingNullByDefault
 public enum MekanismLang implements ILangEntry {
@@ -876,7 +875,8 @@ public enum MekanismLang implements ILangEntry {
         return key;
     }
 
-    public static ILangEntry get(EquipmentSlot type) {
+    //TODO - 26.1: unused?
+    /*public static ILangEntry get(EquipmentSlot type) {
         return switch (type) {
             case HEAD -> HEAD;
             case CHEST, BODY -> BODY;
@@ -885,5 +885,5 @@ public enum MekanismLang implements ILangEntry {
             case MAINHAND -> MAINHAND;
             case OFFHAND -> OFFHAND;
         };
-    }
+    }*/
 }

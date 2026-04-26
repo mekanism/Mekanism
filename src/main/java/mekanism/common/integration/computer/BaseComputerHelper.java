@@ -131,12 +131,12 @@ public abstract class BaseComputerHelper {
     /**
      * @param param param index
      *
-     * @return ResourceLocation parsed from String or null
+     * @return Identifier parsed from String or null
      *
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     @NotNull
-    public Identifier getResourceLocation(int param) throws ComputerException {
+    public Identifier getIdentifier(int param) throws ComputerException {
         return requireNonNull(param, Identifier.tryParse(getString(param)));
     }
 
@@ -150,7 +150,7 @@ public abstract class BaseComputerHelper {
      * @throws ComputerException if the param index does not exist or param is the wrong type.
      */
     public Item getItem(int param) throws ComputerException {
-        Identifier itemName = getResourceLocation(param);
+        Identifier itemName = getIdentifier(param);
         return getItemFromResourceLocation(itemName);
     }
 
