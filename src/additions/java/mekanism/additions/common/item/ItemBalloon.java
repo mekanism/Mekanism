@@ -56,7 +56,7 @@ public class ItemBalloon extends Item {
             world.gameEvent(player, GameEvent.ENTITY_PLACE, pos);
         }
         stack.consume(1, player);
-        return InteractionResultHolder.success(stack);
+        return InteractionResult.SUCCESS_SERVER;
     }
 
     @NotNull

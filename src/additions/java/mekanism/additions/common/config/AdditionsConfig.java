@@ -16,6 +16,7 @@ import mekanism.common.config.value.CachedIntValue;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Holder;
 import net.minecraft.util.Mth;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
@@ -132,19 +133,19 @@ public class AdditionsConfig extends BaseMekanismConfig {
             builder.pop();
         }
 
-        public MobSpawnSettings.SpawnerData getSpawner(MobSpawnSettings.SpawnerData parentEntry) {
-            int weight = Mth.ceil(parentEntry.getWeight().asInt() * weightPercentage.get());
-            int minSize = Mth.ceil(parentEntry.minCount * minSizePercentage.get());
-            int maxSize = Mth.ceil(parentEntry.maxCount * maxSizePercentage.get());
-            return new MobSpawnSettings.SpawnerData(entityType.value(), weight, minSize, Math.max(minSize, maxSize));
+        public Weighted<MobSpawnSettings.SpawnerData> getSpawner(Weighted<MobSpawnSettings.SpawnerData> parentEntry) {
+            int weight = Mth.ceil(parentEntry.weight() * weightPercentage.get());
+            int minSize = Mth.ceil(parentEntry.value().minCount() * minSizePercentage.get());
+            int maxSize = Mth.ceil(parentEntry.value().maxCount() * maxSizePercentage.get());
+            return new Weighted<>(new MobSpawnSettings.SpawnerData(entityType.value(), minSize, Math.max(minSize, maxSize)), weight);
         }
 
-        public List<MobSpawnSettings.SpawnerData> getSpawnersToAdd(List<MobSpawnSettings.SpawnerData> monsterSpawns) {
+        public List<Weighted<MobSpawnSettings.SpawnerData>> getSpawnersToAdd(List<Weighted<MobSpawnSettings.SpawnerData>> monsterSpawns) {
             //If the adult mob can spawn let the baby mob spawn as well
             //Note: We adjust the mob's spawning based on the adult's spawn rates
-            List<SpawnerData> list = new ArrayList<>();
-            for (SpawnerData monsterSpawn : monsterSpawns) {
-                if (monsterSpawn.type == parentType) {
+            List<Weighted<MobSpawnSettings.SpawnerData>> list = new ArrayList<>();
+            for (Weighted<SpawnerData> monsterSpawn : monsterSpawns) {
+                if (monsterSpawn.value().type() == parentType) {
                     list.add(getSpawner(monsterSpawn));
                 }
             }

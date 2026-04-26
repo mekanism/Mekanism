@@ -2,42 +2,36 @@ package mekanism.additions.client.render.entity.layer;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
-import mekanism.additions.client.model.ModelBabyEnderman;
-import mekanism.additions.common.entity.baby.EntityBabyEnderman;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.model.monster.enderman.EndermanModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.NullMarked;
 
-public class BabyEndermanHeldBlockLayer extends RenderLayer<EndermanRenderState, ModelBabyEnderman> {
+@NullMarked
+public class BabyEndermanHeldBlockLayer extends RenderLayer<EndermanRenderState, EndermanModel<EndermanRenderState>> {
 
-    public BabyEndermanHeldBlockLayer(RenderLayerParent<EndermanRenderState, ModelBabyEnderman> renderer) {
+    public BabyEndermanHeldBlockLayer(RenderLayerParent<EndermanRenderState, EndermanModel<EndermanRenderState>> renderer) {
         super(renderer);
     }
 
-    @Override
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, int light, EntityBabyEnderman enderman, float limbSwing, float limbSwingAmount,
-          float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-        BlockState blockstate = enderman.getCarriedBlock();
-        if (blockstate != null) {
-            matrix.pushPose();
-            matrix.translate(0, 0.6875, -0.75);
-            matrix.mulPose(Axis.XP.rotationDegrees(20));
-            matrix.mulPose(Axis.YP.rotationDegrees(45));
-            matrix.translate(0.25, 0.1875, 0.25);
+    public void submit(PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, EndermanRenderState state, float yRot, float xRot) {
+        BlockModelRenderState carriedBlock = state.carriedBlock;
+        if (!carriedBlock.isEmpty()) {
+            poseStack.pushPose();
+            poseStack.translate(0.0F, 0.6875F, -0.75F);
+            poseStack.mulPose(Axis.XP.rotationDegrees(20.0F));
+            poseStack.mulPose(Axis.YP.rotationDegrees(45.0F));
+            poseStack.translate(0.25F, 0.1875F, 0.25F);
             //Modify scale of block to be 3/4 of what it is for the adult enderman
             float scale = 0.375F;
-            matrix.scale(-scale, -scale, scale);
-            matrix.mulPose(Axis.YP.rotationDegrees(90));
-            //Adjust the position of the block to actually look more like it is in the enderman's hands
-            matrix.translate(0, -1, 0.25);
-            Minecraft.getInstance().getBlockRenderer().renderSingleBlock(blockstate, matrix, renderer, light, OverlayTexture.NO_OVERLAY, ModelData.EMPTY, null);
-            matrix.popPose();
+            poseStack.scale(-scale, -scale, scale);
+            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            carriedBlock.submit(poseStack, submitNodeCollector, lightCoords, OverlayTexture.NO_OVERLAY, state.outlineColor);
+            poseStack.popPose();
         }
     }
 }

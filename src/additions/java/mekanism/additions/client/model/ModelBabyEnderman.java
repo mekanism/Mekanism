@@ -1,7 +1,5 @@
 package mekanism.additions.client.model;
 
-import java.util.List;
-import mekanism.additions.common.entity.baby.EntityBabyEnderman;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.monster.enderman.EndermanModel;
 import net.minecraft.client.renderer.entity.state.EndermanRenderState;
@@ -13,18 +11,13 @@ public class ModelBabyEnderman extends EndermanModel<EndermanRenderState> {
         super(part);
     }
 
-    @NotNull
+    /*@NotNull TODO - 26.1: is this relevant/possible?
     @Override
     protected Iterable<ModelPart> headParts() {
         //Make the "hat" (the jaw) be part of the head for scaling purposes
         return List.of(this.head, this.hat);
     }
-
-    @NotNull
-    @Override
-    protected Iterable<ModelPart> bodyParts() {
-        return List.of(this.body, this.rightArm, this.leftArm, this.rightLeg, this.leftLeg);
-    }
+*/
 
     @Override
     public void setupAnim(@NotNull EndermanRenderState state) {

@@ -12,6 +12,7 @@ import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.util.random.Weighted;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.MobSpawnSettings;
 import net.minecraft.world.level.levelgen.structure.Structure;
@@ -35,12 +36,12 @@ public record BabyEntitySpawnStructureModifier(BabyType babyType, AdditionsConfi
             StructureSpawnOverrideBuilder spawnOverrides = structureSettings.getSpawnOverrides(MobCategory.MONSTER);
             //Fail quick if there are no overrides for this structure, or it is blacklisted
             if (spawnOverrides != null && !structure.is(babyType.structureBlacklist)) {
-                for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
+                for (Weighted<MobSpawnSettings.SpawnerData> spawner : spawnConfig.getSpawnersToAdd(spawnOverrides.getSpawns())) {
                     spawnOverrides.addSpawn(spawner);
                     ResourceKey<Structure> structureKey = structure.getKey();
                     Mekanism.logger.debug("Adding spawn rate for '{}' in structure '{}', with weight: {}, minSize: {}, maxSize: {}",
-                          Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.type), structureKey == null ? null : structureKey.identifier(), spawner.getWeight(),
-                          spawner.minCount, spawner.maxCount);
+                          Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.value().type()), structureKey == null ? null : structureKey.identifier(), spawner.weight(),
+                          spawner.value().minCount(), spawner.value().maxCount());
                 }
             }
         }

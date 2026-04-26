@@ -2,19 +2,21 @@ package mekanism.additions.common.world.modifier;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.List;
 import mekanism.additions.common.config.AdditionsConfig;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.entity.baby.BabyType;
 import mekanism.additions.common.registries.AdditionsBiomeModifierSerializers;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.util.Util;
+import net.minecraft.util.random.Weighted;
+import net.minecraft.util.random.WeightedList.Builder;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.MobSpawnSettings;
+import net.minecraft.world.level.biome.MobSpawnSettings.SpawnerData;
 import net.neoforged.neoforge.common.world.BiomeModifier;
 import net.neoforged.neoforge.common.world.MobSpawnSettingsBuilder;
 import net.neoforged.neoforge.common.world.ModifiableBiomeInfo.BiomeInfo;
@@ -32,21 +34,23 @@ public record BabyEntitySpawnBiomeModifier(BabyType babyType, AdditionsConfig.Sp
             // but we run before after everything to make it easier for another mod to remove us
             if (!biome.is(babyType.biomeBlacklist)) {
                 MobSpawnSettingsBuilder mobSpawnSettings = builder.getMobSpawnSettings();
-                List<MobSpawnSettings.SpawnerData> monsterSpawns = mobSpawnSettings.getSpawner(MobCategory.MONSTER);
-                for (MobSpawnSettings.SpawnerData spawner : spawnConfig.getSpawnersToAdd(monsterSpawns)) {
-                    mobSpawnSettings.addSpawn(MobCategory.MONSTER, spawner);
+                Builder<SpawnerData> monsterSpawns = mobSpawnSettings.getSpawner(MobCategory.MONSTER);
+                for (Weighted<SpawnerData> weightedSpawner : spawnConfig.getSpawnersToAdd(monsterSpawns.getList())) {
+                    SpawnerData spawner = weightedSpawner.value();
+                    int weight = weightedSpawner.weight();
+                    monsterSpawns.add(weightedSpawner);
                     MobSpawnSettings.MobSpawnCost parentCost = mobSpawnSettings.getCost(spawnConfig.parentType);
                     if (parentCost == null) {
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}",
-                              Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.type), biome.getRegisteredName(), spawner.getWeight(), spawner.minCount,
-                              spawner.maxCount);
+                              Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.type()), biome.getRegisteredName(), weight, spawner.minCount(),
+                              spawner.maxCount());
                     } else {
                         double spawnCostPerEntity = parentCost.charge() * spawnConfig.spawnCostPerEntityPercentage.get();
                         double maxSpawnCost = parentCost.energyBudget() * spawnConfig.maxSpawnCostPercentage.get();
-                        mobSpawnSettings.addMobCharge(spawner.type, spawnCostPerEntity, maxSpawnCost);
+                        mobSpawnSettings.addMobCharge(spawner.type(), spawnCostPerEntity, maxSpawnCost);
                         Mekanism.logger.debug("Adding spawn rate for '{}' in biome '{}', with weight: {}, minSize: {}, maxSize: {}, spawnCostPerEntity: {}, maxSpawnCost: {}",
-                              Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.type), biome.getRegisteredName(), spawner.getWeight(), spawner.minCount,
-                              spawner.maxCount, spawnCostPerEntity, maxSpawnCost);
+                              Util.getRegisteredName(BuiltInRegistries.ENTITY_TYPE, spawner.type()), biome.getRegisteredName(), weight, spawner.minCount(),
+                              spawner.maxCount(), spawnCostPerEntity, maxSpawnCost);
                     }
                 }
             }

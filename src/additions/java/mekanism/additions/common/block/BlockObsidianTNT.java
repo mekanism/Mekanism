@@ -6,6 +6,7 @@ import mekanism.common.block.states.IStateFluidLoggable;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.RandomSource;
@@ -15,7 +16,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
 import net.minecraft.world.level.block.Block;
@@ -83,14 +83,16 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
     }
 
     @Override
-    public void onCaughtFire(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
+    public boolean onCaughtFire(@NotNull BlockState state, Level world, @NotNull BlockPos pos, @Nullable Direction side, @Nullable LivingEntity igniter) {
         if (!world.isClientSide() && createAndAddEntity(world, pos, igniter)) {
             world.gameEvent(igniter, GameEvent.PRIME_FUSE, pos);
+            return true;
         }
+        return false;
     }
 
     @Override
-    public void wasExploded(Level world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
+    public void wasExploded(ServerLevel world, @NotNull BlockPos pos, @NotNull Explosion explosion) {
         if (!world.isClientSide()) {
             PrimedTnt tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, explosion.getIndirectSourceEntity());
             tnt.setFuse((short) (world.getRandom().nextInt(tnt.getFuse() / 4) + tnt.getFuse() / 8));
@@ -125,8 +127,10 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
 
     public static boolean createAndAddEntity(@NotNull Level world, @NotNull BlockPos pos, @Nullable LivingEntity igniter) {
         PrimedTnt tnt = new EntityObsidianTNT(world, pos.getX() + 0.5F, pos.getY(), pos.getZ() + 0.5F, igniter);
-        world.addFreshEntity(tnt);
-        world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
-        return true;
+        if (world.addFreshEntity(tnt)) {
+            world.playSound(null, tnt.getX(), tnt.getY(), tnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS);
+            return true;
+        }
+        return false;
     }
 }

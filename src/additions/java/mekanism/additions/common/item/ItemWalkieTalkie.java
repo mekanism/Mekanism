@@ -3,7 +3,6 @@ package mekanism.additions.common.item;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
@@ -51,7 +50,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         if (player.isShiftKeyDown()) {
             WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
             stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(data.channel(), !data.running()));
-            return InteractionResultHolder.sidedSuccess(stack, world.isClientSide());
+            return InteractionResult.SUCCESS.heldItemTransformedTo(stack);
         }
         return InteractionResult.PASS;
     }

@@ -39,7 +39,7 @@ public class EntityBabyBogged extends Bogged {
     @Override
     protected AbstractArrow getArrow(@NotNull ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
         AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
-        projectile.setBaseDamage(projectile.getBaseDamage() * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
+        projectile.setBaseDamage(projectile.baseDamage * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
         return projectile;
     }
 

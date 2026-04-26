@@ -4,6 +4,7 @@ import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
+import net.minecraft.world.entity.ConversionParams;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -38,7 +39,12 @@ public class EntityBabySkeleton extends Skeleton {
 
     @Override
     protected void doFreezeConversion() {
-        convertTo(AdditionsEntityTypes.BABY_STRAY.value(), true);
+        this.convertTo(AdditionsEntityTypes.BABY_STRAY.value(), ConversionParams.single(this, true, true), stray -> {
+            net.neoforged.neoforge.event.EventHooks.onLivingConvert(this, stray);
+            if (!this.isSilent()) {
+                this.level().levelEvent(null, 1048, this.blockPosition(), 0);
+            }
+        });
         if (!this.isSilent()) {
             level().levelEvent(null, LevelEvent.SOUND_SKELETON_TO_STRAY, this.blockPosition(), 0);
         }
@@ -48,7 +54,7 @@ public class EntityBabySkeleton extends Skeleton {
     @Override
     protected AbstractArrow getArrow(@NotNull ItemStack arrow, float velocity, @Nullable ItemStack weapon) {
         AbstractArrow projectile = super.getArrow(arrow, velocity, weapon);
-        projectile.setBaseDamage(projectile.getBaseDamage() * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
+        projectile.setBaseDamage(projectile.baseDamage * MekanismAdditionsConfig.additions.babyArrowDamageMultiplier.get());
         return projectile;
     }
 

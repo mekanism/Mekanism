@@ -7,17 +7,11 @@ import mekanism.additions.client.render.entity.RenderBabyCreeper;
 import mekanism.additions.client.render.entity.RenderBabyEnderman;
 import mekanism.additions.client.render.entity.RenderBalloon;
 import mekanism.additions.common.MekanismAdditions;
-import mekanism.additions.common.item.ItemBalloon;
-import mekanism.additions.common.item.ItemWalkieTalkie.WalkieData;
 import mekanism.additions.common.registries.AdditionsBlocks;
-import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsEntityTypes;
-import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.client.ClientRegistrationUtil;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registration.impl.ItemRegistryObject;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
 import net.minecraft.client.renderer.entity.BoggedRenderer;
 import net.minecraft.client.renderer.entity.SkeletonRenderer;
@@ -27,7 +21,6 @@ import net.minecraft.client.renderer.entity.WitherSkeletonRenderer;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
@@ -40,13 +33,14 @@ public class AdditionsClientRegistration {
     private AdditionsClientRegistration() {
     }
 
-    @SubscribeEvent
+    //todo - 26.1: item properties
+    /*@SubscribeEvent
     public static void init(FMLClientSetupEvent event) {
         event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(AdditionsItems.WALKIE_TALKIE, MekanismAdditions.rl("channel"), (stack, world, entity, seed) -> {
             WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
             return data.running() ? data.channel() : 0;
         }));
-    }
+    }*/
 
     @SubscribeEvent
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
@@ -89,18 +83,19 @@ public class AdditionsClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.Block event) {
+    public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
         registerIColoredBlocks(event);
     }
 
-    @SubscribeEvent
+    //tod - 26.1: item colors
+    /*@SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
         registerIColoredBlocks(event);
         ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? balloon.getColor().getPackedColor() : -1;
         for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
             ClientRegistrationUtil.registerItemColorHandler(event, balloonColorHandler, balloon);
         }
-    }
+    }*/
 
     private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {
         registerBlockColorHandles(event, AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_BLOCKS,

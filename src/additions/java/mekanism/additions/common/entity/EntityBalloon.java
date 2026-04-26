@@ -16,8 +16,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.DustParticleOptions;
-import net.minecraft.nbt.IntArrayTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -27,6 +25,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
@@ -38,13 +37,11 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
-import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Vector3f;
 
 public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
@@ -71,7 +68,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Nullable
     public static EntityBalloon create(Level world, double x, double y, double z, EnumColor c) {
-        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world, EntitySpawnReason.EVENT);
         if (balloon == null) {
             return null;
         }
@@ -82,7 +79,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Nullable
     public static EntityBalloon create(LivingEntity entity, EnumColor c) {
-        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(entity.level());
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(entity.level(), EntitySpawnReason.EVENT);
         if (balloon == null) {
             return null;
         }
@@ -98,7 +95,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
 
     @Nullable
     public static EntityBalloon create(Level world, BlockPos pos, EnumColor c) {
-        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world);
+        EntityBalloon balloon = AdditionsEntityTypes.BALLOON.get().create(world, EntitySpawnReason.EVENT);
         if (balloon == null) {
             return null;
         }
@@ -257,8 +254,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
     private void pop() {
         playSound(AdditionsSounds.POP.get(), 1, 1);
         if (!level().isClientSide()) {
-            Vector3f col = new Vector3f(color.getColor(0), color.getColor(1), color.getColor(2));
-            DustParticleOptions redstoneParticleData = new DustParticleOptions(col, 1.0F);
+            DustParticleOptions redstoneParticleData = new DustParticleOptions(color.getPackedColor(), 1.0F);
             Vec3 center = getBoundingBox().getCenter();
             for (int i = 0; i < 10; i++) {
                 ((ServerLevel) level()).sendParticles(redstoneParticleData, center.x() + 0.6 * random.nextFloat() - 0.3, center.y() + 0.6 * random.nextFloat() - 0.3,
@@ -367,13 +363,17 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         return true;
     }
 
-    @Override
     public boolean isInvulnerableTo(@NotNull DamageSource source) {
-        return source.is(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE) || super.isInvulnerableTo(source);
+        return source.is(AdditionsTags.DamageTypes.BALLOON_INVULNERABLE) || super.isInvulnerableToBase(source);
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource dmgSource, float damage) {
+    public boolean hurtClient(DamageSource source) {
+        return !isInvulnerableTo(source);
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, @NotNull DamageSource dmgSource, float damage) {
         if (isInvulnerableTo(dmgSource)) {
             return false;
         }
@@ -383,6 +383,7 @@ public class EntityBalloon extends Entity implements IEntityWithComplexSpawn {
         }
         return true;
     }
+
 
     public boolean isLatched() {
         if (level().isClientSide()) {
