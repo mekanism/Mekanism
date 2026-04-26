@@ -8,8 +8,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.math.voxel.VoxelCuboid;
 import mekanism.common.registries.MekanismAttachmentTypes;
-import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
@@ -27,8 +27,8 @@ public class MeltdownLevelData implements ValueIOSerializable {
 
     private final List<Meltdown> meltdowns = new ArrayList<>();
 
-    public void createMeltdown(BlockPos minPos, BlockPos maxPos, double magnitude, double chance, float radius, UUID multiblockID) {
-        meltdowns.add(new Meltdown(minPos, maxPos, magnitude, chance, radius, multiblockID));
+    public void createMeltdown(VoxelCuboid bounds, double magnitude, double chance, float radius, UUID multiblockID) {
+        meltdowns.add(new Meltdown(bounds, magnitude, chance, radius, multiblockID));
     }
 
     @SubscribeEvent

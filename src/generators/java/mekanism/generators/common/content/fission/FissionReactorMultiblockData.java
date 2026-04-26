@@ -331,7 +331,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private void createMeltdown(Level world) {
         float radius = MekanismGeneratorsConfig.generators.fissionMeltdownRadius.get();
-        world.getData(MekanismAttachmentTypes.MELTDOWN_DATA).createMeltdown(getMinPos(), getMaxPos(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, radius, inventoryID);
+        world.getData(MekanismAttachmentTypes.MELTDOWN_DATA).createMeltdown(getBounds(), heatCapacitor.getHeat(), EXPLOSION_CHANCE, radius, inventoryID);
     }
 
     @Override
