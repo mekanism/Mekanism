@@ -1,5 +1,6 @@
 package mekanism.common.item.gear;
 
+import mekanism.common.registries.MekanismArmorMaterials;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.Item;
@@ -11,8 +12,8 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemSpecialArmor extends Item {
 
-    protected ItemSpecialArmor(Holder<ArmorMaterial> material, ArmorType armorType, Item.Properties properties) {
-        super(properties.humanoidArmor(material.value(), armorType));
+    protected ItemSpecialArmor(ArmorMaterial material, ArmorType armorType, Item.Properties properties) {
+        super(MekanismArmorMaterials.apply(properties, material, armorType));
     }
 
     @Override

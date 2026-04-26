@@ -36,7 +36,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
         this(MekanismArmorMaterials.JETPACK, properties);
     }
 
-    public ItemJetpack(Holder<ArmorMaterial> material, Item.Properties properties) {
+    public ItemJetpack(ArmorMaterial material, Item.Properties properties) {
         super(material, ArmorType.CHESTPLATE, properties.component(MekanismDataComponents.JETPACK_MODE, JetpackMode.NORMAL));
     }
 

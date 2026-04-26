@@ -19,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChemicalItem, ICustomCreativeTabContents {
 
-    protected ItemChemicalArmor(Holder<ArmorMaterial> material, ArmorType armorType, Item.Properties properties) {
+    protected ItemChemicalArmor(ArmorMaterial material, ArmorType armorType, Item.Properties properties) {
         super(material, armorType, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1));
     }
 

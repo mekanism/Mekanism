@@ -63,7 +63,6 @@ import mekanism.common.network.to_client.transmitter.PacketNetworkScale;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.condition.MekanismRecipeConditions;
 import mekanism.common.registration.impl.BlockRegistryObject;
-import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicalIngredientTypes;
@@ -217,7 +216,6 @@ public class Mekanism {
         MekanismItems.ITEMS.register(modEventBus);
         MekanismBlocks.BLOCKS.register(modEventBus);
         MekanismFluids.FLUIDS.register(modEventBus);
-        MekanismArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         MekanismAttachmentTypes.ATTACHMENT_TYPES.register(modEventBus);
         MekanismContainerTypes.CONTAINER_TYPES.register(modEventBus);
         MekanismCreativeTabs.CREATIVE_TABS.register(modEventBus);

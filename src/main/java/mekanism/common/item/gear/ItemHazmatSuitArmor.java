@@ -19,7 +19,7 @@ public class ItemHazmatSuitArmor extends Item implements ICapabilityAware {
     private final ArmorType armorType;
 
     public ItemHazmatSuitArmor(ArmorType armorType, Item.Properties properties) {
-        super(properties.rarity(Rarity.UNCOMMON).stacksTo(1).humanoidArmor(MekanismArmorMaterials.HAZMAT.value(), armorType));
+        super(MekanismArmorMaterials.apply(properties, MekanismArmorMaterials.HAZMAT, armorType).rarity(Rarity.UNCOMMON).stacksTo(1));
         this.armorType = armorType;
     }
 

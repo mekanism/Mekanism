@@ -154,6 +154,7 @@ public class ToolsItems {
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(Holder<ArmorMaterial> armorMaterial, MaterialCreator material, ArmorType armorType, ArmorCreator armorCreator) {
         return ITEMS.register(material.getRegistryPrefix() + "_" + armorType.getName(), () -> armorCreator.create(armorMaterial, armorType, getBaseProperties(material)
+              //todo move this to the material
               .durability(material.getDurabilityForType(armorType))));
     }
 

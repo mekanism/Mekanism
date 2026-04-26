@@ -46,7 +46,7 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         this(MekanismArmorMaterials.FREE_RUNNERS, properties);
     }
 
-    public ItemFreeRunners(Holder<ArmorMaterial> material, Item.Properties properties) {
+    public ItemFreeRunners(ArmorMaterial material, Item.Properties properties) {
         super(material, ArmorType.BOOTS, properties.rarity(Rarity.RARE).setNoCombineRepair().stacksTo(1)
               .component(MekanismDataComponents.FREE_RUNNER_MODE, FreeRunnerMode.NORMAL)
         );
