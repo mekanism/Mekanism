@@ -22,7 +22,7 @@ import org.jetbrains.annotations.Nullable;
 public class ToolsTagProvider extends BaseTagProvider {
 
     public ToolsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MekanismTools.MODID, existingFileHelper);
+        super(output, lookupProvider, MekanismTools.MODID);
     }
 
     @Override

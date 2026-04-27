@@ -10,7 +10,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class GeneratorsItemModelProvider extends BaseItemModelProvider {
 
     public GeneratorsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MekanismGenerators.MODID, existingFileHelper);
+        super(output, MekanismGenerators.MODID);
     }
 
     @Override

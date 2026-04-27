@@ -14,6 +14,7 @@ import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
@@ -22,24 +23,24 @@ import java.util.function.Function;
 import mekanism.client.lang.MekanismLangProvider;
 import mekanism.client.model.MekanismItemModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
-import mekanism.client.state.MekanismBlockStateProvider;
 import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
 import mekanism.common.advancements.MekanismAdvancementProvider;
 import mekanism.common.integration.computer.ComputerHelpProvider;
 import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.loot.MekanismLootProvider;
+import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
 import mekanism.common.registries.MekanismDatapackRegistryProvider;
 import mekanism.common.tag.MekanismTagProvider;
-import net.minecraft.server.packs.PackType;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Util;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Util;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.DeferredWorkQueue;
 import net.neoforged.fml.ModContainer;
@@ -51,7 +52,6 @@ import net.neoforged.fml.event.config.ModConfigEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
 import net.neoforged.fml.util.ObfuscationReflectionHelper;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @EventBusSubscriber(modid = Mekanism.MODID)
@@ -93,20 +93,20 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
         gen.addProvider(true, new MekanismSoundProvider(output));
         gen.addProvider(true, new MekanismSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(true, new MekanismItemModelProvider(output, existingFileHelper));
-        gen.addProvider(true, new MekanismBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(true, new MekanismItemModelProvider(output, clientResources));
+        //todo - 26.1: gen.addProvider(true, new MekanismBlockStateProvider(output));
         //Server side data generators
-        gen.addProvider(true, new MekanismTagProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(true, new MekanismTagProvider(output, lookupProvider));
         gen.addProvider(true, new MekanismLootProvider(output, lookupProvider));
         gen.addProvider(true, drProvider);
         gen.addProvider(true, new MekanismDataMapsProvider(output, lookupProvider));
-        MekanismRecipeProvider recipeProvider = new MekanismRecipeProvider(output, lookupProvider, existingFileHelper);
-        gen.addProvider(true, recipeProvider);
-        gen.addProvider(true, new MekanismAdvancementProvider(output, lookupProvider, existingFileHelper));
+        HashSet<String> disabledCompats = new HashSet<>();
+        gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, (registries, recipeOutput) -> new MekanismRecipeProvider(registries, recipeOutput, disabledCompats), Mekanism.MODID));
+        gen.addProvider(true, new MekanismAdvancementProvider(output, lookupProvider));
         gen.addProvider(true, new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
-        PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, recipeProvider.getDisabledCompats());
+        PersistingDisabledProvidersProvider.addDisableableProviders(event, lookupProvider, disabledCompats);
     }
 
     /**

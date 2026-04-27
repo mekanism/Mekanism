@@ -21,7 +21,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MekanismBlockStateProvider extends BaseBlockStateProvider<MekanismBlockModelProvider> {
 
-    public MekanismBlockStateProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
+    public MekanismBlockStateProvider(PackOutput output) {
         super(output, Mekanism.MODID, existingFileHelper, MekanismBlockModelProvider::new);
     }
 

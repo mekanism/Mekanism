@@ -18,7 +18,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class ToolsItemModelProvider extends BaseItemModelProvider {
 
     public ToolsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MekanismTools.MODID, existingFileHelper);
+        super(output, MekanismTools.MODID);
     }
 
     @Override

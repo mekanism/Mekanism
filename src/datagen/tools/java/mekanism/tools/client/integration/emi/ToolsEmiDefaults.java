@@ -7,13 +7,13 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.registries.ToolsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 @NothingNullByDefault
 public class ToolsEmiDefaults extends BaseEmiDefaults {
 
-    public ToolsEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, existingFileHelper, registries, MekanismTools.MODID);
+    public ToolsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, serverResources, registries, MekanismTools.MODID);
     }
 
     @Override

@@ -48,7 +48,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new AdditionsDataMapsProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, AdditionsAliasMapping::new,

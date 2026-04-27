@@ -4,37 +4,40 @@ import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.RegistryUtils;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
-import net.minecraft.data.models.ItemModelGenerators;
-import net.minecraft.data.models.ItemModelGenerators.TrimModelData;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ItemModelProvider;
-import net.neoforged.neoforge.client.model.generators.loaders.DynamicFluidContainerModelBuilder;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import net.neoforged.neoforge.internal.versions.neoforge.NeoForgeVersion;
+import net.neoforged.neoforge.common.NeoForgeMod;
+import net.neoforged.neoforge.common.NeoForgeVersion;
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseItemModelProvider extends ItemModelProvider {
+public abstract class BaseItemModelProvider extends ModelProvider {
 
-    protected BaseItemModelProvider(PackOutput output, String modid, ExistingFileHelper existingFileHelper) {
-        super(output, modid, existingFileHelper);
+    protected final ResourceManager clientResources;
+
+    protected BaseItemModelProvider(PackOutput output, String modid, ResourceManager clientResources) {
+        super(output, modid);
+        this.clientResources = clientResources;
     }
 
     @NotNull
     @Override
     public String getName() {
-        return "Item model provider: " + modid;
+        return "Item model provider: " + modId;
     }
 
-    public boolean textureExists(Identifier texture) {
-        return existingFileHelper.exists(texture, PackType.CLIENT_RESOURCES, ".png", "textures");
+    protected abstract void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels);
+
+    public boolean textureExists(Identifier texture) {//todo - 26.1: check me
+        return clientResources.getResource(texture.withPrefix("textures/").withSuffix(".png")).isPresent();
     }
     
     protected String getPath(Holder<Item> holder) {
@@ -43,6 +46,10 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
 
     protected Identifier itemTexture(Holder<Item> item) {
         return modLoc("item/" + getPath(item));
+    }
+
+    private Identifier modLoc(String path) {
+        return Identifier.fromNamespaceAndPath(modId, path);
     }
 
     @SafeVarargs
@@ -64,7 +71,7 @@ public abstract class BaseItemModelProvider extends ItemModelProvider {
         for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                withExistingParent(getPath(holder), Identifier.fromNamespaceAndPath(NeoForgeVersion.MOD_ID, "item/bucket"))
+                withExistingParent(getPath(holder), Identifier.fromNamespaceAndPath(NeoForgeMod.MOD_ID, "item/bucket"))
                       .customLoader(DynamicFluidContainerModelBuilder::begin)
                       .fluid(bucket.content);
             }

@@ -39,7 +39,7 @@ public class ToolsDataGenerator {
         //Server side data generators
         gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));
         gen.addProvider(event.includeServer(), new ToolsRecipeProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ToolsAdvancementProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new ToolsAdvancementProvider(output, lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismTools.MODID, ToolsAliasMapping::new, () -> ToolsEmiDefaults::new);

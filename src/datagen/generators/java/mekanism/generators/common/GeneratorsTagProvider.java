@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public class GeneratorsTagProvider extends BaseTagProvider {
 
     public GeneratorsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MekanismGenerators.MODID, existingFileHelper);
+        super(output, lookupProvider, MekanismGenerators.MODID);
     }
 
     @Override

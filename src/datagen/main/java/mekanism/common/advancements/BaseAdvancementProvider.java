@@ -34,14 +34,12 @@ public abstract class BaseAdvancementProvider implements DataProvider {
 
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final PackOutput.PathProvider pathProvider;
-    private final ExistingFileHelper existingFileHelper;
     private final String advancementFolder;
     private final String modid;
 
-    public BaseAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper, String modid) {
+    public BaseAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, String modid) {
         this.modid = modid;
         this.registries = provider;
-        this.existingFileHelper = existingFileHelper;
         this.advancementFolder = Registries.elementsDirPath(Registries.ADVANCEMENT);
         this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
     }
@@ -57,7 +55,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     public CompletableFuture<?> run(@NotNull CachedOutput cache) {
         return this.registries.thenCompose(lookupProvider -> {
             List<CompletableFuture<?>> futures = new ArrayList<>();
-            registerAdvancements(advancement -> {
+            registerAdvancements(lookupProvider, advancement -> {
                 Identifier id = advancement.id();
                 if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", advancementFolder)) {
                     throw new IllegalStateException("Duplicate advancement " + id);
@@ -73,7 +71,7 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     protected abstract void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer);
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
-        return ExtendedAdvancementBuilder.advancement(advancement, existingFileHelper);
+        return ExtendedAdvancementBuilder.advancement(advancement);
     }
 
     public static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(ItemPredicate... predicates) {

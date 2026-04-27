@@ -51,6 +51,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
@@ -64,8 +65,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jeitweaker.Jei";
 
-    public MekanismCrTExampleProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, existingFileHelper, Mekanism.MODID);
+    public MekanismCrTExampleProvider(PackOutput output, ResourceManager serverResources) {
+        super(output, serverResources, Mekanism.MODID);
     }
 
     @Override

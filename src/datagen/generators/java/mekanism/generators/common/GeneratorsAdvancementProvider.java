@@ -9,17 +9,16 @@ import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.AdvancementType;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class GeneratorsAdvancementProvider extends BaseAdvancementProvider {
 
-    public GeneratorsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(output, provider, existingFileHelper, MekanismGenerators.MODID);
+    public GeneratorsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, MekanismGenerators.MODID);
     }
 
     @Override
-    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
+    protected void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
         advancement(GeneratorsAdvancements.HEAT_GENERATOR)
               .displayAndCriterion(GeneratorsBlocks.HEAT_GENERATOR, AdvancementType.TASK, true)
               .save(consumer);

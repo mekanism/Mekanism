@@ -27,12 +27,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class AdditionsAdvancementProvider extends BaseAdvancementProvider {
 
-    public AdditionsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(output, provider, existingFileHelper, MekanismAdditions.MODID);
+    public AdditionsAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, MekanismAdditions.MODID);
     }
 
     @Override
-    protected void registerAdvancements(@NotNull Consumer<AdvancementHolder> consumer) {
+    protected void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer) {
         advancement(AdditionsAdvancements.BALLOON)
               .display(AdditionsItems.BALLOONS.get(EnumColor.AQUA), AdvancementType.TASK, false)
               .addCriterion("balloon", hasItems(AdditionsTags.Items.BALLOONS))

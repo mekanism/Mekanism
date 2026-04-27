@@ -10,13 +10,13 @@ import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.minecraft.server.packs.resources.ResourceManager;
 
 @NothingNullByDefault
 public class GeneratorsEmiDefaults extends BaseEmiDefaults {
 
-    public GeneratorsEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, existingFileHelper, registries, MekanismGenerators.MODID);
+    public GeneratorsEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, serverResources, registries, MekanismGenerators.MODID);
     }
 
     @Override

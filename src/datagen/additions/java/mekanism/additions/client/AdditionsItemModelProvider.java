@@ -13,7 +13,7 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 public class AdditionsItemModelProvider extends BaseItemModelProvider {
 
     public AdditionsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MekanismAdditions.MODID, existingFileHelper);
+        super(output, MekanismAdditions.MODID);
     }
 
     @Override

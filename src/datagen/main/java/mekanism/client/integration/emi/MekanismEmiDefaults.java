@@ -17,16 +17,16 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
 public class MekanismEmiDefaults extends BaseEmiDefaults {
 
-    public MekanismEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries) {
-        super(output, existingFileHelper, registries, Mekanism.MODID);
+    public MekanismEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
+        super(output, serverResources, registries, Mekanism.MODID);
     }
 
     @Override

@@ -49,14 +49,12 @@ import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
 
 public class MekanismTagProvider extends BaseTagProvider {
 
-    public MekanismTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, Mekanism.MODID, existingFileHelper);
+    public MekanismTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
+        super(output, lookupProvider, Mekanism.MODID);
     }
 
     @Override
@@ -143,7 +141,7 @@ public class MekanismTagProvider extends BaseTagProvider {
 
         addToTags(Tags.Items.HIDDEN_FROM_RECIPE_VIEWERS, Tags.Blocks.HIDDEN_FROM_RECIPE_VIEWERS, MekanismBlocks.BOUNDING_BLOCK);
 
-        getBuilder(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON).add(
+        getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).add(
               MekanismBlocks.STRUCTURAL_GLASS,
 
               MekanismBlocks.BOILER_CASING,

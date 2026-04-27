@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
@@ -37,8 +36,8 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
@@ -77,16 +76,17 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.HDPE_CHAR, Pattern.HDPE_CHAR, Pattern.HDPE_CHAR));
 
     private final List<ISubRecipeProvider> compatProviders = new ArrayList<>();
-    private final Set<String> disabledCompats = new HashSet<>();
+    private final Set<String> disabledCompats;
 
-    public MekanismRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-        super(output, provider);
+    public MekanismRecipeProvider(HolderLookup.Provider registries, RecipeOutput output, HashSet<String> disabledCompatsIn) {
+        super(output, registries);
 
         //Mod Compat Recipe providers
         checkCompat("ae2", AE2RecipeProvider::new);
         checkCompat("biomesoplenty", BiomesOPlentyRecipeProvider::new);
         checkCompat("biomeswevegone", BWGRecipeProvider::new);
         checkCompat("farmersdelight", FarmersDelightRecipeProvider::new);
+        disabledCompats = disabledCompatsIn;
     }
 
     private void checkCompat(String modid, Function<String, ISubRecipeProvider> providerCreator) {

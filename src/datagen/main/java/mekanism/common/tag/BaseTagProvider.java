@@ -34,10 +34,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public abstract class BaseTagProvider implements DataProvider {
 
@@ -50,15 +48,13 @@ public abstract class BaseTagProvider implements DataProvider {
     private final Map<ResourceKey<? extends Registry<?>>, Map<TagKey<?>, TagBuilder>> supportedTagTypes = new Object2ObjectLinkedOpenHashMap<>();
     private final Set<Block> knownHarvestRequirements = new ReferenceOpenHashSet<>();
     private final CompletableFuture<HolderLookup.Provider> lookupProvider;
-    private final ExistingFileHelper existingFileHelper;
     private final PackOutput output;
     private final String modid;
 
-    protected BaseTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid, @Nullable ExistingFileHelper existingFileHelper) {
+    protected BaseTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, String modid) {
         this.output = output;
         this.modid = modid;
         this.lookupProvider = lookupProvider;
-        this.existingFileHelper = existingFileHelper;
     }
 
     @NotNull
@@ -101,7 +97,7 @@ public abstract class BaseTagProvider implements DataProvider {
 
     @SuppressWarnings("unchecked")
     private <TYPE> TagsProvider<TYPE> createDummyTagsProvider(ResourceKey<?> registry, Map<TagKey<?>, TagBuilder> tagTypeMap) {
-        return new TagsProvider<>(output, (ResourceKey<? extends Registry<TYPE>>) registry, lookupProvider, modid, existingFileHelper) {
+        return new TagsProvider<>(output, (ResourceKey<? extends Registry<TYPE>>) registry, lookupProvider, modid) {
             @Override
             protected void addTags(@NotNull HolderLookup.Provider lookupProvider) {
                 //Add each tag builder to the wrapped provider's builder

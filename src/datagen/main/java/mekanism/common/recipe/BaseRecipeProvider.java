@@ -13,6 +13,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -25,16 +26,12 @@ import net.neoforged.neoforge.common.data.ExistingFileHelper;
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
-    private final CompletableFuture<HolderLookup.Provider> registriesFuture;
-
-    protected BaseRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registriesFuture) {
-        super(output, registriesFuture);
-        this.registriesFuture = registriesFuture;
+    protected BaseRecipeProvider(RecipeOutput output, HolderLookup.Provider registriesFuture) {
+        super(registriesFuture, output);
     }
 
     @Override
     protected final void buildRecipes() {
-        HolderLookup.Provider registries = registriesFuture.resultNow();
         addRecipes(registries);
         for (ISubRecipeProvider subRecipeProvider : getSubRecipeProviders()) {
             subRecipeProvider.addRecipes(output, registries);

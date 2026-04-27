@@ -14,33 +14,31 @@ import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
+import net.minecraft.core.ClientAsset.ResourceTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.Nullable;
 
 public class ExtendedAdvancementBuilder {
 
     private final Advancement.Builder internal = Advancement.Builder.advancement();
     private final MekanismAdvancement advancement;
-    private final ExistingFileHelper existingFileHelper;
 
-    private ExtendedAdvancementBuilder(MekanismAdvancement advancement, ExistingFileHelper existingFileHelper) {
+    private ExtendedAdvancementBuilder(MekanismAdvancement advancement) {
         this.advancement = advancement;
-        this.existingFileHelper = existingFileHelper;
         if (this.advancement.parent() != null) {
             internal.parent(this.advancement.parent().name());
         }
     }
 
-    public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement, ExistingFileHelper existingFileHelper) {
-        return new ExtendedAdvancementBuilder(advancement, existingFileHelper);
+    public static ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
+        return new ExtendedAdvancementBuilder(advancement);
     }
 
     public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
-        return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background), type, showToast, announceToChat, hidden));
+        return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background).map(ResourceTexture::new), type, showToast, announceToChat, hidden));
     }
 
     public ExtendedAdvancementBuilder display(ItemLike item, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
@@ -124,6 +122,6 @@ public class ExtendedAdvancementBuilder {
     }
 
     public AdvancementHolder save(Consumer<AdvancementHolder> consumer) {
-        return internal.save(consumer, advancement.name(), existingFileHelper);
+        return internal.save(consumer, advancement.name());
     }
 }

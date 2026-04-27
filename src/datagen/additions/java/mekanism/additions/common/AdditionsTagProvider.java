@@ -33,7 +33,7 @@ import org.jetbrains.annotations.Nullable;
 public class AdditionsTagProvider extends BaseTagProvider {
 
     public AdditionsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
-        super(output, lookupProvider, MekanismAdditions.MODID, existingFileHelper);
+        super(output, lookupProvider, MekanismAdditions.MODID);
     }
 
     @Override

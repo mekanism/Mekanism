@@ -46,7 +46,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(event.includeServer(), new GeneratorsLootProvider(output, lookupProvider));
         gen.addProvider(event.includeServer(), drProvider);
         gen.addProvider(event.includeServer(), new GeneratorsRecipeProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider, existingFileHelper));
+        gen.addProvider(event.includeServer(), new GeneratorsAdvancementProvider(output, lookupProvider));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismGenerators.MODID, GeneratorsAliasMapping::new,

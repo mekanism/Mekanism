@@ -46,10 +46,11 @@ import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -62,13 +63,13 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
-    private final ExistingFileHelper existingFileHelper;
+    private final ResourceManager serverResources;
     private final PackOutput output;
     private final String modid;
 
-    protected BaseCrTExampleProvider(PackOutput output, ExistingFileHelper existingFileHelper, String modid) {
+    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, String modid) {
         this.output = output;
-        this.existingFileHelper = existingFileHelper;
+        this.serverResources = serverResources;
         this.modid = modid;
         addNameLookupOverride(String.class, "string");
         addPrimitiveInfo(Byte.TYPE, Byte.class, "byte");
@@ -201,7 +202,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
+        return serverResources.exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 
     protected abstract void addExamples();
@@ -223,7 +224,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        existingFileHelper.trackGenerated(Identifier.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
+        serverResources.trackGenerated(Identifier.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
@@ -258,7 +259,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
                           return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount((int) amount).getCommandString();
                       }
                   } else {
-                      List<ChemicalStack> chemicals = ingredient.getRepresentations();
+                      List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
                       if (chemicals.size() == 1) {
                           return new CrTChemicalStack(chemicals.getFirst()).getCommandString();
                       }
@@ -273,7 +274,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
             String tagRepresentation = tagManager.tag(tagged.tag()).getCommandString();
             return ingredientType + ".from(" + tagRepresentation + ", " + ingredient.amount() + ")";
         }
-        List<ChemicalStack> chemicals = ingredient.getRepresentations();
+        List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
         if (chemicals.size() == 1) {
             String stackRepresentation = singleDescription.apply(chemicals.getFirst()).getCommandString();
             return ingredientType + ".from(" + stackRepresentation + ")";

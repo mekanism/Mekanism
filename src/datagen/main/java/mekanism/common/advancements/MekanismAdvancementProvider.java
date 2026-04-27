@@ -19,10 +19,8 @@ import mekanism.common.advancements.triggers.ViewVibrationsTrigger;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.item.block.machine.ItemBlockFactory;
-import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.item.predicate.FullCanteenItemPredicate;
 import mekanism.common.item.predicate.MaxedModuleContainerItemPredicate;
-import mekanism.common.item.predicate.MekanismItemPredicates;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismDataComponents;
@@ -50,13 +48,12 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismAdvancementProvider extends BaseAdvancementProvider {
 
-    public MekanismAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, ExistingFileHelper existingFileHelper) {
-        super(output, provider, existingFileHelper, Mekanism.MODID);
+    public MekanismAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
+        super(output, provider, Mekanism.MODID);
     }
 
     //TODO - 1.19: xp rewards for any of these?

@@ -22,6 +22,7 @@ import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -35,13 +36,13 @@ public abstract class BaseEmiDefaults implements DataProvider {
 
     private final CompletableFuture<HolderLookup.Provider> registries;
     private final Set<Identifier> recipes = new HashSet<>();
-    private final ExistingFileHelper existingFileHelper;
+    private final ResourceManager serverResources;
     private final PathProvider pathProvider;
     private final String modid;
 
-    protected BaseEmiDefaults(PackOutput output, ExistingFileHelper existingFileHelper, CompletableFuture<HolderLookup.Provider> registries, String modid) {
+    protected BaseEmiDefaults(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries, String modid) {
         this.pathProvider = output.createPathProvider(Target.RESOURCE_PACK, "recipe/defaults");
-        this.existingFileHelper = existingFileHelper;
+        this.serverResources = serverResources;
         this.registries = registries;
         this.modid = modid;
     }
@@ -102,6 +103,6 @@ public abstract class BaseEmiDefaults implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return existingFileHelper.exists(location, PackType.SERVER_DATA, ".json", "recipes");
+        return serverResources// todo .exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 }
