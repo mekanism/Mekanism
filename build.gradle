@@ -495,6 +495,7 @@ dependencies {
     }
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junit_version}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junit_version}")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:${junit_version}")
     //We use https://github.com/jqwik-team/jqwik to allow for implementing property based testing
     testImplementation("net.jqwik:jqwik:${jqwik_version}")
 

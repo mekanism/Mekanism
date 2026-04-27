@@ -12,8 +12,8 @@ import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -38,7 +38,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             //sanity check nothing can be extracted
             int extracted = feHandler.extract(JOULES_CAPACITY, tx);
             assertValueEqual(extracted, 0, "extracted energy (fe)");
-            assertValueEqual(feHandler.getAmountAsInt(), FE_CAPACITY, "FE capacity");
+            assertValueEqual(feHandler.getCapacityAsInt(), FE_CAPACITY, "FE capacity");
 
             //insert more than the FE capacity, check it capped at FE max
             int accepted = feHandler.insert(JOULES_CAPACITY, tx);
@@ -418,7 +418,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     private EnergyHandler createForgeWrappedStrictEnergyHandler(IEnergyContainer container, double conversionRate) {
         List<IEnergyContainer> containers = Collections.singletonList(container);
         return new ForgeEnergyIntegration(new IMekanismStrictEnergyHandler() {
-            @NotNull
+            @NonNull
             @Override
             public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
                 return containers;
@@ -430,7 +430,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         }, getConverter(conversionRate));
     }
 
-    private static @NotNull IEnergyConversion getConverter(double conversionRate) {
+    private static @NonNull IEnergyConversion getConverter(double conversionRate) {
         return new IEnergyConversion() {
             @Override
             public boolean isEnabled() {

@@ -83,6 +83,7 @@ public enum APILang implements ILangEntry {
     private final String key;
 
     APILang(String type, String path) {
+        //TODO - 26.1: Evaluate replacing usages of makeDescriptionId with Identifier#toLanguageKey?
         this(Util.makeDescriptionId(type, Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, path)));
     }
 
