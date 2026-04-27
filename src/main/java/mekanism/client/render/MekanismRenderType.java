@@ -2,6 +2,7 @@ package mekanism.client.render;
 
 import java.util.function.Function;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
 
 public class MekanismRenderType {
@@ -19,21 +20,21 @@ public class MekanismRenderType {
     }, RenderSystem::disableBlend);
     private static final RenderStateShard.ShaderStateShard PARTICLE_SHADER = new RenderStateShard.ShaderStateShard(GameRenderer::getParticleShader);
 */
-public static final RenderType MEK_LIGHTNING = null;/*RenderType.create("mek_lightning", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
+public static final RenderType MEK_LIGHTNING = RenderTypes.lightning();/*RenderType.create("mek_lightning", DefaultVertexFormat.POSITION_COLOR, Mode.QUADS, 256,
           false, true, RenderType.CompositeState.builder()
                 .setShaderState(RenderType.RENDERTYPE_LIGHTNING_SHADER)
                 .setTransparencyState(RenderType.LIGHTNING_TRANSPARENCY)
                 .createCompositeState(false)
     );*/
 
-    public static final Function<Identifier, RenderType> STANDARD = null;/*Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> STANDARD = RenderTypes::entityCutout;/*Util.memoize(resourceLocation ->
           createStandard("mek_standard", resourceLocation, UnaryOperator.identity(), false));*/
-    public static final Function<Identifier, RenderType> STANDARD_TRANSLUCENT_TARGET = null;/*Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> STANDARD_TRANSLUCENT_TARGET = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
           createStandard("mek_standard_translucent_target", resourceLocation, state -> state.setOutputState(RenderType.TRANSLUCENT_TARGET), true));*/
-    public static final Function<Identifier, RenderType> ALARM = null;/*Util.memoize(resourceLocation ->
+    public static final Function<Identifier, RenderType> ALARM = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation ->
           createStandard("mek_alarm", resourceLocation, state -> state.setCullState(RenderType.NO_CULL).setOutputState(RenderType.TRANSLUCENT_TARGET), true));*/
     //Similar to mekStandard but blurs the texture
-    public static final Function<Identifier, RenderType> JETPACK_GLASS = null;/*Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
+    public static final Function<Identifier, RenderType> JETPACK_GLASS = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> createStandard("mek_jetpack_glass", resourceLocation,
           state -> state.setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, true, false)), false));*/
 
     /*private static RenderType createStandard(String name, Identifier resourceLocation, UnaryOperator<RenderType.CompositeState.CompositeStateBuilder> stateModifier,
@@ -48,7 +49,7 @@ public static final RenderType MEK_LIGHTNING = null;/*RenderType.create("mek_lig
         return RenderType.create(name, DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, sortOnUpload, state);
     }*/
 
-    public static final Function<Identifier, RenderType> BLADE = null;/*Util.memoize(resourceLocation -> {
+    public static final Function<Identifier, RenderType> BLADE = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
               //Note: We use the eyes shader as it is effectively equivalent to NEW_ENTITY except takes fog into account for purposes of
               // things like blindness and darkness
@@ -59,7 +60,7 @@ public static final RenderType MEK_LIGHTNING = null;/*RenderType.create("mek_lig
         return RenderType.create("mek_blade", DefaultVertexFormat.NEW_ENTITY, Mode.QUADS, 256, true, false, state);
     });*/
 
-    public static final Function<Identifier, RenderType> FLAME = null;/*Util.memoize(resourceLocation -> {
+    public static final Function<Identifier, RenderType> FLAME = RenderTypes::entityTranslucent;/*Util.memoize(resourceLocation -> {
         RenderType.CompositeState state = RenderType.CompositeState.builder()
               .setShaderState(MekanismShaders.FLAME.shard)
               .setTextureState(new RenderStateShard.TextureStateShard(resourceLocation, false, false))

@@ -1,6 +1,7 @@
 package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.Collections;
 import mekanism.client.RobitSpriteUploader;
 import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
 import mekanism.client.render.entity.RenderRobit.RobitRenderState;
@@ -23,7 +24,8 @@ import org.jetbrains.annotations.Nullable;
 public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, RobitModelWrapper> {
 
     public RenderRobit(EntityRendererProvider.Context context) {
-        super(context, new RobitModelWrapper(null), 0.5F);
+        //TODO - 26.1: Figure out the model part to pass?
+        super(context, new RobitModelWrapper(new ModelPart(Collections.emptyList(), Collections.emptyMap())), 0.5F);
     }
 
     @Override
