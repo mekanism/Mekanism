@@ -121,7 +121,8 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
                 throw assertionException("Expected a container or item handler at " + relativePos + ", found " +
-                                                  Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType()));
+                                         (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
+                                                              : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
             }
             int found = 0;
             for (int i = 0, slots = handler.getSlots(); i < slots; i++) {

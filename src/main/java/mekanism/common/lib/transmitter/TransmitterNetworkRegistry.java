@@ -356,11 +356,17 @@ public class TransmitterNetworkRegistry {
                     long chunk = entry.getLongKey();
                     boolean loaded = entry.getBooleanValue();
                     Collection<Transmitter<?, ?, ?>> chunkTransmitters = transmitters.get(chunk);
-                    for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
-                        transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);
+                    int transmitterCount;
+                    if (chunkTransmitters != null) {//TODO - 26.1: Is this supposed to be able to be null, or is this check masking a bug?
+                        transmitterCount = chunkTransmitters.size();
+                        for (Transmitter<?, ?, ?> transmitter : chunkTransmitters) {
+                            transmitter.getTransmitterTile().chunkAccessibilityChange(loaded);
+                        }
+                    } else {
+                        transmitterCount = 0;
                     }
                     if (MekanismAPI.debug) {
-                        Mekanism.logger.info("{} {} transmitters in chunk: {}, {}", loaded ? "Loaded" : "Unloaded", chunkTransmitters.size(), ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
+                        Mekanism.logger.info("{} {} transmitters in chunk: {}, {}", loaded ? "Loaded" : "Unloaded", transmitterCount, ChunkPos.getX(chunk), ChunkPos.getZ(chunk));
                     }
                 }
             }
