@@ -42,7 +42,7 @@ public class ItemPropertiesTest {
     }
 
     private static void validateSideConfigs(MekGameTestHelper helper, Collection<DeferredHolder<Block, ? extends Block>> blocks) {
-        BlockPos center = helper.absolutePos(new BlockPos(0, 2, 0));
+        BlockPos center = helper.absolutePos(new BlockPos(0, 1, 0));
         for (DeferredHolder<Block, ? extends Block> holder : blocks) {
             Block block = holder.get();
             ItemStack stack = new ItemStack(block);

@@ -56,10 +56,10 @@ public class TransmitterNetworkTest {
               .thenExecute(() -> {
                   //Use the configurator on all sides
                   for (Direction direction : EnumUtils.DIRECTIONS) {
-                      helper.useConfigurator(1, 2, 1, direction, direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : 2);
+                      helper.useConfigurator(1, 1, 1, direction, direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : 2);
                   }
               })
-              .thenMap(() -> helper.getBlockEntity(1, 2, 1, TileEntityLogisticalTransporter.class).getTransmitter())
+              .thenMap(() -> helper.getBlockEntity(1, 1, 1, TileEntityLogisticalTransporter.class).getTransmitter())
               .thenExecute(transporter -> {
                   //Validate all sides got properly changed
                   for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -103,12 +103,12 @@ public class TransmitterNetworkTest {
               .thenMap(() -> helper.setChunkLoadLevel(relativeChunk, MekGameTestHelper.INACCESSIBLE_LEVEL))
               //Wait 5 ticks in case anything needs more time to process after the chunk unloads
               .thenIdle(5)
-              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(0, 1, 0))
+              .thenSequence(sequence -> sequence.thenMap(() -> helper.getBlockState(0, 0, 0))
                     //Force a rebuild of the network by breaking one transmitter
-                    .thenExecute(() -> helper.setBlock(0, 1, 0, Blocks.AIR))
+                    .thenExecute(() -> helper.setBlock(0, 0, 0, Blocks.AIR))
                     //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
                     //Set the block back to what it was before (the transmitter)
-                    .thenExecuteAfter(5, state -> helper.setBlock(0, 1, 0, state))
+                    .thenExecuteAfter(5, state -> helper.setBlock(0, 0, 0, state))
               )
               //Wait 5 ticks to ensure it has time to process everything (expected to only take two ticks)
               //Set the chunk level back to what it was before (aka loading it fully again)

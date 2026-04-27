@@ -73,11 +73,11 @@ public class InventoryNetworkTest {
     public static void sendsBackToHome(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a second for it to pull the item out, and remove the destination
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.AIR))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
               //Make sure the start container is empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               .thenSucceed();
     }
 
@@ -87,11 +87,11 @@ public class InventoryNetworkTest {
     public static void sendsBackToHomeDisabled(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a second for it to pull the item out, and disable the path to the destination
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 1, 4, Direction.SOUTH, 3))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               .thenSucceed();
     }
 
@@ -101,11 +101,11 @@ public class InventoryNetworkTest {
     public static void sendsBackToHomeColorChanged(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a second for it to pull the item out, and then color the path to the destination
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 1, 4, Direction.UP))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
               //Make sure the start container is empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               .thenSucceed();
     }
 
@@ -125,11 +125,11 @@ public class InventoryNetworkTest {
         test.onGameTest(TransmitterTestHelper.class, helper ->
               helper.startSequence()
                     //Wait a second for it to pull the item out, and then color the path to the destination
-                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 1, 4, Direction.UP))
+                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.UP))
                     //And then after a few seconds that the item has transferred to the destination
-                    .thenExecuteAfter(3 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
+                    .thenExecuteAfter(3 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
                     //And make sure the start container is empty
-                    .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+                    .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
                     .thenSucceed()
         );
     }
@@ -153,13 +153,13 @@ public class InventoryNetworkTest {
               //Wait a second for it to pull the item out, and fill the last slot of the barrel
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, barrel -> barrel.setItem(26, Items.OAK_LOG.getDefaultInstance()))
               //Make sure the start container is empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               //After we make it back, then allow sending the item for real by removing the item from the barrel
               .thenExecute(RandomizableContainerBlockEntity::clearContent)
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerEmpty(0, 1, 0))
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerEmpty(0, 0, 0))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
               .thenSucceed()
         );
     }
@@ -184,11 +184,11 @@ public class InventoryNetworkTest {
         test.onGameTest(TransmitterTestHelper.class, helper ->
               helper.startSequence()
                     //Wait a second for it to pull the item out, and then pull the lever that is controlling the diversion transporter
-                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 2, 4))
+                    .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 4))
                     //Make sure the start container is empty
-                    .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+                    .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
                     //And then after a few seconds that the item has transferred back into the destination it was pulled from
-                    .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+                    .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
                     .thenSucceed()
         );
     }
@@ -209,11 +209,11 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a second for it to pull the item out, and disable the base path to the destination
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 1, 4, Direction.SOUTH, 3))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(0, 0, 4, Direction.SOUTH, 3))
               //Make sure the start container is empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
               .thenSucceed()
         );
     }
@@ -224,11 +224,11 @@ public class InventoryNetworkTest {
     public static void findPathFromIdle(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a second for it to pull the item out, and remove the destination
-              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.AIR))
-              .thenExecute(() -> helper.setBlock(0, 1, 0, Blocks.AIR))
-              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 1, 5, Blocks.BARREL))
+              .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.AIR))
+              .thenExecute(() -> helper.setBlock(0, 0, 0, Blocks.AIR))
+              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(0, 0, 5, Blocks.BARREL))
               //And then after a few seconds that the item has transferred back into the destination it was pulled from
-              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
               .thenSucceed();
     }
 
@@ -250,15 +250,15 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 1, 2, Blocks.AIR.defaultBlockState()))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, Blocks.AIR.defaultBlockState()))
               //Validate original destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(2, 1, 2, Items.STONE, 2))
+              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 2))
               //Validate that two items were dropped when the transporter was broken
-              .thenExecute(() -> helper.assertItemEntityCountIs(Items.STONE, new BlockPos(1, 1, 2), 1, 2))
+              .thenExecute(() -> helper.assertItemEntityCountIs(Items.STONE, new BlockPos(1, 0, 2), 1, 2))
               //Validate new destination has expected count after we give some time for the items to transfer
-              .thenExecuteAfter(11 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE, 16))
+              .thenExecuteAfter(11 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE, 16))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
@@ -280,13 +280,13 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, and add a transporter to create a shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 1, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState()))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.setBlock(1, 0, 2, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER.defaultState()))
               //Validate original destination has expected count
-              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE, 8))
+              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE, 8))
               //Validate new destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(2, 1, 2, Items.STONE, 12))
+              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 12))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
@@ -311,13 +311,13 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, re-enable a disabled path to make there be a shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(1, 1, 2, Direction.WEST))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.useConfigurator(1, 0, 2, Direction.WEST))
               //Validate original destination has expected count
-              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE, 8))
+              .thenExecuteAfter(10 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE, 8))
               //Validate new destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(2, 1, 2, Items.STONE, 12))
+              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 12))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
@@ -338,9 +338,9 @@ public class InventoryNetworkTest {
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a little to validate nothing is happening
               //Validate original destination has the starting amount
-              .thenExecuteAfter(2 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 0, Items.STONE))
+              .thenExecuteAfter(2 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 0, Items.STONE))
               //Validate new destination is still empty
-              .thenExecute(() -> helper.assertContainerEmpty(1, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(1, 0, 0))
               .thenSucceed()
         );
     }
@@ -364,11 +364,11 @@ public class InventoryNetworkTest {
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
-              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 1, 3, Items.STONE, 2))
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 3, Items.STONE, 2))
               //Validate wrong color destination is empty
-              .thenExecute(() -> helper.assertContainerEmpty(2, 1, 2))
+              .thenExecute(() -> helper.assertContainerEmpty(2, 0, 2))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
@@ -392,11 +392,11 @@ public class InventoryNetworkTest {
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate colored destination has expected count
-              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(1, 1, 2, Items.STONE, 2))
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(1, 0, 2, Items.STONE, 2))
               //Validate wrong color destination is empty
-              .thenExecute(() -> helper.assertContainerEmpty(1, 1, 3))
+              .thenExecute(() -> helper.assertContainerEmpty(1, 0, 3))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
@@ -419,9 +419,9 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for transferring to happen then validate stuff
-              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE))
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
-              .thenExecute(() -> helper.assertContainerEmpty(1, 1, 0))
+              .thenExecuteAfter(5 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(1, 0, 0))
               .thenSucceed()
         );
     }
@@ -432,14 +432,14 @@ public class InventoryNetworkTest {
     public static void upgradeFurtherPath(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(9, 1, 0), AlloyTier.INFUSED))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(9, 0, 0), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate original destination has expected count
-              .thenExecuteAfter(13 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 1, 0, Items.STONE, 8))
+              .thenExecuteAfter(13 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 0, Items.STONE, 8))
               //Validate further but now "closer" destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(8, 1, 0, Items.STONE, 12))
+              .thenExecute(() -> helper.assertContainerContains(8, 0, 0, Items.STONE, 12))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(3, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(3, 0, 0))
               .thenSucceed();
     }
 
@@ -450,14 +450,14 @@ public class InventoryNetworkTest {
     public static void upgradeFurtherOverlapping(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(6, 1, 2), AlloyTier.INFUSED))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(6, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate original destination has expected count
-              .thenExecuteAfter(13 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 1, 0, Items.STONE, 8))
+              .thenExecuteAfter(13 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 0, Items.STONE, 8))
               //Validate further but now "closer" destination has expected count
-              .thenExecute(() -> helper.assertContainerContains(8, 1, 0, Items.STONE, 12))
+              .thenExecute(() -> helper.assertContainerContains(8, 0, 0, Items.STONE, 12))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(3, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(3, 0, 0))
               .thenSucceed();
     }
 
@@ -466,14 +466,14 @@ public class InventoryNetworkTest {
     public static void upgradeExisting(final TransmitterTestHelper helper) {
         helper.startSequence()
               //Wait a few seconds for it to pull some items out, and upgrade the transporter to the further destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(3, 1, 2), AlloyTier.INFUSED))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.applyAlloyUpgrade(new BlockPos(3, 0, 2), AlloyTier.INFUSED))
               //Wait a few seconds for transferring to happen then validate stuff
               //Validate original destination has expected count
-              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 1, 0, Items.STONE, 20))
+              .thenExecuteAfter(6 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(2, 0, 0, Items.STONE, 20))
               //Validate further is still empty
-              .thenExecute(() -> helper.assertContainerEmpty(8, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(8, 0, 0))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(3, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(3, 0, 0))
               .thenSucceed();
     }
 
@@ -504,13 +504,13 @@ public class InventoryNetworkTest {
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
               //Wait a few seconds for it to pull some items out, and remove the transporter to the shorter destination
-              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 2, 2))
+              .thenExecuteAfter(4 * SharedConstants.TICKS_PER_SECOND, () -> helper.pullLever(0, 1, 2))
               //Validate original destination has expected count
-              .thenExecuteAfter(11 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 1, 5, Items.STONE, 4))
+              .thenExecuteAfter(11 * SharedConstants.TICKS_PER_SECOND, () -> helper.assertContainerContains(0, 0, 5, Items.STONE, 4))
               //Validate new destination has expected count after we give some time for the items to transfer
-              .thenExecute(() -> helper.assertContainerContains(2, 1, 2, Items.STONE, 16))
+              .thenExecute(() -> helper.assertContainerContains(2, 0, 2, Items.STONE, 16))
               //Validate start is also empty
-              .thenExecute(() -> helper.assertContainerEmpty(0, 1, 0))
+              .thenExecute(() -> helper.assertContainerEmpty(0, 0, 0))
               .thenSucceed()
         );
     }
