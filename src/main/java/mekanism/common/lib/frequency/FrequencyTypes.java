@@ -21,28 +21,28 @@ import org.jetbrains.annotations.Nullable;
 public class FrequencyTypes {
     private static final Map<String, FrequencyType<?>> registryMap = new HashMap<>();
 
-    public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("Teleporter",
+    public static final FrequencyType<TeleporterFrequency> TELEPORTER = register("teleporter",
           (key, uuid, securityMode) -> new TeleporterFrequency((String) key, uuid, securityMode),
           TeleporterFrequency.CODEC,
           TeleporterFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME,
           false);
-    public static final FrequencyType<InventoryFrequency> INVENTORY = register("Inventory",
+    public static final FrequencyType<InventoryFrequency> INVENTORY = register("inventory",
           (key, uuid, securityMode) -> new InventoryFrequency((String) key, uuid, securityMode),
           InventoryFrequency.CODEC,
           InventoryFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_PRIVATE_TRUSTED,
           IdentitySerializer.NAME,
           false);
-    public static final FrequencyType<SecurityFrequency> SECURITY = register("Security",
+    public static final FrequencyType<SecurityFrequency> SECURITY = register("security",
           (key, uuid, securityMode) -> new SecurityFrequency(uuid, securityMode),
           SecurityFrequency.CODEC,
           SecurityFrequency.STREAM_CODEC,
           FrequencyController.Type.PUBLIC_ONLY,
           IdentitySerializer.UUID,
           false);
-    public static final FrequencyType<QIOFrequency> QIO = register("QIO",
+    public static final FrequencyType<QIOFrequency> QIO = register("qio",
           (key, uuid, securityMode) -> new QIOFrequency((String) key, uuid, securityMode),
           QIOFrequency.CODEC,
           QIOFrequency.STREAM_CODEC,

@@ -8,6 +8,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
@@ -143,9 +144,10 @@ public class FrequencyLookup<FREQ extends Frequency> extends SavedData {
         StringBuilder path = new StringBuilder("frequency/");
         path.append(frequencyType.getName()).append("/");
         if (ownerUUID != null) {
-            path.append(ownerUUID).append("/");
+            path.append(ownerUUID.toString().toLowerCase(Locale.ROOT)).append("/");
         }
-        path.append(securityMode.name());
+        //TODO - 26.1: Do we want to cache this?
+        path.append(securityMode.name().toLowerCase(Locale.ROOT));
         return Mekanism.rl(path.toString());
     }
 
