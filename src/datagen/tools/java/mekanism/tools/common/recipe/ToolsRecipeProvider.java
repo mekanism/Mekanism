@@ -21,9 +21,11 @@ import mekanism.tools.common.registries.ToolsRecipeSerializers;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -105,7 +107,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               ToolsItems.STEEL_SWORD, ToolsItems.STEEL_PICKAXE, ToolsItems.STEEL_AXE, ToolsItems.STEEL_SHOVEL, ToolsItems.STEEL_HOE, ToolsItems.STEEL_PAXEL,
               ToolsItems.STEEL_SHIELD, MekanismTags.Items.INGOTS_STEEL, Tags.Items.INGOTS_IRON, MekanismItems.STEEL_NUGGET);
         registerVanillaPaxels();
-        SpecialRecipeBuilder.special(MekBannerShieldRecipe::new).save(output, ToolsRecipeSerializers.BANNER_SHIELD.getId());
+        SpecialRecipeBuilder.special(() -> MekBannerShieldRecipe.INSTANCE).save(output, ResourceKey.create(Registries.RECIPE, ToolsRecipeSerializers.BANNER_SHIELD.getId()));
     }
 
     private void registerRecipeSet(String name, Holder<Item> helmet, Holder<Item> chestplate, Holder<Item> leggings, Holder<Item> boots, Holder<Item> sword,
