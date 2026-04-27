@@ -32,7 +32,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -184,10 +186,10 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
 
     @NothingNullByDefault
     public enum FusionReactorLogic implements IReactorLogicMode<FusionReactorLogic>, IHasEnumNameTranslationKey, StringRepresentable {
-        DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER)),
-        READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, new ItemStack(Items.REDSTONE)),
-        CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, new ItemStack(Items.REDSTONE)),
-        DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE));
+        DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, Items.GUNPOWDER),
+        READY(GeneratorsLang.REACTOR_LOGIC_READY, GeneratorsLang.DESCRIPTION_REACTOR_READY, Items.REDSTONE),
+        CAPACITY(GeneratorsLang.REACTOR_LOGIC_CAPACITY, GeneratorsLang.DESCRIPTION_REACTOR_CAPACITY, Items.REDSTONE),
+        DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, Items.REDSTONE);
 
         public static final Codec<FusionReactorLogic> CODEC = StringRepresentable.fromEnum(FusionReactorLogic::values);
         public static final IntFunction<FusionReactorLogic> BY_ID = ByIdMap.continuous(FusionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
@@ -195,19 +197,19 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
 
         private final ILangEntry name;
         private final ILangEntry description;
-        private final ItemStack renderStack;
+        private final ItemStackTemplate renderStack;
         private final String serializedName;
 
-        FusionReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack) {
+        FusionReactorLogic(ILangEntry name, ILangEntry description, Item item) {
             this.name = name;
             this.description = description;
-            this.renderStack = stack;
+            this.renderStack = new ItemStackTemplate(item);
             this.serializedName = name().toLowerCase(Locale.ROOT);
         }
 
         @Override
         public ItemStack getRenderStack() {
-            return renderStack;
+            return renderStack.create();
         }
 
         @Override

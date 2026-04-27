@@ -34,7 +34,9 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -195,18 +197,18 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
 
     @NothingNullByDefault
     public enum FissionReactorLogic implements IReactorLogicMode<FissionReactorLogic>, IHasEnumNameTranslationKey, StringRepresentable {
-        DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, new ItemStack(Items.GUNPOWDER), EnumColor.DARK_GRAY),
-        ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, new ItemStack(Items.FLINT_AND_STEEL), EnumColor.AQUA),
-        TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, new ItemStack(Items.REDSTONE), EnumColor.RED),
-        CRITICAL_WASTE_LEVEL(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, new ItemStack(Items.REDSTONE), EnumColor.RED) {
+        DISABLED(GeneratorsLang.REACTOR_LOGIC_DISABLED, GeneratorsLang.DESCRIPTION_REACTOR_DISABLED, Items.GUNPOWDER, EnumColor.DARK_GRAY),
+        ACTIVATION(GeneratorsLang.REACTOR_LOGIC_ACTIVATION, GeneratorsLang.DESCRIPTION_REACTOR_ACTIVATION, Items.FLINT_AND_STEEL, EnumColor.AQUA),
+        TEMPERATURE(GeneratorsLang.REACTOR_LOGIC_TEMPERATURE, GeneratorsLang.DESCRIPTION_REACTOR_TEMPERATURE, Items.REDSTONE, EnumColor.RED),
+        CRITICAL_WASTE_LEVEL(GeneratorsLang.REACTOR_LOGIC_CRITICAL_WASTE_LEVEL, GeneratorsLang.DESCRIPTION_REACTOR_CRITICAL_WASTE_LEVEL, Items.REDSTONE, EnumColor.RED) {
             @NotNull
             @Override
             public Component getDescription() {
                 return description.translate(TextUtils.getPercent(MekanismGeneratorsConfig.generators.fissionExcessWasteRatio.get()));
             }
         },
-        DAMAGED(GeneratorsLang.REACTOR_LOGIC_DAMAGED, GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, new ItemStack(Items.REDSTONE), EnumColor.RED),
-        DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, new ItemStack(Items.REDSTONE), EnumColor.RED);
+        DAMAGED(GeneratorsLang.REACTOR_LOGIC_DAMAGED, GeneratorsLang.DESCRIPTION_REACTOR_DAMAGED, Items.REDSTONE, EnumColor.RED),
+        DEPLETED(GeneratorsLang.REACTOR_LOGIC_DEPLETED, GeneratorsLang.DESCRIPTION_REACTOR_DEPLETED, Items.REDSTONE, EnumColor.RED);
 
         public static final Codec<FissionReactorLogic> CODEC = StringRepresentable.fromEnum(FissionReactorLogic::values);
         public static final IntFunction<FissionReactorLogic> BY_ID = ByIdMap.continuous(FissionReactorLogic::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
@@ -214,21 +216,21 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
 
         private final ILangEntry name;
         protected final ILangEntry description;
-        private final ItemStack renderStack;
+        private final ItemStackTemplate renderStack;
         private final EnumColor color;
         private final String serializedName;
 
-        FissionReactorLogic(ILangEntry name, ILangEntry description, ItemStack stack, EnumColor color) {
+        FissionReactorLogic(ILangEntry name, ILangEntry description, Item item, EnumColor color) {
             this.name = name;
             this.description = description;
-            this.renderStack = stack;
+            this.renderStack = new ItemStackTemplate(item);
             this.color = color;
             this.serializedName = name().toLowerCase(Locale.ROOT);
         }
 
         @Override
         public ItemStack getRenderStack() {
-            return renderStack;
+            return renderStack.create();
         }
 
         @Override
