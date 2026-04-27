@@ -15,6 +15,7 @@ import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -28,6 +29,12 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
     private static final RecipePattern PLASTIC_FENCE_GATE = RecipePattern.createPattern(
           TripleLine.of(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR),
           TripleLine.of(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, Pattern.CONSTANT, AdditionsRecipeProvider.PLASTIC_ROD_CHAR));
+
+    private final HolderGetter<Item> items;
+
+    public PlasticFencesRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -47,7 +54,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
     private void registerPlasticFence(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_FENCE)
-              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
+              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.DECORATIONS)
               .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
@@ -65,7 +72,7 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
     private void registerPlasticFenceGate(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result)
               .pattern(PLASTIC_FENCE_GATE)
-              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, MekanismTags.Items.RODS_PLASTIC)
+              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.REDSTONE)
               .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));

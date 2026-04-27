@@ -16,6 +16,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tier.FactoryTier;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -23,6 +24,12 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 class FactoryRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+
+    public FactoryRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -48,9 +55,9 @@ class FactoryRecipeProvider implements ISubRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(factory)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
               .key(Pattern.PREVIOUS, toUpgrade)
-              .key(Pattern.CIRCUIT, circuitTag)
-              .key(Pattern.INGOT, ingotTag)
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.CIRCUIT, this.items, circuitTag)
+              .key(Pattern.INGOT, this.items, ingotTag)
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + Attribute.getOrThrow(factory, AttributeFactoryType.class).getFactoryType().getRegistryNameComponent()));
     }
 }

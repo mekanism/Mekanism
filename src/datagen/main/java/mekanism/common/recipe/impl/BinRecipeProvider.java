@@ -14,6 +14,7 @@ import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -29,6 +30,12 @@ class BinRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.PREVIOUS, Pattern.ALLOY),
           TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE));
 
+    private final HolderGetter<Item> items;
+
+    public BinRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         //Special recipes (bins)
@@ -42,9 +49,9 @@ class BinRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.CIRCUIT, Pattern.COBBLESTONE),
                     TripleLine.of(Pattern.ALLOY, Pattern.EMPTY, Pattern.ALLOY),
                     TripleLine.of(Pattern.COBBLESTONE, Pattern.COBBLESTONE, Pattern.COBBLESTONE))
-              ).key(Pattern.COBBLESTONE, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
+              ).key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
+              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredBin(consumer, basePath, MekanismBlocks.ADVANCED_BIN, MekanismBlocks.BASIC_BIN, MekanismTags.Items.CIRCUITS_ADVANCED, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredBin(consumer, basePath, MekanismBlocks.ELITE_BIN, MekanismBlocks.ADVANCED_BIN, MekanismTags.Items.CIRCUITS_ELITE, MekanismTags.Items.ALLOYS_REINFORCED);
@@ -57,9 +64,9 @@ class BinRecipeProvider implements ISubRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(bin)
               .pattern(BIN_PATTERN)
               .key(Pattern.PREVIOUS, previousBin)
-              .key(Pattern.COBBLESTONE, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
-              .key(Pattern.CIRCUIT, circuitTag)
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.COBBLESTONE, this.items, MekanismTags.Items.STONE_CRAFTING_MATERIALS)
+              .key(Pattern.CIRCUIT, this.items, circuitTag)
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

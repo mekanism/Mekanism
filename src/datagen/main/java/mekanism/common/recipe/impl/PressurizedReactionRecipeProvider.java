@@ -9,14 +9,25 @@ import mekanism.common.recipe.ISubRecipeProvider;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+    private final HolderGetter<Fluid> fluids;
+
+    public PressurizedReactionRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids) {
+        this.items = items;
+        this.fluids = fluids;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -33,19 +44,19 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     Tags.Items.STORAGE_BLOCKS_COAL,
                     MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
               )),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 1_000),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 1_000),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1_000),
               900,
-              MekanismItems.SULFUR_DUST.asStack(9),
+              MekanismItems.SULFUR_DUST.asTemplate(9),
               MekanismChemicals.HYDROGEN.asStack(1_000)
         ).save(consumer, Mekanism.rl(basePath + "blocks_coals"));
         //Coals
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(, ItemTags.COALS),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 100),
+              IngredientCreatorAccess.item().from(this.items, ItemTags.COALS),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 100),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
-              MekanismItems.SULFUR_DUST.asStack(),
+              MekanismItems.SULFUR_DUST.asTemplate(),
               MekanismChemicals.HYDROGEN.asStack(100)
         ).save(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
@@ -54,10 +65,10 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     MekanismTags.Items.DUSTS_COAL,
                     MekanismTags.Items.DUSTS_CHARCOAL
               )),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 100),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 100),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 100),
               100,
-              MekanismItems.SULFUR_DUST.asStack(),
+              MekanismItems.SULFUR_DUST.asTemplate(),
               MekanismChemicals.HYDROGEN.asStack(100)
         ).save(consumer, Mekanism.rl(basePath + "dusts_coals"));
 
@@ -68,19 +79,19 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         // but doe snot have one for the other types of wood
         //Dusts, each worth a 32th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_WOOD, 8),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 25),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_WOOD, 8),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 25),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 25),
               37,
               MekanismChemicals.HYDROGEN.asStack(25)
         ).save(consumer, Mekanism.rl(basePath + "dusts_wood"));
         //Logs, each worth one log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(, ItemTags.LOGS, 4),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 400),
+              IngredientCreatorAccess.item().from(this.items, ItemTags.LOGS, 4),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
-              MekanismItems.CHARCOAL_DUST.asStack(),
+              MekanismItems.CHARCOAL_DUST.asTemplate(),
               MekanismChemicals.HYDROGEN.asStack(400)
         ).save(consumer, Mekanism.rl(basePath + "logs"));
         //Planks, each worth a 5th of a log.
@@ -90,16 +101,16 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC
               ), 20),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 400),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 400),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400),
               600,
-              MekanismItems.CHARCOAL_DUST.asStack(),
+              MekanismItems.CHARCOAL_DUST.asTemplate(),
               MekanismChemicals.HYDROGEN.asStack(400)
         ).save(consumer, Mekanism.rl(basePath + "planks"));
         //Rods, each worth a 30th of a log.
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(, Tags.Items.RODS_WOODEN, 3),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 10),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.RODS_WOODEN, 3),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
               15,
               MekanismChemicals.HYDROGEN.asStack(10)
@@ -111,7 +122,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC_SLAB
               )),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 10),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
               15,
               MekanismChemicals.HYDROGEN.asStack(10)
@@ -123,7 +134,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC_STAIRS
               )),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 15),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 15),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 15),
               22,
               MekanismChemicals.HYDROGEN.asStack(15)
@@ -134,29 +145,29 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         //Ethene + oxygen
         PressurizedReactionRecipeBuilder.reaction(
                     IngredientCreatorAccess.item().from(MekanismItems.SUBSTRATE),
-                    IngredientCreatorAccess.fluid().from(, MekanismTags.Fluids.ETHENE, 50),
+                    IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.ETHENE, 50),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 10),
                     60,
-                    MekanismItems.HDPE_PELLET.asStack()
+                    MekanismItems.HDPE_PELLET.asTemplate()
               ).energyRequired(10)
               .save(consumer, Mekanism.rl(basePath + "ethene_oxygen"));
         //Water + ethene
         PressurizedReactionRecipeBuilder.reaction(
                     IngredientCreatorAccess.item().from(MekanismItems.SUBSTRATE),
-                    IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 200),
+                    IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 200),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ETHENE, 100),
                     400,
-                    MekanismItems.SUBSTRATE.asStack(8),
+                    MekanismItems.SUBSTRATE.asTemplate(8),
                     MekanismChemicals.OXYGEN.asStack(10)
               ).energyRequired(2)
               .save(consumer, Mekanism.rl(basePath + "water_ethene"));
         //Water + hydrogen
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.FUELS_BIO, 2),
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 10),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.FUELS_BIO, 2),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 10),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100),
               100,
-              MekanismItems.SUBSTRATE.asStack(),
+              MekanismItems.SUBSTRATE.asTemplate(),
               MekanismChemicals.ETHENE.asStack(300)
         ).save(consumer, Mekanism.rl(basePath + "water_hydrogen"));
     }

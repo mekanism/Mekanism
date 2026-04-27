@@ -18,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
@@ -43,6 +44,15 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
         return value();
     }
 
+    public ItemStackTemplate asTemplate() {
+        return asTemplate(1);
+    }
+
+    public ItemStackTemplate asTemplate(int count) {
+        return new ItemStackTemplate(value(), count);
+    }
+
+    //TODO - 26.1: Re-evaluate asStack usages, as maybe most are gone by the time datagen is converted to asTemplate?
     public ItemStack asStack() {
         return asStack(1);
     }

@@ -2,6 +2,7 @@ package mekanism.common.recipe.impl;
 
 import java.util.Objects;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datagen.recipe.builder.ChemicalChemicalToChemicalRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
@@ -32,19 +33,31 @@ import mekanism.common.resource.ore.OreType;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import org.jetbrains.annotations.Nullable;
 
 class OreProcessingRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+    private final HolderGetter<Fluid> fluids;
+    private final HolderGetter<Chemical> chemicals;
+
+    public OreProcessingRecipeProvider(HolderGetter<Item> items, HolderGetter<Fluid> fluids, HolderGetter<Chemical> chemicals) {
+        this.items = items;
+        this.fluids = fluids;
+        this.chemicals = chemicals;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -54,22 +67,22 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         }
         //Raw Gold plus netherrack to nether gold ore
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(, Tags.Items.RAW_MATERIALS_GOLD, 8),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.RAW_MATERIALS_GOLD, 8),
               IngredientCreatorAccess.item().from(Items.NETHERRACK),
-              new ItemStack(Items.NETHER_GOLD_ORE)
+              new ItemStackTemplate(Items.NETHER_GOLD_ORE)
         ).save(consumer, Mekanism.rl(basePath + "gold/ore/nether_from_raw"));
 
         //Iron -> enriched iron
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(, Tags.Items.INGOTS_IRON),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.CARBON, 10),
-              MekanismItems.ENRICHED_IRON.asStack(),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_IRON),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
+              MekanismItems.ENRICHED_IRON.asTemplate(),
               false
         ).save(consumer, Mekanism.rl(basePath + "iron/enriched"));
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON)),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.CARBON, 10),
-              MekanismItems.ENRICHED_IRON.asStack(),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.IRON)),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
+              MekanismItems.ENRICHED_IRON.asTemplate(),
               false
         ).save(consumer, Mekanism.rl(basePath + "iron/enriched_dust"));
         addNetheriteProcessingRecipes(consumer, basePath + "netherite/");
@@ -183,13 +196,13 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(block)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
                   .key(Pattern.PREVIOUS, ingot)
-                  .key(Pattern.CONSTANT, ingotTag)
+                  .key(Pattern.CONSTANT, this.items, ingotTag)
                   .save(consumer, Mekanism.rl(basePath + "storage_blocks/from_ingots"));
             // from nuggets
             ExtendedShapedRecipeBuilder.shapedRecipe(ingot)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
                   .key(Pattern.PREVIOUS, nugget)
-                  .key(Pattern.CONSTANT, nuggetTag)
+                  .key(Pattern.CONSTANT, this.items, nuggetTag)
                   .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
             // to nuggets
             ExtendedShapelessRecipeBuilder.shapelessRecipe(nugget, 9)
@@ -209,26 +222,26 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(rawBlock)
                   .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
                   .key(Pattern.PREVIOUS, raw)
-                  .key(Pattern.CONSTANT, rawTag)
+                  .key(Pattern.CONSTANT, this.items, rawTag)
                   .save(consumer, Mekanism.rl(basePath + "raw_storage_blocks/from_raw"));
         }
 
-        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(, rawTag, toOre);
+        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, rawTag, toOre);
         // Ore from Dust
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStack(ore)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
+              new ItemStackTemplate(ore)
         ).save(consumer, Mekanism.rl(basePath + "ore/from_raw"));
         // Deepslate Ore from Dust
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_DEEPSLATE),
-              new ItemStack(deepslateOre)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
+              new ItemStackTemplate(deepslateOre)
         ).save(consumer, Mekanism.rl(basePath + "ore/deepslate_from_raw"));
 
         //Dust from Ingot
-        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(, ingotTag), new ItemStack(dust))
+        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(this.items, ingotTag), new ItemStackTemplate(dust))
               .save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
 
         // Intermediate Steps
@@ -236,56 +249,56 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         RecipeProviderUtil.addSmeltingBlastingRecipes(consumer, BaseRecipeProvider.createIngredient(dust), ingot, dustExperience, 200,
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         // Dust from Dirty Dust
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(, dirtyDustTag), new ItemStack(dust))
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, dirtyDustTag), new ItemStackTemplate(dust))
               .save(consumer, Mekanism.rl(basePath + "dust/from_dirty_dust"));
         // Dirty Dust from Clump
-        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(, clumpTag), new ItemStack(dirtyDust))
+        ItemStackToItemStackRecipeBuilder.crushing(IngredientCreatorAccess.item().from(this.items, clumpTag), new ItemStackTemplate(dirtyDust))
               .save(consumer, Mekanism.rl(basePath + "dirty_dust/from_clump"));
         // Clump from Shard
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(, shardTag),
+              IngredientCreatorAccess.item().from(this.items, shardTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
-              new ItemStack(clump),
+              new ItemStackTemplate(clump),
               true
         ).save(consumer, Mekanism.rl(basePath + "clump/from_shard"));
         // Shard from Crystal
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(, crystalTag),
+              IngredientCreatorAccess.item().from(this.items, crystalTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              new ItemStack(shard),
+              new ItemStackTemplate(shard),
               true
         ).save(consumer, Mekanism.rl(basePath + "shard/from_crystal"));
         // Crystal from Clean Slurry
-        ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.chemicalStack().fromHolder(slurry.getCleanSlurry(), 200), new ItemStack(crystal))
+        ChemicalCrystallizerRecipeBuilder.crystallizing(IngredientCreatorAccess.chemicalStack().fromHolder(slurry.getCleanSlurry(), 200), new ItemStackTemplate(crystal))
               .save(consumer, Mekanism.rl(basePath + "crystal/from_slurry"));
         // Clean Slurry from Dirty Slurry
         FluidChemicalToChemicalRecipeBuilder.washing(
-              IngredientCreatorAccess.fluid().from(, FluidTags.WATER, 5),
+              IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 5),
               IngredientCreatorAccess.chemicalStack().fromHolder(slurry, 1),
               new ChemicalStack(slurry.getCleanSlurry(), 1)
         ).save(consumer, Mekanism.rl(basePath + "slurry/clean"));
 
         // From ore
         // Dust
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(, oreTag), new ItemStack(dust, 2))
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, oreTag), new ItemStackTemplate(dust, 2))
               .save(consumer, Mekanism.rl(basePath + "dust/from_ore"));
         // Clump
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(, oreTag),
+              IngredientCreatorAccess.item().from(this.items, oreTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
-              new ItemStack(clump, 3),
+              new ItemStackTemplate(clump, 3),
               true
         ).save(consumer, Mekanism.rl(basePath + "clump/from_ore"));
         // Shard
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(, oreTag),
+              IngredientCreatorAccess.item().from(this.items, oreTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              new ItemStack(shard, 4),
+              new ItemStackTemplate(shard, 4),
               true
         ).save(consumer, Mekanism.rl(basePath + "shard/from_ore"));
         // Dirty Slurry
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(, oreTag),
+              IngredientCreatorAccess.item().from(this.items, oreTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
               new ChemicalStack(slurry, 1_000),
               true
@@ -293,25 +306,25 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
         // From raw ore
         // Dust
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(, rawTag, 3), new ItemStack(dust, 4))
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, rawTag, 3), new ItemStackTemplate(dust, 4))
               .save(consumer, Mekanism.rl(basePath + "dust/from_raw_ore"));
         // Clump
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(, rawTag),
+              IngredientCreatorAccess.item().from(this.items, rawTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 1),
-              new ItemStack(clump, 2),
+              new ItemStackTemplate(clump, 2),
               true
         ).save(consumer, Mekanism.rl(basePath + "clump/from_raw_ore"));
         // Shard
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(, rawTag, 3),
+              IngredientCreatorAccess.item().from(this.items, rawTag, 3),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              new ItemStack(shard, 8),
+              new ItemStackTemplate(shard, 8),
               true
         ).save(consumer, Mekanism.rl(basePath + "shard/from_raw_ore"));
         // Dirty Slurry
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(, rawTag, 3),
+              IngredientCreatorAccess.item().from(this.items, rawTag, 3),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
               new ChemicalStack(slurry, 2_000),
               true
@@ -319,25 +332,25 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
 
         // From raw ore block
         // Dust
-        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(, rawBlockTag), new ItemStack(dust, 12))
+        ItemStackToItemStackRecipeBuilder.enriching(IngredientCreatorAccess.item().from(this.items, rawBlockTag), new ItemStackTemplate(dust, 12))
               .save(consumer, Mekanism.rl(basePath + "dust/from_raw_block"));
         // Clump
         ItemStackChemicalToItemStackRecipeBuilder.purifying(
-              IngredientCreatorAccess.item().from(, rawBlockTag),
+              IngredientCreatorAccess.item().from(this.items, rawBlockTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 2),
-              new ItemStack(clump, 18),
+              new ItemStackTemplate(clump, 18),
               true
         ).save(consumer, Mekanism.rl(basePath + "clump/from_raw_block"));
         // Shard
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(, rawBlockTag),
+              IngredientCreatorAccess.item().from(this.items, rawBlockTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 2),
-              new ItemStack(shard, 24),
+              new ItemStackTemplate(shard, 24),
               true
         ).save(consumer, Mekanism.rl(basePath + "shard/from_raw_block"));
         // Dirty Slurry
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(, rawBlockTag),
+              IngredientCreatorAccess.item().from(this.items, rawBlockTag),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 2),
               new ChemicalStack(slurry, 6_000),
               true
@@ -347,70 +360,70 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addCoalOreProcessingRecipes(RecipeOutput consumer, String basePath) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_COAL),
-              new ItemStack(Items.COAL)
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_COAL),
+              new ItemStackTemplate(Items.COAL)
         ).save(consumer, Mekanism.rl(basePath + "from_dust"));
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, Tags.Items.ORES_COAL),
-              new ItemStack(Items.COAL, 2)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.ORES_COAL),
+              new ItemStackTemplate(Items.COAL, 2)
         ).save(consumer, Mekanism.rl(basePath + "from_ore"));
         //to dust
         ItemStackToItemStackRecipeBuilder.crushing(
               IngredientCreatorAccess.item().from(Items.COAL),
-              MekanismItems.COAL_DUST.asStack()
+              MekanismItems.COAL_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "to_dust"));
-        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_COAL, 8);
+        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_COAL, 8);
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStack(Items.COAL_ORE)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
+              new ItemStackTemplate(Items.COAL_ORE)
         ).save(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_DEEPSLATE),
-              new ItemStack(Items.DEEPSLATE_COAL_ORE)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
+              new ItemStackTemplate(Items.DEEPSLATE_COAL_ORE)
         ).save(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
     private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
           Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, TagKey<Item> combineType) {
         addOreProcessingGemRecipes(consumer, basePath, ore, deepslateOre, oreTag, dust, dustTag, gem, gemTag, fromOre, toOre,
-              IngredientCreatorAccess.item().from(, combineType));
+              IngredientCreatorAccess.item().from(this.items, combineType));
     }
 
     private void addOreProcessingGemRecipes(RecipeOutput consumer, String basePath, ItemLike ore, @Nullable ItemLike deepslateOre, TagKey<Item> oreTag,
           Holder<Item> dust, TagKey<Item> dustTag, ItemLike gem, TagKey<Item> gemTag, int fromOre, int toOre, ItemStackIngredient combineType) {
         //from dust
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, dustTag),
-              new ItemStack(gem)
+              IngredientCreatorAccess.item().from(this.items, dustTag),
+              new ItemStackTemplate(gem.asItem())
         ).save(consumer, Mekanism.rl(basePath + "from_dust"));
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, oreTag),
-              new ItemStack(gem, fromOre)
+              IngredientCreatorAccess.item().from(this.items, oreTag),
+              new ItemStackTemplate(gem.asItem(), fromOre)
         ).save(consumer, Mekanism.rl(basePath + "from_ore"));
         //to dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, gemTag),
-              new ItemStack(dust)
+              IngredientCreatorAccess.item().from(this.items, gemTag),
+              new ItemStackTemplate(dust)
         ).save(consumer, Mekanism.rl(basePath + "to_dust"));
-        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(, dustTag, toOre);
+        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, dustTag, toOre);
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
               combineType,
-              new ItemStack(ore)
+              new ItemStackTemplate(ore.asItem())
         ).save(consumer, Mekanism.rl(basePath + "to_ore"));
         if (deepslateOre != null) {
             //to deepslate ore
             CombinerRecipeBuilder.combining(
                   forOre,
-                  IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_DEEPSLATE),
-                  new ItemStack(deepslateOre)
+                  IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
+                  new ItemStackTemplate(deepslateOre.asItem())
             ).save(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
         }
     }
@@ -418,24 +431,24 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addNetheriteProcessingRecipes(RecipeOutput consumer, String basePath) {
         //Ancient Debris to Dirty Netherite Scrap
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, Tags.Items.ORES_NETHERITE_SCRAP),
-              MekanismItems.DIRTY_NETHERITE_SCRAP.asStack(3)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.ORES_NETHERITE_SCRAP),
+              MekanismItems.DIRTY_NETHERITE_SCRAP.asTemplate(3)
         ).save(consumer, Mekanism.rl(basePath + "ancient_debris_to_dirty_scrap"));
         //Dirty Netherite Scrap to Netherite Scrap
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().from(MekanismItems.DIRTY_NETHERITE_SCRAP),
-              new ItemStack(Items.NETHERITE_SCRAP)
+              new ItemStackTemplate(Items.NETHERITE_SCRAP)
         ).save(consumer, Mekanism.rl(basePath + "dirty_scrap_to_scrap"));
         //Ancient Debris to Netherite Scrap
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, Tags.Items.ORES_NETHERITE_SCRAP),
-              new ItemStack(Items.NETHERITE_SCRAP, 2)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.ORES_NETHERITE_SCRAP),
+              new ItemStackTemplate(Items.NETHERITE_SCRAP, 2)
         ).save(consumer, Mekanism.rl(basePath + "ancient_debris_to_scrap"));
         //Netherite scrap to netherite dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(Items.NETHERITE_SCRAP, 4),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.GOLD, 40),
-              MekanismItems.NETHERITE_DUST.asStack(),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.GOLD, 40),
+              MekanismItems.NETHERITE_DUST.asTemplate(),
               false
         ).save(consumer, Mekanism.rl(basePath + "scrap_to_dust"));
         //Netherite Dust to Netherite Ingot
@@ -443,15 +456,15 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               Mekanism.rl(basePath + "ingot_from_dust_blasting"), Mekanism.rl(basePath + "ingot_from_dust_smelting"));
         //Netherite Ingot to Netherite Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, Tags.Items.INGOTS_NETHERITE),
-              MekanismItems.NETHERITE_DUST.asStack()
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_NETHERITE),
+              MekanismItems.NETHERITE_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
         //Netherite Dust to Ancient Debris
         // Note: We only require two dust as that is equivalent to 8 scrap
         CombinerRecipeBuilder.combining(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_NETHERITE, 2),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_NETHERITE, 2),
               IngredientCreatorAccess.item().from(Items.BASALT),
-              new ItemStack(Items.ANCIENT_DEBRIS)
+              new ItemStackTemplate(Items.ANCIENT_DEBRIS)
         ).save(consumer, Mekanism.rl(basePath + "dust_to_ancient_debris"));
     }
 
@@ -459,15 +472,15 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Dust
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.COPPER), 3),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.TIN, 10),
-              MekanismItems.BRONZE_DUST.asStack(4),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.COPPER), 3),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.TIN, 10),
+              MekanismItems.BRONZE_DUST.asTemplate(4),
               false
         ).save(consumer, Mekanism.rl(basePath + "dust/from_infusing"));
         //from ingot
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.INGOTS_BRONZE),
-              MekanismItems.BRONZE_DUST.asStack()
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_BRONZE),
+              MekanismItems.BRONZE_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //Ingot
         //from block
@@ -479,37 +492,37 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               Mekanism.rl(basePath + "ingot/from_dust_blasting"), Mekanism.rl(basePath + "ingot/from_dust_smelting"));
         //from infusing
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(, Tags.Items.INGOTS_COPPER, 3),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.TIN, 10),
-              MekanismItems.BRONZE_INGOT.asStack(4),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_COPPER, 3),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.TIN, 10),
+              MekanismItems.BRONZE_INGOT.asTemplate(4),
               false
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_infusing"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.BRONZE_INGOT)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, MekanismItems.BRONZE_NUGGET)
-              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_BRONZE)
+              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_BRONZE)
               .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
 
     private void addRedstoneProcessingRecipes(RecipeOutput consumer, String basePath) {
         //from ore
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, Tags.Items.ORES_REDSTONE),
-              new ItemStack(Items.REDSTONE, 12)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.ORES_REDSTONE),
+              new ItemStackTemplate(Items.REDSTONE, 12)
         ).save(consumer, Mekanism.rl(basePath + "from_ore"));
-        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(, Tags.Items.DUSTS_REDSTONE, 16);
+        ItemStackIngredient forOre = IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_REDSTONE, 16);
         //to ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_NORMAL),
-              new ItemStack(Items.REDSTONE_ORE)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_NORMAL),
+              new ItemStackTemplate(Items.REDSTONE_ORE)
         ).save(consumer, Mekanism.rl(basePath + "to_ore"));
         //to deepslate ore
         CombinerRecipeBuilder.combining(
               forOre,
-              IngredientCreatorAccess.item().from(, Tags.Items.COBBLESTONES_DEEPSLATE),
-              new ItemStack(Items.DEEPSLATE_REDSTONE_ORE)
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.COBBLESTONES_DEEPSLATE),
+              new ItemStackTemplate(Items.DEEPSLATE_REDSTONE_ORE)
         ).save(consumer, Mekanism.rl(basePath + "to_deepslate_ore"));
     }
 
@@ -521,21 +534,21 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
-              IngredientCreatorAccess.item().from(, Tags.Items.DUSTS_GLOWSTONE),
+              IngredientCreatorAccess.item().from(this.items, Tags.Items.DUSTS_GLOWSTONE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 1),
-              MekanismItems.REFINED_GLOWSTONE_INGOT.asStack(),
+              MekanismItems.REFINED_GLOWSTONE_INGOT.asTemplate(),
               true
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_GLOWSTONE_INGOT)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, MekanismItems.REFINED_GLOWSTONE_NUGGET)
-              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE)
+              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_REFINED_GLOWSTONE)
               .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Ingot -> dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE),
-              new ItemStack(Items.GLOWSTONE_DUST)
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_REFINED_GLOWSTONE),
+              new ItemStackTemplate(Items.GLOWSTONE_DUST)
         ).save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
@@ -543,14 +556,14 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         //Dust
         //from ingot
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN),
-              MekanismItems.REFINED_OBSIDIAN_DUST.asStack()
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_REFINED_OBSIDIAN),
+              MekanismItems.REFINED_OBSIDIAN_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "dust/from_ingot"));
         //from obsidian dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_OBSIDIAN),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.DIAMOND, 10),
-              MekanismItems.REFINED_OBSIDIAN_DUST.asStack(),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_OBSIDIAN),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.DIAMOND, 10),
+              MekanismItems.REFINED_OBSIDIAN_DUST.asTemplate(),
               false
         ).save(consumer, Mekanism.rl(basePath + "dust/from_obsidian_dust"));
         //Ingot
@@ -560,16 +573,16 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "ingot/from_block"));
         //from dust
         ItemStackChemicalToItemStackRecipeBuilder.compressing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_REFINED_OBSIDIAN),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 1),
-              MekanismItems.REFINED_OBSIDIAN_INGOT.asStack(),
+              MekanismItems.REFINED_OBSIDIAN_INGOT.asTemplate(),
               true
         ).save(consumer, Mekanism.rl(basePath + "ingot/from_dust"));
         //from nuggets
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.REFINED_OBSIDIAN_INGOT)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, MekanismItems.REFINED_OBSIDIAN_NUGGET)
-              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN)
+              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_REFINED_OBSIDIAN)
               .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
     }
 
@@ -586,19 +599,19 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismItems.STEEL_INGOT)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, MekanismItems.STEEL_NUGGET)
-              .key(Pattern.CONSTANT, MekanismTags.Items.NUGGETS_STEEL)
+              .key(Pattern.CONSTANT, this.items, MekanismTags.Items.NUGGETS_STEEL)
               .save(consumer, Mekanism.rl(basePath + "ingot/from_nuggets"));
         //Enriched iron -> dust
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
               IngredientCreatorAccess.item().from(MekanismItems.ENRICHED_IRON),
-              IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.CARBON, 10),
-              MekanismItems.STEEL_DUST.asStack(),
+              IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.CARBON, 10),
+              MekanismItems.STEEL_DUST.asTemplate(),
               false
         ).save(consumer, Mekanism.rl(basePath + "enriched_iron_to_dust"));
         //Ingot -> dust
         ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.INGOTS_STEEL),
-              MekanismItems.STEEL_DUST.asStack()
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.INGOTS_STEEL),
+              MekanismItems.STEEL_DUST.asTemplate()
         ).save(consumer, Mekanism.rl(basePath + "ingot_to_dust"));
     }
 
@@ -616,18 +629,18 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
     private void addUraniumRecipes(RecipeOutput consumer, String basePath) {
         //yellow cake
         ItemStackToItemStackRecipeBuilder.enriching(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),
-              MekanismItems.YELLOW_CAKE_URANIUM.asStack(2)
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.URANIUM)),
+              MekanismItems.YELLOW_CAKE_URANIUM.asTemplate(2)
         ).save(consumer, Mekanism.rl(basePath + "yellow_cake_uranium"));
         //hydrofluoric acid
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.GEMS_FLUORITE),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.GEMS_FLUORITE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 1),
               MekanismChemicals.HYDROFLUORIC_ACID.asStack(1_000),
               true
         ).save(consumer, Mekanism.rl(basePath + "hydrofluoric_acid"));
         ChemicalDissolutionRecipeBuilder.dissolution(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.STORAGE_BLOCKS_FLUORITE),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.STORAGE_BLOCKS_FLUORITE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFURIC_ACID, 9),
               MekanismChemicals.HYDROFLUORIC_ACID.asStack(9_000),
               true
@@ -650,9 +663,9 @@ class OreProcessingRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "fissile_fuel"));
         //fissile fuel reprocessing (IMPORTANT)
         ItemStackChemicalToItemStackRecipeBuilder.injecting(
-              IngredientCreatorAccess.item().from(, MekanismTags.Items.PELLETS_PLUTONIUM),
+              IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PELLETS_PLUTONIUM),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 1),
-              MekanismItems.REPROCESSED_FISSILE_FRAGMENT.asStack(4),
+              MekanismItems.REPROCESSED_FISSILE_FRAGMENT.asTemplate(4),
               true
         ).save(consumer, Mekanism.rl(basePath + "reprocessing/from_plutonium"));
         //fragment -> fuel

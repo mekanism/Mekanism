@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -26,6 +27,12 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.OSMIUM, Pattern.PREVIOUS, Pattern.OSMIUM),
           TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY));
 
+    private final HolderGetter<Item> items;
+
+    public ChemicalTankRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "chemical_tank/";
@@ -35,8 +42,8 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY),
                     TripleLine.of(Pattern.OSMIUM, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.ALLOY, Pattern.OSMIUM, Pattern.ALLOY))
-              ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
-              .key(Pattern.ALLOY, MekanismTags.Items.ALLOYS_BASIC)
+              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.ALLOY, this.items, MekanismTags.Items.ALLOYS_BASIC)
               .save(consumer, Mekanism.rl(basePath + "basic"));
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismBlocks.BASIC_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_INFUSED);
         addTieredChemicalTank(consumer, basePath, MekanismBlocks.ELITE_CHEMICAL_TANK, MekanismBlocks.ADVANCED_CHEMICAL_TANK, MekanismTags.Items.ALLOYS_REINFORCED);
@@ -48,8 +55,8 @@ class ChemicalTankRecipeProvider implements ISubRecipeProvider {
         MekDataShapedRecipeBuilder.shapedRecipe(tank)
               .pattern(CHEMICAL_TANK_PATTERN)
               .key(Pattern.PREVIOUS, previousTank)
-              .key(Pattern.OSMIUM, Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.OSMIUM, this.items, Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM)))
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

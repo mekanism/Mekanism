@@ -10,6 +10,7 @@ import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -25,6 +26,12 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.PREVIOUS, Pattern.ALLOY, Pattern.PREVIOUS),
           TripleLine.of(Pattern.PREVIOUS, Pattern.PREVIOUS, Pattern.PREVIOUS));
 
+    private final HolderGetter<Item> items;
+
+    public TransmitterRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "transmitter/";
@@ -39,14 +46,14 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE),
                     TripleLine.of(Pattern.STEEL, Pattern.CONSTANT, Pattern.STEEL),
                     TripleLine.of(Pattern.REDSTONE, Pattern.REDSTONE, Pattern.REDSTONE))
-              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.REDSTONE, Tags.Items.DUSTS_REDSTONE)
+              ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.REDSTONE, this.items, Tags.Items.DUSTS_REDSTONE)
               .key(Pattern.CONSTANT, Items.IRON_BARS)
               .save(consumer, Mekanism.rl(basePath + "diversion_transporter"));
         //Restrictive
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.RESTRICTIVE_TRANSPORTER, 2)
               .pattern(BASIC_TRANSMITTER_PATTERN)
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, Items.IRON_BARS)
               .save(consumer, Mekanism.rl(basePath + "restrictive_transporter"));
     }
@@ -89,15 +96,15 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
     private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, TagKey<Item> itemTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.CONSTANT, itemTag)
+              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.CONSTANT, this.items, itemTag)
               .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 
     private void addBasicTransmitterRecipe(RecipeOutput consumer, String basePath, BlockRegistryObject<?, ?> transmitter, Item item) {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(BASIC_TRANSMITTER_PATTERN)
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .key(Pattern.CONSTANT, item)
               .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
@@ -107,7 +114,7 @@ class TransmitterRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(transmitter, 8)
               .pattern(TRANSMITTER_UPGRADE_PATTERN)
               .key(Pattern.PREVIOUS, previousTransmitter)
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + Attribute.getBaseTier(transmitter).getLowerName()));
     }
 }

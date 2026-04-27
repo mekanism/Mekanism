@@ -15,15 +15,15 @@ import net.neoforged.neoforge.common.Tags;
 @ParametersAreNotNullByDefault
 public class AE2RecipeProvider extends CompatRecipeProvider {
 
-    public AE2RecipeProvider(String modid) {
-        super(modid);
+    public AE2RecipeProvider(HolderLookup.Provider registries, String modid) {
+        super(registries, modid);
     }
 
     @Override
     protected void registerRecipes(RecipeOutput consumer, String basePath, HolderLookup.Provider registries) {
         //Certus Crystal -> Certus Dust
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(, ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"))),
+                    IngredientCreatorAccess.item().from(this.items, ItemTags.create(Tags.Items.GEMS.location().withSuffix("/certus_quartz"))),
                     foreignItemStack(registries, AEItemIds.CERTUS_QUARTZ_DUST)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "certus_crystal_to_dust"));
@@ -58,7 +58,7 @@ public class AE2RecipeProvider extends CompatRecipeProvider {
 
         //Sand -> Silicon
         ItemStackToItemStackRecipeBuilder.crushing(
-                    IngredientCreatorAccess.item().from(, Tags.Items.SANDS),
+                    IngredientCreatorAccess.item().from(this.items, Tags.Items.SANDS),
                     foreignItemStack(registries, AEItemIds.SILICON)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "sand_to_silicon"));

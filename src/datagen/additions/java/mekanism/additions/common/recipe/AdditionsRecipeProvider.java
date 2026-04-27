@@ -2,7 +2,6 @@ package mekanism.additions.common.recipe;
 
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.CompletableFuture;
 import mekanism.additions.common.AdditionsTags;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
@@ -27,11 +26,11 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
@@ -53,8 +52,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(PLASTIC_SHEET_CHAR, Pattern.DYE, PLASTIC_SHEET_CHAR),
           TripleLine.of(Pattern.GLOWSTONE, PLASTIC_SHEET_CHAR, Pattern.GLOWSTONE));
 
-    public AdditionsRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-        super(output, provider);
+    public AdditionsRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(output, registries);
     }
 
     @Override
@@ -64,16 +63,16 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.EMPTY, Pattern.OSMIUM),
                     TripleLine.of(Pattern.STEEL, Pattern.CIRCUIT, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_BASIC)
-              .key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
+              ).key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM))
+              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_BASIC)
+              .key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
               .save(output);
         ExtendedShapedRecipeBuilder.shapedRecipe(AdditionsBlocks.OBSIDIAN_TNT)
               .pattern(RecipePattern.createPattern(
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR),
                     TripleLine.of(TNT_CHAR, TNT_CHAR, TNT_CHAR),
                     TripleLine.of(OBSIDIAN_CHAR, OBSIDIAN_CHAR, OBSIDIAN_CHAR))
-              ).key(OBSIDIAN_CHAR, Tags.Items.OBSIDIANS_NORMAL)
+              ).key(OBSIDIAN_CHAR, this.items, Tags.Items.OBSIDIANS_NORMAL)
               .key(TNT_CHAR, Items.TNT)
               .category(RecipeCategory.REDSTONE)
               .save(output);
@@ -85,8 +84,8 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
     protected List<ISubRecipeProvider> getSubRecipeProviders() {
         return List.of(
               new PigmentExtractingPlasticRecipeProvider(),
-              new PlasticBlockRecipeProvider(),
-              new PlasticFencesRecipeProvider(),
+              new PlasticBlockRecipeProvider(this.items),
+              new PlasticFencesRecipeProvider(this.items),
               new PlasticSlabsRecipeProvider(),
               new PlasticStairsRecipeProvider()
         );
@@ -116,7 +115,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
             ItemStackChemicalToItemStackRecipeBuilder.painting(
                   IngredientCreatorAccess.item().from(recolorInput),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
-                  new ItemStack(balloon),
+                  new ItemStackTemplate(balloon),
                   false
             ).save(output, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
         }
@@ -132,9 +131,9 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                 ExtendedShapedRecipeBuilder.shapedRecipe(glowPanel, 2)
                       .pattern(GLOW_PANEL)
                       .key(PLASTIC_SHEET_CHAR, MekanismItems.HDPE_SHEET)
-                      .key(GLASS_PANES_CHAR, Tags.Items.GLASS_PANES)
-                      .key(Pattern.GLOWSTONE, Tags.Items.DUSTS_GLOWSTONE)
-                      .key(Pattern.DYE, dye.getTag())
+                      .key(GLASS_PANES_CHAR, this.items, Tags.Items.GLASS_PANES)
+                      .key(Pattern.GLOWSTONE, this.items, Tags.Items.DUSTS_GLOWSTONE)
+                      .key(Pattern.DYE, this.items, dye.getTag())
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }

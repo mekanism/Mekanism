@@ -10,9 +10,11 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.CraftingRecipe;
@@ -60,6 +62,10 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
             }
         }
         return this;
+    }
+
+    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> items, TagKey<Item> tag) {
+        return key(symbol, items.getOrThrow(tag));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderSet<Item> tag) {

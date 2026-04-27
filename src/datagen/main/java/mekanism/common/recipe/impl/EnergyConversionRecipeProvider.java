@@ -4,6 +4,7 @@ import mekanism.api.datagen.recipe.builder.ItemStackToEnergyRecipeBuilder;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.Mekanism;
 import mekanism.common.recipe.ISubRecipeProvider;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -11,6 +12,12 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 class EnergyConversionRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+
+    public EnergyConversionRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -22,7 +29,7 @@ class EnergyConversionRecipeProvider implements ISubRecipeProvider {
 
     private void addEnergyConversionRecipe(RecipeOutput consumer, String basePath, String name, TagKey<Item> inputTag, long output) {
         ItemStackToEnergyRecipeBuilder.energyConversion(
-              IngredientCreatorAccess.item().from(, inputTag),
+              IngredientCreatorAccess.item().from(this.items, inputTag),
               output
         ).save(consumer, Mekanism.rl(basePath + name));
     }

@@ -14,6 +14,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.BlockResourceInfo;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -21,6 +22,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 
 class StorageRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+
+    public StorageRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -61,7 +68,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
               .pattern(RecipePattern.createPattern(
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT),
                     DoubleLine.of(Pattern.CONSTANT, Pattern.CONSTANT))
-              ).key(Pattern.CONSTANT, MekanismTags.Items.DUSTS_SALT)
+              ).key(Pattern.CONSTANT, this.items, MekanismTags.Items.DUSTS_SALT)
               .save(consumer, Mekanism.rl(basePath + "salt"));
     }
 
@@ -75,7 +82,7 @@ class StorageRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(block)
               .pattern(MekanismRecipeProvider.TYPED_STORAGE_PATTERN)
               .key(Pattern.PREVIOUS, ingot)
-              .key(Pattern.CONSTANT, ingotTag)
+              .key(Pattern.CONSTANT, this.items, ingotTag)
               .save(consumer, Mekanism.rl(basePath + suffix));
     }
 }

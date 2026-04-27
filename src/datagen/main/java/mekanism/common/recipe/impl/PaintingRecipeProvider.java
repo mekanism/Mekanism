@@ -20,6 +20,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.BannerBlock;
@@ -131,7 +132,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(MekanismItems.DYE_BASE),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE),
-              new ItemStack(dye),
+              new ItemStackTemplate(dye),
               false
         ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
@@ -155,7 +156,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.difference(input, result)),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), rate),
-              new ItemStack(result),
+              new ItemStackTemplate(result),
               false
         ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }

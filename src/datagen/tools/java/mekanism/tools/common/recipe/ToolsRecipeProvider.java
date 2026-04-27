@@ -1,6 +1,5 @@
 package mekanism.tools.common.recipe;
 
-import java.util.concurrent.CompletableFuture;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.recipe.BaseRecipeProvider;
 import mekanism.common.recipe.RecipeProviderUtil;
@@ -22,8 +21,8 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeCategory;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
@@ -79,8 +78,8 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY),
           TripleLine.of(Pattern.EMPTY, ROD_CHAR, Pattern.EMPTY));
 
-    public ToolsRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider) {
-        super(output, provider);
+    public ToolsRecipeProvider(HolderLookup.Provider registries, RecipeOutput output) {
+        super(output, registries);
     }
 
     @Override
@@ -121,7 +120,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(shield)
               .pattern(SHIELD)
               .key(Pattern.PREVIOUS, Items.SHIELD)
-              .key(Pattern.INGOT, ingot)
+              .key(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT)
               .save(output, MekanismTools.rl(name + "/shield"));
         String baseToolsPath = name + "/tools/";
@@ -136,7 +135,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .key(AXE_CHAR, axe)
               .key(PICKAXE_CHAR, pickaxe)
               .key(SHOVEL_CHAR, shovel)
-              .key(ROD_CHAR, rod)
+              .key(ROD_CHAR, this.items, rod)
               .save(output, MekanismTools.rl(baseToolsPath + "paxel"));
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
@@ -161,7 +160,7 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
               .key(AXE_CHAR, axe)
               .key(PICKAXE_CHAR, pickaxe)
               .key(SHOVEL_CHAR, shovel)
-              .key(ROD_CHAR, Tags.Items.RODS_WOODEN)
+              .key(ROD_CHAR, this.items, Tags.Items.RODS_WOODEN)
               .save(output);
         //If we have a nugget that means we also want to add recipes for smelting tools/armor into the nugget
         if (nugget != null) {
@@ -174,14 +173,14 @@ public class ToolsRecipeProvider extends BaseRecipeProvider {
     private ExtendedShapedRecipeBuilder armor(RecipePattern pattern, Holder<Item> armor, TagKey<Item> ingot) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(armor)
               .pattern(pattern)
-              .key(Pattern.INGOT, ingot)
+              .key(Pattern.INGOT, this.items, ingot)
               .category(RecipeCategory.COMBAT);
     }
 
     private ExtendedShapedRecipeBuilder tool(RecipePattern pattern, Holder<Item> tool, TagKey<Item> ingot, TagKey<Item> rod) {
         return ExtendedShapedRecipeBuilder.shapedRecipe(tool)
               .pattern(pattern)
-              .key(Pattern.INGOT, ingot)
-              .key(ROD_CHAR, rod);
+              .key(Pattern.INGOT, this.items, ingot)
+              .key(ROD_CHAR, this.items, rod);
     }
 }

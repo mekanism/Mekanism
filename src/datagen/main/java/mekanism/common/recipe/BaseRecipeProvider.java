@@ -6,12 +6,17 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
+import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
@@ -20,14 +25,20 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.Ingredient.ItemValue;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
 
-    protected BaseRecipeProvider(RecipeOutput output, HolderLookup.Provider registriesFuture) {
-        super(registriesFuture, output);
+    protected final HolderGetter<Fluid> fluids;
+    protected final HolderGetter<Chemical> chemicals;
+
+    protected BaseRecipeProvider(RecipeOutput output, HolderLookup.Provider registries) {
+        super(registries, output);
+        this.fluids = this.registries.lookupOrThrow(Registries.FLUID);
+        this.chemicals = this.registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
     }
 
     @Override
@@ -69,15 +80,18 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted.value()));
     }
 
-    public static TagKey<Item> osmiumIngot() {
-        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+    public static HolderSet<Item> osmiumIngot(HolderGetter<Item> items) {
+        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+        return items.getOrThrow(tag);
     }
 
-    public static TagKey<Item> leadIngot() {
-        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD));
+    public static HolderSet<Item> leadIngot(HolderGetter<Item> items) {
+        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD));
+        return items.getOrThrow(tag);
     }
 
-    public static TagKey<Item> tinIngot() {
-        return Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN));
+    public static HolderSet<Item> tinIngot(HolderGetter<Item> items) {
+        TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN));
+        return items.getOrThrow(tag);
     }
 }

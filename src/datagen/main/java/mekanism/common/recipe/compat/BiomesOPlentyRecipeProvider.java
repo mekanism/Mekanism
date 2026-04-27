@@ -1,6 +1,5 @@
 package mekanism.common.recipe.compat;
 
-import biomesoplenty.api.block.BOPBlocks;
 import biomesoplenty.api.item.BOPItems;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ItemStackToChemicalRecipeBuilder;
@@ -15,16 +14,15 @@ import mekanism.common.registries.MekanismChemicals;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
 @NothingNullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
 
-    public BiomesOPlentyRecipeProvider(String modid) {
-        super(modid);
+    public BiomesOPlentyRecipeProvider(HolderLookup.Provider registries, String modid) {
+        super(registries, modid);
     }
 
     @Override
@@ -35,93 +33,93 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
     }
 
     private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.DEAD_PLANKS, BOPItems.DEAD_BOAT, BOPItems.DEAD_CHEST_BOAT, BOPBlocks.DEAD_DOOR,
-              BOPBlocks.DEAD_FENCE_GATE, BOPBlocks.DEAD_PRESSURE_PLATE, BOPBlocks.DEAD_TRAPDOOR, BOPBlocks.DEAD_HANGING_SIGN, "dead");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.EMPYREAL_PLANKS, BOPItems.EMPYREAL_BOAT, BOPItems.EMPYREAL_CHEST_BOAT, BOPBlocks.EMPYREAL_DOOR,
-              BOPBlocks.EMPYREAL_FENCE_GATE, BOPBlocks.EMPYREAL_PRESSURE_PLATE, BOPBlocks.EMPYREAL_TRAPDOOR, BOPBlocks.EMPYREAL_HANGING_SIGN, "empyreal");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.FIR_PLANKS, BOPItems.FIR_BOAT, BOPItems.FIR_CHEST_BOAT, BOPBlocks.FIR_DOOR,
-              BOPBlocks.FIR_FENCE_GATE, BOPBlocks.FIR_PRESSURE_PLATE, BOPBlocks.FIR_TRAPDOOR, BOPBlocks.FIR_HANGING_SIGN, "fir");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.PINE_PLANKS, BOPItems.PINE_BOAT, BOPItems.PINE_CHEST_BOAT, BOPBlocks.PINE_DOOR,
-              BOPBlocks.PINE_FENCE_GATE, BOPBlocks.PINE_PRESSURE_PLATE, BOPBlocks.PINE_TRAPDOOR, BOPBlocks.PINE_HANGING_SIGN, "pine");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.MAPLE_PLANKS, BOPItems.MAPLE_BOAT, BOPItems.MAPLE_CHEST_BOAT, BOPBlocks.MAPLE_DOOR,
-              BOPBlocks.MAPLE_FENCE_GATE, BOPBlocks.MAPLE_PRESSURE_PLATE, BOPBlocks.MAPLE_TRAPDOOR, BOPBlocks.MAPLE_HANGING_SIGN, "maple");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.HELLBARK_PLANKS, BOPItems.HELLBARK_BOAT, BOPItems.HELLBARK_CHEST_BOAT, BOPBlocks.HELLBARK_DOOR,
-              BOPBlocks.HELLBARK_FENCE_GATE, BOPBlocks.HELLBARK_PRESSURE_PLATE, BOPBlocks.HELLBARK_TRAPDOOR, BOPBlocks.HELLBARK_HANGING_SIGN, "hellbark");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.JACARANDA_PLANKS, BOPItems.JACARANDA_BOAT, BOPItems.JACARANDA_CHEST_BOAT, BOPBlocks.JACARANDA_DOOR,
-              BOPBlocks.JACARANDA_FENCE_GATE, BOPBlocks.JACARANDA_PRESSURE_PLATE, BOPBlocks.JACARANDA_TRAPDOOR, BOPBlocks.JACARANDA_HANGING_SIGN, "jacaranda");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.MAGIC_PLANKS, BOPItems.MAGIC_BOAT, BOPItems.MAGIC_CHEST_BOAT, BOPBlocks.MAGIC_DOOR,
-              BOPBlocks.MAGIC_FENCE_GATE, BOPBlocks.MAGIC_PRESSURE_PLATE, BOPBlocks.MAGIC_TRAPDOOR, BOPBlocks.MAGIC_HANGING_SIGN, "magic");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.MAHOGANY_PLANKS, BOPItems.MAHOGANY_BOAT, BOPItems.MAHOGANY_CHEST_BOAT, BOPBlocks.MAHOGANY_DOOR,
-              BOPBlocks.MAHOGANY_FENCE_GATE, BOPBlocks.MAHOGANY_PRESSURE_PLATE, BOPBlocks.MAHOGANY_TRAPDOOR, BOPBlocks.MAHOGANY_HANGING_SIGN, "mahogany");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.PALM_PLANKS, BOPItems.PALM_BOAT, BOPItems.PALM_CHEST_BOAT, BOPBlocks.PALM_DOOR,
-              BOPBlocks.PALM_FENCE_GATE, BOPBlocks.PALM_PRESSURE_PLATE, BOPBlocks.PALM_TRAPDOOR, BOPBlocks.PALM_HANGING_SIGN, "palm");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.REDWOOD_PLANKS, BOPItems.REDWOOD_BOAT, BOPItems.REDWOOD_CHEST_BOAT, BOPBlocks.REDWOOD_DOOR,
-              BOPBlocks.REDWOOD_FENCE_GATE, BOPBlocks.REDWOOD_PRESSURE_PLATE, BOPBlocks.REDWOOD_TRAPDOOR, BOPBlocks.REDWOOD_HANGING_SIGN, "redwood");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.UMBRAN_PLANKS, BOPItems.UMBRAN_BOAT, BOPItems.UMBRAN_CHEST_BOAT, BOPBlocks.UMBRAN_DOOR,
-              BOPBlocks.UMBRAN_FENCE_GATE, BOPBlocks.UMBRAN_PRESSURE_PLATE, BOPBlocks.UMBRAN_TRAPDOOR, BOPBlocks.UMBRAN_HANGING_SIGN, "umbran");
-        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPBlocks.WILLOW_PLANKS, BOPItems.WILLOW_BOAT, BOPItems.WILLOW_CHEST_BOAT, BOPBlocks.WILLOW_DOOR,
-              BOPBlocks.WILLOW_FENCE_GATE, BOPBlocks.WILLOW_PRESSURE_PLATE, BOPBlocks.WILLOW_TRAPDOOR, BOPBlocks.WILLOW_HANGING_SIGN, "willow");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.DEAD_PLANKS, BOPItems.DEAD_BOAT, BOPItems.DEAD_CHEST_BOAT, BOPItems.DEAD_DOOR,
+              BOPItems.DEAD_FENCE_GATE, BOPItems.DEAD_PRESSURE_PLATE, BOPItems.DEAD_TRAPDOOR, BOPItems.DEAD_HANGING_SIGN, "dead");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.EMPYREAL_PLANKS, BOPItems.EMPYREAL_BOAT, BOPItems.EMPYREAL_CHEST_BOAT, BOPItems.EMPYREAL_DOOR,
+              BOPItems.EMPYREAL_FENCE_GATE, BOPItems.EMPYREAL_PRESSURE_PLATE, BOPItems.EMPYREAL_TRAPDOOR, BOPItems.EMPYREAL_HANGING_SIGN, "empyreal");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.FIR_PLANKS, BOPItems.FIR_BOAT, BOPItems.FIR_CHEST_BOAT, BOPItems.FIR_DOOR,
+              BOPItems.FIR_FENCE_GATE, BOPItems.FIR_PRESSURE_PLATE, BOPItems.FIR_TRAPDOOR, BOPItems.FIR_HANGING_SIGN, "fir");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.PINE_PLANKS, BOPItems.PINE_BOAT, BOPItems.PINE_CHEST_BOAT, BOPItems.PINE_DOOR,
+              BOPItems.PINE_FENCE_GATE, BOPItems.PINE_PRESSURE_PLATE, BOPItems.PINE_TRAPDOOR, BOPItems.PINE_HANGING_SIGN, "pine");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.MAPLE_PLANKS, BOPItems.MAPLE_BOAT, BOPItems.MAPLE_CHEST_BOAT, BOPItems.MAPLE_DOOR,
+              BOPItems.MAPLE_FENCE_GATE, BOPItems.MAPLE_PRESSURE_PLATE, BOPItems.MAPLE_TRAPDOOR, BOPItems.MAPLE_HANGING_SIGN, "maple");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.HELLBARK_PLANKS, BOPItems.HELLBARK_BOAT, BOPItems.HELLBARK_CHEST_BOAT, BOPItems.HELLBARK_DOOR,
+              BOPItems.HELLBARK_FENCE_GATE, BOPItems.HELLBARK_PRESSURE_PLATE, BOPItems.HELLBARK_TRAPDOOR, BOPItems.HELLBARK_HANGING_SIGN, "hellbark");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.JACARANDA_PLANKS, BOPItems.JACARANDA_BOAT, BOPItems.JACARANDA_CHEST_BOAT, BOPItems.JACARANDA_DOOR,
+              BOPItems.JACARANDA_FENCE_GATE, BOPItems.JACARANDA_PRESSURE_PLATE, BOPItems.JACARANDA_TRAPDOOR, BOPItems.JACARANDA_HANGING_SIGN, "jacaranda");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.MAGIC_PLANKS, BOPItems.MAGIC_BOAT, BOPItems.MAGIC_CHEST_BOAT, BOPItems.MAGIC_DOOR,
+              BOPItems.MAGIC_FENCE_GATE, BOPItems.MAGIC_PRESSURE_PLATE, BOPItems.MAGIC_TRAPDOOR, BOPItems.MAGIC_HANGING_SIGN, "magic");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.MAHOGANY_PLANKS, BOPItems.MAHOGANY_BOAT, BOPItems.MAHOGANY_CHEST_BOAT, BOPItems.MAHOGANY_DOOR,
+              BOPItems.MAHOGANY_FENCE_GATE, BOPItems.MAHOGANY_PRESSURE_PLATE, BOPItems.MAHOGANY_TRAPDOOR, BOPItems.MAHOGANY_HANGING_SIGN, "mahogany");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.PALM_PLANKS, BOPItems.PALM_BOAT, BOPItems.PALM_CHEST_BOAT, BOPItems.PALM_DOOR,
+              BOPItems.PALM_FENCE_GATE, BOPItems.PALM_PRESSURE_PLATE, BOPItems.PALM_TRAPDOOR, BOPItems.PALM_HANGING_SIGN, "palm");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.REDWOOD_PLANKS, BOPItems.REDWOOD_BOAT, BOPItems.REDWOOD_CHEST_BOAT, BOPItems.REDWOOD_DOOR,
+              BOPItems.REDWOOD_FENCE_GATE, BOPItems.REDWOOD_PRESSURE_PLATE, BOPItems.REDWOOD_TRAPDOOR, BOPItems.REDWOOD_HANGING_SIGN, "redwood");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.UMBRAN_PLANKS, BOPItems.UMBRAN_BOAT, BOPItems.UMBRAN_CHEST_BOAT, BOPItems.UMBRAN_DOOR,
+              BOPItems.UMBRAN_FENCE_GATE, BOPItems.UMBRAN_PRESSURE_PLATE, BOPItems.UMBRAN_TRAPDOOR, BOPItems.UMBRAN_HANGING_SIGN, "umbran");
+        addPrecisionSawmillWoodTypeRecipes(consumer, basePath, BOPItems.WILLOW_PLANKS, BOPItems.WILLOW_BOAT, BOPItems.WILLOW_CHEST_BOAT, BOPItems.WILLOW_DOOR,
+              BOPItems.WILLOW_FENCE_GATE, BOPItems.WILLOW_PRESSURE_PLATE, BOPItems.WILLOW_TRAPDOOR, BOPItems.WILLOW_HANGING_SIGN, "willow");
     }
 
-    private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, Block planks, Item boat, Item chestBoat, Block door, Block fenceGate,
-          Block pressurePlate, Block trapdoor, Block hangingSign, String name) {
-        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, planks, boat, chestBoat, door, fenceGate,
+    private void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, String basePath, Item planks, Item boat, Item chestBoat, Item door, Item fenceGate,
+          Item pressurePlate, Item trapdoor, Item hangingSign, String name) {
+        RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, planks, boat, chestBoat, door, fenceGate,
               tag(name + "_logs"), pressurePlate, trapdoor, hangingSign, name, modLoaded);
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
         //Black Sandstone -> Sand
-        addSandStoneToSandRecipe(consumer, basePath + "black", BOPBlocks.BLACK_SAND, BOPBlocks.BLACK_SANDSTONE, BOPBlocks.CHISELED_BLACK_SANDSTONE,
-              BOPBlocks.CUT_BLACK_SANDSTONE, BOPBlocks.SMOOTH_BLACK_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "black", BOPItems.BLACK_SAND, BOPItems.BLACK_SANDSTONE, BOPItems.CHISELED_BLACK_SANDSTONE,
+              BOPItems.CUT_BLACK_SANDSTONE, BOPItems.SMOOTH_BLACK_SANDSTONE);
         //Orange Sandstone -> Sand
-        addSandStoneToSandRecipe(consumer, basePath + "orange", BOPBlocks.ORANGE_SAND, BOPBlocks.ORANGE_SANDSTONE, BOPBlocks.CHISELED_ORANGE_SANDSTONE,
-              BOPBlocks.CUT_ORANGE_SANDSTONE, BOPBlocks.SMOOTH_ORANGE_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "orange", BOPItems.ORANGE_SAND, BOPItems.ORANGE_SANDSTONE, BOPItems.CHISELED_ORANGE_SANDSTONE,
+              BOPItems.CUT_ORANGE_SANDSTONE, BOPItems.SMOOTH_ORANGE_SANDSTONE);
         //White Sandstone -> Sand
-        addSandStoneToSandRecipe(consumer, basePath + "white", BOPBlocks.WHITE_SAND, BOPBlocks.WHITE_SANDSTONE, BOPBlocks.CHISELED_WHITE_SANDSTONE,
-              BOPBlocks.CUT_WHITE_SANDSTONE, BOPBlocks.SMOOTH_WHITE_SANDSTONE);
+        addSandStoneToSandRecipe(consumer, basePath + "white", BOPItems.WHITE_SAND, BOPItems.WHITE_SANDSTONE, BOPItems.CHISELED_WHITE_SANDSTONE,
+              BOPItems.CUT_WHITE_SANDSTONE, BOPItems.SMOOTH_WHITE_SANDSTONE);
     }
 
-    private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, Block sand, Block... sandstones) {
+    private void addSandStoneToSandRecipe(RecipeOutput consumer, String path, Item sand, Item... sandstones) {
         RecipeProviderUtil.addSandStoneToSandRecipe(consumer, path, modLoaded, sand, sandstones);
     }
 
     private void addDyeRecipes(RecipeOutput consumer, String basePath) {
         //Brown
-        largeDye(consumer, basePath, Items.BROWN_DYE, EnumColor.BROWN, BOPBlocks.CATTAIL);
+        largeDye(consumer, basePath, Items.BROWN_DYE, EnumColor.BROWN, BOPItems.CATTAIL);
         //Red
-        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPBlocks.ROSE, BOPBlocks.WATERLILY);
+        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPItems.ROSE, BOPItems.WATERLILY);
         //Green
-        dye(consumer, basePath, Items.GREEN_DYE, EnumColor.DARK_GREEN, BOPBlocks.TINY_CACTUS);
+        dye(consumer, basePath, Items.GREEN_DYE, EnumColor.DARK_GREEN, BOPItems.TINY_CACTUS);
         //Purple
-        dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPBlocks.VIOLET, BOPBlocks.LAVENDER);
-        largeDye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPBlocks.TALL_LAVENDER);
+        dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.VIOLET, BOPItems.LAVENDER);
+        largeDye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.TALL_LAVENDER);
         //Magenta
-        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPBlocks.WILDFLOWER);
+        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPItems.WILDFLOWER);
         //Orange
-        dye(consumer, basePath, Items.ORANGE_DYE, EnumColor.ORANGE, BOPBlocks.ORANGE_COSMOS, BOPBlocks.BURNING_BLOSSOM);
+        dye(consumer, basePath, Items.ORANGE_DYE, EnumColor.ORANGE, BOPItems.ORANGE_COSMOS, BOPItems.BURNING_BLOSSOM);
         //Pink
-        dye(consumer, basePath, Items.PINK_DYE, EnumColor.BRIGHT_PINK, BOPBlocks.PINK_DAFFODIL, BOPBlocks.PINK_HIBISCUS);
+        dye(consumer, basePath, Items.PINK_DYE, EnumColor.BRIGHT_PINK, BOPItems.PINK_DAFFODIL, BOPItems.PINK_HIBISCUS);
         //Cyan
-        dye(consumer, basePath, Items.CYAN_DYE, EnumColor.DARK_AQUA, BOPBlocks.GLOWFLOWER);
+        dye(consumer, basePath, Items.CYAN_DYE, EnumColor.DARK_AQUA, BOPItems.GLOWFLOWER);
         //Gray
-        dye(consumer, basePath, Items.GRAY_DYE, EnumColor.DARK_GRAY, BOPBlocks.WILTED_LILY);
+        dye(consumer, basePath, Items.GRAY_DYE, EnumColor.DARK_GRAY, BOPItems.WILTED_LILY);
         //Light Blue
-        dye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPBlocks.BLUE_HYDRANGEA);
-        largeDye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPBlocks.ICY_IRIS);
+        dye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPItems.BLUE_HYDRANGEA);
+        largeDye(consumer, basePath, Items.LIGHT_BLUE_DYE, EnumColor.INDIGO, BOPItems.ICY_IRIS);
         //Light Gray
-        dye(consumer, basePath, Items.LIGHT_GRAY_DYE, EnumColor.GRAY, BOPBlocks.ENDBLOOM);
+        dye(consumer, basePath, Items.LIGHT_GRAY_DYE, EnumColor.GRAY, BOPItems.ENDBLOOM);
         //White
-        dye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPBlocks.WHITE_LAVENDER, BOPBlocks.WHITE_PETALS);
-        largeDye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPBlocks.TALL_WHITE_LAVENDER);
+        dye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPItems.WHITE_LAVENDER, BOPItems.WHITE_PETALS);
+        largeDye(consumer, basePath, Items.WHITE_DYE, EnumColor.WHITE, BOPItems.TALL_WHITE_LAVENDER);
         //Yellow
-        dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPBlocks.GOLDENROD);
+        dye(consumer, basePath, Items.YELLOW_DYE, EnumColor.YELLOW, BOPItems.GOLDENROD);
     }
 
-    private void dye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
+    private void dye(RecipeOutput consumer, String basePath, Item output, EnumColor color, Item... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
-                    new ItemStack(output, 2)
+                    new ItemStackTemplate(output, 2)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)
@@ -133,11 +131,11 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
               .save(consumer, Mekanism.rl(basePath + "pigment_extracting/" + color.getRegistryPrefix()));
     }
 
-    private void largeDye(RecipeOutput consumer, String basePath, ItemLike output, EnumColor color, Block... inputs) {
+    private void largeDye(RecipeOutput consumer, String basePath, Item output, EnumColor color, Item... inputs) {
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(inputs);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
-                    new ItemStack(output, 4)
+                    new ItemStackTemplate(output, 4)
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(basePath + "dye/large_" + color.getRegistryPrefix()));
         //Flowers -> 4x dye output (See PigmentExtractingRecipeProvider#addFlowerExtractionRecipes for note)

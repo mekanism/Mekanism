@@ -23,6 +23,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.conditions.ICondition;
@@ -40,8 +41,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private static final FieldReflectionHelper<BWGWoodSet, String> WOOD_SET_NAME = new FieldReflectionHelper<>(BWGWoodSet.class, "name", () -> null);
     private final ICondition villageUpdate;
 
-    public BWGRecipeProvider(String modid) {
-        super(modid);
+    public BWGRecipeProvider(HolderLookup.Provider registries, String modid) {
+        super(registries, modid);
         //TODO - 26.1: Replace this with just the mod loaded condition
         villageUpdate = new ModVersionLoadedCondition(modid, "2.4.0");
     }
@@ -59,15 +60,15 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
 
     private void addPrecisionSawmillRecipes(RecipeOutput consumer, String basePath) {
         for (BWGWoodSet woodType : BWGWoodSet.woodsets()) {
-            RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, basePath, woodType.planks(), woodType.boatItem().get(),
-                  woodType.chestBoatItem().get(), woodType.door(), woodType.fenceGate(), woodType.logItemTag(), woodType.pressurePlate(),
-                  woodType.trapdoor(), woodType.hangingSignItem(), WOOD_SET_NAME.getValue(woodType), modLoaded);
+            RecipeProviderUtil.addPrecisionSawmillWoodTypeRecipes(consumer, this.items, basePath, woodType.planks().asItem(), woodType.boatItem().get(),
+                  woodType.chestBoatItem().get(), woodType.door().asItem(), woodType.fenceGate().asItem(), woodType.logItemTag(), woodType.pressurePlate().asItem(),
+                  woodType.trapdoor().asItem(), woodType.hangingSignItem(), WOOD_SET_NAME.getValue(woodType), modLoaded);
         }
     }
 
     private void addSandRecipes(RecipeOutput consumer, String basePath) {
         for (BWGSandSet sandSet : BWGSandSet.getSandSets()) {
-            RecipeProviderUtil.addSandStoneToSandRecipe(consumer, basePath + sandSet.getName(), modLoaded, sandSet.getSand(), sandSet.getSandstoneBlocksItemTag());
+            RecipeProviderUtil.addSandStoneToSandRecipe(consumer, this.items, basePath + sandSet.getName(), modLoaded, sandSet.getSand().asItem(), sandSet.getSandstoneBlocksItemTag());
         }
     }
 
@@ -82,7 +83,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         }
     }
 
-    private void dye(RecipeOutput consumer, String basePath, ItemLike output, boolean large, EnumColor color) {
+    private void dye(RecipeOutput consumer, String basePath, Item output, boolean large, EnumColor color) {
         String name = color.getRegistryPrefix();
         String makeTarget = name;
         if (large) {
@@ -91,10 +92,10 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         }
         TagKey<Item> makesDyeTag = tag("dye/makes_" + makeTarget + "_dye");
         ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition(makesDyeTag));
-        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(, makesDyeTag);
+        ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(this.items, makesDyeTag);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,
-                    new ItemStack(output, large ? 4 : 2)
+                    new ItemStackTemplate(output, large ? 4 : 2)
               ).addCondition(modLoaded)
               .addCondition(tagNotEmpty)
               .save(consumer, Mekanism.rl(basePath + "dye/" + name));
@@ -130,7 +131,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         //Dacite Pillar -> Dacite
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(BWGBlocks.DACITE_PILLAR.get()),
-                    new ItemStack(BWGBlocks.DACITE_SET.getBase(), 2)
+                    new ItemStackTemplate(BWGBlocks.DACITE_SET.getBase().asItem(), 2)
               ).addCondition(villageUpdate)
               .save(consumer, Mekanism.rl(basePath + "from_dacite_pillar"));
     }
@@ -150,7 +151,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
         crushing(consumer, basePath, BWGBlocks.CRACKED_WHITE_DACITE_BRICKS_SET, BWGBlocks.WHITE_DACITE_SET, villageUpdate);
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(BWGBlocks.WHITE_DACITE_PILLAR.get()),
-                    new ItemStack(BWGBlocks.WHITE_DACITE_SET.getBase(), 2)
+                    new ItemStackTemplate(BWGBlocks.WHITE_DACITE_SET.getBase().asItem(), 2)
               ).addCondition(villageUpdate)
               .save(consumer, Mekanism.rl(basePath + "from_white_dacite_pillar"));
     }
@@ -185,7 +186,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void crushing(RecipeOutput consumer, ItemLike input, ItemLike output, String path, @Nullable ICondition condition) {
         ItemStackToItemStackRecipeBuilder.crushing(
                     IngredientCreatorAccess.item().from(input),
-                    new ItemStack(output)
+                    new ItemStackTemplate(output.asItem())
               ).addCondition(condition == null ? modLoaded : condition)
               .save(consumer, Mekanism.rl(path));
     }
@@ -273,7 +274,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void enriching(RecipeOutput consumer, ItemLike input, ItemLike output, String path, @Nullable ICondition condition) {
         ItemStackToItemStackRecipeBuilder.enriching(
                     IngredientCreatorAccess.item().from(input),
-                    new ItemStack(output)
+                    new ItemStackTemplate(output.asItem())
               ).addCondition(condition == null ? modLoaded : condition)
               .save(consumer, Mekanism.rl(path));
     }
@@ -303,8 +304,8 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
     private void infuseMoss(RecipeOutput consumer, ItemLike input, ItemLike output, String path) {
         ItemStackChemicalToItemStackRecipeBuilder.metallurgicInfusing(
                     IngredientCreatorAccess.item().from(input),
-                    IngredientCreatorAccess.chemicalStack().from(, MekanismAPITags.Chemicals.BIO, 10),
-                    new ItemStack(output),
+                    IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.BIO, 10),
+                    new ItemStackTemplate(output.asItem()),
                     false
               ).addCondition(modLoaded)
               .save(consumer, Mekanism.rl(path));

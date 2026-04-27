@@ -10,6 +10,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
@@ -18,6 +19,12 @@ import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
 
 class TierInstallerRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+
+    public TierInstallerRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -32,10 +39,10 @@ class TierInstallerRecipeProvider implements ISubRecipeProvider {
           TagKey<Item> alloyTag, TagKey<Item> circuitTag) {
         ExtendedShapedRecipeBuilder.shapedRecipe(tierInstaller)
               .pattern(MekanismRecipeProvider.TIER_PATTERN)
-              .key(Pattern.PREVIOUS, ItemTags.PLANKS)
-              .key(Pattern.CIRCUIT, circuitTag)
-              .key(Pattern.INGOT, ingotTag)
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.PREVIOUS, this.items, ItemTags.PLANKS)
+              .key(Pattern.CIRCUIT, this.items, circuitTag)
+              .key(Pattern.INGOT, this.items, ingotTag)
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + tierInstaller.value().getToTier().getLowerName()));
     }
 }

@@ -13,6 +13,7 @@ import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -25,6 +26,12 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY),
           TripleLine.of(Pattern.INGOT, Pattern.PREVIOUS, Pattern.INGOT),
           TripleLine.of(Pattern.ALLOY, Pattern.ENERGY, Pattern.ALLOY));
+
+    private final HolderGetter<Item> items;
+
+    public EnergyCubeRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -42,8 +49,8 @@ class EnergyCubeRecipeProvider implements ISubRecipeProvider {
               .pattern(ENERGY_CUBE_PATTERN)
               .key(Pattern.PREVIOUS, previousEnergyCube)
               .key(Pattern.ENERGY, MekanismItems.ENERGY_TABLET)
-              .key(Pattern.INGOT, ingotTag)
-              .key(Pattern.ALLOY, alloyTag)
+              .key(Pattern.INGOT, this.items, ingotTag)
+              .key(Pattern.ALLOY, this.items, alloyTag)
               .save(consumer, Mekanism.rl(basePath + tierName));
     }
 }

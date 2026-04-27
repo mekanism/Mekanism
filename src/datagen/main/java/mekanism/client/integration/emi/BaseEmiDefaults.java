@@ -103,6 +103,6 @@ public abstract class BaseEmiDefaults implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return serverResources// todo .exists(location, PackType.SERVER_DATA, ".json", "recipes");
+        return serverResources;// todo .exists(location, PackType.SERVER_DATA, ".json", "recipes");
     }
 }

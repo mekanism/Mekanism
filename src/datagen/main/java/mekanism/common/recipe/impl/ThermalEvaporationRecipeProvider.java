@@ -8,12 +8,20 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tags.MekanismTags;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
 class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
+
+    private final HolderGetter<Item> items;
+
+    public ThermalEvaporationRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -24,8 +32,8 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY),
                     TripleLine.of(Pattern.STEEL, Pattern.INGOT, Pattern.STEEL),
                     TripleLine.of(Pattern.EMPTY, Pattern.STEEL, Pattern.EMPTY))
-              ).key(Pattern.STEEL, MekanismTags.Items.INGOTS_STEEL)
-              .key(Pattern.INGOT, Tags.Items.INGOTS_COPPER)
+              ).key(Pattern.STEEL, this.items, MekanismTags.Items.INGOTS_STEEL)
+              .key(Pattern.INGOT, this.items, Tags.Items.INGOTS_COPPER)
               .save(consumer, Mekanism.rl(basePath + "block"));
         //Controller
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER)
@@ -34,9 +42,9 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.BUCKET, Pattern.CONSTANT),
                     TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT))
               ).key(Pattern.CONSTANT, MekanismBlocks.THERMAL_EVAPORATION_BLOCK)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .key(Pattern.BUCKET, Items.BUCKET)
-              .key(MekanismRecipeProvider.GLASS_CHAR, Tags.Items.GLASS_PANES)
+              .key(MekanismRecipeProvider.GLASS_CHAR, this.items, Tags.Items.GLASS_PANES)
               .save(consumer, Mekanism.rl(basePath + "controller"));
         //Valve
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.THERMAL_EVAPORATION_VALVE)
@@ -45,7 +53,7 @@ class ThermalEvaporationRecipeProvider implements ISubRecipeProvider {
                     TripleLine.of(Pattern.CONSTANT, Pattern.CIRCUIT, Pattern.CONSTANT),
                     TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY))
               ).key(Pattern.CONSTANT, MekanismBlocks.THERMAL_EVAPORATION_BLOCK)
-              .key(Pattern.CIRCUIT, MekanismTags.Items.CIRCUITS_ADVANCED)
+              .key(Pattern.CIRCUIT, this.items, MekanismTags.Items.CIRCUITS_ADVANCED)
               .save(consumer, Mekanism.rl(basePath + "valve"));
     }
 }

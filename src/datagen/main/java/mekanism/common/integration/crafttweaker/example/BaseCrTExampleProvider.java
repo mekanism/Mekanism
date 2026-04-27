@@ -26,6 +26,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -39,6 +40,9 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
@@ -51,6 +55,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,13 +68,21 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
+    protected final HolderLookup.Provider registries;
+    protected final HolderGetter<Item> items;
+    protected final HolderGetter<Fluid> fluids;
+    protected final HolderGetter<Chemical> chemicals;
     private final ResourceManager serverResources;
     private final PackOutput output;
     private final String modid;
 
-    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, String modid) {
+    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, HolderLookup.Provider registries, String modid) {
         this.output = output;
         this.serverResources = serverResources;
+        this.registries = registries;
+        this.items = this.registries.lookupOrThrow(Registries.ITEM);
+        this.fluids = this.registries.lookupOrThrow(Registries.FLUID);
+        this.chemicals = this.registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         this.modid = modid;
         addNameLookupOverride(String.class, "string");
         addPrimitiveInfo(Byte.TYPE, Byte.class, "byte");

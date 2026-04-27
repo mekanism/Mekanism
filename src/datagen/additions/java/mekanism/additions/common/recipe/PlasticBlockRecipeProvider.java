@@ -25,6 +25,7 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -32,6 +33,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.Tags;
 
@@ -58,6 +60,12 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, AdditionsRecipeProvider.SLIME_CHAR, Pattern.CONSTANT),
           TripleLine.of(Pattern.EMPTY, Pattern.CONSTANT, Pattern.EMPTY));
 
+    private final HolderGetter<Item> items;
+
+    public PlasticBlockRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "plastic/";
@@ -82,7 +90,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(PLASTIC)
                   .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
-                  .key(Pattern.DYE, dye.getTag())
+                  .key(Pattern.DYE, this.items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         }
@@ -102,7 +110,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
                   .pattern(PLASTIC_TRANSPARENT)
                   .key(Pattern.CONSTANT, MekanismItems.HDPE_SHEET)
-                  .key(Pattern.DYE, dye.getTag())
+                  .key(Pattern.DYE, this.items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
         }
@@ -137,7 +145,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
     private void registerReinforcedPlastic(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(REINFORCED_PLASTIC)
-              .key(Pattern.OSMIUM, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM))
+              .key(Pattern.OSMIUM, this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.DUST, PrimaryResource.OSMIUM))
               .key(Pattern.CONSTANT, plastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
@@ -155,7 +163,7 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
     private void registerPlasticRoad(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> slickPlastic, String basePath) {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
               .pattern(PLASTIC_ROAD)
-              .key(AdditionsRecipeProvider.SAND_CHAR, Tags.Items.SANDS)
+              .key(AdditionsRecipeProvider.SAND_CHAR, this.items, Tags.Items.SANDS)
               .key(Pattern.CONSTANT, slickPlastic)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
@@ -175,13 +183,13 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
         ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
               .pattern(SLICK_PLASTIC)
               .key(Pattern.CONSTANT, plastic)
-              .key(AdditionsRecipeProvider.SLIME_CHAR, Tags.Items.SLIMEBALLS)
+              .key(AdditionsRecipeProvider.SLIME_CHAR, this.items, Tags.Items.SLIME_BALLS)
               .category(RecipeCategory.BUILDING_BLOCKS)
               .save(consumer, MekanismAdditions.rl(basePath + colorString));
         //Enriching recipes
         ItemStackToItemStackRecipeBuilder.enriching(
               IngredientCreatorAccess.item().fromHolder(plastic),
-              new ItemStack(result)
+              new ItemStackTemplate(result)
         ).save(consumer, MekanismAdditions.rl(basePath + "enriching/" + colorString));
         //Recolor recipes
         registerRecolor(consumer, result, AdditionsTags.Items.PLASTIC_BLOCKS_SLICK, color, basePath);
@@ -195,14 +203,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
                   .pattern(PLASTIC)
                   .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, dye.getTag())
+                  .key(Pattern.DYE, this.items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 4),
-              new ItemStack(result.value()),
+              new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
@@ -215,14 +223,14 @@ public class PlasticBlockRecipeProvider implements ISubRecipeProvider {
             ExtendedShapedRecipeBuilder.shapedRecipe(result, 8)
                   .pattern(PLASTIC_TRANSPARENT)
                   .key(Pattern.CONSTANT, recolorInput)
-                  .key(Pattern.DYE, dye.getTag())
+                  .key(Pattern.DYE, this.items, dye.getTag())
                   .category(RecipeCategory.BUILDING_BLOCKS)
                   .save(consumer, MekanismAdditions.rl(basePath + "recolor/" + colorString));
         }
         ItemStackChemicalToItemStackRecipeBuilder.painting(
               IngredientCreatorAccess.item().from(recolorInput),
               IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(color), PigmentExtractingRecipeProvider.DYE_RATE / 8),
-              new ItemStack(result.value()),
+              new ItemStackTemplate(result.value()),
               false
         ).save(consumer, MekanismAdditions.rl(basePath + "recolor/painting/" + colorString));
     }
