@@ -196,7 +196,7 @@ public class Mekanism {
         modEventBus.addListener(this::imcHandle);
         addRegistrationListeners(modEventBus);
         FrequencyTypes.init();
-        MekanismMultiblocks.register(NeoForge.EVENT_BUS);
+        MekanismMultiblocks.register(modEventBus);
         packetHandler = new PacketHandler(modEventBus, versionNumber);
         //Super early hooks, only reliable thing is for checking dependencies that we declare we are after
         hooks.hookConstructor(modEventBus);

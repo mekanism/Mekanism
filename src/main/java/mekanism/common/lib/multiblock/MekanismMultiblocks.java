@@ -19,9 +19,9 @@ public class MekanismMultiblocks {
 
     private static final MekanismMultiblockRegistry REGISTRY = new MekanismMultiblockRegistry(Mekanism.MODID);
 
-    public static final MultiblockType<TankMultiblockData> TANK = REGISTRY.registerMultiblock("dynamicTank", TankCache::new, TankValidator::new);
-    public static final MultiblockType<MatrixMultiblockData> MATRIX = REGISTRY.registerMultiblock("inductionMatrix", MultiblockCache::new, MatrixValidator::new);
-    public static final MultiblockType<BoilerMultiblockData> BOILER = REGISTRY.registerMultiblock("thermoelectricBoiler", MultiblockCache::new, BoilerValidator::new);
+    public static final MultiblockType<TankMultiblockData> TANK = REGISTRY.registerMultiblock("dynamic_tank", TankCache::new, TankValidator::new);
+    public static final MultiblockType<MatrixMultiblockData> MATRIX = REGISTRY.registerMultiblock("induction_matrix", MultiblockCache::new, MatrixValidator::new);
+    public static final MultiblockType<BoilerMultiblockData> BOILER = REGISTRY.registerMultiblock("thermoelectric_boiler", MultiblockCache::new, BoilerValidator::new);
     public static final MultiblockType<EvaporationMultiblockData> EVAPORATION = REGISTRY.registerMultiblock("evaporation", MultiblockCache::new, EvaporationValidator::new);
     public static final MultiblockType<SPSMultiblockData> SPS = REGISTRY.registerMultiblock("sps", SPSCache::new, SPSValidator::new);
 

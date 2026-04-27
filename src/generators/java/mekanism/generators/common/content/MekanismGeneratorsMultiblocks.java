@@ -18,9 +18,9 @@ public class MekanismGeneratorsMultiblocks {
 
     private static final MekanismMultiblockRegistry REGISTRY = new MekanismMultiblockRegistry(MekanismGenerators.MODID);
 
-    public static final MultiblockType<TurbineMultiblockData> TURBINE = REGISTRY.registerMultiblock("industrialTurbine", TurbineCache::new, TurbineValidator::new);
-    public static final MultiblockType<FissionReactorMultiblockData> FISSION_REACTOR = REGISTRY.registerMultiblock("fissionReactor", FissionReactorCache::new, FissionReactorValidator::new);
-    public static final MultiblockType<FusionReactorMultiblockData> FUSION_REACTOR = REGISTRY.registerMultiblock("fusionReactor", FusionReactorCache::new, FusionReactorValidator::new);
+    public static final MultiblockType<TurbineMultiblockData> TURBINE = REGISTRY.registerMultiblock("industrial_turbine", TurbineCache::new, TurbineValidator::new);
+    public static final MultiblockType<FissionReactorMultiblockData> FISSION_REACTOR = REGISTRY.registerMultiblock("fission_reactor", FissionReactorCache::new, FissionReactorValidator::new);
+    public static final MultiblockType<FusionReactorMultiblockData> FUSION_REACTOR = REGISTRY.registerMultiblock("fusion_reactor", FusionReactorCache::new, FusionReactorValidator::new);
 
     public static void register(IEventBus bus) {
         REGISTRY.register(bus);

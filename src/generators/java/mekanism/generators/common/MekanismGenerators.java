@@ -28,7 +28,6 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.InterModEnqueueEvent;
-import net.neoforged.neoforge.common.NeoForge;
 
 @Mod(MekanismGenerators.MODID)
 public class MekanismGenerators implements IModModule {
@@ -65,7 +64,7 @@ public class MekanismGenerators implements IModModule {
         GeneratorsTileEntityTypes.TILE_ENTITY_TYPES.register(modEventBus);
         GeneratorsChemicals.CHEMICALS.register(modEventBus);
         GeneratorsModules.MODULES.register(modEventBus);
-        MekanismGeneratorsMultiblocks.register(NeoForge.EVENT_BUS);
+        MekanismGeneratorsMultiblocks.register(modEventBus);
         packetHandler = new GeneratorsPacketHandler(modEventBus, versionNumber);
     }
 
