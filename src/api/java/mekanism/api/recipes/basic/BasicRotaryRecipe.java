@@ -61,9 +61,6 @@ public class BasicRotaryRecipe extends RotaryRecipe {
     public BasicRotaryRecipe(ChemicalStackIngredient chemicalInput, FluidStackTemplate fluidOutput) {
         this.chemicalInput = Objects.requireNonNull(chemicalInput, "Chemical input cannot be null.");
         Objects.requireNonNull(fluidOutput, "Fluid output cannot be null.");
-        if (fluidOutput.create().isEmpty()) {
-            throw new IllegalArgumentException("Fluid output cannot be empty.");
-        }
         this.fluidOutput = fluidOutput;
         //noinspection ConstantConditions we safety check it being null behind require hasFluidToChemical
         this.fluidInput = null;

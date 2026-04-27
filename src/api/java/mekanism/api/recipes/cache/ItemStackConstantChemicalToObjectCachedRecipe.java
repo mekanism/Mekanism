@@ -207,7 +207,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler, ILongInputHandler<ChemicalStack> chemicalInputHandler,
           ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new ItemStackConstantChemicalToObjectCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, chemicalUsage,
-              chemicalUsedSoFarChanged, outputHandler, ConstantPredicates.ITEM_TEMPLATE_EMPTY);
+              chemicalUsedSoFarChanged, outputHandler, ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
 
     /**

@@ -1,5 +1,6 @@
 package mekanism.api.functions;
 
+import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.LongSupplier;
@@ -12,6 +13,7 @@ import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper class to reduce having to create duplicate objects for constant predicates.
@@ -47,11 +49,11 @@ public class ConstantPredicates {
      */
     public static final Predicate<ItemStack> ITEM_EMPTY = ItemStack::isEmpty;
     /**
-     * Represents a predicate that checks if an item stack produced by a template is empty (or the template is null).
+     * Represents a predicate that checks if the item template is null. Templates throw an error during construction if they would refer to an empty stack.
      *
      * @since 10.8.0
-     *///TODO - 26.1: I don't think the created stack can be empty? Because the record's constructor throws an exception if it is
-    public static final Predicate<ItemStackTemplate> ITEM_TEMPLATE_EMPTY = template -> template == null || template.create().isEmpty();
+     */
+    public static final Predicate<ItemStackTemplate> INVALID_ITEM_TEMPLATE = Objects::isNull;
 
     /**
      * Represents a predicate that checks if a fluid stack is empty.
@@ -60,11 +62,11 @@ public class ConstantPredicates {
      */
     public static final Predicate<FluidStack> FLUID_EMPTY = FluidStack::isEmpty;
     /**
-     * Represents a predicate that checks if a fluid stack produced by a template is empty (or the template is null).
+     * Represents a predicate that checks if the fluid template is null. Templates throw an error during construction if they would refer to an empty stack.
      *
      * @since 10.8.0
-     *///TODO - 26.1: I don't think the created stack can be empty? Because the record's constructor throws an exception if it is
-    public static final Predicate<FluidStackTemplate> FLUID_TEMPLATE_EMPTY = template -> template == null || template.create().isEmpty();
+     */
+    public static final Predicate<@Nullable FluidStackTemplate> INVALID_FLUID_TEMPLATE = Objects::isNull;
     /**
      * Represents a predicate that checks if a chemical stack is empty.
      *

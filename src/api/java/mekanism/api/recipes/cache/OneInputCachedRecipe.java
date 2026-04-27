@@ -117,7 +117,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
     public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStackTemplate, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
-              ConstantPredicates.ITEM_TEMPLATE_EMPTY);
+              ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
 
     /**
@@ -147,7 +147,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
     public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStackTemplate, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
-              ConstantPredicates.FLUID_TEMPLATE_EMPTY);
+              ConstantPredicates.INVALID_FLUID_TEMPLATE);
     }
 
     /**
@@ -162,7 +162,7 @@ public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?
     public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStackTemplate, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
-              ConstantPredicates.ITEM_TEMPLATE_EMPTY);
+              ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
 
     /**

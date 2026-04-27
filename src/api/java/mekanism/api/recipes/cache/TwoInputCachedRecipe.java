@@ -145,7 +145,7 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
     itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
           IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.ITEM_TEMPLATE_EMPTY);
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
 
     /**
@@ -181,6 +181,6 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
           BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IInputHandler<@NotNull ItemStack> extraInputHandler,
           IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, extraInputHandler, outputHandler, recipe::getMainInput, recipe::getExtraInput,
-              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_TEMPLATE_EMPTY);
+              recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
 }
