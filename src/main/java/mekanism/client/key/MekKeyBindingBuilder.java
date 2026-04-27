@@ -23,8 +23,7 @@ public class MekKeyBindingBuilder {
     private KeyModifier keyModifier = KeyModifier.NONE;
     @Nullable
     private InputConstants.Key key;
-    @Nullable
-    private KeyMapping.Category category;
+    private KeyMapping.Category category = MekanismKeyHandler.CATEGORY;
     @Nullable
     private BiConsumer<KeyMapping, Boolean> onKeyDown;
     @Nullable

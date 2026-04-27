@@ -30,6 +30,8 @@ import top.theillusivec4.curios.api.SlotResult;
 
 public class MekanismKeyHandler {
 
+    //TODO - 26.1: Re-evaluate key binding categories and also translating this
+    public static final KeyMapping.Category CATEGORY = new KeyMapping.Category(Mekanism.rl("main"));
     public static final KeyMapping handModeSwitchKey = new MekKeyBindingBuilder().description(MekanismLang.KEY_HAND_MODE).conflictInGame().keyCode(InputConstants.KEY_N)
           .onKeyDown((kb, isRepeat) -> {
               Player player = Minecraft.getInstance().player;
@@ -71,6 +73,7 @@ public class MekanismKeyHandler {
           }).build();
 
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
+        event.registerCategory(CATEGORY);
         ClientRegistrationUtil.registerKeyBindings(event, handModeSwitchKey, headModeSwitchKey, chestModeSwitchKey, legsModeSwitchKey, feetModeSwitchKey,
               detailsKey, descriptionKey, moduleTweakerKey, boostKey, hudKey);
     }
