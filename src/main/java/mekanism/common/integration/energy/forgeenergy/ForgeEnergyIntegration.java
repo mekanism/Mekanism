@@ -1,14 +1,20 @@
 package mekanism.common.integration.energy.forgeenergy;
 
 import mekanism.api.Action;
+import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
-import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.VisibleForTesting;
 
-public class ForgeEnergyIntegration implements IEnergyStorage {
+@NothingNullByDefault
+public class ForgeEnergyIntegration implements EnergyHandler {
 
+    private final EnergyJournal energyJournal = new EnergyJournal();
     private final IStrictEnergyHandler handler;
     private final IEnergyConversion converter;
 
@@ -23,12 +29,12 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public int receiveEnergy(int maxReceive, boolean simulate) {
-        if (maxReceive <= 0) {
+    public int insert(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+        if (amount == 0) {
             return 0;
         }
-        Action action = Action.get(!simulate);
-        long toInsert = converter.convertFrom(maxReceive);
+        long toInsert = converter.convertFrom(amount);
         if (toInsert == 0) {
             return 0;
         }
@@ -50,7 +56,8 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
                 return 0;
             }
         }
-        long remainder = handler.insertEnergy(toInsert, action);
+        energyJournal.updateSnapshots(transaction);
+        long remainder = handler.insertEnergy(toInsert, Action.EXECUTE);
         if (remainder == toInsert) {
             //Nothing can be inserted at all, just exit quickly
             return 0;
@@ -60,12 +67,12 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public int extractEnergy(int maxExtract, boolean simulate) {
-        if (maxExtract <= 0) {
+    public int extract(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+        if (amount == 0) {
             return 0;
         }
-        Action action = Action.get(!simulate);
-        long toExtract = converter.convertFrom(maxExtract);
+        long toExtract = converter.convertFrom(amount);
         if (toExtract == 0) {
             return 0;
         }
@@ -83,7 +90,8 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
                 return 0;
             }
         }
-        long extracted = handler.extractEnergy(toExtract, action);
+        energyJournal.updateSnapshots(transaction);
+        long extracted = handler.extractEnergy(toExtract, Action.EXECUTE);
         return converter.convertToAsInt(extracted);
     }
 
@@ -97,13 +105,13 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public int getEnergyStored() {
-        int energy = 0;
+    public long getAmountAsLong() {
+        long energy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            int total = converter.convertToAsInt(handler.getEnergy(container));
-            if (total > Integer.MAX_VALUE - energy) {
+            long total = converter.convertTo(handler.getEnergy(container));
+            if (total > Long.MAX_VALUE - energy) {
                 //Ensure we don't overflow
-                return Integer.MAX_VALUE;
+                return Long.MAX_VALUE;
             }
             energy += total;
         }
@@ -111,26 +119,33 @@ public class ForgeEnergyIntegration implements IEnergyStorage {
     }
 
     @Override
-    public int getMaxEnergyStored() {
-        int maxEnergy = 0;
+    public long getCapacityAsLong() {
+        long maxEnergy = 0;
         for (int container = 0, containers = handler.getEnergyContainerCount(); container < containers; container++) {
-            int max = converter.convertToAsInt(handler.getMaxEnergy(container));
-            if (max > Integer.MAX_VALUE - maxEnergy) {
+            long max = converter.convertTo(handler.getMaxEnergy(container));
+            if (max > Long.MAX_VALUE - maxEnergy) {
                 //Ensure we don't overflow
-                return Integer.MAX_VALUE;
+                return Long.MAX_VALUE;
             }
             maxEnergy += max;
         }
         return maxEnergy;
     }
 
-    @Override
-    public boolean canExtract() {
-        return true;
-    }
+    //TODO - 26.1: Remove this and just have strict energy handlers natively support transactions so then we don't have to manually handle simulation
+    private class EnergyJournal extends SnapshotJournal<Long> {
 
-    @Override
-    public boolean canReceive() {
-        return true;
+        @Override
+        protected Long createSnapshot() {
+            //TODO: Theoretically this should be made to support multiple containers, but as this is only temporary until we make strict energy support transactions
+            // it doesn't matter
+            return handler.getEnergy(0);
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            //Note: Not 100% safe, but we don't have any other option for now
+            handler.setEnergy(0, snapshot);
+        }
     }
 }

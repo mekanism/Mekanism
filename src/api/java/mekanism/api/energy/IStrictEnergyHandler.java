@@ -7,7 +7,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-public interface IStrictEnergyHandler {
+public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting transactions
 
     /**
      * Returns the number of energy storage units ("containers") available
