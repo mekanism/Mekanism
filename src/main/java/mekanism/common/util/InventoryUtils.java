@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -10,7 +11,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -101,7 +101,7 @@ public final class InventoryUtils {
                         //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
                         // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
                         // much in the first place.
-                        stackToDrop.setCount(MathUtils.clampToInt((long) scalar * stackToDrop.count()));
+                        stackToDrop.setCount(Ints.saturatedCast((long) scalar * stackToDrop.count()));
                     } else {
                         stackToDrop.setCount(scalar * stackToDrop.count());
                     }

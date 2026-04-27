@@ -1,6 +1,6 @@
 package mekanism.common.util;
 
-import mekanism.api.math.MathUtils;
+import com.google.common.primitives.Ints;
 import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
@@ -60,7 +60,7 @@ public class EmitUtils {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
-        return MathUtils.clampToInt(sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend));
+        return Ints.saturatedCast(sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend));
     }
 
     /**

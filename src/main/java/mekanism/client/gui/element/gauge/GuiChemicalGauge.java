@@ -1,5 +1,6 @@
 package mekanism.client.gui.element.gauge;
 
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -7,7 +8,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -72,7 +72,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
             return 0;
         }
         double scale = tank.getStored() / (double) tank.getCapacity();
-        return MathUtils.clampToInt(Math.max(1, Math.round(scale * (height - 2))));
+        return Ints.saturatedCast(Math.max(1, Math.round(scale * (height - 2))));
     }
 
     @Nullable

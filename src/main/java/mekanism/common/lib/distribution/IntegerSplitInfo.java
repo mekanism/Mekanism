@@ -1,6 +1,6 @@
 package mekanism.common.lib.distribution;
 
-import mekanism.api.math.MathUtils;
+import com.google.common.primitives.Ints;
 
 public class IntegerSplitInfo extends SplitInfo {
 
@@ -19,7 +19,7 @@ public class IntegerSplitInfo extends SplitInfo {
     @Override
     public void send(long amountNeeded) {
         //If we are giving it, then lower the amount we are checking/splitting
-        int amountNeededInt = MathUtils.clampToInt(amountNeeded);
+        int amountNeededInt = Ints.saturatedCast(amountNeeded);
         amountToSplit -= amountNeededInt;
         sentSoFar += amountNeededInt;
         if (!decrementTargets) {

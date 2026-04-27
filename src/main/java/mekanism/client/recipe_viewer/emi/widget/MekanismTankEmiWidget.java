@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.emi.widget;
 
+import com.google.common.primitives.Ints;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.api.widget.Bounds;
@@ -56,7 +57,7 @@ public class MekanismTankEmiWidget extends SlotWidget {
                 MekanismRenderer.color(graphics, chemicalStack);
                 sprite = MekanismRenderer.getChemicalTexture(chemicalStack);
             } else if (stack.getKey() instanceof Fluid fluid) {
-                FluidStack fluidStack = new FluidStack(fluid.builtInRegistryHolder(), MathUtils.clampToInt(ingredient.getAmount()), stack.getComponentChanges());
+                FluidStack fluidStack = new FluidStack(fluid.builtInRegistryHolder(), Ints.saturatedCast(ingredient.getAmount()), stack.getComponentChanges());
                 MekanismRenderer.color(graphics, fluidStack);
                 sprite = MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL);
             } else {

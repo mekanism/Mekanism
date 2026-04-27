@@ -1,10 +1,10 @@
 package mekanism.client.recipe_viewer.jei.machine;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.heat.HeatAPI;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -52,7 +52,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
                 boilRate = 0;
             } else {
                 temperature = recipe.temperature();
-                boilRate = MathUtils.clampToInt(recipe.steam().getAmount());
+                boilRate = Ints.saturatedCast(recipe.steam().getAmount());
             }
             return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));

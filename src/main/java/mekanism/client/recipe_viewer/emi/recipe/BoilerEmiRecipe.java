@@ -1,9 +1,9 @@
 package mekanism.client.recipe_viewer.emi.recipe;
 
+import com.google.common.primitives.Ints;
 import dev.emi.emi.api.widget.WidgetHolder;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.gauge.GaugeType;
@@ -38,7 +38,7 @@ public class BoilerEmiRecipe extends MekanismEmiRecipe<BoilerRecipeViewerRecipe>
         // so that they fit properly in emi
         addElement(widgetHolder, new GuiInnerScreen(this, 48, 23, 96, 40, () -> List.of(
               MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(recipe.temperature(), TemperatureUnit.KELVIN, true)),
-              MekanismLang.BOIL_RATE.translate(TextUtils.format(MathUtils.clampToInt(recipe.steam().getAmount())))
+              MekanismLang.BOIL_RATE.translate(TextUtils.format(Ints.saturatedCast(recipe.steam().getAmount())))
         )));
         initTank(widgetHolder, GuiChemicalGauge.getDummy(GaugeType.STANDARD, this, 6, 13).setLabel(MekanismLang.BOILER_HEATED_COOLANT_TANK.translateColored(EnumColor.ORANGE)), input(1));
         initTank(widgetHolder, GuiFluidGauge.getDummy(GaugeType.STANDARD, this, 26, 13).setLabel(MekanismLang.BOILER_WATER_TANK.translateColored(EnumColor.INDIGO)), input(0));

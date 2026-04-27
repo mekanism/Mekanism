@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
+import com.google.common.primitives.Ints;
 import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
@@ -62,7 +63,7 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
         }
         if (productionRate > 0) {
             long usage = MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity());
-            int maxRate = MathUtils.clampToInt(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
+            int maxRate = Ints.saturatedCast(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
             long hydrogenUsed = 0;
             ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);

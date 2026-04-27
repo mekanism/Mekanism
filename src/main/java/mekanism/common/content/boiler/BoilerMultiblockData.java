@@ -1,5 +1,6 @@
 package mekanism.common.content.boiler;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.ArrayList;
@@ -181,7 +182,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
 
             int amountToBoil = Math.min(lastMaxBoil, waterTank.getFluidAmount());
-            amountToBoil = Math.min(amountToBoil, MathUtils.clampToInt(steamTank.getNeeded()));
+            amountToBoil = Math.min(amountToBoil, Ints.saturatedCast(steamTank.getNeeded()));
             if (!waterTank.isEmpty()) {
                 waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
             }

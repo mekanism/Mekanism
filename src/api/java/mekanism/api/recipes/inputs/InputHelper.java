@@ -1,5 +1,6 @@
 package mekanism.api.recipes.inputs;
 
+import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
@@ -8,7 +9,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.InputIngredient;
@@ -229,7 +229,7 @@ public class InputHelper {
                 // where we may want to allow not having the input be required for recipe matching
                 if (!recipeInput.isEmpty()) {
                     //TODO: Simulate the drain?
-                    int operations = MathUtils.clampToInt(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
+                    int operations = Ints.saturatedCast(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
                     if (operations > 0) {
                         tracker.updateOperations(operations);
                         return;

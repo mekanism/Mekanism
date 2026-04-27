@@ -1,5 +1,6 @@
 package mekanism.common.content.qio;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.bytes.Byte2IntArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMap;
 import it.unimi.dsi.fastutil.bytes.Byte2IntMaps;
@@ -20,7 +21,6 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.InsertableSlot;
@@ -183,7 +183,7 @@ public class QIOCraftingTransferHelper {
                     }
                     //We have less stored than we need, use what we can and remove the source
                     available -= stored;
-                    sources.add(new SingularHashedItemSource(slot, MathUtils.clampToInt(stored)));
+                    sources.add(new SingularHashedItemSource(slot, Ints.saturatedCast(stored)));
                     iterator.remove();
                     if (stored == toUse) {
                         //If we had the exact amount we needed then return our sources
@@ -211,7 +211,7 @@ public class QIOCraftingTransferHelper {
                     }
                     //We have less stored than we need, use what we can and remove the source
                     available -= stored;
-                    sources.add(new SingularHashedItemSource(key, MathUtils.clampToInt(stored)));
+                    sources.add(new SingularHashedItemSource(key, Ints.saturatedCast(stored)));
                     iter.remove();
                     if (stored == toUse) {
                         //If we had the exact amount we needed then return our sources

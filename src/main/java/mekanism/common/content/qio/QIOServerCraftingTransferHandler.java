@@ -1,5 +1,6 @@
 package mekanism.common.content.qio;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
@@ -21,7 +22,6 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
@@ -789,7 +789,7 @@ public class QIOServerCraftingTransferHandler {
         public FrequencySlotData(HashedItem type, long stored) {
             //Clamp to int as with how many slots we are filling even though the frequency may have more than
             // a certain amount stored, we can never need that many for usage, so we can save some extra memory
-            super(MathUtils.clampToInt(stored));
+            super(Ints.saturatedCast(stored));
             this.type = type;
         }
 

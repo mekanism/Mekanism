@@ -1,5 +1,6 @@
 package mekanism.common.tile.factory;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.List;
@@ -14,7 +15,6 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -162,7 +162,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Override
     protected int getNeededInput(ItemStackChemicalToItemStackRecipe recipe, ItemStack inputStack) {
-        return MathUtils.clampToInt(recipe.getItemInput().getNeededAmount(inputStack));
+        return Ints.saturatedCast(recipe.getItemInput().getNeededAmount(inputStack));
     }
 
     @Override

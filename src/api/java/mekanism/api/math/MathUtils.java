@@ -7,8 +7,6 @@ public class MathUtils {
     private MathUtils() {
     }
 
-    static final long UNSIGNED_MASK = 0x7FFFFFFFFFFFFFFFL;
-
     /**
      * Clamp a double to int without using{@link Math#min(double, double)} due to double representation issues. Primary use: power systems that use int, where Mek uses
      * doubles internally
@@ -26,26 +24,15 @@ public class MathUtils {
      * @return an int clamped to {@link Integer#MAX_VALUE}
      *
      * @see <a href="https://github.com/aidancbrady/Mekanism/pull/5203">Original PR</a>
+     * @see com.google.common.primitives.Ints#saturatedCast(long)
      */
     public static int clampToInt(double d) {
-        if (d < Integer.MAX_VALUE) {
-            return (int) d;
+        if (d > Integer.MAX_VALUE) {
+            return Integer.MAX_VALUE;
+        } else if (d < Integer.MIN_VALUE) {
+            return Integer.MIN_VALUE;
         }
-        return Integer.MAX_VALUE;
-    }
-
-    /**
-     * Clamp a long to int
-     *
-     * @param l long to clamp
-     *
-     * @return an int clamped to {@link Integer#MAX_VALUE}
-     */
-    public static int clampToInt(long l) {
-        if (l < Integer.MAX_VALUE) {
-            return (int) l;
-        }
-        return Integer.MAX_VALUE;
+        return (int) d;
     }
 
     /**
@@ -54,12 +41,16 @@ public class MathUtils {
      * @param d double to clamp
      *
      * @return a long clamped to {@link Long#MAX_VALUE}
+     *
+     * @see com.google.common.primitives.Ints#saturatedCast(long)
      */
     public static long clampToLong(double d) {
-        if (d < Long.MAX_VALUE) {
-            return (long) d;
+        if (d > Long.MAX_VALUE) {
+            return Long.MAX_VALUE;
+        } else if (d < Long.MIN_VALUE) {
+            return Long.MIN_VALUE;
         }
-        return Long.MAX_VALUE;
+        return (long) d;
     }
 
     /**

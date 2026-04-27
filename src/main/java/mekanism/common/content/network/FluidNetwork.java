@@ -1,5 +1,6 @@
 package mekanism.common.content.network;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -9,7 +10,6 @@ import mekanism.api.Action;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -125,13 +125,13 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     @Override
     protected synchronized void updateCapacity(MechanicalPipe transmitter) {
         super.updateCapacity(transmitter);
-        intCapacity = MathUtils.clampToInt(getCapacity());
+        intCapacity = Ints.saturatedCast(getCapacity());
     }
 
     @Override
     public synchronized void updateCapacity() {
         super.updateCapacity();
-        intCapacity = MathUtils.clampToInt(getCapacity());
+        intCapacity = Ints.saturatedCast(getCapacity());
     }
 
     public int getCapacityAsInt() {

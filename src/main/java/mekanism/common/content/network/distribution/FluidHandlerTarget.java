@@ -1,7 +1,7 @@
 package mekanism.common.content.network.distribution;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
-import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -24,11 +24,11 @@ public class FluidHandlerTarget extends Target<IFluidHandler, @NotNull FluidStac
 
     @Override
     protected void acceptAmount(IFluidHandler handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
-        splitInfo.send(handler.fill(resource.copyWithAmount(MathUtils.clampToInt(amount)), FluidAction.EXECUTE));
+        splitInfo.send(handler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.EXECUTE));
     }
 
     @Override
     protected long simulate(IFluidHandler handler, @NotNull FluidStack resource, long amount) {
-        return handler.fill(resource.copyWithAmount(MathUtils.clampToInt(amount)), FluidAction.SIMULATE);
+        return handler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.SIMULATE);
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.api.energy;
 
+import com.google.common.primitives.Ints;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import net.minecraft.util.Mth;
@@ -38,7 +39,7 @@ public interface IEnergyConversion {
      * @return Amount of energy clamped to an int. (Units matching this conversion)
      */
     default int convertToAsInt(long joules) {
-        return MathUtils.clampToInt(convertTo(joules));
+        return Ints.saturatedCast(convertTo(joules));
     }
 
     /**

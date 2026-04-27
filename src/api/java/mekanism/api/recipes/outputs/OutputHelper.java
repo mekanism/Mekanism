@@ -1,5 +1,6 @@
 package mekanism.api.recipes.outputs;
 
+import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -8,7 +9,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
@@ -290,7 +290,7 @@ public class OutputHelper {
             ChemicalStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
             long amountUsed = maxOutput.getAmount() - remainder.getAmount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = MathUtils.clampToInt(amountUsed / toOutput.getAmount());
+            int operations = Ints.saturatedCast(amountUsed / toOutput.getAmount());
             tracker.updateOperations(operations);
             if (operations == 0) {
                 if (amountUsed == 0 && tank.getNeeded() > 0) {

@@ -1,5 +1,6 @@
 package mekanism.common.content.network.transmitter;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -10,7 +11,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.math.MathUtils;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -50,7 +50,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         super(tile, TransmissionType.FLUID);
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
         //TODO: If we make fluids support longs then adjust this
-        buffer = BasicFluidTank.create(MathUtils.clampToInt(getCapacity()), ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), this);
+        buffer = BasicFluidTank.create(Ints.saturatedCast(getCapacity()), ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), this);
         tanks = Collections.singletonList(buffer);
     }
 

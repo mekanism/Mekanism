@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMaps;
@@ -24,7 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.qio.QIOCraftingTransferHelper;
@@ -295,7 +295,7 @@ public class QIOCraftingTransferHandler {
                     int max = maxStack == 1 ? toTransfer : Math.min(toTransfer, maxStack);
                     //Note: This will always be at least one as the int list should not be able to become
                     // larger than the number of items we have available
-                    toTransfer = Math.min(max, MathUtils.clampToInt(source.getAvailable() / entry.getValue().size()));
+                    toTransfer = Math.min(max, Ints.saturatedCast(source.getAvailable() / entry.getValue().size()));
                     if (toTransfer == 1) {
                         //Short circuit checking the other ones if we get down to a single stack
                         break;

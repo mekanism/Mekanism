@@ -1,5 +1,6 @@
 package mekanism.common.inventory.container;
 
+import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.platform.InputConstants;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
@@ -18,7 +19,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -692,7 +692,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null && slot.count() > 0) {
-                    int maxStackSize = Math.min(MathUtils.clampToInt(slot.count()), slot.item().getMaxStackSize());
+                    int maxStackSize = Math.min(Ints.saturatedCast(slot.count()), slot.item().getMaxStackSize());
                     //Left click -> as much as possible, right click -> half of a stack, middle click -> 1
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
                     int toTake;

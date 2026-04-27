@@ -1,5 +1,6 @@
 package mekanism.common.tile.qio;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
@@ -16,7 +17,6 @@ import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.math.MathUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
@@ -65,10 +65,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements IAdvancedTransportEjector {
 
-    private static final EfficientEjector<Object2LongMap.Entry<HashedItem>> FILTER_EJECTOR = new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getLongValue()),
+    private static final EfficientEjector<Object2LongMap.Entry<HashedItem>> FILTER_EJECTOR = new EfficientEjector<>(Entry::getKey, e -> Ints.saturatedCast(e.getLongValue()),
           (exporter, freq) -> exporter.getFilterEjectMap(freq).object2LongEntrySet());
     private static final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> FILTERLESS_EJECTOR =
-          new EfficientEjector<>(Entry::getKey, e -> MathUtils.clampToInt(e.getValue().getCount()), (exporter, freq) -> freq.getItemDataMap().entrySet());
+          new EfficientEjector<>(Entry::getKey, e -> Ints.saturatedCast(e.getValue().getCount()), (exporter, freq) -> freq.getItemDataMap().entrySet());
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
     @Nullable

@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -354,7 +355,7 @@ public class StorageUtils {
             // but we may as well short circuit it here
             return 0;
         }
-        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
+        return Ints.saturatedCast(Math.round(13.0F - 13.0F * getDurabilityForDisplay(stack)));
     }
 
     private static double getDurabilityForDisplay(ItemStack stack) {
@@ -381,7 +382,7 @@ public class StorageUtils {
             // but we may as well short circuit it here
             return 0;
         }
-        return MathUtils.clampToInt(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
+        return Ints.saturatedCast(Math.round(13.0F - 13.0F * getEnergyDurabilityForDisplay(stack)));
     }
 
     private static double getEnergyDurabilityForDisplay(ItemStack stack) {

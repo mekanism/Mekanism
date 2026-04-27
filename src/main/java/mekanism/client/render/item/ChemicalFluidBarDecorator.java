@@ -1,10 +1,10 @@
 package mekanism.client.render.item;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.math.MathUtils;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.FluidUtils;
@@ -80,7 +80,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     }
 
     private static int convertWidth(double width) {
-        return MathUtils.clampToInt(Math.round(13.0F * width));
+        return Ints.saturatedCast(Math.round(13.0F * width));
     }
 
     static int getDisplayTank(int tanks) {

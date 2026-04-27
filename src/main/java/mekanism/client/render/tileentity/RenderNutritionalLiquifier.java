@@ -1,5 +1,6 @@
 package mekanism.client.render.tileentity;
 
+import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
@@ -9,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.MathUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -89,7 +89,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         ItemStack stack = liquifier.getRenderStack();
         if (!stack.isEmpty()) {
             //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
-            int seed = MathUtils.clampToInt(state.blockPos.asLong());
+            int seed = Ints.saturatedCast(state.blockPos.asLong());
             this.itemModelResolver.updateForTopItem(state.item, stack, ItemDisplayContext.GROUND, level, null, seed);
         }
     }

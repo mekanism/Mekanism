@@ -2,6 +2,7 @@ package mekanism.common.content.qio;
 
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.SetMultimap;
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -30,7 +31,6 @@ import mekanism.api.Action;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.IHashedItem;
 import mekanism.api.inventory.qio.IQIOFrequency;
-import mekanism.api.math.MathUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.CommonWorldTickHandler;
@@ -202,7 +202,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 itemDataMap.put(type, data);
             }
         }
-        return type.createStack(MathUtils.clampToInt(data.add(stack.count(), Action.EXECUTE)));
+        return type.createStack(Ints.saturatedCast(data.add(stack.count(), Action.EXECUTE)));
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
@@ -758,7 +758,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
 
         private ItemStack remove(int amount) {
-            int removed = MathUtils.clampToInt(remove(amount, Action.EXECUTE));
+            int removed = Ints.saturatedCast(remove(amount, Action.EXECUTE));
             return removed == 0 ? ItemStack.EMPTY : itemType.createStack(removed);
         }
 

@@ -1,5 +1,6 @@
 package mekanism.common.content.gear.mekasuit;
 
+import com.google.common.primitives.Ints;
 import java.util.function.Consumer;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.gear.ICustomModule;
@@ -7,7 +8,6 @@ import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
-import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.registries.MekanismFluids;
@@ -36,7 +36,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             if (handler != null) {
                 int contained = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.asStack(1)).amount();
                 int needed = Math.min(20 - player.getFoodData().getFoodLevel(), contained / MekanismConfig.general.nutritionalPasteMBPerFood.get());
-                int toFeed = Math.min(MathUtils.clampToInt(module.getContainerEnergy(stack) / usage), needed);
+                int toFeed = Math.min(Ints.saturatedCast(module.getContainerEnergy(stack) / usage), needed);
                 if (toFeed > 0) {
                     module.useEnergy(player, stack, usage * toFeed);
                     handler.drain(MekanismFluids.NUTRITIONAL_PASTE.asStack(toFeed * MekanismConfig.general.nutritionalPasteMBPerFood.get()), FluidAction.EXECUTE);

@@ -1,5 +1,6 @@
 package mekanism.generators.client.recipe_viewer.recipe;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -42,7 +42,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
     public FluidStackIngredient waterInput() {
-        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
+        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, Ints.saturatedCast(outputCoolant().getAmount()));
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {

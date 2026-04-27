@@ -1,10 +1,10 @@
 package mekanism.common.tile.factory;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -120,7 +120,7 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Override
     protected int getNeededInput(SawmillRecipe recipe, ItemStack inputStack) {
-        return MathUtils.clampToInt(recipe.getInput().getNeededAmount(inputStack));
+        return Ints.saturatedCast(recipe.getInput().getNeededAmount(inputStack));
     }
 
     @Override

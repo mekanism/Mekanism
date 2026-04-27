@@ -1,5 +1,6 @@
 package mekanism.common.content.sps;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
@@ -182,7 +183,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         long processed = inputTank.shrinkStack(operations, Action.EXECUTE);
         int lastInputProcessed = inputProcessed;
         //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
-        inputProcessed += MathUtils.clampToInt(processed);
+        inputProcessed += Ints.saturatedCast(processed);
         final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
         if (inputProcessed >= inputPerAntimatter) {
             ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.asStack(inputProcessed / inputPerAntimatter);

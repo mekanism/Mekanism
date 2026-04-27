@@ -1,7 +1,7 @@
 package mekanism.common.content.network.distribution;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
-import mekanism.api.math.MathUtils;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
@@ -20,12 +20,12 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
 
     @Override
     protected void acceptAmount(SaveHandler handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
-        handler.acceptAmount(splitInfo, resource, MathUtils.clampToInt(amount));
+        handler.acceptAmount(splitInfo, resource, Ints.saturatedCast(amount));
     }
 
     @Override
     protected long simulate(SaveHandler handler, @NotNull FluidStack resource, long amount) {
-        return handler.simulate(resource.copyWithAmount(MathUtils.clampToInt(amount)));
+        return handler.simulate(resource.copyWithAmount(Ints.saturatedCast(amount)));
     }
 
     public void saveShare() {
@@ -44,7 +44,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
         }
 
         protected void acceptAmount(SplitInfo splitInfo, @NotNull FluidStack resource, int amount) {
-            amount = Math.min(amount, MathUtils.clampToInt(transmitter.getCapacity() - currentStored.amount()));
+            amount = Math.min(amount, Ints.saturatedCast(transmitter.getCapacity() - currentStored.amount()));
             if (currentStored.isEmpty()) {
                 currentStored = resource.copyWithAmount(amount);
             } else {
@@ -57,7 +57,7 @@ public class FluidTransmitterSaveTarget extends Target<FluidTransmitterSaveTarge
             if (!currentStored.isEmpty() && !FluidStack.isSameFluidSameComponents(currentStored, fluidStack)) {
                 return 0;
             }
-            return Math.min(fluidStack.amount(), MathUtils.clampToInt(transmitter.getCapacity() - currentStored.amount()));
+            return Math.min(fluidStack.amount(), Ints.saturatedCast(transmitter.getCapacity() - currentStored.amount()));
         }
 
         protected void saveShare() {

@@ -1,10 +1,10 @@
 package mekanism.common.tile.factory;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -90,7 +90,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     protected int getNeededInput(CombinerRecipe recipe, ItemStack inputStack) {
-        return MathUtils.clampToInt(recipe.getMainInput().getNeededAmount(inputStack));
+        return Ints.saturatedCast(recipe.getMainInput().getNeededAmount(inputStack));
     }
 
     @Override
