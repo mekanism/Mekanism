@@ -2,14 +2,18 @@ package mekanism.tools.common.material.impl.vanilla;
 
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
 import mekanism.tools.common.material.VanillaPaxelMaterial;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 
 @MethodsAreNotNullByDefault
 public class GoldPaxelMaterialDefaults extends VanillaPaxelMaterial {
 
+    public GoldPaxelMaterialDefaults() {
+        super("gold");
+    }
+
     @Override
-    public Tiers getVanillaTier() {
-        return Tiers.GOLD;
+    public ToolMaterial getVanillaTier() {
+        return ToolMaterial.GOLD;
     }
 
     @Override

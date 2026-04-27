@@ -1,5 +1,6 @@
 package mekanism.tools.client.render;
-
+//TODO - 26.1 glow armor model
+/*
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.model.HumanoidModel;
@@ -30,4 +31,4 @@ public class GlowArmor extends Model {
             base.renderToBuffer(matrix, vertexBuilder, LightCoordsUtil.FULL_BRIGHT, overlayLight, color);
         }
     }
-}
+}*/

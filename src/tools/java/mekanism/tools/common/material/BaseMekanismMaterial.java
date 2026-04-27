@@ -1,19 +1,28 @@
 package mekanism.tools.common.material;
 
-import java.util.List;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
-import mekanism.tools.common.ToolsTags;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
-import org.jetbrains.annotations.NotNull;
 
 @MethodsAreNotNullByDefault
-public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
+public interface BaseMekanismMaterial extends IPaxelMaterial {
+
+    //begin from ToolMaterial
+    TagKey<Block> incorrectBlocksForDrops();
+
+    int getDurability();
+
+    float getSpeed();
+
+    int getEnchantmentValue();
+
+    TagKey<Item> getRepairItems();
+    //end from ToolMaterial
 
     int getShieldDurability();
 
@@ -45,6 +54,8 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
         return -2.8F;
     }
 
+    float getAttackDamageBonus();
+
     default float getHoeDamage() {
         //Default to match the vanilla hoe's implementation of being negative the attack damage of the material
         return -getAttackDamageBonus();
@@ -61,7 +72,7 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
 
     @Override
     default int getPaxelDurability() {
-        return 2 * getUses();
+        return 2 * getDurability();
     }
 
     @Override
@@ -91,9 +102,7 @@ public interface BaseMekanismMaterial extends Tier, IPaxelMaterial {
 
     int getDurabilityForType(ArmorType type);
 
-    @Override
-    default Tool createToolProperties(@NotNull TagKey<Block> block) {
-        float speed = block == ToolsTags.Blocks.MINEABLE_WITH_PAXEL ? getPaxelEfficiency() : getSpeed();
-        return new Tool(List.of(Tool.Rule.deniesDrops(this.getIncorrectBlocksForDrops()), Tool.Rule.minesAndDrops(block, speed)), 1.0F, 1);
+    default ToolMaterial toToolMaterial() {
+        return new ToolMaterial(incorrectBlocksForDrops(), getDurability(), getSpeed(), getAttackDamageBonus(), getEnchantmentValue(), getRepairItems());
     }
 }

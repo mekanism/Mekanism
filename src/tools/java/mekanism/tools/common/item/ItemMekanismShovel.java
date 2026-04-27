@@ -1,6 +1,5 @@
 package mekanism.tools.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
@@ -12,10 +11,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMekanismShovel extends ShovelItem {
+public class ItemMekanismShovel extends ShovelItem implements IsMekanismTool {
 
     public ItemMekanismShovel(MaterialCreator material, Item.Properties properties) {
-        super(material, properties.attributes(createAttributes(material, material.getShovelDamage(), material.getShovelAtkSpeed())));
+        super(material.toToolMaterial(), material.getShovelDamage(), material.getShovelAtkSpeed(), properties);
     }
 
     @Override

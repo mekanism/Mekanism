@@ -4,7 +4,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.IModModule;
 import mekanism.common.lib.Version;
 import mekanism.tools.common.config.MekanismToolsConfig;
-import mekanism.tools.common.registries.ToolsArmorMaterials;
 import mekanism.tools.common.registries.ToolsCreativeTabs;
 import mekanism.tools.common.registries.ToolsItems;
 import mekanism.tools.common.registries.ToolsRecipeSerializers;
@@ -37,7 +36,6 @@ public class MekanismTools implements IModModule {
 
         modEventBus.addListener(this::commonSetup);
         modEventBus.addListener(MekanismToolsConfig::onConfigLoad);
-        ToolsArmorMaterials.ARMOR_MATERIALS.register(modEventBus);
         ToolsItems.ITEMS.register(modEventBus);
         ToolsCreativeTabs.CREATIVE_TABS.register(modEventBus);
         ToolsRecipeSerializers.RECIPE_SERIALIZERS.register(modEventBus);

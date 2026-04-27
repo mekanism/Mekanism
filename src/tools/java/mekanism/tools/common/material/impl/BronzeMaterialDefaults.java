@@ -7,7 +7,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +30,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getUses() {
+    public int getDurability() {
         return 375;
     }
 
@@ -83,7 +83,7 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public TagKey<Block> getIncorrectBlocksForDrops() {
+    public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_BRONZE_TOOL;
     }
 
@@ -93,10 +93,9 @@ public class BronzeMaterialDefaults implements BaseMekanismMaterial {
         return SoundEvents.ARMOR_EQUIP_IRON;
     }
 
-    @NotNull
     @Override
-    public Ingredient getRepairIngredient() {
-        return Ingredient.of(MekanismTags.Items.INGOTS_BRONZE);
+    public TagKey<Item> getRepairItems() {
+        return MekanismTags.Items.INGOTS_BRONZE;
     }
 
     @Override

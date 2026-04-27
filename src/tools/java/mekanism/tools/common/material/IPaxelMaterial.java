@@ -1,6 +1,7 @@
 package mekanism.tools.common.material;
 
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
+import net.minecraft.world.item.ToolMaterial;
 
 @MethodsAreNotNullByDefault
 public interface IPaxelMaterial {
@@ -16,4 +17,6 @@ public interface IPaxelMaterial {
     float getPaxelEfficiency();
 
     int getPaxelEnchantability();
+
+    ToolMaterial toToolMaterial();
 }

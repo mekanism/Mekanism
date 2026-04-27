@@ -15,6 +15,7 @@ import mezz.jei.api.constants.RecipeTypes;
 import mezz.jei.api.recipe.vanilla.IVanillaRecipeFactory;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderSet;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +55,7 @@ public class RecipeRegistryHelper {
         registry.addRecipes(MekanismJEI.recipeType(recipeType), recipes);
     }
 
-    public static void addAnvilRecipes(IRecipeRegistration registry, Holder<Item> item, Function<Item, ItemStack[]> repairMaterials) {
+    public static void addAnvilRecipes(IRecipeRegistration registry, Holder<Item> item, Function<Item, HolderSet<Item>> repairMaterials) {
         IVanillaRecipeFactory factory = registry.getVanillaRecipeFactory();
         //Based off of how JEI adds for Vanilla items
         ItemStack damaged2 = new ItemStack(item);
@@ -64,13 +65,14 @@ public class RecipeRegistryHelper {
         //Two damaged items combine to undamaged
         Identifier itemId = Objects.requireNonNull(item.getKey(), "expected bound").identifier();
         registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged2, List.of(damaged2), List.of(damaged3), itemId.withSuffix("_two_damaged"))));
-        ItemStack[] repairStacks = repairMaterials.apply(item.value());
+        HolderSet<Item> repairItems = repairMaterials.apply(item.value());
         //Damaged item + the repair material
-        if (repairStacks != null && repairStacks.length > 0) {
+        if (repairItems != null && repairItems.size() > 0) {
             //While this is damaged1 it is down here as we don't need to bother creating the reference if we don't have a repair material
             ItemStack damaged1 = new ItemStack(item);
             damaged1.setDamageValue(damaged1.getMaxDamage());
-            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, List.of(repairStacks), List.of(damaged2), itemId.withSuffix("_repair_material"))));
+            List<ItemStack> repairStacks = repairItems.stream().map(holder -> holder.value().getDefaultInstance()).toList();
+            registry.addRecipes(RecipeTypes.ANVIL, List.of(factory.createAnvilRecipe(damaged1, repairStacks, List.of(damaged2), itemId.withSuffix("_repair_material"))));
         }
     }
 }

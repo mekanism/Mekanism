@@ -6,12 +6,22 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.config.ToolsConfigTranslations.MaterialTranslations;
 import net.minecraft.core.Holder;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
+import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAsset;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
@@ -19,6 +29,7 @@ import net.neoforged.neoforge.common.ModConfigSpec;
 public class MaterialCreator implements BaseMekanismMaterial {
 
     private final BaseMekanismMaterial fallBack;
+    private final ResourceKey<EquipmentAsset> equipmentAsset;
 
     private final CachedIntValue shieldDurability;
     private final CachedFloatValue swordDamage;
@@ -54,11 +65,12 @@ public class MaterialCreator implements BaseMekanismMaterial {
     public MaterialCreator(IMekanismConfig config, ModConfigSpec.Builder builder, BaseMekanismMaterial materialDefaults) {
         fallBack = materialDefaults;
         String toolKey = getRegistryPrefix();
+        equipmentAsset = ResourceKey.create(EquipmentAssets.ROOT_ID, MekanismTools.rl(toolKey));
         MaterialTranslations translations = MaterialTranslations.create(toolKey);
         translations.topLevel().applyToBuilder(builder).push(toolKey);
         toolDurability = CachedIntValue.wrap(config, translations.toolDurability().applyToBuilder(builder)
               .gameRestart()
-              .defineInRange(toolKey + "ToolDurability", materialDefaults.getUses(), 1, Integer.MAX_VALUE));
+              .defineInRange(toolKey + "ToolDurability", materialDefaults.getDurability(), 1, Integer.MAX_VALUE));
         efficiency = CachedFloatValue.wrap(config, translations.efficiency().applyToBuilder(builder)
               .gameRestart()
               .define(toolKey + "Efficiency", (double) materialDefaults.getSpeed()));
@@ -256,7 +268,7 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getUses() {
+    public int getDurability() {
         return toolDurability.get();
     }
 
@@ -271,8 +283,8 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public TagKey<Block> getIncorrectBlocksForDrops() {
-        return fallBack.getIncorrectBlocksForDrops();
+    public TagKey<Block> incorrectBlocksForDrops() {
+        return fallBack.incorrectBlocksForDrops();
     }
 
     @Override
@@ -317,8 +329,8 @@ public class MaterialCreator implements BaseMekanismMaterial {
     }
 
     @Override
-    public Ingredient getRepairIngredient() {
-        return fallBack.getRepairIngredient();
+    public TagKey<Item> getRepairItems() {
+        return fallBack.getRepairItems();
     }
 
     @Override
@@ -334,5 +346,26 @@ public class MaterialCreator implements BaseMekanismMaterial {
     @Override
     public float knockbackResistance() {
         return knockbackResistance.get();
+    }
+
+    public ResourceKey<EquipmentAsset> equipmentAsset() {
+        return equipmentAsset;
+    }
+
+    /// copied and adapted from [ArmorMaterial#createAttributes(ArmorType)]
+    public ItemAttributeModifiers createAttributes(ArmorType type) {
+        int defense = getDefense(type);
+        ItemAttributeModifiers.Builder modifiers = ItemAttributeModifiers.builder();
+        EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(type.getSlot());
+        Identifier modifierId = Identifier.withDefaultNamespace("armor." + type.getName());
+        modifiers.add(Attributes.ARMOR, new AttributeModifier(modifierId, defense, AttributeModifier.Operation.ADD_VALUE), slotGroup);
+        modifiers.add(Attributes.ARMOR_TOUGHNESS, new AttributeModifier(modifierId, this.toughness(), AttributeModifier.Operation.ADD_VALUE), slotGroup);
+        if (knockbackResistance() > 0.0F) {
+            modifiers.add(
+                  Attributes.KNOCKBACK_RESISTANCE, new AttributeModifier(modifierId, this.knockbackResistance(), AttributeModifier.Operation.ADD_VALUE), slotGroup
+            );
+        }
+
+        return modifiers.build();
     }
 }

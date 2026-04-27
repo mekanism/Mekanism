@@ -1,15 +1,16 @@
 package mekanism.tools.common.material.impl;
 
+import java.util.Objects;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
-import mekanism.common.tags.MekanismTags;
+import mekanism.common.tags.MekanismTags.Items;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -32,7 +33,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getUses() {
+    public int getDurability() {
         return 1_024;
     }
 
@@ -85,7 +86,7 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public TagKey<Block> getIncorrectBlocksForDrops() {
+    public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_OSMIUM_TOOL;
     }
 
@@ -97,8 +98,8 @@ public class OsmiumMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public Ingredient getRepairIngredient() {
-        return Ingredient.of(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
+    public TagKey<Item> getRepairItems() {
+        return Objects.requireNonNull(Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
     }
 
     @Override

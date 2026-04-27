@@ -5,17 +5,16 @@ import mekanism.client.recipe_viewer.jei.MekanismJEI;
 import mekanism.client.recipe_viewer.jei.RecipeRegistryHelper;
 import mekanism.tools.client.recipe_viewer.aliases.ToolsAliasMapping;
 import mekanism.tools.common.MekanismTools;
-import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.registration.IIngredientAliasRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TieredItem;
+import net.minecraft.world.item.enchantment.Repairable;
 import org.jetbrains.annotations.NotNull;
 
 @JeiPlugin
@@ -38,14 +37,12 @@ public class ToolsJEI implements IModPlugin {
     public void registerRecipes(@NotNull IRecipeRegistration registry) {
         if (MekanismJEI.shouldLoad()) {
             //Add the Anvil repair recipes to JEI for all the different tools and armors in Mekanism Tools
+            //TODO - 26.1: check that we need to still do this - JEI doesn't seem to have a reference to Repairable (yet?)
             for (Holder<Item> toolsItem : ToolsItems.ITEMS.getEntries()) {
                 RecipeRegistryHelper.addAnvilRecipes(registry, toolsItem, item -> {
-                    if (item instanceof ItemMekanismShield shieldItem) {
-                        return shieldItem.getRepairMaterial().getItems();
-                    } else if (item instanceof ArmorItem armorItem) {
-                        return armorItem.getMaterial().value().repairIngredient().get().getItems();
-                    } else if (item instanceof TieredItem tieredItem) {
-                        return tieredItem.getTier().getRepairIngredient().getItems();
+                    Repairable repairable = item.components().get(DataComponents.REPAIRABLE);
+                    if (repairable != null) {
+                        return repairable.items();
                     }
                     return null;
                 });

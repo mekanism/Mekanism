@@ -1,6 +1,5 @@
 package mekanism.tools.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
@@ -12,10 +11,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMekanismHoe extends HoeItem {
+public class ItemMekanismHoe extends HoeItem implements IsMekanismTool {
 
     public ItemMekanismHoe(MaterialCreator material, Item.Properties properties) {
-        super(material, properties.attributes(createAttributes(material, material.getHoeDamage(), material.getHoeAtkSpeed())));
+        super(material.toToolMaterial(), material.getHoeDamage(), material.getHoeAtkSpeed(), properties);
     }
 
     @Override

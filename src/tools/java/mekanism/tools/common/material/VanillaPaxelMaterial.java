@@ -1,30 +1,40 @@
 package mekanism.tools.common.material;
 
-import java.util.Locale;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.ToolMaterial;
 
 @MethodsAreNotNullByDefault
 public abstract class VanillaPaxelMaterial implements IPaxelMaterial {
 
-    public abstract Tiers getVanillaTier();
+    private final String vanillaMaterialName;
+
+    protected VanillaPaxelMaterial(String vanillaMaterialName) {
+        this.vanillaMaterialName = vanillaMaterialName;
+    }
+
+    public abstract ToolMaterial getVanillaTier();
 
     public String getRegistryPrefix() {
-        return getVanillaTier().name().toLowerCase(Locale.ROOT);
+        return vanillaMaterialName;
     }
 
     @Override
     public int getPaxelDurability() {
-        return 2 * getVanillaTier().getUses();
+        return 2 * getVanillaTier().durability();
     }
 
     @Override
     public float getPaxelEfficiency() {
-        return getVanillaTier().getSpeed();
+        return getVanillaTier().speed();
     }
 
     @Override
     public int getPaxelEnchantability() {
-        return getVanillaTier().getEnchantmentValue();
+        return getVanillaTier().enchantmentValue();
+    }
+
+    @Override
+    public ToolMaterial toToolMaterial() {
+        return getVanillaTier();
     }
 }

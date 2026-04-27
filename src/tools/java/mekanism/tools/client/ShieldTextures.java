@@ -2,7 +2,7 @@ package mekanism.tools.client;
 
 import mekanism.tools.common.MekanismTools;
 import net.minecraft.client.renderer.Sheets;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.SpriteId;
 
 public enum ShieldTextures {
     BRONZE("bronze"),
@@ -12,13 +12,13 @@ public enum ShieldTextures {
     REFINED_OBSIDIAN("refined_obsidian"),
     STEEL("steel");
 
-    private final Material base;
+    private final SpriteId base;
 
     ShieldTextures(String name) {
-        base = new Material(Sheets.SHIELD_SHEET, MekanismTools.rl("entity/shield/" + name));
+        base = new SpriteId(Sheets.SHIELD_SHEET, MekanismTools.rl("entity/shield/" + name));
     }
 
-    public Material getBase() {
+    public SpriteId getBase() {
         return base;
     }
 }

@@ -1,6 +1,5 @@
 package mekanism.tools.common.item;
 
-import java.util.List;
 import java.util.function.Consumer;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
@@ -12,10 +11,11 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import org.jetbrains.annotations.NotNull;
 
-public class ItemMekanismAxe extends AxeItem {
+public class ItemMekanismAxe extends AxeItem implements IsMekanismTool {
 
     public ItemMekanismAxe(MaterialCreator material, Item.Properties properties) {
-        super(material, properties.attributes(createAttributes(material, material.getAxeDamage(), material.getAxeAtkSpeed())));
+        //super(material, properties.attributes(createAttributes(material, material.getAxeDamage(), material.getAxeAtkSpeed())));
+        super(material.toToolMaterial(), material.getAxeDamage(), material.getAxeAtkSpeed(), properties);
     }
 
     @Override

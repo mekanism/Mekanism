@@ -6,7 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
@@ -30,7 +30,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
     }
 
     @Override
-    public int getUses() {
+    public int getDurability() {
         return 128;
     }
 
@@ -82,7 +82,7 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
 
     @NotNull
     @Override
-    public TagKey<Block> getIncorrectBlocksForDrops() {
+    public TagKey<Block> incorrectBlocksForDrops() {
         return ToolsTags.Blocks.INCORRECT_FOR_LAPIS_LAZULI_TOOL;
     }
 
@@ -92,10 +92,9 @@ public class LapisLazuliMaterialDefaults implements BaseMekanismMaterial {
         return SoundEvents.ARMOR_EQUIP_DIAMOND;
     }
 
-    @NotNull
     @Override
-    public Ingredient getRepairIngredient() {
-        return Ingredient.of(Tags.Items.GEMS_LAPIS);
+    public TagKey<Item> getRepairItems() {
+        return Tags.Items.GEMS_LAPIS;
     }
 
     @Override

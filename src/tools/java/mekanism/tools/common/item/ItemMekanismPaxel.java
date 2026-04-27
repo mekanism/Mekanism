@@ -1,30 +1,25 @@
 package mekanism.tools.common.item;
 
 import it.unimi.dsi.fastutil.objects.ReferenceOpenHashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import javax.annotation.ParametersAreNonnullByDefault;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.material.IPaxelMaterial;
-import mekanism.tools.common.material.MaterialCreator;
-import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
 import mekanism.tools.common.util.ToolsUtils;
-import net.minecraft.util.Util;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -40,29 +35,28 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNonnullByDefault
-public class ItemMekanismPaxel extends DiggerItem {
+public class ItemMekanismPaxel extends Item implements IsMekanismTool {
 
     private static final Set<ItemAbility> PAXEL_ACTIONS = Util.make(new ReferenceOpenHashSet<>(), actions -> {
         actions.add(MekanismItemAbilities.PAXEL_DIG);
-        actions.addAll(ItemAbilities.DEFAULT_PICKAXE_ACTIONS);
+        //actions.addAll(ItemAbilities.DEFAULT_PICKAXE_ACTIONS);
         actions.addAll(ItemAbilities.DEFAULT_SHOVEL_ACTIONS);
         actions.addAll(ItemAbilities.DEFAULT_AXE_ACTIONS);
     });
 
     private final IPaxelMaterial material;
 
-    public ItemMekanismPaxel(MaterialCreator material, Item.Properties properties) {
-        super(material, ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties
-              .durability(material.getPaxelDurability())
-              .attributes(createAttributes(material, material.getPaxelDamage(), material.getPaxelAtkSpeed())));
-        this.material = material;
-    }
-
-    public ItemMekanismPaxel(VanillaPaxelMaterialCreator material, Item.Properties properties) {
-        super(material.getVanillaTier(), ToolsTags.Blocks.MINEABLE_WITH_PAXEL, properties
-              .durability(material.getPaxelDurability())
-              .component(DataComponents.TOOL, material.createToolProperties())
-              .attributes(createAttributes(material.getVanillaTier(), material.getPaxelDamage(), material.getPaxelAtkSpeed())));
+    public ItemMekanismPaxel(IPaxelMaterial material, Item.Properties properties) {
+        super(properties
+              .tool(
+                    material.toToolMaterial(),
+                    ToolsTags.Blocks.MINEABLE_WITH_PAXEL,
+                    material.getPaxelDamage(),
+                    material.getPaxelAtkSpeed(),
+                    0
+              )
+              .durability(material.getPaxelDurability())//must go after Tool
+        );
         this.material = material;
     }
 
@@ -74,7 +68,7 @@ public class ItemMekanismPaxel extends DiggerItem {
     }
 
     @Override
-    public boolean canPerformAction(ItemStack stack, ItemAbility action) {
+    public boolean canPerformAction(ItemInstance stack, ItemAbility action) {
         return PAXEL_ACTIONS.contains(action);
     }
 
@@ -149,10 +143,5 @@ public class ItemMekanismPaxel extends DiggerItem {
             return resultToSet;
         }
         return null;
-    }
-
-    @Override
-    public int getEnchantmentValue() {
-        return material.getPaxelEnchantability();
     }
 }

@@ -1,5 +1,6 @@
 package mekanism.tools.common.registries;
 
+import mekanism.common.recipe.WrappedShapedRecipe;
 import mekanism.common.recipe.serializer.MekanismRecipeSerializer;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.recipe.MekBannerShieldRecipe;
@@ -17,6 +18,6 @@ public class ToolsRecipeSerializers {
 
     public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(Registries.RECIPE_SERIALIZER, MekanismTools.MODID);
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekBannerShieldRecipe>> BANNER_SHIELD = RECIPE_SERIALIZERS.register("banner_shield", () -> new CustomRecipe.Serializer<>(MekBannerShieldRecipe::new));
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PaxelRecipe>> PAXEL = RECIPE_SERIALIZERS.register("paxel", () -> MekanismRecipeSerializer.wrapped(PaxelRecipe::new));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<MekBannerShieldRecipe>> BANNER_SHIELD = RECIPE_SERIALIZERS.register("banner_shield", () -> MekanismRecipeSerializer.singleton(MekBannerShieldRecipe.INSTANCE));
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<PaxelRecipe>> PAXEL = RECIPE_SERIALIZERS.register("paxel", () -> WrappedShapedRecipe.serializer(PaxelRecipe::new));
 }

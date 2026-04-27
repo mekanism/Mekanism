@@ -1,15 +1,12 @@
 package mekanism.tools.common.material;
 
-import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.config.value.CachedFloatValue;
 import mekanism.common.config.value.CachedIntValue;
-import mekanism.tools.common.ToolsTags;
 import mekanism.tools.common.config.ToolsConfigTranslations.VanillaPaxelMaterialTranslations;
-import net.minecraft.world.item.Tiers;
-import net.minecraft.world.item.component.Tool;
+import net.minecraft.world.item.ToolMaterial;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 @NothingNullByDefault
@@ -61,7 +58,7 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             } else {
                 actualValue = (float) val;
             }
-            float baseDamage = getVanillaTier().getAttackDamageBonus();
+            float baseDamage = getVanillaTier().attackDamageBonus();
             return actualValue >= -baseDamage && actualValue <= Float.MAX_VALUE - baseDamage;
         }
         return false;
@@ -72,11 +69,11 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
             if (validateDamageModifier(defaultModifier)) {
                 return defaultModifier;
             }
-            return (double) -getVanillaTier().getAttackDamageBonus();
+            return (double) -getVanillaTier().attackDamageBonus();
         };
     }
 
-    public Tiers getVanillaTier() {
+    public ToolMaterial getVanillaTier() {
         return fallback.getVanillaTier();
     }
 
@@ -109,7 +106,8 @@ public class VanillaPaxelMaterialCreator implements IPaxelMaterial {
         return paxelEnchantability.get();
     }
 
-    public Tool createToolProperties() {
-        return new Tool(List.of(Tool.Rule.deniesDrops(getVanillaTier().getIncorrectBlocksForDrops()), Tool.Rule.minesAndDrops(ToolsTags.Blocks.MINEABLE_WITH_PAXEL, getPaxelEfficiency())), 1.0F, 1);
+    @Override
+    public ToolMaterial toToolMaterial() {
+        return getVanillaTier();
     }
 }

@@ -5,15 +5,15 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.registries.MekanismCreativeTabs;
 import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.ToolsLang;
+import mekanism.tools.common.item.IsMekanismTool;
 import mekanism.tools.common.item.ItemMekanismArmor;
+import mekanism.tools.common.item.ItemMekanismSword;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.CreativeModeTabs;
-import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ShieldItem;
-import net.minecraft.world.item.SwordItem;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 public class ToolsCreativeTabs {
@@ -31,14 +31,14 @@ public class ToolsCreativeTabs {
         ResourceKey<CreativeModeTab> tabKey = event.getTabKey();
         if (tabKey == CreativeModeTabs.TOOLS_AND_UTILITIES) {
             for (Holder<Item> holder : ToolsItems.ITEMS.getEntries()) {
-                if (holder.value() instanceof DiggerItem) {
+                if (holder.value() instanceof IsMekanismTool) {
                     CreativeTabDeferredRegister.addToDisplay(event, holder);
                 }
             }
         } else if (tabKey == CreativeModeTabs.COMBAT) {
             for (Holder<Item> itemProvider : ToolsItems.ITEMS.getEntries()) {
                 Item item = itemProvider.value();
-                if (item instanceof ItemMekanismArmor || item instanceof SwordItem || item instanceof ShieldItem) {
+                if (item instanceof ItemMekanismArmor || item instanceof ItemMekanismSword || item instanceof ShieldItem) {
                     CreativeTabDeferredRegister.addToDisplay(event, itemProvider);
                 }
             }
