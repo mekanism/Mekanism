@@ -16,7 +16,6 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
@@ -93,17 +92,7 @@ public class RenderTurbineRotor extends MekanismTileEntityRenderer<TileEntityTur
     }
 
     private void submitBlade(TurbineRotorRenderState state, TurbineBladeRenderState bladeState, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
-        nodeCollector.submitModel(
-              this.model,
-              bladeState,
-              poseStack,
-              this.model.getRenderType(),
-              //TODO - 26.1: Do we need to calculate lighting differently for if the blades are very long?
-              state.lightCoords,
-              OverlayTexture.NO_OVERLAY,
-              0,//No outline
-              state.breakProgress
-        );
+        this.model.collect(bladeState, poseStack, nodeCollector, state.lightCoords, OverlayTexture.NO_OVERLAY, false);
     }
 
     @Override

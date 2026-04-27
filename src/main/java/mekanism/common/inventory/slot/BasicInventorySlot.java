@@ -20,12 +20,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
 public class BasicInventorySlot implements IInventorySlot {
+
+    private final ItemAccess itemAccess = ItemAccess.forHandlerIndex(new ResourceHandlerWrapper(), 0);
 
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
@@ -327,5 +332,34 @@ public class BasicInventorySlot implements IInventorySlot {
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
         // crashing due to the stack not being valid
         setStackUnchecked(input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY));
+    }
+
+    //TODO - 26.1: review this
+    public ItemAccess itemAccess() {
+        return itemAccess;
+    }
+
+    private class ResourceHandlerWrapper extends ItemStackResourceHandler {
+
+        @Override
+        protected ItemStack getStack() {
+            return BasicInventorySlot.this.getStack().copy();
+        }
+
+        @Override
+        public long getAmountAsLong(int index) {
+            Objects.checkIndex(index, 1);
+            return BasicInventorySlot.this.getStack().count();
+        }
+
+        @Override
+        protected void setStack(ItemStack stack) {
+            BasicInventorySlot.this.setStackUnchecked(stack);
+        }
+
+        @Override
+        protected boolean isValid(ItemResource resource) {
+            return isItemValid(resource.toStack());
+        }
     }
 }

@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
@@ -29,7 +30,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(stack);
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);

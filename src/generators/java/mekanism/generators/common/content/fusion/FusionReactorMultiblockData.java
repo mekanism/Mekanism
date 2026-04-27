@@ -204,7 +204,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         if (!reactorSlot.isEmpty()) {
             ItemStack hohlraum = reactorSlot.getStack();
             if (hohlraum.getItem() instanceof ItemHohlraum) {
-                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
                 if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                     return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getChemicalTankCapacity(0);
@@ -299,7 +299,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void vaporiseHohlraum() {
         ItemStack hohlraum = reactorSlot.getStack();
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(hohlraum);
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
             lastPlasmaTemperature = getPlasmaTemp();

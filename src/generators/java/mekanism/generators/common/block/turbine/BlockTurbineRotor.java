@@ -31,7 +31,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
         TileEntityTurbineRotor tile = WorldUtils.getTileEntity(TileEntityTurbineRotor.class, world, pos);
         if (tile == null) {
             //No tile, we can just skip trying to use without an item
-            return ItemInteractionResult.SKIP_DEFAULT_BLOCK_INTERACTION;
+            return InteractionResult.PASS;
         } else if (world.isClientSide()) {
             return genericClientActivated(stack, tile);
         }
@@ -43,7 +43,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
             if (!stack.isEmpty() && stack.getItem() instanceof ItemTurbineBlade) {
                 if (tile.addBlade(true)) {
                     stack.consume(1, player);
-                    return ItemInteractionResult.CONSUME;
+                    return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
                 }
             }
         } else if (stack.isEmpty()) {
@@ -52,7 +52,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                     player.setItemInHand(hand, GeneratorsItems.TURBINE_BLADE.asStack());
                     player.getInventory().setChanged();
                 }
-                return ItemInteractionResult.CONSUME;
+                return InteractionResult.SUCCESS_SERVER;
             }
         } else if (stack.getItem() instanceof ItemTurbineBlade) {
             if (stack.count() < stack.getMaxStackSize()) {
@@ -61,7 +61,7 @@ public class BlockTurbineRotor extends BlockTileModel<TileEntityTurbineRotor, Bl
                         stack.grow(1);
                         player.getInventory().setChanged();
                     }
-                    return ItemInteractionResult.CONSUME;
+                    return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
                 }
             }
         }

@@ -11,13 +11,14 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.jspecify.annotations.NullMarked;
 
-//TODO - 26.1: Figure out if this should be a no data special model renderer or what data we want to be including
+//TODO - 26.1: class is needed at all
 @NullMarked
 public abstract class MekanismISTER<MODEL_DATA> implements SpecialModelRenderer<MODEL_DATA> {
 
     protected MekanismISTER() {
     }
 
+    //todo - 26.1: remove this, should come from BakeContext
     public static EntityModelSet getEntityModels() {
         //Just have this method as a helper for what we pass as entity models rather than bothering to
         // use an AT to access it directly

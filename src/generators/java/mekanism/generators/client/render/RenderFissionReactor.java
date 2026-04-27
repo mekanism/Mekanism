@@ -13,7 +13,6 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.RenderData.ScaledRenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
@@ -23,17 +22,13 @@ import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.fission.FissionReactorMultiblockData;
 import mekanism.generators.common.content.fission.FissionReactorValidator.FormedAssembly;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
-import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,17 +113,18 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
                 poseStack.translate(assemblyPos.getX() - pos.getX(), assemblyPos.getY() - pos.getY(), assemblyPos.getZ() - pos.getZ());
                 //Add a bit of extra distance so that it includes the lower part of the control rod
                 poseStack.scale(1, assembly.height() + 0.625F, 1);
-                MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, assemblyPos);
+                //TODO - 26.1: MekanismRenderer.renderObject(model, poseStack, Sheets.translucentCullBlockSheet(), GLOW_ARGB, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, assemblyPos);
                 poseStack.popPose();
             }
             //profiler.pop();
         }
-        if (state.coolantData != null && state.coolantModel != null) {
+        //TODO - 26.1 - renderObject
+        /*if (state.coolantData != null && state.coolantModel != null) {
             renderObject(camera.pos, state.coolantData.asRenderData(), state.blockPos, state.coolantModel, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.coolantScale);
         }
         if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
             renderObject(camera.pos, state.heatedCoolantData, state.blockPos, state.heatedCoolantModel, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.heatedCoolantScale);
-        }
+        }*/
     }
 
     @Override

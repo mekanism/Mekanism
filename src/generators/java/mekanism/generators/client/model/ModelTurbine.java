@@ -1,5 +1,6 @@
 package mekanism.generators.client.model;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import mekanism.client.model.MekanismJavaModel;
 import mekanism.client.model.ModelPartData;
@@ -11,9 +12,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
@@ -58,14 +61,14 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
               BLADE_WEST);
     }
 
-    private final RenderType RENDER_TYPE = renderType(TURBINE_TEXTURE);
+    private final RenderType RENDER_TYPE = RenderTypes.entitySolid(TURBINE_TEXTURE);
     private final ModelPart bladeWest;
     private final ModelPart bladeEast;
     private final ModelPart bladeNorth;
     private final ModelPart bladeSouth;
 
     public ModelTurbine(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(TURBINE_LAYER), RenderTypes::entitySolid);
+        super(entityModelSet.bakeLayer(TURBINE_LAYER));
         bladeWest = BLADE_WEST.getFromRoot(root);
         bladeEast = BLADE_EAST.getFromRoot(root);
         bladeNorth = BLADE_NORTH.getFromRoot(root);
@@ -98,6 +101,12 @@ public class ModelTurbine extends MekanismJavaModel<TurbineBladeRenderState> {
         poseStack.translate(-transX, 0, -transZ);*/
         blade.offsetRotation(new Vector3f(-transX * scaleX, 0, -transZ * scaleZ));
         blade.offsetScale(new Vector3f(scaleX, 0, scaleZ));
+    }
+
+    @Override
+    public void collect(TurbineBladeRenderState turbineBladeRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        setupAnim(turbineBladeRenderState);
+        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 
     public static class TurbineBladeRenderState {

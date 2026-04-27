@@ -34,7 +34,7 @@ public class GuiFusionReactorStats extends GuiFusionReactorInfo {
         FusionReactorMultiblockData multiblock = tile.getMultiblock();
         if (multiblock.isFormed()) {
             int indentation = 4;
-            int textArea = getXSize() - indentation;
+            int textArea = this.getImageWidth() - indentation;
             drawScrollingString(guiGraphics,GeneratorsLang.REACTOR_PASSIVE.translateColored(EnumColor.DARK_GREEN),
                   0, 26, TextAlignment.LEFT, titleTextColor(), 6, false);
             drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_MIN_INJECTION.translate(multiblock.getMinInjectionRate(false)),

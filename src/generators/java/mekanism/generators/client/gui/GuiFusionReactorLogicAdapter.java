@@ -56,7 +56,7 @@ public class GuiFusionReactorLogicAdapter extends GuiMekanismTile<TileEntityFusi
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_ACTIVE_COOLING.translate(EnumColor.RED, OnOff.of(tile.isActiveCooled())), 23, 20, TextAlignment.LEFT,
-              titleTextColor(), getXSize() - 23, 16, false);
+              titleTextColor(), this.getImageWidth() - 23, 16, false);
         drawScrollingString(guiGraphics, GeneratorsLang.REACTOR_LOGIC_REDSTONE_MODE.translate(EnumColor.RED, tile.logicType), 0, 123, TextAlignment.CENTER, titleTextColor(), 4, false);
         drawScrollingString(guiGraphics, MekanismLang.STATUS.translate(EnumColor.RED, tile.checkMode() ? GeneratorsLang.REACTOR_LOGIC_OUTPUTTING : MekanismLang.IDLE),
               0, 136, TextAlignment.CENTER, titleTextColor(), 4, false);

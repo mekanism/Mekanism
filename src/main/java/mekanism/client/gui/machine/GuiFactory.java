@@ -93,7 +93,7 @@ public class GuiFactory extends GuiConfigurableTile<TileEntityFactory<?>, Mekani
     @Override
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
-        renderInventoryText(guiGraphics, dumpButton == null ? getXSize() : dumpButton.getRelativeX());
+        renderInventoryText(guiGraphics, dumpButton == null ? this.getImageWidth() : dumpButton.getRelativeX());
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

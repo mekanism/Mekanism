@@ -2,33 +2,36 @@ package mekanism.generators.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import java.util.function.Consumer;
 import mekanism.api.MekanismAPITags;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.generators.client.model.ModelWindGenerator;
+import mekanism.generators.client.model.ModelWindGenerator.WindGeneratorRotationRenderState;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.world.item.ItemDisplayContext;
+import net.minecraft.client.model.geom.EntityModelSet;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
-public class RenderWindGeneratorItem extends MekanismISTER {
+public class RenderWindGeneratorItem extends MekanismISTER<WindGeneratorRotationRenderState> {
 
-    public static final RenderWindGeneratorItem RENDERER = new RenderWindGeneratorItem();
+    //todo - 26.1: unbaked instead
+    // public static final RenderWindGeneratorItem RENDERER = new RenderWindGeneratorItem();
     private static final int SPEED = 16;
     private static int lastTicksUpdated = 0;
     private static int angle = 0;
     private ModelWindGenerator windGenerator;
+    private static WindGeneratorRotationRenderState ZERO_ANGLE = new WindGeneratorRotationRenderState(0);
 
-    @Override
-    public void onResourceManagerReload(@NotNull ResourceManager resourceManager) {
-        windGenerator = new ModelWindGenerator(getEntityModels());
+    public RenderWindGeneratorItem(EntityModelSet entityModelSet) {
+        windGenerator = new ModelWindGenerator(entityModelSet);
     }
 
+    @Nullable
     @Override
-    public void renderByItem(@NotNull ItemStack stack, @NotNull ItemDisplayContext displayContext, @NotNull PoseStack matrix, @NotNull MultiBufferSource renderer,
-          int light, int overlayLight) {
+    public WindGeneratorRotationRenderState extractArgument(ItemStack stack) {
         Minecraft minecraft = Minecraft.getInstance();
         boolean tickingNormally = MekanismRenderer.isRunningNormally();
         if (tickingNormally && minecraft.level != null) {
@@ -44,14 +47,29 @@ public class RenderWindGeneratorItem extends MekanismISTER {
                 }
             }
         }
-        float renderAngle = angle;
+        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState(angle);
         if (tickingNormally) {
-            renderAngle = (renderAngle + SPEED * MekanismRenderer.getPartialTick()) % 360;
+            state.angle = (state.angle + SPEED * MekanismRenderer.getPartialTick()) % 360;
         }
+        return state;
+    }
+
+    @Override
+    public void getExtents(Consumer<Vector3fc> output) {
+        windGenerator.setupAnim(ZERO_ANGLE);
+        windGenerator.root().getExtentsForGui(new PoseStack(), output);
+    }
+
+    @Override
+    public void submit(@Nullable WindGeneratorRotationRenderState argument, PoseStack matrix, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
+        if (argument == null) {
+            return;
+        }
+        windGenerator.setupAnim(argument);
         matrix.pushPose();
         matrix.translate(0.5, 0.5, 0.5);
         matrix.mulPose(Axis.ZP.rotationDegrees(180));
-        windGenerator.render(matrix, renderer, renderAngle, light, overlayLight, stack.hasFoil());
+        windGenerator.collect(argument, matrix, submitNodeCollector, lightCoords, overlayCoords, hasFoil);
         matrix.popPose();
     }
 }

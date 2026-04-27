@@ -78,6 +78,7 @@ sourceSets {
             if (disableEMI) {
                 println("Disabling compilation of EMI integration")
                 exclude('mekanism/client/recipe_viewer/emi/**')
+                exclude('mekanism/generators/client/recipe_viewer/emi/**')
             }
             if (disableProjectE) {
                 println("Disabling compilation of ProjE integration")
@@ -145,6 +146,12 @@ for (String name : secondaryModules) {
         srcDirs += ["src/datagen/generated/mekanism${name}"]
         //But exclude the cache of the generated data from what gets built
         exclude('.cache')
+    }
+    if (disableEMI) {
+        if (name == 'generators') {
+            println("[generators] Disabling compilation of EMI integration")
+            sourceSet.java.exclude('mekanism/generators/client/recipe_viewer/emi/**')
+        }
     }
     sourceSet.compileClasspath += sourceSets.api.output
     sourceSet.compileClasspath += sourceSets.main.output

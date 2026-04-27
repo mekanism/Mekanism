@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
@@ -110,7 +110,7 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
               REAR_PLATE_1, REAR_PLATE_2, BLADE_1A, BLADE_2A, BLADE_3A, BLADE_1B, BLADE_2B, BLADE_3B, POST_1A, POST_1B, POST_1C, POST_1D);
     }
 
-    public final RenderType RENDER_TYPE = renderType(GENERATOR_TEXTURE);
+    public final RenderType RENDER_TYPE = RenderTypes.entitySolid(GENERATOR_TEXTURE);
     private final ModelPart blade1a;
     private final ModelPart blade1b;
     private final ModelPart blade2a;
@@ -121,7 +121,7 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
     private final ModelPart bladeCenter;
 
     public ModelWindGenerator(EntityModelSet entityModelSet) {
-        super(entityModelSet.bakeLayer(GENERATOR_LAYER), RenderTypes::entitySolid);
+        super(entityModelSet.bakeLayer(GENERATOR_LAYER));
         blade1a = BLADE_1A.getFromRoot(root);
         blade1b = BLADE_1B.getFromRoot(root);
         blade2a = BLADE_2A.getFromRoot(root);
@@ -132,17 +132,14 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
         bladeCenter = BLADE_CENTER.getFromRoot(root);
     }
 
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    public void render(@NotNull PoseStack matrix, @NotNull MultiBufferSource renderer, float angle, int light, int overlayLight, boolean hasEffect) {
-        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState();
-        state.angle = angle;
-        setupAnim(state);
-        renderToBuffer(matrix, getVertexConsumer(renderer, RENDER_TYPE, hasEffect), light, overlayLight, 0xFFFFFFFF);
+    @Override
+    public void collect(WindGeneratorRotationRenderState windGeneratorRotationRenderState, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        setupAnim(windGeneratorRotationRenderState);
+        collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 
     public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float angle) {
-        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState();
-        state.angle = angle;
+        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState(angle);
         setupAnim(state);
         renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder);
     }
@@ -172,6 +169,9 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
 
     public static class WindGeneratorRotationRenderState {
 
+        public WindGeneratorRotationRenderState(float angle) {
+            this.angle = angle;
+        }
         public float angle;
     }
 }

@@ -17,11 +17,11 @@ import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
-import mekanism.client.recipe_viewer.emi.INamedRVRecipe;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
@@ -30,7 +30,7 @@ import org.jetbrains.annotations.Nullable;
 //If null -> coolant is water
 public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIngredient inputCoolant, ChemicalStackIngredient fuel, ChemicalStack outputCoolant,
                                         ChemicalStack waste)
-      implements INamedRVRecipe {
+      /*implements INamedRVRecipe */ {
 
     public static final Codec<FissionRecipeViewerRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Identifier.CODEC.fieldOf(SerializationConstants.ID).forGetter(FissionRecipeViewerRecipe::id),
@@ -42,7 +42,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
     public FluidStackIngredient waterInput() {
-        return IngredientCreatorAccess.fluid().from(, FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
+        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, MathUtils.clampToInt(outputCoolant().getAmount()));
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {

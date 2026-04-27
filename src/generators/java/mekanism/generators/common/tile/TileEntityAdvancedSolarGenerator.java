@@ -131,7 +131,7 @@ public class TileEntityAdvancedSolarGenerator extends TileEntitySolarGenerator i
                 if (world.canSeeSky(above)) {
                     //If the spot above can see the sun, check to make sure we can see through the block there
                     BlockState state = world.getBlockState(above);
-                    canSeeSun = !state.liquid() && state.getLightBlock(world, above) <= 0;
+                    canSeeSun = !state.liquid() && state.getLightDampening() <= 0;
                 } else {
                     canSeeSun = false;
                 }

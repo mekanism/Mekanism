@@ -81,17 +81,17 @@ public class GuiMatrixStats extends GuiMekanismTile<TileEntityInductionCasing, E
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         MatrixMultiblockData multiblock = tile.getMultiblock();
-        drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 45, 26, TextAlignment.LEFT, subheadingTextColor(), getXSize() - 54, 8, false);
-        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastInput(), multiblock.getTransferCap()).getTextComponent(), 51, 35, TextAlignment.LEFT, titleTextColor(), getXSize() - 60, 8, false);
-        drawScrollingString(guiGraphics, MekanismLang.OUTPUT.translate(), 45, 46, TextAlignment.LEFT, subheadingTextColor(), getXSize() - 54, 8, false);
-        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastOutput(), multiblock.getTransferCap()).getTextComponent(), 51, 55, TextAlignment.LEFT, titleTextColor(), getXSize() - 60, 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.INPUT.translate(), 45, 26, TextAlignment.LEFT, subheadingTextColor(), this.getImageWidth() - 54, 8, false);
+        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastInput(), multiblock.getTransferCap()).getTextComponent(), 51, 35, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.OUTPUT.translate(), 45, 46, TextAlignment.LEFT, subheadingTextColor(), this.getImageWidth() - 54, 8, false);
+        drawScrollingString(guiGraphics, EnergyDisplay.of(multiblock.getLastOutput(), multiblock.getTransferCap()).getTextComponent(), 51, 55, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 60, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_DIMENSIONS.translate(), 0, 82, TextAlignment.LEFT, subheadingTextColor(), 8, false);
         if (multiblock.isFormed()) {
-            drawScrollingString(guiGraphics, MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(multiblock.width(), multiblock.height(), multiblock.length()), 6, 91, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+            drawScrollingString(guiGraphics, MekanismLang.MATRIX_DIMENSION_REPRESENTATION.translate(multiblock.width(), multiblock.height(), multiblock.length()), 6, 91, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         }
         drawScrollingString(guiGraphics, MekanismLang.MATRIX_CONSTITUENTS.translate(), 0, 102, TextAlignment.LEFT, subheadingTextColor(), 8, false);
-        drawScrollingString(guiGraphics, MekanismLang.MATRIX_CELLS.translate(multiblock.getCellCount()), 6, 111, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
-        drawScrollingString(guiGraphics, MekanismLang.MATRIX_PROVIDERS.translate(multiblock.getProviderCount()), 6, 120, TextAlignment.LEFT, titleTextColor(), getXSize() - 6, 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.MATRIX_CELLS.translate(multiblock.getCellCount()), 6, 111, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.MATRIX_PROVIDERS.translate(multiblock.getProviderCount()), 6, 120, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         super.drawForegroundText(guiGraphics, mouseX, mouseY);
     }
 }

@@ -18,7 +18,6 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -59,17 +58,14 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             poseStack.translate(0.5, 1.5, 0.5);
             MekanismRenderer.rotate(poseStack, state.direction, 0, 180, 90, 270);
             poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-            nodeCollector.submitModel(
-                  this.model,
+            this.model.collect(
                   state.rotation,
                   poseStack,
-                  //TODO - 26.1: Figure out/at least cleanup the name
-                  this.model.RENDER_TYPE,
+                  nodeCollector,
                   //TODO - 26.1: Do we need to do something for the light level similar to what double chests do of calculating the max of all the positions?
                   state.lightCoords,
                   OverlayTexture.NO_OVERLAY,
-                  0,//No outline
-                  state.breakProgress
+                  false
             );
             poseStack.popPose();
         }
@@ -110,7 +106,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
 
     public static class WindGeneratorRenderState extends BlockEntityRenderState {
 
-        public WindGeneratorRotationRenderState rotation = new WindGeneratorRotationRenderState();
+        public WindGeneratorRotationRenderState rotation = new WindGeneratorRotationRenderState(0);
         @Nullable
         public Direction direction;
     }

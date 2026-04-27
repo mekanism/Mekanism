@@ -43,6 +43,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
     //TODO - 26.1 outlines??
     public abstract void collect(STATE state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect);
 
+    //todo - 26.1: call this in renderer submit methods before calling collect()?
     public void setupAnim(STATE state) {
         this.resetPose();
     }

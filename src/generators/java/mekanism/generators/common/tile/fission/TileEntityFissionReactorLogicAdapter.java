@@ -65,7 +65,9 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                     //Not formed, just update all sides
                     world.updateNeighborsAt(getBlockPos(), state.getBlock());
                 } else if (!EventHooks.onNeighborNotify(world, worldPosition, state, EnumSet.of(side), false).isCanceled()) {
-                    world.neighborChanged(worldPosition.relative(side), state.getBlock(), worldPosition);
+                    BlockPos toUpdate = worldPosition.relative(side);
+                    world.getBlockState(toUpdate).onNeighborChange(world, toUpdate, worldPosition);
+                    //TODO - 26.1: check weak power updates, updateNeighbourForOutputSignal does some cascading extra stuff
                 }
             }
             prevStatus = status;

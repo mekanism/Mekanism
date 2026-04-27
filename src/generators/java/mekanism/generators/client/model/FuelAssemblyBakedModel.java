@@ -1,5 +1,5 @@
 package mekanism.generators.client.model;
-
+/* TODO update this
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
@@ -85,4 +85,4 @@ public class FuelAssemblyBakedModel extends BakedModelWrapper<BakedModel> {
         }
         return super.getRenderTypes(state, rand, data);
     }
-}
+}*/
