@@ -17,7 +17,6 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkMap;
 import net.minecraft.server.level.DistanceManager;
@@ -29,6 +28,7 @@ import net.neoforged.testframework.DynamicTest;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.RegisterStructureTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.GameTest;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
 import org.jetbrains.annotations.Nullable;
 
@@ -59,7 +59,7 @@ public class TransmitterNetworkTest {
                       helper.useConfigurator(1, 2, 1, direction, direction.getAxisDirection() == AxisDirection.POSITIVE ? 1 : 2);
                   }
               })
-              .thenMap(() -> helper.requireBlockEntity(1, 2, 1, TileEntityLogisticalTransporter.class).getTransmitter())
+              .thenMap(() -> helper.getBlockEntity(1, 2, 1, TileEntityLogisticalTransporter.class).getTransmitter())
               .thenExecute(transporter -> {
                   //Validate all sides got properly changed
                   for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -131,7 +131,7 @@ public class TransmitterNetworkTest {
         public void run() {
             helper.forEveryBlockInStructure(relativePos -> {
                 if (helper.isBlockLoaded(relativePos)) {
-                    Transmitter<?, ?, ?> transmitter = helper.requireBlockEntity(relativePos, TileEntityTransmitter.class).getTransmitter();
+                    Transmitter<?, ?, ?> transmitter = helper.getBlockEntity(relativePos, TileEntityTransmitter.class).getTransmitter();
                     if (!transmitter.hasTransmitterNetwork()) {
                         helper.fail("No transmitter network found", relativePos);
                     }

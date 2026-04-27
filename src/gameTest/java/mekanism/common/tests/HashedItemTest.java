@@ -7,12 +7,12 @@ import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
 import mekanism.common.tests.helpers.MekGameTestHelper;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.GameTest;
 
 @ForEachTest(groups = "hasheditem")
 public class HashedItemTest {

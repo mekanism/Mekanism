@@ -16,7 +16,6 @@ import mekanism.common.tests.helpers.TransmitterTestHelper;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BarrelBlockEntity;
@@ -26,6 +25,7 @@ import net.neoforged.testframework.DynamicTest;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.RegisterStructureTemplate;
 import net.neoforged.testframework.annotation.TestHolder;
+import net.neoforged.testframework.gametest.GameTest;
 import net.neoforged.testframework.gametest.StructureTemplateBuilder;
 
 @ForEachTest(groups = "network.inventory")
@@ -149,7 +149,7 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              .thenMap(() -> helper.requireBlockEntity(0, 1, 5, BarrelBlockEntity.class))
+              .thenMap(() -> helper.getBlockEntity(0, 1, 5, BarrelBlockEntity.class))
               //Wait a second for it to pull the item out, and fill the last slot of the barrel
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, barrel -> barrel.setItem(26, Items.OAK_LOG.getDefaultInstance()))
               //Make sure the start container is empty

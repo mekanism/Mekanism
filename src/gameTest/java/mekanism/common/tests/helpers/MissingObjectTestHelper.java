@@ -32,7 +32,6 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
-import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -104,7 +103,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         succeedIf(() -> {
             TYPE val = cycleSerialization(codec, sourceSupplier.apply(this), rawJsonReplacer);
             if (!resultValidator.test(val)) {//TODO: Allow for custom messages?
-                throw new GameTestAssertException("Resulting value after cycling serialization was not what was expected");
+                throw assertionException( "Resulting value after cycling serialization was not what was expected");
             }
         });
     }
@@ -114,7 +113,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
             TYPE sourceObject = sourceSupplier.apply(this);
             TYPE val = cycleSerialization(codec, sourceObject, rawJsonReplacer);
             if (!sourceObject.equals(val)) {
-                throw new GameTestAssertException("Resulting value after cycling serialization was not what was expected");
+                throw assertionException("Resulting value after cycling serialization was not what was expected");
             }
         });
     }

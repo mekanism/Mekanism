@@ -3,17 +3,19 @@ package mekanism.common.tests.util;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
+import mekanism.common.Mekanism;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.NBTUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.TagValueOutput;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,11 +35,20 @@ public class TransporterTestUtils {
     }
 
     public static CompoundTag containing(ItemStack... stacks) {
-        return ContainerHelper.saveAllItems(new CompoundTag(), NonNullList.of(ItemStack.EMPTY, stacks), registryAccess());
+        return containing(NonNullList.of(ItemStack.EMPTY, stacks));
     }
 
     public static CompoundTag containing(ItemStack stack, int slots) {
-        return ContainerHelper.saveAllItems(new CompoundTag(), NonNullList.withSize(slots, stack), registryAccess());
+        return containing(NonNullList.withSize(slots, stack));
+    }
+
+    private static CompoundTag containing(NonNullList<ItemStack> items) {
+        //TODO - 26.1: Should we pass a path to the scoped collector?
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
+            ContainerHelper.saveAllItems(output, items);
+            return output.buildResult();
+        }
     }
 
     private static HolderLookup.Provider registryAccess() {
@@ -71,7 +82,7 @@ public class TransporterTestUtils {
         }
         CompoundTag tag = new CompoundTag();
         if (color != null) {
-            NBTUtils.writeEnum(tag, SerializationConstants.COLOR, color);
+            tag.putInt(SerializationConstants.COLOR, color.ordinal());
         }
         if (side != null) {
             int[] raw = new int[EnumUtils.DIRECTIONS.length];

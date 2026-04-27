@@ -20,7 +20,6 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.helpers.MissingObjectTestHelper;
 import net.minecraft.core.NonNullList;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -28,6 +27,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.GameTest;
 
 @ForEachTest(groups = "codec.missing")
 public class MissingObjectSerializationTest {
@@ -120,7 +120,7 @@ public class MissingObjectSerializationTest {
         }, formulaItem -> {
             if (formulaItem.is(MekanismItems.CRAFTING_FORMULA)) {
                 FormulaAttachment formula = formulaItem.get(MekanismDataComponents.FORMULA_HOLDER);
-                return formula != null && formula.isEmpty() && formulaItem.getComponentsPatch().get(MekanismDataComponents.FORMULA_HOLDER.get()) == null;
+                return formula != null && formula.isEmpty() && formulaItem.getComponentsPatch().getPatch(MekanismDataComponents.FORMULA_HOLDER.get()) == null;
             }
             return false;
         });
@@ -143,7 +143,7 @@ public class MissingObjectSerializationTest {
             binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
             return binItem;
         }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
-                      binItem.getComponentsPatch().get(MekanismDataComponents.LOCK.get()) == null);
+                      binItem.getComponentsPatch().getPatch(MekanismDataComponents.LOCK.get()) == null);
     }
 
     @GameTest
@@ -159,7 +159,7 @@ public class MissingObjectSerializationTest {
         }, adapter -> {
             if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
                 Optional<HashedItem> itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
-                return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().get(MekanismDataComponents.ITEM_TARGET.get()) == null &&
+                return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().getPatch(MekanismDataComponents.ITEM_TARGET.get()) == null &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
             }
             return false;

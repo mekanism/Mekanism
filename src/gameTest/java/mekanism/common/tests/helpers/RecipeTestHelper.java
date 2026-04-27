@@ -14,9 +14,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
 import net.neoforged.neoforge.registries.datamaps.DataMapType;
 
 public class RecipeTestHelper extends MekGameTestHelper {
@@ -27,6 +29,10 @@ public class RecipeTestHelper extends MekGameTestHelper {
 
     public <RECIPE extends MekanismRecipe<?>> List<RecipeHolder<RECIPE>> getRecipes(IMekanismRecipeTypeProvider<?, RECIPE, ?> recipeType) {
         return recipeType.getRecipes(getLevel());
+    }
+
+    public ContextMap recipeContext() {
+        return SlotDisplayContext.fromLevel(getLevel());
     }
 
     public <TYPE> Set<ResourceKey<TYPE>> collectKnownMissing(Registry<TYPE> registry, TagKey<TYPE> knownMissingTag) {
@@ -41,7 +47,7 @@ public class RecipeTestHelper extends MekGameTestHelper {
     }
 
     public void collectInputs(Set<ResourceKey<Item>> inputs, ItemStackIngredient input, TagKey<Item> knownMissingTag, String type) {
-        for (ItemStack representation : input.getRepresentations()) {
+        for (ItemStack representation : input.getRepresentations(recipeContext())) {
             if (representation.is(knownMissingTag)) {
                 fail("Item " + representation.getItem() + " is marked as being known to be missing, but has a " + type + " recipe.");
             }

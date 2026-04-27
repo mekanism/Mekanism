@@ -17,6 +17,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkLevel;
@@ -47,6 +48,11 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public MekGameTestHelper(GameTestInfo info) {
         super(info);
+    }
+
+    public GameTestAssertException assertionException(String description) {
+        //TODO - 26.1: Do we want to make any of our assertions translatable so that they can replace parameters instead of using string concat?
+        return assertionException(Component.literal(description));
     }
 
     public static HashedItem hashedStack(Item item) {
@@ -89,7 +95,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
     public void fail(String message, ChunkPos relativePos) {
         ChunkPos absolutePos = absolutePos(relativePos);
-        fail(message + " at " + absolutePos.x + "," + absolutePos.z + " (relative: " + relativePos.x + "," + relativePos.z + ") (t=" + getTick() + ")");
+        fail(message + " at " + absolutePos.x() + "," + absolutePos.z() + " (relative: " + relativePos.x() + "," + relativePos.z() + ") (t=" + getTick() + ")");
     }
 
     @Override
@@ -107,14 +113,14 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public void assertContainerContains(BlockPos relativePos, Item item, int count) {
         //TODO: Do we want to make a PR to Neo that adds this overload, even if it is as simple as only checking the count
         // and doesn't also add support for checking item handlers?
-        BlockEntity blockentity = getBlockEntity(relativePos);
+        BlockEntity blockentity = getLevel().getBlockEntity(absolutePos(relativePos));
         boolean sameCount;
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
             sameCount = containerBE.countItem(item) == count;
         } else {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
-                throw new GameTestAssertException("Expected a container or item handler at " + relativePos + ", found " +
+                throw assertionException("Expected a container or item handler at " + relativePos + ", found " +
                                                   Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType()));
             }
             int found = 0;
@@ -127,7 +133,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
             sameCount = found == count;
         }
         if (!sameCount) {
-            throw new GameTestAssertException("Container should contain: " + count + " " + item);
+            throw assertionException("Container should contain: " + count + " " + item);
         }
     }
 
@@ -136,17 +142,17 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
      */
     @Override
     public void assertContainerEmpty(BlockPos relativePos) {
-        BlockEntity blockentity = getBlockEntity(relativePos);
+        BlockEntity blockentity = getLevel().getBlockEntity(absolutePos(relativePos));
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
             if (!containerBE.isEmpty()) {
-                throw new GameTestAssertException("Container should be empty");
+                throw assertionException("Container should be empty");
             }
         } else {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler != null) {
                 for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
                     if (!handler.getStackInSlot(i).isEmpty()) {
-                        throw new GameTestAssertException("Container should be empty");
+                        throw assertionException("Container should be empty");
                     }
                 }
             }
@@ -205,7 +211,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         RegistryOps<JsonElement> serializationContext = getLevel().registryAccess().createSerializationContext(JsonOps.INSTANCE);
         DataResult<JsonElement> encodedResult = codec.encodeStart(serializationContext, sourceObject);
         //Note: Theoretically encoding shouldn't have any issues, but if it does, throw them
-        JsonElement encoded = encodedResult.getOrThrow(GameTestAssertException::new);
+        JsonElement encoded = encodedResult.getOrThrow(this::assertionException);
 
         String asString = GsonHelper.toStableString(encoded);
         String replacedString = rawJsonReplacer.apply(asString);
@@ -213,12 +219,12 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
             fail("Could not find target to replace in: " + asString);
         }
         JsonElement toDecode = switch (encoded) {
-            case JsonObject json -> GsonHelper.parse(replacedString);
-            case JsonArray json -> GsonHelper.parseArray(replacedString);
-            case null, default -> throw new GameTestAssertException("Unable to determine type of json element to decode");
+            case JsonObject _ -> GsonHelper.parse(replacedString);
+            case JsonArray _ -> GsonHelper.parseArray(replacedString);
+            case null, default -> throw assertionException("Unable to determine type of json element to decode");
         };
 
         DataResult<TYPE> decoded = codec.parse(serializationContext, toDecode);
-        return decoded.getOrThrow(GameTestAssertException::new);
+        return decoded.getOrThrow(this::assertionException);
     }
 }

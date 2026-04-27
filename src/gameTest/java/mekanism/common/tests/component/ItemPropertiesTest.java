@@ -20,13 +20,13 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
+import net.neoforged.testframework.gametest.GameTest;
 
 @ForEachTest(groups = "component.item")
 public class ItemPropertiesTest {
