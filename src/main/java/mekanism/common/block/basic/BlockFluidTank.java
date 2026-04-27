@@ -14,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -21,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockFluidTank extends BlockTileModel<TileEntityFluidTank, Machine<TileEntityFluidTank>> {
 
-    public BlockFluidTank(Machine<TileEntityFluidTank> type) {
-        super(type, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor()));
+    public BlockFluidTank(Machine<TileEntityFluidTank> type, BlockBehaviour.Properties properties) {
+        super(type, defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor()));
     }
 
     @Override

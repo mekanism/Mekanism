@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import java.util.function.UnaryOperator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
@@ -29,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
 
-    public BlockBin(BlockTypeTile<TileEntityBin> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(type, propertiesModifier);
+    public BlockBin(BlockTypeTile<TileEntityBin> type, BlockBehaviour.Properties properties) {
+        super(type, properties);
     }
 
     @Override

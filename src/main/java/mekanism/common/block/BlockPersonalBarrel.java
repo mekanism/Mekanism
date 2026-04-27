@@ -7,14 +7,15 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPersonalBarrel extends BlockPersonalStorage<TileEntityPersonalBarrel, BlockTypeTile<TileEntityPersonalBarrel>> {
 
-    public BlockPersonalBarrel() {
-        super(MekanismBlockTypes.PERSONAL_BARREL, properties -> properties.mapColor(MapColor.COLOR_GRAY));
+    public BlockPersonalBarrel(BlockBehaviour.Properties properties) {
+        super(MekanismBlockTypes.PERSONAL_BARREL, defaultProperties(properties).mapColor(MapColor.COLOR_GRAY));
     }
 
     @Override

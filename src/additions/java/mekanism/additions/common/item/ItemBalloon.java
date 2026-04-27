@@ -31,8 +31,8 @@ public class ItemBalloon extends Item {
 
     private final EnumColor color;
 
-    public ItemBalloon(EnumColor color) {
-        super(new Item.Properties());
+    public ItemBalloon(Item.Properties properties, EnumColor color) {
+        super(properties);
         this.color = color;
         DispenserBlock.registerBehavior(this, new DispenserBehavior(this.color));
     }

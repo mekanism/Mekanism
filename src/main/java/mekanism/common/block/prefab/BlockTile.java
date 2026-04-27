@@ -1,7 +1,6 @@
 package mekanism.common.block.prefab;
 
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeParticleFX;
@@ -33,9 +32,10 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockBase<TYPE> implements IHasTileEntity<TILE> {
 
-    public BlockTile(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(3.5F, 16).requiresCorrectToolForDrops()));
+    //TODO - 26.1: Re-evaluate usages of this and maybe decide to inline properties to call sites?
+    public static BlockBehaviour.Properties defaultProperties(BlockBehaviour.Properties properties) {
         //TODO - 1.18: Figure out what the resistance should be (it used to be different in 1.12)
+        return properties.strength(3.5F, 16).requiresCorrectToolForDrops();
     }
 
     public BlockTile(TYPE type, BlockBehaviour.Properties properties) {
@@ -133,10 +133,6 @@ public class BlockTile<TILE extends TileEntityMekanism, TYPE extends BlockTypeTi
     }
 
     public static class BlockTileModel<TILE extends TileEntityMekanism, BLOCK extends BlockTypeTile<TILE>> extends BlockTile<TILE, BLOCK> implements IStateFluidLoggable {
-
-        public BlockTileModel(BLOCK type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-            super(type, propertiesModifier);
-        }
 
         public BlockTileModel(BLOCK type, BlockBehaviour.Properties properties) {
             super(type, properties);

@@ -1,6 +1,5 @@
 package mekanism.common.block.transmitter;
 
-import java.util.function.UnaryOperator;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
@@ -8,7 +7,9 @@ import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockLargeTransmitter<TILE extends TileEntityTransmitter> extends BlockTransmitter<TILE> {
 
@@ -40,12 +41,12 @@ public class BlockLargeTransmitter<TILE extends TileEntityTransmitter> extends B
         return SIDES[side.ordinal()];
     }
 
-    public BlockLargeTransmitter(BlockTypeTile<TILE> type) {
-        super(type);
+    public BlockLargeTransmitter(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties) {
+        this(type, properties, null);
     }
 
-    public BlockLargeTransmitter(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(type, propertiesModifier);
+    public BlockLargeTransmitter(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties, @Nullable MapColor mapColor) {
+        super(type, properties, mapColor);
     }
 
     @Override

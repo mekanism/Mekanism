@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.function.UnaryOperator;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.Attributes.AttributeInventory;
 import mekanism.common.block.prefab.BlockTile;
@@ -13,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -24,8 +24,8 @@ public abstract class BlockPersonalStorage<TILE extends TileEntityPersonalStorag
         return true;
     });
 
-    public BlockPersonalStorage(BLOCK type, UnaryOperator<Properties> propertiesModifier) {
-        super(type, propertiesModifier);
+    public BlockPersonalStorage(BLOCK type, BlockBehaviour.Properties properties) {
+        super(type, properties);
     }
 
     @Override

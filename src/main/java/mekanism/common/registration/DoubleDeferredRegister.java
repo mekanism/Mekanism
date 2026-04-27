@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import net.minecraft.core.Registry;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredHolder;
@@ -30,22 +31,22 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
     }
 
     public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,
-          Supplier<? extends P> primarySupplier, Supplier<? extends S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
-          DeferredHolder<SECONDARY, S>, W> objectWrapper) {
+          Supplier<? extends P> primarySupplier, Supplier<? extends S> secondarySupplier,
+          BiFunction<DeferredHolder<PRIMARY, P>, DeferredHolder<SECONDARY, S>, W> objectWrapper) {
         return objectWrapper.apply(primaryRegister.register(name, primarySupplier), secondaryRegister.register(name, secondarySupplier));
     }
 
     public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W register(String name,
-          Supplier<? extends P> primarySupplier, Function<P, S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
-          DeferredHolder<SECONDARY, S>, W> objectWrapper) {
-        return registerAdvanced(name, primarySupplier, secondarySupplier.compose(Supplier::get), objectWrapper);
+          Function<Identifier, ? extends P> primarySupplier, BiFunction<Identifier, P, S> secondarySupplier,
+          BiFunction<DeferredHolder<PRIMARY, P>, DeferredHolder<SECONDARY, S>, W> objectWrapper) {
+        return registerAdvanced(name, primarySupplier, (id, holder) -> secondarySupplier.apply(id, holder.get()), objectWrapper);
     }
 
     public <P extends PRIMARY, S extends SECONDARY, W extends DoubleWrappedRegistryObject<PRIMARY, P, SECONDARY, S>> W registerAdvanced(String name,
-          Supplier<? extends P> primarySupplier, Function<DeferredHolder<PRIMARY, P>, S> secondarySupplier, BiFunction<DeferredHolder<PRIMARY, P>,
-          DeferredHolder<SECONDARY, S>, W> objectWrapper) {
+          Function<Identifier, ? extends P> primarySupplier, BiFunction<Identifier, DeferredHolder<PRIMARY, P>, S> secondarySupplier,
+          BiFunction<DeferredHolder<PRIMARY, P>, DeferredHolder<SECONDARY, S>, W> objectWrapper) {
         DeferredHolder<PRIMARY, P> primaryObject = primaryRegister.register(name, primarySupplier);
-        return objectWrapper.apply(primaryObject, secondaryRegister.register(name, () -> secondarySupplier.apply(primaryObject)));
+        return objectWrapper.apply(primaryObject, secondaryRegister.register(name, key -> secondarySupplier.apply(key, primaryObject)));
     }
 
     public void register(IEventBus bus) {
@@ -59,5 +60,13 @@ public class DoubleDeferredRegister<PRIMARY, SECONDARY> {
 
     public Collection<DeferredHolder<SECONDARY, ? extends SECONDARY>> getSecondaryEntries() {
         return secondaryRegister.getEntries();
+    }
+
+    protected ResourceKey<PRIMARY> createPrimaryId(Identifier key) {
+        return ResourceKey.create(primaryRegister.getRegistryKey(), key);
+    }
+
+    protected ResourceKey<SECONDARY> createSecondaryId(Identifier key) {
+        return ResourceKey.create(secondaryRegister.getRegistryKey(), key);
     }
 }

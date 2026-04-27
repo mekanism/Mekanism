@@ -2,7 +2,7 @@ package mekanism.additions.common.registries;
 
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
@@ -74,7 +74,7 @@ public class AdditionsBlocks {
             PLASTIC_FENCE_GATES.put(color, registerColoredBlock(BlockPlasticFenceGate::new, "_plastic_fence_gate", color));
             PLASTIC_GLOW_STAIRS.put(color, registerPlasticStairs(plasticGlowBlockRO, color, "_plastic_glow_stairs", properties -> properties.lightLevel(state -> 10).emissiveRendering(BlockStateHelper.ALWAYS_PREDICATE)));
             PLASTIC_GLOW_SLABS.put(color, registerPlasticSlab(color, "_plastic_glow_slab", properties -> properties.lightLevel(state -> 10).emissiveRendering(BlockStateHelper.ALWAYS_PREDICATE)));
-            TRANSPARENT_PLASTIC_STAIRS.put(color, registerColoredBlock(c -> new BlockPlasticTransparentStairs(transparentPlasticRO.defaultState(), c),
+            TRANSPARENT_PLASTIC_STAIRS.put(color, registerColoredBlock((properties, c) -> new BlockPlasticTransparentStairs(transparentPlasticRO.defaultState(), properties, c),
                   "_plastic_transparent_stairs", color));
             TRANSPARENT_PLASTIC_SLABS.put(color, registerColoredBlock(BlockPlasticTransparentSlab::new, "_plastic_transparent_slab", color));
         }
@@ -82,21 +82,22 @@ public class AdditionsBlocks {
 
     private static BlockRegistryObject<BlockPlastic, ItemBlockMekanism<BlockPlastic>> registerPlastic(EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        return registerColoredBlock(c -> new BlockPlastic(c, propertyModifier), blockTypeSuffix, color);
+        return registerColoredBlock((properties, c) -> new BlockPlastic(propertyModifier.apply(properties), c), blockTypeSuffix, color);
     }
 
     private static BlockRegistryObject<BlockPlasticSlab, ItemBlockMekanism<BlockPlasticSlab>> registerPlasticSlab(EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        return registerColoredBlock(c -> new BlockPlasticSlab(c, propertyModifier), blockTypeSuffix, color);
+        return registerColoredBlock((properties, c) -> new BlockPlasticSlab(propertyModifier.apply(properties), c), blockTypeSuffix, color);
     }
 
     private static BlockRegistryObject<BlockPlasticStairs, ItemBlockMekanism<BlockPlasticStairs>> registerPlasticStairs(Holder<Block> baseBlock, EnumColor color, String blockTypeSuffix,
           UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        return registerColoredBlock(c -> new BlockPlasticStairs(baseBlock.value().defaultBlockState(), c, propertyModifier), blockTypeSuffix, color);
+        return registerColoredBlock((properties, c) -> new BlockPlasticStairs(baseBlock.value().defaultBlockState(), propertyModifier.apply(properties), c), blockTypeSuffix, color);
     }
 
-    private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(Function<EnumColor, BLOCK> blockCreator,
+    private static <BLOCK extends Block & IColoredBlock> BlockRegistryObject<BLOCK, ItemBlockMekanism<BLOCK>> registerColoredBlock(
+          BiFunction<BlockBehaviour.Properties, EnumColor, BLOCK> blockCreator,
           String blockTypeSuffix, EnumColor color) {
-        return BLOCKS.register(color.getRegistryPrefix() + blockTypeSuffix, () -> blockCreator.apply(color), ItemBlockMekanism::new);
+        return BLOCKS.register(color.getRegistryPrefix() + blockTypeSuffix, properties -> blockCreator.apply(properties, color), ItemBlockMekanism::new);
     }
 }

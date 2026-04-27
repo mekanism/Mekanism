@@ -1,6 +1,5 @@
 package mekanism.common.block;
 
-import java.util.function.UnaryOperator;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -11,14 +10,15 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.qio.TileEntityQIOComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockQIOComponent<TILE extends TileEntityQIOComponent, BLOCK extends BlockTypeTile<TILE>> extends BlockTileModel<TILE, BLOCK> {
 
-    public BlockQIOComponent(BLOCK type, UnaryOperator<Properties> propertiesModifier) {
-        super(type, propertiesModifier);
+    public BlockQIOComponent(BLOCK type, BlockBehaviour.Properties properties) {
+        super(type, properties);
     }
 
     @Nullable

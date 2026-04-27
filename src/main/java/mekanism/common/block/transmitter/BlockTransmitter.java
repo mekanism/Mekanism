@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.shorts.Short2ObjectMaps;
 import it.unimi.dsi.fastutil.shorts.Short2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.block.attribute.AttributeTier;
 import mekanism.common.block.interfaces.IHasTileEntity;
@@ -34,6 +33,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.pathfinder.PathComputationType;
 import net.minecraft.world.phys.BlockHitResult;
@@ -42,6 +42,7 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.EntityCollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> extends BlockBaseModel<BlockTypeTile<TILE>> implements IHasTileEntity<TILE> {
 
@@ -49,15 +50,17 @@ public abstract class BlockTransmitter<TILE extends TileEntityTransmitter> exten
     //Max retained size packing it like this 163,987B
     private static final Short2ObjectMap<VoxelShape> cachedShapes = Short2ObjectMaps.synchronize(new Short2ObjectOpenHashMap<>());
 
-    protected BlockTransmitter(BlockTypeTile<TILE> type) {
-        this(type, properties -> {
+    protected BlockTransmitter(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties, @Nullable MapColor mapColor) {
+        if (mapColor == null) {
             AttributeTier<?> attributeTier = type.get(AttributeTier.class);
-            return attributeTier == null ? properties : properties.mapColor(attributeTier.tier().getBaseTier().getMapColor());
-        });
-    }
-
-    protected BlockTransmitter(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        super(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(1, 6).pushReaction(PushReaction.BLOCK)));
+            if (attributeTier != null) {
+                mapColor = attributeTier.tier().getBaseTier().getMapColor();
+            }
+        }
+        if (mapColor != null) {
+            properties.mapColor(mapColor);
+        }
+        super(type, properties.strength(1, 6).pushReaction(PushReaction.BLOCK));
     }
 
     @Override

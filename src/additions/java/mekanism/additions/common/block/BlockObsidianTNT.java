@@ -57,8 +57,8 @@ public class BlockObsidianTNT extends TntBlock implements IStateFluidLoggable {
           box(1, -1, 1, 5, 12, 5)//Rod9
     );
 
-    public BlockObsidianTNT() {
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).ignitedByLava()));
+    public BlockObsidianTNT(BlockBehaviour.Properties properties) {
+        super(BlockStateHelper.applyLightLevelAdjustments(properties.mapColor(MapColor.COLOR_BLACK).ignitedByLava()));
         //Uses getDefaultState as starting state to take into account the stuff from super
         registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));
     }

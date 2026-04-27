@@ -1,6 +1,5 @@
 package mekanism.common.block.prefab;
 
-import java.util.function.UnaryOperator;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.api.tier.BaseTier;
@@ -42,29 +41,17 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
 
     protected final TYPE type;
 
-    public BlockBase(TYPE type, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-        this(type, propertyModifier.apply(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()));
-    }
-
     public BlockBase(TYPE type, BlockBehaviour.Properties properties) {
-        super(hack(type, properties));
         this.type = type;
-    }
-
-    // ugly hack but required to have a reference to our block type before setting state info; assumes single-threaded startup
-    private static BlockType cacheType;
-
-    private static <TYPE extends BlockType> BlockBehaviour.Properties hack(TYPE type, BlockBehaviour.Properties props) {
-        cacheType = type;
         for (Attribute a : type.getAll()) {
-            a.adjustProperties(props);
+            a.adjustProperties(properties);
         }
-        return props;
+        super(properties);
     }
 
     @Override
     public final BlockType getType() {
-        return type == null ? cacheType : type;
+        return type;
     }
 
     @NotNull
@@ -144,10 +131,6 @@ public class BlockBase<TYPE extends BlockType> extends BlockMekanism implements 
     }
 
     public static class BlockBaseModel<BLOCK extends BlockType> extends BlockBase<BLOCK> implements IStateFluidLoggable {
-
-        public BlockBaseModel(BLOCK blockType, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
-            super(blockType, propertyModifier);
-        }
 
         public BlockBaseModel(BLOCK blockType, BlockBehaviour.Properties properties) {
             super(blockType, properties);

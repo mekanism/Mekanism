@@ -69,6 +69,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Unit;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Item.Properties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -95,7 +96,7 @@ public class MekanismItems {
                 .addBasic(() -> MekanismUtils.calculateUsage(EntityRobit.MAX_ENERGY), () -> EntityRobit.MAX_ENERGY)
                 .build()
           );
-    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.register("energy_tablet", () -> new ItemEnergized(new Item.Properties().rarity(Rarity.UNCOMMON)))
+    public static final ItemRegistryObject<ItemEnergized> ENERGY_TABLET = ITEMS.registerItem("energy_tablet", properties -> new ItemEnergized(properties.rarity(Rarity.UNCOMMON)))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
                 .addBasic(ConstantPredicates.alwaysTrue(), ConstantPredicates.alwaysTrue(), MekanismConfig.gear.tabletChargeRate, MekanismConfig.gear.tabletMaxEnergy)
                 .build(), MekanismConfig.gear
@@ -141,13 +142,13 @@ public class MekanismItems {
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_PANTS = ITEMS.registerItem("hazmat_pants", props -> new ItemHazmatSuitArmor(ArmorType.LEGGINGS, props));
     public static final ItemRegistryObject<ItemHazmatSuitArmor> HAZMAT_BOOTS = ITEMS.registerItem("hazmat_boots", props -> new ItemHazmatSuitArmor(ArmorType.BOOTS, props));
 
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerUnburnable("mekasuit_helmet", props -> new ItemMekaSuitArmor(ArmorType.HELMET, props))
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_HELMET = ITEMS.registerItem("mekasuit_helmet", props -> new ItemMekaSuitArmor(ArmorType.HELMET, props.fireResistant()))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerUnburnable("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(ArmorType.CHESTPLATE, props))
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BODYARMOR = ITEMS.registerItem("mekasuit_bodyarmor", props -> new ItemMekaSuitArmor(ArmorType.CHESTPLATE, props.fireResistant()))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerUnburnable("mekasuit_pants", props -> new ItemMekaSuitArmor(ArmorType.LEGGINGS, props))
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_PANTS = ITEMS.registerItem("mekasuit_pants", props -> new ItemMekaSuitArmor(ArmorType.LEGGINGS, props.fireResistant()))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
-    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerUnburnable("mekasuit_boots", props -> new ItemMekaSuitArmor(ArmorType.BOOTS, props))
+    public static final ItemRegistryObject<ItemMekaSuitArmor> MEKASUIT_BOOTS = ITEMS.registerItem("mekasuit_boots", props -> new ItemMekaSuitArmor(ArmorType.BOOTS, props.fireResistant()))
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder().addMekaSuit().build(), MekanismConfig.gear);
 
     public static final ItemRegistryObject<Item> MODULE_BASE = ITEMS.register("module_base");
@@ -235,7 +236,7 @@ public class MekanismItems {
     public static final ItemRegistryObject<Item> DYE_BASE = ITEMS.register("dye_base");
     public static final ItemRegistryObject<Item> FLUORITE_GEM = ITEMS.register("fluorite_gem");
     public static final ItemRegistryObject<Item> YELLOW_CAKE_URANIUM = ITEMS.register("yellow_cake_uranium", Rarity.UNCOMMON);
-    public static final ItemRegistryObject<Item> DIRTY_NETHERITE_SCRAP = ITEMS.registerUnburnable("dirty_netherite_scrap");
+    public static final ItemRegistryObject<Item> DIRTY_NETHERITE_SCRAP = ITEMS.registerSimple("dirty_netherite_scrap", Properties::fireResistant);
 
     public static final ItemRegistryObject<Item> BRONZE_DUST = registerResource(ResourceType.DUST, MiscResource.BRONZE);
     public static final ItemRegistryObject<Item> LAPIS_LAZULI_DUST = registerResource(ResourceType.DUST, MiscResource.LAPIS_LAZULI);
@@ -278,7 +279,7 @@ public class MekanismItems {
                 .addInternalStorage(MekanismConfig.gear.flamethrowerFillRate, MekanismConfig.gear.flamethrowerCapacity, chemical -> chemical.is(MekanismChemicals.HYDROGEN)
                 ).build(), MekanismConfig.gear
           );
-    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerUnburnable("meka_tool", ItemMekaTool::new)
+    public static final ItemRegistryObject<ItemMekaTool> MEKA_TOOL = ITEMS.registerItem("meka_tool", ItemMekaTool::new)
           .addAttachedContainerCapabilities(ContainerType.ENERGY, () -> EnergyContainersBuilder.builder()
                 .addContainer((type, attachedTo, containerIndex) -> new ComponentBackedNoClampEnergyContainer(attachedTo, containerIndex, BasicEnergyContainer.manualOnly,
                       ConstantPredicates.alwaysTrue(), () -> ModuleEnergyUnit.getChargeRate(attachedTo, MekanismConfig.gear.mekaToolBaseChargeRate),
@@ -341,7 +342,7 @@ public class MekanismItems {
     }
 
     private static ItemRegistryObject<Item> registerUnburnableResource(ResourceType type, IResource resource) {
-        return ITEMS.registerUnburnable(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix());
+        return ITEMS.registerSimple(type.getRegistryPrefix() + "_" + resource.getRegistrySuffix(), Properties::fireResistant);
     }
 
     private static ItemRegistryObject<Item> registerCircuit(BaseTier tier) {

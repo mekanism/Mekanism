@@ -57,13 +57,13 @@ public class BlockBounding extends Block implements IHasTileEntity<TileEntityBou
         return null;
     }
 
-    public BlockBounding() {
+    public BlockBounding(BlockBehaviour.Properties properties) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the bounding block
         // Torches cannot be placed on the sides due to vanilla checking the incorrect shape
         //Note: We mark it as not having occlusion as our occlusion shape is not quite right in that it goes past a single block size which confuses MC
         // Eventually we may want to try cropping it but for now this works better
         //Note: We explicitly set the push reaction to protect against mods like Quark that allow blocks with TEs to be moved
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(BlockResourceInfo.STEEL.getMapColor())
+        super(BlockStateHelper.applyLightLevelAdjustments(properties.mapColor(BlockResourceInfo.STEEL.getMapColor())
               .strength(3.5F, 4.8F).requiresCorrectToolForDrops().dynamicShape().noOcclusion()
               .isViewBlocking(BlockStateHelper.NEVER_PREDICATE).pushReaction(PushReaction.BLOCK)));
         registerDefaultState(BlockStateHelper.getDefaultState(stateDefinition.any()));

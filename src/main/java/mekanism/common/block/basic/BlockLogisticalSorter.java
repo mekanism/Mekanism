@@ -16,14 +16,15 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BlockLogisticalSorter extends BlockTileModel<TileEntityLogisticalSorter, Machine<TileEntityLogisticalSorter>> {
 
-    public BlockLogisticalSorter() {
-        super(MekanismBlockTypes.LOGISTICAL_SORTER, properties -> properties.mapColor(BlockResourceInfo.STEEL.getMapColor()));
+    public BlockLogisticalSorter(BlockBehaviour.Properties properties) {
+        super(MekanismBlockTypes.LOGISTICAL_SORTER, defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor()));
     }
 
     @Nullable

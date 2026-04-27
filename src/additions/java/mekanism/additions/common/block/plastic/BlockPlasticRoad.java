@@ -4,14 +4,15 @@ import mekanism.api.text.EnumColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticRoad extends BlockPlastic {
 
-    public BlockPlasticRoad(EnumColor color) {
-        super(color, properties -> properties.strength(5, 6));
+    public BlockPlasticRoad(BlockBehaviour.Properties properties, EnumColor color) {
+        super(properties.strength(5, 6), color);
     }
 
     @Override

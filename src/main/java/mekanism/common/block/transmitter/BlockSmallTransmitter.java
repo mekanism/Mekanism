@@ -6,7 +6,10 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.VoxelShapeUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 
 public class BlockSmallTransmitter<TILE extends TileEntityTransmitter> extends BlockTransmitter<TILE> {
 
@@ -38,8 +41,12 @@ public class BlockSmallTransmitter<TILE extends TileEntityTransmitter> extends B
         return SIDES[side.ordinal()];
     }
 
-    public BlockSmallTransmitter(BlockTypeTile<TILE> type) {
-        super(type);
+    public BlockSmallTransmitter(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties) {
+        this(type, properties, null);
+    }
+
+    public BlockSmallTransmitter(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties, @Nullable MapColor mapColor) {
+        super(type, properties, mapColor);
     }
 
     @Override

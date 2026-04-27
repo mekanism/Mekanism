@@ -5,6 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
@@ -128,10 +129,11 @@ public class FluidDeferredRegister {
 
         DeferredHolder<Fluid, Source> stillFluid = fluidRegister.register(name, () -> new Source(fluidProperties));
         DeferredHolder<Fluid, Flowing> flowingFluid = fluidRegister.register("flowing_" + name, () -> new Flowing(fluidProperties));
-        ItemRegistryObject<BUCKET> bucket = itemRegister.register(name + "_bucket", () -> bucketCreator.create(stillFluid.get(), new Item.Properties().stacksTo(1).craftRemainder(Items.BUCKET)));
+        ItemRegistryObject<BUCKET> bucket = itemRegister.registerItem(name + "_bucket", itemProperties -> bucketCreator.create(stillFluid.get(), itemProperties.stacksTo(1).craftRemainder(Items.BUCKET)));
         MapColor color = getClosestColor(renderProperties.color);
         //Note: The block properties used here is a copy of the ones for water
-        DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, () -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
+        DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, key -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
+              .setId(ResourceKey.create(blockRegister.getRegistryKey(), key))
               .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
         return new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
     }

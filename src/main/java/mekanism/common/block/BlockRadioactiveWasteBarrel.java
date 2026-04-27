@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.BlockHitResult;
@@ -21,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioactiveWasteBarrel, BlockTypeTile<TileEntityRadioactiveWasteBarrel>> {
 
-    public BlockRadioactiveWasteBarrel() {
-        super(MekanismBlockTypes.RADIOACTIVE_WASTE_BARREL, properties -> properties.mapColor(MapColor.COLOR_BLACK));
+    public BlockRadioactiveWasteBarrel(BlockBehaviour.Properties properties) {
+        super(MekanismBlockTypes.RADIOACTIVE_WASTE_BARREL, defaultProperties(properties).mapColor(MapColor.COLOR_BLACK));
     }
 
     @NotNull

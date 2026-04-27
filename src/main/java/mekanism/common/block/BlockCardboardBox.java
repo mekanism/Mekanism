@@ -30,8 +30,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class BlockCardboardBox extends BlockMekanism implements IStateStorage, IHasTileEntity<TileEntityCardboardBox> {
 
-    public BlockCardboardBox() {
-        super(BlockBehaviour.Properties.of().strength(0.5F, 0.6F).mapColor(MapColor.WOOD));
+    public BlockCardboardBox(BlockBehaviour.Properties properties) {
+        super(properties.strength(0.5F, 0.6F).mapColor(MapColor.WOOD));
     }
 
     @NotNull

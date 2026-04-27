@@ -22,8 +22,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockLaserFocusMatrix extends BlockBasicMultiblock<TileEntityLaserFocusMatrix> {
 
-    public BlockLaserFocusMatrix() {
-        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(3.5F, 4.8F)
+    public BlockLaserFocusMatrix(BlockBehaviour.Properties properties) {
+        super(GeneratorsBlockTypes.LASER_FOCUS_MATRIX, properties.sound(SoundType.GLASS).strength(3.5F, 4.8F)
               .requiresCorrectToolForDrops().noOcclusion().isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE)
               .instrument(NoteBlockInstrument.HAT));
     }

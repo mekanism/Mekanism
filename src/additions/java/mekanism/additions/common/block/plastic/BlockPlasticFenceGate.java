@@ -23,8 +23,8 @@ public class BlockPlasticFenceGate extends FenceGateBlock implements IColoredBlo
 
     private final EnumColor color;
 
-    public BlockPlasticFenceGate(EnumColor color) {
-        super(BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().mapColor(color.getMapColor()).strength(5, 6)),
+    public BlockPlasticFenceGate(BlockBehaviour.Properties properties, EnumColor color) {
+        super(BlockStateHelper.applyLightLevelAdjustments(properties.mapColor(color.getMapColor()).strength(5, 6)),
               SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_OPEN);
         this.color = color;
         //Uses getDefaultState as starting state to take into account the stuff from super

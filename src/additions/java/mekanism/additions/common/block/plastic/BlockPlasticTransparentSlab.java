@@ -7,14 +7,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticTransparentSlab extends BlockPlasticSlab {
 
-    public BlockPlasticTransparentSlab(EnumColor color) {
-        super(color, properties -> properties.noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE).isSuffocating(BlockStateHelper.NEVER_PREDICATE)
-              .isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
+    public BlockPlasticTransparentSlab(BlockBehaviour.Properties properties, EnumColor color) {
+        super(properties.noOcclusion()
+                    .isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
+                    .isSuffocating(BlockStateHelper.NEVER_PREDICATE)
+                    .isViewBlocking(BlockStateHelper.NEVER_PREDICATE),
+              color);
     }
 
     @Override

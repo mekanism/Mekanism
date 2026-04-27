@@ -14,8 +14,8 @@ public class BlockResource extends BlockMekanism {
     private final BlockResourceInfo resource;
 
     //TODO: Isn't as "generic"? So make it be from one BlockType thing?
-    public BlockResource(@NotNull BlockResourceInfo resource) {
-        super(resource.modifyProperties(BlockBehaviour.Properties.of().requiresCorrectToolForDrops()));
+    public BlockResource(BlockBehaviour.Properties properties, @NotNull BlockResourceInfo resource) {
+        super(resource.modifyProperties(properties.requiresCorrectToolForDrops()));
         this.resource = resource;
     }
 

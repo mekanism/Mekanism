@@ -7,6 +7,7 @@ import mekanism.common.tile.TileEntityChargepad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -18,8 +19,8 @@ public class BlockChargepad extends BlockTileModel<TileEntityChargepad, BlockTyp
 
     private static final VoxelShape BASE = box(0, 0, 0, 16, 1, 16);
 
-    public BlockChargepad() {
-        super(MekanismBlockTypes.CHARGEPAD, properties -> properties.mapColor(MapColor.COLOR_GRAY));
+    public BlockChargepad(BlockBehaviour.Properties properties) {
+        super(MekanismBlockTypes.CHARGEPAD, defaultProperties(properties).mapColor(MapColor.COLOR_GRAY));
     }
 
     @NotNull

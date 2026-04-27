@@ -18,6 +18,8 @@ import mekanism.tools.common.item.ItemRefinedGlowstoneArmor;
 import mekanism.tools.common.material.BaseMekanismMaterial;
 import mekanism.tools.common.material.MaterialCreator;
 import mekanism.tools.common.material.VanillaPaxelMaterialCreator;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
@@ -137,13 +139,7 @@ public class ToolsItems {
     }
 
     private static ItemRegistryObject<ItemMekanismPaxel> registerPaxel(VanillaPaxelMaterialCreator material) {
-        return ITEMS.register(material.getRegistryPrefix() + "_paxel", () -> {
-            Item.Properties properties = new StrictProperties();
-            if (material.getVanillaTier() == ToolMaterial.NETHERITE) {
-                properties.fireResistant();
-            }
-            return new ItemMekanismPaxel(material, properties);
-        });
+        return ITEMS.register(material.getRegistryPrefix() + "_paxel", key -> new ItemMekanismPaxel(material, getBaseProperties(key, material.getVanillaTier() == ToolMaterial.NETHERITE)));
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, ArmorType armorType) {
@@ -151,17 +147,22 @@ public class ToolsItems {
     }
 
     private static ItemRegistryObject<ItemMekanismArmor> registerArmor(MaterialCreator material, ArmorType armorType, ArmorCreator armorCreator) {
-        return ITEMS.register(material.getRegistryPrefix() + "_" + armorType.getName(), () -> armorCreator.create(material, armorType, getBaseProperties(material)));
+        return ITEMS.register(material.getRegistryPrefix() + "_" + armorType.getName(), key -> armorCreator.create(material, armorType, getBaseProperties(key, material)));
     }
 
     private static <ITEM extends Item> ItemRegistryObject<ITEM> register(BiFunction<MaterialCreator, Item.Properties, ITEM> itemCreator, String suffix,
           MaterialCreator material) {
-        return ITEMS.register(material.getRegistryPrefix() + suffix, () -> itemCreator.apply(material, getBaseProperties(material)));
+        return ITEMS.register(material.getRegistryPrefix() + suffix, key -> itemCreator.apply(material, getBaseProperties(key, material)));
     }
 
-    private static Item.Properties getBaseProperties(BaseMekanismMaterial material) {
+    private static Item.Properties getBaseProperties(Identifier key, BaseMekanismMaterial material) {
+        return getBaseProperties(key, !material.burnsInFire());
+    }
+
+    private static Item.Properties getBaseProperties(Identifier key, boolean fireResistant) {
         Item.Properties properties = new StrictProperties();
-        if (!material.burnsInFire()) {
+        properties.setId(ResourceKey.create(ITEMS.getRegistryKey(), key));
+        if (fireResistant) {
             properties = properties.fireResistant();
         }
         return properties;

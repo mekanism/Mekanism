@@ -1,7 +1,9 @@
 package mekanism.common.registration.impl;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.function.UnaryOperator;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
@@ -19,6 +21,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 
 public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
 
@@ -27,21 +30,28 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
         super(modid, Registries.BLOCK, new ItemDeferredRegister(modid));
     }
 
-    public BlockRegistryObject<Block, BlockItem> register(String name, BlockBehaviour.Properties properties) {
-        return register(name, () -> new Block(BlockStateHelper.applyLightLevelAdjustments(properties)), BlockItem::new);
+    public BlockRegistryObject<Block, BlockItem> registerSimple(String name, UnaryOperator<BlockBehaviour.Properties> propertyModifier) {
+        //TODO: Do we care about always trying to apply light level adjustments here given none of our callers are fluid loggable?
+        return register(name, properties -> new Block(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(properties))), BlockItem::new);
     }
 
-    public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Supplier<? extends BLOCK> blockSupplier) {
-        return register(name, blockSupplier, BlockItem::new);
+    public <BLOCK extends Block> BlockRegistryObject<BLOCK, BlockItem> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return register(name, blockCreator, BlockItem::new);
     }
 
-    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerDetails(String name, Supplier<? extends BLOCK> blockSupplier) {
-        return register(name, blockSupplier, (block, properties) -> new ItemBlockTooltip<>(block, true, properties));
+    public <BLOCK extends Block & IHasDescription> BlockRegistryObject<BLOCK, ItemBlockTooltip<BLOCK>> registerDetails(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator) {
+        return register(name, blockCreator, (block, properties) -> new ItemBlockTooltip<>(block, true, properties));
     }
 
-    public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<? extends BLOCK> blockSupplier,
+    public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,
           BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
-        return registerAdvanced(name, blockSupplier, block -> {
+        return register(name, BlockBehaviour.Properties::of, blockCreator, itemCreator);
+    }
+
+    public <BLOCK extends Block, ITEM extends BlockItem> BlockRegistryObject<BLOCK, ITEM> register(String name, Supplier<Properties> baseBlockProperties,
+          Function<BlockBehaviour.Properties, ? extends BLOCK> blockCreator,
+          BiFunction<BLOCK, Item.Properties, ITEM> itemCreator) {
+        return registerAdvanced(name, key -> blockCreator.apply(baseBlockProperties.get().setId(createPrimaryId(key))), (key, block) -> {
             Item.Properties properties = new Item.Properties();
             if (Attribute.has(block, AttributeSecurity.class)) {
                 properties.component(MekanismDataComponents.SECURITY, SecurityMode.PUBLIC);
@@ -52,7 +62,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 properties.component(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             }
-            return itemCreator.apply(block.get(), properties);
+            return itemCreator.apply(block.get(), properties.setId(createSecondaryId(key)));
         }, BlockRegistryObject::new);
     }
 }

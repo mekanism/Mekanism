@@ -9,6 +9,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.BooleanOp;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -17,9 +18,12 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticTransparent extends BlockPlastic {
 
-    public BlockPlasticTransparent(EnumColor color) {
-        super(color, properties -> properties.strength(5, 6).noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
-              .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
+    public BlockPlasticTransparent(BlockBehaviour.Properties properties, EnumColor color) {
+        super(properties.strength(5, 6)
+                    .noOcclusion()
+                    .isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
+                    .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE),
+              color);
     }
 
     @Override

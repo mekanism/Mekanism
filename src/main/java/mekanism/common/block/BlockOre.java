@@ -3,11 +3,10 @@ package mekanism.common.block;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.block.interfaces.IHasDescription;
-import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.resource.ore.OreType;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
+import net.minecraft.util.Util;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.LevelAccessor;
@@ -15,8 +14,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,11 +21,6 @@ public class BlockOre extends Block implements IHasDescription {
 
     private final OreType ore;
     private String descriptionTranslationKey;
-
-    public BlockOre(OreType ore) {
-        this(ore, BlockStateHelper.applyLightLevelAdjustments(BlockBehaviour.Properties.of().strength(3, 3).requiresCorrectToolForDrops()
-              .mapColor(MapColor.STONE).instrument(NoteBlockInstrument.BASEDRUM)));
-    }
 
     public BlockOre(OreType ore, BlockBehaviour.Properties properties) {
         super(properties);

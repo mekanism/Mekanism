@@ -19,8 +19,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockTileGlass<TILE extends TileEntityMekanism, TYPE extends BlockTypeTile<TILE>> extends BlockTile<TILE, TYPE> {
 
-    public BlockTileGlass(TYPE type) {
-        super(type, BlockBehaviour.Properties.of().sound(SoundType.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops()
+    public BlockTileGlass(TYPE type, BlockBehaviour.Properties properties) {
+        super(type, properties.sound(SoundType.GLASS).strength(3.5F, 9.6F).noOcclusion().requiresCorrectToolForDrops()
               .isSuffocating(BlockStateHelper.NEVER_PREDICATE).isViewBlocking(BlockStateHelper.NEVER_PREDICATE).instrument(NoteBlockInstrument.HAT));
     }
 

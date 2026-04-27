@@ -30,8 +30,8 @@ public class BlockIndustrialAlarm extends BlockTileModel<TileEntityIndustrialAla
         VoxelShapeUtils.setShape(box(5, 0, 5, 11, 16, 11), MIN_SHAPES, true);
     }
 
-    public BlockIndustrialAlarm() {
-        super(MekanismBlockTypes.INDUSTRIAL_ALARM, BlockBehaviour.Properties.of().strength(2, 2.4F).mapColor(MapColor.COLOR_RED));
+    public BlockIndustrialAlarm(BlockBehaviour.Properties properties) {
+        super(MekanismBlockTypes.INDUSTRIAL_ALARM, properties.strength(2, 2.4F).mapColor(MapColor.COLOR_RED));
     }
 
     @NotNull

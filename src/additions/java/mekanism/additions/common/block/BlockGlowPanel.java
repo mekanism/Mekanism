@@ -32,8 +32,8 @@ public class BlockGlowPanel extends BlockBaseModel<BlockType> implements IColore
 
     private final EnumColor color;
 
-    public BlockGlowPanel(EnumColor color) {
-        super(AdditionsBlockTypes.GLOW_PANEL, BlockBehaviour.Properties.of().mapColor(color.getMapColor()).strength(1, 6));
+    public BlockGlowPanel(BlockBehaviour.Properties properties, EnumColor color) {
+        super(AdditionsBlockTypes.GLOW_PANEL, properties.mapColor(color.getMapColor()).strength(1, 6));
         this.color = color;
     }
 

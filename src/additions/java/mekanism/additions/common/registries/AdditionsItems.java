@@ -30,7 +30,7 @@ public class AdditionsItems {
 
     static {
         for (EnumColor color : EnumUtils.COLORS) {
-            BALLOONS.put(color, ITEMS.register(color.getRegistryPrefix() + "_balloon", () -> new ItemBalloon(color)));
+            BALLOONS.put(color, ITEMS.registerItem(color.getRegistryPrefix() + "_balloon", properties -> new ItemBalloon(properties, color)));
         }
     }
 }

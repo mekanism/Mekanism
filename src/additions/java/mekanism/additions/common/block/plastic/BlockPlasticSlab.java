@@ -1,7 +1,6 @@
 package mekanism.additions.common.block.plastic;
 
 import java.util.Optional;
-import java.util.function.UnaryOperator;
 import mekanism.additions.common.block.IStateExtendedFluidLoggable;
 import mekanism.api.text.EnumColor;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -32,9 +31,9 @@ public class BlockPlasticSlab extends SlabBlock implements IColoredBlock, IState
 
     private final EnumColor color;
 
-    public BlockPlasticSlab(EnumColor color, UnaryOperator<Properties> propertyModifier) {
-        super(BlockStateHelper.applyLightLevelAdjustments(propertyModifier.apply(BlockBehaviour.Properties.of().mapColor(color.getMapColor())
-              .strength(5, 6))));
+    public BlockPlasticSlab(BlockBehaviour.Properties properties, EnumColor color) {
+        super(BlockStateHelper.applyLightLevelAdjustments(properties.mapColor(color.getMapColor())
+              .strength(5, 6)));
         this.color = color;
         //Uses getDefaultState as starting state to take into account the stuff from super
         registerDefaultState(BlockStateHelper.getDefaultState(defaultBlockState()));

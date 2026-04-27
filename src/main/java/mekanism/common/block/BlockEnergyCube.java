@@ -127,10 +127,10 @@ public class BlockEnergyCube extends BlockTileModel<TileEntityEnergyCube, Machin
     }
 
 
-    public BlockEnergyCube(Machine<TileEntityEnergyCube> type) {
+    public BlockEnergyCube(Machine<TileEntityEnergyCube> type, BlockBehaviour.Properties properties) {
         //Note: We require setting variable opacity so that the block state does not cache the ability of if blocks can be placed on top of the energy cube
         // this may change based on what sides are enabled. Torches cannot be placed on the sides due to vanilla checking the incorrect shape
-        super(type, BlockBehaviour.Properties.of().strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape().mapColor(MapColor.DEEPSLATE));
+        super(type, properties.strength(2, 2.4F).requiresCorrectToolForDrops().dynamicShape().mapColor(MapColor.DEEPSLATE));
     }
 
     @Override

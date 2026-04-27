@@ -1,6 +1,5 @@
 package mekanism.common.block.prefab;
 
-import java.util.function.UnaryOperator;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
@@ -19,8 +18,9 @@ import org.jetbrains.annotations.NotNull;
 
 public class BlockBasicMultiblock<TILE extends TileEntityMekanism> extends BlockTile<TILE, BlockTypeTile<TILE>> {
 
-    public BlockBasicMultiblock(BlockTypeTile<TILE> type, UnaryOperator<BlockBehaviour.Properties> propertiesModifier) {
-        this(type, propertiesModifier.apply(BlockBehaviour.Properties.of().strength(5, 9).requiresCorrectToolForDrops()));
+    //TODO - 26.1: Re-evaluate usages of this and maybe decide to inline properties to call sites?
+    public static BlockBehaviour.Properties defaultProperties(BlockBehaviour.Properties properties) {
+        return properties.strength(5, 9).requiresCorrectToolForDrops();
     }
 
     public BlockBasicMultiblock(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties) {

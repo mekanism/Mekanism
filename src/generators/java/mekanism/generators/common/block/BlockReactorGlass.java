@@ -5,13 +5,14 @@ import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.generators.common.block.fusion.BlockLaserFocusMatrix;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockReactorGlass<TILE extends TileEntityStructuralMultiblock> extends BlockStructuralGlass<TILE> {
 
-    public BlockReactorGlass(BlockTypeTile<TILE> type) {
-        super(type);
+    public BlockReactorGlass(BlockTypeTile<TILE> type, BlockBehaviour.Properties properties) {
+        super(type, properties);
     }
 
     @Override

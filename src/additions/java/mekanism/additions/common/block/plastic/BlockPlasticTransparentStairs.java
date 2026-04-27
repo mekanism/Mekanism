@@ -7,14 +7,18 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockPlasticTransparentStairs extends BlockPlasticStairs {
 
-    public BlockPlasticTransparentStairs(BlockState baseState, EnumColor color) {
-        super(baseState, color, properties -> properties.noOcclusion().isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE).isSuffocating(BlockStateHelper.NEVER_PREDICATE)
-              .isViewBlocking(BlockStateHelper.NEVER_PREDICATE));
+    public BlockPlasticTransparentStairs(BlockState baseState, BlockBehaviour.Properties properties, EnumColor color) {
+        super(baseState, properties.noOcclusion()
+                    .isValidSpawn(AttributeMobSpawn.NEVER_PREDICATE)
+                    .isSuffocating(BlockStateHelper.NEVER_PREDICATE)
+                    .isViewBlocking(BlockStateHelper.NEVER_PREDICATE),
+              color);
     }
 
     @Override
