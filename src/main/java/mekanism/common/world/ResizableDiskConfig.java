@@ -10,18 +10,18 @@ import net.minecraft.util.valueproviders.IntProviders;
 import net.minecraft.world.level.levelgen.blockpredicates.BlockPredicate;
 import net.minecraft.world.level.levelgen.feature.configurations.DiskConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
-import net.minecraft.world.level.levelgen.feature.stateproviders.RuleBasedStateProvider;
+import net.minecraft.world.level.levelgen.feature.stateproviders.SimpleStateProvider;
 
-public record ResizableDiskConfig(RuleBasedStateProvider stateProvider, BlockPredicate target, IntProvider radius,
+public record ResizableDiskConfig(SimpleStateProvider stateProvider, BlockPredicate target, IntProvider radius,
                                   IntSupplier halfHeight) implements FeatureConfiguration {
 
     public static final Codec<ResizableDiskConfig> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-          RuleBasedStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskConfig::stateProvider),
+          SimpleStateProvider.CODEC.fieldOf(SerializationConstants.STATE_PROVIDER).forGetter(ResizableDiskConfig::stateProvider),
           BlockPredicate.CODEC.fieldOf(SerializationConstants.TARGET).forGetter(ResizableDiskConfig::target),
           IntProviders.CODEC.fieldOf(SerializationConstants.RADIUS).forGetter(ResizableDiskConfig::radius)
     ).apply(builder, ResizableDiskConfig::new));
 
-    public ResizableDiskConfig(RuleBasedStateProvider stateProvider, BlockPredicate target, IntProvider radius) {
+    public ResizableDiskConfig(SimpleStateProvider stateProvider, BlockPredicate target, IntProvider radius) {
         this(stateProvider, target, radius, MekanismConfig.world.salt.halfHeight);
     }
 

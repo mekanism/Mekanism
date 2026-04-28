@@ -21,10 +21,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
 @NothingNullByDefault
@@ -103,6 +101,6 @@ public abstract class BaseEmiDefaults implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return serverResources;// todo .exists(location, PackType.SERVER_DATA, ".json", "recipes");
+        return serverResources.getResource(location.withPrefix("recipes/").withSuffix(".json")).isPresent();
     }
 }

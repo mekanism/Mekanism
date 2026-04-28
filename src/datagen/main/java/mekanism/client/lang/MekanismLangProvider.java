@@ -658,7 +658,7 @@ public class MekanismLangProvider extends BaseLanguageProvider {
         addRobitSkin(MekanismRobitSkins.ALLAY, "Allay Costume");
         for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {
             ResourceKey<RobitSkin> prideSkin = entry.getValue();
-            String name = TextUtils.formatAndCapitalize(prideSkin.location().getPath());
+            String name = TextUtils.formatAndCapitalize(prideSkin.identifier().getPath());
             if (entry.getKey() != RobitPrideSkinData.PRIDE) {
                 name += " Pride";
             }

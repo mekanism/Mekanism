@@ -97,17 +97,7 @@ public abstract class BaseItemModelProvider extends ModelProvider {
         }
         return modelBuilder;
     }
-
-    @SafeVarargs
-    protected final void registerHandheld(Holder<Item>... items) {
-        for (Holder<Item> item : items) {
-            handheld(item);
-        }
-    }
-
-    protected ItemModelBuilder handheld(Holder<Item> item) {
-        return handheld(item, itemTexture(item));
-    }
+    
 
     protected ItemModelBuilder handheld(Holder<Item> item, Identifier texture) {
         return withExistingParent(getPath(item), "item/handheld").texture("layer0", texture);

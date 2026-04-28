@@ -4,8 +4,8 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.registries.MekanismFluids;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
@@ -15,7 +15,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
     @Override
     protected void gather() {
-        SourceList atlas = atlas(BLOCKS_ATLAS);
+        SourceList atlas = atlas(AtlasIds.BLOCKS);
         addFiles(atlas, Mekanism.rl("liquid/energy"));
         addFiles(atlas, Mekanism.rl("liquid/heat"));
         addFiles(atlas, Mekanism.rl("icon/redstone_control_pulse"));

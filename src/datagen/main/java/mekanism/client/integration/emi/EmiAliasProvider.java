@@ -28,7 +28,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.text.IHasTranslationKey;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.RVAliasHelper;
-import mekanism.client.recipe_viewer.emi.ChemicalEmiStack;
 import mekanism.common.DataGenSerializationConstants;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.collection.HashList;
@@ -125,7 +124,8 @@ public class EmiAliasProvider implements DataProvider, RVAliasHelper<EmiIngredie
 
     @Override
     public EmiIngredient chemicalIngredient(Holder<Chemical> chemical) {
-        return new ChemicalEmiStack(chemical, 1);
+        throw new UnsupportedOperationException("emi disabled");
+        //return new ChemicalEmiStack(chemical, 1);
     }
 
     @Override

@@ -21,7 +21,7 @@ import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 import mekanism.client.lang.MekanismLangProvider;
-import mekanism.client.model.MekanismItemModelProvider;
+import mekanism.client.model.MekanismModelProvider;
 import mekanism.client.sound.MekanismSoundProvider;
 import mekanism.client.texture.MekanismSpriteSourceProvider;
 import mekanism.client.texture.PrideRobitTextureProvider;
@@ -93,7 +93,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
         gen.addProvider(true, new MekanismSoundProvider(output));
         gen.addProvider(true, new MekanismSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(true, new MekanismItemModelProvider(output, clientResources));
+        gen.addProvider(true, new MekanismModelProvider(output, clientResources));
         //todo - 26.1: gen.addProvider(true, new MekanismBlockStateProvider(output));
         //Server side data generators
         gen.addProvider(true, new MekanismTagProvider(output, lookupProvider));
