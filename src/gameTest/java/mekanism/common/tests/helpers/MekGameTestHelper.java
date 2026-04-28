@@ -14,9 +14,11 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestInfo;
+import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.server.level.ChunkHolder;
@@ -120,9 +122,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         } else {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
-                throw assertionException("Expected a container or item handler at " + relativePos + ", found " +
-                                         (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
-                                                              : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
+                throw assertionException(relativePos, "Expected a container or item handler, found " +
+                                                      (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
+                                                                           : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
             }
             int found = 0;
             for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
@@ -134,7 +136,7 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
             sameCount = found == count;
         }
         if (!sameCount) {
-            throw assertionException("Container should contain: " + count + " " + item);
+            throw assertionException(relativePos, "test.error.expected_container_contents", count + " " + getItemName(item));
         }
     }
 
@@ -146,14 +148,14 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         BlockEntity blockentity = getLevel().getBlockEntity(absolutePos(relativePos));
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
             if (!containerBE.isEmpty()) {
-                throw assertionException("Container should be empty");
+                throw assertionException(relativePos, "test.error.expected_empty_container");
             }
         } else {
             IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler != null) {
                 for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
                     if (!handler.getStackInSlot(i).isEmpty()) {
-                        throw assertionException("Container should be empty");
+                        throw assertionException(relativePos, "test.error.expected_empty_container");
                     }
                 }
             }
@@ -227,5 +229,10 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
 
         DataResult<TYPE> decoded = codec.parse(serializationContext, toDecode);
         return decoded.getOrThrow(this::assertionException);
+    }
+
+    /// Copied from [net.minecraft.gametest.framework.GameTestHelper]
+    private static Component getItemName(Item itemType) {
+        return itemType.components().getOrDefault(DataComponents.ITEM_NAME, CommonComponents.EMPTY);
     }
 }

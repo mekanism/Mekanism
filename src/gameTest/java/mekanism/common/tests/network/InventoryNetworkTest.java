@@ -149,7 +149,7 @@ public class InventoryNetworkTest {
         );
 
         test.onGameTest(TransmitterTestHelper.class, helper -> helper.startSequence()
-              .thenMap(() -> helper.getBlockEntity(0, 1, 5, BarrelBlockEntity.class))
+              .thenMap(() -> helper.getBlockEntity(0, 0, 5, BarrelBlockEntity.class))
               //Wait a second for it to pull the item out, and fill the last slot of the barrel
               .thenExecuteAfter(SharedConstants.TICKS_PER_SECOND, barrel -> barrel.setItem(26, Items.OAK_LOG.getDefaultInstance()))
               //Make sure the start container is empty
