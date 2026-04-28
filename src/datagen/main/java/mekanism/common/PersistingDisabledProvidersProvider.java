@@ -32,7 +32,6 @@ import net.minecraft.data.HashCache.ProviderCache;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +69,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources));
+            gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
         } else {
             pathsToSkip.add("scripts");
             fakeProviders.add("CraftTweaker Examples: mekanism");

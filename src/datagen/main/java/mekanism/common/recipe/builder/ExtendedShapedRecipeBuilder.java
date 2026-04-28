@@ -64,8 +64,8 @@ public class ExtendedShapedRecipeBuilder extends BaseRecipeBuilder<ExtendedShape
         return this;
     }
 
-    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> items, TagKey<Item> tag) {
-        return key(symbol, items.getOrThrow(tag));
+    public ExtendedShapedRecipeBuilder key(char symbol, HolderGetter<Item> lookup, TagKey<Item> tag) {
+        return key(symbol, lookup.getOrThrow(tag));
     }
 
     public ExtendedShapedRecipeBuilder key(char symbol, HolderSet<Item> tag) {

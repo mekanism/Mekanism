@@ -20,13 +20,11 @@ import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import org.jetbrains.annotations.Nullable;
 
 public class GeneratorsTagProvider extends BaseTagProvider {
 
-    public GeneratorsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider, @Nullable ExistingFileHelper existingFileHelper) {
+    public GeneratorsTagProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookupProvider) {
         super(output, lookupProvider, MekanismGenerators.MODID);
     }
 
@@ -46,7 +44,7 @@ public class GeneratorsTagProvider extends BaseTagProvider {
         addHarvestRequirements();
         getBuilder(BlockTags.IMPERMEABLE).add(GeneratorsBlocks.REACTOR_GLASS);
 
-        getBuilder(BlockTags.SNOW_LAYER_CANNOT_SURVIVE_ON).add(
+        getBuilder(BlockTags.CANNOT_SUPPORT_SNOW_LAYER).add(
               GeneratorsBlocks.REACTOR_GLASS,
 
               GeneratorsBlocks.FISSION_REACTOR_CASING,

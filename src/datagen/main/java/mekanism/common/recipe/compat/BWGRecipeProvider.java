@@ -91,7 +91,7 @@ public class BWGRecipeProvider extends CompatRecipeProvider {
             name = "large_" + name;
         }
         TagKey<Item> makesDyeTag = tag("dye/makes_" + makeTarget + "_dye");
-        ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition(makesDyeTag));
+        ICondition tagNotEmpty = new NotCondition(new TagEmptyCondition<>(makesDyeTag));
         ItemStackIngredient inputIngredient = IngredientCreatorAccess.item().from(this.items, makesDyeTag);
         ItemStackToItemStackRecipeBuilder.enriching(
                     inputIngredient,

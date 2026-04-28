@@ -26,7 +26,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
@@ -40,22 +39,18 @@ import mekanism.common.integration.crafttweaker.chemical.CrTChemicalStack;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.example.component.CrTImportsComponent;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -68,21 +63,15 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     private final Map<Class<?>, ConversionTracker> supportedConversions = new HashMap<>();
     private final Map<String, CrTExampleBuilder<?>> examples = new LinkedHashMap<>();
     private final Map<Class<?>, String> nameLookupOverrides = new HashMap<>();
-    protected final HolderLookup.Provider registries;
-    protected final HolderGetter<Item> items;
-    protected final HolderGetter<Fluid> fluids;
-    protected final HolderGetter<Chemical> chemicals;
+    private final CompletableFuture<HolderLookup.Provider> registries;
     private final ResourceManager serverResources;
     private final PackOutput output;
     private final String modid;
 
-    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, HolderLookup.Provider registries, String modid) {
+    protected BaseCrTExampleProvider(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries, String modid) {
         this.output = output;
         this.serverResources = serverResources;
         this.registries = registries;
-        this.items = this.registries.lookupOrThrow(Registries.ITEM);
-        this.fluids = this.registries.lookupOrThrow(Registries.FLUID);
-        this.chemicals = this.registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         this.modid = modid;
         addNameLookupOverride(String.class, "string");
         addPrimitiveInfo(Byte.TYPE, Byte.class, "byte");
@@ -215,10 +204,10 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
     }
 
     public boolean recipeExists(Identifier location) {
-        return serverResources.exists(location, PackType.SERVER_DATA, ".json", "recipes");
+        return serverResources.getResource(location.withPrefix("recipes/").withSuffix(".json")).isPresent();
     }
 
-    protected abstract void addExamples();
+    protected abstract void addExamples(HolderLookup.Provider registries);
 
     /**
      * Creates and adds a CraftTweaker example script builder with the file located by data/modid/scripts/fileName.json
@@ -237,22 +226,23 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
         }
         CrTExampleBuilder<?> exampleBuilder = new CrTExampleBuilder<>(this, fileName);
         examples.put(fileName, exampleBuilder);
-        serverResources.trackGenerated(Identifier.fromNamespaceAndPath(modid, fileName), PackType.SERVER_DATA, ".zs", "scripts");
         return exampleBuilder;
     }
 
     @NotNull
     @Override
     public CompletableFuture<?> run(@NotNull CachedOutput cache) {
-        examples.clear();
-        addExamples();
-        PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
-        List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
-        for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
-            Path path = pathProvider.file(Identifier.fromNamespaceAndPath(modid, entry.getKey()), "zs");
-            list.add(MekanismDataGenerator.save(cache, stream -> stream.write(entry.getValue().build().getBytes(StandardCharsets.UTF_8)), path));
-        }
-        return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
+        return this.registries.thenCompose(lookup -> {
+            examples.clear();
+            addExamples(lookup);
+            PathProvider pathProvider = output.createPathProvider(Target.DATA_PACK, "scripts");
+            List<CompletableFuture<?>> list = new ArrayList<>(examples.size());
+            for (Entry<String, CrTExampleBuilder<?>> entry : examples.entrySet()) {
+                Path path = pathProvider.file(Identifier.fromNamespaceAndPath(modid, entry.getKey()), "zs");
+                list.add(MekanismDataGenerator.save(cache, stream -> stream.write(entry.getValue().build().getBytes(StandardCharsets.UTF_8)), path));
+            }
+            return CompletableFuture.allOf(list.toArray(new CompletableFuture[0]));
+        });
     }
 
     @NotNull

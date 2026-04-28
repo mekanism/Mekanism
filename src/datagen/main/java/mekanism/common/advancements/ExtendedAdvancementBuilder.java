@@ -15,8 +15,10 @@ import net.minecraft.advancements.DisplayInfo;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.core.ClientAsset.ResourceTexture;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,14 +38,14 @@ public class ExtendedAdvancementBuilder {
         return new ExtendedAdvancementBuilder(advancement);
     }
 
-    public ExtendedAdvancementBuilder display(ItemStack stack, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
+    public ExtendedAdvancementBuilder display(ItemStackTemplate stack, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
         return display(new DisplayInfo(stack, advancement.translateTitle(), advancement.translateDescription(), Optional.ofNullable(background).map(ResourceTexture::new), type, showToast, announceToChat, hidden));
     }
 
     public ExtendedAdvancementBuilder display(ItemLike item, @Nullable Identifier background, AdvancementType type, boolean showToast, boolean announceToChat,
           boolean hidden) {
-        return display(new ItemStack(item), background, type, showToast, announceToChat, hidden);
+        return display(new ItemStackTemplate(item.asItem()), background, type, showToast, announceToChat, hidden);
     }
 
     public ExtendedAdvancementBuilder display(ItemLike item, AdvancementType type, boolean announceToChat) {
@@ -67,11 +69,11 @@ public class ExtendedAdvancementBuilder {
         return runInternal(builder -> builder.rewards(rewards));
     }
 
-    public ExtendedAdvancementBuilder orCriteria(String key, ItemLike... items) {
+    public ExtendedAdvancementBuilder orCriteria(String key, HolderGetter<Item> lookup, ItemLike... items) {
         if (items.length == 0) {
             throw new IllegalArgumentException("No items specified");
         }
-        return addCriterion(key, InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(items).build()));
+        return addCriterion(key, InventoryChangeTrigger.TriggerInstance.hasItems(ItemPredicate.Builder.item().of(lookup, items).build()));
     }
 
     public ExtendedAdvancementBuilder orCriteria(RecipeCriterion... criteria) {

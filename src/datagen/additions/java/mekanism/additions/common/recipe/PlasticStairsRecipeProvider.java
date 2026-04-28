@@ -12,7 +12,9 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -25,6 +27,12 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.EMPTY),
           TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
 
+    private final HolderGetter<Item> items;
+
+    public PlasticStairsRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
+
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "plastic/stairs/";
@@ -36,24 +44,22 @@ public class PlasticStairsRecipeProvider implements ISubRecipeProvider {
     }
 
     private void registerPlasticStairs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks,
-          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
+          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath) {
+        HolderSet<Item> typeTag = this.items.getOrThrow(blockType);
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticStairs(consumer, color, entry.getValue().getItemHolder(), plastic.get(color).getItemHolder(), blockType, transparent, basePath);
-        }
-    }
-
-    private void registerPlasticStairs(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, TagKey<Item> blockType,
-          boolean transparent, String basePath) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
-              .pattern(PLASTIC_STAIRS)
-              .key(Pattern.CONSTANT, plastic)
-              .category(RecipeCategory.BUILDING_BLOCKS)
-              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        if (transparent) {
-            PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, result, blockType, color, basePath);
-        } else {
-            PlasticBlockRecipeProvider.registerRecolor(consumer, result, blockType, color, basePath);
+            Holder<Item> result = entry.getValue().getItemHolder();
+            Holder<Item> plastic = plasticMap.get(color).getItemHolder();
+            ExtendedShapedRecipeBuilder.shapedRecipe(result, 4)
+                  .pattern(PLASTIC_STAIRS)
+                  .key(Pattern.CONSTANT, plastic)
+                  .category(RecipeCategory.BUILDING_BLOCKS)
+                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+            if (transparent) {
+                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, result, typeTag, color, basePath);
+            } else {
+                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, typeTag, color, basePath);
+            }
         }
     }
 }

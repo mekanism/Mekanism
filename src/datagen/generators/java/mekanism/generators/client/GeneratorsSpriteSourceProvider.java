@@ -5,8 +5,8 @@ import mekanism.client.texture.BaseSpriteSourceProvider;
 import mekanism.generators.common.MekanismGenerators;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.data.AtlasIds;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class GeneratorsSpriteSourceProvider extends BaseSpriteSourceProvider {
 
@@ -16,7 +16,7 @@ public class GeneratorsSpriteSourceProvider extends BaseSpriteSourceProvider {
 
     @Override
     protected void gather() {
-        SourceList atlas = atlas(BLOCKS_ATLAS);
+        SourceList atlas = atlas(AtlasIds.BLOCKS);
         addChemicalSprites(atlas);
         addFluids(atlas, GeneratorsFluids.FLUIDS);
     }

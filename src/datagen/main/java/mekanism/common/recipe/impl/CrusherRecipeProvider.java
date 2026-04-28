@@ -1,5 +1,6 @@
 package mekanism.common.recipe.impl;
 
+import java.util.Arrays;
 import java.util.Map;
 import mekanism.api.datagen.recipe.builder.ItemStackToItemStackRecipeBuilder;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
@@ -574,7 +575,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "pink_petals", 1, 1, Items.PINK_PETALS);//not in small_flowers tag
         biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);
-        biofuel(consumer, basePath, "tall_flowers", 2, 1, ItemTags.TALL_FLOWERS);
+        biofuel(consumer, basePath, "tall_flowers", 2, 1, Tags.Items.FLOWERS_TALL);
         biofuel(consumer, basePath, "tall_grass", 2, 1, Items.TALL_GRASS);
         biofuel(consumer, basePath, "vines", 1, 1, Items.VINE, Items.TWISTING_VINES, Items.WEEPING_VINES);
         biofuel(consumer, basePath, "warped_roots", 1, 1, Items.WARPED_ROOTS);
@@ -593,16 +594,19 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(countInput, items));
     }
 
-    private void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
+    @SafeVarargs
+    private void biofuelBlock(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item>... tag) {
         biofuel(consumer, basePath, filename, MekanismBlocks.BIO_FUEL_BLOCK.getItemHolder(), countOutput, countInput, tag);
     }
 
-    private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item> tag) {
+    @SafeVarargs
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, TagKey<Item>... tag) {
         biofuel(consumer, basePath, filename, MekanismItems.BIO_FUEL, countOutput, countInput, tag);
     }
 
-    private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, TagKey<Item> tag) {
-        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(this.items, tag, countInput));
+    @SafeVarargs
+    private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, int countInput, TagKey<Item>... tag) {
+        biofuel(consumer, basePath, filename, bioFuelType, countOutput, IngredientCreatorAccess.item().from(this.items, countInput, Arrays.asList(tag)));
     }
 
     private void biofuel(RecipeOutput consumer, String basePath, String filename, Holder<Item> bioFuelType, int countOutput, ItemStackIngredient input) {

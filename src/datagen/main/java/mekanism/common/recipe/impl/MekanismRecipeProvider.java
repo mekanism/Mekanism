@@ -5,7 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.datagen.recipe.builder.ChemicalCrystallizerRecipeBuilder;
 import mekanism.api.datagen.recipe.builder.ChemicalToChemicalRecipeBuilder;
@@ -36,9 +35,11 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -135,7 +136,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               new NucleosynthesizingRecipeProvider(this.items),
               new OreProcessingRecipeProvider(this.items, this.fluids, this.chemicals),
               new OxidizingRecipeProvider(this.items),
-              new PaintingRecipeProvider(),
+              new PaintingRecipeProvider(this.items),
               new PigmentExtractingRecipeProvider(this.items),
               new PigmentMixingRecipeProvider(),
               new PressurizedReactionRecipeProvider(this.items, this.fluids),
@@ -151,7 +152,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
     }
 
     private void addMiscRecipes() {
-        SpecialRecipeBuilder.special(ClearConfigurationRecipe::new).save(output, MekanismRecipeSerializersInternal.CLEAR_CONFIGURATION.getId());
+        SpecialRecipeBuilder.special(() -> ClearConfigurationRecipe.INSTANCE).save(output, ResourceKey.create(Registries.RECIPE, MekanismRecipeSerializersInternal.CLEAR_CONFIGURATION.getId()));
         //Atomic disassembler
         MekDataShapedRecipeBuilder.shapedRecipe(MekanismItems.ATOMIC_DISASSEMBLER)
               .pattern(RecipePattern.createPattern(
@@ -321,7 +322,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Crafting formula
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.CRAFTING_FORMULA)
               .addIngredient(Items.PAPER)
-              .addIngredient(MekanismTags.Items.CIRCUITS_BASIC)
+              .addIngredient(this.items, MekanismTags.Items.CIRCUITS_BASIC)
               .save(output);
         //Crusher
         ExtendedShapedRecipeBuilder.shapedRecipe(MekanismBlocks.CRUSHER)
@@ -367,7 +368,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
               .save(output);
         //Dye Base
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.DYE_BASE, 3)
-              .addIngredient(MekanismTags.Items.DUSTS_WOOD, 2)
+              .addIngredient(this.items, MekanismTags.Items.DUSTS_WOOD, 2)
               .addIngredient(Items.CLAY_BALL)
               .save(output);
         //Dynamic tank

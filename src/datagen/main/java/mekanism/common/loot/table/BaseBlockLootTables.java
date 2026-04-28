@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SlabBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.properties.SlabType;
+import net.minecraft.world.level.storage.loot.LootContext.BlockEntityTarget;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.LootTable.Builder;
@@ -155,7 +156,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             Block block = blockProvider.value();
             boolean hasComponents = false;
-            CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponents(CopyComponentsFunction.Source.BLOCK_ENTITY);
+            CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponentsFromBlockEntity(BlockEntityTarget.BLOCK_ENTITY.contextParam());
             boolean hasContents = false;
             ItemStack stack = new ItemStack(block);
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
@@ -192,7 +193,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof TileEntityMekanism tileEntity) {
                 if (tileEntity.isNameable()) {
-                    itemLootPool.apply(CopyNameFunction.copyName(CopyNameFunction.NameSource.BLOCK_ENTITY));
+                    itemLootPool.apply(CopyNameFunction.copyName(BlockEntityTarget.BLOCK_ENTITY));
                 }
                 for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
                     List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();

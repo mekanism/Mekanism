@@ -2,7 +2,9 @@ package mekanism.common.integration.crafttweaker;
 
 import com.blamejared.crafttweaker.api.bracket.CommandStringDisplayable;
 import java.util.Locale;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
@@ -49,14 +51,18 @@ import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -65,14 +71,14 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
 
     private static final String EXPANSION_TARGET_JEITWEAKER = "mods.jeitweaker.Jei";
 
-    public MekanismCrTExampleProvider(PackOutput output, ResourceManager serverResources, HolderLookup.Provider registries) {
+    public MekanismCrTExampleProvider(PackOutput output, ResourceManager serverResources, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, serverResources, registries, Mekanism.MODID);
     }
 
     @Override
-    protected void addExamples() {
+    protected void addExamples(HolderLookup.Provider registries) {
         //Recipes
-        addRecipeExamples();
+        addRecipeExamples(registries);
         //Content
         exampleBuilder("mekanism/custom_chemicals")
               .addComponent(() -> "#loader " + CrTConstants.CONTENT_LOADER)
@@ -124,7 +130,10 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
         ;
     }
 
-    private void addRecipeExamples() {
+    private void addRecipeExamples(HolderLookup.Provider registries) {
+        HolderGetter<Item> items = registries.lookupOrThrow(Registries.ITEM);
+        HolderGetter<Fluid> fluids = registries.lookupOrThrow(Registries.FLUID);
+        HolderGetter<Chemical> chemicals = registries.lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME);
         exampleBuilder("mekanism/crystallizer")
               .comment("Adds two Crystallizing Recipes that do the following:",
                     "1) Adds a recipe that produces one Osmium Ingot out of 200 mB of Osmium.",
@@ -133,7 +142,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .recipe(ChemicalCrystallizerRecipeManager.INSTANCE)
               .addExample("osmium_ingotification", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 200),
                     MekanismItems.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM).asStack())
-              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismAPITags.Chemicals.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
+              .addExample("gold_infusion_to_gold", IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismAPITags.Chemicals.GOLD, 9), new ItemStack(Items.GOLD_NUGGET))
               .end()
               .comment("Removes two Crystallizing Recipes:",
                     "1) The recipe for producing Lithium Dust.",
@@ -177,9 +186,9 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "2) Adds a recipe that combines eight Prismarine Shards and one Black Dye into a block of Dark Prismarine."
               ).blankLine()
               .recipe(CombinerRecipeManager.INSTANCE)
-              .addExample("combining/bookshelf", IngredientCreatorAccess.item().from(Items.BOOK, 3), IngredientCreatorAccess.item().from(this.items, ItemTags.PLANKS, 6),
+              .addExample("combining/bookshelf", IngredientCreatorAccess.item().from(Items.BOOK, 3), IngredientCreatorAccess.item().from(items, ItemTags.PLANKS, 6),
                     new ItemStack(Items.BOOKSHELF))
-              .addExample("combining/dark_prismarine", IngredientCreatorAccess.item().from(Items.PRISMARINE_SHARD, 8), IngredientCreatorAccess.item().from(this.items, Tags.Items.DYES_BLACK),
+              .addExample("combining/dark_prismarine", IngredientCreatorAccess.item().from(Items.PRISMARINE_SHARD, 8), IngredientCreatorAccess.item().from(items, Tags.Items.DYES_BLACK),
                     new ItemStack(Items.DARK_PRISMARINE))
               .end()
               .comment("Removes two Combining Recipes:",
@@ -198,9 +207,9 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     + "using twice as much energy as it takes to separate Oxygen and Hydrogen from Water."
               ).blankLine()
               .recipe(ElectrolysisRecipeManager.INSTANCE)
-              .addExample("separator/sulfur_trioxide", IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.SULFUR_TRIOXIDE, 2), MekanismChemicals.OXYGEN.asStack(1),
+              .addExample("separator/sulfur_trioxide", IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.SULFUR_TRIOXIDE, 2), MekanismChemicals.OXYGEN.asStack(1),
                     MekanismChemicals.SULFUR_DIOXIDE.asStack(2))
-              .addExample("separator/sulfuric_acid", IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.SULFURIC_ACID, 1), MekanismChemicals.WATER_VAPOR.asStack(1),
+              .addExample("separator/sulfuric_acid", IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.SULFURIC_ACID, 1), MekanismChemicals.WATER_VAPOR.asStack(1),
                     MekanismChemicals.SULFUR_TRIOXIDE.asStack(1), 2L)
               .end()
               .comment("Removes the Separating Recipe for separating Brine into Sodium and Chlorine.")
@@ -215,7 +224,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Add back the Washing Recipe that was removed above, this time having it require 10 mB of water to clean 1 mB of Dirty Uranium Slurry instead of 5 mB:")
               .blankLine()
               .recipe(ChemicalWasherRecipeManager.INSTANCE)
-              .addExample("cleaning_uranium_slurry", IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 10),
+              .addExample("cleaning_uranium_slurry", IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 10),
                     IngredientCreatorAccess.chemicalStack().fromHolder(uraniumSlurryRO, 1), new ChemicalStack(uraniumSlurryRO.getCleanSlurry(), 1))
               .end()
         ;
@@ -223,7 +232,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Evaporating Recipe that evaporates 10 mB of Lithium and produces 1 mB of Chlorine.")
               .blankLine()
               .recipe(EvaporatingRecipeManager.INSTANCE)
-              .addExample("evaporate_lithium", IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.LITHIUM, 10), MekanismFluids.CHLORINE.asStack(1))
+              .addExample("evaporate_lithium", IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.LITHIUM, 10), MekanismFluids.CHLORINE.asStack(1))
               .end()
               .comment("Removes the Evaporating Recipe for producing Lithium from Brine.")
               .blankLine()
@@ -253,7 +262,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Compressing Recipe that compresses Emerald Dust into an Emerald.")
               .blankLine()
               .recipe(OsmiumCompressorRecipeManager.INSTANCE)
-              .addExample("compress_emerald", IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_EMERALD), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 1),
+              .addExample("compress_emerald", IngredientCreatorAccess.item().from(items, MekanismTags.Items.DUSTS_EMERALD), IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OSMIUM, 1),
                     new ItemStack(Items.EMERALD), true)
               .end()
               .comment("Removes the Compressing Recipe that creates Refined Obsidian Ingots.")
@@ -264,7 +273,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Injecting Recipe that injects 1,000 mB of Water Vapor (5 mB per tick) into a Dry Sponge to make it Wet.")
               .blankLine()
               .recipe(ChemicalInjectionRecipeManager.INSTANCE)
-              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Items.SPONGE), IngredientCreatorAccess.chemicalStack().from(this.chemicals, MekanismTags.Chemicals.WATER_VAPOR, 5),
+              .addExample("inject_water_to_sponge", IngredientCreatorAccess.item().from(Items.SPONGE), IngredientCreatorAccess.chemicalStack().from(chemicals, MekanismTags.Chemicals.WATER_VAPOR, 5),
                     new ItemStack(Items.WET_SPONGE), true)
               .end()
               .comment("Removes the Injecting Recipe that creates Gold Shards from Gold Ore.")
@@ -297,7 +306,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Painting Recipe that uses 256 mB Red Pigment to convert Clear Sand into Red Sand.")
               .blankLine()
               .recipe(PaintingRecipeManager.INSTANCE)
-              .addExample("paint_sand", IngredientCreatorAccess.item().from(this.items, Tags.Items.SANDS_COLORLESS),
+              .addExample("paint_sand", IngredientCreatorAccess.item().from(items, Tags.Items.SANDS_COLORLESS),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.RED), 256),
                     new ItemStack(Items.RED_SAND), false)
               .end()
@@ -309,7 +318,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Energy Conversion Recipe that allows converting Redstone Ore into 45 kJ of power.")
               .blankLine()
               .recipe(EnergyConversionRecipeManager.INSTANCE)
-              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(this.items, Tags.Items.ORES_REDSTONE), 45_000L)
+              .addExample("redstone_ore_to_power", IngredientCreatorAccess.item().from(items, Tags.Items.ORES_REDSTONE), 45_000L)
               .end()
               .comment("Removes the Energy Conversion Recipe that allows converting Redstone Blocks into Power.")
               .blankLine()
@@ -319,7 +328,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Gas Conversion Recipe that allows converting Osmium Nuggets into 22 mB of Osmium.")
               .blankLine()
               .recipe(ChemicalConversionRecipeManager.INSTANCE)
-              .addExample("gas_conversion/osmium_from_nugget", IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
+              .addExample("gas_conversion/osmium_from_nugget", IngredientCreatorAccess.item().from(items, MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.NUGGET, PrimaryResource.OSMIUM)),
                     MekanismChemicals.OSMIUM.asStack(22))
               .end()
               .comment("Removes the Gas Conversion Recipe that allows converting Osmium Blocks into Osmium.")
@@ -340,7 +349,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds an Infusion Conversion Recipe that allows converting Gold Ingots into 10 mB Gold Infuse Type.")
               .blankLine()
               .recipe(ChemicalConversionRecipeManager.INSTANCE)
-              .addExample("chemical_conversion/gold/from_ingot", IngredientCreatorAccess.item().from(this.items, Tags.Items.INGOTS_GOLD), MekanismChemicals.GOLD.asStack(10))
+              .addExample("chemical_conversion/gold/from_ingot", IngredientCreatorAccess.item().from(items, Tags.Items.INGOTS_GOLD), MekanismChemicals.GOLD.asStack(10))
               .end()
               .comment("Removes the Infusion Conversion Recipe that allows converting Bio Fuel into the Bio Infuse Type.")
               .blankLine()
@@ -377,7 +386,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Pigment Extracting Recipe that extracts 6,912 mB of Blue Pigment from a Lapis Lazuli Block.")
               .blankLine()
               .recipe(PigmentExtractingRecipeManager.INSTANCE)
-              .addExample("extract_lapis_block_pigment", IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_LAPIS),
+              .addExample("extract_lapis_block_pigment", IngredientCreatorAccess.item().from(items, Tags.Items.STORAGE_BLOCKS_LAPIS),
                     MekanismChemicals.PIGMENT_COLOR_LOOKUP.get(EnumColor.DARK_BLUE).asStack(6_912))
               .end()
               .comment("Removes the Pigment Extracting Recipe that extracts Brown Pigment from Brown Dye.")
@@ -388,7 +397,7 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .comment("Adds a Nucleosynthesizing Recipe that converts a Block of Coal to a Block of Diamond in 9,000 ticks (7 minutes 30 seconds).")
               .blankLine()
               .recipe(NucleosynthesizingRecipeManager.INSTANCE)
-              .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_COAL),
+              .addExample("coal_block_to_diamond_block", IngredientCreatorAccess.item().from(items, Tags.Items.STORAGE_BLOCKS_COAL),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.ANTIMATTER, 36), new ItemStack(Items.DIAMOND_BLOCK), 9_000, false)
               .end()
               .comment("Removes the Nucleosynthesizing Recipe that converts Tin Ingots into Iron Ingots.")
@@ -417,18 +426,18 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
                     "6) Adds a recipe that uses 400 mB of Water, 400 mB of Oxygen, and four Boats to create a Charcoal Dust and 400 mB of Hydrogen in 600 ticks."
               ).blankLine()
               .recipe(PressurizedReactionRecipeManager.INSTANCE)
-              .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 350),
+              .addExample("reaction/sawdust", IngredientCreatorAccess.item().from(items, MekanismTags.Items.DUSTS_WOOD), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 350),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN_CHLORIDE, 50), 45, new ItemStack(Items.PAPER, 2), 25L)
-              .addExample("reaction/sand", IngredientCreatorAccess.item().from(this.items, Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.CHLORINE, 100),
+              .addExample("reaction/sand", IngredientCreatorAccess.item().from(items, Tags.Items.SANDS), IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.CHLORINE, 100),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.HYDROGEN, 100), 300, new ItemStack(MekanismBlocks.SALT_BLOCK))
-              .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(this.items, ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 25),
+              .addExample("reaction/wooden_buttons", IngredientCreatorAccess.item().from(items, ItemTags.WOODEN_BUTTONS, 8), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 25),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 25), 37, MekanismChemicals.HYDROGEN.asStack(25))
-              .addExample("reaction/wooden_pressure_plates", IngredientCreatorAccess.item().from(this.items, ItemTags.WOODEN_PRESSURE_PLATES, 8), IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 50),
+              .addExample("reaction/wooden_pressure_plates", IngredientCreatorAccess.item().from(items, ItemTags.WOODEN_PRESSURE_PLATES, 8), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 50),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 50), 74, MekanismChemicals.HYDROGEN.asStack(50), 100L)
-              .addExample("reaction/wooden_fences", IngredientCreatorAccess.item().from(this.items, ItemTags.WOODEN_FENCES, 20), IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 400),
+              .addExample("reaction/wooden_fences", IngredientCreatorAccess.item().from(items, ItemTags.WOODEN_FENCES, 20), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 400),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.asStack(), MekanismChemicals.HYDROGEN.asStack(400),
                     300L)
-              .addExample("reaction/boat", IngredientCreatorAccess.item().from(this.items, ItemTags.BOATS, 4), IngredientCreatorAccess.fluid().from(this.fluids, FluidTags.WATER, 400),
+              .addExample("reaction/boat", IngredientCreatorAccess.item().from(items, ItemTags.BOATS, 4), IngredientCreatorAccess.fluid().from(fluids, FluidTags.WATER, 400),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.OXYGEN, 400), 600, MekanismItems.CHARCOAL_DUST.asStack(), MekanismChemicals.HYDROGEN.asStack(400))
               .end()
               .comment("Removes the Reaction Recipe for producing Substrate from Bio Fuel.")
@@ -454,9 +463,9 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               .blankLine()
               .recipe(RotaryRecipeManager.INSTANCE)
               .addExample("condensentrate_lithium", IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.LITHIUM, 1), MekanismFluids.LITHIUM.asStack(1))
-              .addExample("decondensentrate_sulfur_dioxide", IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.SULFUR_DIOXIDE, 1),
+              .addExample("decondensentrate_sulfur_dioxide", IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.SULFUR_DIOXIDE, 1),
                     MekanismChemicals.SULFUR_DIOXIDE.asStack(1))
-              .addExample("rotary_sulfur_trioxide", IngredientCreatorAccess.fluid().from(this.fluids, MekanismTags.Fluids.SULFUR_TRIOXIDE, 1),
+              .addExample("rotary_sulfur_trioxide", IngredientCreatorAccess.fluid().from(fluids, MekanismTags.Fluids.SULFUR_TRIOXIDE, 1),
                     IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.SULFUR_TRIOXIDE, 1), MekanismChemicals.SULFUR_TRIOXIDE.asStack(1),
                     MekanismFluids.SULFUR_TRIOXIDE.asStack(1))
               .end()
@@ -472,8 +481,8 @@ public class MekanismCrTExampleProvider extends BaseCrTExampleProvider {
               ).blankLine()
               .recipe(SawmillRecipeManager.INSTANCE)
               .addExample("sawing/melon_to_seeds", IngredientCreatorAccess.item().from(Items.MELON_SLICE), new WeightedItemStack(Items.MELON_SEEDS.builtInRegistryHolder()))
-              .addExample("sawing/leaves", IngredientCreatorAccess.item().from(this.items, ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
-              .addExample("sawing/saplings", IngredientCreatorAccess.item().from(this.items, ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.asStack(), 0.75)
+              .addExample("sawing/leaves", IngredientCreatorAccess.item().from(items, ItemTags.LEAVES, 15), new WeightedItemStack(MekanismItems.SAWDUST, 0.5))
+              .addExample("sawing/saplings", IngredientCreatorAccess.item().from(items, ItemTags.SAPLINGS, 5), MekanismItems.SAWDUST.asStack(), 0.75)
               .addExample("sawing/shield", IngredientCreatorAccess.item().from(Items.SHIELD), new WeightedItemStack(new ItemStack(Items.OAK_PLANKS, 4), 1.5))
               .addExample("sawing/workbench", IngredientCreatorAccess.item().from(Items.CRAFTING_TABLE), new ItemStack(Items.OAK_PLANKS, 5),
                     new WeightedItemStack(MekanismItems.SAWDUST, 0.25))

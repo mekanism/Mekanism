@@ -38,6 +38,7 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
@@ -102,7 +103,7 @@ public class MekanismDataGenerator {
         gen.addProvider(true, new MekanismDataMapsProvider(output, lookupProvider));
         HashSet<String> disabledCompats = new HashSet<>();
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, (registries, recipeOutput) -> new MekanismRecipeProvider(registries, recipeOutput, disabledCompats), Mekanism.MODID));
-        gen.addProvider(true, new MekanismAdvancementProvider(output, lookupProvider));
+        gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new MekanismAdvancementProvider())));
         gen.addProvider(true, new ComputerHelpProvider(output, lookupProvider, Mekanism.MODID));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE

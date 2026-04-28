@@ -11,12 +11,10 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.NeoForgeMod;
-import net.neoforged.neoforge.common.NeoForgeVersion;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BaseItemModelProvider extends ModelProvider {

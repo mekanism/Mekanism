@@ -56,6 +56,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL), MekanismChemicals.CARBON.asStack(180), basePath, "from_charcoal_block");
         //Charcoal
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              this.items,
               MekanismTags.Items.DUSTS_CHARCOAL,
               Items.CHARCOAL
         )), MekanismChemicals.CARBON.asStack(20), basePath, "from_charcoal");
@@ -64,6 +65,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
         infusionConversion(consumer, IngredientCreatorAccess.item().from(this.items, Tags.Items.STORAGE_BLOCKS_COAL), MekanismChemicals.CARBON.asStack(90), basePath, "from_coal_block");
         //Coal
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              this.items,
               MekanismTags.Items.DUSTS_COAL,
               Items.COAL
         )), MekanismChemicals.CARBON.asStack(10), basePath, "from_coal");
@@ -82,6 +84,7 @@ class InfusionConversionRecipeProvider implements ISubRecipeProvider {
     private void addInfusionConversionFungiRecipes(RecipeOutput consumer, String basePath) {
         //Mushrooms
         infusionConversion(consumer, IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+              this.items,
               Tags.Items.MUSHROOMS,
               //TODO: If these get added to the mushroom tag then we can remove them from here
               Items.WARPED_FUNGUS,

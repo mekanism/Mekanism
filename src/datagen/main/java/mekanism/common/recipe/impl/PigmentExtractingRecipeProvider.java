@@ -22,7 +22,6 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.block.BannerBlock;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
@@ -193,10 +192,7 @@ public class PigmentExtractingRecipeProvider implements ISubRecipeProvider {
                       pigment.asStack(DYE_RATE)
                 ).save(consumer, Mekanism.rl(basePath + "dye/" + color.getRegistryPrefix()));
                 //TODO: Eventually we may want to consider taking patterns into account
-                ItemStackToChemicalRecipeBuilder.pigmentExtracting(
-                      IngredientCreatorAccess.item().from(BannerBlock.byColor(dye)),
-                      pigment.asStack(BANNER_RATE)
-                ).save(consumer, Mekanism.rl(basePath + "banner/" + color.getRegistryPrefix()));
+                addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_BANNERS, pigment, BANNER_RATE, basePath + "banner/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CANDLE, pigment, CANDLE_RATE, basePath + "candle/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE, pigment, CONCRETE_RATE, basePath + "concrete/");
                 addExtractionRecipe(consumer, color, MekanismTags.Items.COLORABLE_CONCRETE_POWDER, pigment, CONCRETE_POWDER_RATE, basePath + "concrete_powder/");

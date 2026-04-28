@@ -40,7 +40,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
     private void addCoalGasificationRecipes(RecipeOutput consumer, String basePath) {
         //Blocks
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(1, List.of(
+              IngredientCreatorAccess.item().from(this.items, 1, List.of(
                     Tags.Items.STORAGE_BLOCKS_COAL,
                     MekanismTags.Items.STORAGE_BLOCKS_CHARCOAL
               )),
@@ -61,7 +61,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + "coals"));
         //Dusts
         PressurizedReactionRecipeBuilder.reaction(
-              IngredientCreatorAccess.item().from(1, List.of(
+              IngredientCreatorAccess.item().from(this.items, 1, List.of(
                     MekanismTags.Items.DUSTS_COAL,
                     MekanismTags.Items.DUSTS_CHARCOAL
               )),
@@ -97,6 +97,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         //Planks, each worth a 5th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    this.items,
                     ItemTags.PLANKS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC
@@ -118,6 +119,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         //Slabs, each worth a 10th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    this.items,
                     ItemTags.WOODEN_SLABS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC_SLAB
@@ -130,6 +132,7 @@ class PressurizedReactionRecipeProvider implements ISubRecipeProvider {
         //Stairs, each worth a 6⅔th of a log.
         PressurizedReactionRecipeBuilder.reaction(
               IngredientCreatorAccess.item().from(BaseRecipeProvider.createIngredient(
+                    this.items,
                     ItemTags.WOODEN_STAIRS,
                     //Allow mosaic as it can be smelted, so it makes sense it can be used in wood gasification
                     Items.BAMBOO_MOSAIC_STAIRS

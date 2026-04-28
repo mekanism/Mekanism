@@ -2,7 +2,6 @@ package mekanism.client.model;
 
 import mekanism.common.Mekanism;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class MekanismBlockModelProvider extends BaseBlockModelProvider {
 

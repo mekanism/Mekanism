@@ -7,22 +7,24 @@ import mekanism.tools.common.MekanismTools;
 import mekanism.tools.common.item.ItemMekanismPaxel;
 import mekanism.tools.common.item.ItemMekanismShield;
 import mekanism.tools.common.registries.ToolsItems;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
 import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class ToolsItemModelProvider extends BaseItemModelProvider {
 
-    public ToolsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MekanismTools.MODID);
+    public ToolsItemModelProvider(PackOutput output, ResourceManager clientResources) {
+        super(output, MekanismTools.MODID, clientResources);
     }
 
     @Override
-    protected void registerModels() {
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         //Shields
         addShieldModel(ToolsItems.BRONZE_SHIELD, Mekanism.rl("block/block_bronze"));
         addShieldModel(ToolsItems.LAPIS_LAZULI_SHIELD, mcLoc("block/lapis_block"));

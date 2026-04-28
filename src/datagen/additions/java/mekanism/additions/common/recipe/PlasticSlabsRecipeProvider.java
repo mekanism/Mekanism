@@ -12,7 +12,9 @@ import mekanism.common.recipe.pattern.RecipePattern;
 import mekanism.common.recipe.pattern.RecipePattern.TripleLine;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.TagKey;
@@ -22,6 +24,12 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
 
     private static final RecipePattern PLASTIC_SLAB = RecipePattern.createPattern(TripleLine.of(Pattern.CONSTANT, Pattern.CONSTANT, Pattern.CONSTANT));
     private static final RecipePattern PLASTIC_RECOMBINATION = RecipePattern.createPattern(Pattern.CONSTANT, Pattern.CONSTANT);
+
+    private final HolderGetter<Item> items;
+
+    public PlasticSlabsRecipeProvider(HolderGetter<Item> items) {
+        this.items = items;
+    }
 
     @Override
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
@@ -34,29 +42,27 @@ public class PlasticSlabsRecipeProvider implements ISubRecipeProvider {
     }
 
     private void registerPlasticSlabs(RecipeOutput consumer, Map<EnumColor, ? extends BlockRegistryObject<?, ?>> blocks,
-          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plastic, TagKey<Item> blockType, boolean transparent, String basePath) {
+          Map<EnumColor, ? extends BlockRegistryObject<?, ?>> plasticMap, TagKey<Item> blockType, boolean transparent, String basePath) {
+        HolderSet<Item> typeTag = this.items.getOrThrow(blockType);
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : blocks.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticSlab(consumer, color, entry.getValue().getItemHolder(), plastic.get(color).getItemHolder(), blockType, transparent, basePath);
+            Holder<Item> slab = entry.getValue().getItemHolder();
+            Holder<Item> plastic = plasticMap.get(color).getItemHolder();
+            ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
+                  .pattern(PLASTIC_SLAB)
+                  .key(Pattern.CONSTANT, plastic)
+                  .category(RecipeCategory.BUILDING_BLOCKS)
+                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+            if (transparent) {
+                PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, this.items, slab, typeTag, color, basePath);
+            } else {
+                PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, slab, typeTag, color, basePath);
+            }
+            ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
+                  .pattern(PLASTIC_RECOMBINATION)
+                  .key(Pattern.CONSTANT, slab)
+                  .category(RecipeCategory.BUILDING_BLOCKS)
+                  .save(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
         }
-    }
-
-    private void registerPlasticSlab(RecipeOutput consumer, EnumColor color, Holder<Item> slab, Holder<Item> plastic, TagKey<Item> blockType, boolean transparent,
-          String basePath) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(slab, 6)
-              .pattern(PLASTIC_SLAB)
-              .key(Pattern.CONSTANT, plastic)
-              .category(RecipeCategory.BUILDING_BLOCKS)
-              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        if (transparent) {
-            PlasticBlockRecipeProvider.registerTransparentRecolor(consumer, slab, blockType, color, basePath);
-        } else {
-            PlasticBlockRecipeProvider.registerRecolor(consumer, slab, blockType, color, basePath);
-        }
-        ExtendedShapedRecipeBuilder.shapedRecipe(plastic, 1)
-              .pattern(PLASTIC_RECOMBINATION)
-              .key(Pattern.CONSTANT, slab)
-              .category(RecipeCategory.BUILDING_BLOCKS)
-              .save(consumer, MekanismAdditions.rl(basePath + "recombination/" + color.getRegistryPrefix()));
     }
 }

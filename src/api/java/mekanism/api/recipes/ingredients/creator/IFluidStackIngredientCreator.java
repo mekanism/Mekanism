@@ -62,9 +62,9 @@ public interface IFluidStackIngredientCreator extends IIngredientCreator<Fluid, 
     }
 
     @Override
-    default FluidStackIngredient from(HolderGetter<Fluid> holderGetter, TagKey<Fluid> tag, int amount) {
+    default FluidStackIngredient from(HolderGetter<Fluid> lookup, TagKey<Fluid> tag, int amount) {
         Objects.requireNonNull(tag, "FluidStackIngredients cannot be created from a null tag.");
-        return from(new SizedFluidIngredient(FluidIngredient.of(holderGetter.getOrThrow(tag)), amount));
+        return from(new SizedFluidIngredient(FluidIngredient.of(lookup.getOrThrow(tag)), amount));
     }
 
     /**

@@ -16,7 +16,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.Block;
 
 @NothingNullByDefault
 public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
@@ -87,14 +86,14 @@ public class BiomesOPlentyRecipeProvider extends CompatRecipeProvider {
         //Brown
         largeDye(consumer, basePath, Items.BROWN_DYE, EnumColor.BROWN, BOPItems.CATTAIL);
         //Red
-        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPItems.ROSE, BOPItems.WATERLILY);
+        dye(consumer, basePath, Items.RED_DYE, EnumColor.RED, BOPItems.ORIGIN_ROSE, BOPItems.WATERLILY);
         //Green
         dye(consumer, basePath, Items.GREEN_DYE, EnumColor.DARK_GREEN, BOPItems.TINY_CACTUS);
         //Purple
         dye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.VIOLET, BOPItems.LAVENDER);
         largeDye(consumer, basePath, Items.PURPLE_DYE, EnumColor.PURPLE, BOPItems.TALL_LAVENDER);
         //Magenta
-        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPItems.WILDFLOWER);
+        dye(consumer, basePath, Items.MAGENTA_DYE, EnumColor.PINK, BOPItems.PURPLE_WILDFLOWERS);
         //Orange
         dye(consumer, basePath, Items.ORANGE_DYE, EnumColor.ORANGE, BOPItems.ORANGE_COSMOS, BOPItems.BURNING_BLOSSOM);
         //Pink

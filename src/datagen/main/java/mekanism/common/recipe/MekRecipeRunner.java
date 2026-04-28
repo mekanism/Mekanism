@@ -7,7 +7,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 
-public class MekRecipeRunner extends RecipeProvider.Runner{
+public class MekRecipeRunner extends RecipeProvider.Runner {
 
     private final BiFunction<Provider, RecipeOutput, RecipeProvider> factory;
     private final String modId;
@@ -25,6 +25,6 @@ public class MekRecipeRunner extends RecipeProvider.Runner{
 
     @Override
     public String getName() {
-        return "Recipes: "+modId;
+        return "Recipes: " + modId;
     }
 }

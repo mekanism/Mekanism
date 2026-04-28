@@ -42,10 +42,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.level.block.BannerBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
@@ -553,10 +551,9 @@ public class MekanismTagProvider extends BaseTagProvider {
               Items.MAGENTA_CONCRETE_POWDER, Items.LIGHT_BLUE_CONCRETE_POWDER, Items.YELLOW_CONCRETE_POWDER, Items.LIME_CONCRETE_POWDER, Items.PINK_CONCRETE_POWDER,
               Items.GRAY_CONCRETE_POWDER, Items.LIGHT_GRAY_CONCRETE_POWDER, Items.CYAN_CONCRETE_POWDER, Items.PURPLE_CONCRETE_POWDER, Items.BLUE_CONCRETE_POWDER,
               Items.BROWN_CONCRETE_POWDER, Items.GREEN_CONCRETE_POWDER, Items.RED_CONCRETE_POWDER, Items.BLACK_CONCRETE_POWDER);
-        MekanismTagBuilder<Item> colorableBanners = getBuilder(MekanismTags.Items.COLORABLE_BANNERS);
-        for (DyeColor color : DyeColor.values()) {
-            colorableBanners.addIntrinsic(BuiltInRegistries.ITEM, BannerBlock.byColor(color).asItem());
-        }
+        getBuilder(MekanismTags.Items.COLORABLE_BANNERS).addIntrinsic(BuiltInRegistries.ITEM, Items.WHITE_BANNER, Items.ORANGE_BANNER, Items.MAGENTA_BANNER,
+              Items.LIGHT_BLUE_BANNER, Items.YELLOW_BANNER, Items.LIME_BANNER, Items.PINK_BANNER, Items.GRAY_BANNER, Items.LIGHT_GRAY_BANNER, Items.CYAN_BANNER,
+              Items.PURPLE_BANNER, Items.BLUE_BANNER, Items.BROWN_BANNER, Items.GREEN_BANNER, Items.RED_BANNER, Items.BLACK_BANNER);
     }
 
     private void addBiomes() {

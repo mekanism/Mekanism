@@ -6,18 +6,20 @@ import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.client.model.BaseItemModelProvider;
 import mekanism.common.registration.INamedEntry;
+import net.minecraft.client.data.models.BlockModelGenerators;
+import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.data.PackOutput;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
 public class AdditionsItemModelProvider extends BaseItemModelProvider {
 
-    public AdditionsItemModelProvider(PackOutput output, ExistingFileHelper existingFileHelper) {
-        super(output, MekanismAdditions.MODID);
+    public AdditionsItemModelProvider(PackOutput output, ResourceManager clientResources) {
+        super(output, MekanismAdditions.MODID, clientResources);
     }
 
     @Override
-    protected void registerModels() {
+    protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
         withParent(AdditionsItems.BALLOONS, "item/balloon");
         withParent(AdditionsBlocks.GLOW_PANELS, "item/glow_panel");
         withParent(AdditionsBlocks.PLASTIC_BLOCKS, "block/plastic/block");

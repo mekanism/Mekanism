@@ -26,6 +26,7 @@ import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.DyeColor;
@@ -86,29 +87,30 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
               new PigmentExtractingPlasticRecipeProvider(),
               new PlasticBlockRecipeProvider(this.items),
               new PlasticFencesRecipeProvider(this.items),
-              new PlasticSlabsRecipeProvider(),
-              new PlasticStairsRecipeProvider()
+              new PlasticSlabsRecipeProvider(this.items),
+              new PlasticStairsRecipeProvider(this.items)
         );
     }
 
     private void registerBalloons() {
         final String basePath = "balloon/";
+        HolderSet<Item> allBalloons = this.items.getOrThrow(AdditionsTags.Items.BALLOONS);
         for (Map.Entry<EnumColor, ? extends Holder<Item>> entry : AdditionsItems.BALLOONS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> balloon = entry.getValue();
             String colorString = color.getRegistryPrefix();
-            Ingredient recolorInput = difference(AdditionsTags.Items.BALLOONS, balloon);
+            Ingredient recolorInput = difference(allBalloons, balloon);
             DyeColor dye = color.getDyeColor();
             if (dye != null) {
                 ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon, 2)
-                      .addIngredient(Tags.Items.LEATHERS)
-                      .addIngredient(Tags.Items.STRINGS)
-                      .addIngredient(dye.getTag())
+                      .addIngredient(this.items, Tags.Items.LEATHERS)
+                      .addIngredient(this.items, Tags.Items.STRINGS)
+                      .addIngredient(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
                       .save(output, MekanismAdditions.rl(basePath + colorString));
                 ExtendedShapelessRecipeBuilder.shapelessRecipe(balloon)
                       .addIngredient(recolorInput)
-                      .addIngredient(dye.getTag())
+                      .addIngredient(this.items, dye.getTag())
                       .category(RecipeCategory.DECORATIONS)
                       .save(output, MekanismAdditions.rl(basePath + "recolor/" + colorString));
             }
@@ -123,6 +125,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
 
     private void registerGlowPanels() {
         final String basePath = "glow_panel/";
+        HolderSet<Item> glowPanelTag = this.items.getOrThrow(AdditionsTags.Items.GLOW_PANELS);
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<?, ?>> entry : AdditionsBlocks.GLOW_PANELS.entrySet()) {
             EnumColor color = entry.getKey();
             Holder<Item> glowPanel = entry.getValue().getItemHolder();
@@ -137,7 +140,7 @@ public class AdditionsRecipeProvider extends BaseRecipeProvider {
                       .category(RecipeCategory.BUILDING_BLOCKS)
                       .save(output, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
             }
-            PlasticBlockRecipeProvider.registerRecolor(output, glowPanel, AdditionsTags.Items.GLOW_PANELS, color, basePath);
+            PlasticBlockRecipeProvider.registerRecolor(output, this.items, glowPanel, glowPanelTag, color, basePath);
         }
     }
 }

@@ -17,6 +17,7 @@ import mekanism.common.tags.MekanismTags;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderSet;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
@@ -45,37 +46,33 @@ public class PlasticFencesRecipeProvider implements ISubRecipeProvider {
 
     private void registerPlasticFences(RecipeOutput consumer, String basePath) {
         basePath += "fence/";
+        HolderSet<Item> fencesTag = this.items.getOrThrow(AdditionsTags.Items.FENCES_PLASTIC_NORMAL);
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFence, ?>> entry : AdditionsBlocks.PLASTIC_FENCES.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticFence(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color).getItemHolder(), basePath);
+            Holder<Item> result = entry.getValue().getItemHolder();
+            ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
+                  .pattern(PLASTIC_FENCE)
+                  .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
+                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
+                  .category(RecipeCategory.DECORATIONS)
+                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, fencesTag, color, basePath);
         }
-    }
-
-    private void registerPlasticFence(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(result, 3)
-              .pattern(PLASTIC_FENCE)
-              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-              .key(Pattern.CONSTANT, plastic)
-              .category(RecipeCategory.DECORATIONS)
-              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCES_PLASTIC_NORMAL, color, basePath);
     }
 
     private void registerPlasticFenceGates(RecipeOutput consumer, String basePath) {
         basePath += "fence_gate/";
+        HolderSet<Item> gatesTag = this.items.getOrThrow(AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL);
         for (Map.Entry<EnumColor, ? extends BlockRegistryObject<BlockPlasticFenceGate, ?>> entry : AdditionsBlocks.PLASTIC_FENCE_GATES.entrySet()) {
             EnumColor color = entry.getKey();
-            registerPlasticFenceGate(consumer, color, entry.getValue().getItemHolder(), AdditionsBlocks.PLASTIC_BLOCKS.get(color).getItemHolder(), basePath);
+            Holder<Item> result = entry.getValue().getItemHolder();
+            ExtendedShapedRecipeBuilder.shapedRecipe(result)
+                  .pattern(PLASTIC_FENCE_GATE)
+                  .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
+                  .key(Pattern.CONSTANT, AdditionsBlocks.PLASTIC_BLOCKS.get(color))
+                  .category(RecipeCategory.REDSTONE)
+                  .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
+            PlasticBlockRecipeProvider.registerRecolor(consumer, this.items, result, gatesTag, color, basePath);
         }
-    }
-
-    private void registerPlasticFenceGate(RecipeOutput consumer, EnumColor color, Holder<Item> result, Holder<Item> plastic, String basePath) {
-        ExtendedShapedRecipeBuilder.shapedRecipe(result)
-              .pattern(PLASTIC_FENCE_GATE)
-              .key(AdditionsRecipeProvider.PLASTIC_ROD_CHAR, this.items, MekanismTags.Items.RODS_PLASTIC)
-              .key(Pattern.CONSTANT, plastic)
-              .category(RecipeCategory.REDSTONE)
-              .save(consumer, MekanismAdditions.rl(basePath + color.getRegistryPrefix()));
-        PlasticBlockRecipeProvider.registerRecolor(consumer, result, AdditionsTags.Items.FENCE_GATES_PLASTIC_NORMAL, color, basePath);
     }
 }

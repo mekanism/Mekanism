@@ -1,5 +1,6 @@
 package mekanism.additions.common;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import mekanism.additions.client.AdditionsBlockStateProvider;
 import mekanism.additions.client.AdditionsItemModelProvider;
@@ -13,12 +14,15 @@ import mekanism.additions.common.recipe.AdditionsRecipeProvider;
 import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
+import mekanism.common.recipe.MekRecipeRunner;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @EventBusSubscriber(modid = MekanismAdditions.MODID)
@@ -32,23 +36,23 @@ public class AdditionsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismAdditions.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         AdditionsDatapackRegistryProvider drProvider = new AdditionsDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
+        ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         gen.addProvider(true, new BasePackMetadataGenerator(output, AdditionsLang.PACK_DESCRIPTION));
         //Client side data generators
-        gen.addProvider(event.includeClient(), new AdditionsLangProvider(output));
-        gen.addProvider(event.includeClient(), new AdditionsSoundProvider(output));
-        gen.addProvider(event.includeClient(), new AdditionsSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(event.includeClient(), new AdditionsItemModelProvider(output, existingFileHelper));
-        gen.addProvider(event.includeClient(), new AdditionsBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(true, new AdditionsLangProvider(output));
+        gen.addProvider(true, new AdditionsSoundProvider(output));
+        gen.addProvider(true, new AdditionsSpriteSourceProvider(output, lookupProvider));
+        gen.addProvider(true, new AdditionsItemModelProvider(output, clientResources));
+        gen.addProvider(true, new AdditionsBlockStateProvider(output, existingFileHelper));
         //Server side data generators
-        gen.addProvider(event.includeServer(), new AdditionsTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new AdditionsLootProvider(output, lookupProvider));
-        gen.addProvider(event.includeServer(), drProvider);
-        gen.addProvider(event.includeServer(), new AdditionsDataMapsProvider(output, lookupProvider));
-        gen.addProvider(event.includeServer(), new AdditionsRecipeProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new AdditionsAdvancementProvider(output, lookupProvider));
+        gen.addProvider(true, new AdditionsTagProvider(output, lookupProvider));
+        gen.addProvider(true, new AdditionsLootProvider(output, lookupProvider));
+        gen.addProvider(true, drProvider);
+        gen.addProvider(true, new AdditionsDataMapsProvider(output, lookupProvider));
+        gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, AdditionsRecipeProvider::new, MekanismAdditions.MODID));
+        gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new AdditionsAdvancementProvider())));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismAdditions.MODID, AdditionsAliasMapping::new,

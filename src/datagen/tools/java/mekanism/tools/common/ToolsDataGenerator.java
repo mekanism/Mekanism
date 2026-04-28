@@ -1,9 +1,11 @@
 package mekanism.tools.common;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
+import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.tools.client.ToolsItemModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
@@ -13,9 +15,11 @@ import mekanism.tools.common.recipe.ToolsRecipeProvider;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
+import net.minecraft.data.advancements.AdvancementProvider;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 
 @EventBusSubscriber(modid = MekanismTools.MODID)
@@ -29,17 +33,17 @@ public class ToolsDataGenerator {
         MekanismDataGenerator.bootstrapConfigs(MekanismTools.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
-        ExistingFileHelper existingFileHelper = event.getExistingFileHelper();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
+        ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
         gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
-        gen.addProvider(event.includeClient(), new ToolsLangProvider(output));
-        gen.addProvider(event.includeClient(), new ToolsSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(event.includeClient(), new ToolsItemModelProvider(output, existingFileHelper));
+        gen.addProvider(true, new ToolsLangProvider(output));
+        gen.addProvider(true, new ToolsSpriteSourceProvider(output, lookupProvider));
+        gen.addProvider(true, new ToolsItemModelProvider(output, clientResources));
         //Server side data generators
-        gen.addProvider(event.includeServer(), new ToolsTagProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ToolsRecipeProvider(output, lookupProvider, existingFileHelper));
-        gen.addProvider(event.includeServer(), new ToolsAdvancementProvider(output, lookupProvider));
+        gen.addProvider(true, new ToolsTagProvider(output, lookupProvider));
+        gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, ToolsRecipeProvider::new, MekanismTools.MODID));
+        gen.addProvider(true, new AdvancementProvider(output, lookupProvider, List.of(new ToolsAdvancementProvider())));
         //Data generator to help with persisting data when porting across MC versions when optional deps aren't updated yet
         // DO NOT ADD OTHERS AFTER THIS ONE
         PersistingDisabledProvidersProvider.addDisabledEmiProvider(event, lookupProvider, MekanismTools.MODID, ToolsAliasMapping::new, () -> ToolsEmiDefaults::new);

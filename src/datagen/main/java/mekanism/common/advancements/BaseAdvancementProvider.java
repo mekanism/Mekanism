@@ -1,74 +1,24 @@
 package mekanism.common.advancements;
 
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.CompletableFuture;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
-import net.minecraft.advancements.Advancement;
-import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.advancements.Criterion;
 import net.minecraft.advancements.criterion.DataComponentMatchers;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.data.CachedOutput;
-import net.minecraft.data.DataProvider;
-import net.minecraft.data.PackOutput;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.PackType;
+import net.minecraft.data.advancements.AdvancementSubProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.NotNull;
 
-public abstract class BaseAdvancementProvider implements DataProvider {
-
-    private final CompletableFuture<HolderLookup.Provider> registries;
-    private final PackOutput.PathProvider pathProvider;
-    private final String advancementFolder;
-    private final String modid;
-
-    public BaseAdvancementProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> provider, String modid) {
-        this.modid = modid;
-        this.registries = provider;
-        this.advancementFolder = Registries.elementsDirPath(Registries.ADVANCEMENT);
-        this.pathProvider = output.createRegistryElementsPathProvider(Registries.ADVANCEMENT);
-    }
-
-    @NotNull
-    @Override
-    public String getName() {
-        return "Advancements: " + modid;
-    }
-
-    @NotNull
-    @Override
-    public CompletableFuture<?> run(@NotNull CachedOutput cache) {
-        return this.registries.thenCompose(lookupProvider -> {
-            List<CompletableFuture<?>> futures = new ArrayList<>();
-            registerAdvancements(lookupProvider, advancement -> {
-                Identifier id = advancement.id();
-                if (existingFileHelper.exists(id, PackType.SERVER_DATA, ".json", advancementFolder)) {
-                    throw new IllegalStateException("Duplicate advancement " + id);
-                }
-                Path path = this.pathProvider.json(id);
-                existingFileHelper.trackGenerated(id, PackType.SERVER_DATA, ".json", advancementFolder);
-                futures.add(DataProvider.saveStable(cache, lookupProvider, Advancement.CODEC, advancement.value(), path));
-            });
-            return CompletableFuture.allOf(futures.toArray(CompletableFuture[]::new));
-        });
-    }
-
-    protected abstract void registerAdvancements(HolderLookup.Provider registries, @NotNull Consumer<AdvancementHolder> consumer);
+public abstract class BaseAdvancementProvider implements AdvancementSubProvider {
 
     protected ExtendedAdvancementBuilder advancement(MekanismAdvancement advancement) {
         return ExtendedAdvancementBuilder.advancement(advancement);
@@ -91,10 +41,12 @@ public abstract class BaseAdvancementProvider implements DataProvider {
     }
 
     @SafeVarargs
-    protected static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(TagKey<Item>... tags) {
-        return hasItems(Arrays.stream(tags)
-              .map(tag -> ItemPredicate.Builder.item().of(tag).build())
-              .toArray(ItemPredicate[]::new));
+    protected static Criterion<InventoryChangeTrigger.TriggerInstance> hasItems(HolderGetter<Item> lookup, TagKey<Item>... tags) {
+        List<ItemPredicate> list = new ArrayList<>();
+        for (TagKey<Item> tag : tags) {
+            list.add(ItemPredicate.Builder.item().of(lookup, tag).build());
+        }
+        return hasItems(list.toArray(new ItemPredicate[0]));
     }
 
     protected static Item[] getItems(Collection<? extends Holder<Item>> items, Predicate<Item> matcher) {

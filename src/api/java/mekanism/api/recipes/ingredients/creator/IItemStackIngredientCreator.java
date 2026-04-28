@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -176,14 +177,32 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
      *
      * @param tag Tag to match.
      */
-    default ItemStackIngredient from(HolderGetter<Item> holderGetter, TagKey<Item> tag) {
-        return from(holderGetter, tag, 1);
+    default ItemStackIngredient from(HolderGetter<Item> lookup, TagKey<Item> tag) {
+        return from(lookup, tag, 1);
     }
 
     @Override
-    default ItemStackIngredient from(HolderGetter<Item> holderGetter, TagKey<Item> tag, int amount) {
+    default ItemStackIngredient from(HolderGetter<Item> lookup, TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
-        return from(Ingredient.of(holderGetter.getOrThrow(tag)), amount);
+        return from(Ingredient.of(lookup.getOrThrow(tag)), amount);
+    }
+
+    /**
+     * Creates an Item Stack Ingredient that matches any of the given Item tags.
+     *
+     * @param tags Tag to match.
+     *
+     * @throws NullPointerException     if the list of tags is null.
+     * @throws IllegalArgumentException if the list of tags is empty.
+     * @since 10.7.11
+     */
+    default ItemStackIngredient from(HolderGetter<Item> lookup, int amount, List<TagKey<Item>> tags) {//TODO - 26.1: Add docs for lookup param
+        if (tags.isEmpty()) {
+            throw new IllegalArgumentException("Attempted to create an ItemStackIngredient with no tags.");
+        } else if (tags.size() == 1) {
+            return from(lookup, tags.getFirst(), amount);
+        }
+        return from(Ingredient.of(new OrHolderSet<>(tags.stream().<HolderSet<Item>>map(lookup::getOrThrow).toList())), amount);
     }
 
     /**

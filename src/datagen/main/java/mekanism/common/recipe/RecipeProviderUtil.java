@@ -44,13 +44,13 @@ public class RecipeProviderUtil {
         smeltingRecipe.save(consumer, smeltingLocation);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> lookup, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
           @Nullable Item hangingSign, String name) {
-        addPrecisionSawmillWoodTypeRecipes(consumer, items, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
+        addPrecisionSawmillWoodTypeRecipes(consumer, lookup, basePath, planks, boat, chestBoat, door, fenceGate, log, pressurePlate, trapdoor, hangingSign, name, null);
     }
 
-    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> items, String basePath, Item planks, @Nullable Item boat,
+    public static void addPrecisionSawmillWoodTypeRecipes(RecipeOutput consumer, HolderGetter<Item> lookup, String basePath, Item planks, @Nullable Item boat,
           @Nullable Item chestBoat, Item door, Item fenceGate, @Nullable TagKey<Item> log, Item pressurePlate, Item trapdoor,
           @Nullable Item hangingSign, String name, @Nullable ICondition condition) {
         if (boat != null) {
@@ -84,7 +84,7 @@ public class RecipeProviderUtil {
         if (log != null) {
             //Log
             save(consumer, SawmillRecipeBuilder.sawing(
-                  IngredientCreatorAccess.item().from(items, log),
+                  IngredientCreatorAccess.item().from(lookup, log),
                   new ItemStackTemplate(planks, 6),
                   MekanismItems.SAWDUST.asTemplate(),
                   0.25
@@ -113,10 +113,10 @@ public class RecipeProviderUtil {
         ), basePath + "trapdoor/" + name, condition);
     }
 
-    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> items, String path, @Nullable ICondition condition, Item sand,
+    public static void addSandStoneToSandRecipe(RecipeOutput consumer, HolderGetter<Item> lookup, String path, @Nullable ICondition condition, Item sand,
           TagKey<Item> sandstoneTag) {
         save(consumer, ItemStackToItemStackRecipeBuilder.crushing(
-              IngredientCreatorAccess.item().from(items, sandstoneTag),
+              IngredientCreatorAccess.item().from(lookup, sandstoneTag),
               new ItemStackTemplate(sand, 2)
         ), path, condition);
     }

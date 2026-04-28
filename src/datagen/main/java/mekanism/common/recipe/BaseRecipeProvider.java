@@ -4,8 +4,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
-import java.util.stream.Stream;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -17,17 +15,14 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.RecipeProvider;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Ingredient.ItemValue;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
-import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
@@ -60,38 +55,31 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
         return Collections.emptyList();
     }
 
-    public static Ingredient createIngredient(TagKey<Item> itemTag, Item... items) {
-        return createIngredient(Stream.of(itemTag), Arrays.stream(items).map(ItemStack::new));
-    }
-
-    private static Ingredient createIngredient(Stream<TagKey<Item>> itemTags, Stream<ItemStack> items) {
-        return Ingredient.fromValues(Stream.concat(
-              itemTags.map(Ingredient.TagValue::new),
-              items.map(ItemValue::new)
-        ));
+    public static Ingredient createIngredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, Item... items) {
+        return Ingredient.of(new OrHolderSet<>(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(Item::builtInRegistryHolder).toList())));
     }
 
     @SafeVarargs
     public static Ingredient createIngredient(Holder<Item>... items) {
-        return Ingredient.of(Arrays.stream(items).map(ItemStack::new));
+        return Ingredient.of(HolderSet.direct(Arrays.stream(items).toList()));
     }
 
-    public static Ingredient difference(TagKey<Item> base, Holder<Item> subtracted) {
+    public static Ingredient difference(HolderSet<Item> base, Holder<Item> subtracted) {
         return DifferenceIngredient.of(Ingredient.of(base), Ingredient.of(subtracted.value()));
     }
 
-    public static HolderSet<Item> osmiumIngot(HolderGetter<Item> items) {
+    public static HolderSet<Item> osmiumIngot(HolderGetter<Item> lookup) {
         TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.OSMIUM));
-        return items.getOrThrow(tag);
+        return lookup.getOrThrow(tag);
     }
 
-    public static HolderSet<Item> leadIngot(HolderGetter<Item> items) {
+    public static HolderSet<Item> leadIngot(HolderGetter<Item> lookup) {
         TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.LEAD));
-        return items.getOrThrow(tag);
+        return lookup.getOrThrow(tag);
     }
 
-    public static HolderSet<Item> tinIngot(HolderGetter<Item> items) {
+    public static HolderSet<Item> tinIngot(HolderGetter<Item> lookup) {
         TagKey<Item> tag = Objects.requireNonNull(MekanismTags.Items.PROCESSED_RESOURCES.get(ResourceType.INGOT, PrimaryResource.TIN));
-        return items.getOrThrow(tag);
+        return lookup.getOrThrow(tag);
     }
 }

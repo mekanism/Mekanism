@@ -55,7 +55,7 @@ public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredi
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    INGREDIENT from(HolderGetter<TYPE> holderGetter, TagKey<TYPE> tag, int amount);
+    INGREDIENT from(HolderGetter<TYPE> lookup, TagKey<TYPE> tag, int amount);//TODO - 26.1: Add docs for lookup param
 
     /**
      * Retrieve a codec which can (de)encode a single or multi ingredient of this type.

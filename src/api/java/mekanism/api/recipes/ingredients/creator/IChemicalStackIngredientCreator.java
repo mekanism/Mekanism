@@ -64,8 +64,8 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     }
 
     @Override
-    default ChemicalStackIngredient from(HolderGetter<Chemical> holderGetter, TagKey<Chemical> tag, int amount) {
-        return from(holderGetter, tag, (long) amount);
+    default ChemicalStackIngredient from(HolderGetter<Chemical> lookup, TagKey<Chemical> tag, int amount) {
+        return from(lookup, tag, (long) amount);
     }
 
     /**
@@ -77,7 +77,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws NullPointerException     if the given tag is null.
      * @throws IllegalArgumentException if the given amount smaller than one.
      */
-    default ChemicalStackIngredient from(HolderGetter<Chemical> holderGetter, TagKey<Chemical> tag, long amount) {
+    default ChemicalStackIngredient from(HolderGetter<Chemical> lookup, TagKey<Chemical> tag, long amount) {
         Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
         //TODO - 26.1: Make use of this holder getter
         return from(IngredientCreatorAccess.chemical().tag(tag), amount);
