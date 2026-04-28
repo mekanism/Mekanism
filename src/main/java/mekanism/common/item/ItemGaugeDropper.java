@@ -70,7 +70,7 @@ public class ItemGaugeDropper extends Item {
         ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
             if (!world.isClientSide()) {
-                IFluidHandlerItem fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+                IFluidHandlerItem fluidHandler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
                 if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
                     for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                         fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);

@@ -15,6 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IExtendedFluidTank, IFluidHandler, ISidedFluidHandler> {
 
     public FluidHandlerManager(@Nullable IFluidTankHolder holder, @NotNull ISidedFluidHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.FLUID.block(), ProxyFluidHandler::new, IFluidTankHolder::getTanks);
+        super(holder, baseHandler, Capabilities.FLUID_LEGACY.block(), ProxyFluidHandler::new, IFluidTankHolder::getTanks);
     }
 }

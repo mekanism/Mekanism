@@ -76,7 +76,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (fluidHandlerItem != null) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -108,7 +108,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
 
     public static Predicate<ItemStack> getFillPredicate(IExtendedFluidTank fluidTank) {
         return stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (fluidHandlerItem != null) {
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
@@ -151,11 +151,11 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
         // though we have special handling to only move one item at a time anyway
         // Though we first have to check if it has a capability exposed at all while stacked
-        if (stack.count() > 1 && Capabilities.FLUID.getCapability(ItemAccess.forStack(stack)) == null) {
+        if (stack.count() > 1 && Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack)) == null) {
             return null;
         }
         ItemStack stackToCheck = stack.count() > 1 ? stack.copyWithCount(1) : stack;
-        return Capabilities.FLUID.getCapability(ItemAccess.forStack(stackToCheck));
+        return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stackToCheck));
     }
 
     //TODO: Should we make this also have the fluid type have to match a desired type???

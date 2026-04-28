@@ -34,7 +34,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         Predicate<ItemStack> fillPredicate = getFillPredicate(fluidTank);
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (fluidHandlerItem != null) {
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {

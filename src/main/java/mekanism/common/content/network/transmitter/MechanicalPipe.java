@@ -56,7 +56,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
 
     @Override
     protected AbstractAcceptorCache<IFluidHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID.block());
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID_LEGACY.block());
     }
 
     @Override

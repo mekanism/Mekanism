@@ -46,7 +46,7 @@ public final class TransporterUtils {
         if (tile instanceof TileEntityTransmitter transmitter && TransmissionType.ITEM.checkTransmissionType(transmitter)) {
             return false;
         }
-        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
+        return Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
     }
 
     public static EnumColor increment(@Nullable EnumColor color) {
@@ -99,7 +99,7 @@ public final class TransporterUtils {
                 return false;
             }
         }
-        IItemHandler inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
+        IItemHandler inventory = Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
         if (inventory != null) {
             for (int i = 0, slots = inventory.getSlots(); i < slots; i++) {
                 // Simulate insert, this will handle validating the item is valid for the inventory

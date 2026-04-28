@@ -39,7 +39,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.testframework.gametest.ExtendedGameTestHelper;
 
 @NothingNullByDefault
@@ -120,17 +122,17 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
             sameCount = containerBE.countItem(item) == count;
         } else {
-            IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
+            ResourceHandler<ItemResource> handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
                 throw assertionException(relativePos, "Expected a container or item handler, found " +
                                                       (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
                                                                            : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
             }
             int found = 0;
-            for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                ItemStack stack = handler.getStackInSlot(i);
-                if (stack.is(item)) {
-                    found += stack.count();
+            for (int i = 0, slots = handler.size(); i < slots; i++) {
+                ItemResource resource = handler.getResource(i);
+                if (resource.is(item)) {
+                    found += handler.getAmountAsInt(i);
                 }
             }
             sameCount = found == count;
@@ -151,13 +153,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
                 throw assertionException(relativePos, "test.error.expected_empty_container");
             }
         } else {
-            IItemHandler handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
-            if (handler != null) {
-                for (int i = 0, slots = handler.getSlots(); i < slots; i++) {
-                    if (!handler.getStackInSlot(i).isEmpty()) {
-                        throw assertionException(relativePos, "test.error.expected_empty_container");
-                    }
-                }
+            ResourceHandler<ItemResource> handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
+            if (handler != null && !ResourceHandlerUtil.isEmpty(handler)) {
+                throw assertionException(relativePos, "test.error.expected_empty_container");
             }
         }
     }

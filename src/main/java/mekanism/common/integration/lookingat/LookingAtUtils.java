@@ -134,7 +134,7 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                IFluidHandler fluidCapability = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, tile, null);
+                IFluidHandler fluidCapability = Capabilities.FLUID_LEGACY.getCapabilityIfLoaded(level, pos, state, tile, null);
                 if (fluidCapability != null) {
                     FluidStack fallback = FluidStack.EMPTY;
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {

@@ -60,7 +60,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             case CHEMICAL -> chemicalInsertPredicate.test(stack);
             case EMPTY -> {
                 //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
-                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID.hasCapability(ItemAccess.forStack(stack))) {
+                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID_LEGACY.hasCapability(ItemAccess.forStack(stack))) {
                     yield true;
                 }
                 //otherwise, only allow it if one of the chemical insert predicates matches

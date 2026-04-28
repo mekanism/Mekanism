@@ -72,7 +72,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     private IItemHandler getCapForSide(Direction logisticalSide) {
         BlockCapabilityCache<IItemHandler, Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
+            cache = Capabilities.ITEM_LEGACY.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
             capabilityCache.put(logisticalSide, cache);
         }
         return cache.getCapability();
@@ -83,7 +83,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
         EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<IItemHandler, Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
-            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
+            cache = Capabilities.ITEM_LEGACY.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
             sideCache.put(handlerSide, cache);
         }
         return cache.getCapability();
@@ -92,7 +92,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
     @Override
     protected AbstractAcceptorCache<IItemHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM.block());
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM_LEGACY.block());
     }
 
     @Override

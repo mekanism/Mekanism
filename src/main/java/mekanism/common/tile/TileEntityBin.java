@@ -100,7 +100,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
+                    targetInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
                 }
                 TransitResponse response = request.eject(this, targetInventory.getCapability(), 0, LogisticalTransporterBase::getColor);
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {

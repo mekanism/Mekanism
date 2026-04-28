@@ -74,6 +74,6 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FLUID.item(), (stack, ctx) -> new FluidBucketWrapper(stack), this);
+        event.registerItem(Capabilities.FLUID_LEGACY.item(), (stack, ctx) -> new FluidBucketWrapper(stack), this);
     }
 }

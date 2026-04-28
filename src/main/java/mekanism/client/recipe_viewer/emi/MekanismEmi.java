@@ -130,7 +130,7 @@ public class MekanismEmi implements EmiPlugin {
     private static void addFluidComponent(Set<Object> representation, ItemStack stack) {
         IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
-            handler = Capabilities.FLUID.getCapability(stack);
+            handler = Capabilities.FLUID_LEGACY.getCapability(stack);
         }
         if (handler != null) {
             int tanks = handler.getTanks();
@@ -212,7 +212,7 @@ public class MekanismEmi implements EmiPlugin {
             //Handle items
             ItemStack stack = new ItemStack(item);
             ItemAccess itemAccess = ItemAccess.forStack(stack);
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID_LEGACY.hasCapability(itemAccess)) {
                 registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
             }
         }

@@ -71,7 +71,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     private void tryImport(QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
         }
         IItemHandler inventory = backInventory.getCapability();
         if (inventory == null) {//Not an IItemHandler

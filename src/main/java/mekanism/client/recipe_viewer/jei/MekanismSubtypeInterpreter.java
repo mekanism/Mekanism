@@ -86,7 +86,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
     private static IFluidHandler getFluidHandler(ItemStack stack) {
         IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
-            return Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         }
         return handler;
     }

@@ -122,7 +122,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     private void tryEject(QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
         }
         IItemHandler backHandler = backInventory.getCapability();
         if (backHandler == null) {

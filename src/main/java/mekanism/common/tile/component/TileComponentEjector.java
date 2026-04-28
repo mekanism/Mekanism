@@ -227,7 +227,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
                     case FLUID -> {
-                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
+                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID_LEGACY);
                         FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
                     }
                     case ENERGY -> {
@@ -288,7 +288,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     for (Direction side : outputs) {
                         BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = (BlockCapabilityCache<IItemHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
                         if (cache == null) {
-                            cache = Capabilities.ITEM.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
+                            cache = Capabilities.ITEM_LEGACY.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
                             typeCapabilityCaches.put(side, cache);
                         }
                         IItemHandler capability = cache.getCapability();

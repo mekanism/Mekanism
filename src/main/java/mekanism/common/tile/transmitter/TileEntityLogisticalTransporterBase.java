@@ -70,7 +70,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         // so we can check to ensure that if we are one of the two that the other isn't the other one we don't have a cap for
         if (type == ConnectionType.NONE && old != ConnectionType.PUSH || type == ConnectionType.PUSH && old != ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.ITEM.block(), side);
+            invalidateCapability(Capabilities.ITEM_LEGACY.block(), side);
         } else if (old == ConnectionType.NONE && type != ConnectionType.PUSH || old == ConnectionType.PUSH && type != ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -81,7 +81,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     @NothingNullByDefault
     private class TransporterCapabilityResolver implements ICapabilityResolver<@Nullable Direction> {
 
-        private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM.block());
+        private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM_LEGACY.block());
 
         private final Map<Direction, CursedTransporterItemHandler> cursedHandlers = new EnumMap<>(Direction.class);
         private final Map<Direction, IItemHandler> handlers = new EnumMap<>(Direction.class);

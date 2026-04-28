@@ -220,7 +220,7 @@ public class MekanismTileEntityTypes {
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIG_CARD)
           //Item capabilities are handled only via offset capabilities
-          .without(Capabilities.ITEM.block())
+          .without(Capabilities.ITEM_LEGACY.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityDynamicTank> DYNAMIC_TANK = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.DYNAMIC_TANK, TileEntityDynamicTank::new)
@@ -228,7 +228,7 @@ public class MekanismTileEntityTypes {
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           //Disable item handler caps if we are the dynamic tank (but not the valve)
-          .without(Capabilities.ITEM.block())
+          .without(Capabilities.ITEM_LEGACY.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityDynamicValve> DYNAMIC_VALVE = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.DYNAMIC_VALVE, TileEntityDynamicValve::new)
@@ -277,7 +277,7 @@ public class MekanismTileEntityTypes {
           .serverTicker(TileEntityMekanism::tickServer)
           .withSimple(Capabilities.CONFIGURABLE)
           //Disable item handler caps if we are the induction casing (but not the port)
-          .without(Capabilities.ITEM.block())
+          .without(Capabilities.ITEM_LEGACY.block())
           .build();
     public static final TileEntityTypeRegistryObject<TileEntityInductionPort> INDUCTION_PORT = TILE_ENTITY_TYPES
           .mekBuilder(MekanismBlocks.INDUCTION_PORT, TileEntityInductionPort::new)
@@ -530,12 +530,12 @@ public class MekanismTileEntityTypes {
     private static <BE extends TileEntityLogisticalTransporterBase> BlockEntityTypeBuilder<BE> transporterBuilder(DeferredHolder<Block, ?> block, BlockEntityFactory<BE> factory) {
         return transmitterBuilder(block, factory)
               .clientTicker(TileEntityLogisticalTransporterBase::tickClient)
-              .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
+              .with(Capabilities.ITEM_LEGACY.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER);
     }
 
     private static TileEntityTypeRegistryObject<TileEntityMechanicalPipe> registerPipe(DeferredHolder<Block, ?> block) {
         BlockEntityTypeBuilder<TileEntityMechanicalPipe> builder = transmitterBuilder(block, TileEntityMechanicalPipe::new)
-              .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
+              .with(Capabilities.FLUID_LEGACY.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }

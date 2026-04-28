@@ -118,7 +118,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             if (back != null) {
                 Direction direction = getDirection();
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction), direction.getOpposite());
+                    targetInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction), direction.getOpposite());
                 }
                 IItemHandler frontCap = targetInventory.getCapability();
                 if (frontCap != null) {
@@ -241,7 +241,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         if (homeInventory == null) {
             Direction direction = getDirection();
             BlockPos pos = worldPosition.relative(direction.getOpposite());
-            homeInventory = Capabilities.ITEM.createCache((ServerLevel) level, pos, direction);
+            homeInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, pos, direction);
         }
         return homeInventory.getCapability();
     }

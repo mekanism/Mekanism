@@ -69,7 +69,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
             int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).amount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
             if (needed > 0) {
                 player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-                IFluidHandlerItem handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+                IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
                 if (handler != null) {
                     handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(), FluidAction.EXECUTE);
                 }
@@ -91,7 +91,7 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     }
 
     private FluidStack getFluid(ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (fluidHandlerItem != null) {
             return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.asStack(1));
         }

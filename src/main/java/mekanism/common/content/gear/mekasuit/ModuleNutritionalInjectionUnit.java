@@ -32,7 +32,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
         long usage = MekanismConfig.gear.mekaSuitEnergyUsageNutritionalInjection.get();
         if (MekanismUtils.isPlayingMode(player) && player.canEat(false)) {
             //Check if we can use a single iteration of it
-            IFluidHandlerItem handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (handler != null) {
                 int contained = StorageUtils.getContainedFluid(handler, MekanismFluids.NUTRITIONAL_PASTE.asStack(1)).amount();
                 int needed = Math.min(20 - player.getFoodData().getFoodLevel(), contained / MekanismConfig.general.nutritionalPasteMBPerFood.get());
@@ -49,7 +49,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
     @Override
     public void addHUDElements(IModule<ModuleNutritionalInjectionUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            IFluidHandlerItem handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             double ratio = 0;
             if (handler != null) {
                 int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();

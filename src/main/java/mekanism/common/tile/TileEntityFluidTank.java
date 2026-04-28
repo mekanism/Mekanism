@@ -178,7 +178,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (getActive()) {
             if (fluidHandlerBelow.isEmpty()) {
                 //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
-                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                fluidHandlerBelow = List.of(Capabilities.FLUID_LEGACY.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
                     //Reset the tank that we know is below this
                     resolvedBelowTank = false;
                     belowTank = null;

@@ -251,7 +251,7 @@ public class ItemSlotsBuilder {
 
     private boolean canFluidFill(ItemStack attachedTo, int tankIndex, ItemStack stack) {
         //Copy of FluidInventorySlot#getFillPredicate
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (fluidHandlerItem != null) {
             IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -327,7 +327,7 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidRotarySlot(int tankIndex) {
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, ConstantPredicates.manualOnly(), (stack, automationType) -> {
             //Copy of FluidInventorySlot's rotary insert predicate
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (fluidHandlerItem != null) {
                 boolean mode = attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
                 //Mode == true if fluid to chemical
@@ -357,7 +357,7 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidFuelSlot(int tankIndex, Predicate<@NotNull ItemStack> hasFuelValue) {
         //Copy of FluidFuelInventorySlot's forFuel insert and extract predicates
         return addSlot(((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (stack, automationType) -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (fluidHandlerItem != null) {
                 int tanks = fluidHandlerItem.getTanks();
                 if (tanks > 0) {

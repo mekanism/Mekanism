@@ -36,7 +36,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
           Capabilities.CHEMICAL.block(),
-          Capabilities.FLUID.block()
+          Capabilities.FLUID_LEGACY.block()
     );
     private final Predicate<BoilerValveMode> MODE_MATCHES = mode -> mode == getMode();
 

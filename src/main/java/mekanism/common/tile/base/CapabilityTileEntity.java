@@ -28,8 +28,8 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IChemicalHandler> CHEMICAL_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.CHEMICAL.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IItemHandler> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM_LEGACY.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IFluidHandler> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID_LEGACY.block());
 
     public static <CAP> ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, CAP> basicCapabilityProvider(BlockCapability<CAP, @Nullable Direction> capability) {
         return (tile, context) -> {

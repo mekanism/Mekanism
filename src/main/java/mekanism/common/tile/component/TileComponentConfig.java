@@ -82,9 +82,9 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     private void sideChangedBasic(TransmissionType transmissionType, Direction direction) {
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
-            case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
+            case FLUID -> tile.invalidateCapability(Capabilities.FLUID_LEGACY.block(), direction);
             case CHEMICAL -> tile.invalidateCapability(Capabilities.CHEMICAL.block(), direction);
-            case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
+            case ITEM -> tile.invalidateCapability(Capabilities.ITEM_LEGACY.block(), direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT, direction);
         }
         tile.markForSave();
@@ -105,13 +105,13 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
 
     public boolean isCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, @Nullable Direction side) {
         TransmissionType type = null;
-        if (Capabilities.ITEM.is(capability)) {
+        if (Capabilities.ITEM_LEGACY.is(capability)) {
             type = TransmissionType.ITEM;
         } else if (Capabilities.CHEMICAL.is(capability)) {
             type = TransmissionType.CHEMICAL;
         } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;
-        } else if (Capabilities.FLUID.is(capability)) {
+        } else if (Capabilities.FLUID_LEGACY.is(capability)) {
             type = TransmissionType.FLUID;
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             type = TransmissionType.ENERGY;

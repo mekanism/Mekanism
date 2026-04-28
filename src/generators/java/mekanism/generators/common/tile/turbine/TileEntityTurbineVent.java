@@ -43,7 +43,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     public void addFluidTargetCapability(List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> outputTargets, Direction side) {
         BlockCapabilityCache<IFluidHandler, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.FLUID_LEGACY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(cache);

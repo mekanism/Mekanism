@@ -136,7 +136,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(itemAccess);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
             IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
             if (itemFluidTank != null) {

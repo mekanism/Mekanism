@@ -161,7 +161,7 @@ public final class InventoryUtils {
     }
 
     public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
-        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
+        return Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
     public static HandlerTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {

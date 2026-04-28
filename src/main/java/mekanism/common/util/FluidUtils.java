@@ -132,13 +132,13 @@ public final class FluidUtils {
     }
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
-        if (Capabilities.FLUID.getCapability(ItemAccess.forStack(itemStack)) == null) {
+        if (Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(itemStack)) == null) {
             //If the stack doesn't have a capability just exit. There may be cases like our fluid tank where it will have a capability
             // if the stack size is one, but not when the stack size is greater
             return false;
         }
         ItemStack copyStack = itemStack.copyWithCount(1);
-        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(copyStack));
+        IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(copyStack));
         if (handler != null) {
             FluidStack fluidInItem;
             if (fluidTank.isEmpty()) {

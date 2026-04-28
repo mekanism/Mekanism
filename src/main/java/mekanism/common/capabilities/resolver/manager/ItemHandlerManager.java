@@ -15,6 +15,6 @@ import org.jetbrains.annotations.Nullable;
 public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler, ISidedItemHandler> {
 
     public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull ISidedItemHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.ITEM.block(), ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
+        super(holder, baseHandler, Capabilities.ITEM_LEGACY.block(), ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
     }
 }

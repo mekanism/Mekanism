@@ -98,7 +98,7 @@ public class StorageUtils {
 
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
-        IFluidHandlerItem handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+        IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (handler == null) {
             //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
             handler = ContainerType.FLUID.createHandlerIfData(stack);
@@ -367,7 +367,7 @@ public class StorageUtils {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).amount(), handler.getChemicalTankCapacity(chemTack)));
             }
         }
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(itemAccess);
+        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
         if (fluidHandlerItem != null) {
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).amount(), fluidHandlerItem.getTankCapacity(tank)));
