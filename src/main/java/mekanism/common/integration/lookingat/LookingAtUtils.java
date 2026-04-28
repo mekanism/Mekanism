@@ -50,6 +50,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -134,13 +136,13 @@ public class LookingAtUtils {
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
-                IFluidHandler fluidCapability = Capabilities.FLUID_LEGACY.getCapabilityIfLoaded(level, pos, state, tile, null);
+                ResourceHandler<FluidResource> fluidCapability = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, tile, null);
                 if (fluidCapability != null) {
                     FluidStack fallback = FluidStack.EMPTY;
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
                         fallback = pipe.getTransmitter().getTransmitterNetwork().lastFluid;
                     }
-                    displayFluid(info, fluidCapability, fallback);
+                    displayFluid(info, IFluidHandler.of(fluidCapability), fallback);
                 } else if (structure != null && structure.isFormed()) {
                     //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
                     displayFluid(info, structure, FluidStack.EMPTY);

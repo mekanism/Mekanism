@@ -20,7 +20,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
+import net.neoforged.neoforge.transfer.fluid.BucketResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilityAware {
@@ -74,6 +74,6 @@ public class ItemNutritionalPasteBucket extends BucketItem implements ICapabilit
 
     @Override
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FLUID_LEGACY.item(), (stack, ctx) -> new FluidBucketWrapper(stack), this);
+        event.registerItem(Capabilities.FLUID.item(), (stack, access) -> new BucketResourceHandler(access), this);
     }
 }

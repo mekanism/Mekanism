@@ -208,7 +208,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         BlockCapabilityCache<?, @Nullable Direction> cache = caches.get(side);
         if (cache == null) {
             IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
-                case FLUID -> Capabilities.FLUID_LEGACY;
+                case FLUID -> Capabilities.FLUID;
                 case CHEMICAL -> Capabilities.CHEMICAL;
                 default -> null;
             };
