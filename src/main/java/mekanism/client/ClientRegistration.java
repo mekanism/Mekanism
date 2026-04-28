@@ -499,10 +499,7 @@ public class ClientRegistration {
         //TODO - 26.1 fluid models
         //ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
         //TODO - 26.1 item colours
-        /*for (Cell<ResourceType, PrimaryResource, ItemRegistryObject<Item>> item : MekanismItems.PROCESSED_RESOURCES.cellSet()) {
-            int tint = item.getColumnKey().getTint();
-            ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, item.getValue());
-        }
+        /*
         ClientRegistrationUtil.registerIColoredItemHandler(event, MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
 
