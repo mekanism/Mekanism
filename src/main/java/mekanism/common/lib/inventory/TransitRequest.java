@@ -15,7 +15,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -114,7 +113,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             // to see if we actually have enough room to send the minimum amount of our item. We can
             // skip this step if we don't have a minimum amount being sent, as then whatever we are
             // able to insert will be "good enough"
-            TransitResponse response = TransporterManager.getPredictedInsert(IItemHandler.of(inventory), this);
+            TransitResponse response = TransporterManager.getPredictedInsert(inventory, this);
             if (response.isEmpty() || response.getSendingAmount() < min) {
                 //If we aren't able to send any items or are only able to send less than we have room for
                 // return that we aren't able to insert the requested amount

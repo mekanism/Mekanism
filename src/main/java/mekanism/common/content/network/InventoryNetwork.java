@@ -29,7 +29,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -74,7 +73,7 @@ public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResourc
                             }
                         }
                     }
-                    TransitResponse response = TransporterManager.getPredictedInsert(position, side, IItemHandler.of(handler), request, additionalFlowingStacks);
+                    TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler, request, additionalFlowingStacks);
                     if (!response.isEmpty()) {
                         Direction opposite = side.getOpposite();
                         //If the response isn't empty, check if we already have acceptor data for

@@ -20,7 +20,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +71,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
         // so we can check to ensure that if we are one of the two that the other isn't the other one we don't have a cap for
         if (type == ConnectionType.NONE && old != ConnectionType.PUSH || type == ConnectionType.PUSH && old != ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.ITEM_LEGACY.block(), side);
+            invalidateCapability(Capabilities.ITEM.block(), side);
         } else if (old == ConnectionType.NONE && type != ConnectionType.PUSH || old == ConnectionType.PUSH && type != ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -81,10 +82,10 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
     @NothingNullByDefault
     private class TransporterCapabilityResolver implements ICapabilityResolver<@Nullable Direction> {
 
-        private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM_LEGACY.block());
+        private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM.block());
 
         private final Map<Direction, CursedTransporterItemHandler> cursedHandlers = new EnumMap<>(Direction.class);
-        private final Map<Direction, IItemHandler> handlers = new EnumMap<>(Direction.class);
+        private final Map<Direction, ResourceHandler<ItemResource>> handlers = new EnumMap<>(Direction.class);
 
         @Override
         public List<BlockCapability<?, @Nullable Direction>> getSupportedCapabilities() {
@@ -101,7 +102,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 //We provide no readonly item handler view
                 return null;
             }
-            IItemHandler cachedCapability = handlers.get(side);
+            ResourceHandler<ItemResource> cachedCapability = handlers.get(side);
             if (cachedCapability == null) {
                 LogisticalTransporterBase transporter = getTransmitter();
                 //Note: We check here whether it exposes the cap rather than in the cap itself as we invalidate the cached cap whenever this changes

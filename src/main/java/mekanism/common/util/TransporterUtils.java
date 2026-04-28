@@ -17,7 +17,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -46,7 +48,7 @@ public final class TransporterUtils {
         if (tile instanceof TileEntityTransmitter transmitter && TransmissionType.ITEM.checkTransmissionType(transmitter)) {
             return false;
         }
-        return Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side) != null;
     }
 
     public static EnumColor increment(@Nullable EnumColor color) {
@@ -99,16 +101,16 @@ public final class TransporterUtils {
                 return false;
             }
         }
-        IItemHandler inventory = Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
-        if (inventory != null) {
-            for (int i = 0, slots = inventory.getSlots(); i < slots; i++) {
-                // Simulate insert, this will handle validating the item is valid for the inventory
-                ItemStack rejects = inventory.insertItem(i, itemStack, true);
-                if (rejects.isEmpty() || rejects.count() < itemStack.count()) {
-                    return true;
-                }
-            }
+        ResourceHandler<ItemResource> inventory = Capabilities.ITEM.getCapabilityIfLoaded(level, pos, null, tile, side.getOpposite());
+        if (inventory == null) {
+            return false;
         }
-        return false;
+        ItemResource itemType = ItemResource.of(itemStack);
+        try (Transaction tx = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+            // Simulate insert, this will handle validating the item is valid for the inventory
+            //TODO - 26.1: Should we be taking the item stack's count into account, and only return true if it can all be inserted, or should we maybe just try inserting
+            // a single thing of the item for the simulation
+            return inventory.insert(itemType, itemStack.count(), tx) > 0;
+        }
     }
 }
