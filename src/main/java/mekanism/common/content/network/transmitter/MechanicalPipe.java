@@ -34,10 +34,12 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler,
+public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler,
       IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
 
     public final PipeTier tier;
@@ -55,14 +57,14 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    protected AbstractAcceptorCache<IFluidHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID_LEGACY.block());
+    protected AbstractAcceptorCache<ResourceHandler<FluidResource>, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID.block());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AcceptorCache<IFluidHandler> getAcceptorCache() {
-        return (AcceptorCache<IFluidHandler>) super.getAcceptorCache();
+    public AcceptorCache<ResourceHandler<FluidResource>> getAcceptorCache() {
+        return (AcceptorCache<ResourceHandler<FluidResource>>) super.getAcceptorCache();
     }
 
     @Override
@@ -75,31 +77,33 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
-        AcceptorCache<IFluidHandler> acceptorCache = getAcceptorCache();
+        AcceptorCache<ResourceHandler<FluidResource>> acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
                 continue;
             }
-            IFluidHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
+            ResourceHandler<FluidResource> connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
+                //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
+                IFluidHandler legacyAcceptor = IFluidHandler.of(connectedAcceptor);
                 FluidStack received;
                 //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
                 // and our buffer changed and is no longer empty
                 FluidStack bufferWithFallback = getBufferWithFallback();
                 if (bufferWithFallback.isEmpty()) {
                     //If we don't have a fluid stored try pulling as much as we are able to
-                    received = connectedAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
+                    received = legacyAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
                 } else {
                     //Otherwise, try draining the same type of fluid we have stored requesting up to as much as we are able to pull
                     // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
                     // second tank but just asking to drain a specific amount
-                    received = connectedAcceptor.drain(bufferWithFallback.copyWithAmount(getAvailablePull()), FluidAction.SIMULATE);
+                    received = legacyAcceptor.drain(bufferWithFallback.copyWithAmount(getAvailablePull()), FluidAction.SIMULATE);
                 }
                 if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
                     //If we received some fluid and are able to insert it all, then actually extract it and insert it into our thing.
                     // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
                     // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-                    takeFluid(connectedAcceptor.drain(received.copy(), FluidAction.EXECUTE), Action.EXECUTE);
+                    takeFluid(legacyAcceptor.drain(received.copy(), FluidAction.EXECUTE), Action.EXECUTE);
                 }
             }
         }
@@ -151,7 +155,7 @@ public class MechanicalPipe extends BufferedTransmitter<IFluidHandler, FluidNetw
     }
 
     @Override
-    public CompatibleTransmitterValidator<IFluidHandler, FluidNetwork, MechanicalPipe> getNewOrphanValidator() {
+    public CompatibleTransmitterValidator<ResourceHandler<FluidResource>, FluidNetwork, MechanicalPipe> getNewOrphanValidator() {
         return new CompatibleFluidTransmitterValidator(this);
     }
 

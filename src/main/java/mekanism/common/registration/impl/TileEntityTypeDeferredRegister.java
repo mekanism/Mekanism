@@ -52,8 +52,8 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
               //TODO: Eventually see if we can come up with a way to avoid attaching providers to BEs that can never have one of the following types
               .with(Capabilities.CHEMICAL.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER)
               .with(Capabilities.HEAT, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
-              .with(Capabilities.ITEM_LEGACY.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER)
-              .with(Capabilities.FLUID_LEGACY.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
+              .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER)
+              .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);
         EnergyCompatUtils.addBlockCapabilities(builder);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, () -> Attribute.has(block, AttributeComputerIntegration.class));

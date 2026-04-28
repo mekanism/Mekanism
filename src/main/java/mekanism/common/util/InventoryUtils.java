@@ -29,6 +29,8 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -160,11 +162,12 @@ public final class InventoryUtils {
         return ItemStack.isSameItemSameComponents(inSlot, toInsert);
     }
 
+    //TODO - 26.1: Re-evaluate this
     public static boolean isItemHandler(Level level, BlockPos pos, Direction side) {
-        return Capabilities.ITEM_LEGACY.getCapabilityIfLoaded(level, pos, side) != null;
+        return Capabilities.ITEM.getCapabilityIfLoaded(level, pos, side) != null;
     }
 
-    public static HandlerTransitRequest getEjectItemMap(IItemHandler handler, List<IInventorySlot> slots) {
+    public static HandlerTransitRequest getEjectItemMap(ResourceHandler<ItemResource> handler, List<IInventorySlot> slots) {
         return getEjectItemMap(new HandlerTransitRequest(handler), slots);
     }
 

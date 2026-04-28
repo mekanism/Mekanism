@@ -698,6 +698,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             setNeedsUpdate();
         }
 
+        //TODO - 26.1: Make this support transactions?
         private long add(long amount, Action action) {
             long toAdd = amount;
             // first we try to add the items to an already-containing drive

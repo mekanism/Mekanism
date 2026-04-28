@@ -62,7 +62,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -85,7 +86,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private int valve;
     @NotNull
     public FluidStack valveFluid = FluidStack.EMPTY;
-    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
+    private List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
 
     public float prevScale;
 
@@ -178,7 +179,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (getActive()) {
             if (fluidHandlerBelow.isEmpty()) {
                 //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
-                fluidHandlerBelow = List.of(Capabilities.FLUID_LEGACY.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                fluidHandlerBelow = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
                     //Reset the tank that we know is below this
                     resolvedBelowTank = false;
                     belowTank = null;
@@ -204,7 +205,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     private IExtendedFluidTank getBelowTank() {
         if (!resolvedBelowTank) {
             resolvedBelowTank = true;
-            IFluidHandler belowHandler = fluidHandlerBelow.getFirst().getCapability();
+            ResourceHandler<FluidResource> belowHandler = fluidHandlerBelow.getFirst().getCapability();
             if (belowHandler instanceof ProxyFluidHandler fluidHandler && fluidHandler.getInternalHandler() instanceof TileEntityFluidTank tank) {
                 //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
                 belowTank = tank.fluidTank;

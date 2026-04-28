@@ -21,7 +21,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> implements Finder {
@@ -90,7 +91,7 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         max = filter.max;
     }
 
-    public TransitRequest mapInventory(IItemHandler itemHandler, boolean singleItem) {
+    public TransitRequest mapInventory(ResourceHandler<ItemResource> itemHandler, boolean singleItem) {
         if (sizeMode && !singleItem) {
             return TransitRequest.definedItem(itemHandler, min, max, this);
         }

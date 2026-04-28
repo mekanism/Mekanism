@@ -68,6 +68,8 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,7 +104,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * The nodes that have full sources near them or in them
      */
     private final Set<BlockPos> recurringNodes = new ObjectOpenHashSet<>();
-    private List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> fluidHandlerAbove = Collections.emptyList();
+    private List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidHandlerAbove = Collections.emptyList();
 
     private MachineEnergyContainer<TileEntityElectricPump> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input slot")
@@ -174,7 +176,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         usedEnergy = clientEnergyUsed > 0L;
         if (!fluidTank.isEmpty()) {
             if (fluidHandlerAbove.isEmpty()) {
-                fluidHandlerAbove = List.of(Capabilities.FLUID_LEGACY.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
+                fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
             }
             FluidUtils.emit(fluidHandlerAbove, fluidTank, outputRate);
         }

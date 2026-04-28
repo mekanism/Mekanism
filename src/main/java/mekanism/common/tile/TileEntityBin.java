@@ -42,14 +42,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
 
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> targetInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> targetInventory;
     public int addTicks = 0;
     public int removeTicks = 0;
     private int delayTicks;
@@ -96,11 +97,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
             if (getActive()) {
                 //Note: We can't just pass "this" and have to instead look up the capability to make sure we respect any sidedness
                 // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
-                IItemHandler capability = ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
+                ResourceHandler<ItemResource> capability = ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
                 request.addItem(binSlot.getBottomStack(), 0);
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
+                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
                 }
                 TransitResponse response = request.eject(this, targetInventory.getCapability(), 0, LogisticalTransporterBase::getColor);
                 if (!response.isEmpty() && tier != BinTier.CREATIVE) {

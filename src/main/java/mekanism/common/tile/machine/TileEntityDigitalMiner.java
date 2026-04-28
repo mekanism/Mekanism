@@ -111,7 +111,8 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -126,11 +127,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     public ThreadMinerSearch searcher = new ThreadMinerSearch(this);
 
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> pullInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> pullInventory;
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> selfEjectInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> selfEjectInventory;
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> ejectInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> ejectInventory;
 
     private int radius;
     private boolean inverse;
@@ -275,13 +276,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             Direction oppositeDirection = direction.getOpposite();
             BlockPos ejectPos = getBlockPos().above().relative(oppositeDirection);
             if (selfEjectInventory == null) {
-                selfEjectInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, ejectPos, oppositeDirection);
+                selfEjectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos, oppositeDirection);
             }
-            IItemHandler ejectHandler = selfEjectInventory.getCapability();
+            ResourceHandler<ItemResource> ejectHandler = selfEjectInventory.getCapability();
             if (ejectInventory == null) {
-                ejectInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, ejectPos.relative(oppositeDirection), direction);
+                ejectInventory = Capabilities.ITEM.createCache((ServerLevel) level, ejectPos.relative(oppositeDirection), direction);
             }
-            IItemHandler targetHandler = ejectInventory.getCapability();
+            ResourceHandler<ItemResource> targetHandler = ejectInventory.getCapability();
             if (ejectHandler != null && targetHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
@@ -625,9 +626,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         //And finally source from the inventory on top if auto pull is enabled
         if (doPull) {
             if (pullInventory == null) {
-                pullInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, getBlockPos().above(2), Direction.DOWN);
+                pullInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().above(2), Direction.DOWN);
             }
-            IItemHandler pullInv = pullInventory.getCapability();
+            ResourceHandler<ItemResource> pullInv = pullInventory.getCapability();
             if (pullInv != null) {
                 //Todo: can we do this without a capturing lambda? or at least store it somewhere
                 // replace stacks could be stored as an itemstack filter instead of item?
@@ -1121,7 +1122,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     @Nullable
     @Override
     public <T> T getOffsetCapabilityIfEnabled(@NotNull BlockCapability<T, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == Capabilities.ITEM_LEGACY.block()) {
+        if (capability == Capabilities.ITEM.block()) {
             //Get item handler cap directly from here as we disable it entirely for the main block as we only have it enabled from ports
             return Objects.requireNonNull(itemHandlerManager, "Expected to have item handler").resolve(capability, side);
         }
@@ -1131,7 +1132,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @Override
     public boolean isOffsetCapabilityDisabled(@NotNull BlockCapability<?, @Nullable Direction> capability, Direction side, @NotNull Vec3i offset) {
-        if (capability == Capabilities.ITEM_LEGACY.block()) {
+        if (capability == Capabilities.ITEM.block()) {
             return notItemPort(side, offset);
         } else if (EnergyCompatUtils.isEnergyCapability(capability)) {
             return notEnergyPort(side, offset);

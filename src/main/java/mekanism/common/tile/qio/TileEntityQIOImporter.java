@@ -9,15 +9,12 @@ import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.filter.QIOFilter;
-import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,7 +26,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +36,11 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
 
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
-    private final Predicate<ItemStack> FILTER_ENABLED = stack -> getFilterManager().anyEnabledMatch(stack, QIOFilter::test);
+    //TODO - 26.1: Do we want to make filters able to check resources directly instead of having to convert it to a stack?
+    private final Predicate<ItemResource> FILTER_ENABLED = resource -> getFilterManager().anyEnabledMatch(resource.toStack(), QIOFilter::test);
 
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> backInventory;
     private int delay = 0;
     private boolean importWithoutFilter = true;
 
@@ -71,14 +71,14 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     private void tryImport(QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
         }
-        IItemHandler inventory = backInventory.getCapability();
+        ResourceHandler<ItemResource> inventory = backInventory.getCapability();
         if (inventory == null) {//Not an IItemHandler
             return;
         }
 
-        Predicate<ItemStack> canFilter;
+        Predicate<ItemResource> canFilter;
         if (getFilterManager().hasEnabledFilters()) {
             canFilter = FILTER_ENABLED;
         } else if (importWithoutFilter) {
@@ -88,36 +88,61 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             //If we don't have any enabled filters installed, and we don't allow filterless importing
             return;
         }
-        int slots = inventory.getSlots();
+        int slots = inventory.size();
         if (slots == 0) {
             //If the inventory has no slots just exit early
             return;
         }
-        Set<HashedItem> typesAdded = new HashSet<>();
-        int maxTypes = getMaxTransitTypes(), maxCount = getMaxTransitCount(), countAdded = 0;
+        Set<ItemResource> typesAdded = new HashSet<>();
+        int maxTypes = getMaxTransitTypes();
+        int maxCount = getMaxTransitCount();
+        int countAdded = 0;
 
         for (int i = slots - 1; i >= 0; i--) {
-            ItemStack stack = inventory.extractItem(i, maxCount - countAdded, true);
-            if (stack.isEmpty()) {
-                continue;
-            }
-            HashedItem type = HashedItem.create(stack);
-            // if we don't have room for another item type, skip
-            if (!typesAdded.contains(type) && typesAdded.size() == maxTypes) {
+            ItemResource type = inventory.getResource(i);
+            // if the slot is empty, or we don't have room for another item type, skip
+            if (type.isEmpty() || (!typesAdded.contains(type) && typesAdded.size() == maxTypes)) {
                 continue;
             }
             // if we can't filter this item type, skip
-            if (!canFilter.test(stack)) {
+            if (!canFilter.test(type)) {
                 continue;
             }
-            ItemStack used = TransporterManager.getToUse(stack, freq.addItem(stack));
-            ItemStack ret = inventory.extractItem(i, used.count(), false);
-            if (!InventoryUtils.areItemsStackable(used, ret) || used.count() != ret.count()) {
-                Mekanism.logger.error("QIO insertion error: item handler at {} in {} returned {} during simulated extraction, but returned {} during execution. This is wrong!",
-                      worldPosition.relative(getOppositeDirection()), level.dimension().identifier(), stack, ret);
+            int extractable;
+            int amountInserted;
+            try (Transaction tx = Transaction.openRoot()) {
+                //TODO - 26.1: Ignore caring about the index for extracting, and instead skip over things already in typesAdded
+                extractable = inventory.extract(i, type, maxCount - countAdded, tx);
+                if (extractable == 0) {//Nothing can be extracted, skip it
+                    continue;
+                }
+                ItemStack frequencyRemainder = freq.addItem(type.toStack(extractable));
+                if (frequencyRemainder.isEmpty()) {
+                    //Everything from our initial extraction could be inserted, just commit the transaction as the changes made are the ones we want
+                    tx.commit();
+                    // and add it as a type that was successful
+                    typesAdded.add(type);
+                    countAdded += extractable;
+                    continue;
+                }
+                amountInserted = extractable - frequencyRemainder.count();
             }
-            typesAdded.add(type);
-            countAdded += used.count();
+            if (amountInserted > 0) {
+                //We were unable to add everything our initial extraction attempt got to the frequency
+                // This means we let it revert the inventory to the previous state, so need to extract how much we have added to the frequency
+                // from the inventory
+                try (Transaction tx = Transaction.openRoot()) {
+                    int extracted = inventory.extract(i, type, amountInserted, tx);
+                    if (amountInserted != extracted) {//TODO - 26.1: Maybe rework this error message if we even have any "simulation" once we move qio insertion to transactions
+                        Mekanism.logger.error("QIO insertion error: item resource handler at {} in {} returned {} of {} during simulated extraction, but returned {} during execution. This is wrong!",
+                              worldPosition.relative(getOppositeDirection()), level.dimension().identifier(), extractable, type, extracted);
+                    }
+                    tx.commit();
+                    typesAdded.add(type);
+                    //TODO - 26.1: extracted should always be <= amountInserted, so should we be using extracted instead of amountInserted? In case things don't line up?
+                    countAdded += amountInserted;
+                }
+            }
         }
     }
 

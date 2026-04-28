@@ -6,12 +6,17 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 @FunctionalInterface
 public interface Finder {
 
     boolean test(ItemStack stack);
+
+    default boolean test(ItemResource itemType) {//TODO - 26.1: Do we want to make finders work on item resources by default instead of on stacks?
+        return test(itemType.toStack());
+    }
 
     Finder ANY = stack -> true;
     Finder NONE = stack -> false;

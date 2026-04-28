@@ -31,7 +31,6 @@ import mekanism.common.content.qio.filter.QIOFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.qio.filter.QIOModIDFilter;
 import mekanism.common.content.qio.filter.QIOTagFilter;
-import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -47,7 +46,6 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StackUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
@@ -59,7 +57,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,7 +72,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> backInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> backInventory;
     private int delay = 0;
     private boolean exportWithoutFilter;
     private boolean roundRobin;
@@ -122,9 +122,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     private void tryEject(QIOFrequency freq) {
         if (backInventory == null) {
             Direction direction = getDirection();
-            backInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
+            backInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction.getOpposite()), direction);
         }
-        IItemHandler backHandler = backInventory.getCapability();
+        ResourceHandler<ItemResource> backHandler = backInventory.getCapability();
         if (backHandler == null) {
             return;
         }
@@ -264,10 +264,12 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         QIOFrequency frequency = getQIOFrequency();
         if (frequency != null) {
             for (ItemData data : request) {
-                ItemStack origInsert = StackUtils.size(data.getStack(), data.getTotalCount());
-                ItemStack remainder = frequency.addItem(origInsert);
-                if (TransporterManager.didEmit(origInsert, remainder)) {
-                    return request.createResponse(TransporterManager.getToUse(origInsert, remainder), data);
+                ItemResource itemType = data.getItemType();
+                int totalCount = data.getTotalCount();
+                ItemStack remainder = frequency.addItem(itemType.toStack(totalCount));
+                //TODO - 26.1: Can total count be zero? If so then we should just skip handling that, and then we can remove oure check for if the remainder is empty here
+                if (remainder.isEmpty() || remainder.count() < totalCount) {
+                    return request.createResponse(itemType.toStack(totalCount - remainder.count()), data);
                 }
             }
         }
@@ -309,8 +311,8 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
 
         private static final double MAX_EJECT_ATTEMPTS = 100;
 
-        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, IItemHandler inventory) {
-            int slots = inventory.getSlots();
+        private void eject(TileEntityQIOExporter exporter, QIOFrequency freq, ResourceHandler<ItemResource> inventory) {
+            int slots = inventory.size();
             if (slots == 0) {
                 //If the inventory has no slots just exit early and don't even bother calculating the eject map
                 return;
@@ -350,20 +352,16 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 }
                 HashedItem type = typeSupplier.apply(obj);
                 int amountToInsert = Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj));
-                ItemStack origInsert = type.createStack(amountToInsert);
                 int toUse;
                 if (transporter == null) {
-                    ItemStack toInsert = origInsert.copy();
-                    for (int i = 0; i < slots; i++) {
-                        // Do insert, this will handle validating the item is valid for the inventory
-                        toInsert = inventory.insertItem(i, toInsert, false);
-                        // If empty, end
-                        if (toInsert.isEmpty()) {
-                            break;
-                        }
+                    try (Transaction tx = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+                        //Insert the item into the resource handler, allowing the handler to decide how it is split among slots
+                        //TODO - 26.1: Validate that the type can't somehow be empty
+                        toUse = inventory.insert(type.asResource(), amountToInsert, tx);
+                        tx.commit();
                     }
-                    toUse = TransporterManager.getToUse(origInsert, toInsert).count();
                 } else {
+                    ItemStack origInsert = type.createStack(amountToInsert);
                     //Note: We just simplify the logic that we would have when sending to a transporter via the handler
                     // and add support for also performing round-robin distribution. We don't just use a custom transit request
                     // as we want to be able to send multiple types at once, which is not that straightforward to do when trying

@@ -7,14 +7,16 @@ import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
-public class FluidHandlerTarget extends Target<IFluidHandler, @NotNull FluidStack> {
+public class FluidHandlerTarget extends Target<ResourceHandler<FluidResource>, @NotNull FluidStack> {
 
     public FluidHandlerTarget() {
     }
 
-    public FluidHandlerTarget(Collection<IFluidHandler> allHandlers) {
+    public FluidHandlerTarget(Collection<ResourceHandler<FluidResource>> allHandlers) {
         super(allHandlers);
     }
 
@@ -23,12 +25,16 @@ public class FluidHandlerTarget extends Target<IFluidHandler, @NotNull FluidStac
     }
 
     @Override
-    protected void acceptAmount(IFluidHandler handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
-        splitInfo.send(handler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.EXECUTE));
+    protected void acceptAmount(ResourceHandler<FluidResource> handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
+        //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
+        IFluidHandler legacyHandler = IFluidHandler.of(handler);
+        splitInfo.send(legacyHandler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.EXECUTE));
     }
 
     @Override
-    protected long simulate(IFluidHandler handler, @NotNull FluidStack resource, long amount) {
-        return handler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.SIMULATE);
+    protected long simulate(ResourceHandler<FluidResource> handler, @NotNull FluidStack resource, long amount) {
+        //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
+        IFluidHandler legacyHandler = IFluidHandler.of(handler);
+        return legacyHandler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.SIMULATE);
     }
 }

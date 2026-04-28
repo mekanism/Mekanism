@@ -25,11 +25,12 @@ import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
+public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
     private final List<IExtendedFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
@@ -150,10 +151,10 @@ public class FluidNetwork extends DynamicBufferedNetwork<IFluidHandler, FluidNet
     }
 
     private int tickEmit(@NotNull FluidStack fluidToSend) {
-        Collection<Map<Direction, IFluidHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<Map<Direction, ResourceHandler<FluidResource>>> acceptorValues = acceptorCache.getAcceptorValues();
         FluidHandlerTarget target = null;
-        for (Map<Direction, IFluidHandler> acceptors : acceptorValues) {
-            for (IFluidHandler acceptor : acceptors.values()) {
+        for (Map<Direction, ResourceHandler<FluidResource>> acceptors : acceptorValues) {
+            for (ResourceHandler<FluidResource> acceptor : acceptors.values()) {
                 if (FluidUtils.canFill(acceptor, fluidToSend)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting

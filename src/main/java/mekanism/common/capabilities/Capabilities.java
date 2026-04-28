@@ -117,12 +117,12 @@ public class Capabilities {
         TileEntityBoundingBlock.alwaysProxyCapability(event, IBlockSecurityUtils.INSTANCE.securityCapability());
         //Capabilities we need to proxy because some sub implementations use them
         ComputerCapabilityHelper.addBoundingComputerCapabilities(event);
-        TileEntityBoundingBlock.proxyCapability(event, ITEM_LEGACY.block());
+        TileEntityBoundingBlock.proxyCapability(event, ITEM.block());
         for (BlockCapability<?, @Nullable Direction> capability : EnergyCompatUtils.getLoadedEnergyCapabilities()) {
             TileEntityBoundingBlock.proxyCapability(event, capability);
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
-        TileEntityBoundingBlock.proxyCapability(event, FLUID_LEGACY.block());
+        TileEntityBoundingBlock.proxyCapability(event, FLUID.block());
         TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
         TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }

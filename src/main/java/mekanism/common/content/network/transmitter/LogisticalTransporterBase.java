@@ -48,11 +48,12 @@ import net.minecraft.world.level.storage.ValueInput.ValueInputList;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler, InventoryNetwork, LogisticalTransporterBase> {
+public abstract class LogisticalTransporterBase extends Transmitter<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
 
     protected final Int2ObjectMap<TransporterStack> transit = new Int2ObjectOpenHashMap<>();
     protected final Int2ObjectMap<TransporterStack> needsSync = new Int2ObjectOpenHashMap<>();
@@ -60,8 +61,8 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     protected int nextId = 0;
     protected int delay = 0;
     protected int delayCount = 0;
-    private final Map<Direction, BlockCapabilityCache<IItemHandler, Direction>> capabilityCache = new EnumMap<>(Direction.class);
-    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
+    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> capabilityCache = new EnumMap<>(Direction.class);
+    private final Long2ReferenceMap<EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>>> fallbackHandlerCache = new Long2ReferenceRBTreeMap<>();
 
     protected LogisticalTransporterBase(TileEntityTransmitter tile, TransporterTier tier) {
         super(tile, TransmissionType.ITEM);
@@ -69,21 +70,21 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
     }
 
     @Nullable
-    private IItemHandler getCapForSide(Direction logisticalSide) {
-        BlockCapabilityCache<IItemHandler, Direction> cache = capabilityCache.get(logisticalSide);
+    private ResourceHandler<ItemResource> getCapForSide(Direction logisticalSide) {
+        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = capabilityCache.get(logisticalSide);
         if (cache == null) {
-            cache = Capabilities.ITEM_LEGACY.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), getBlockPos().relative(logisticalSide), logisticalSide.getOpposite(), this::isValid);
             capabilityCache.put(logisticalSide, cache);
         }
         return cache.getCapability();
     }
 
     @Nullable
-    private IItemHandler getFallbackCapForSide(long pos, Direction handlerSide) {
-        EnumMap<Direction, BlockCapabilityCache<IItemHandler, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
-        BlockCapabilityCache<IItemHandler, Direction> cache = sideCache.get(handlerSide);
+    private ResourceHandler<ItemResource> getFallbackCapForSide(long pos, Direction handlerSide) {
+        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
+        BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
-            cache = Capabilities.ITEM_LEGACY.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
+            cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);
             sideCache.put(handlerSide, cache);
         }
         return cache.getCapability();
@@ -91,14 +92,14 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
 
 
     @Override
-    protected AbstractAcceptorCache<IItemHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM_LEGACY.block());
+    protected AbstractAcceptorCache<ResourceHandler<ItemResource>, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.ITEM.block());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AcceptorCache<IItemHandler> getAcceptorCache() {
-        return (AcceptorCache<IItemHandler>) super.getAcceptorCache();
+    public AcceptorCache<ResourceHandler<ItemResource>> getAcceptorCache() {
+        return (AcceptorCache<ResourceHandler<ItemResource>>) super.getAcceptorCache();
     }
 
     @Override
@@ -153,7 +154,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                     if (!isConnectionType(side, ConnectionType.PULL)) {
                         continue;
                     }
-                    IItemHandler inventory = getCapForSide(side);
+                    ResourceHandler<ItemResource> inventory = getCapForSide(side);
                     if (inventory != null) {
                         TransitRequest request = TransitRequest.anyItem(inventory, tier.getPullAmount());
                         //There's a stack available to insert into the network...
@@ -217,7 +218,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<IItemHandler
                                     //Otherwise, try to insert it into the destination inventory
                                     //Get the handler we are trying to insert into from the network's acceptor cache
                                     Direction side = stack.getSide(this).getOpposite();
-                                    IItemHandler acceptor = network.getCachedAcceptor(next, side);
+                                    ResourceHandler<ItemResource> acceptor = network.getCachedAcceptor(next, side);
                                     if (acceptor == null && stack.getPathType().isHome()) {
                                         acceptor = getFallbackCapForSide(next, side);
                                     }

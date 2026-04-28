@@ -43,14 +43,6 @@ public class TransporterManager {
         }
     }
 
-    public static boolean didEmit(ItemStack stack, ItemStack returned) {
-        return returned.isEmpty() || returned.count() < stack.count();
-    }
-
-    public static ItemStack getToUse(ItemStack stack, ItemStack returned) {
-        return returned.isEmpty() ? stack : StackUtils.size(stack, stack.count() - returned.count());
-    }
-
     /**
      * Simulates inserting multiple items into an item handler without modifying the contents of the handler itself.
      *

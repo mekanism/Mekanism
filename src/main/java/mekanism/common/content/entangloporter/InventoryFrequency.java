@@ -70,7 +70,8 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -311,7 +312,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
     }
 
-    private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<IFluidHandler> {
+    private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<ResourceHandler<FluidResource>> {
 
         private final FluidStack toSend;
         private final IExtendedFluidTank storedFluid;
@@ -330,7 +331,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
         }
 
         @Override
-        public void accept(IFluidHandler handler) {
+        public void accept(ResourceHandler<FluidResource> handler) {
             if (FluidUtils.canFill(handler, toSend)) {
                 addHandler(handler);
             }

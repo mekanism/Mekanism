@@ -24,10 +24,10 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,13 +62,12 @@ public class TileEntityChargepad extends TileEntityMekanism {
                     //If we run out of energy, stop checking the remaining entities
                     break;
                 } else if (entity instanceof Player) {
-                    IItemHandler itemHandler = Capabilities.ITEM_LEGACY.getCapability(entity);
+                    ResourceHandler<ItemResource> itemHandler = Capabilities.ITEM.getCapability(entity);
                     if (chargeHandler(itemHandler)) {
                         active = true;
                     } else if (Mekanism.hooks.curios.isLoaded()) {
                         //If we didn't charge anything in the inventory and curios is loaded try charging things in the curios slots
-                        //TODO - 26.1: Resources
-                        if (chargeHandler(IItemHandler.of(CuriosIntegration.getCuriosInventory(entity)))) {
+                        if (chargeHandler(CuriosIntegration.getCuriosInventory(entity))) {
                             active = true;
                         }
                     }
@@ -84,15 +83,19 @@ public class TileEntityChargepad extends TileEntityMekanism {
         return sendUpdatePacket;
     }
 
-    private boolean chargeHandler(@Nullable IItemHandler itemHandler) {
+    private boolean chargeHandler(@Nullable ResourceHandler<ItemResource> itemHandler) {
         //Ensure that we have an item handler capability, because if for example the player is dead we will not
         if (itemHandler != null) {
-            int slots = itemHandler.getSlots();
+            int slots = itemHandler.size();
             for (int slot = 0; slot < slots; slot++) {
-                ItemStack stack = itemHandler.getStackInSlot(slot);
-                if (!stack.isEmpty() && provideEnergy(EnergyCompatUtils.getStrictEnergyHandler(stack))) {
-                    //Only allow charging one item per player each check
-                    return true;
+                ItemResource resource = itemHandler.getResource(slot);
+                if (!resource.isEmpty()) {
+                    //TODO - 26.1: Figure out how to interact with and charge an ItemAccess
+                    IStrictEnergyHandler energyHandler = null;//EnergyCompatUtils.getStrictEnergyHandler(stack);
+                    if (provideEnergy(energyHandler)) {
+                        //Only allow charging one item per player each check
+                        return true;
+                    }
                 }
             }
         }

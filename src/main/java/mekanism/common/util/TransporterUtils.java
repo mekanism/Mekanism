@@ -104,7 +104,7 @@ public final class TransporterUtils {
             for (int i = 0, slots = inventory.getSlots(); i < slots; i++) {
                 // Simulate insert, this will handle validating the item is valid for the inventory
                 ItemStack rejects = inventory.insertItem(i, itemStack, true);
-                if (TransporterManager.didEmit(itemStack, rejects)) {
+                if (rejects.isEmpty() || rejects.count() < itemStack.count()) {
                     return true;
                 }
             }

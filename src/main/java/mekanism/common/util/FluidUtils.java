@@ -23,7 +23,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -68,11 +70,11 @@ public final class FluidUtils {
         return 0xFFFFFFFF;
     }
 
-    public static void emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, IExtendedFluidTank tank) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IExtendedFluidTank tank) {
         emit(targets, tank, tank.getCapacity());
     }
 
-    public static void emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, IExtendedFluidTank tank, int maxOutput) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IExtendedFluidTank tank, int maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
             tank.extract(emit(targets, FluidStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -86,11 +88,11 @@ public final class FluidUtils {
      *
      * @return the amount of fluid emitted
      */
-    public static int emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, @NotNull FluidStack stack) {
+    public static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack) {
         return emit(targets, stack, null, Integer.MAX_VALUE);
     }
 
-    private static int emit(Collection<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> targets, @NotNull FluidStack stack, IExtendedFluidTank tank,
+    private static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack, IExtendedFluidTank tank,
           int maxOutput) {
         if (stack.isEmpty() && tank == null) {
             //Something went wrong in calling this method
@@ -100,9 +102,9 @@ public final class FluidUtils {
         }
         FluidStack toSend = stack.copy();
         FluidHandlerTarget target = null;
-        for (BlockCapabilityCache<IFluidHandler, Direction> capability : targets) {
+        for (BlockCapabilityCache<ResourceHandler<FluidResource>, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IFluidHandler handler = capability.getCapability();
+            ResourceHandler<FluidResource> handler = capability.getCapability();
             if (handler != null) {
                 //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
                 // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
@@ -127,8 +129,10 @@ public final class FluidUtils {
         return EmitUtils.sendToAcceptors(target, stack.amount(), toSend);
     }
 
-    public static boolean canFill(IFluidHandler handler, @NotNull FluidStack stack) {
-        return handler.fill(stack.copy(), FluidAction.SIMULATE) > 0;
+    public static boolean canFill(ResourceHandler<FluidResource> handler, @NotNull FluidStack stack) {
+        //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
+        IFluidHandler legacyHandler = IFluidHandler.of(handler);
+        return legacyHandler.fill(stack.copy(), FluidAction.SIMULATE) > 0;
     }
 
     public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {

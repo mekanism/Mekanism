@@ -13,14 +13,16 @@ import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * A wrapper of an ItemStack which tests equality and hashes based on item type and NBT data, ignoring stack size.
  *
  * @author aidancbrady
  */
-@NothingNullByDefault//TODO - 26.1 - convert to use ItemStackTemplate?
+@NothingNullByDefault//TODO - 26.1 - convert to use ItemStackTemplate? or maybe ItemResource?
 public class HashedItem implements IHashedItem, DataComponentHolder {
 
     /**
@@ -48,6 +50,8 @@ public class HashedItem implements IHashedItem, DataComponentHolder {
 
     private final ItemStack itemStack;
     private final int hashCode;
+    @Nullable
+    private ItemResource cachedResource;
 
     protected HashedItem(ItemStack stack) {
         this.itemStack = stack;
@@ -61,6 +65,13 @@ public class HashedItem implements IHashedItem, DataComponentHolder {
     protected HashedItem(ItemStack stack, int hashCode) {
         this.itemStack = stack;
         this.hashCode = hashCode;
+    }
+
+    public ItemResource asResource() {//TODO - 26.1: Re-evaluate as maybe we just want to replaced hashed items with item resource in general
+        if (cachedResource == null) {
+            cachedResource = ItemResource.of(itemStack);
+        }
+        return cachedResource;
     }
 
     @Override

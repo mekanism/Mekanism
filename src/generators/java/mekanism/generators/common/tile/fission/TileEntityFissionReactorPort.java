@@ -40,7 +40,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
           Capabilities.CHEMICAL.block(),
-          Capabilities.FLUID_LEGACY.block()
+          Capabilities.FLUID.block()
     );
     private final Predicate<FissionPortMode> MODE_MATCHES = mode -> mode == getMode();
 

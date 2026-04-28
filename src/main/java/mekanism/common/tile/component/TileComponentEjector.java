@@ -62,8 +62,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -227,7 +228,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
                     case FLUID -> {
-                        List<BlockCapabilityCache<IFluidHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID_LEGACY);
+                        List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
                         FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
                     }
                     case ENERGY -> {
@@ -286,17 +287,17 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                         typeCapabilityCaches = capabilityCaches.computeIfAbsent(TransmissionType.ITEM, t -> new EnumMap<>(Direction.class));
                     }
                     for (Direction side : outputs) {
-                        BlockCapabilityCache<IItemHandler, @Nullable Direction> cache = (BlockCapabilityCache<IItemHandler, @Nullable Direction>) typeCapabilityCaches.get(side);
+                        BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> cache = (BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction>) typeCapabilityCaches.get(side);
                         if (cache == null) {
-                            cache = Capabilities.ITEM_LEGACY.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
+                            cache = Capabilities.ITEM.createCache(level, tile.getBlockPos().relative(side), side.getOpposite());
                             typeCapabilityCaches.put(side, cache);
                         }
-                        IItemHandler capability = cache.getCapability();
+                        ResourceHandler<ItemResource> capability = cache.getCapability();
                         if (capability == null) {
                             //Skip sides where there isn't a target
                             continue;
                         }
-                        IItemHandler handler = getHandler(side);
+                        ResourceHandler<ItemResource> handler = getHandler(side);
                         if (ejectMap == null) {
                             //NOTE: The below logic and the entire concept of EjectTransitRequest relies on the implementation detail that
                             // per DataType all exposed slots are the same regardless of the actual side. If this ever changes or there are
@@ -344,7 +345,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         return directions == null ? Collections.emptySet() : directions;
     }
 
-    private IItemHandler getHandler(Direction side) {
+    private ResourceHandler<ItemResource> getHandler(Direction side) {
         //Note: We can't just pass "tile" and have to instead look up the capability to make sure we respect any sidedness
         // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
         return CapabilityTileEntity.ITEM_HANDLER_PROVIDER.getCapability(tile, side);
@@ -541,15 +542,15 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public IItemHandler handler;
+        public ResourceHandler<ItemResource> handler;
 
-        public EjectTransitRequest(IItemHandler handler) {
+        public EjectTransitRequest(ResourceHandler<ItemResource> handler) {
             super(handler);
             this.handler = handler;
         }
 
         @Override
-        protected IItemHandler getHandler() {
+        protected ResourceHandler<ItemResource> getHandler() {
             return handler;
         }
     }

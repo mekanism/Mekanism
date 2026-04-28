@@ -52,7 +52,8 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,9 +71,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     };
 
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> homeInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> homeInventory;
     @Nullable
-    private BlockCapabilityCache<IItemHandler, @Nullable Direction> targetInventory;
+    private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> targetInventory;
 
     @SyntheticComputerMethod(getter = "getDefaultColor")
     public EnumColor color;
@@ -113,14 +114,14 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         }
 
         if (canFunction() && delayTicks == 0) {
-            IItemHandler back = getHomeInventory();
+            ResourceHandler<ItemResource> back = getHomeInventory();
             //If there is no tile to pull from or the push to, skip doing any checks
             if (back != null) {
                 Direction direction = getDirection();
                 if (targetInventory == null) {
-                    targetInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, worldPosition.relative(direction), direction.getOpposite());
+                    targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, worldPosition.relative(direction), direction.getOpposite());
                 }
-                IItemHandler frontCap = targetInventory.getCapability();
+                ResourceHandler<ItemResource> frontCap = targetInventory.getCapability();
                 if (frontCap != null) {
                     boolean sentItems = false;
                     for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
@@ -154,7 +155,7 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
         return sendUpdatePacket;
     }
 
-    private TransitResponse emitItemToTransporter(IItemHandler target, TransitRequest request, EnumColor filterColor, int min) {
+    private TransitResponse emitItemToTransporter(ResourceHandler<ItemResource> target, TransitRequest request, EnumColor filterColor, int min) {
         if (request.isEmpty()) {
             return request.getEmptyResponse();
         } else if (target instanceof CursedTransporterItemHandler cursed) {
@@ -237,11 +238,11 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Nullable
-    private IItemHandler getHomeInventory() {
+    private ResourceHandler<ItemResource> getHomeInventory() {
         if (homeInventory == null) {
             Direction direction = getDirection();
             BlockPos pos = worldPosition.relative(direction.getOpposite());
-            homeInventory = Capabilities.ITEM_LEGACY.createCache((ServerLevel) level, pos, direction);
+            homeInventory = Capabilities.ITEM.createCache((ServerLevel) level, pos, direction);
         }
         return homeInventory.getCapability();
     }
