@@ -1,7 +1,7 @@
 package mekanism.common.capabilities.resolver.manager;
 
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.ISidedItemHandler;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.proxy.ProxyItemHandler;
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler, ISidedItemHandler> {
+public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler, IMekanismInventory> {
 
-    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull ISidedItemHandler baseHandler) {
+    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull IMekanismInventory baseHandler) {
         super(holder, baseHandler, Capabilities.ITEM_LEGACY.block(), ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
     }
 }

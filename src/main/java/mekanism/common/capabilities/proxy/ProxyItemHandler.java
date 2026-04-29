@@ -2,7 +2,7 @@ package mekanism.common.capabilities.proxy;
 
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.inventory.ISidedItemHandler;
+import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -12,9 +12,9 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ProxyItemHandler extends ProxyHandler implements IItemHandlerModifiable {
 
-    private final ISidedItemHandler inventory;
+    private final IMekanismInventory inventory;
 
-    public ProxyItemHandler(ISidedItemHandler inventory, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyItemHandler(IMekanismInventory inventory, @Nullable Direction side, @Nullable IHolder holder) {
         super(side, holder);
         this.inventory = inventory;
     }
