@@ -212,6 +212,10 @@ SourceSet setupExtraSourceSet(SourceSet baseSourceSet, String extra) {
     def name = baseSourceSet.name
     def extraSourceSet = sourceSets.create(baseSourceSet.getTaskName(extra, null))
     extraSourceSet.java.srcDirs = ["src/${extra}/${name}/java"]
+    if (disableCrT) {
+        println("[datagen] Disabling compilation of CrT integration")
+        extraSourceSet.java.exclude('mekanism/common/integration/crafttweaker/**')
+    }
     //Resources folder for if we have anything get created by our annotation processors or in the case of game tests, for any nbt presets
     extraSourceSet.resources.srcDirs = ["src/${extra}/${name}/resources"]
     extraSourceSet.compileClasspath += project.sourceSets.api.output

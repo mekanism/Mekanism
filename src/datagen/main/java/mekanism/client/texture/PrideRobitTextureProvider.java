@@ -1,25 +1,31 @@
 package mekanism.client.texture;
 
-import com.google.common.hash.Hasher;
 import com.google.common.hash.Hashing;
+import com.google.common.hash.HashingOutputStream;
 import com.mojang.blaze3d.platform.NativeImage;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
 import java.nio.file.Path;
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
 import mekanism.common.entity.RobitPrideSkinData;
 import mekanism.common.registries.MekanismRobitSkins;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Util;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.PackOutput.PathProvider;
 import net.minecraft.data.PackOutput.Target;
 import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
+import org.lwjgl.stb.STBIWriteCallback;
+import org.lwjgl.stb.STBImageWrite;
 
 public class PrideRobitTextureProvider implements DataProvider {
 
@@ -77,10 +83,13 @@ public class PrideRobitTextureProvider implements DataProvider {
                                 fileName += rotationIndex + 1;
                             }
                             Path path = pathProvider.file(Mekanism.rl(fileName), "png");
-                            byte[] bytes = writableImage.asByteArray();
-                            Hasher hasher = Hashing.sha1().newHasher();
-                            hasher.putBytes(bytes);
-                            cache.writeIfNeeded(path, bytes, hasher.hash());
+                            try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+                                 HashingOutputStream hashingOutputStream = new HashingOutputStream(Hashing.sha1(), outputStream)) {
+                                nativeImageToStream(writableImage, hashingOutputStream);
+                                cache.writeIfNeeded(path, outputStream.toByteArray(), hashingOutputStream.hash());
+                            } catch (IOException ioexception) {
+                                Mekanism.logger.error("Failed to save file to {}", path, ioexception);
+                            }
                         }
                     }
                 }
@@ -116,5 +125,51 @@ public class PrideRobitTextureProvider implements DataProvider {
     @Override
     public String getName() {
         return "Robit Texture Provider";
+    }
+
+    private static void nativeImageToStream(NativeImage image, OutputStream stream) throws IOException {
+        WriteCallback writer = new WriteCallback(stream);
+
+        try {
+            int height = Math.min(image.getHeight(), Integer.MAX_VALUE / image.getWidth() / image.format().components());
+            if (height < image.getHeight()) {
+                LOGGER.warn("Dropping image height from {} to {} to fit the size into 32-bit signed int", image.getHeight(), height);
+            }
+
+            if (STBImageWrite.nstbi_write_png_to_func(writer.address(), 0L, image.getWidth(), height, image.format().components(), image.getPointer(), 0) != 0) {
+                writer.throwIfException();
+            }
+
+        } finally {
+            writer.free();
+        }
+    }
+
+    private static class WriteCallback extends STBIWriteCallback {
+
+        private final OutputStream output;
+        private @Nullable IOException exception;
+
+        private WriteCallback(OutputStream output) {
+            this.output = output;
+        }
+
+        @Override
+        public void invoke(long context, long data, int size) {
+            ByteBuffer dataBuf = getData(data, size);
+            byte[] tmp = new byte[size];
+            try {
+                dataBuf.get(tmp);
+                this.output.write(tmp);
+            } catch (IOException var8) {
+                this.exception = var8;
+            }
+        }
+
+        public void throwIfException() throws IOException {
+            if (this.exception != null) {
+                throw this.exception;
+            }
+        }
     }
 }
