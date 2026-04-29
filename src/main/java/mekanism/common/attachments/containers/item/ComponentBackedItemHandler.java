@@ -6,7 +6,6 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -23,28 +22,28 @@ public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack
     }
 
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return getContainers();
     }
 
     @Nullable
     @Override
-    public IInventorySlot getInventorySlot(int slot, @Nullable Direction side) {
+    public IInventorySlot getInventorySlot(int slot) {
         return getContainer(slot);
     }
 
     @Override
-    public int getSlots(@Nullable Direction side) {
+    public int getSlots() {
         return size();
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot, @Nullable Direction side) {
+    public ItemStack getStackInSlot(int slot) {
         return getContents(slot);
     }
 
     @Override
-    public boolean isInventoryEmpty(@Nullable Direction side) {
+    public boolean isInventoryEmpty() {
         for (ItemStack item : getAttached()) {
             if (!item.isEmpty()) {
                 return false;

@@ -155,7 +155,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 

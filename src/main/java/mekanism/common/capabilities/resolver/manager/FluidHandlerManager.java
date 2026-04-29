@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IExtendedFluidTank, IFluidHandler, ISidedFluidHandler> {
+public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IExtendedFluidTank, IFluidHandler> {
 
     public FluidHandlerManager(@Nullable IFluidTankHolder holder, @NotNull ISidedFluidHandler baseHandler) {
         super(holder, baseHandler, Capabilities.FLUID_LEGACY.block(), ProxyFluidHandler::new, IFluidTankHolder::getTanks);

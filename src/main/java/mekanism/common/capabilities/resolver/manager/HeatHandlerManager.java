@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class HeatHandlerManager extends CapabilityHandlerManager<IHeatCapacitorHolder, IHeatCapacitor, IHeatHandler, ISidedHeatHandler> {
+public class HeatHandlerManager extends CapabilityHandlerManager<IHeatCapacitorHolder, IHeatCapacitor, IHeatHandler> {
 
     public HeatHandlerManager(@Nullable IHeatCapacitorHolder holder, @NotNull ISidedHeatHandler baseHandler) {
         super(holder, baseHandler, Capabilities.HEAT, ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);

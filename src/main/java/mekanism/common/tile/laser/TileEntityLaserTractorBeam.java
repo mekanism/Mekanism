@@ -65,7 +65,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         if (!drops.isEmpty()) {
             BlockPos dropPos = null;
             Direction opposite = null;
-            List<IInventorySlot> inventorySlots = getInventorySlots(null);
+            List<IInventorySlot> inventorySlots = getInventorySlots();
             for (ItemStack drop : drops) {
                 //Try inserting it first where it can stack and then into empty slots
                 drop = InventoryUtils.insertItem(inventorySlots, drop, Action.EXECUTE, AutomationType.INTERNAL);
@@ -88,7 +88,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     protected boolean handleHitItem(ItemEntity entity) {
         ItemStack stack = entity.getItem();
         //Try inserting it first where it can stack and then into empty slots
-        stack = InventoryUtils.insertItem(getInventorySlots(null), stack, Action.EXECUTE, AutomationType.INTERNAL);
+        stack = InventoryUtils.insertItem(getInventorySlots(), stack, Action.EXECUTE, AutomationType.INTERNAL);
         if (stack.isEmpty()) {
             //If we have finished grabbing it all then remove the entity
             entity.discard();

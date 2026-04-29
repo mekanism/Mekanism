@@ -1141,7 +1141,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return MekanismUtils.redstoneLevelFromContents(getInventorySlots(null));
+                return MekanismUtils.redstoneLevelFromContents(getInventorySlots());
             }
             //TODO: Do we want some other defaults as well?
         }
@@ -1217,6 +1217,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     @Override
+    public final List<IInventorySlot> getInventorySlots() {
+        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
+        // and maybe rename the one that does take a side as it is mostly used for ContainerType
+        return getInventorySlots(null);
+    }
+
+    @NotNull
     public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
         return itemHandlerManager != null ? itemHandlerManager.getContainers(side) : Collections.emptyList();
     }

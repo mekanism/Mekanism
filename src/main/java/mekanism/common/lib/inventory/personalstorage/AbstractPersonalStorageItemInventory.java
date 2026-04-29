@@ -7,8 +7,6 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import net.minecraft.util.Util;
-import net.minecraft.core.Direction;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public abstract class AbstractPersonalStorageItemInventory implements IMekanismInventory {
@@ -16,7 +14,7 @@ public abstract class AbstractPersonalStorageItemInventory implements IMekanismI
     protected final List<IInventorySlot> slots = Util.make(new ArrayList<>(), lst -> PersonalStorageManager.createSlots(lst::add, ConstantPredicates.alwaysTrueBi(), this));
 
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return slots;
     }
 }

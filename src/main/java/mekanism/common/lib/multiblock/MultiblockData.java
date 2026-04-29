@@ -369,7 +369,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return isFormed() || isRemote() ? inventorySlots : Collections.emptyList();
     }
 

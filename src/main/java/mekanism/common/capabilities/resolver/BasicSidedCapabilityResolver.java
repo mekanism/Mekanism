@@ -11,33 +11,26 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER> implements ICapabilityResolver<@Nullable Direction> {
+public class BasicSidedCapabilityResolver<HANDLER> implements ICapabilityResolver<@Nullable Direction> {
 
-    private final ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator;
+    private final ProxyCreator<HANDLER> proxyCreator;
     private final Map<Direction, HANDLER> handlers;
     private final List<BlockCapability<?, @Nullable Direction>> supportedCapability;
-    private final SIDED_HANDLER baseHandler;
     @Nullable
     private HANDLER readOnlyHandler;
 
-    public BasicSidedCapabilityResolver(SIDED_HANDLER baseHandler, BlockCapability<HANDLER, @Nullable Direction> supportedCapability, BasicProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator) {
-        this(baseHandler, supportedCapability, proxyCreator, true);
+    public BasicSidedCapabilityResolver(BlockCapability<HANDLER, @Nullable Direction> supportedCapability, BasicProxyCreator<HANDLER> proxyCreator) {
+        this(supportedCapability, true, proxyCreator);
     }
 
-    protected BasicSidedCapabilityResolver(SIDED_HANDLER baseHandler, BlockCapability<HANDLER, @Nullable Direction> supportedCapability, ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator,
-          boolean canHandle) {
+    protected BasicSidedCapabilityResolver(BlockCapability<HANDLER, @Nullable Direction> supportedCapability, boolean canHandle, ProxyCreator<HANDLER> proxyCreator) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
-        this.baseHandler = baseHandler;
         this.proxyCreator = proxyCreator;
         if (canHandle) {
             handlers = new EnumMap<>(Direction.class);
         } else {
             handlers = Collections.emptyMap();
         }
-    }
-
-    public SIDED_HANDLER getInternal() {
-        return baseHandler;
     }
 
     @Override
@@ -58,13 +51,13 @@ public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER
     public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {
         if (side == null) {
             if (readOnlyHandler == null) {
-                readOnlyHandler = proxyCreator.create(baseHandler, null, getHolder());
+                readOnlyHandler = proxyCreator.create(null, getHolder());
             }
             return (T) readOnlyHandler;
         }
         HANDLER handler = handlers.get(side);
         if (handler == null) {
-            handler = proxyCreator.create(baseHandler, side, getHolder());
+            handler = proxyCreator.create(side, getHolder());
             handlers.put(side, handler);
         }
         return (T) handler;
@@ -86,19 +79,19 @@ public class BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER extends HANDLER
     }
 
     @FunctionalInterface
-    public interface ProxyCreator<HANDLER, SIDED_HANDLER extends HANDLER> {
+    public interface ProxyCreator<HANDLER> {
 
-        HANDLER create(SIDED_HANDLER handler, @Nullable Direction side, @Nullable IHolder holder);
+        HANDLER create(@Nullable Direction side, @Nullable IHolder holder);
     }
 
     @FunctionalInterface
-    public interface BasicProxyCreator<HANDLER, SIDED_HANDLER extends HANDLER> extends ProxyCreator<HANDLER, SIDED_HANDLER> {
+    public interface BasicProxyCreator<HANDLER> extends ProxyCreator<HANDLER> {
 
-        HANDLER create(SIDED_HANDLER handler, @Nullable Direction side);
+        HANDLER create(@Nullable Direction side);
 
         @Override
-        default HANDLER create(SIDED_HANDLER handler, @Nullable Direction side, @Nullable IHolder holder) {
-            return create(handler, side);
+        default HANDLER create(@Nullable Direction side, @Nullable IHolder holder) {
+            return create(side);
         }
     }
 }

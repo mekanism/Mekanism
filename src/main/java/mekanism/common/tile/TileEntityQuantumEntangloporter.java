@@ -79,7 +79,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     public TileEntityQuantumEntangloporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER, pos, state);
 
-        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots(null) : Collections.emptyList());
+        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
@@ -301,7 +301,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     // in which case we can just add some overloads while we deprecate these
     @ComputerMethod
     ItemStack getBufferItem() throws ComputerException {
-        return getFrequency().getInventorySlots(null).getFirst().getStack();
+        return getFrequency().getInventorySlots().getFirst().getStack();
     }
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",

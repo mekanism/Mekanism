@@ -1,5 +1,8 @@
 package mekanism.common.capabilities.resolver.manager;
 
+import java.util.Collections;
+import java.util.List;
+import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.Capabilities;
@@ -12,9 +15,22 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler, IMekanismInventory> {
+public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, IItemHandler> {
 
-    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull IMekanismInventory baseHandler) {
-        super(holder, baseHandler, Capabilities.ITEM_LEGACY.block(), ProxyItemHandler::new, IInventorySlotHolder::getInventorySlots);
+    public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull IContentsListener changeListener) {
+        super(holder, Capabilities.ITEM_LEGACY.block(), IInventorySlotHolder::getInventorySlots, (side, h) -> new ProxyItemHandler(new IMekanismInventory() {
+
+            @Override
+            public void onContentsChanged() {
+                changeListener.onContentsChanged();
+            }
+
+            @NotNull
+            @Override
+            public List<IInventorySlot> getInventorySlots() {
+                //Note: This instance of check should always pass, but we have it in case we are passed a null holder
+                return h instanceof IInventorySlotHolder slotHolder ? slotHolder.getInventorySlots(side) : Collections.emptyList();
+            }
+        }, side, h));
     }
 }

@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.proxy;
 
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.holder.IHolder;
@@ -21,38 +22,38 @@ public class ProxyItemHandler extends ProxyHandler implements IItemHandlerModifi
 
     @Override
     public int getSlots() {
-        return inventory.getSlots(side);
+        return inventory.getSlots();
     }
 
     @Override
     public ItemStack getStackInSlot(int slot) {
-        return inventory.getStackInSlot(slot, side);
+        return inventory.getStackInSlot(slot);
     }
 
     @Override
     public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return readOnlyInsert() ? stack : inventory.insertItem(slot, stack, side, Action.get(!simulate));
+        return readOnlyInsert() ? stack : inventory.insertItem(slot, stack, Action.get(!simulate), AutomationType.handler(side));
     }
 
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return readOnlyExtract() ? ItemStack.EMPTY : inventory.extractItem(slot, amount, side, Action.get(!simulate));
+        return readOnlyExtract() ? ItemStack.EMPTY : inventory.extractItem(slot, amount, Action.get(!simulate), AutomationType.handler(side));
     }
 
     @Override
     public int getSlotLimit(int slot) {
-        return inventory.getSlotLimit(slot, side);
+        return inventory.getSlotLimit(slot);
     }
 
     @Override
     public boolean isItemValid(int slot, ItemStack stack) {
-        return !readOnly || inventory.isItemValid(slot, stack, side);
+        return !readOnly || inventory.isItemValid(slot, stack);
     }
 
     @Override
     public void setStackInSlot(int slot, ItemStack stack) {
         if (!readOnly) {
-            inventory.setStackInSlot(slot, stack, side);
+            inventory.setStackInSlot(slot, stack);
         }
     }
 }

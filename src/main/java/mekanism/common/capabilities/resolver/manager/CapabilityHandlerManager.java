@@ -11,7 +11,7 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER, SIDED_HANDLER extends HANDLER> extends BasicSidedCapabilityResolver<HANDLER, SIDED_HANDLER>
+public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER> extends BasicSidedCapabilityResolver<HANDLER>
       implements ICapabilityHandlerManager<CONTAINER> {
 
     private final BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter;
@@ -19,9 +19,16 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
     @Nullable
     protected final HOLDER holder;
 
-    protected CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler, BlockCapability<HANDLER, @Nullable Direction> supportedCapability,
-          ProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator, BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
-        super(baseHandler, supportedCapability, proxyCreator, holder != null);
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this after converting all of the handlers to not be natively sided and instead return different impls based on side
+    protected <SIDED_HANDLER extends HANDLER> CapabilityHandlerManager(@Nullable HOLDER holder, SIDED_HANDLER baseHandler,
+          BlockCapability<HANDLER, @Nullable Direction> supportedCapability, LegacyProxyCreator<HANDLER, SIDED_HANDLER> proxyCreator,
+          BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter) {
+        this(holder, supportedCapability, containerGetter, (side, h) -> proxyCreator.create(baseHandler, side, h));
+    }
+
+    protected CapabilityHandlerManager(@Nullable HOLDER holder, BlockCapability<HANDLER, @Nullable Direction> supportedCapability,
+          BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter, ProxyCreator<HANDLER> proxyCreator) {
+        super(supportedCapability, holder != null, proxyCreator);
         this.holder = holder;
         this.canHandle = this.holder != null;
         this.containerGetter = containerGetter;
@@ -54,5 +61,12 @@ public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER
             return null;
         }
         return super.resolve(capability, side);
+    }
+
+    @FunctionalInterface
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this after converting all of the handlers to not be natively sided and instead return different impls based on side
+    public interface LegacyProxyCreator<HANDLER, SIDED_HANDLER extends HANDLER> {
+
+        HANDLER create(SIDED_HANDLER handler, @Nullable Direction side, @Nullable IHolder holder);
     }
 }

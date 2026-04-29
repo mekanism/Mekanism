@@ -441,7 +441,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        List<IInventorySlot> robitSlots = getInventorySlots(null);
+        List<IInventorySlot> robitSlots = getInventorySlots();
         ComponentBackedItemHandler stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
             ItemStack invStack = robitSlots.get(slot).getStack();
@@ -491,7 +491,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         output.putBoolean(SerializationConstants.FOLLOW, getFollowing());
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
-        ContainerType.ITEM.saveTo(output, getInventorySlots(null));
+        ContainerType.ITEM.saveTo(output, getInventorySlots());
         ContainerType.ENERGY.saveTo(output, getEnergyContainers(null));
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
@@ -505,7 +505,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
-        ContainerType.ITEM.readFrom(input, getInventorySlots(null));
+        ContainerType.ITEM.readFrom(input, getInventorySlots());
         ContainerType.ENERGY.readFrom(input, getEnergyContainers(null));
         progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
@@ -607,7 +607,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return hasInventory() ? inventorySlots : Collections.emptyList();
     }
 

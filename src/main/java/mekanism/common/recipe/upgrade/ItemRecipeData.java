@@ -9,10 +9,8 @@ import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
-import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -44,9 +42,8 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             PersonalStorageManager.createSlots(stackSlots::add, ConstantPredicates.alwaysTrueBi(), null);
             //TODO: Improve the logic so that it maybe tries multiple different slot combinations
             IMekanismInventory outputHandler = new IMekanismInventory() {
-                @NotNull
                 @Override
-                public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+                public List<IInventorySlot> getInventorySlots() {
                     return stackSlots;
                 }
 

@@ -88,7 +88,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
 
         // Items
-        StackUtils.merge(getInventorySlots(null), mergeCache.getInventorySlots(null), rejectContents.rejectedItems);
+        StackUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems);
         // Fluid
         StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
         // Chemical
@@ -105,7 +105,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
+    public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
@@ -150,7 +150,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
             @Override
             protected List<IInventorySlot> containerList(IMekanismInventory inventory) {
-                return inventory.getInventorySlots(null);
+                return inventory.getInventorySlots();
             }
 
             @Override

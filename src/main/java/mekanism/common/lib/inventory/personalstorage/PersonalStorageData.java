@@ -50,7 +50,7 @@ class PersonalStorageData extends SavedData {
         if (inventory == null) {
             inventory = createInventory();
             inventoriesById.put(id, inventory);
-            List<IInventorySlot> inventorySlots = inventory.getInventorySlots(null);
+            List<IInventorySlot> inventorySlots = inventory.getInventorySlots();
             for (int i = 0, slots = contents.size(); i < slots; i++) {
                 ContainerType.ITEM.copy(contents.get(i), inventorySlots.get(i));
             }

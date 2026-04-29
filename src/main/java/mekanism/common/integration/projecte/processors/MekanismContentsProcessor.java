@@ -64,7 +64,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
         }
         AbstractPersonalStorageItemInventory personalStorage = PersonalStorageManager.getInventoryIfPresent(stack);
         if (personalStorage != null) {//Items stored in a personal chest or barrel
-            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getInventorySlots(null));
+            currentEMC = addEmc(emcProxy, currentEMC, personalStorage.getInventorySlots());
             if (currentEMC == 0) {
                 //Something that is stored cannot be converted into EMC
                 return 0;

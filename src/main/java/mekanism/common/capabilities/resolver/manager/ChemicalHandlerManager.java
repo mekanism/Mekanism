@@ -13,7 +13,7 @@ import org.jetbrains.annotations.Nullable;
  * Helper class to make reading instead of having as messy generics
  */
 @ParametersAreNotNullByDefault
-public class ChemicalHandlerManager extends CapabilityHandlerManager<IChemicalTankHolder, IChemicalTank, IChemicalHandler, ISidedChemicalHandler> {
+public class ChemicalHandlerManager extends CapabilityHandlerManager<IChemicalTankHolder, IChemicalTank, IChemicalHandler> {
 
     public ChemicalHandlerManager(@Nullable IChemicalTankHolder holder, ISidedChemicalHandler baseHandler) {
         super(holder, baseHandler, Capabilities.CHEMICAL.block(), ProxyChemicalHandler::new, IChemicalTankHolder::getTanks);

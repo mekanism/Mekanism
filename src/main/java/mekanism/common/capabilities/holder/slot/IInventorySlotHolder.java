@@ -7,6 +7,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+@FunctionalInterface
 public interface IInventorySlotHolder extends IHolder {
 
     @NotNull
