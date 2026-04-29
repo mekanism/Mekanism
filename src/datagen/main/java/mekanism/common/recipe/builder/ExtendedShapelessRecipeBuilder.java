@@ -1,6 +1,5 @@
 package mekanism.common.recipe.builder;
 
-import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import net.minecraft.core.Holder;
@@ -93,8 +92,8 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     @Override
     protected ShapelessRecipe asRecipe() {
         return new ShapelessRecipe(
-              Objects.requireNonNullElse(this.group, ""),
-              RecipeBuilder.determineCraftingBookCategory(this.category),
+              RecipeBuilder.createCraftingCommonInfo(false),
+              RecipeBuilder.createCraftingBookInfo(this.category, this.group),
               resultStack(),
               this.ingredients
         );
