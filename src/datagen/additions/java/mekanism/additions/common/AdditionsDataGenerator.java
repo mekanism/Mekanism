@@ -11,7 +11,6 @@ import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
 import mekanism.additions.client.recipe_viewer.aliases.AdditionsAliasMapping;
 import mekanism.additions.common.loot.AdditionsLootProvider;
 import mekanism.additions.common.recipe.AdditionsRecipeProvider;
-import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.common.recipe.MekRecipeRunner;
@@ -39,7 +38,6 @@ public class AdditionsDataGenerator {
         AdditionsDatapackRegistryProvider drProvider = new AdditionsDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
-        gen.addProvider(true, new BasePackMetadataGenerator(output, AdditionsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(true, new AdditionsLangProvider(output));
         gen.addProvider(true, new AdditionsSoundProvider(output));

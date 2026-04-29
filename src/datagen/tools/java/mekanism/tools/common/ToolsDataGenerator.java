@@ -2,7 +2,6 @@ package mekanism.tools.common;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import mekanism.common.BasePackMetadataGenerator;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.common.recipe.MekRecipeRunner;
@@ -35,7 +34,6 @@ public class ToolsDataGenerator {
         PackOutput output = gen.getPackOutput();
         CompletableFuture<HolderLookup.Provider> lookupProvider = event.getLookupProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
-        gen.addProvider(true, new BasePackMetadataGenerator(output, ToolsLang.PACK_DESCRIPTION));
         //Client side data generators
         gen.addProvider(true, new ToolsLangProvider(output));
         gen.addProvider(true, new ToolsSpriteSourceProvider(output, lookupProvider));
