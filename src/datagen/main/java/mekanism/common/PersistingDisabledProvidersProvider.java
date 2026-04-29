@@ -20,7 +20,6 @@ import mekanism.client.integration.emi.EmiAliasProvider;
 import mekanism.client.integration.emi.MekanismEmiDefaults;
 import mekanism.client.recipe_viewer.alias.IAliasMapping;
 import mekanism.client.recipe_viewer.alias.MekanismAliasMapping;
-import mekanism.common.integration.crafttweaker.MekanismCrTExampleProvider;
 import mekanism.common.integration.projecte.MekanismCustomConversions;
 import mekanism.common.lib.FieldReflectionHelper;
 import net.minecraft.core.HolderLookup;
@@ -69,7 +68,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             fakeProviders.add("Custom EMC Conversions: mekanism");
         }
         if (Mekanism.hooks.craftTweaker.isLoaded()) {
-            gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
+            throw new UnsupportedOperationException("uncomment me, then");
+            //gen.addProvider(true, new MekanismCrTExampleProvider(output, serverResources, lookupProvider));
         } else {
             pathsToSkip.add("scripts");
             fakeProviders.add("CraftTweaker Examples: mekanism");

@@ -159,6 +159,7 @@ public class ClientRegistrationUtil {
     }*/
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
+        //TODO - 26.1: do this with the models themselves?
         if (event instanceof RegisterColorHandlersEvent.BlockTintSources blockEvent) {
             registerBlockColorHandler(blockEvent, COLORED_BLOCK_COLOR, blocks);
         }//TODO - 26.1 item colours

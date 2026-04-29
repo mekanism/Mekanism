@@ -1,7 +1,9 @@
 package mekanism.common.recipe.builder;
 
+import java.util.Optional;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
+import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.SmithingRecipe;
@@ -32,6 +34,6 @@ public class ExtendedSmithingRecipeBuilder extends BaseRecipeBuilder<ExtendedSmi
 
     @Override
     protected SmithingRecipe asRecipe() {
-        return new SmithingTransformRecipe(template, base, addition, resultStack());
+        return new SmithingTransformRecipe(RecipeBuilder.createCraftingCommonInfo(false), Optional.of(template), base, Optional.of(addition), resultStack());
     }
 }

@@ -4,7 +4,7 @@ import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.registries.AdditionsBlocks;
 import mekanism.additions.common.registries.AdditionsItems;
-import mekanism.client.model.BaseItemModelProvider;
+import mekanism.client.model.BaseModelProvider;
 import mekanism.common.registration.INamedEntry;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -12,7 +12,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
 
-public class AdditionsItemModelProvider extends BaseItemModelProvider {
+public class AdditionsItemModelProvider extends BaseModelProvider {
 
     public AdditionsItemModelProvider(PackOutput output, ResourceManager clientResources) {
         super(output, MekanismAdditions.MODID, clientResources);
@@ -20,6 +20,8 @@ public class AdditionsItemModelProvider extends BaseItemModelProvider {
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        //todo - these are tinted models, move tint here from AdditionsClientRegistration
+
         withParent(AdditionsItems.BALLOONS, "item/balloon");
         withParent(AdditionsBlocks.GLOW_PANELS, "item/glow_panel");
         withParent(AdditionsBlocks.PLASTIC_BLOCKS, "block/plastic/block");
@@ -39,7 +41,7 @@ public class AdditionsItemModelProvider extends BaseItemModelProvider {
     }
 
     private void withParent(Map<?, ? extends INamedEntry> items, String modelName) {
-        ModelFile parent = getExistingFile(modLoc(modelName));
+        ModelFile parent = getExistingFile(modLocation(modelName));
         for (INamedEntry item : items.values()) {
             getBuilder(item.getName()).parent(parent);
         }

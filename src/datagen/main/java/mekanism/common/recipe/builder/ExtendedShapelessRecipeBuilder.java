@@ -94,7 +94,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     protected ShapelessRecipe asRecipe() {
         return new ShapelessRecipe(
               Objects.requireNonNullElse(this.group, ""),
-              RecipeBuilder.determineBookCategory(this.category),
+              RecipeBuilder.determineCraftingBookCategory(this.category),
               resultStack(),
               this.ingredients
         );

@@ -1,6 +1,6 @@
 package mekanism.tools.client;
 
-import mekanism.client.model.BaseItemModelProvider;
+import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
 import mekanism.common.registration.INamedEntry;
 import mekanism.tools.common.MekanismTools;
@@ -14,10 +14,8 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
-import net.neoforged.neoforge.client.model.generators.ItemModelBuilder;
-import net.neoforged.neoforge.client.model.generators.ModelFile.ExistingModelFile;
 
-public class ToolsItemModelProvider extends BaseItemModelProvider {
+public class ToolsItemModelProvider extends BaseModelProvider {
 
     public ToolsItemModelProvider(PackOutput output, ResourceManager clientResources) {
         super(output, MekanismTools.MODID, clientResources);
@@ -44,10 +42,32 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
                 texture = itemTexture(holder);
             } else {
                 int index = name.lastIndexOf('_');
-                texture = modLoc("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
+                texture = modLocation("item/" + name.substring(0, index) + '/' + name.substring(index + 1));
             }
             armorOrHandheld(holder, texture);
         }
+    }
+
+    protected ItemModelBuilder generated(Holder<Item> item, Identifier texture) {
+        return withExistingParent(getPath(item), "item/generated").texture("layer0", texture);
+    }
+
+    protected void armorOrHandheld(Holder<Item> holder, Identifier texture) {
+        if (holder.value() instanceof ArmorItem armorItem) {
+            //todo net.minecraft.client.data.models.ItemModelGenerators.generateTrimmableItem ?
+            ItemModelBuilder builder = generated(holder, texture);
+            for (ItemModelGenerators.TrimMaterialData trimModelData : ItemModelGenerators.TRIM_MATERIAL_MODELS) {
+                String trimId = trimModelData.name(armorItem.getMaterial());
+                ItemModelBuilder override = withExistingParent(builder.getLocation().withSuffix("_" + trimId + "_trim").getPath(), "item/generated")
+                      .texture("layer0", texture)
+                      .texture("layer1", Identifier.withDefaultNamespace("trims/items/" + armorItem.getType().getName() + "_trim_" + trimId));
+                builder.override()
+                      .predicate(ItemModelGenerators.TRIM_TYPE_PREDICATE_ID, trimModelData.itemModelIndex())
+                      .model(override);
+            }
+            return builder;
+        }
+        return withExistingParent(getPath(holder), "item/handheld").texture("layer0", texture);
     }
 
     private boolean isVanilla(Holder<Item> item, String name) {
@@ -66,7 +86,7 @@ public class ToolsItemModelProvider extends BaseItemModelProvider {
               .parent(new ExistingModelFile(mcLoc(folder + "/shield"), existingFileHelper))
               .texture("particle", particle)
               .override()
-              .predicate(modLoc("blocking"), 1)
+              .predicate(modLocation("blocking"), 1)
               .model(blockingModel)
               .end();
     }
