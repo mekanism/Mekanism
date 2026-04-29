@@ -92,7 +92,7 @@ public class ExtendedShapelessRecipeBuilder extends BaseRecipeBuilder<ExtendedSh
     @Override
     protected ShapelessRecipe asRecipe() {
         return new ShapelessRecipe(
-              RecipeBuilder.createCraftingCommonInfo(false),
+              RecipeBuilder.createCraftingCommonInfo(true),
               RecipeBuilder.createCraftingBookInfo(this.category, this.group),
               resultStack(),
               this.ingredients
