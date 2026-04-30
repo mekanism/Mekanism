@@ -5,7 +5,7 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.common.recipe.MekRecipeRunner;
-import mekanism.tools.client.ToolsItemModelProvider;
+import mekanism.tools.client.ToolsModelProvider;
 import mekanism.tools.client.ToolsLangProvider;
 import mekanism.tools.client.ToolsSpriteSourceProvider;
 import mekanism.tools.client.integration.emi.ToolsEmiDefaults;
@@ -37,7 +37,7 @@ public class ToolsDataGenerator {
         //Client side data generators
         gen.addProvider(true, new ToolsLangProvider(output));
         gen.addProvider(true, new ToolsSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(true, new ToolsItemModelProvider(output, clientResources));
+        gen.addProvider(true, new ToolsModelProvider(output, clientResources));
         //Server side data generators
         gen.addProvider(true, new ToolsTagProvider(output, lookupProvider));
         gen.addProvider(true, new MekRecipeRunner(output, lookupProvider, ToolsRecipeProvider::new, MekanismTools.MODID));
