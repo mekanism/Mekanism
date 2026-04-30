@@ -10,7 +10,6 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -187,7 +186,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     @Override
     default ItemStackIngredient from(HolderGetter<Item> lookup, TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
-        return from(Ingredient.of(HolderSet.emptyNamed(BuiltInRegistries.ITEM, tag)), amount);
+        return from(Ingredient.of(lookup.getOrThrow(tag)), amount);
     }
 
     /**
