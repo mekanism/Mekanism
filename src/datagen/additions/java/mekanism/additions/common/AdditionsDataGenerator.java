@@ -2,9 +2,8 @@ package mekanism.additions.common;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
-import mekanism.additions.client.AdditionsBlockStateProvider;
-import mekanism.additions.client.AdditionsItemModelProvider;
 import mekanism.additions.client.AdditionsLangProvider;
+import mekanism.additions.client.AdditionsModelProvider;
 import mekanism.additions.client.AdditionsSoundProvider;
 import mekanism.additions.client.AdditionsSpriteSourceProvider;
 import mekanism.additions.client.integration.emi.AdditionsEmiDefaults;
@@ -42,8 +41,7 @@ public class AdditionsDataGenerator {
         gen.addProvider(true, new AdditionsLangProvider(output));
         gen.addProvider(true, new AdditionsSoundProvider(output));
         gen.addProvider(true, new AdditionsSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(true, new AdditionsItemModelProvider(output, clientResources));
-        gen.addProvider(true, new AdditionsBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(true, new AdditionsModelProvider(output, clientResources));
         //Server side data generators
         gen.addProvider(true, new AdditionsTagProvider(output, lookupProvider));
         gen.addProvider(true, new AdditionsLootProvider(output, lookupProvider));
