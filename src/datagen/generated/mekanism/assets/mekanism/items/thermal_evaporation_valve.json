@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanism:block/thermal_evaporation_valve"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanism:block/pressurized_reaction_chamber"
+  }
+}
