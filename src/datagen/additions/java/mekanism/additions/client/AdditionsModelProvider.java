@@ -135,7 +135,6 @@ public class AdditionsModelProvider extends BaseModelProvider {
         for (BlockRegistryObject<? extends BlockPlasticStairs, ?> stair : stairs.values()) {
             blockModels.blockStateOutput
                   .accept(BlockModelGenerators.createStairs(stair.value(), stairsInner, BlockModelGenerators.plainVariant(stairsModel), stairsOuter));
-            blockModels.registerSimpleItemModel(stair.value(), stairsModel);
             tintedItem(blockModels, stair.value(), stairsModel, stair.get().getColor());
         }
     }
