@@ -4,6 +4,7 @@ import mekanism.additions.common.registries.AdditionsEntityTypes;
 import mekanism.common.loot.table.BaseEntityLootTables;
 import net.minecraft.advancements.criterion.EntityPredicate;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
@@ -55,7 +56,7 @@ public class AdditionsEntityLootTables extends BaseEntityLootTables {
               ).withPool(LootPool.lootPool()
                     .name("music_discs")
                     .add(TagEntry.expandTag(ItemTags.CREEPER_DROP_MUSIC_DISCS))
-                    .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER, EntityPredicate.Builder.entity().of(EntityTypeTags.SKELETONS)))
+                    .when(LootItemEntityPropertyCondition.hasProperties(LootContext.EntityTarget.ATTACKER, EntityPredicate.Builder.entity().of(this.registries.lookupOrThrow(Registries.ENTITY_TYPE), EntityTypeTags.SKELETONS)))
               )
         );
         //Copy of vanilla's enderman drops
