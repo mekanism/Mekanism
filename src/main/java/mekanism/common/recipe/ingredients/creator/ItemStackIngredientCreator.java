@@ -13,9 +13,6 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     public static final ItemStackIngredientCreator INSTANCE = new ItemStackIngredientCreator();
 
-    @ApiStatus.Internal
-    public boolean isDatagen = false;
-
     private ItemStackIngredientCreator() {
     }
 
@@ -27,10 +24,5 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @Override
     public StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> streamCodec() {
         return ItemStackIngredient.STREAM_CODEC;
-    }
-
-    @Override
-    public boolean isRunningDatagen() {
-        return isDatagen;
     }
 }

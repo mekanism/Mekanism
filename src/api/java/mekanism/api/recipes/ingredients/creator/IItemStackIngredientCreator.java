@@ -21,8 +21,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
-import org.jetbrains.annotations.ApiStatus;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -208,7 +208,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         List<HolderSet<Item>> combinedTags = tags.stream().<HolderSet<Item>>map(lookup::getOrThrow).toList();
 
         OrHolderSet<Item> holderSet;
-        if (isRunningDatagen()) {
+        if (DatagenModLoader.isRunningDataGen()) {
             holderSet = new DataGenOnly_OrHolderSet(combinedTags);
         } else {
             holderSet = new OrHolderSet<>(combinedTags);
@@ -265,8 +265,4 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
-
-    /// Temporary. Determines whether to use OrHolderSet hack
-    @ApiStatus.Internal
-    boolean isRunningDatagen();
 }

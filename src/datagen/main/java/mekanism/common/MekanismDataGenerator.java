@@ -89,7 +89,6 @@ public class MekanismDataGenerator {
         MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
-        ItemStackIngredientCreator.INSTANCE.isDatagen = true;
         //Client side data generators
         gen.addProvider(true, new MekanismLangProvider(output));
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));
