@@ -5,9 +5,8 @@ import java.util.concurrent.CompletableFuture;
 import mekanism.common.MekanismDataGenerator;
 import mekanism.common.PersistingDisabledProvidersProvider;
 import mekanism.common.recipe.MekRecipeRunner;
-import mekanism.generators.client.GeneratorsBlockStateProvider;
-import mekanism.generators.client.GeneratorsItemModelProvider;
 import mekanism.generators.client.GeneratorsLangProvider;
+import mekanism.generators.client.GeneratorsModelProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
 import mekanism.generators.client.GeneratorsSpriteSourceProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
@@ -41,8 +40,7 @@ public class GeneratorsDataGenerator {
         gen.addProvider(true, new GeneratorsLangProvider(output));
         gen.addProvider(true, new GeneratorsSoundProvider(output));
         gen.addProvider(true, new GeneratorsSpriteSourceProvider(output, lookupProvider));
-        gen.addProvider(true, new GeneratorsItemModelProvider(output, clientResources));
-        gen.addProvider(true, new GeneratorsBlockStateProvider(output, existingFileHelper));
+        gen.addProvider(true, new GeneratorsModelProvider(output, clientResources));
         //Server side data generators
         gen.addProvider(true, new GeneratorsTagProvider(output, lookupProvider));
         gen.addProvider(true, new GeneratorsLootProvider(output, lookupProvider));

@@ -84,20 +84,6 @@ public class AdditionsClientRegistration {
 
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
-        registerIColoredBlocks(event);
-    }
-
-    //tod - 26.1: item colors
-    /*@SubscribeEvent
-    public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-        registerIColoredBlocks(event);
-        ItemColor balloonColorHandler = (stack, tintIndex) -> stack.getItem() instanceof ItemBalloon balloon ? balloon.getColor().getPackedColor() : -1;
-        for (ItemRegistryObject<ItemBalloon> balloon : AdditionsItems.BALLOONS.values()) {
-            ClientRegistrationUtil.registerItemColorHandler(event, balloonColorHandler, balloon);
-        }
-    }*/
-
-    private static void registerIColoredBlocks(RegisterColorHandlersEvent event) {
         registerBlockColorHandles(event, AdditionsBlocks.GLOW_PANELS, AdditionsBlocks.PLASTIC_BLOCKS,
               AdditionsBlocks.SLICK_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_ROADS,
               AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, AdditionsBlocks.PLASTIC_STAIRS, AdditionsBlocks.PLASTIC_SLABS, AdditionsBlocks.PLASTIC_FENCES,

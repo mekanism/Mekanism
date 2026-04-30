@@ -8,15 +8,18 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.data.PackOutput;
 import net.minecraft.server.packs.resources.ResourceManager;
+import org.jspecify.annotations.NullMarked;
 
-public class GeneratorsItemModelProvider extends BaseModelProvider {
+@NullMarked
+public class GeneratorsModelProvider extends BaseModelProvider {
 
-    public GeneratorsItemModelProvider(PackOutput output, ResourceManager clientResources) {
+    public GeneratorsModelProvider(PackOutput output, ResourceManager clientResources) {
         super(output, MekanismGenerators.MODID, clientResources);
     }
 
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
+        registerFluidBlockStates(blockModels, GeneratorsFluids.FLUIDS);
         registerBuckets(GeneratorsFluids.FLUIDS, itemModels);
         registerModules(GeneratorsItems.ITEMS, itemModels);
         registerGenerated(itemModels, GeneratorsItems.HOHLRAUM, GeneratorsItems.SOLAR_PANEL, GeneratorsItems.TURBINE_BLADE);
