@@ -176,7 +176,6 @@ public class MekanismModelProvider extends BaseModelProvider {
                           stabilizerBlock,
                           BlockModelGenerators.plainVariant(stabilizerModel)
                     )
-                    .with(BlockModelGenerators.ROTATION_FACING)
                     .with(
                           PropertyDispatch.modify(AttributeStateActive.activeProperty)
                                 .select(false, BlockModelGenerators.NOP)
