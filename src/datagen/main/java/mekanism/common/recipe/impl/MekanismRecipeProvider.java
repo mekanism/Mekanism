@@ -203,7 +203,7 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         //Bio Fuel
         ExtendedShapelessRecipeBuilder.shapelessRecipe(MekanismItems.BIO_FUEL, 9)
               .addIngredient(MekanismBlocks.BIO_FUEL_BLOCK)
-              .save(output, Mekanism.rl("bio_fuel"));
+              .save(output);
         //Sulfur as dye
         ExtendedShapelessRecipeBuilder.shapelessRecipe(Items.YELLOW_DYE.builtInRegistryHolder())
               .addIngredient(MekanismItems.SULFUR_DUST)
