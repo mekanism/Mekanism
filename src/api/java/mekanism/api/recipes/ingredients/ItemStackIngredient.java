@@ -57,9 +57,6 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
      */
     public static ItemStackIngredient of(SizedIngredient ingredient) {
         Objects.requireNonNull(ingredient, "ItemStackIngredients cannot be created from a null ingredient.");
-        if (ingredient.ingredient().isEmpty()) {
-            throw new IllegalArgumentException("ItemStackIngredients cannot be created using the empty ingredient.");
-        }
         return new ItemStackIngredient(ingredient);
     }
 
