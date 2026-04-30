@@ -201,7 +201,7 @@ public class MekanismModelProvider extends BaseModelProvider {
               .create(
                     stabilizerBlock,
                     new TextureMapping()
-                          .put(TextureSlot.TOP, modTexture("block/personal_barrel/top_active"))
+                          .put(TextureSlot.TOP, modTexture("block/dimensional_stabilizer/top_active"))
                           .put(TextureSlot.SIDE, modTexture("block/dimensional_stabilizer/side_active")),
                     blockModels.modelOutput
               );
