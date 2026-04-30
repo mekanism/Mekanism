@@ -3,7 +3,6 @@ package mekanism.common.recipe.builder;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.core.Holder;
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -58,11 +57,12 @@ public class ExtendedCookingRecipeBuilder extends BaseRecipeBuilder<ExtendedCook
 
     public static ExtendedCookingRecipeBuilder smelting(Holder<Item> result, int count, Ingredient ingredient, int cookingTime) {
         CookingBookCategory bookCategory;
-        if (result.value().components().has(DataComponents.FOOD)) {
-            bookCategory = CookingBookCategory.FOOD;
-        } else {
+        //This isn't used anywhere where it could be food, and components are no longer available
+        //if (result.value().components().has(DataComponents.FOOD)) {
+        //    bookCategory = CookingBookCategory.FOOD;
+        //} else {
             bookCategory = result.value() instanceof BlockItem ? CookingBookCategory.BLOCKS : CookingBookCategory.MISC;
-        }
+        //}
         return new ExtendedCookingRecipeBuilder(result, count, ingredient, cookingTime, bookCategory, SmeltingRecipe::new);
     }
 
