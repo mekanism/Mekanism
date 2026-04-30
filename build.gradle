@@ -347,6 +347,8 @@ neoForge {
             'src/gameTest/resources/META-INF/gametest_ats.cfg',
     ]
 
+    validateAccessTransformers = true
+
     runs {
         configureEach {
             if (project.hasProperty('forge_force_ansi')) {
