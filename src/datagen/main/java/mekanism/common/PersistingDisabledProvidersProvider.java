@@ -2,8 +2,6 @@ package mekanism.common;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.hash.HashCode;
-import com.google.common.hash.Hashing;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -100,14 +98,14 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         gen.addProvider(true, new PersistingDisabledProvidersProvider(output, Collections.emptySet(), pathsToSkip, fakeProviders));
     }
 
-    private final Set<String> compatRecipesToSkip;
+    private final Set<String> disabledCompats;
     private final Set<String> pathsToSkip;
     private final List<String> fakeProviders;
     private final Path baseOutputPath;
 
     private PersistingDisabledProvidersProvider(PackOutput output, Set<String> disabledCompats, Set<String> pathsToSkip, List<String> fakeProviders) {
         this.baseOutputPath = output.getOutputFolder();
-        this.compatRecipesToSkip = disabledCompats.stream().map(compat -> compat + "/").collect(Collectors.toUnmodifiableSet());
+        this.disabledCompats = disabledCompats;
         this.pathsToSkip = pathsToSkip.stream().map(path -> "/" + path + "/").collect(Collectors.toUnmodifiableSet());
         this.fakeProviders = fakeProviders;
     }
@@ -122,6 +120,8 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     }
 
     private void tryPersist(HashCache cache) {
+        //Note: We have to do this here rather than in the constructor as the set isn't populated yet in the constructor
+        Set<String> compatRecipesToSkip = disabledCompats.stream().map(compat -> compat + "/").collect(Collectors.toUnmodifiableSet());
         if (compatRecipesToSkip.isEmpty() && pathsToSkip.isEmpty() && fakeProviders.isEmpty()) {
             //Skip if we don't have any things to override and persist
             return;
@@ -142,7 +142,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
             ImmutableMap<Path, HashCode> oldCacheData = oldCache.data();
             for (Map.Entry<Path, HashCode> oldEntry : oldCacheData.entrySet()) {
                 Path dataPath = oldEntry.getKey();
-                if (!newCacheData.containsKey(dataPath) && shouldPersist(dataPath) && Files.exists(dataPath)) {
+                if (!newCacheData.containsKey(dataPath) && shouldPersist(compatRecipesToSkip, dataPath) && Files.exists(dataPath)) {
                     newCacheData.put(dataPath, oldEntry.getValue());
                     changed = true;
                     additionalWrites++;
@@ -157,11 +157,10 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         //Technically this is unused except in a logging message but log it anyway, if we didn't end up having any caches to add though we can ignore it
         cache.writes += additionalWrites;
 
-        Path cacheDir = baseOutputPath.resolve(".cache");
         //Load and inject any providers we have that are fully disabled into the cache system
         // We do this after copying things to persist, so we don't have to copy these as well
         for (String fakeProvider : fakeProviders) {
-            Path path = getProviderCachePath(cacheDir, fakeProvider);
+            Path path = cache.getProviderCachePath(fakeProvider);
             ProviderCache provider = HashCache.readCache(baseOutputPath, path);
             cache.cachePaths.add(path);
             cache.caches.put(fakeProvider, provider);
@@ -170,7 +169,7 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
         }
     }
 
-    private boolean shouldPersist(Path path) {
+    private boolean shouldPersist(Set<String> compatRecipesToSkip, Path path) {
         //Get the string representation of the path and sanitize it
         String stringPath = path.toString().replace('\\', '/');
         //Mekanism.logger.info("Evaluating path: {}", stringPath);
@@ -191,12 +190,6 @@ public class PersistingDisabledProvidersProvider implements DataProvider {
     @Override
     public String getName() {
         return "Persisting disabled provider";
-    }
-
-    @SuppressWarnings("deprecation")
-    private static Path getProviderCachePath(Path cacheDir, String providerName) {
-        //Copy of HashCache#getProviderCachePath
-        return cacheDir.resolve(Hashing.sha1().hashString(providerName, StandardCharsets.UTF_8).toString());
     }
 
     @FunctionalInterface
