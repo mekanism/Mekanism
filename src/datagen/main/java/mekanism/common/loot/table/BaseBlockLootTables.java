@@ -33,7 +33,6 @@ import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
@@ -158,7 +157,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             boolean hasComponents = false;
             CopyComponentsFunction.Builder componentsBuilder = CopyComponentsFunction.copyComponentsFromBlockEntity(BlockEntityTarget.BLOCK_ENTITY.contextParam());
             boolean hasContents = false;
-            ItemStack stack = new ItemStack(block);
+            Item blockItem = block.asItem();
             LootItem.Builder<?> itemLootPool = LootItem.lootTableItem(block);
             //delayed items until after other copies are added, for cases like referencing the owner
             DelayedLootItemBuilder delayedPool = new DelayedLootItemBuilder();
@@ -169,7 +168,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
             }
             if (tile instanceof IFrequencyHandler frequencyHandler) {
                 Set<FrequencyType<?>> customFrequencies = frequencyHandler.getFrequencyComponent().getCustomFrequencies();
-                if (!customFrequencies.isEmpty() && stack.getItem() instanceof IFrequencyItem frequencyItem) {
+                if (!customFrequencies.isEmpty() && blockItem instanceof IFrequencyItem frequencyItem) {
                     FrequencyType<?> frequencyType = frequencyItem.getFrequencyType();
                     if (!customFrequencies.contains(frequencyType)) {
                         Mekanism.logger.warn("Block missing frequency type '{}' expected by item: {}", frequencyType.getName(), blockProvider.getId());
@@ -197,7 +196,7 @@ public abstract class BaseBlockLootTables extends BlockLootSubProvider {
                 }
                 for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
                     List<?> containers = tileEntity.persists(type) ? type.getContainers(tileEntity) : Collections.emptyList();
-                    int attachmentContainers = type.getContainerCount(stack);
+                    int attachmentContainers = type.getContainerCount(blockItem);
                     if (containers.size() == attachmentContainers) {
                         if (!containers.isEmpty()) {
                             componentsBuilder.include(type.getComponentType().get());

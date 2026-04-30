@@ -47,6 +47,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -185,14 +186,19 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return handler == null ? Collections.emptyList() : handler.getContainers();
     }
 
-    public int getContainerCount(ItemStack stack) {
+    public int getContainerCount(ItemInstance stack) {
         ATTACHED attached = getOrEmpty(stack);
         if (attached.isEmpty()) {
-            Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> containerCreator = knownDefaultCreators.get(stack.getItem());
-            return containerCreator == null ? 0 : containerCreator.get().totalContainers();
+            return getContainerCount(stack.typeHolder().value());
         }
         //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
         return attached.size();
+    }
+
+    //for datagen
+    public int getContainerCount(Item item) {
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> containerCreator = knownDefaultCreators.get(item);
+        return containerCreator == null ? 0 : containerCreator.get().totalContainers();
     }
 
     @Nullable//TODO - 26.1: remove me, just use caps
