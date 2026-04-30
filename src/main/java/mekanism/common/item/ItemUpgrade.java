@@ -37,7 +37,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         if (MekKeyHandler.isKeyPressed(MekanismKeyHandler.detailsKey)) {
-            Upgrade upgradeType = getUpgradeType(stack);
+            Upgrade upgradeType = getUpgradeType();
             tooltipAdder.accept(upgradeType.getDescription());
             tooltipAdder.accept(APILang.UPGRADE_MAX_INSTALLED.translate(upgradeType.getMax()));
         } else {
@@ -46,7 +46,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
     }
 
     @Override
-    public Upgrade getUpgradeType(ItemStack stack) {
+    public Upgrade getUpgradeType() {
         return upgrade;
     }
 
@@ -61,7 +61,7 @@ public class ItemUpgrade extends Item implements IUpgradeItem {
                 if (upgradeTile.supportsUpgrades()) {
                     TileComponentUpgrade component = upgradeTile.getComponent();
                     ItemStack stack = context.getItemInHand();
-                    Upgrade type = getUpgradeType(stack);
+                    Upgrade type = getUpgradeType();
                     if (component.supports(type)) {
                         if (!world.isClientSide()) {
                             int added = component.addUpgrades(type, stack.count());

@@ -78,7 +78,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
                 ItemStack slotInStack = slot.getStack().copy();
-                Upgrade upgrade = slotInStack.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType(slotInStack) : null;
+                Upgrade upgrade = slotInStack.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
                 if (upgrade == null) {
                     //Not an upgrade
                     return false;

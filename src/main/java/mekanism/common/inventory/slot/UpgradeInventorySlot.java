@@ -26,7 +26,7 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
         return new UpgradeInventorySlot(listener, (stack, automationType) -> {
             Item item = stack.getItem();
             if (item instanceof IUpgradeItem upgradeItem) {
-                Upgrade upgradeType = upgradeItem.getUpgradeType(stack);
+                Upgrade upgradeType = upgradeItem.getUpgradeType();
                 return supportedTypes.contains(upgradeType);
             }
             return false;

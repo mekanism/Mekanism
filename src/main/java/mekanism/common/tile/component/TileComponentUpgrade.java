@@ -72,7 +72,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (canCheckUpgrades) {
             ItemStack stack = upgradeSlot.getStack();
             if (!stack.isEmpty() && stack.getItem() instanceof IUpgradeItem upgradeItem) {
-                Upgrade type = upgradeItem.getUpgradeType(stack);
+                Upgrade type = upgradeItem.getUpgradeType();
                 if (supports(type)) {
                     int upgrades = getUpgrades(type);
                     if (upgrades < type.getMax()) {
