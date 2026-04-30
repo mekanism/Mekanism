@@ -1,7 +1,6 @@
 package mekanism.common.recipe.impl;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -96,10 +95,6 @@ public class MekanismRecipeProvider extends BaseRecipeProvider {
         } else {
             disabledCompats.add(modid);
         }
-    }
-
-    public Set<String> getDisabledCompats() {
-        return Collections.unmodifiableSet(disabledCompats);
     }
 
     @Override
