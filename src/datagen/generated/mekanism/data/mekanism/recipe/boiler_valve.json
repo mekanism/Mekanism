@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:boiler_casing"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    }
+    "#": "mekanism:boiler_casing",
+    "C": "#c:circuits/advanced"
   },
   "pattern": [
     " # ",

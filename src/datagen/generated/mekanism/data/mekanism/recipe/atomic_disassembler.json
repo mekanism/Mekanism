@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    }
+    "#": "#mekanism:alloys/atomic",
+    "A": "#mekanism:alloys/infused",
+    "E": "mekanism:energy_tablet",
+    "I": "#c:ingots/refined_obsidian"
   },
   "pattern": [
     "AEA",
@@ -21,7 +13,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:atomic_disassembler"
   }
 }
