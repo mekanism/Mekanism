@@ -270,7 +270,16 @@ def setupTasks(SourceSet sourceSet) {
         def files = fileTree(dir: outputs.files.asPath, includes: ['**/*.json', '**/*.mcmeta'])
         doLast {
             for (def file : files) {
-                file.text = JsonOutput.toJson(new JsonSlurper().parse(file))
+                def text = file.getText('UTF-8')
+                if (!text.isEmpty()) {
+                    try {
+                        file.text = JsonOutput.toJson(new JsonSlurper().parseText(text))
+                    } catch (Exception e) {
+                        throw new RuntimeException("Failed to process '${file}': ${e.getMessage()}", e)
+                    }
+                } else {
+                    logger.warn("File was empty: {}", file)
+                }
             }
         }
     }
