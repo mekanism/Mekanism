@@ -3,12 +3,14 @@ package mekanism.api.recipes.ingredients.creator;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.ingredients.DataGenOnly_OrHolderSet;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
@@ -20,6 +22,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
+import org.jetbrains.annotations.ApiStatus;
 
 @NothingNullByDefault
 public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
@@ -184,7 +187,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     @Override
     default ItemStackIngredient from(HolderGetter<Item> lookup, TagKey<Item> tag, int amount) {
         Objects.requireNonNull(tag, "ItemStackIngredients cannot be created from a null tag.");
-        return from(Ingredient.of(lookup.getOrThrow(tag)), amount);
+        return from(Ingredient.of(HolderSet.emptyNamed(BuiltInRegistries.ITEM, tag)), amount);
     }
 
     /**
@@ -202,7 +205,15 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
         } else if (tags.size() == 1) {
             return from(lookup, tags.getFirst(), amount);
         }
-        return from(Ingredient.of(new OrHolderSet<>(tags.stream().<HolderSet<Item>>map(lookup::getOrThrow).toList())), amount);
+        List<HolderSet<Item>> combinedTags = tags.stream().<HolderSet<Item>>map(lookup::getOrThrow).toList();
+
+        OrHolderSet<Item> holderSet;
+        if (isRunningDatagen()) {
+            holderSet = new DataGenOnly_OrHolderSet(combinedTags);
+        } else {
+            holderSet = new OrHolderSet<>(combinedTags);
+        }
+        return from(Ingredient.of(holderSet), amount);
     }
 
     /**
@@ -254,4 +265,8 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
     default ItemStackIngredient from(HolderLookup.Provider registries, Identifier itemId) {
         return fromHolder(registries.lookupOrThrow(Registries.ITEM).getOrThrow(ResourceKey.create(Registries.ITEM, itemId)));
     }
+
+    /// Temporary. Determines whether to use OrHolderSet hack
+    @ApiStatus.Internal
+    boolean isRunningDatagen();
 }

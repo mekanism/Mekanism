@@ -31,6 +31,7 @@ import mekanism.common.lib.FieldReflectionHelper;
 import mekanism.common.loot.MekanismLootProvider;
 import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.common.recipe.impl.MekanismRecipeProvider;
+import mekanism.common.recipe.ingredients.creator.ItemStackIngredientCreator;
 import mekanism.common.registries.MekanismDatapackRegistryProvider;
 import mekanism.common.tag.MekanismTagProvider;
 import net.minecraft.core.HolderLookup;
@@ -88,6 +89,7 @@ public class MekanismDataGenerator {
         MekanismDatapackRegistryProvider drProvider = new MekanismDatapackRegistryProvider(output, event.getLookupProvider());
         CompletableFuture<HolderLookup.Provider> lookupProvider = drProvider.getRegistryProvider();
         ResourceManager clientResources = event.getResourceManager(PackType.CLIENT_RESOURCES);
+        ItemStackIngredientCreator.INSTANCE.isDatagen = true;
         //Client side data generators
         gen.addProvider(true, new MekanismLangProvider(output));
         gen.addProvider(true, new PrideRobitTextureProvider(output, clientResources));

@@ -7,6 +7,7 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.recipes.ingredients.DataGenOnly_OrHolderSet;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ResourceType;
 import mekanism.common.tags.MekanismTags;
@@ -22,7 +23,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.crafting.DifferenceIngredient;
-import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 @NothingNullByDefault
 public abstract class BaseRecipeProvider extends RecipeProvider {
@@ -56,7 +56,7 @@ public abstract class BaseRecipeProvider extends RecipeProvider {
     }
 
     public static Ingredient createIngredient(HolderGetter<Item> lookup, TagKey<Item> itemTag, Item... items) {
-        return Ingredient.of(new OrHolderSet<>(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(Item::builtInRegistryHolder).toList())));
+        return Ingredient.of(new DataGenOnly_OrHolderSet(lookup.getOrThrow(itemTag), HolderSet.direct(Arrays.stream(items).map(Item::builtInRegistryHolder).toList())));
     }
 
     @SafeVarargs

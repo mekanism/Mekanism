@@ -6,11 +6,15 @@ import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IItemStackIngredientCreator;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import org.jetbrains.annotations.ApiStatus;
 
 @NothingNullByDefault
 public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
 
     public static final ItemStackIngredientCreator INSTANCE = new ItemStackIngredientCreator();
+
+    @ApiStatus.Internal
+    public boolean isDatagen = false;
 
     private ItemStackIngredientCreator() {
     }
@@ -23,5 +27,10 @@ public class ItemStackIngredientCreator implements IItemStackIngredientCreator {
     @Override
     public StreamCodec<RegistryFriendlyByteBuf, ItemStackIngredient> streamCodec() {
         return ItemStackIngredient.STREAM_CODEC;
+    }
+
+    @Override
+    public boolean isRunningDatagen() {
+        return isDatagen;
     }
 }
