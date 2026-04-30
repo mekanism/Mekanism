@@ -1,8 +1,12 @@
 package mekanism.client.model;
 
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
+import java.util.HashSet;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Stream;
 import mekanism.common.item.ItemModule;
+import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.ItemDeferredRegister;
 import mekanism.common.util.RegistryUtils;
@@ -20,6 +24,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.Item;
@@ -39,6 +44,8 @@ public abstract class BaseModelProvider extends ModelProvider {
           Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid_cover")))
     );
     protected final ResourceManager clientResources;
+    /// Blocks to ignore for validation of everything generated (i.e. a manual blockstate exists in the normal source set)
+    private final Set<ResourceKey<Block>> manuallyGeneratedBlockStates = new HashSet<>();
 
     public BaseModelProvider(PackOutput output, String modId, ResourceManager clientResources) {
         super(output, modId);
@@ -127,6 +134,15 @@ public abstract class BaseModelProvider extends ModelProvider {
         for (Holder<Item> item : items) {
             itemModels.generateFlatItem(item.value(), ModelTemplates.FLAT_ITEM);
         }
+    }
+
+    protected void markManualBlockState(BlockRegistryObject<?, ?> registryObject) {
+        manuallyGeneratedBlockStates.add(registryObject.getKey());
+    }
+
+    @Override
+    protected Stream<? extends Holder<Block>> getKnownBlocks() {
+        return super.getKnownBlocks().filter(holder -> !manuallyGeneratedBlockStates.contains(holder.getKey()));
     }
 
     @Override
