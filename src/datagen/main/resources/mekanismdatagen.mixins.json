@@ -1,0 +1,7 @@
+{
+  "package": "mekanism.datagen.mixin",
+  "mixins": [
+    "PersistingMekanismDatagenCache"
+  ],
+  "required": true
+}

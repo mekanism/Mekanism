@@ -1,0 +1,17 @@
+#this is a copy of the main mods toml, which overrides the main one during datagen
+#it should not end up in the production jar
+issueTrackerURL="https://github.com/mekanism/Mekanism/issues"
+license="MIT"
+
+[[mods]]
+    modId="mekanism"
+    version="${file.jarVersion}"
+    displayName="Mekanism Datagen"
+    displayURL="https://aidancbrady.com/mekanism/"
+    authors="Aidancbrady, Thommy101, Thiakil, pupnewfster, dizzyd"
+    credits="unpairedbracket, CyanideX, Ridanisaurus and many others"
+    logoFile="logo.png"
+    description='''Mekanism is a Minecraft add-on featuring high-tech machinery that can be used to create powerful tools, armor, and weapons.'''
+
+[[mixins]]
+    config="mekanismdatagen.mixins.json"
