@@ -80,7 +80,7 @@ public class MekanismDataGenerator {
     }
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         bootstrapConfigs(Mekanism.MODID);
         bootstrapIMC();
         DataGenerator gen = event.getGenerator();

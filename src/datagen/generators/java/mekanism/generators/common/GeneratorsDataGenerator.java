@@ -29,7 +29,7 @@ public class GeneratorsDataGenerator {
     }
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         MekanismDataGenerator.bootstrapConfigs(MekanismGenerators.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();

@@ -30,7 +30,7 @@ public class AdditionsDataGenerator {
     }
 
     @SubscribeEvent
-    public static void gatherData(GatherDataEvent event) {
+    public static void gatherData(GatherDataEvent.Client event) {
         MekanismDataGenerator.bootstrapConfigs(MekanismAdditions.MODID);
         DataGenerator gen = event.getGenerator();
         PackOutput output = gen.getPackOutput();
