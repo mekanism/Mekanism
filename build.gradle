@@ -486,6 +486,14 @@ repositories { RepositoryHandler handler ->
             includeGroup('org.appliedenergistics')
         }
     }
+    maven {//TODO - 26.1: Remove this once https://github.com/neoforged/NeoForge/pull/3143 is merged
+        name = "Maven for PR #3143" // https://github.com/neoforged/NeoForge/pull/3143
+        url = uri("https://prmaven.neoforged.net/NeoForge/pr3143")
+        content {
+            includeModule("net.neoforged", "neoforge")
+            includeModule("net.neoforged", "testframework")
+        }
+    }
 }
 
 tasks.named('test', Test) {

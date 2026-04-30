@@ -3,7 +3,6 @@ package mekanism.api.recipes.ingredients.creator;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.recipes.ingredients.DataGenOnly_OrHolderSet;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
@@ -20,7 +19,6 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
 
 @NothingNullByDefault
@@ -205,14 +203,7 @@ public interface IItemStackIngredientCreator extends IIngredientCreator<Item, It
             return from(lookup, tags.getFirst(), amount);
         }
         List<HolderSet<Item>> combinedTags = tags.stream().<HolderSet<Item>>map(lookup::getOrThrow).toList();
-
-        OrHolderSet<Item> holderSet;
-        if (DatagenModLoader.isRunningDataGen()) {
-            holderSet = new DataGenOnly_OrHolderSet(combinedTags);
-        } else {
-            holderSet = new OrHolderSet<>(combinedTags);
-        }
-        return from(Ingredient.of(holderSet), amount);
+        return from(Ingredient.of(new OrHolderSet<>(combinedTags)), amount);
     }
 
     /**
