@@ -410,11 +410,7 @@ neoForge {
             clientData()
             gameDirectory.value(runsFolder.dir('gameTestServer'))
             programArguments.addAll('--all', '--output', file('src/gameTest/generated/').absolutePath,
-                    '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath,
-                    '--existing-mod', 'mekanism')
-            for (String name : secondaryModules) {
-                programArguments.addAll('--existing-mod', 'mekanism' + name)
-            }
+                    '--mod', 'mekanismtests', '--existing', file('src/gameTest/resources/').absolutePath)
 
             sourceSet = sourceSets.gameTest
             loadedMods.add(mods.mekanismtests)
