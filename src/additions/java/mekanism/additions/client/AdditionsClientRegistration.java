@@ -33,15 +33,6 @@ public class AdditionsClientRegistration {
     private AdditionsClientRegistration() {
     }
 
-    //todo - 26.1: item properties
-    /*@SubscribeEvent
-    public static void init(FMLClientSetupEvent event) {
-        event.enqueueWork(() -> ClientRegistrationUtil.setPropertyOverride(AdditionsItems.WALKIE_TALKIE, MekanismAdditions.rl("channel"), (stack, world, entity, seed) -> {
-            WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
-            return data.running() ? data.channel() : 0;
-        }));
-    }*/
-
     @SubscribeEvent
     public static void registerKeybindings(RegisterKeyMappingsEvent event) {
         AdditionsKeyHandler.registerKeybindings(event);

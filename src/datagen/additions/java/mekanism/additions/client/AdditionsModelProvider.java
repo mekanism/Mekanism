@@ -1,12 +1,15 @@
 package mekanism.additions.client;
 
+import java.util.List;
 import java.util.Map;
 import mekanism.additions.common.MekanismAdditions;
 import mekanism.additions.common.block.BlockGlowPanel;
 import mekanism.additions.common.block.plastic.BlockPlasticFenceGate;
 import mekanism.additions.common.block.plastic.BlockPlasticStairs;
 import mekanism.additions.common.item.ItemBalloon;
+import mekanism.additions.common.item.ItemWalkieTalkie;
 import mekanism.additions.common.registries.AdditionsBlocks;
+import mekanism.additions.common.registries.AdditionsDataComponents;
 import mekanism.additions.common.registries.AdditionsItems;
 import mekanism.api.text.EnumColor;
 import mekanism.client.model.BaseModelProvider;
@@ -19,11 +22,17 @@ import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.ItemModelUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
+import net.minecraft.client.data.models.model.ModelTemplates;
+import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.SelectItemModel;
+import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NullMarked;
 
@@ -46,6 +55,33 @@ public class AdditionsModelProvider extends BaseModelProvider {
             //todo - 26.1: does this work, or does it need to define child model with parent? (previous line). check other usages if so
             tintedItem(itemModels, balloon, balloonModelLoc, color);
         }
+
+        //for now just copy the big spawn eggs, with a scale transform. TODO - 26.1 - check this works/looks ok
+        ModelTemplate babySpawnEgg = ModelTemplates.FLAT_ITEM.extend().rootTransforms(builder -> builder.scale(0.5F)).build();
+        itemModels.generateFlatItem(AdditionsItems.BABY_BOGGED_SPAWN_EGG.value(), Items.BOGGED_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_CREEPER_SPAWN_EGG.value(), Items.CREEPER_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.value(), Items.ENDERMAN_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_SKELETON_SPAWN_EGG.value(), Items.SKELETON_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_STRAY_SPAWN_EGG.value(), Items.STRAY_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG.value(), Items.WITHER_SKELETON_SPAWN_EGG, babySpawnEgg);
+
+        Item walkieTalkie = AdditionsItems.WALKIE_TALKIE.value();
+        ItemModel.Unbaked baseWalkie = ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, ModelTemplates.FLAT_ITEM));
+        itemModels.itemModelOutput.accept(
+              walkieTalkie,
+              ItemModelUtils.select(
+                    new ComponentContents<>(AdditionsDataComponents.WALKIE_DATA.get()),
+                    baseWalkie,
+                    ItemWalkieTalkie.WalkieData.runningChannels()
+                          .map(walkieData ->
+                                new SelectItemModel.SwitchCase<>(
+                                      List.of(walkieData),
+                                      ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, "_ch" + walkieData.channel(), ModelTemplates.FLAT_ITEM))
+                                )
+                          )
+                          .toList()
+              )
+        );
 
         //todo - verify these are just the same block models
         /*colouredBlock(blockModels, AdditionsBlocks.GLOW_PANELS, "item/glow_panel");
@@ -79,6 +115,8 @@ public class AdditionsModelProvider extends BaseModelProvider {
         coloredStairs(blockModels, AdditionsBlocks.PLASTIC_GLOW_STAIRS, "glow_");
         coloredSlabs(blockModels, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, "transparent_", "transparent");
         coloredStairs(blockModels, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, "transparent_");
+
+        markManualBlockState(AdditionsBlocks.OBSIDIAN_TNT);
     }
 
     private static void tintedItem(ItemModelGenerators itemModels, Item item, Identifier modelLoc, EnumColor color) {
