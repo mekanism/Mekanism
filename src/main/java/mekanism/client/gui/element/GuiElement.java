@@ -598,18 +598,24 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
             //TODO - 1.21: Do we need to add support for guiGraphics.containsPointInScissor(mouseX, mouseY) to more places where we do adhoc mouse over checks?
             this.isHovered = guiGraphics.containsPointInScissor(mouseX, mouseY) && mouseX >= this.getX() && mouseY >= this.getY() &&
                              mouseX < this.getX() + this.width && mouseY < this.getY() + this.height;
-            extractWidgetRenderState(guiGraphics, mouseX, mouseY, partialTicks);
+            renderWidget(guiGraphics, mouseX, mouseY, partialTicks);
         }
     }
 
     @Override
     public void extractWidgetRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
-        Matrix3x2fStack matrix = guiGraphics.pose();
-        matrix.pushMatrix();
-        // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
-        matrix.translate(getGuiLeft(), getGuiTop());
-        renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
-        matrix.popMatrix();
+        //Note: We copy super's visible check here so that if it is not visible we can skip the pose stack transforms
+        if (visible) {
+            Matrix3x2fStack matrix = guiGraphics.pose();
+            matrix.pushMatrix();
+            // fix render offset to be as we expect things to be for how we implement our render methods (based on relatives)
+            matrix.translate(getGuiLeft(), getGuiTop());
+            renderShifted(guiGraphics, mouseX, mouseY, partialTicks);
+            matrix.popMatrix();
+        }
+    }
+
+    public void renderWidget(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
     }
 
     @Override
@@ -650,7 +656,7 @@ public abstract class GuiElement extends AbstractWidget implements IFancyFontRen
     }
 
     /**
-     * Based on the code in AbstractButton#extractWidgetRenderState
+     * Based on the code in AbstractButton#renderWidget
      */
     protected void drawButton(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         if (resetColorBeforeRender()) {
