@@ -10,6 +10,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
 import mekanism.api.SerializationConstants;
@@ -153,11 +154,11 @@ public class FrequencyLookup<FREQ extends Frequency> extends SavedData {
 
     private static final Consumer<String> frequencyError = err -> Mekanism.logger.error("Failed to load some frequencies: {}", err);
 
-    public static <FREQ extends Frequency> Codec<Pair<UUID, List<FREQ>>> baseCodec(FrequencyType<FREQ> frequencyType) {
+    public static <FREQ extends Frequency> Codec<Pair<@Nullable UUID, List<FREQ>>> baseCodec(FrequencyType<FREQ> frequencyType) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              UUIDUtil.CODEC.fieldOf(SerializationConstants.OWNER_UUID).forGetter(Pair::getFirst),
+              UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(t -> Optional.ofNullable(t.getFirst())),
               frequencyType.codec().listOf().promotePartial(frequencyError).fieldOf(SerializationConstants.FREQUENCY_LIST).forGetter(Pair::getSecond)
-        ).apply(instance, Pair::new));
+        ).apply(instance, (first, second) -> new Pair<>(first.orElse(null), second)));
     }
 
     public static <FREQ extends Frequency> Codec<FrequencyLookup<FREQ>> codec(FrequencyType<FREQ> frequencyType, Codec<Pair<UUID, List<FREQ>>> baseCodec, SecurityMode securityMode) {
