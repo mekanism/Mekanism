@@ -12,7 +12,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -114,14 +113,14 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
             //Fail if we are a full tank or our rate is zero
             return stack;
         } else if (stored.isEmpty() || ChemicalStack.isSameChemical(stored, stack)) {
-            long toAdd = Math.min(stack.getAmount(), needed);
+            long toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //Note: We let setStack handle updating the backing holding stack
                 // We use stored.getAmount + toAdd so that if we are empty we end up at toAdd
                 // but if we aren't then we grow by the given amount
-                setContents(attachedChemicals, stack.copyWithAmount(stored.getAmount() + toAdd));
+                setContents(attachedChemicals, stack.copyWithAmount(stored.amount() + toAdd));
             }
-            return stack.copyWithAmount(stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - toAdd);
         }
         //If we didn't accept this fluid, then just return the given stack
         return stack;
@@ -144,14 +143,14 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
         }
         //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
         // We also are limiting it by the rate this tank has
-        long size = Math.min(Math.min(getExtractRate(automationType), stored.getAmount()), amount);
+        long size = Math.min(Math.min(getExtractRate(automationType), stored.amount()), amount);
         if (size == 0) {
             return ChemicalStack.EMPTY;
         }
         ChemicalStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedChemicals, stored.copyWithAmount(stored.getAmount() - ret.getAmount()));
+            setContents(attachedChemicals, stored.copyWithAmount(stored.amount() - ret.amount()));
         }
         return ret;
     }
@@ -175,7 +174,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (stored.getAmount() == amount || action.simulate()) {
+        if (stored.amount() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -187,7 +186,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
     public long growStack(long amount, Action action) {
         AttachedChemicals attachedChemicals = getAttached();
         ChemicalStack stored = getContents(attachedChemicals);
-        long current = stored.getAmount();
+        long current = stored.amount();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
             return 0;
@@ -205,7 +204,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedContainer<Chemic
 
     protected long getNeeded(ChemicalStack stored) {
         //Skip the stack lookup for getNeeded
-        return Math.max(0, getCapacity() - stored.getAmount());
+        return Math.max(0, getCapacity() - stored.amount());
     }
 
     @Override

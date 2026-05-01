@@ -84,7 +84,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
         }
         boolean sameType = false;
         if (isEmpty() || (sameType = isTypeEqual(stack))) {
-            long toAdd = Math.min(stack.getAmount(), needed);
+            long toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the chemical, then update the current chemical
                 if (sameType) {
@@ -97,7 +97,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
                     setStack(stack.copyWithAmount(toAdd));
                 }
             }
-            return stack.copyWithAmount(stack.getAmount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - toAdd);
         }
         //If we didn't accept this chemical, then just return the given stack
         return stack;
@@ -127,7 +127,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
         ChemicalStack ret = getStack().copyWithAmount(Math.min(getStored(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
-            shrinkStack(ret.getAmount(), action);
+            shrinkStack(ret.amount(), action);
         }
         return ret;
     }
@@ -263,7 +263,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default long getStored() {
-        return getStack().getAmount();
+        return getStack().amount();
     }
 
     /**

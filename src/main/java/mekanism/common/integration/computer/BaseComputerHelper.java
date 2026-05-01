@@ -232,7 +232,7 @@ public abstract class BaseComputerHelper {
         }
         Map<String, Object> wrapped = new HashMap<>(2);
         wrapped.put(SerializationConstants.NAME, stack.typeHolder().getRegisteredName());
-        wrapped.put(SerializationConstants.AMOUNT, stack.getAmount());
+        wrapped.put(SerializationConstants.AMOUNT, stack.amount());
         return wrapped;
     }
 

@@ -74,7 +74,7 @@ public class StorageUtils {
                     tooltipAdder.accept(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
                 } else {
                     tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
-                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.getAmount()))));
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.amount()))));
                 }
             }
         } else {
@@ -131,7 +131,7 @@ public class StorageUtils {
             type = MekanismLang.LIQUID;
         } else {
             contents = chemicalStack;
-            amount = chemicalStack.getAmount();
+            amount = chemicalStack.amount();
             type = MekanismLang.CHEMICAL;
         }
         if (isCreative) {
@@ -242,7 +242,7 @@ public class StorageUtils {
                     if (chemicalStack.isEmpty()) {
                         chemicalStack = tank.getStack().copy();
                     } else if (tank.isTypeEqual(chemicalStack)) {
-                        if (chemicalStack.getAmount() < Long.MAX_VALUE - tank.getStored()) {
+                        if (chemicalStack.amount() < Long.MAX_VALUE - tank.getStored()) {
                             chemicalStack.grow(tank.getStored());
                         } else {
                             chemicalStack.setAmount(Long.MAX_VALUE);
@@ -364,7 +364,7 @@ public class StorageUtils {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null) {
             for (int chemTack = 0, chemTanks = handler.getChemicalTanks(); chemTack < chemTanks; chemTack++) {
-                bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).getAmount(), handler.getChemicalTankCapacity(chemTack)));
+                bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).amount(), handler.getChemicalTankCapacity(chemTack)));
             }
         }
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID.getCapability(itemAccess);
@@ -441,18 +441,18 @@ public class StorageUtils {
                 ChemicalStack mergeStack = mergeTank.getStack();
                 if (tank.isEmpty()) {
                     long capacity = tank.getCapacity();
-                    if (mergeStack.getAmount() <= capacity) {
+                    if (mergeStack.amount() <= capacity) {
                         tank.setStack(mergeStack);
                     } else {
                         tank.setStack(mergeStack.copyWithAmount(capacity));
-                        long remaining = mergeStack.getAmount() - capacity;
+                        long remaining = mergeStack.amount() - capacity;
                         if (remaining > 0) {
                             rejects.add(mergeStack.copyWithAmount(remaining));
                         }
                     }
                 } else if (tank.isTypeEqual(mergeStack)) {
-                    long amount = tank.growStack(mergeStack.getAmount(), Action.EXECUTE);
-                    long remaining = mergeStack.getAmount() - amount;
+                    long amount = tank.growStack(mergeStack.amount(), Action.EXECUTE);
+                    long remaining = mergeStack.amount() - amount;
                     if (remaining > 0) {
                         rejects.add(mergeStack.copyWithAmount(remaining));
                     }

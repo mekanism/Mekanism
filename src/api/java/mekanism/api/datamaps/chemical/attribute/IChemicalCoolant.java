@@ -8,7 +8,7 @@ import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalInstance;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
@@ -53,7 +53,7 @@ public sealed interface IChemicalCoolant extends IChemicalAttribute permits Cool
     static <COOLANT extends IChemicalCoolant> Products.P3<Mu<COOLANT>, Holder<Chemical>, Double, Double> createBaseCodec(RecordCodecBuilder.Instance<COOLANT> instance,
           String otherFormName, double defaultConductivity) {
         return instance.group(
-              ChemicalStack.CHEMICAL_NON_EMPTY_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
+              ChemicalInstance.CHEMICAL_HOLDER_CODEC.fieldOf(otherFormName).forGetter(IChemicalCoolant::otherVariant),
               Codec.doubleRange(Double.MIN_VALUE, Double.MAX_VALUE).fieldOf(SerializationConstants.THERMAL_ENTHALPY).forGetter(IChemicalCoolant::thermalEnthalpy),
               Codec.doubleRange(Double.MIN_VALUE, 1).optionalFieldOf(SerializationConstants.CONDUCTIVITY, defaultConductivity).forGetter(IChemicalCoolant::conductivity)
         );

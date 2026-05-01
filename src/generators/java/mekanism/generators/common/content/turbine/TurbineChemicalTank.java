@@ -25,7 +25,7 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
     public ChemicalStack insert(@NotNull ChemicalStack stack, Action action, AutomationType automationType) {
         ChemicalStack returned = super.insert(stack, action, automationType);
         if (action == Action.EXECUTE && multiblock.isFormed()) {
-            multiblock.newSteamInput += stack.getAmount() - returned.getAmount();
+            multiblock.newSteamInput += stack.amount() - returned.amount();
         }
         return returned;
     }

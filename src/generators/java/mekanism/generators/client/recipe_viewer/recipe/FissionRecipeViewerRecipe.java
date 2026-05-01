@@ -42,7 +42,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
           new FissionRecipeViewerRecipe(id, inputCoolant.orElse(null), fuel, outputCoolant, waste)));
 
     public FluidStackIngredient waterInput() {
-        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, Ints.saturatedCast(outputCoolant().getAmount()));
+        return IngredientCreatorAccess.fluid().from(BuiltInRegistries.FLUID, FluidTags.WATER, Ints.saturatedCast(outputCoolant().amount()));
     }
 
     public static List<FissionRecipeViewerRecipe> getFissionRecipes() {

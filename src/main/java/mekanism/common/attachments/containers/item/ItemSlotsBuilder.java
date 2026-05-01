@@ -387,7 +387,7 @@ public class ItemSlotsBuilder {
             if (chemicalInTank.isEmpty()) {
                 //If the chemical tank is empty, accept the chemical item as long as it is not full
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                    if (handler.getChemicalInTank(tank).getAmount() < handler.getChemicalTankCapacity(tank)) {
+                    if (handler.getChemicalInTank(tank).amount() < handler.getChemicalTankCapacity(tank)) {
                         //True if we have any space in this tank
                         return true;
                     }
@@ -395,7 +395,7 @@ public class ItemSlotsBuilder {
                 return false;
             }
             //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-            return handler.insertChemical(chemicalInTank, Action.SIMULATE).getAmount() < chemicalInTank.getAmount();
+            return handler.insertChemical(chemicalInTank, Action.SIMULATE).amount() < chemicalInTank.amount();
         }
         return false;
     }
@@ -434,7 +434,7 @@ public class ItemSlotsBuilder {
                     if (chemicalTank == null) {
                         chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                     }
-                    if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
+                    if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < chemicalInTank.amount()) {
                         //True if we can fill the tank with any of our contents
                         // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
                         return true;
@@ -486,7 +486,7 @@ public class ItemSlotsBuilder {
                         if (chemicalTank == null) {
                             chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                         }
-                        if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
+                        if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < chemicalInTank.amount()) {
                             //True if we can fill the tank with any of our contents
                             // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
                             return true;
@@ -503,7 +503,7 @@ public class ItemSlotsBuilder {
             //If we haven't resolved the tank yet, we need to do it now
             chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
         }
-        if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount()) {
+        if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).amount() < conversion.amount()) {
             //If we can insert the converted substance into the tank allow insertion
             return true;
         }

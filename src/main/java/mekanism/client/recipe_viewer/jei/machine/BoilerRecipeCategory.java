@@ -52,7 +52,7 @@ public class BoilerRecipeCategory extends BaseRecipeCategory<BoilerRecipeViewerR
                 boilRate = 0;
             } else {
                 temperature = recipe.temperature();
-                boilRate = Ints.saturatedCast(recipe.steam().getAmount());
+                boilRate = Ints.saturatedCast(recipe.steam().amount());
             }
             return List.of(MekanismLang.TEMPERATURE.translate(MekanismUtils.getTemperatureDisplay(temperature, TemperatureUnit.KELVIN, true)),
                   MekanismLang.BOIL_RATE.translate(TextUtils.format(boilRate)));

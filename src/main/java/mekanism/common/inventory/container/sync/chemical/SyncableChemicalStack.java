@@ -64,7 +64,7 @@ public final class SyncableChemicalStack implements ISyncableData {
     public DirtyType isDirty() {
         ChemicalStack value = get();
         boolean sameType = ChemicalStack.isSameChemical(value, this.lastKnownValue);
-        if (!sameType || value.getAmount() != this.lastKnownValue.getAmount()) {
+        if (!sameType || value.amount() != this.lastKnownValue.amount()) {
             //Make sure to copy it in case our infusion stack object is the same object so would be getting modified
             // only do so though if it is dirty, as we don't need to spam object creation
             this.lastKnownValue = value.copy();
@@ -77,7 +77,7 @@ public final class SyncableChemicalStack implements ISyncableData {
     public PropertyData getPropertyData(RegistryAccess registryAccess, short property, DirtyType dirtyType) {
         if (dirtyType == DirtyType.SIZE) {
             //If only the size changed, don't bother re-syncing the type
-            return new LongPropertyData(property, get().getAmount());
+            return new LongPropertyData(property, get().amount());
         }
         //Note: While this copy operation isn't strictly necessary, it allows for simplifying the logic and ensuring we don't have the actual stack object
         // leak from one side to another when in single player. Given copying is rather cheap, and we only need to do this on change/when the data is dirty

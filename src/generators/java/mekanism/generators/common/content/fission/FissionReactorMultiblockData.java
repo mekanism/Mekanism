@@ -386,7 +386,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             //If we want to dump if we have a radioactive substance, then we need to set the tank to empty
             wasteTank.setEmpty();
         }
-        return wasteRadioactivity * (stored.getAmount() + partialWaste);
+        return wasteRadioactivity * (stored.amount() + partialWaste);
     }
 
     /**

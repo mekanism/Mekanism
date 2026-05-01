@@ -152,9 +152,9 @@ public class ChemicalUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -204,9 +204,9 @@ public class ChemicalUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -237,10 +237,10 @@ public class ChemicalUtils {
             if (inTank.isEmpty() || !ChemicalStack.isSameChemical(inTank, stack)) {
                 return ChemicalStack.EMPTY;
             }
-            return extractChemical.interact(0, stack.getAmount(), side, action);
+            return extractChemical.interact(0, stack.amount(), side, action);
         }
         ChemicalStack extracted = ChemicalStack.EMPTY;
-        long toDrain = stack.getAmount();
+        long toDrain = stack.amount();
         for (int tank = 0; tank < tanks; tank++) {
             if (ChemicalStack.isSameChemical(stack, inTankGetter.getStored(tank, side))) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
@@ -250,9 +250,9 @@ public class ChemicalUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;
@@ -291,10 +291,10 @@ public class ChemicalUtils {
             if (tank.isEmpty() || !tank.isTypeEqual(stack)) {
                 return ChemicalStack.EMPTY;
             }
-            return tank.extract(stack.getAmount(), action, automationType);
+            return tank.extract(stack.amount(), action, automationType);
         }
         ChemicalStack extracted = ChemicalStack.EMPTY;
-        long toDrain = stack.getAmount();
+        long toDrain = stack.amount();
         for (IChemicalTank tank : chemicalTanks) {
             if (tank.isTypeEqual(stack)) {
                 //If there is chemical in the tank that matches the type we are trying to drain, try to drain from it
@@ -304,9 +304,9 @@ public class ChemicalUtils {
                     if (extracted.isEmpty()) {
                         extracted = drained;
                     } else {
-                        extracted.grow(drained.getAmount());
+                        extracted.grow(drained.amount());
                     }
-                    toDrain -= drained.getAmount();
+                    toDrain -= drained.amount();
                     if (toDrain == 0) {
                         //If we are done draining break and return the amount extracted
                         break;

@@ -94,7 +94,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
                 stored = gasHandlerItem.getChemicalInTank(0);
                 capacity = gasHandlerItem.getChemicalTankCapacity(0);
             }
-            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.getAmount(), String.format(Locale.ROOT, "%.0f", 100.0 * stored.getAmount() / capacity)));
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.amount(), String.format(Locale.ROOT, "%.0f", 100.0 * stored.amount() / capacity)));
         }
     }
 

@@ -43,7 +43,7 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
         }
 
         protected void acceptAmount(SplitInfo splitInfo, ChemicalStack resource, long amount) {
-            amount = Math.min(amount, transmitter.getCapacity() - currentStored.getAmount());
+            amount = Math.min(amount, transmitter.getCapacity() - currentStored.amount());
             if (currentStored.isEmpty()) {
                 currentStored = resource.copyWithAmount(amount);
             } else {
@@ -56,7 +56,7 @@ public class ChemicalTransmitterSaveTarget extends Target<ChemicalTransmitterSav
             if (!currentStored.isEmpty() && !ChemicalStack.isSameChemical(currentStored, chemicalStack)) {
                 return 0L;
             }
-            return Math.min(chemicalStack.getAmount(), transmitter.getCapacity() - currentStored.getAmount());
+            return Math.min(chemicalStack.amount(), transmitter.getCapacity() - currentStored.amount());
         }
 
         protected void saveShare() {

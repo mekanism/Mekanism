@@ -208,7 +208,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
                 if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    return gasHandlerItem.getChemicalInTank(0).getAmount() == gasHandlerItem.getChemicalTankCapacity(0);
+                    return gasHandlerItem.getChemicalInTank(0).amount() == gasHandlerItem.getChemicalTankCapacity(0);
                 }
             }
         }

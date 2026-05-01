@@ -1,7 +1,6 @@
 package mekanism.api.chemical;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.handler.codec.DecoderException;
@@ -12,7 +11,6 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.APILang;
@@ -23,7 +21,6 @@ import mekanism.api.text.TextComponentUtil;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -39,7 +36,7 @@ import net.neoforged.neoforge.registries.datamaps.IWithData;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public final class ChemicalStack implements IHasTextComponent, IHasTranslationKey, IWithData<Chemical>, TypedInstance<Chemical> {
+public final class ChemicalStack implements ChemicalInstance, IHasTextComponent, IHasTranslationKey, IWithData<Chemical> {
 
     private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid chemical: '{}'", error);
 
@@ -49,20 +46,13 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
     public static final ChemicalStack EMPTY = new ChemicalStack(null);
 
     /**
-     * A standard codec for non-empty Chemical holders.
-     *
-     * @since 10.7.11
-     */
-    public static final Codec<Holder<Chemical>> CHEMICAL_NON_EMPTY_CODEC = Chemical.CODEC
-          .validate(chemical -> chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? DataResult.error(() -> "Chemical must not be mekanism:empty") : DataResult.success(chemical));
-    /**
      * A standard map codec for Chemical stacks that does not accept empty stacks.
      *
      * @since 10.6.0
      */
     public static final MapCodec<ChemicalStack> MAP_CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::typeHolder),
-          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(ChemicalStack::getAmount)
+          CHEMICAL_HOLDER_CODEC.fieldOf(FIELD_ID).forGetter(ChemicalStack::typeHolder),
+          SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(FIELD_AMOUNT).forGetter(ChemicalStack::amount)
     ).apply(instance, ChemicalStack::new));
     /**
      * A standard codec for Chemical stacks that does not accept empty stacks.
@@ -100,7 +90,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
 
         @Override
         public void encode(RegistryFriendlyByteBuf buffer, ChemicalStack stack) {
-            buffer.writeVarLong(stack.getAmount());
+            buffer.writeVarLong(stack.amount());
             if (!stack.isEmpty()) {
                 Chemical.STREAM_CODEC.encode(buffer, stack.typeHolder());
             }
@@ -139,7 +129,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      */
     public static Codec<ChemicalStack> fixedAmountCodec(long amount) {
         return RecordCodecBuilder.create(instance -> instance.group(
-              CHEMICAL_NON_EMPTY_CODEC.fieldOf(SerializationConstants.ID).forGetter(ChemicalStack::typeHolder)
+              CHEMICAL_HOLDER_CODEC.fieldOf(FIELD_ID).forGetter(ChemicalStack::typeHolder)
         ).apply(instance, holder -> new ChemicalStack(holder, amount)));
     }
 
@@ -186,7 +176,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
         if (isEmpty()) {
             return EMPTY;
         }
-        return new ChemicalStack(typeHolder(), getAmount());
+        return new ChemicalStack(typeHolder(), amount());
     }
 
     /**
@@ -209,7 +199,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      */
     public ChemicalStack split(long amount) {
-        long i = Math.min(amount, getAmount());
+        long i = Math.min(amount, amount());
         ChemicalStack stack = copyWithAmount(i);
         this.shrink(i);
         return stack;
@@ -324,7 +314,8 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      *
      * @return The size of this chemical stack or zero if it is empty
      */
-    public long getAmount() {
+    @Override
+    public long amount() {
         return isEmpty() ? 0 : amount;
     }
 
@@ -345,7 +336,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.6.0
      */
     public void limitSize(long amount) {
-        if (!isEmpty() && getAmount() > amount) {
+        if (!isEmpty() && amount() > amount) {
             setAmount(amount);
         }
     }
@@ -391,7 +382,7 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
      * @since 10.7.11
      */
     public double getRadioactivity() {
-        return getChemical().getRadioactivity() * getAmount();
+        return getChemical().getRadioactivity() * amount();
     }
 
     /**
@@ -445,12 +436,12 @@ public final class ChemicalStack implements IHasTextComponent, IHasTranslationKe
             return false;
         }
         ChemicalStack other = (ChemicalStack) o;
-        return getAmount() == other.getAmount() && is(other.typeHolder());
+        return amount() == other.amount() && is(other.typeHolder());
     }
 
     @Override
     public String toString() {
-        return getAmount() + " " + typeHolder().getRegisteredName();
+        return amount() + " " + typeHolder().getRegisteredName();
     }
 
     @Override

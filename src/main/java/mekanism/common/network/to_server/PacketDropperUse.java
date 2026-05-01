@@ -157,14 +157,14 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             ChemicalStack chemicalInDrainTank = drainTank.getStack();
             ChemicalStack simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            long remainder = simulatedRemainder.getAmount();
-            long amount = chemicalInDrainTank.getAmount();
+            long remainder = simulatedRemainder.amount();
+            long amount = chemicalInDrainTank.amount();
             if (remainder < amount) {
                 //We are able to fit at least some of the chemical from our drain tank into the fill tank
                 ChemicalStack extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the tank
-                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
+                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
                     player.containerMenu.synchronizeCarriedToRemote();
                 }
             }

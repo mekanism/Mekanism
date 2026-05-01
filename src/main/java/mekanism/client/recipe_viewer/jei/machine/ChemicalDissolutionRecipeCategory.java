@@ -52,7 +52,7 @@ public class ChemicalDissolutionRecipeCategory extends HolderRecipeCategory<Chem
         List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
         if (recipe.perTickUsage()) {
             scaledChemicals = scaledChemicals.stream()
-                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
+                  .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityChemicalDissolutionChamber.BASE_TICKS_REQUIRED))
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, inputGauge, scaledChemicals);

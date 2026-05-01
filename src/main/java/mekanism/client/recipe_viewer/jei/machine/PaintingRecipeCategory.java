@@ -63,7 +63,7 @@ public class PaintingRecipeCategory extends HolderRecipeCategory<ItemStackChemic
         List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
         if (recipe.perTickUsage()) {
             scaledChemicals = scaledChemicals.stream()
-                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
+                  .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityPaintingMachine.BASE_TICKS_REQUIRED))
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, inputChemical, scaledChemicals)

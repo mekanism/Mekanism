@@ -159,11 +159,11 @@ public class ChemicalUtil {
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack.copy());
+        return EmitUtils.sendToAcceptors(target, stack.amount(), stack.copy());
     }
 
     public static boolean canInsert(IChemicalHandler handler, @NotNull ChemicalStack stack) {
-        return handler.insertChemical(stack, Action.SIMULATE).getAmount() < stack.getAmount();
+        return handler.insertChemical(stack, Action.SIMULATE).amount() < stack.amount();
     }
 
     public static long hydrogenEnergyDensity() {

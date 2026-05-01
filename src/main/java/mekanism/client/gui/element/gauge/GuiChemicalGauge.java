@@ -102,7 +102,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         List<Component> list = new ArrayList<>();
-        long amount = stack.getAmount();
+        long amount = stack.amount();
         if (amount == Long.MAX_VALUE) {
             list.add(MekanismLang.GENERIC_STORED.translate(stack, MekanismLang.INFINITE));
         } else {

@@ -70,14 +70,14 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             if (checkChestPlate(chestStack)) {
                 IChemicalHandler chestCapability = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(chestStack));
                 if (chestCapability != null) {
-                    hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).amount();
                     hydrogenStack.shrink(hydrogenUsed);
                 }
             }
             if (fillHeld) {
                 IChemicalHandler handCapability = Capabilities.CHEMICAL.getCapability(ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
                 if (handCapability != null) {
-                    hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).getAmount();
+                    hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).amount();
                 }
             }
             int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());

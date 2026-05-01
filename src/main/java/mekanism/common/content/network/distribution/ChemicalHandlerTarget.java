@@ -17,11 +17,11 @@ public class ChemicalHandlerTarget extends Target<IChemicalHandler, ChemicalStac
 
     @Override
     protected void acceptAmount(IChemicalHandler handler, SplitInfo splitInfo, ChemicalStack resource, long amount) {
-        splitInfo.send(amount - handler.insertChemical(resource.copyWithAmount(amount), Action.EXECUTE).getAmount());
+        splitInfo.send(amount - handler.insertChemical(resource.copyWithAmount(amount), Action.EXECUTE).amount());
     }
 
     @Override
     protected long simulate(IChemicalHandler handler, ChemicalStack resource, long amount) {
-        return resource.getAmount() - handler.insertChemical(resource.copyWithAmount(amount), Action.SIMULATE).getAmount();
+        return resource.amount() - handler.insertChemical(resource.copyWithAmount(amount), Action.SIMULATE).amount();
     }
 }

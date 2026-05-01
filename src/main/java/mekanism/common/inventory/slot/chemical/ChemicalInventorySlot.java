@@ -65,7 +65,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             if (conversion.isEmpty()) {
                 return false;
             }
-            if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < conversion.getAmount()) {
+            if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).amount() < conversion.amount()) {
                 //If we can insert the converted substance into the tank allow insertion
                 return true;
             }
@@ -98,7 +98,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         if (handler != null) {
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                 ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                if (!chemicalInTank.isEmpty() && chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).getAmount() < chemicalInTank.getAmount()) {
+                if (!chemicalInTank.isEmpty() && chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < chemicalInTank.amount()) {
                     //True if we can fill the tank with any of our contents
                     // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
                     return true;
@@ -115,7 +115,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                 if (chemicalTank.isEmpty()) {
                     //If the chemical tank is empty, accept the chemical item as long as it is not full
                     for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                        if (handler.getChemicalInTank(tank).getAmount() < handler.getChemicalTankCapacity(tank)) {
+                        if (handler.getChemicalInTank(tank).amount() < handler.getChemicalTankCapacity(tank)) {
                             //True if we have any space in this tank
                             return true;
                         }
@@ -123,7 +123,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     return false;
                 }
                 //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-                return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).getAmount() < chemicalTank.getStored();
+                return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).amount() < chemicalTank.getStored();
             }
             return false;
         };
@@ -230,7 +230,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                         //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
                         if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
                             //If we can accept it all, then add it and decrease our input
-                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).getAmount(), 0);
+                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
                             int amountUsed = itemInput.count();
                             MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
                         }
@@ -273,14 +273,14 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             if (!toExtract.isEmpty()) {
                 //Simulate inserting chemical from each tank in the item into our tank
                 ChemicalStack simulatedRemainder = chemicalTank.insert(toExtract, Action.SIMULATE, AutomationType.INTERNAL);
-                toExtract.shrink(simulatedRemainder.getAmount());
+                toExtract.shrink(simulatedRemainder.amount());
                 if (!toExtract.isEmpty()) {
                     //If we were simulated that we could actually insert any, then
                     // extract up to as much chemical as we were able to accept from the item
                     ChemicalStack extractedChemical = handler.extractChemical(toExtract, Action.EXECUTE);
                     if (!extractedChemical.isEmpty()) {
                         //If we were able to actually extract it from the item, then insert it into our chemical tank
-                        MekanismUtils.logMismatchedStackSize(chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).getAmount(), 0);
+                        MekanismUtils.logMismatchedStackSize(chemicalTank.insert(extractedChemical, Action.EXECUTE, AutomationType.INTERNAL).amount(), 0);
                         //and mark that we were able to transfer at least some of it
                         slot.onContentsChanged();
                         return true;
@@ -304,14 +304,14 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         if (!slot.isEmpty() && !chemicalTank.isEmpty() && handler != null) {
             ChemicalStack storedChemical = chemicalTank.getStack();
             ChemicalStack simulatedRemainder = handler.insertChemical(storedChemical, Action.SIMULATE);
-            long remainder = simulatedRemainder.getAmount();
-            long amount = storedChemical.getAmount();
+            long remainder = simulatedRemainder.amount();
+            long amount = storedChemical.amount();
             if (remainder < amount) {
                 //We are able to fit at least some of the chemical from our tank into the item
                 ChemicalStack extractedChemical = chemicalTank.extract(amount - remainder, Action.EXECUTE, AutomationType.INTERNAL);
                 if (!extractedChemical.isEmpty()) {
                     //If we were able to actually extract it from our tank, then insert it into the item
-                    MekanismUtils.logMismatchedStackSize(handler.insertChemical(extractedChemical, Action.EXECUTE).getAmount(), 0);
+                    MekanismUtils.logMismatchedStackSize(handler.insertChemical(extractedChemical, Action.EXECUTE).amount(), 0);
                     slot.onContentsChanged();
                 }
             }

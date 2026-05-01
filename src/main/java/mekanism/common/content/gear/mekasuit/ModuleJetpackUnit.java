@@ -51,7 +51,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
                 ChemicalStack stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored.getAmount(), chemicalHandler.getChemicalTankCapacity(0));
+                double ratio = StorageUtils.getRatio(stored.amount(), chemicalHandler.getChemicalTankCapacity(0));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
@@ -77,7 +77,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
                 ChemicalStack stored = chemicalHandler.getChemicalInTank(tank);
                 if (!stored.isEmpty()) {
                     long capacity = chemicalHandler.getChemicalTankCapacity(tank);
-                    if (stored.getAmount() > capacity) {
+                    if (stored.amount() > capacity) {
                         chemicalHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
                     }
                 }

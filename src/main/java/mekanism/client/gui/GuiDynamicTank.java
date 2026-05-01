@@ -63,7 +63,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
     }
 
     private void addStored(List<Component> ret, IChemicalTank tank) {
-        addStored(ret, tank.getStack(), ChemicalStack::getAmount);
+        addStored(ret, tank.getStack(), ChemicalStack::amount);
     }
 
     private <STACK> void addStored(List<Component> ret, STACK stack, ToLongFunction<STACK> amountGetter) {

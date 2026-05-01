@@ -16,7 +16,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @Override
     default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
-        return fromHolder(instance.typeHolder(), instance.getAmount());
+        return fromHolder(instance.typeHolder(), instance.amount());
     }
 
     @Override

@@ -215,7 +215,7 @@ public class InputHelper {
             }
             ChemicalStack inputChemical = getInput();
             if (!inputChemical.isEmpty()) {
-                long amount = recipeInput.getAmount() * operations;
+                long amount = recipeInput.amount() * operations;
                 logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
             }
         }
@@ -229,7 +229,7 @@ public class InputHelper {
                 // where we may want to allow not having the input be required for recipe matching
                 if (!recipeInput.isEmpty()) {
                     //TODO: Simulate the drain?
-                    int operations = Ints.saturatedCast(getInput().getAmount() / (recipeInput.getAmount() * usageMultiplier));
+                    int operations = Ints.saturatedCast(getInput().amount() / (recipeInput.amount() * usageMultiplier));
                     if (operations > 0) {
                         tracker.updateOperations(operations);
                         return;

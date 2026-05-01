@@ -56,7 +56,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
             if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
             }
-            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismChemicals.OXYGEN, EnumColor.ORANGE, stored.getAmount()));
+            list.add(MekanismLang.GENERIC_STORED.translateColored(EnumColor.DARK_GRAY, MekanismChemicals.OXYGEN, EnumColor.ORANGE, stored.amount()));
         }
     }
 

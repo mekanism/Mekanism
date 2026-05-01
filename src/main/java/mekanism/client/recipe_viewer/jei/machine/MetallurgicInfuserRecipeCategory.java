@@ -48,7 +48,7 @@ public class MetallurgicInfuserRecipeCategory extends HolderRecipeCategory<ItemS
         List<ChemicalStack> scaledChemicals = recipe.getChemicalInput().getRepresentations(slotDisplayContext);
         if (recipe.perTickUsage()) {
             scaledChemicals = scaledChemicals.stream()
-                  .map(chemical -> chemical.copyWithAmount(chemical.getAmount() * TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED))
+                  .map(chemical -> chemical.copyWithAmount(chemical.amount() * TileEntityMetallurgicInfuser.BASE_TICKS_REQUIRED))
                   .toList();
         }
         initChemical(builder, RecipeIngredientRole.INPUT, infusionBar, scaledChemicals);

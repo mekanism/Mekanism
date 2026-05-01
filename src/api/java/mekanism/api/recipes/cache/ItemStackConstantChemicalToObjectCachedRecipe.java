@@ -130,7 +130,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
             //Ensure that we check that we have enough for that the recipe matches *and* also that we have enough for how much we need to use
             if (!chemicalStack.isEmpty() && recipe.test(itemInput, chemicalStack)) {
                 ChemicalStack recipeChemical = chemicalInputHandler.getRecipeInput(recipe.getChemicalInput());
-                return !recipeChemical.isEmpty() && chemicalStack.getAmount() >= recipeChemical.getAmount();
+                return !recipeChemical.isEmpty() && chemicalStack.amount() >= recipeChemical.amount();
             }
         }
         return false;

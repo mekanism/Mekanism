@@ -119,7 +119,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
             if (chemicalTank.isEmpty()) {
                 chemicalTank.setStack(transmitterReleased.copy());
             } else if (chemicalTank.isTypeEqual(transmitterReleased)) {
-                long amount = transmitterReleased.getAmount();
+                long amount = transmitterReleased.amount();
                 MekanismUtils.logMismatchedStackSize(chemicalTank.growStack(amount, Action.EXECUTE), amount);
             }
         }
@@ -145,9 +145,9 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     private void updateSaveShares(@Nullable PressurizedTube triggerTransmitter, ChemicalStack chemical) {
         ChemicalTransmitterSaveTarget saveTarget = new ChemicalTransmitterSaveTarget(getTransmitters());
-        long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.getAmount(), chemical);
-        if (triggerTransmitter != null && sent < chemical.getAmount()) {
-            disperse(triggerTransmitter, chemical.copyWithAmount(chemical.getAmount() - sent));
+        long sent = EmitUtils.sendToAcceptors(saveTarget, chemical.amount(), chemical);
+        if (triggerTransmitter != null && sent < chemical.amount()) {
+            disperse(triggerTransmitter, chemical.copyWithAmount(chemical.amount() - sent));
         }
         saveTarget.saveShare();
     }
@@ -178,7 +178,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, stack.getAmount(), stack);
+        return EmitUtils.sendToAcceptors(target, stack.amount(), stack);
     }
 
     @Override

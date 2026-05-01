@@ -337,7 +337,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
             //we can never insert the chemical or currently are unable to insert it
             return stack;
         }
-        long toAdd = Math.min(stack.getAmount(), needed);
+        long toAdd = Math.min(stack.amount(), needed);
         if (action.execute()) {
             //If we want to actually insert the chemical, then update the current chemical
             if (sameType) {
@@ -351,7 +351,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
                 setStackUnchecked(stack.copyWithAmount(toAdd));
             }
         }
-        return stack.copyWithAmount(stack.getAmount() - toAdd);
+        return stack.copyWithAmount(stack.amount() - toAdd);
     }
 
     @Override
@@ -369,7 +369,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
         ChemicalStack ret = stored.copyWithAmount(size);
         if (!ret.isEmpty() && action.execute()) {
             //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            stored.shrink(ret.getAmount());
+            stored.shrink(ret.amount());
             onContentsChanged();
         }
         return ret;
@@ -441,7 +441,7 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
      */
     @Override
     public long getStored() {
-        return stored.getAmount();
+        return stored.amount();
     }
 
     /**
@@ -544,6 +544,6 @@ public class BasicChemicalTank implements IChemicalTank, IChemicalHandler {
 
     @Override
     public ChemicalStack extractChemical(ChemicalStack stack, Action action) {
-        return isTypeEqual(stack) ? extractChemical(stack.getAmount(), action) : ChemicalStack.EMPTY;
+        return isTypeEqual(stack) ? extractChemical(stack.amount(), action) : ChemicalStack.EMPTY;
     }
 }

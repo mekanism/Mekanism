@@ -35,8 +35,8 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);
             if (!storedGas.isEmpty()) {
-                tooltipAdder.accept(MekanismLang.STORED.translate(storedGas, storedGas.getAmount()));
-                if (storedGas.getAmount() == gasHandlerItem.getChemicalTankCapacity(0)) {
+                tooltipAdder.accept(MekanismLang.STORED.translate(storedGas, storedGas.amount()));
+                if (storedGas.amount() == gasHandlerItem.getChemicalTankCapacity(0)) {
                     tooltipAdder.accept(GeneratorsLang.READY_FOR_REACTION.translateColored(EnumColor.DARK_GREEN));
                 } else {
                     tooltipAdder.accept(GeneratorsLang.INSUFFICIENT_FUEL.translateColored(EnumColor.DARK_RED));

@@ -69,7 +69,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
             if (!player.isCreative() && ConfigView.Server.INSTANCE.shouldConsumeCamoItem()) {
                 ChemicalStack extracted = handler.extractChemical(tank, FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT, Action.SIMULATE);
-                if (extracted.getAmount() != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
+                if (extracted.amount() != FramedBlocksIntegration.Constants.CHEMICAL_AMOUNT) {
                     continue;
                 }
 

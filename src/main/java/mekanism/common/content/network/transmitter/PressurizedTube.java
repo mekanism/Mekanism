@@ -251,7 +251,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
             ChemicalNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.chemicalTank.isEmpty() && !saveShare.isEmpty()) {
                 ChemicalStack chemicalStack = saveShare;
-                long amount = chemicalStack.getAmount();
+                long amount = chemicalStack.amount();
                 MekanismUtils.logMismatchedStackSize(transmitterNetwork.chemicalTank.shrinkStack(amount, Action.EXECUTE), amount);
                 buffer.setStack(chemicalStack);
             }

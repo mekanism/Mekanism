@@ -71,7 +71,7 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
                     long leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
                     ChemicalStack remainder = tileAbove.getChemicalTank().insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
-                    grownAmount += leftOverToInsert - remainder.getAmount();
+                    grownAmount += leftOverToInsert - remainder.amount();
                 }
             }
         }

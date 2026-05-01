@@ -52,7 +52,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     @Override
     public void render(@NotNull GuiGraphicsExtractor guiGraphics, ChemicalStack stack) {
         if (!stack.isEmpty()) {
-            int desiredHeight = MathUtils.clampToInt(height * (double) stack.getAmount() / capacityMb);
+            int desiredHeight = MathUtils.clampToInt(height * (double) stack.amount() / capacityMb);
             if (desiredHeight < MIN_CHEMICAL_HEIGHT) {
                 desiredHeight = MIN_CHEMICAL_HEIGHT;
             }
@@ -74,9 +74,9 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
         if (!chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
             tooltips.add(TextComponentUtil.build(chemical));
             if (tooltipMode == TooltipMode.SHOW_AMOUNT_AND_CAPACITY) {
-                tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount()), TextUtils.format(capacityMb)));
+                tooltips.add(MekanismLang.JEI_AMOUNT_WITH_CAPACITY.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount()), TextUtils.format(capacityMb)));
             } else if (tooltipMode == TooltipMode.SHOW_AMOUNT) {
-                tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.getAmount())));
+                tooltips.add(MekanismLang.GENERIC_MB.translateColored(EnumColor.GRAY, TextUtils.format(stack.amount())));
             }
             stack.appendHoverText(RecipeViewerUtils.getRVTooltipContext(), tooltips, tooltipFlag);
         }

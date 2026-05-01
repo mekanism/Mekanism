@@ -132,7 +132,7 @@ public class CommonPlayerTickHandler {
             tank.useChemical(chest, 1);
             ChemicalStack received = tank.useChemical(chest, max - player.getAirSupply());
             if (!received.isEmpty()) {
-                player.setAirSupply(player.getAirSupply() + (int) received.getAmount());
+                player.setAirSupply(player.getAirSupply() + (int) received.amount());
             }
             if (player.getAirSupply() == max) {
                 for (MobEffectInstance effect : player.getActiveEffects()) {

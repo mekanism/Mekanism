@@ -247,7 +247,7 @@ public class OutputHelper {
             //This should not happen
             return;
         }
-        ChemicalStack output = toOutput.copyWithAmount(toOutput.getAmount() * operations);
+        ChemicalStack output = toOutput.copyWithAmount(toOutput.amount() * operations);
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
@@ -288,9 +288,9 @@ public class OutputHelper {
             ChemicalStack maxOutput = toOutput.copyWithAmount(Long.MAX_VALUE);
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
             ChemicalStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-            long amountUsed = maxOutput.getAmount() - remainder.getAmount();
+            long amountUsed = maxOutput.amount() - remainder.amount();
             //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = Ints.saturatedCast(amountUsed / toOutput.getAmount());
+            int operations = Ints.saturatedCast(amountUsed / toOutput.amount());
             tracker.updateOperations(operations);
             if (operations == 0) {
                 if (amountUsed == 0 && tank.getNeeded() > 0) {

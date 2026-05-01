@@ -108,7 +108,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
 
     @Override
     public boolean test(ChemicalStack stack) {
-        return testType(stack) && stack.getAmount() >= amount;
+        return testType(stack) && stack.amount() >= amount;
     }
 
     @Override

@@ -130,7 +130,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
         Holder<Chemical> chemical = ingredient.typeHolder();
         toStringHelper.add("Chemical", chemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) ? "none" : TextComponentUtil.build(chemical).getString());
         if (!ingredient.isEmpty()) {
-            toStringHelper.add("Amount", ingredient.getAmount());
+            toStringHelper.add("Amount", ingredient.amount());
         }
         return toStringHelper.toString();
     }

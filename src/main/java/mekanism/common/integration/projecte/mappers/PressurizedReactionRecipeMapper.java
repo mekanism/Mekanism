@@ -59,13 +59,13 @@ public class PressurizedReactionRecipeMapper extends TypedMekanismRecipeMapper<P
             return addConversion(mapper, outputChemical, inputs);
         } else if (outputChemical.isEmpty()) {
             return addConversion(mapper, outputItem, inputs);
-        } else if (outputChemical.getAmount() > Integer.MAX_VALUE) {
+        } else if (outputChemical.amount() > Integer.MAX_VALUE) {
             return false;
         }
         //Use bitwise or as we want to try and add both of them
         return addConversion(mapper, outputItem, forIngredients(
               inputs,
-              NSSChemical.createChemical(outputChemical), (int) -outputChemical.getAmount()
+              NSSChemical.createChemical(outputChemical), (int) -outputChemical.amount()
         )) | addConversion(mapper, outputChemical, forIngredients(
               inputs,
               NSSItem.createItem(outputItem.item(), outputItem.components()), -outputItem.count()

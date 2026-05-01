@@ -42,10 +42,10 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     public int getScaledLevel(int level) {
-        if (capacity == 0 || stored.getAmount() == Long.MAX_VALUE) {
+        if (capacity == 0 || stored.amount() == Long.MAX_VALUE) {
             return level;
         }
-        return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.getAmount(), capacity));
+        return MathUtils.clampToInt(level * MathUtils.divideToLevel(stored.amount(), capacity));
     }
 
     @NotNull
@@ -64,7 +64,7 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     public Component getText() {
-        long amount = stored.getAmount();
+        long amount = stored.amount();
         if (stored.isEmpty()) {
             return MekanismLang.EMPTY.translate();
         } else if (amount == Long.MAX_VALUE) {

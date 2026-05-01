@@ -27,8 +27,8 @@ public abstract class BaseCrTChemicalStack implements ICrTChemicalStack {
     @Override
     public String getCommandString() {
         StringBuilder builder = getBracket();
-        if (!stack.isEmpty() && stack.getAmount() != 1) {
-            builder.append(" * ").append(stack.getAmount());
+        if (!stack.isEmpty() && stack.amount() != 1) {
+            builder.append(" * ").append(stack.amount());
         }
         return builder.toString();
     }

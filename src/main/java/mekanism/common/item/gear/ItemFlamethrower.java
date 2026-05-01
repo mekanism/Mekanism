@@ -171,7 +171,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);
             if (!storedGas.isEmpty()) {
-                list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.getAmount()));
+                list.add(MekanismLang.FLAMETHROWER_STORED.translateColored(EnumColor.GRAY, EnumColor.ORANGE, storedGas.amount()));
                 hasGas = true;
             }
         }

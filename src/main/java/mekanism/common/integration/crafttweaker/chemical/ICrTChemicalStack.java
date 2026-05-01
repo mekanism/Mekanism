@@ -47,7 +47,7 @@ public interface ICrTChemicalStack extends CommandStringDisplayable {
     @ZenCodeType.Method
     @ZenCodeType.Getter("amount")
     default long getAmount() {
-        return getInternal().getAmount();
+        return getInternal().amount();
     }
 
     /**
