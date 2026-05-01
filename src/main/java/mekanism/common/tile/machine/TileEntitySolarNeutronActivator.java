@@ -75,7 +75,6 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
     @SyntheticComputerMethod(getter = "getProductionRate")
     private float productionRate;
     private boolean settingsChecked;
-    private boolean needsRainCheck;
 
     private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
     private final IInputHandler<@NotNull ChemicalStack> inputHandler;
@@ -130,7 +129,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         int seaLevel = world.getSeaLevel();
         BlockPos pos = getBlockPos();
         Biome b = world.getBiomeManager().getBiome(pos).value();
-        needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
+        boolean needsRainCheck = b.getPrecipitationAt(pos, seaLevel) != Precipitation.NONE;
         // Consider the best temperature to be 0.8; biomes that are higher than that
         // will suffer an efficiency loss (semiconductors don't like heat); biomes that are cooler
         // get a boost. We scale the efficiency to around 30% so that it doesn't totally dominate
@@ -192,16 +191,10 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
         if (world == null || !canFunction()) {
             return 0;
         }
-        //Get the brightness of the sun; note that there are some implementations that depend on the base
-        // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        float brightness = WorldUtils.getSunBrightness(world, 1.0F);
+        //Get the brightness of the sun; including rain penalty
+        float brightness = WorldUtils.getSunBrightness(world, this.worldPosition);
         //Production is a function of the peak possible output in this biome and sun's current brightness
-        float production = peakProductionRate * brightness;
-        //If the solar neutron activator is in a biome where it can rain, and it's raining penalize production by 80%
-        if (needsRainCheck && (world.isRaining() || world.isThundering())) {
-            production *= 0.2F;
-        }
-        return production;
+        return peakProductionRate * brightness;
     }
 
     @NotNull

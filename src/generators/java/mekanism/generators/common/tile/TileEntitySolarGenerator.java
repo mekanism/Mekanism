@@ -105,11 +105,8 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
     }
 
     protected float getBrightnessMultiplier(@NotNull Level world) {
-        //Get the brightness of the sun; note that there are some implementations that depend on the base
-        // brightness function which doesn't take into account the fact that rain can't occur in some biomes.
-        //TODO: Galacticraft solar energy multiplier (see TileEntitySolarGenerator 1.12 branch).
-        // Also do that for the Solar Neutron Activator and Solar Recharging Unit
-        return WorldUtils.getSunBrightness(world, 1.0F);
+        //Get the brightness of the sun; including rain penalty
+        return WorldUtils.getSunBrightness(world, this.worldPosition);
     }
 
     @Override
@@ -175,10 +172,6 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         public float getGenerationMultiplier() {
             if (!canSeeSun) {
                 return 0;
-            }
-            if (needsRainCheck && (this.world.isRaining() || this.world.isThundering())) {
-                //If the generator is in a biome where it can rain, and it's raining penalize production by 80%
-                return peakMultiplier * 0.2F;
             }
             return peakMultiplier;
         }

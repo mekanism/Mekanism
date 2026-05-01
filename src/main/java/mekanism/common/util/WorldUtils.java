@@ -877,20 +877,11 @@ public class WorldUtils {
     }
 
     /**
-     * Vanilla copy of {@link net.minecraft.client.multiplayer.ClientLevel#getSkyDarken(float)} used to be World#getSunBrightness
+     * Gets the skylight factor, a percentage based on the time of day and weather. Vanilla max of 1
+     * @return percentage value of float type. Normal range of 0 - 1. CAN BE HIGHER
      */
-    public static float getSunBrightness(Level world, float partialTicks) {
-        float envSunAngle = world.environmentAttributes().getDimensionValue(EnvironmentAttributes.SUN_ANGLE);//0 - 360? midday = 360, midnight = 0?
-        //todo - 26.1 work out what this should do now. Also review usages - this seems to apply rain, but some usages also add rain multipliers
-        //also, what is the range?? 0-1?
-        return 0;
-        /*float f = world.getTimeOfDay(partialTicks);
-        float f1 = 1.0F - (Mth.cos(f * Mth.TWO_PI) * 2.0F + 0.2F);
-        f1 = Mth.clamp(f1, 0.0F, 1.0F);
-        f1 = 1.0F - f1;
-        f1 = (float) (f1 * (1.0D - world.getRainLevel(partialTicks) * 5.0F / 16.0D));
-        f1 = (float) (f1 * (1.0D - world.getThunderLevel(partialTicks) * 5.0F / 16.0D));
-        return f1 * 0.8F + 0.2F;*/
+    public static float getSunBrightness(Level level, BlockPos position) {
+        return Math.max(0, level.environmentAttributes().getValue(EnvironmentAttributes.SKY_LIGHT_FACTOR, position));
     }
 
     /**
