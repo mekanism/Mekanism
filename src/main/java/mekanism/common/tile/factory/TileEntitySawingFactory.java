@@ -33,7 +33,6 @@ import mekanism.common.tier.FactoryTier;
 import mekanism.common.tile.machine.TileEntityPrecisionSawmill;
 import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.upgrade.SawmillUpgradeData;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -49,17 +48,17 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
-    private static final CheckRecipeType<Item, ItemResource, ItemStack, SawmillRecipe, ItemStack, ItemStack> OUTPUT_CHECK = (recipe, input, output, extra) -> {
+    private static final CheckRecipeType<Item, ItemResource, ItemStack, SawmillRecipe, ItemResource, ItemResource> OUTPUT_CHECK = (recipe, input, output, extra) -> {
         //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
         ChanceOutput chanceOutput = recipe.getOutput(input.toStack());
-        if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
+        if (output.matches(chanceOutput.getMainOutput())) {
             //If the input is good and the primary output matches, make sure that the secondary
             // output of this recipe will stack with what is currently in the secondary slot
             if (extra.isEmpty()) {
                 return true;
             }
             ItemStackTemplate secondaryOutput = chanceOutput.getMaxSecondaryOutput();
-            return secondaryOutput == null || ItemStack.isSameItemSameComponents(extra, secondaryOutput);
+            return secondaryOutput == null || extra.matches(secondaryOutput);
         }
         return false;
     };
@@ -132,8 +131,8 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
 
     @Override
     protected SawmillRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
-        ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), extra, OUTPUT_CHECK);
+        ItemResource extra = secondaryOutputSlot == null ? ItemResource.EMPTY : secondaryOutputSlot.getResource();
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getResource(), extra, OUTPUT_CHECK);
     }
 
     @NotNull

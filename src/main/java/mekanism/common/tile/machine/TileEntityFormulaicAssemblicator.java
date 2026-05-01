@@ -42,7 +42,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
@@ -294,7 +293,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             return recipe;
         }
-        formulaSlot.setStack(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()).toStack());
+        formulaSlot.setStack(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.getCount());
         return RecipeFormula.EMPTY;
     }
 
@@ -409,30 +408,26 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         boolean ret = true;
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            ItemStack recipeStack = recipeSlot.getStack();
-            if (formula.isIngredientInPos(level, recipeStack, i)) {
+            if (formula.isIngredientInPos(level, recipeSlot.getResource(), i)) {
                 continue;
             }
-            if (recipeStack.isEmpty()) {
-                Set<HashedItem> checkedTypes = null;
+            if (recipeSlot.isEmpty()) {
+                Set<ItemResource> checkedTypes = null;
                 for (int j = inputSlots.size() - 1; j >= 0; j--) {
                     //The stack stored in the stock inventory
                     IInventorySlot stockSlot = inputSlots.get(j);
                     if (!stockSlot.isEmpty()) {
-                        ItemStack stockStack = stockSlot.getStack();
-                        //Note: As we don't mutate it (except potentially when we found it as a match, at which point we don't need it anymore),
-                        // we can just use a raw view rather than having to copy the stack
-                        HashedItem stockStackType = HashedItem.raw(stockStack);
+                        ItemResource stockType = stockSlot.getResource();
                         //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
-                        if (checkedTypes == null || checkedTypes.add(stockStackType)) {
-                            if (formula.isIngredientInPos(level, stockStack, i)) {
-                                recipeSlot.setStack(stockStack.copyWithCount(1));
+                        if (checkedTypes == null || checkedTypes.add(stockType)) {
+                            if (formula.isIngredientInPos(level, stockType, i)) {
+                                recipeSlot.setStack(stockType, 1);
                                 MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
                                 break;
                             } else if (checkedTypes == null) {
                                 checkedTypes = new HashSet<>();
                                 //Note: If the types set was not null, then we will have added it above when checking if we already checked the type
-                                checkedTypes.add(stockStackType);
+                                checkedTypes.add(stockType);
                             }
                         }
                     }
@@ -442,9 +437,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     ret = false;
                 }
             } else {
-                //Update recipeStack as well, so we can check if it is empty without having to get it again
-                recipeSlot.setStack(recipeStack = tryMoveToInput(recipeStack));
-                if (!recipeStack.isEmpty()) {
+                tryMoveToInput(recipeSlot);
+                if (!recipeSlot.isEmpty()) {
                     ret = false;
                 }
             }
@@ -478,9 +472,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private void moveItemsToInput(boolean forcePush) {
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            ItemStack recipeStack = recipeSlot.getStack();
-            if (!recipeStack.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeStack, i)))) {
-                recipeSlot.setStack(tryMoveToInput(recipeStack));
+            if (!recipeSlot.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeSlot.getResource(), i)))) {
+                tryMoveToInput(recipeSlot);
             }
         }
     }
@@ -631,7 +624,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private static void setSlotIfChanged(IInventorySlot slot, ItemResource itemType, int count) {
         if (slot.getCount() != count || !slot.getResource().equals(itemType)) {
-            slot.setStack(itemType.toStack(count));
+            slot.setStack(itemType, count);
         }
     }
 
@@ -647,8 +640,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private ItemStack tryMoveToInput(ItemStack stack) {
-        return InventoryUtils.insertItem(inputSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
+    private void tryMoveToInput(IInventorySlot recipeSlot) {
+        recipeSlot.setStack(InventoryUtils.insertItem(inputSlots, recipeSlot.getStack(), Action.EXECUTE, AutomationType.INTERNAL));
     }
 
     private boolean tryMoveToOutput(ItemStack stack, Action action) {
@@ -664,13 +657,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaSlot.isEmpty()) {
             return;
         }
-        FormulaAttachment formulaAttachment = formulaSlot.getResource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        ItemResource currentResource = formulaSlot.getResource();
+        FormulaAttachment formulaAttachment = currentResource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
-                ItemStack stack = formulaSlot.getStack().copy();
-                stack.set(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula));
-                formulaSlot.setStack(stack);
+                formulaSlot.setStack(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.getCount());
             }
         }
     }

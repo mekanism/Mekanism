@@ -54,7 +54,6 @@ import mekanism.common.tile.machine.TileEntityMetallurgicInfuser;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.upgrade.AdvancedMachineUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.core.BlockPos;
@@ -76,8 +75,8 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
     //TODO - 26.1: Either change getOutput to take an ItemResource and ChemicalResource or figure out the size of the stack we should be passing
-    protected static final CheckRecipeType<Item, ItemResource, ItemStack, Chemical, ChemicalResource, ChemicalStack, ItemStackChemicalToItemStackRecipe, ItemStack> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack(), extra.toStack(1)), output);
+    protected static final CheckRecipeType<Item, ItemResource, ItemStack, Chemical, ChemicalResource, ChemicalStack, ItemStackChemicalToItemStackRecipe, ItemResource> OUTPUT_CHECK =
+          (recipe, input, extra, output) -> output.matches(recipe.getOutput(input.toStack(), extra.toStack(1)));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -182,7 +181,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getResource(), outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getResource(), outputSlot.getResource(), OUTPUT_CHECK);
     }
 
     @Override

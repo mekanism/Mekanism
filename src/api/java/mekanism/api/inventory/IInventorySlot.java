@@ -56,7 +56,13 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @throws RuntimeException if this slot is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(ItemStack stack);
+    @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStack(ItemResource, int)
+    default void setStack(ItemStack stack) {
+        setStack(ItemResource.of(stack), stack.count());
+    }
+
+    //TODO - 26.1: Docs, and transition calls to setStack(ItemStack) to this
+    void setStack(ItemResource itemType, int storedAmount);
 
     /**
      * <p>
@@ -99,7 +105,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
                 } else {
                     //If we are not the same type then we have to copy the stack and set it
                     // Note: this also will mark that the contents changed
-                    setStack(insertingResource.toStack(toAdd));
+                    setStack(insertingResource, toAdd);
                 }
             }
             return insertingResource.toStack(stack.count() - toAdd);
@@ -286,7 +292,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(getResource().toStack(amount));
+        setStack(getResource(), amount);
         return amount;
     }
 
@@ -348,7 +354,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * Convenience method for emptying this {@link IInventorySlot}.
      */
     default void setEmpty() {
-        setStack(ItemStack.EMPTY);
+        setStack(ItemResource.EMPTY, 0);
     }
 
     /**

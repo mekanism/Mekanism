@@ -49,9 +49,9 @@ public final class StackUtils {
                 if (origSlot.isEmpty()) {
                     int max = origSlot.getLimit(toAddResource);
                     if (toAddAmount <= max) {
-                        origSlot.setStack(toAddResource.toStack(toAddAmount));
+                        origSlot.setStack(toAddResource, toAddAmount);
                     } else {
-                        origSlot.setStack(toAddResource.toStack(max));
+                        origSlot.setStack(toAddResource, max);
                         //Add any remainder to the rejects (if this is zero this will no-op
                         addStack(rejects, toAddResource.toStack(toAddAmount - max));
                     }

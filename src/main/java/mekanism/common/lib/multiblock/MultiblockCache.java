@@ -155,7 +155,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
             @Override
             public void sync(IInventorySlot cache, IInventorySlot data) {
-                cache.setStack(data.getStack());
+                cache.setStack(data.getResource(), data.getCount());
             }
         };
 

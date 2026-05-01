@@ -485,7 +485,8 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 ContainerType.ITEM.copy(data.inputSlots.get(i), inputSlots.get(i));
             }
             for (int i = 0; i < data.outputSlots.size(); i++) {
-                outputSlots.get(i).setStack(data.outputSlots.get(i).getStack());
+                IInventorySlot outputSlot = data.outputSlots.get(i);
+                outputSlots.get(i).setStack(outputSlot.getResource(), outputSlot.getCount());
             }
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
@@ -720,7 +721,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         // recipes to change. If this is the case, then we want to properly not crash,
                         // but we would rather not add any extra overhead about revalidating the item
                         // each time as it can get somewhat expensive.
-                        inputSlot.setStackUnchecked(item.toStack(sizeForSlot));
+                        inputSlot.setStackUnchecked(item, sizeForSlot);
                     }
                 } else {
                     //Slot is not currently empty

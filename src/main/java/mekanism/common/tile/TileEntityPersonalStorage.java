@@ -125,7 +125,8 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
                 if (storageItemInventory != null) {
                     List<IInventorySlot> inventorySlots = storageItemInventory.getInventorySlots();
                     for (int i = 0; i < inventorySlots.size(); i++) {
-                        setStackInSlot(i, inventorySlots.get(i).getStack().copy());
+                        IInventorySlot slot = inventorySlots.get(i);
+                        setStackInSlot(i, slot.getResource(), slot.getCount());
                     }
                 }
             }

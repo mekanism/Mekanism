@@ -80,10 +80,10 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
         return recipe.value().matches(MekanismUtils.getCraftingInputSlots(3, 3, craftingGridSlots, true).input(), world);
     }
 
-    public boolean isIngredientInPos(Level world, ItemStack stack, int i) {
+    public boolean isIngredientInPos(Level world, ItemResource itemType, int i) {
         if (recipe == null) {
             return false;
-        } else if (stack.isEmpty()) {
+        } else if (itemType.isEmpty()) {
             //If the stack being checked is empty but the input isn't expected to be empty,
             // mark it as not being correct for the position, but if it is expected to be empty,
             // mark it as being correct for the position
@@ -93,13 +93,13 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
         if (lastItem.isEmpty()) {
             //We expect it to be empty, fail because it isn't
             return false;
-        } else if (ItemStack.isSameItemSameComponents(stack, lastItem)) {
+        } else if (itemType.matches(lastItem)) {
             //We are the same as the last item and the one we expect for that slot of the recipe
             return true;
         }
 
         List<ItemStack> dummy = getCopy(false);
-        dummy.set(i, stack);
+        dummy.set(i, itemType.toStack());
         return recipe.value().matches(CraftingInput.of(3, 3, dummy), world);
     }
 

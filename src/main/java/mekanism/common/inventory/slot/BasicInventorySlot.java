@@ -19,6 +19,7 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
@@ -118,27 +119,33 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public void setStack(ItemStack stack) {
-        setStack(stack, true);
+    public void setStack(ItemResource itemType, int storedAmount) {
+        setStack(itemType, storedAmount, true);
     }
 
+    @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStackUnchecked(ItemResource, int)
     public void setStackUnchecked(ItemStack stack) {
-        setStack(stack, false);
+        setStackUnchecked(ItemResource.of(stack), stack.count());
     }
 
-    private void setStack(ItemStack stack, boolean validateStack) {
-        if (stack.isEmpty()) {
+    public void setStackUnchecked(ItemResource itemType, int storedAmount) {
+        setStack(itemType, storedAmount, false);
+    }
+
+    private void setStack(ItemResource itemType, int storedAmount, boolean validateStack) {
+        TransferPreconditions.checkNonNegative(storedAmount);
+        if (itemType.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
             if (current.isEmpty()) {
                 //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             current = ItemStack.EMPTY;
-        } else if (!validateStack || isValid(ItemResource.of(stack))) {
-            current = stack.copy();
+        } else if (!validateStack || isValid(itemType)) {
+            current = itemType.toStack(storedAmount);
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
-            throw new RuntimeException("Invalid stack for slot: " + stack + " " + stack.getComponentsPatch());
+            throw new RuntimeException("Invalid stack for slot: " + itemType.value() + " " + itemType.getComponentsPatch());
         }
         onContentsChanged();
     }

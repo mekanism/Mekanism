@@ -82,30 +82,29 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
           SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
-          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, ((from, to) -> {
-        ItemStack copy = from.getStack().copy();
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, (from, to) -> {
         if (to instanceof BasicInventorySlot basicInventorySlot) {
-            basicInventorySlot.setStackUnchecked(copy);
+            basicInventorySlot.setStackUnchecked(from.getResource(), from.getCount());
         } else {
-            to.setStack(copy);
+            to.setStack(from.getResource(), from.getCount());
         }
-    }));
+    });
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID_LEGACY, AttachedFluids.EMPTY,
-          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid, ((from, to) -> to.setStackUnchecked(from.getFluid().copy())));
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid, (from, to) -> to.setStackUnchecked(from.getFluid().copy()));
 
     public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
           SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedChemicals.EMPTY,
-          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals, ((from, to) -> to.setStackUnchecked(from.getStack().copy())));
+          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals, (from, to) -> to.setStackUnchecked(from.getStack().copy()));
 
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
-          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat, ((from, to) -> {
+          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat, (from, to) -> {
         to.setHeat(from.getHeat());
         if (to instanceof BasicHeatCapacitor heatCapacitor) {
             heatCapacitor.setHeatCapacity(from.getHeatCapacity(), false);
         }
-    }));
+    });
 
     //TODO - 1.20.5: Re-evaluate this codec implementation
     //TODO - 26.1: seems unused?

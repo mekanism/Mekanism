@@ -446,7 +446,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
             IInventorySlot inventorySlot = robitSlots.get(slot);
             if (!inventorySlot.isEmpty()) {
-                stackInventory.setStackInSlot(slot, inventorySlot.getStack().copy());
+                stackInventory.setStackInSlot(slot, inventorySlot.getResource(), inventorySlot.getCount());
             }
         }
         if (hasCustomName()) {

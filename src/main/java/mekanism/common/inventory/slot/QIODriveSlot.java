@@ -33,32 +33,32 @@ public class QIODriveSlot extends BasicInventorySlot {
     }
 
     @Override
-    public void setStack(ItemStack stack) {
+    public void setStack(ItemResource itemType, int storedAmount) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
         // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
         if (!isRemote() && !isEmpty()) {
             removeDrive();
         }
-        super.setStack(stack);
+        super.setStack(itemType, storedAmount);
         // if we just added a new drive, add it to the frequency
         // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
         if (!isRemote() && !isEmpty()) {
-            addDrive(getStack());
+            addDrive();
         }
     }
 
     @Override
-    public void setStackUnchecked(ItemStack stack) {
+    public void setStackUnchecked(ItemResource itemType, int storedAmount) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
         // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
         if (!isRemote() && !isEmpty()) {
             removeDrive();
         }
-        super.setStackUnchecked(stack);
+        super.setStackUnchecked(itemType, storedAmount);
         // if we just added a new drive, add it to the frequency
         // (note that both of these operations can happen in this order if a user replaces the drive in the slot)
         if (!isRemote() && !isEmpty()) {
-            addDrive(getStack());
+            addDrive();
         }
     }
 
@@ -66,7 +66,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         ItemStack ret = super.insertItem(stack, action, automationType);
         if (!isRemote() && action.execute() && ret.isEmpty()) {
-            addDrive(stack);
+            addDrive();
         }
         return ret;
     }
@@ -93,7 +93,7 @@ public class QIODriveSlot extends BasicInventorySlot {
         return level == null || level.isClientSide();
     }
 
-    private void addDrive(ItemStack stack) {
+    private void addDrive() {
         QIOFrequency frequency = driveHolder.getQIOFrequency();
         if (frequency != null) {
             frequency.addDrive(key);

@@ -27,7 +27,6 @@ import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache.CheckRecipeTyp
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.upgrade.CombinerUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -43,8 +42,8 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
     //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
-    private static final CheckRecipeType<Item, ItemResource, ItemStack, Item, ItemResource, ItemStack, CombinerRecipe, ItemStack> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack(), extra.toStack()), output);
+    private static final CheckRecipeType<Item, ItemResource, ItemStack, Item, ItemResource, ItemStack, CombinerRecipe, ItemResource> OUTPUT_CHECK =
+          (recipe, input, extra, output) -> output.matches(recipe.getOutput(input.toStack(), extra.toStack()));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -107,7 +106,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     @Override
     protected CombinerRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.getResource(), outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.getResource(), outputSlot.getResource(), OUTPUT_CHECK);
     }
 
     @NotNull

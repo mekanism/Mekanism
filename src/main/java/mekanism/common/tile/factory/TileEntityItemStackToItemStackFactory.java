@@ -15,11 +15,9 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.ItemRecipeLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.upgrade.MachineUpgradeData;
-import mekanism.common.util.InventoryUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -32,8 +30,8 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
-    private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemStack> OUTPUT_CHECK =
-          (recipe, input, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack()), output);
+    private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemResource> OUTPUT_CHECK =
+          (recipe, input, output) -> output.matches(recipe.getOutput(input.toStack()));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -70,7 +68,7 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     @Override
     protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getResource(), OUTPUT_CHECK);
     }
 
     @NotNull

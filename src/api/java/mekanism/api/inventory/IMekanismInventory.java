@@ -59,10 +59,10 @@ public interface IMekanismInventory extends ResourceHandler<ItemResource>, ICont
     }
 
     //@Override
-    default void setStackInSlot(int slot, ItemStack stack) {//TODO - 26.1: Re-evaluate, previously was in IItemHandlerModifiable
+    default void setStackInSlot(int slot, ItemResource itemType, int amount) {//TODO - 26.1: Re-evaluate, previously was in IItemHandlerModifiable
         IInventorySlot inventorySlot = getInventorySlot(slot);
         if (inventorySlot != null) {
-            inventorySlot.setStack(stack);
+            inventorySlot.setStack(itemType, amount);
         }
     }
 
