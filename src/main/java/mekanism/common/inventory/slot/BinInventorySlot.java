@@ -97,6 +97,11 @@ public class BinInventorySlot extends BasicInventorySlot {
         return super.setStackSize(amount, action.combine(!isCreative));
     }
 
+    @Override
+    public int getCurrentLimit() {
+        return getLimit(getBinItemType());
+    }
+
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
@@ -154,7 +159,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         return !lockStack.isEmpty();
     }
 
-    public ItemStack getRenderStack() {
+    public ItemStack getBinItemType() {
         return isLocked() ? getLockStack() : getStack();
     }
 

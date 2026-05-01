@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,22 +44,23 @@ public final class StackUtils {
             IInventorySlot toAddSlot = toAdd.get(i);
             if (!toAddSlot.isEmpty()) {
                 IInventorySlot origSlot = orig.get(i);
-                ItemStack toAddStack = toAddSlot.getStack();
+                ItemResource toAddResource = toAddSlot.getResource();
+                int toAddAmount = toAddSlot.getCount();
                 if (origSlot.isEmpty()) {
-                    int max = origSlot.getLimit(toAddStack);
-                    if (toAddStack.count() <= max) {
-                        origSlot.setStack(toAddStack);
+                    int max = origSlot.getLimit(toAddResource);
+                    if (toAddAmount <= max) {
+                        origSlot.setStack(toAddResource.toStack(toAddAmount));
                     } else {
-                        origSlot.setStack(toAddStack.copyWithCount(max));
+                        origSlot.setStack(toAddResource.toStack(max));
                         //Add any remainder to the rejects (if this is zero this will no-op
-                        addStack(rejects, toAddStack.copyWithCount(toAddStack.count() - max));
+                        addStack(rejects, toAddResource.toStack(toAddAmount - max));
                     }
-                } else if (ItemStack.isSameItemSameComponents(origSlot.getStack(), toAddStack)) {
-                    int added = origSlot.growStack(toAddStack.count(), Action.EXECUTE);
+                } else if (origSlot.getResource().equals(toAddResource)) {
+                    int added = origSlot.growStack(toAddAmount, Action.EXECUTE);
                     //Add any remainder to the rejects (if this is zero this will no-op
-                    addStack(rejects, toAddStack.copyWithCount(toAddStack.count() - added));
+                    addStack(rejects, toAddResource.toStack(toAddAmount - added));
                 } else {
-                    addStack(rejects, toAddStack.copy());
+                    addStack(rejects, toAddResource.toStack(toAddAmount));
                 }
             }
         }

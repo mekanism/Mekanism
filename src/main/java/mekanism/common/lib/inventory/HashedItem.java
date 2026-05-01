@@ -48,6 +48,11 @@ public class HashedItem implements IHashedItem, DataComponentHolder {
         return new HashedItem(stack);
     }
 
+    //TODO - 26.1: Re-evaluate this/just replace HashedItem with ItemResource
+    public static HashedItem fromResource(ItemResource resource) {
+        return raw(resource.toStack());
+    }
+
     private final ItemStack itemStack;
     private final int hashCode;
     @Nullable
@@ -88,7 +93,7 @@ public class HashedItem implements IHashedItem, DataComponentHolder {
      * @apiNote Main use is to ensure that this HashedItem is not raw, but to allow skipping recalculating the hash code. This will cause a stack copy if used on an
      * already not-raw HashedItem, so ideally this should only be called on raw stacks and otherwise properly kept track of by the caller.
      */
-    public HashedItem recreate() {
+    public HashedItem recreate() {//TODO - 26.1: Remove this?
         return new HashedItem(createStack(1), hashCode);
     }
 

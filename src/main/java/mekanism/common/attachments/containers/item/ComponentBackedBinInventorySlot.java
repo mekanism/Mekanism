@@ -17,6 +17,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -77,11 +78,11 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      * @see BinInventorySlot#getBottomStack()
      */
     public ItemStack getBottomStack() {
-        ItemStack current = getStack();
-        if (current.isEmpty()) {
+        if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return current.copyWithCount(Math.min(current.count(), current.getMaxStackSize()));
+        ItemResource current = getResource();
+        return current.toStack(Math.min(getCount(), current.getMaxStackSize()));
     }
 
     /**

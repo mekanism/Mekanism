@@ -81,7 +81,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         }
     };
     public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
-          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM_LEGACY, AttachedItems.EMPTY,
+          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
           TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, ((from, to) -> {
         ItemStack copy = from.getStack().copy();
         if (to instanceof BasicInventorySlot basicInventorySlot) {

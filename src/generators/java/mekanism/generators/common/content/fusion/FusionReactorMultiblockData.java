@@ -44,6 +44,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
+import mekanism.generators.common.registries.GeneratorsItems;
 import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
@@ -53,7 +54,6 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
@@ -203,8 +203,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private boolean hasHohlraum() {
         if (!reactorSlot.isEmpty()) {
-            ItemStack hohlraum = reactorSlot.getStack();
-            if (hohlraum.getItem() instanceof ItemHohlraum) {
+            if (GeneratorsItems.HOHLRAUM.is(reactorSlot.getResource())) {
                 IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
                 if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
@@ -299,7 +298,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void vaporiseHohlraum() {
-        ItemStack hohlraum = reactorSlot.getStack();
         IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);

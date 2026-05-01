@@ -11,7 +11,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -147,27 +146,9 @@ public class BasicEnergyContainer implements IEnergyContainer {
         return ret;
     }
 
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isEmpty() {
-        return stored == 0L;
-    }
-
     @Override
     public long getMaxEnergy() {
         return maxEnergy;
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our value in {@link #getEnergy()}, we can optimize out the copying.
-     */
-    @Override
-    public void serialize(ValueOutput output) {
-        if (!isEmpty()) {
-            output.putLong(SerializationConstants.STORED, stored);
-        }
     }
 
     @Override

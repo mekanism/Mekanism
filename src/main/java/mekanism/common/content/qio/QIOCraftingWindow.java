@@ -45,6 +45,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -114,7 +115,7 @@ public class QIOCraftingWindow implements IContentsListener {
      * Checks if the stack is equivalent to the current output.
      */
     public boolean isOutput(@NotNull ItemStack stack) {
-        return ItemStack.isSameItemSameComponents(outputSlot.getStack(), stack);
+        return outputSlot.getResource().matches(stack);
     }
 
     @Override
@@ -374,14 +375,14 @@ public class QIOCraftingWindow implements IContentsListener {
                     // is enabled, and they only have access to one of the crafting recipes
                     break;
                 }
-                ItemStack updatedOutput = outputSlot.getStack();
-                if (updatedOutput.isEmpty() || updatedOutput.getItem() != resultItem) {
+                ItemResource updatedOutput = outputSlot.getResource();
+                if (updatedOutput.isEmpty() || !updatedOutput.is(resultItem)) {
                     //If we can't craft anymore or the resulting item changed entirely, stop crafting
                     break;
                 }
                 //If they may still be compatible, copy the stack, and apply the onCreated to it so that
                 // we can adjust the NBT if it needs adjusting
-                ItemStack potentialUpdatedOutput = updatedOutput.copy();
+                ItemStack potentialUpdatedOutput = updatedOutput.toStack(outputSlot.getCount());
                 resultItem.onCraftedBy(potentialUpdatedOutput, player);
                 if (!ItemStack.matches(result, potentialUpdatedOutput)) {
                     //If some data is different about the output, stop crafting
@@ -682,7 +683,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (!updated && !remainder.isEmpty()) {
                 //Update inputs and mark that we have updated them
                 for (int index = 0; index < inputSlots.length; index++) {
-                    dummy.set(index, inputSlots[index].getStack().copyWithCount(1));
+                    dummy.set(index, inputSlots[index].getResource().toStack());
                 }
                 updated = true;
             }

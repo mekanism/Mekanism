@@ -611,10 +611,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
         //Start by sourcing from the miner's inventory
         for (IInventorySlot slot : mainSlots) {
-            ItemStack slotStack = slot.getStack();
-            if (replaceStackMatches.test(slotStack.getItem())) {
+            ItemResource slotContents = slot.getResource();
+            if (replaceStackMatches.test(slotContents.getItem())) {
                 MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
-                return slotStack.copyWithCount(1);
+                return slotContents.toStack();
             }
         }
         //Then source from the upgrade if it is installed
@@ -663,7 +663,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             IInventorySlot slot = mainSlots.get(i);
             if (!slot.isEmpty()) {
                 //Note: We skip caching the current stack of any empty slots
-                cachedStacks.put(i, new ItemCount(slot.getStack(), slot.getCount()));
+                cachedStacks.put(i, new ItemCount(slot.getResource(), slot.getCount()));
             }
         }
         for (ItemStack stackToInsert : toInsert) {
@@ -686,11 +686,12 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             //If the stack is already empty for some reason just return it (aka no remainder)
             return stackToInsert;
         }
+        ItemResource resourceToInsert = ItemResource.of(stackToInsert);
         ItemStack stack = stackToInsert.copy();
         //Try to simulate inserting into slots that are not currently empty
         for (int i = 0; i < slots; i++) {
             ItemCount cachedItem = cachedStacks.get(i);
-            if (cachedItem != null && ItemStack.isSameItemSameComponents(stack, cachedItem.stack)) {
+            if (cachedItem != null && cachedItem.resource.matches(stack)) {
                 //Ensure that our stack can stack with the item that is already in the slot
                 IInventorySlot slot = mainSlots.get(i);
                 int limit = slot.getLimit(stack);
@@ -722,7 +723,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                     //If the slot accepted at least some item we are inserting, then cache the item type that we put into that slot
                     // Given the slot is empty the expected result is that we will always end up inserting into the first empty slot
                     // and end up inserting the entire stack
-                    cachedStacks.put(i, new ItemCount(stackToInsert, stackSize - remainderSize));
+                    cachedStacks.put(i, new ItemCount(resourceToInsert, stackSize - remainderSize));
                     if (stack.isEmpty()) {
                         //Stack was fully accepted, return that we have no remainder
                         return ItemStack.EMPTY;
@@ -1467,11 +1468,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     private static class ItemCount {
 
-        private final ItemStack stack;
+        private final ItemResource resource;
         private int count;
 
-        public ItemCount(ItemStack stack, int count) {
-            this.stack = stack;
+        public ItemCount(ItemResource resource, int count) {
+            this.resource = resource;
             this.count = count;
         }
     }

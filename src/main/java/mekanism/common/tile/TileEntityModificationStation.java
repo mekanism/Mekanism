@@ -89,7 +89,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         if (canFunction()) {
             boolean operated = false;
             if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                Holder<ModuleData<?>> data = ((IModuleItem) moduleSlot.getStack().getItem()).getModuleData();
+                Holder<ModuleData<?>> data = ((IModuleItem) moduleSlot.getResource().getItem()).getModuleData();
                 ItemStack stack = containerSlot.getStack();
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {

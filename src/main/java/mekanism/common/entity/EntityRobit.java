@@ -361,10 +361,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
                             playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
                             break;
                         }
-                        ItemStack itemStack = slot.getStack();
-                        int maxSize = slot.getLimit(itemStack);
-                        if (ItemStack.isSameItemSameComponents(itemStack, item.getItem()) && itemStack.count() < maxSize) {
-                            int needed = maxSize - itemStack.count();
+                        int currentCount = slot.getCount();
+                        int maxSize = slot.getCurrentLimit();
+                        if (slot.getResource().matches(item.getItem()) && currentCount < maxSize) {
+                            int needed = maxSize - currentCount;
                             int toAdd = Math.min(needed, item.getItem().count());
                             MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
                             item.getItem().shrink(toAdd);
@@ -444,11 +444,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         List<IInventorySlot> robitSlots = getInventorySlots();
         ComponentBackedItemHandler stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
-            ItemStack invStack = robitSlots.get(slot).getStack();
-            if (invStack.isEmpty()) {
-                continue;
+            IInventorySlot inventorySlot = robitSlots.get(slot);
+            if (!inventorySlot.isEmpty()) {
+                stackInventory.setStackInSlot(slot, inventorySlot.getStack().copy());
             }
-            stackInventory.setStackInSlot(slot, invStack.copy());
         }
         if (hasCustomName()) {
             stack.set(MekanismDataComponents.ROBIT_NAME, getName());

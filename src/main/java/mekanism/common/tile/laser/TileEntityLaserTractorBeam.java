@@ -99,7 +99,9 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     //Methods relating to IComputerTile
     @ComputerMethod
     int getSlotCount() {
-        return getSlots();
+        //TODO - 26.1: This used to just call getSlots, which effectively now would be size, but that seems like an unclear name
+        // and we likely will move away from directly implementing IMekanismInventory. Evaluate if this handling will be fine, or if we need to change things
+        return getInventorySlots().size();
     }
 
     @ComputerMethod

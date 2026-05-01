@@ -17,11 +17,11 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.tile.FormulaicAssemblicatorContainer;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_server.PacketGuiInteract;
 import mekanism.common.network.to_server.PacketGuiInteract.GuiInteraction;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -30,6 +30,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFormulaicAssemblicator, FormulaicAssemblicatorContainer> {
@@ -134,9 +135,9 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
 
     private boolean canEncode() {
         if (!tile.hasValidFormula()) {
-            ItemStack stack = tile.getFormulaSlot().getStack();
-            if (!stack.isEmpty() && stack.getItem() instanceof ItemCraftingFormula) {
-                return stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
+            ItemResource resource = tile.getFormulaSlot().getResource();
+            if (!resource.isEmpty() && MekanismItems.CRAFTING_FORMULA.is(resource)) {
+                return resource.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).isEmpty();
             }
         }
         return false;

@@ -10,7 +10,8 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -62,13 +63,20 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         return outputHandler != null && applyToStack(outputHandler, slots);
     }
 
-    static boolean applyToStack(IMekanismInventory outputHandler, List<IInventorySlot> dataSlots) {
-        for (IInventorySlot slot : dataSlots) {
-            if (!slot.isEmpty() && !ItemHandlerHelper.insertItemStacked(outputHandler, slot.getStack(), false).isEmpty()) {
-                //If we have a remainder something failed so bail
-                return false;
+    private static boolean applyToStack(IMekanismInventory outputHandler, List<IInventorySlot> dataSlots) {
+        try (Transaction tx = Transaction.openRoot()) {
+            for (IInventorySlot slot : dataSlots) {
+                if (!slot.isEmpty()) {
+                    int amount = slot.getCount();
+                    int inserted = ResourceHandlerUtil.insertStacking(outputHandler, slot.getResource(), amount, tx);
+                    if (inserted < amount) {
+                        //If we have a remainder something failed so bail
+                        return false;
+                    }
+                }
             }
+            tx.commit();
+            return true;
         }
-        return true;
     }
 }

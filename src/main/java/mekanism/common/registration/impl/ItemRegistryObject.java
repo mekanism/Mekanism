@@ -23,6 +23,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -59,6 +60,10 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
 
     public ItemStack asStack(int count) {
         return new ItemStack(value(), count);
+    }
+
+    public boolean is(ItemResource resource) {
+        return resource.is(get());
     }
 
     @NotNull

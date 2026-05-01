@@ -31,7 +31,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
     private PersonalStorageItemInventory(List<SlotData> loadedData) {
         this.parent = null;
         for (SlotData slotData : loadedData) {
-            var slot = slots.get(slotData.slot);
+            IInventorySlot slot = slots.get(slotData.slot);
             if (slot instanceof BasicInventorySlot basicInventorySlot) {
                 basicInventorySlot.setStackUnchecked(slotData.stack);
             } else {

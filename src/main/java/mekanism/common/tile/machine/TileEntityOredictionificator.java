@@ -82,12 +82,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         if (canFunction() && !inputSlot.isEmpty()) {
             ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getStack());
             if (!result.isEmpty()) {
-                ItemStack outputStack = outputSlot.getStack();
-                if (outputStack.isEmpty()) {
+                if (outputSlot.isEmpty()) {
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.setStack(result);
                     didProcess = true;
-                } else if (ItemStack.isSameItemSameComponents(outputStack, result) && outputStack.count() < outputSlot.getLimit(outputStack)) {
+                } else if (ItemStack.isSameItemSameComponents(outputSlot.getStack(), result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.growStack(1, Action.EXECUTE);
                     didProcess = true;

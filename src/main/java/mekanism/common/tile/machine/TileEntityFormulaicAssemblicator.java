@@ -69,6 +69,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     private boolean stockControl = false;
     private boolean needsOrganize = true; //organize on load
     private boolean canTryToMove = true; //allow trying to move on load
-    private final HashedItem[] stockControlMap = new HashedItem[18];
+    private final ItemResource[] stockControlMap = new ItemResource[18];
 
     private int pulseOperations;
 
@@ -98,7 +99,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @SyntheticComputerMethod(getter = "getExcessRemainingItems")
     NonNullList<ItemStack> lastRemainingItems = EMPTY_LIST;
 
-    private ItemStack lastFormulaStack = ItemStack.EMPTY;
+    private ItemResource lastFormulaStack = ItemResource.EMPTY;
     private ItemStack lastOutputStack = ItemStack.EMPTY;
 
     private MachineEnergyContainer<TileEntityFormulaicAssemblicator> energyContainer;
@@ -163,9 +164,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     } else if (!formula.valid()) {
                         return false;
                     } else if (stockControl) {
-                        HashedItem stockItem = stockControlMap[index];
-                        if (stockItem != null) {
-                            return stockItem.isSameItemSameComponents(stack);
+                        ItemResource stockItem = stockControlMap[index];
+                        if (!stockItem.isEmpty()) {
+                            return stockItem.matches(stack);
                         }
                     }
                     return formula.isValidIngredient(level, stack);
@@ -267,10 +268,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void checkFormula() {
-        ItemStack formulaStack = formulaSlot.getStack();
+        ItemResource formulaStack = formulaSlot.getResource();
         FormulaAttachment attachment = formulaStack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (!attachment.isEmpty() && !attachment.invalid()) {
-            if (formula.isEmpty() || lastFormulaStack != formulaStack) {
+            if (formula.isEmpty() || !lastFormulaStack.equals(formulaStack)) {
                 formula = loadFormula(formulaStack, attachment);
             }
         } else {
@@ -278,11 +279,11 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         //Note: Because loading ends up overriding the set stack, we can't just use our stored variable
         // and have to look it back up instead
-        lastFormulaStack = formulaSlot.getStack();
+        lastFormulaStack = formulaSlot.getResource();
     }
 
     //Note: Assumes attachment is not invalid
-    private RecipeFormula loadFormula(ItemStack formulaStack, FormulaAttachment attachment) {
+    private RecipeFormula loadFormula(ItemResource formulaStack, FormulaAttachment attachment) {
         RecipeFormula recipe = RecipeFormula.create(level, attachment);
         if (recipe.valid()) {
             if (!formula.isEmpty() && !formula.equals(recipe)) {
@@ -293,9 +294,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             return recipe;
         }
-        formulaStack = formulaStack.copy();
-        formulaStack.set(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid());
-        formulaSlot.setStack(formulaStack);
+        formulaSlot.setStack(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()).toStack());
         return RecipeFormula.EMPTY;
     }
 
@@ -546,31 +545,29 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         // build map of what items we have to organize
         // Note: We keep track of the order so that it is more consistent
-        Object2IntMap<HashedItem> storedMap = new Object2IntLinkedOpenHashMap<>();
+        Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
         for (IInventorySlot inputSlot : inputSlots) {
             if (!inputSlot.isEmpty()) {
-                ItemStack stack = inputSlot.getStack();
-                HashedItem hashed = HashedItem.create(stack);
-                storedMap.mergeInt(hashed, stack.count(), Integer::sum);
+                storedMap.mergeInt(inputSlot.getResource(), inputSlot.getCount(), Integer::sum);
             }
         }
         // place items into respective controlled slots
         IntSet unused = new IntArraySet(stockControlMap.length);
         for (int i = 0; i < inputSlots.size(); i++) {
-            HashedItem hashedItem = stockControlMap[i];
-            if (hashedItem == null) {
+            ItemResource itemType = stockControlMap[i];
+            if (itemType == null) {
                 unused.add(i);
             } else {
                 IInventorySlot slot = inputSlots.get(i);
-                int stored = storedMap.getInt(hashedItem);
+                int stored = storedMap.getInt(itemType);
                 if (stored > 0) {
-                    int count = Math.min(hashedItem.getMaxStackSize(), stored);
+                    int count = Math.min(itemType.getMaxStackSize(), stored);
                     if (count == stored) {
-                        storedMap.removeInt(hashedItem);
+                        storedMap.removeInt(itemType);
                     } else {
-                        storedMap.put(hashedItem, stored - count);
+                        storedMap.put(itemType, stored - count);
                     }
-                    setSlotIfChanged(slot, hashedItem, count);
+                    setSlotIfChanged(slot, itemType, count);
                 } else if (!slot.isEmpty()) {
                     //If we don't have the item stored anymore (already filled all previous slots with it),
                     // then we need to empty the slot as the items in it has been moved to a more "optimal" slot
@@ -615,27 +612,26 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private boolean setSlotIfChanged(Object2IntMap<HashedItem> storedMap, IInventorySlot inputSlot) {
+    private boolean setSlotIfChanged(Object2IntMap<ItemResource> storedMap, IInventorySlot inputSlot) {
         boolean empty = false;
-        ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(storedMap);
-        Object2IntMap.Entry<HashedItem> next = iterator.next();
-        HashedItem item = next.getKey();
+        ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(storedMap);
+        Object2IntMap.Entry<ItemResource> next = iterator.next();
+        ItemResource itemType = next.getKey();
         int stored = next.getIntValue();
-        int count = Math.min(item.getMaxStackSize(), stored);
+        int count = Math.min(itemType.getMaxStackSize(), stored);
         if (count == stored) {
             iterator.remove();
             empty = storedMap.isEmpty();
         } else {
             next.setValue(stored - count);
         }
-        setSlotIfChanged(inputSlot, item, count);
+        setSlotIfChanged(inputSlot, itemType, count);
         return empty;
     }
 
-    private static void setSlotIfChanged(IInventorySlot slot, HashedItem item, int count) {
-        ItemStack stack = item.createStack(count);
-        if (!ItemStack.matches(slot.getStack(), stack)) {
-            slot.setStack(stack);
+    private static void setSlotIfChanged(IInventorySlot slot, ItemResource itemType, int count) {
+        if (slot.getCount() != count || !slot.getResource().equals(itemType)) {
+            slot.setStack(itemType.toStack(count));
         }
     }
 
@@ -645,15 +641,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
         for (int i = 0; i < 9; i++) {
             int j = i * 2;
-            ItemStack stack = formula.getInputStack(i);
-            if (stack.isEmpty()) {
-                stockControlMap[j] = null;
-                stockControlMap[j + 1] = null;
-            } else {
-                HashedItem hashedItem = HashedItem.create(stack);
-                stockControlMap[j] = hashedItem;
-                stockControlMap[j + 1] = hashedItem;
-            }
+            ItemResource itemType = ItemResource.of(formula.getInputStack(i));
+            stockControlMap[j] = itemType;
+            stockControlMap[j + 1] = itemType;
         }
     }
 
@@ -674,7 +664,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaSlot.isEmpty()) {
             return;
         }
-        FormulaAttachment formulaAttachment = formulaSlot.getStack().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaAttachment formulaAttachment = formulaSlot.getResource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
@@ -790,7 +780,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
     void computerEncodeFormula() throws ComputerException {
         validateSecurityIsPublic();
-        FormulaAttachment formulaAttachment = formulaSlot.getStack().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
+        FormulaAttachment formulaAttachment = formulaSlot.getResource().getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
         if (formulaAttachment.isEmpty()) {
             throw new ComputerException("No formula found.");
         } else if (hasValidFormula() || formulaAttachment.hasItems()) {

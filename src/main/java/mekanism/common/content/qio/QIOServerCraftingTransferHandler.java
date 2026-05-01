@@ -542,7 +542,7 @@ public class QIOServerCraftingTransferHandler {
                 //If we couldn't insert it all, try recombining with the slots they were in the crafting window
                 // (only if the type matches though)
                 IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
-                if (ItemStack.isSameItemSameComponents(inputSlot.getStack(), stack)) {
+                if (inputSlot.getResource().matches(stack)) {
                     stack = inputSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
                 }
                 if (!stack.isEmpty()) {
@@ -601,7 +601,7 @@ public class QIOServerCraftingTransferHandler {
             Byte2ObjectMap.Entry<ItemStack> entry = iterator.next();
             ItemStack stack = entry.getValue();
             IInventorySlot inputSlot = craftingWindow.getInputSlot(entry.getByteKey());
-            if (ItemStack.isSameItemSameComponents(inputSlot.getStack(), stack)) {
+            if (inputSlot.getResource().matches(stack)) {
                 stack = inputSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
                 if (stack.isEmpty()) {
                     continue;

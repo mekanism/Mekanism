@@ -20,6 +20,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.ItemCraftedEvent;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 //TODO: Test this recipe in various modded crafting tables/auto crafters
 @NothingNullByDefault
@@ -179,13 +180,13 @@ public class BinInsertRecipe extends BinRecipe {
             if (fromRecipe != null && fromRecipe) {
                 //And if it was try to move extra items from the container into it
                 ComponentBackedBinInventorySlot slot = convertToSlot(result);
-                ItemStack storedStack = slot.getStack();
-                if (!storedStack.isEmpty()) {
+                ItemResource storedResource = slot.getResource();
+                if (!storedResource.isEmpty()) {
                     Container craftingMatrix = event.getInventory();
                     for (int i = 0, slots = craftingMatrix.getContainerSize(); i < slots; ++i) {
                         ItemStack stack = craftingMatrix.getItem(i);
                         //Check remaining items
-                        if (stack.count() > 1 && ItemStack.isSameItemSameComponents(storedStack, stack)) {
+                        if (stack.count() > 1 && storedResource.matches(stack)) {
                             //Try to insert any excess items in the slot (we lower it by one as the input slots have not been lowered yet)
                             ItemStack toInsert = stack.copyWithCount(stack.count() - 1);
                             ItemStack remaining = slot.insertItem(toInsert, Action.EXECUTE, AutomationType.MANUAL);

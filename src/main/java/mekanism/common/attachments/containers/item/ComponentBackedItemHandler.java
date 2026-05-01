@@ -33,11 +33,6 @@ public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack
     }
 
     @Override
-    public int getSlots() {
-        return size();
-    }
-
-    @Override
     public ItemStack getStackInSlot(int slot) {
         return getContents(slot);
     }

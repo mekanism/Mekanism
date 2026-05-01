@@ -97,6 +97,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -541,13 +542,8 @@ public final class MekanismUtils {
         }
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            ItemStack stack = slot.getStack();
-            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
-            if (resize) {
-                stacks.add(stack.copyWithCount(1));
-            } else {
-                stacks.add(stack.copy());
-            }
+            //Note: copyWithCount which is used by ItemResource#toStack returns EMPTY if the stack is empty, so we can skip checking
+            stacks.add(slot.getResource().toStack(resize ? 1 : slot.getCount()));
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }
@@ -689,10 +685,10 @@ public final class MekanismUtils {
         long totalLimit = 0;
         for (IInventorySlot slot : slots) {
             if (slot.isEmpty()) {
-                totalLimit += slot.getLimit(ItemStack.EMPTY);
+                totalLimit += slot.getLimit(ItemResource.EMPTY);
             } else {
                 totalCount += slot.getCount();
-                totalLimit += slot.getLimit(slot.getStack());
+                totalLimit += slot.getCurrentLimit();
             }
         }
         return redstoneLevelFromContents(totalCount, totalLimit);

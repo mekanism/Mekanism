@@ -14,6 +14,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -143,8 +144,9 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return validator.test(stack);
+    public boolean isValid(ItemResource itemType) {
+        //TODO - 26.1: Replace validator with being a predicate for item resource
+        return validator.test(itemType.toStack());
     }
 
     @Override

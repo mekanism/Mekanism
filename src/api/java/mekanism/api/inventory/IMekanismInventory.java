@@ -1,20 +1,18 @@
 package mekanism.api.inventory;
 
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.ApiStatus;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
-@NothingNullByDefault
-public interface IMekanismInventory extends IItemHandlerModifiable, IContentsListener {
+@NothingNullByDefault//TODO - 26.1: Docs and generify to support other resource types
+public interface IMekanismInventory extends ResourceHandler<ItemResource>, IContentsListener {
 
     /**
      * Used to check if an instance of {@link IMekanismInventory} actually has an inventory.
@@ -50,16 +48,18 @@ public interface IMekanismInventory extends IItemHandlerModifiable, IContentsLis
      * @param side The side we are interacting with the handler from (null for internal).
      *
      * @return The {@link IInventorySlot} that has the given index from the list of slots on the given side.
+     *
      * @since 10.8.0
      */
     @Nullable
     default IInventorySlot getInventorySlot(int slot) {
+        //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
         List<IInventorySlot> slots = getInventorySlots();
         return slot >= 0 && slot < slots.size() ? slots.get(slot) : null;
     }
 
-    @Override
-    default void setStackInSlot(int slot, ItemStack stack) {
+    //@Override
+    default void setStackInSlot(int slot, ItemStack stack) {//TODO - 26.1: Re-evaluate, previously was in IItemHandlerModifiable
         IInventorySlot inventorySlot = getInventorySlot(slot);
         if (inventorySlot != null) {
             inventorySlot.setStack(stack);
@@ -67,93 +67,94 @@ public interface IMekanismInventory extends IItemHandlerModifiable, IContentsLis
     }
 
     @Override
-    default int getSlots() {
+    default int size() {
         return getInventorySlots().size();
     }
 
-    @Override
-    default ItemStack getStackInSlot(int slot) {
+    //@Override
+    default ItemStack getStackInSlot(int slot) {//TODO - 26.1: Re-evaluate this method
         IInventorySlot inventorySlot = getInventorySlot(slot);
-        return inventorySlot == null ? ItemStack.EMPTY : inventorySlot.getStack();
+        return inventorySlot == null ? ItemStack.EMPTY : inventorySlot.getResource().toStack(inventorySlot.getCount());
     }
 
-    /**
-     * A sided variant of {@link IItemHandler#insertItem(int, ItemStack, boolean)}, docs copied for convenience.
-     *
-     * <p>
-     * Inserts an {@link ItemStack} into the given slot and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
-     * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
-     *
-     * @param slot   Slot to insert into.
-     * @param stack  {@link ItemStack} to insert. This must not be modified by the item handler.
-     * @param side   The side we are interacting with the handler from (null for internal).
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
-     * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
-     *
-     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function!
-     * @since 10.8.0
-     */
-    default ItemStack insertItem(int slot, ItemStack stack, Action action, AutomationType automationType) {
-        IInventorySlot inventorySlot = getInventorySlot(slot);
-        if (inventorySlot == null) {
-            return stack;
+    @Override
+    default ItemResource getResource(int index) {
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot == null ? ItemResource.EMPTY : inventorySlot.getResource();
+    }
+
+    @Override
+    default long getAmountAsLong(int index) {
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot == null ? 0 : inventorySlot.getCount();
+    }
+
+    default int insert(int index, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot == null ? 0 : inventorySlot.insert(resource, amount, transaction, automationType);
+    }
+
+    default int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        int inserted = 0;
+        for (IInventorySlot slot : getInventorySlots()) {
+            inserted += slot.insert(resource, amount - inserted, transaction, automationType);
+            if (inserted == amount) {
+                break;
+            }
         }
-        return inventorySlot.insertItem(stack, action, automationType);
+        return inserted;
     }
 
     @Override
-    @ApiStatus.NonExtendable
-    default ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {//TODO - 26.1: Re-evaluate, previously was in ISidedItemHandler
-        return insertItem(slot, stack, Action.get(!simulate), AutomationType.INTERNAL);
+    default int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return insert(resource, amount, transaction, AutomationType.INTERNAL);
     }
 
-    /**
-     * A sided variant of {@link IItemHandler#extractItem(int, int, boolean)}, docs copied for convenience.
-     * <p>
-     * Extracts an {@link ItemStack} from the given slot.
-     * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and
-     * {@link ItemStack#getMaxStackSize()}.
-     * </p>
-     *
-     * @param slot   Slot to extract from.
-     * @param amount Amount to extract (may be greater than the current stack's max limit)
-     * @param side   The side we are interacting with the handler from (null for internal).
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return {@link ItemStack} extracted from the slot, must be empty if nothing can be extracted. The returned {@link ItemStack} can be safely modified after, so item
-     * handlers should return a new or copied stack.
-     *
-     * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned.
-     * @since 10.8.0
-     */
-    default ItemStack extractItem(int slot, int amount, Action action, AutomationType automationType) {
-        IInventorySlot inventorySlot = getInventorySlot(slot);
-        if (inventorySlot == null) {
-            return ItemStack.EMPTY;
+    @Override
+    default int insert(ItemResource resource, int amount, TransactionContext transaction) {
+        return insert(resource, amount, transaction, AutomationType.INTERNAL);
+    }
+
+    default int extract(int index, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot == null ? 0 : inventorySlot.extract(resource, amount, transaction, automationType);
+    }
+
+    default int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        int extracted = 0;
+        for (IInventorySlot slot : getInventorySlots()) {
+            extracted += slot.extract(resource, amount - extracted, transaction, automationType);
+            if (extracted == amount) {
+                break;
+            }
         }
-        return inventorySlot.extractItem(amount, action, automationType);
+        return extracted;
     }
 
     @Override
-    @ApiStatus.NonExtendable
-    default ItemStack extractItem(int slot, int amount, boolean simulate) {//TODO - 26.1: Re-evaluate, previously was in ISidedItemHandler
-        return extractItem(slot, amount, Action.get(!simulate), AutomationType.INTERNAL);
+    default int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return extract(index, resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override
-    default int getSlotLimit(int slot) {
-        IInventorySlot inventorySlot = getInventorySlot(slot);
-        return inventorySlot == null ? 0 : inventorySlot.getLimit(ItemStack.EMPTY);
+    default int extract(ItemResource resource, int amount, TransactionContext transaction) {
+        return extract(resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override
-    default boolean isItemValid(int slot, ItemStack stack) {
-        IInventorySlot inventorySlot = getInventorySlot(slot);
-        return inventorySlot != null && inventorySlot.isItemValid(stack);
+    default long getCapacityAsLong(int index, ItemResource resource) {
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot == null ? 0 : inventorySlot.getLimit(ItemResource.EMPTY);
+    }
+
+    @Override
+    default boolean isValid(int index, ItemResource resource) {
+        IInventorySlot inventorySlot = getInventorySlot(index);
+        return inventorySlot != null && inventorySlot.isValid(resource);
     }
 
     /**

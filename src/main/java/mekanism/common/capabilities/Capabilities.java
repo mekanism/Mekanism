@@ -35,7 +35,6 @@ import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
@@ -65,8 +64,6 @@ public class Capabilities {
           BlockCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class),
           ItemCapability.create(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class, ItemAccess.class),
           EntityCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class));
-    @Deprecated(forRemoval = true)//TODO - 26.1: Replace this with the above item cap
-    public static final MultiTypeCapability<IItemHandler> ITEM_LEGACY = new MultiTypeCapability<>(Mekanism.rl("legacy_item"), IItemHandler.class);
 
     public static final MultiTypeCapability<IChemicalHandler> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), IChemicalHandler.class);
 

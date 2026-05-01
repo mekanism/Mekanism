@@ -12,6 +12,7 @@ import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,7 +111,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public int getMaxStackSize() {
-        return slot.getLimit(ItemStack.EMPTY);
+        return slot.getLimit(ItemResource.EMPTY);
     }
 
     @Override

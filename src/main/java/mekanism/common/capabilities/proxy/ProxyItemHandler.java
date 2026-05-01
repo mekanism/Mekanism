@@ -1,17 +1,17 @@
 package mekanism.common.capabilities.proxy;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ProxyItemHandler extends ProxyHandler implements IItemHandlerModifiable {
+public class ProxyItemHandler extends ProxyHandler implements ResourceHandler<ItemResource> {
 
     private final IMekanismInventory inventory;
 
@@ -21,39 +21,55 @@ public class ProxyItemHandler extends ProxyHandler implements IItemHandlerModifi
     }
 
     @Override
-    public int getSlots() {
-        return inventory.getSlots();
+    public int size() {
+        return inventory.size();
     }
 
     @Override
-    public ItemStack getStackInSlot(int slot) {
-        return inventory.getStackInSlot(slot);
+    public ItemResource getResource(int index) {
+        return inventory.getResource(index);
     }
 
     @Override
-    public ItemStack insertItem(int slot, ItemStack stack, boolean simulate) {
-        return readOnlyInsert() ? stack : inventory.insertItem(slot, stack, Action.get(!simulate), AutomationType.handler(side));
+    public long getAmountAsLong(int index) {
+        return inventory.getAmountAsLong(index);
     }
 
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate) {
-        return readOnlyExtract() ? ItemStack.EMPTY : inventory.extractItem(slot, amount, Action.get(!simulate), AutomationType.handler(side));
+    public long getCapacityAsLong(int index, ItemResource resource) {
+        return inventory.getCapacityAsLong(index, resource);
     }
 
     @Override
-    public int getSlotLimit(int slot) {
-        return inventory.getSlotLimit(slot);
+    public boolean isValid(int index, ItemResource resource) {
+        return !readOnly || inventory.isValid(index, resource);
     }
 
     @Override
-    public boolean isItemValid(int slot, ItemStack stack) {
-        return !readOnly || inventory.isItemValid(slot, stack);
+    public int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return readOnlyInsert() ? 0 : inventory.insert(index, resource, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
+    public int insert(ItemResource resource, int amount, TransactionContext transaction) {
+        return readOnlyInsert() ? 0 : inventory.insert(resource, amount, transaction, AutomationType.handler(side));
+    }
+
+    @Override
+    public int extract(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        return readOnlyExtract() ? 0 : inventory.extract(index, resource, amount, transaction, AutomationType.handler(side));
+    }
+
+    @Override
+    public int extract(ItemResource resource, int amount, TransactionContext transaction) {
+        return readOnlyExtract() ? 0 : inventory.extract(resource, amount, transaction, AutomationType.handler(side));
+    }
+
+    //TODO - 26.1: Re-evaluate this
+    /*@Override
     public void setStackInSlot(int slot, ItemStack stack) {
         if (!readOnly) {
             inventory.setStackInSlot(slot, stack);
         }
-    }
+    }*/
 }

@@ -79,7 +79,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 //TODO - 26.1: Evaluate the seed we are passing, and if we want to use this as the seed for transporters or if maybe we should be using zero here as well?
                 int seed = Ints.saturatedCast(state.blockPos.asLong());
                 //TODO - 26.1: Is this going to try and display a stack of items, or will it display a single one? If a stack we need to return a single sized item
-                this.itemModelResolver.updateForTopItem(state.item, binSlot.getRenderStack(), ItemDisplayContext.GUI, level, null, seed);
+                this.itemModelResolver.updateForTopItem(state.item, binSlot.getBinItemType(), ItemDisplayContext.GUI, level, null, seed);
                 if (bin.getTier() == BinTier.CREATIVE) {
                     state.displayCount = MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
                 } else {

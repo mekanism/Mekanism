@@ -206,7 +206,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Get the maximum number of items the bin can contain.")
     int getCapacity() {
-        return binSlot.getLimit(binSlot.getStack());
+        return binSlot.getCurrentLimit();
     }
 
     @ComputerMethod(methodDescription = "If true, the Bin is locked to a particular item type.")

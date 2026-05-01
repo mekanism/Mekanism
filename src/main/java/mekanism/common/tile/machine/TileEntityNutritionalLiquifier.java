@@ -36,7 +36,6 @@ import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.impl.NutritionalLiquifierIRecipe;
@@ -93,8 +92,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getEnergyItem", docPlaceholder = "energy slot")
     EnergyInventorySlot energySlot;
 
-    @Nullable
-    private HashedItem lastPasteItem;
+    private ItemResource lastPasteItem = ItemResource.EMPTY;
     private float lastPasteScale;
 
     public TileEntityNutritionalLiquifier(BlockPos pos, BlockState state) {
@@ -158,17 +156,10 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
             lastPasteScale = pasteScale;
             sendUpdatePacket = true;
         }
-        if (inputSlot.isEmpty()) {
-            if (lastPasteItem != null) {
-                lastPasteItem = null;
-                sendUpdatePacket = true;
-            }
-        } else {
-            HashedItem item = HashedItem.raw(inputSlot.getStack());
-            if (!item.equals(lastPasteItem)) {
-                lastPasteItem = item.recreate();
-                sendUpdatePacket = true;
-            }
+        ItemResource itemType = inputSlot.getResource();
+        if (!itemType.equals(lastPasteItem)) {
+            lastPasteItem = itemType;
+            sendUpdatePacket = true;
         }
         return sendUpdatePacket;
     }
@@ -232,24 +223,21 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
      * @apiNote Do not modify the returned stack.
      */
     public ItemStack getRenderStack() {
-        if (lastPasteItem == null) {
-            return ItemStack.EMPTY;
-        }
-        return lastPasteItem.getInternalStack();
+        return lastPasteItem.toStack();
     }
 
     @Override
     public void writeReducedUpdatedTag(@NotNull ValueOutput output) {
         super.writeReducedUpdatedTag(output);
         output.putChild(SerializationConstants.FLUID, fluidTank);
-        output.storeNullable(SerializationConstants.ITEM, HashedItem.CODEC, lastPasteItem);
+        output.store(SerializationConstants.ITEM, ItemResource.CODEC, lastPasteItem);
     }
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
         super.handleUpdateTag(input);
         input.readChild(SerializationConstants.FLUID, fluidTank);
-        lastPasteItem = input.read(SerializationConstants.ITEM, HashedItem.CODEC).orElse(null);
+        lastPasteItem = input.read(SerializationConstants.ITEM, ItemResource.CODEC).orElse(ItemResource.EMPTY);
     }
 
     //Methods relating to IComputerTile

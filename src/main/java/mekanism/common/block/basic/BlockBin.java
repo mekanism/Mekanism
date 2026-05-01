@@ -49,7 +49,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                                 MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.count(), Action.EXECUTE), stack.count());
                             }
                         } else {
-                            stack = binSlot.getStack().copyWithCount(1);
+                            stack = binSlot.getResource().toStack();
                             MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
                         }
                         if (!player.getInventory().add(stack)) {
@@ -87,8 +87,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return bin.toggleLock() ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
         } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
-            ItemStack storedStack = binSlot.isLocked() ? binSlot.getLockStack() : binSlot.getStack();
-            int binMaxSize = binSlot.getLimit(storedStack);
+            int binMaxSize = binSlot.getCurrentLimit();
             if (binSlot.getCount() < binMaxSize) {
                 //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
@@ -100,7 +99,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     //Note: We set the add ticks regardless so that we can allow double right-clicking to insert items from the player's inventory
                     // without requiring them to first be holding the same item
                     bin.addTicks = 5;
-                } else if (bin.addTicks > 0 && !storedStack.isEmpty()) {
+                } else if (bin.addTicks > 0 && (binSlot.isLocked() || !binSlot.isEmpty())) {
                     NonNullList<ItemStack> inv = player.getInventory().getNonEquipmentItems();
                     for (int i = 0; i < inv.size(); i++) {
                         if (binSlot.getCount() == binMaxSize) {

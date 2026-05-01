@@ -19,7 +19,6 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
@@ -134,7 +133,7 @@ public class BasicInventorySlot implements IInventorySlot {
                 return;
             }
             current = ItemStack.EMPTY;
-        } else if (!validateStack || isItemValid(stack)) {
+        } else if (!validateStack || isValid(ItemResource.of(stack))) {
             current = stack.copy();
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
@@ -208,8 +207,9 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
-    public boolean isItemValid(ItemStack stack) {
-        return validator.test(stack);
+    public boolean isValid(ItemResource itemType) {
+        //TODO - 26.1: Replace validator with being a predicate for item resource
+        return validator.test(itemType.toStack());
     }
 
     /**
@@ -257,76 +257,6 @@ public class BasicInventorySlot implements IInventorySlot {
         return slotType;
     }
 
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying, and can also
-     * directly modify our stack instead of having to make a copy.
-     */
-    @Override
-    public int setStackSize(int amount, Action action) {
-        if (current.isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        int maxStackSize = getLimit(current);
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (current.count() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        current.setCount(amount);
-        onContentsChanged();
-        return amount;
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public int growStack(int amount, Action action) {
-        int current = this.current.count();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getLimit(this.current));
-        }
-        int newSize = setStackSize(current + amount, action);
-        return newSize - current;
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public boolean isEmpty() {
-        return current.isEmpty();
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public int getCount() {
-        return current.count();
-    }
-
-    /**
-     * @implNote Overwritten so that if we decide to change to returning a cached/copy of our stack in {@link #getStack()}, we can optimize out the copying.
-     */
-    @Override
-    public void serialize(ValueOutput output) {
-        if (!isEmpty()) {
-            output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, current);
-        }
-    }
-
     @Override
     public void deserialize(ValueInput input) {
         //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
@@ -349,7 +279,7 @@ public class BasicInventorySlot implements IInventorySlot {
         @Override
         public long getAmountAsLong(int index) {
             Objects.checkIndex(index, 1);
-            return BasicInventorySlot.this.getStack().count();
+            return BasicInventorySlot.this.getCount();
         }
 
         @Override
@@ -359,7 +289,7 @@ public class BasicInventorySlot implements IInventorySlot {
 
         @Override
         protected boolean isValid(ItemResource resource) {
-            return isItemValid(resource.toStack());
+            return BasicInventorySlot.this.isValid(resource);
         }
     }
 }

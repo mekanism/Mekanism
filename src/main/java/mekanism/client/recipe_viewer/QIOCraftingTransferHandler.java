@@ -47,6 +47,7 @@ import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -108,9 +109,9 @@ public class QIOCraftingTransferHandler {
         if (action.simulate()) {
             List<ItemStack> dummy = new ArrayList<>(9);
             for (int slot = 0; slot < 9; slot++) {
-                ItemStack inputStack = craftingWindow.getInputSlot(slot).getStack();
+                ItemResource inputStack = craftingWindow.getInputSlot(slot).getResource();
                 //Copy it in case any recipe does weird things and tries to mutate the stack
-                dummy.add(inputStack.copyWithCount(1));
+                dummy.add(inputStack.toStack());
                 if (!inputStack.isEmpty()) {
                     //Count how many crafting slots are not empty
                     nonEmptyCraftingSlots++;
@@ -376,7 +377,7 @@ public class QIOCraftingTransferHandler {
             IInventorySlot slot = craftingWindow.getInputSlot(slotIndex);
             if (!slot.isEmpty()) {
                 //Note: We can use raw as we are not modifying the stack or persisting the reference
-                HashedItem type = HashedItem.raw(slot.getStack());
+                HashedItem type = HashedItem.fromResource(slot.getResource());
                 HashedItemSource source = qioTransferHelper.getSource(type);
                 if (source == null) {
                     //Something went wrong, this should never be null for the things in the crafting slots
