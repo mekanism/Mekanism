@@ -49,8 +49,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
-    private static final CheckRecipeType<ItemStack, SawmillRecipe, ItemStack, ItemStack> OUTPUT_CHECK = (recipe, input, output, extra) -> {
-        ChanceOutput chanceOutput = recipe.getOutput(input);
+    private static final CheckRecipeType<Item, ItemResource, ItemStack, SawmillRecipe, ItemStack, ItemStack> OUTPUT_CHECK = (recipe, input, output, extra) -> {
+        //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
+        ChanceOutput chanceOutput = recipe.getOutput(input.toStack());
         if (InventoryUtils.areItemsStackable(chanceOutput.getMainOutput(), output)) {
             //If the input is good and the primary output matches, make sure that the secondary
             // output of this recipe will stack with what is currently in the secondary slot
@@ -109,28 +110,28 @@ public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> im
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
         //contains recipe in general already validated by isValidInputItem
         return true;
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemStack stack) {
-        return containsRecipe(stack);
+    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+        return containsRecipe(itemType);
     }
 
     @Override
-    protected int getNeededInput(SawmillRecipe recipe, ItemStack inputStack) {
-        return Ints.saturatedCast(recipe.getInput().getNeededAmount(inputStack));
+    protected int getNeededInput(SawmillRecipe recipe, ItemResource inputType) {
+        return Ints.saturatedCast(recipe.getInput().getNeededAmount(inputType));
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<SawmillRecipe> cached, @NotNull ItemStack stack) {
-        return cached != null && cached.getRecipe().getInput().testType(stack);
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<SawmillRecipe> cached, @NotNull ItemResource itemType) {
+        return cached != null && cached.getRecipe().getInput().testType(itemType);
     }
 
     @Override
-    protected SawmillRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected SawmillRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         ItemStack extra = secondaryOutputSlot == null ? ItemStack.EMPTY : secondaryOutputSlot.getStack();
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), extra, OUTPUT_CHECK);
     }

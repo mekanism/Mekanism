@@ -42,12 +42,12 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FormulaicCraftingSlot;
 import mekanism.common.inventory.slot.InputInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
-import mekanism.common.item.ItemCraftingFormula;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.registries.MekanismItems;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
@@ -75,7 +75,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMachine implements IHasMode {
 
-    public static final Predicate<@NotNull ItemStack> FORMULA_SLOT_VALIDATOR = stack -> stack.getItem() instanceof ItemCraftingFormula;
+    public static final Predicate<ItemResource> FORMULA_SLOT_VALIDATOR = MekanismItems.CRAFTING_FORMULA::is;
     private static final NonNullList<ItemStack> EMPTY_LIST = NonNullList.create();
 
     private static final int BASE_TICKS_REQUIRED = 2 * SharedConstants.TICKS_PER_SECOND;
@@ -157,7 +157,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 int index = slotY * 9 + slotX;
-                InputInventorySlot inputSlot = InputInventorySlot.at(stack -> {
+                InputInventorySlot inputSlot = InputInventorySlot.inputAt(itemType -> {
                     //Is item valid
                     if (formula.isEmpty()) {
                         return true;
@@ -166,10 +166,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     } else if (stockControl) {
                         ItemResource stockItem = stockControlMap[index];
                         if (!stockItem.isEmpty()) {
-                            return stockItem.matches(stack);
+                            return stockItem.equals(itemType);
                         }
                     }
-                    return formula.isValidIngredient(level, stack);
+                    return formula.isValidIngredient(level, itemType);
                 }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
                 inputSlots.add(builder.addSlot(inputSlot));
             }

@@ -129,8 +129,8 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(leftTank = BasicChemicalTank.input(MAX_GAS, gas -> containsRecipe(gas, rightTank.getStack()), this::containsRecipe, recipeCacheListener));
-        builder.addTank(rightTank = BasicChemicalTank.input(MAX_GAS, gas -> containsRecipe(gas, leftTank.getStack()), this::containsRecipe, recipeCacheListener));
+        builder.addTank(leftTank = BasicChemicalTank.input(MAX_GAS, chemicalType -> containsRecipe(chemicalType, rightTank.getResource()), this::containsRecipe, recipeCacheListener));
+        builder.addTank(rightTank = BasicChemicalTank.input(MAX_GAS, chemicalType -> containsRecipe(chemicalType, leftTank.getResource()), this::containsRecipe, recipeCacheListener));
         builder.addTank(centerTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
     }

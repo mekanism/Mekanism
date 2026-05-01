@@ -26,7 +26,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
         super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener, null);
+              tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
         rate = tier::getOutput;
     }

@@ -13,12 +13,13 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class QIODriveSlot extends BasicInventorySlot {
 
-    public static final Predicate<ItemStack> IS_QIO_ITEM = stack -> stack.getItem() instanceof IQIODriveItem;
+    public static final Predicate<ItemResource> IS_QIO_ITEM = itemType -> itemType.getItem() instanceof IQIODriveItem;
 
     private final Supplier<@Nullable Level> levelSupplier;
     private final IQIODriveHolder driveHolder;

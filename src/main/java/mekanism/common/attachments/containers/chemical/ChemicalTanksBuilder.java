@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.ContainsRecipe;
@@ -31,15 +31,15 @@ public class ChemicalTanksBuilder {
     }
 
     public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> ChemicalTanksBuilder addBasic(long capacity,
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ChemicalStack> containsRecipe) {
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ChemicalResource> containsRecipe) {
         return addBasic(capacity, chemical -> containsRecipe.check(recipeType.getInputCache(), null, chemical));
     }
 
-    public ChemicalTanksBuilder addBasic(long capacity, Predicate<ChemicalStack> isValid) {
+    public ChemicalTanksBuilder addBasic(long capacity, Predicate<ChemicalResource> isValid) {
         return addBasic(() -> capacity, isValid);
     }
 
-    public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<ChemicalStack> isValid) {
+    public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<ChemicalResource> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
               containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
@@ -54,7 +54,7 @@ public class ChemicalTanksBuilder {
               MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
-    public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<ChemicalStack> isValid) {
+    public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
               containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity, null));
     }

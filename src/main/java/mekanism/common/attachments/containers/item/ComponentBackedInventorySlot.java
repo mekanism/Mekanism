@@ -20,19 +20,19 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemStack, AttachedItems> implements IInventorySlot {
 
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract;
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert;
-    private final Predicate<@NotNull ItemStack> validator;
+    private final BiPredicate<ItemResource, AutomationType> canExtract;
+    private final BiPredicate<ItemResource, AutomationType> canInsert;
+    private final Predicate<ItemResource> validator;
     private final boolean obeyStackLimit;
     private final int limit;
 
-    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator) {
+    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator) {
         this(attachedTo, slotIndex, canExtract, canInsert, validator, true, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
-    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator, boolean obeyStackLimit, int limit) {
+    public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator, boolean obeyStackLimit, int limit) {
         super(attachedTo, slotIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -73,7 +73,8 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
      * Ignores current contents
      */
     private boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        return validator.test(stack) && canInsert.test(stack, automationType);
+        ItemResource itemType = ItemResource.of(stack);
+        return isValid(itemType) && canInsert.test(itemType, automationType);
     }
 
     @Override
@@ -118,7 +119,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
         }
         AttachedItems attachedItems = getAttached();
         ItemStack current = getContents(attachedItems);
-        if (current.isEmpty() || !canExtract.test(current, automationType)) {
+        if (current.isEmpty() || !canExtract.test(ItemResource.of(current), automationType)) {
             return ItemStack.EMPTY;
         }
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
@@ -145,8 +146,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
 
     @Override
     public boolean isValid(ItemResource itemType) {
-        //TODO - 26.1: Replace validator with being a predicate for item resource
-        return validator.test(itemType.toStack());
+        return validator.test(itemType);
     }
 
     @Override

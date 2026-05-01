@@ -246,7 +246,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @return true if this {@link IInventorySlot} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this
      * {@link IInventorySlot} can never insert the {@link ItemStack} in any situation.
      */
-    boolean isValid(ItemResource itemType);//TODO - 26.1: Update docs
+    boolean isValid(ItemResource itemType);//TODO - 26.1: Update docs and figure out handling of empty resource
 
     /**
      * Returns a slot for use in auto adding slots to a container.

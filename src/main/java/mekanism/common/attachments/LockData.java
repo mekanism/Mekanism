@@ -14,6 +14,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 26.1: Replace this with ItemResource, and re-evaluate all other data components that use ItemStacks and either transfere them to ItemResource or ItemStackTemplate
 @NothingNullByDefault
 public record LockData(@Nullable ItemStackTemplate lock) {
 

@@ -123,7 +123,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(inputTank = BasicChemicalTank.input(MAX_SLURRY, slurry -> containsRecipeBA(fluidTank.getFluid(), slurry), this::containsRecipeB,
+        builder.addTank(inputTank = BasicChemicalTank.input(MAX_SLURRY, chemicalType -> containsRecipeBA(fluidTank.getResource(), chemicalType), this::containsRecipeB,
               recipeCacheListener));
         builder.addTank(outputTank = BasicChemicalTank.output(MAX_SLURRY, recipeCacheUnpauseListener));
         return builder.build();
@@ -133,7 +133,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this);
-        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeAB(fluid, inputTank.getStack()), this::containsRecipeA, recipeCacheListener));
+        builder.addTank(fluidTank = BasicFluidTank.input(MAX_FLUID, fluidType -> containsRecipeAB(fluidType, inputTank.getResource()), this::containsRecipeA, recipeCacheListener));
         return builder.build();
     }
 

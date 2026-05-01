@@ -42,8 +42,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
-    private static final CheckRecipeType<ItemStack, ItemStack, CombinerRecipe, ItemStack> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input, extra), output);
+    //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
+    private static final CheckRecipeType<Item, ItemResource, ItemStack, Item, ItemResource, ItemStack, CombinerRecipe, ItemStack> OUTPUT_CHECK =
+          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack(), extra.toStack()), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -80,33 +81,33 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
-        return containsRecipeAB(stack, extraSlot.getStack());
+    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
+        return containsRecipeAB(itemType, extraSlot.getResource());
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemStack stack) {
-        return containsRecipeA(stack);
+    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+        return containsRecipeA(itemType);
     }
 
     @Override
-    protected int getNeededInput(CombinerRecipe recipe, ItemStack inputStack) {
-        return Ints.saturatedCast(recipe.getMainInput().getNeededAmount(inputStack));
+    protected int getNeededInput(CombinerRecipe recipe, ItemResource inputType) {
+        return Ints.saturatedCast(recipe.getMainInput().getNeededAmount(inputType));
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @NotNull ItemStack stack) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<CombinerRecipe> cached, @NotNull ItemResource itemType) {
         if (cached != null) {
             CombinerRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getMainInput().testType(stack) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getStack()));
+            return cachedRecipe.getMainInput().testType(itemType) && (extraSlot.isEmpty() || cachedRecipe.getExtraInput().testType(extraSlot.getResource()));
         }
         return false;
     }
 
     @Override
-    protected CombinerRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
+    protected CombinerRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored secondary stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.getStack(), outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, extraSlot.getResource(), outputSlot.getStack(), OUTPUT_CHECK);
     }
 
     @NotNull

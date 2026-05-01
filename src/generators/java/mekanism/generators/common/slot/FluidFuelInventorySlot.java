@@ -13,11 +13,10 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,14 +26,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
-    public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue,
+    public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue,
           IntFunction<@NotNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        Predicate<ItemStack> fillPredicate = getFillPredicate(fluidTank);
-        return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
+        Predicate<ItemResource> fillPredicate = getFillPredicate(fluidTank);
+        return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, itemType -> {
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
             if (fluidHandlerItem != null) {
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
@@ -46,15 +45,15 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             }
             //Always allow extraction if something went horribly wrong, and we are not a fluid item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
-            return fuelValue.applyAsInt(stack) == 0;
-        }, stack -> fuelValue.applyAsInt(stack) > 0 || fillPredicate.test(stack), listener, x, y);
+            return fuelValue.applyAsInt(itemType) == 0;
+        }, itemType -> fuelValue.applyAsInt(itemType) > 0 || fillPredicate.test(itemType), listener, x, y);
     }
 
     private final IntFunction<@NotNull FluidStack> fuelCreator;
-    private final ToIntFunction<@NotNull ItemStack> fuelValue;
+    private final ToIntFunction<ItemResource> fuelValue;
 
-    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<@NotNull ItemStack> fuelValue, IntFunction<@NotNull FluidStack> fuelCreator,
-          Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue, IntFunction<@NotNull FluidStack> fuelCreator,
+          Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelCreator = fuelCreator;
         this.fuelValue = fuelValue;
@@ -69,12 +68,12 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Fill the tank from the item
             if (needed > 0 && !fillTank()) {
                 //If filling from item failed, try doing it by conversion
-                int fuel = fuelValue.applyAsInt(current);
+                int fuel = fuelValue.applyAsInt(getResource());
                 if (fuel > 0 && fuel <= needed) {
                     UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
                     //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
                     boolean hasContainer = remainder != null;
-                    if (hasContainer && current.count() > 1) {
+                    if (hasContainer && getCount() > 1) {
                         //If we have a container but have more than a single stack of it somehow just exit
                         return;
                     }

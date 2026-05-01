@@ -6,7 +6,6 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -21,13 +20,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
 
-    public static final Predicate<@NotNull ItemStack> validator = stack -> !(stack.getItem() instanceof ItemBlockBin);
+    public static final Predicate<@NotNull ItemResource> validator = itemType -> !(itemType.getItem() instanceof ItemBlockBin);
 
     @Nullable
     public static ComponentBackedBinInventorySlot getForStack(@NotNull ItemStack stack) {
@@ -52,8 +52,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     private final boolean isCreative;
-    /// NB this can remain as Stack for now due to rendering requiring it
-    private ItemStack lockStack = ItemStack.EMPTY;
+    private ItemResource lockType = ItemResource.EMPTY;
 
     private BinInventorySlot(@Nullable IContentsListener listener, BinTier tier) {
         super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, 0, 0);
@@ -64,7 +63,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Override
     public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (isEmpty()) {
-            if (isLocked() && !ItemStack.isSameItemSameComponents(lockStack, stack)) {
+            if (isLocked() && !lockType.matches(stack)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return stack;
             } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
@@ -137,7 +136,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isCreative || isLocked() == lock || (lock && isEmpty())) {
             return false;
         }
-        lockStack = lock ? current.copyWithCount(1) : ItemStack.EMPTY;
+        lockType = lock ? getResource() : ItemResource.EMPTY;
         return true;
     }
 
@@ -145,18 +144,18 @@ public class BinInventorySlot extends BasicInventorySlot {
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
     public void setLockStack(@Nullable ItemStackTemplate template) {
-        lockStack = template != null ? template.create() : ItemStack.EMPTY;
+        lockType = template == null ? ItemResource.EMPTY : ItemResource.of(template);
     }
 
     /**
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
     public void setLockStack(ItemStack template) {
-        lockStack = template;
+        lockType = ItemResource.of(template);
     }
 
     public boolean isLocked() {
-        return !lockStack.isEmpty();
+        return !lockType.isEmpty();
     }
 
     public ItemStack getBinItemType() {
@@ -164,7 +163,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     public ItemStack getLockStack() {
-        return lockStack;
+        //TODO - 26.1: Re-evaluate callers and see if any can be converted to just using the ItemResource
+        return lockType.toStack();
     }
 
     @Override
@@ -174,7 +174,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         super.serialize(output);
         if (isLocked()) {
             //TODO - 26.1: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
-            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK, lockStack);
+            output.store(SerializationConstants.LOCK_STACK, ItemResource.CODEC, lockType);
             //nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
         }
     }
@@ -182,7 +182,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 26.1: Does this properly handle the behavior of when things are empty
-        this.lockStack = input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_ITEMSTACK).orElse(ItemStack.EMPTY);
+        this.lockType = input.read(SerializationConstants.LOCK_STACK, ItemResource.CODEC).orElse(ItemResource.EMPTY);
         //NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
         super.deserialize(input);
     }

@@ -113,7 +113,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
-        builder.addTank(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, pigment -> containsRecipeBA(inputSlot.getStack(), pigment),
+        builder.addTank(pigmentTank = BasicChemicalTank.input(MAX_PIGMENT, chemicalType -> containsRecipeBA(inputSlot.getResource(), chemicalType),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -131,7 +131,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         builder.addSlot(pigmentInputSlot = ChemicalInventorySlot.fill(pigmentTank, listener, 6, 56));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, pigmentTank.getStack()), this::containsRecipeA, recipeCacheListener, 45, 35))
+        builder.addSlot(inputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeAB(itemType, pigmentTank.getResource()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

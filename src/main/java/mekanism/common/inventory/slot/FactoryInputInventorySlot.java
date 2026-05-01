@@ -24,7 +24,7 @@ public class FactoryInputInventorySlot extends InputInventorySlot {
 
     private FactoryInputInventorySlot(TileEntityFactory<?> factory, int process, IInventorySlot outputSlot, @Nullable IInventorySlot secondaryOutputSlot,
           @Nullable IContentsListener listener, int x, int y) {
-        super(stack -> factory.isItemValidForSlot(stack) && factory.inputProducesOutput(process, stack, outputSlot, secondaryOutputSlot, false),
+        super(itemType -> factory.isItemValidForSlot(itemType) && factory.inputProducesOutput(process, itemType, outputSlot, secondaryOutputSlot, false),
               factory::isValidInputItem, listener, x, y);
     }
 }

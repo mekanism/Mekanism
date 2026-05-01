@@ -35,11 +35,11 @@ public class BasicInventorySlot implements IInventorySlot {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NotNull ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         return at(validator, listener, x, y, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
-    public static BasicInventorySlot at(Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y, int limit) {
+    public static BasicInventorySlot at(Predicate<@NotNull ItemResource> validator, @Nullable IContentsListener listener, int x, int y, int limit) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
         if (limit < 1) {
             throw new IllegalArgumentException("Slots with a custom limit must allow at least one item");
@@ -47,19 +47,19 @@ public class BasicInventorySlot implements IInventorySlot {
         return new BasicInventorySlot(limit, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener, x, y);
     }
 
-    public static BasicInventorySlot at(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    public static BasicInventorySlot at(Predicate<@NotNull ItemResource> canExtract, Predicate<@NotNull ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         return new BasicInventorySlot(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    public static BasicInventorySlot at(BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canExtract,
+          BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
         return at(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    public static BasicInventorySlot at(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    public static BasicInventorySlot at(BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canExtract, BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInsert,
+          Predicate<@NotNull ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
         Objects.requireNonNull(canInsert, "Insertion validity check cannot be null");
         Objects.requireNonNull(validator, "Item validity check cannot be null");
@@ -71,9 +71,9 @@ public class BasicInventorySlot implements IInventorySlot {
      * instead.
      */
     protected ItemStack current = ItemStack.EMPTY;
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract;
-    private final BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert;
-    private final Predicate<@NotNull ItemStack> validator;
+    private final BiPredicate<ItemResource, AutomationType> canExtract;
+    private final BiPredicate<ItemResource, AutomationType> canInsert;
+    private final Predicate<ItemResource> validator;
     private final int limit;
     @Nullable
     private final IContentsListener listener;
@@ -86,19 +86,19 @@ public class BasicInventorySlot implements IInventorySlot {
     @Nullable
     private Consumer<ISupportsWarning<?>> warningAdder;
 
-    protected BasicInventorySlot(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator,
+    protected BasicInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator,
           @Nullable IContentsListener listener, int x, int y) {
-        this((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack),
-              validator, listener, x, y);
+        this((itemType, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(itemType),
+              (itemType, _) -> canInsert.test(itemType), validator, listener, x, y);
     }
 
-    protected BasicInventorySlot(BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert,
-          Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected BasicInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
+          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         this(Item.ABSOLUTE_MAX_STACK_SIZE, canExtract, canInsert, validator, listener, x, y);
     }
 
-    protected BasicInventorySlot(int limit, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected BasicInventorySlot(int limit, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
+          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         this.limit = limit;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -179,13 +179,13 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (current.isEmpty() || amount < 1 || !canExtract.test(current, automationType)) {
+        if (current.isEmpty() || amount < 1 || !canExtract.test(ItemResource.of(current), automationType)) {
             //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
             return ItemStack.EMPTY;
         }
         //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
         // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.count(), current.getMaxStackSize());
+        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
         if (currentAmount < amount) {
             //If we are trying to extract more than we have, just change it so that we are extracting it all
             amount = currentAmount;
@@ -208,15 +208,15 @@ public class BasicInventorySlot implements IInventorySlot {
 
     @Override
     public boolean isValid(ItemResource itemType) {
-        //TODO - 26.1: Replace validator with being a predicate for item resource
-        return validator.test(itemType.toStack());
+        return validator.test(itemType);
     }
 
     /**
      * Ignores current contents
      */
     public boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        return validator.test(stack) && canInsert.test(stack, automationType);
+        ItemResource itemType = ItemResource.of(stack);
+        return isValid(itemType) && canInsert.test(itemType, automationType);
     }
 
     @Override

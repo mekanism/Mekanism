@@ -24,10 +24,10 @@ import mekanism.generators.common.registries.GeneratorsBlocks;
 import mekanism.generators.common.registries.GeneratorsFluids;
 import mekanism.generators.common.slot.FluidFuelInventorySlot;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -45,10 +45,10 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         super(GeneratorsBlocks.BIO_GENERATOR, pos, state);
     }
 
-    private static int biofuelFromItem(@NotNull ItemStack stack) {
-        if (stack.is(MekanismTags.Items.FUELS_BIO)) {
+    private static int biofuelFromItem(@NotNull ItemResource itemType) {
+        if (itemType.is(MekanismTags.Items.FUELS_BIO)) {
             return MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
-        } else if (stack.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
+        } else if (itemType.is(MekanismTags.Items.FUELS_BLOCK_BIO)) {
             return 9 * MekanismGeneratorsConfig.generators.bioFuelPerItem.getAsInt();
         }
         return 0;

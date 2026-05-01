@@ -12,11 +12,9 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -24,25 +22,25 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
 
     public static HybridInventorySlot inputOrDrain(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<@NotNull ItemStack> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
-        Predicate<@NotNull ItemStack> chemicalInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getChemicalTank());
-        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> insertPredicate = (stack, automationType) -> switch (mergedTank.getCurrentType()) {
-            case FLUID -> fluidInsertPredicate.test(stack);
-            case CHEMICAL -> chemicalInsertPredicate.test(stack);
+        Predicate<ItemResource> fluidInsertPredicate = FluidInventorySlot.getInputPredicate(mergedTank.getFluidTank());
+        Predicate<ItemResource> chemicalInsertPredicate = ChemicalInventorySlot.getDrainInsertPredicate(mergedTank.getChemicalTank());
+        BiPredicate<ItemResource, AutomationType> insertPredicate = (itemType, _) -> switch (mergedTank.getCurrentType()) {
+            case FLUID -> fluidInsertPredicate.test(itemType);
+            case CHEMICAL -> chemicalInsertPredicate.test(itemType);
             //Tank is empty, check if any insert predicate is valid
-            case EMPTY -> fluidInsertPredicate.test(stack) || chemicalInsertPredicate.test(stack);
+            case EMPTY -> fluidInsertPredicate.test(itemType) || chemicalInsertPredicate.test(itemType);
         };
         //Extract predicate, always allow the player to manually extract or if the insert predicate no longer matches allow for it to be extracted
-        return new HybridInventorySlot(mergedTank, (stack, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(stack, automationType),
+        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> automationType == AutomationType.MANUAL || !insertPredicate.test(itemType, automationType),
               insertPredicate, listener, x, y);
     }
 
     public static HybridInventorySlot outputOrFill(MergedTank mergedTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(mergedTank, "Merged tank cannot be null");
-        Predicate<@NotNull ItemStack> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank());
-        Predicate<@NotNull ItemStack> chemicalInsertPredicate = stack -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), stack);
+        Predicate<ItemResource> chemicalExtractPredicate = ChemicalInventorySlot.getFillExtractPredicate(mergedTank.getChemicalTank());
+        Predicate<ItemResource> chemicalInsertPredicate = itemType -> ChemicalInventorySlot.fillInsertCheck(mergedTank.getChemicalTank(), itemType);
 
-        return new HybridInventorySlot(mergedTank, (stack, automationType) -> {
+        return new HybridInventorySlot(mergedTank, (itemType, automationType) -> {
             if (automationType == AutomationType.MANUAL) {
                 //Always allow the player to manually extract
                 return true;
@@ -50,21 +48,21 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
             return switch (mergedTank.getCurrentType()) {
                 //Always allow extracting from a "fluid output" slot
                 case FLUID -> true;
-                case CHEMICAL -> chemicalExtractPredicate.test(stack);
+                case CHEMICAL -> chemicalExtractPredicate.test(itemType);
                 //Tank is empty, check all our extraction predicates
-                case EMPTY -> chemicalExtractPredicate.test(stack);
+                case EMPTY -> chemicalExtractPredicate.test(itemType);
             };
-        }, (stack, automationType) -> switch (mergedTank.getCurrentType()) {
+        }, (itemType, automationType) -> switch (mergedTank.getCurrentType()) {
             //Only allow inserting internally for "fluid output" slots
             case FLUID -> automationType == AutomationType.INTERNAL;
-            case CHEMICAL -> chemicalInsertPredicate.test(stack);
+            case CHEMICAL -> chemicalInsertPredicate.test(itemType);
             case EMPTY -> {
                 //Tank is empty, if the item is a fluid handler, and it is an internal check allow it
-                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID_LEGACY.hasCapability(ItemAccess.forStack(stack))) {
+                if (automationType == AutomationType.INTERNAL && Capabilities.FLUID.hasCapability(itemType)) {
                     yield true;
                 }
                 //otherwise, only allow it if one of the chemical insert predicates matches
-                yield chemicalInsertPredicate.test(stack);
+                yield chemicalInsertPredicate.test(itemType);
             }
         }, listener, x, y);
     }
@@ -74,8 +72,8 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     private boolean isFilling;
     private final MergedTank mergedTank;
 
-    private HybridInventorySlot(MergedTank mergedTank, BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    private HybridInventorySlot(MergedTank mergedTank, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
+          @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         this.mergedTank = mergedTank;
     }

@@ -128,7 +128,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         builder.addTank(inputGasTank = BasicChemicalTank.create(MAX_GAS, ChemicalTankHelper.radioactiveInputTankPredicate(() -> outputGasTank),
-              (gas, automationType) -> containsRecipeCAB(inputSlot.getStack(), inputFluidTank.getFluid(), gas), this::containsRecipeC,
+              (chemicalType, _) -> containsRecipeCAB(inputSlot.getResource(), inputFluidTank.getResource(), chemicalType), this::containsRecipeC,
               ChemicalAttributeValidator.ALWAYS_ALLOW, recipeCacheListener));
         builder.addTank(outputGasTank = BasicChemicalTank.output(MAX_GAS, recipeCacheUnpauseListener));
         return builder.build();
@@ -138,7 +138,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         FluidTankHelper builder = FluidTankHelper.forSideWithConfig(this);
-        builder.addTank(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluid -> containsRecipeBAC(inputSlot.getStack(), fluid, inputGasTank.getStack()),
+        builder.addTank(inputFluidTank = BasicFluidTank.input(MAX_FLUID, fluidType -> containsRecipeBAC(inputSlot.getResource(), fluidType, inputGasTank.getResource()),
               this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
@@ -155,7 +155,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeABC(item, inputFluidTank.getFluid(), inputGasTank.getStack()), this::containsRecipeA,
+        builder.addSlot(inputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeABC(itemType, inputFluidTank.getResource(), inputGasTank.getResource()), this::containsRecipeA,
                     recipeCacheListener, 54, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
         builder.addSlot(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 40))

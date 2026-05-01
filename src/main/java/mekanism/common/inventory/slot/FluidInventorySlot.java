@@ -20,7 +20,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -37,9 +37,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getInputPredicate(fluidTank), listener, x, y);
     }
 
-    protected static Predicate<ItemStack> getInputPredicate(IExtendedFluidTank fluidTank) {
-        return stack -> {
-            IFluidHandlerItem fluidHandlerItem = tryGetFluidHandlerUnstacked(stack);
+    protected static Predicate<ItemResource> getInputPredicate(IExtendedFluidTank fluidTank) {
+        return itemType -> {
+            IFluidHandlerItem fluidHandlerItem = tryGetFluidHandlerUnstacked(itemType);
             if (fluidHandlerItem != null) {
                 boolean hasEmpty = false;
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
@@ -75,8 +75,8 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     public static FluidInventorySlot rotary(IExtendedFluidTank fluidTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), itemType -> {
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
             if (fluidHandlerItem != null) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
@@ -106,9 +106,9 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), getFillPredicate(fluidTank), listener, x, y);
     }
 
-    public static Predicate<ItemStack> getFillPredicate(IExtendedFluidTank fluidTank) {
-        return stack -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
+    public static Predicate<ItemResource> getFillPredicate(IExtendedFluidTank fluidTank) {
+        return itemType -> {
+            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
             if (fluidHandlerItem != null) {
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
@@ -131,8 +131,8 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
      */
     public static FluidInventorySlot drain(IExtendedFluidTank fluidTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid handler cannot be null");
-        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), stack -> {
-            IFluidHandlerItem itemFluidHandler = tryGetFluidHandlerUnstacked(stack);
+        return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), itemType -> {
+            IFluidHandlerItem itemFluidHandler = tryGetFluidHandlerUnstacked(itemType);
             if (itemFluidHandler != null) {
                 FluidStack fluidInTank = fluidTank.getFluid();
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
@@ -158,6 +158,12 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stackToCheck));
     }
 
+    @Nullable
+    public static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemResource itemType) {
+        //TODO - 26.1: Figure out how to do fluid caps
+        return Capabilities.FLUID_LEGACY.getCapability(itemType);
+    }
+
     //TODO: Should we make this also have the fluid type have to match a desired type???
     public static boolean isNonFullFluidContainer(@Nullable IFluidHandlerItem fluidHandler) {
         if (fluidHandler != null) {
@@ -174,15 +180,15 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     private boolean isDraining;
     private boolean isFilling;
 
-    protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
+    protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert,
           @Nullable IContentsListener listener, int x, int y) {
         this(fluidTank, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a fluid handler on the filled item
         // then we don't have it all of a sudden being invalid after it is emptied
     }
 
-    protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert,
-          Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected FluidInventorySlot(IExtendedFluidTank fluidTank, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert,
+          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.fluidTank = fluidTank;

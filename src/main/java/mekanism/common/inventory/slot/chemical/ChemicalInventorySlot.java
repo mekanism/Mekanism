@@ -21,7 +21,7 @@ import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,16 +29,17 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalInventorySlot extends BasicInventorySlot {
 
     /**
-     * Gets the ChemicalStack from ItemStack conversion, ignoring the size of the item stack.
+     * Gets the ChemicalStack from ItemResource conversion.
      */
-    public static ChemicalStack getPotentialConversion(@Nullable Level world, ItemStack itemStack) {
-        ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemStack);
-        return foundRecipe == null ? ChemicalStack.EMPTY : foundRecipe.getOutput(itemStack);
+    public static ChemicalStack getPotentialConversion(@Nullable Level world, ItemResource itemType) {
+        ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemType);
+        //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
+        return foundRecipe == null ? ChemicalStack.EMPTY : foundRecipe.getOutput(itemType.toStack());
     }
 
-    private static Predicate<@NotNull ItemStack> getFillOrConvertExtractPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
-        return stack -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+    private static Predicate<ItemResource> getFillOrConvertExtractPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
+        return itemType -> {
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
@@ -50,17 +51,17 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             }
             //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
-            ChemicalStack conversion = getPotentialConversion(levelSupplier.get(), stack);
+            ChemicalStack conversion = getPotentialConversion(levelSupplier.get(), itemType);
             return conversion.isEmpty() || !chemicalTank.isValid(conversion);
         };
     }
 
-    private static Predicate<@NotNull ItemStack> getFillOrConvertInsertPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
-        return stack -> {
-            if (fillInsertCheck(chemicalTank, stack)) {
+    private static Predicate<ItemResource> getFillOrConvertInsertPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
+        return itemType -> {
+            if (fillInsertCheck(chemicalTank, itemType)) {
                 return true;
             }
-            ChemicalStack conversion = getPotentialConversion(levelSupplier.get(), stack);
+            ChemicalStack conversion = getPotentialConversion(levelSupplier.get(), itemType);
             //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
             if (conversion.isEmpty()) {
                 return false;
@@ -75,9 +76,9 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         };
     }
 
-    public static Predicate<@NotNull ItemStack> getFillExtractPredicate(IChemicalTank chemicalTank) {
-        return stack -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+    public static Predicate<ItemResource> getFillExtractPredicate(IChemicalTank chemicalTank) {
+        return itemType -> {
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     ChemicalStack storedChemical = handler.getChemicalInTank(tank);
@@ -93,8 +94,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         };
     }
 
-    public static boolean fillInsertCheck(IChemicalTank chemicalTank, ItemStack stack) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+    public static boolean fillInsertCheck(IChemicalTank chemicalTank, ItemResource itemType) {
+        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
         if (handler != null) {
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                 ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
@@ -108,9 +109,9 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         return false;
     }
 
-    public static Predicate<@NotNull ItemStack> getDrainInsertPredicate(IChemicalTank chemicalTank) {
-        return stack -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+    public static Predicate<ItemResource> getDrainInsertPredicate(IChemicalTank chemicalTank) {
+        return itemType -> {
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
             if (handler != null) {
                 if (chemicalTank.isEmpty()) {
                     //If the chemical tank is empty, accept the chemical item as long as it is not full
@@ -135,8 +136,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     public static ChemicalInventorySlot rotaryDrain(IChemicalTank chemicalTank, BooleanSupplier modeSupplier, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
-        Predicate<@NotNull ItemStack> drainInsertPredicate = getDrainInsertPredicate(chemicalTank);
-        Predicate<@NotNull ItemStack> insertPredicate = stack -> modeSupplier.getAsBoolean() && drainInsertPredicate.test(stack);
+        Predicate<ItemResource> drainInsertPredicate = getDrainInsertPredicate(chemicalTank);
+        Predicate<ItemResource> insertPredicate = itemType -> modeSupplier.getAsBoolean() && drainInsertPredicate.test(itemType);
         return new ChemicalInventorySlot(chemicalTank, insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 
@@ -147,7 +148,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new ChemicalInventorySlot(chemicalTank, getFillExtractPredicate(chemicalTank),
-              stack -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, stack), listener, x, y);
+              itemType -> !modeSupplier.getAsBoolean() && fillInsertCheck(chemicalTank, itemType), listener, x, y);
     }
 
     /**
@@ -155,7 +156,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      */
     public static ChemicalInventorySlot fill(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
-        return new ChemicalInventorySlot(chemicalTank, getFillExtractPredicate(chemicalTank), stack -> fillInsertCheck(chemicalTank, stack), listener, x, y);
+        return new ChemicalInventorySlot(chemicalTank, getFillExtractPredicate(chemicalTank), itemType -> fillInsertCheck(chemicalTank, itemType), listener, x, y);
     }
 
     /**
@@ -165,20 +166,20 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      */
     public static ChemicalInventorySlot drain(IChemicalTank chemicalTank, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(chemicalTank, "Chemical tank cannot be null");
-        Predicate<@NotNull ItemStack> insertPredicate = getDrainInsertPredicate(chemicalTank);
+        Predicate<@NotNull ItemResource> insertPredicate = getDrainInsertPredicate(chemicalTank);
         return new ChemicalInventorySlot(chemicalTank, insertPredicate.negate(), insertPredicate, listener, x, y);
     }
 
     private final Supplier<Level> worldSupplier;
     protected final IChemicalTank chemicalTank;
 
-    protected ChemicalInventorySlot(IChemicalTank gasTank, Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener,
+    protected ChemicalInventorySlot(IChemicalTank gasTank, Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, @Nullable IContentsListener listener,
           int x, int y) {
         this(gasTank, () -> null, canExtract, canInsert, listener, x, y);
     }
 
-    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
-          Predicate<@NotNull ItemStack> canInsert, @Nullable IContentsListener listener, int x, int y) {
+    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, Predicate<ItemResource> canExtract,
+          Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
         this(chemicalTank, worldSupplier, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener, x, y);
         //Note: We pass alwaysTrue as the validator, so that if a mod only exposes a chemical handler when an item isn't stacked
         // then we don't crash and burn when it is stacked
@@ -190,8 +191,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         // (instead of only accepting a single item). This is the potentially more important reason why to address this comment
     }
 
-    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, Predicate<@NotNull ItemStack> canExtract,
-          Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected ChemicalInventorySlot(IChemicalTank chemicalTank, Supplier<Level> worldSupplier, Predicate<ItemResource> canExtract,
+          Predicate<ItemResource> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         super(canExtract, canInsert, validator, listener, x, y);
         setSlotType(ContainerSlotType.EXTRA);
         this.chemicalTank = chemicalTank;

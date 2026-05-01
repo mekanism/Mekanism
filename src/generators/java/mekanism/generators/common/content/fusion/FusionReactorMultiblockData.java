@@ -41,7 +41,6 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import mekanism.generators.common.item.ItemHohlraum;
 import mekanism.generators.common.registries.GeneratorsChemicals;
 import mekanism.generators.common.registries.GeneratorsDamageTypes;
 import mekanism.generators.common.registries.GeneratorsItems;
@@ -158,7 +157,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         energyContainers.add(energyContainer = VariableCapacityEnergyContainer.output(MekanismGeneratorsConfig.generators.fusionEnergyCapacity, this));
         heatCapacitors.add(heatCapacitor = VariableHeatCapacitor.create(caseHeatCapacity, FusionReactorMultiblockData::getInverseConductionCoefficient,
               () -> inverseInsulation, () -> biomeAmbientTemp, this));
-        inventorySlots.add(reactorSlot = ReactorInventorySlot.at(stack -> stack.getItem() instanceof ItemHohlraum, this, 85, 39));
+        inventorySlots.add(reactorSlot = ReactorInventorySlot.at(GeneratorsItems.HOHLRAUM::is, this, 85, 39));
     }
 
     @Override

@@ -54,6 +54,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
@@ -116,8 +117,8 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return builder.build();
     }
 
-    private boolean isValidFluid(@NotNull FluidStack stack) {
-        return stack.getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), stack);
+    private boolean isValidFluid(@NotNull FluidResource fluidType) {
+        return fluidType.getFluidType().canBePlacedInLevel(getLevel(), worldPosition.below(), fluidType.toStack(FluidType.BUCKET_VOLUME));
     }
 
     @Override

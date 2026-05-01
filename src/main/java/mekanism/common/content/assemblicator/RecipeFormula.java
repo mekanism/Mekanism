@@ -12,6 +12,7 @@ import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable RecipeHolder<CraftingRecipe> recipe) {
@@ -102,11 +103,11 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
         return recipe.value().matches(CraftingInput.of(3, 3, dummy), world);
     }
 
-    public boolean isValidIngredient(Level world, ItemStack stack) {
+    public boolean isValidIngredient(Level world, ItemResource itemType) {
         if (recipe != null) {
             for (ItemStack inputItem : craftingInput.input().items()) {
                 //Short circuit if it is one of the items we already know about
-                if (!inputItem.isEmpty() && ItemStack.isSameItemSameComponents(inputItem, stack)) {
+                if (!inputItem.isEmpty() && itemType.matches(inputItem)) {
                     return true;
                 }
             }
@@ -115,7 +116,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
                 ItemStack inputItem = dummy.get(i);
                 //Skip slots that aren't expected to be empty
                 if (!inputItem.isEmpty()) {
-                    dummy.set(i, stack);
+                    dummy.set(i, itemType.toStack());
                     if (recipe.value().matches(CraftingInput.of(3, 3, dummy), world)) {
                         return true;
                     }

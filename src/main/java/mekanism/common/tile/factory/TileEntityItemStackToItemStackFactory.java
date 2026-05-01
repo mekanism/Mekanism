@@ -24,15 +24,16 @@ import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.TriPredicate;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //Smelting, enriching, crushing
-public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements
-      ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
-    private static final TriPredicate<ItemStackToItemStackRecipe, ItemStack, ItemStack> OUTPUT_CHECK =
-          (recipe, input, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input), output);
+    //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
+    private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemStack> OUTPUT_CHECK =
+          (recipe, input, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack()), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -46,28 +47,28 @@ public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemF
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
+    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
         //contains recipe in general already validated by isValidInputItem
         return true;
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemStack stack) {
-        return containsRecipe(stack);
+    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+        return containsRecipe(itemType);
     }
 
     @Override
-    protected int getNeededInput(ItemStackToItemStackRecipe recipe, ItemStack inputStack) {
-        return Ints.saturatedCast(recipe.getInput().getNeededAmount(inputStack));
+    protected int getNeededInput(ItemStackToItemStackRecipe recipe, ItemResource inputType) {
+        return Ints.saturatedCast(recipe.getInput().getNeededAmount(inputType));
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, @NotNull ItemStack stack) {
-        return cached != null && cached.getRecipe().getInput().testType(stack);
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackToItemStackRecipe> cached, @NotNull ItemResource itemType) {
+        return cached != null && cached.getRecipe().getInput().testType(itemType);
     }
 
     @Override
-    protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
+    protected ItemStackToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, outputSlot.getStack(), OUTPUT_CHECK);
     }

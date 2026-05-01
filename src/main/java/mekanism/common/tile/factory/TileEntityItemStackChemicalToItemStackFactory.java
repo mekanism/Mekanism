@@ -61,11 +61,13 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -73,8 +75,9 @@ import org.jetbrains.annotations.Nullable;
 public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityItemToItemFactory<ItemStackChemicalToItemStackRecipe> implements IHasDumpButton,
       ItemChemicalRecipeLookupHandler<ItemStackChemicalToItemStackRecipe>, ConstantUsageRecipeLookupHandler {
 
-    protected static final CheckRecipeType<ItemStack, ChemicalStack, ItemStackChemicalToItemStackRecipe, ItemStack> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input, extra), output);
+    //TODO - 26.1: Either change getOutput to take an ItemResource and ChemicalResource or figure out the size of the stack we should be passing
+    protected static final CheckRecipeType<Item, ItemResource, ItemStack, Chemical, ChemicalResource, ChemicalStack, ItemStackChemicalToItemStackRecipe, ItemStack> OUTPUT_CHECK =
+          (recipe, input, extra, output) -> InventoryUtils.areItemsStackable(recipe.getOutput(input.toStack(), extra.toStack(1)), output);
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,
@@ -152,34 +155,34 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     }
 
     @Override
-    public boolean isItemValidForSlot(@NotNull ItemStack stack) {
-        return containsRecipeAB(stack, chemicalTank.getStack());
+    public boolean isItemValidForSlot(@NotNull ItemResource itemType) {
+        return containsRecipeAB(itemType, chemicalTank.getResource());
     }
 
     @Override
-    public boolean isValidInputItem(@NotNull ItemStack stack) {
-        return containsRecipeA(stack);
+    public boolean isValidInputItem(@NotNull ItemResource itemType) {
+        return containsRecipeA(itemType);
     }
 
     @Override
-    protected int getNeededInput(ItemStackChemicalToItemStackRecipe recipe, ItemStack inputStack) {
-        return Ints.saturatedCast(recipe.getItemInput().getNeededAmount(inputStack));
+    protected int getNeededInput(ItemStackChemicalToItemStackRecipe recipe, ItemResource inputType) {
+        return Ints.saturatedCast(recipe.getItemInput().getNeededAmount(inputType));
     }
 
     @Override
-    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, @NotNull ItemStack stack) {
+    protected boolean isCachedRecipeValid(@Nullable CachedRecipe<ItemStackChemicalToItemStackRecipe> cached, @NotNull ItemResource itemType) {
         if (cached != null) {
             ItemStackChemicalToItemStackRecipe cachedRecipe = cached.getRecipe();
-            return cachedRecipe.getItemInput().testType(stack) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getType()));
+            return cachedRecipe.getItemInput().testType(itemType) && (chemicalTank.isEmpty() || cachedRecipe.getChemicalInput().testType(chemicalTank.getResource()));
         }
         return false;
     }
 
     @Override
-    protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemStack fallbackInput, @NotNull IInventorySlot outputSlot,
+    protected ItemStackChemicalToItemStackRecipe findRecipe(int process, @NotNull ItemResource fallbackInput, @NotNull IInventorySlot outputSlot,
           @Nullable IInventorySlot secondaryOutputSlot) {
         //TODO: Give it something that is not empty when we don't have a stored gas stack for getting the output?
-        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getStack(), outputSlot.getStack(), OUTPUT_CHECK);
+        return getRecipeType().getInputCache().findTypeBasedRecipe(level, fallbackInput, chemicalTank.getResource(), outputSlot.getStack(), OUTPUT_CHECK);
     }
 
     @Override

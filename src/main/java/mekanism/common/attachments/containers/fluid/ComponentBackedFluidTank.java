@@ -14,20 +14,20 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStack, AttachedFluids> implements IExtendedFluidTank {
 
-    private final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract;
-    private final BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert;
-    private final Predicate<@NotNull FluidStack> validator;
+    private final BiPredicate<FluidResource, AutomationType> canExtract;
+    private final BiPredicate<FluidResource, AutomationType> canInsert;
+    private final Predicate<FluidResource> validator;
     private final IntSupplier capacity;
     private final IntSupplier rate;
 
-    public ComponentBackedFluidTank(ItemStack attachedTo, int tankIndex, BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canExtract,
-          BiPredicate<@NotNull FluidStack, @NotNull AutomationType> canInsert, Predicate<@NotNull FluidStack> validator, IntSupplier rate, IntSupplier capacity) {
+    public ComponentBackedFluidTank(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
+          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, IntSupplier capacity) {
         super(attachedTo, tankIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -88,7 +88,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
         // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
-        if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(stack, automationType)) {
+        if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(FluidResource.of(stack), automationType)) {
             //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
             return stack;
         }
@@ -123,7 +123,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     protected FluidStack extract(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action, AutomationType automationType) {
-        if (amount < 1 || stored.isEmpty() || !canExtract.test(stored, automationType)) {
+        if (amount < 1 || stored.isEmpty() || !canExtract.test(FluidResource.of(stored), automationType)) {
             //"Fail quick" if we don't can never extract from this tank, have a fluid stored, or the amount being requested is less than one
             return FluidStack.EMPTY;
         }
@@ -192,7 +192,7 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
 
     @Override
     public boolean isFluidValid(FluidStack stack) {
-        return validator.test(stack);
+        return validator.test(FluidResource.of(stack));
     }
 
     @Override

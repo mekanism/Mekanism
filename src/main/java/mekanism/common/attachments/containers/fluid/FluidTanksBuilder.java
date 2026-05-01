@@ -13,8 +13,7 @@ import mekanism.common.config.MekanismConfig;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
 import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
 import net.minecraft.world.item.crafting.RecipeInput;
-import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class FluidTanksBuilder {
 
@@ -32,15 +31,15 @@ public class FluidTanksBuilder {
     }
 
     public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> FluidTanksBuilder addBasic(int capacity,
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, FluidStack> containsRecipe) {
+          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, FluidResource> containsRecipe) {
         return addBasic(capacity, fluid -> containsRecipe.check(recipeType.getInputCache(), null, fluid));
     }
 
-    public FluidTanksBuilder addBasic(int capacity, Predicate<@NotNull FluidStack> isValid) {
+    public FluidTanksBuilder addBasic(int capacity, Predicate<FluidResource> isValid) {
         return addBasic(() -> capacity, isValid);
     }
 
-    public FluidTanksBuilder addBasic(IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
+    public FluidTanksBuilder addBasic(IntSupplier capacity, Predicate<FluidResource> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo,
               containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, MekanismConfig.general.fluidItemFillRate, capacity));
     }
@@ -55,7 +54,7 @@ public class FluidTanksBuilder {
               MekanismConfig.general.fluidItemFillRate, capacity));
     }
 
-    public FluidTanksBuilder addBasicExtractable(IntSupplier rate, IntSupplier capacity, Predicate<@NotNull FluidStack> isValid) {
+    public FluidTanksBuilder addBasicExtractable(IntSupplier rate, IntSupplier capacity, Predicate<FluidResource> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedFluidTank(attachedTo,
               containerIndex, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
     }

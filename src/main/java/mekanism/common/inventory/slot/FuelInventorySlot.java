@@ -10,25 +10,24 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.level.block.entity.FuelValues;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class FuelInventorySlot extends BasicInventorySlot {
 
-    public static FuelInventorySlot forFuel(ToIntFunction<@NotNull ItemStack> fuelValue, @Nullable IContentsListener listener, int x, int y) {
+    public static FuelInventorySlot forFuel(ToIntFunction<ItemResource> fuelValue, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        return new FuelInventorySlot(stack -> fuelValue.applyAsInt(stack) == 0, stack -> fuelValue.applyAsInt(stack) != 0,
+        return new FuelInventorySlot(itemType -> fuelValue.applyAsInt(itemType) == 0, itemType -> fuelValue.applyAsInt(itemType) != 0,
               ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    private FuelInventorySlot(Predicate<@NotNull ItemStack> canExtract, Predicate<@NotNull ItemStack> canInsert, Predicate<@NotNull ItemStack> validator,
-          @Nullable IContentsListener listener, int x, int y) {
-        super((stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack), (stack, automationType) -> canInsert.test(stack), validator,
-              listener, x, y);
+    private FuelInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener,
+          int x, int y) {
+        super((itemType, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(itemType),
+              (itemType, _) -> canInsert.test(itemType), validator, listener, x, y);
     }
 
     public int burn(FuelValues fuelValues) {
@@ -40,7 +39,7 @@ public class FuelInventorySlot extends BasicInventorySlot {
             UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
             //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
             if (remainder != null) {
-                if (current.count() > 1) {
+                if (getCount() > 1) {
                     //If we have a container but have more than a single stack of it somehow just exit
                     //TODO - 26.1: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
                     return 0;

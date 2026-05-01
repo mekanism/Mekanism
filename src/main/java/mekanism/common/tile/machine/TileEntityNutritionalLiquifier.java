@@ -139,8 +139,8 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
         return builder.build();
     }
 
-    public static boolean isValidInput(ItemStack stack) {
-        FoodProperties food = stack.get(DataComponents.FOOD);
+    public static boolean isValidInput(ItemResource itemType) {
+        FoodProperties food = itemType.get(DataComponents.FOOD);
         //And only allow inserting foods that actually would provide paste
         return food != null && food.nutrition() > 0;
     }

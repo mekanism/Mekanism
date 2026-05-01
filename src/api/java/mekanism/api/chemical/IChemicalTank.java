@@ -32,6 +32,10 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      */
     ChemicalStack getStack();
 
+    default ChemicalResource getResource() {//TODO - 26.1: Re-evaluate and add docs
+        return ChemicalResource.of(getStack());
+    }
+
     /**
      * Overrides the stack in this {@link IChemicalTank}.
      *

@@ -120,7 +120,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         ChemicalTankHelper builder = ChemicalTankHelper.forSideWithConfig(this);
         builder.addTank(infusionTank = BasicChemicalTank.create(MAX_INFUSE, ConstantPredicates.alwaysTrueBi(),
-              (infuseType, automationType) -> containsRecipeBA(inputSlot.getStack(), infuseType), this::containsRecipeB, recipeCacheListener));
+              (chemicalType, _) -> containsRecipeBA(inputSlot.getResource(), chemicalType), this::containsRecipeB, recipeCacheListener));
         return builder.build();
     }
 
@@ -137,7 +137,7 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
         builder.addSlot(infusionSlot = ChemicalInventorySlot.fillOrConvert(infusionTank, this::getLevel, listener, 17, 35));
-        builder.addSlot(inputSlot = InputInventorySlot.at(item -> containsRecipeAB(item, infusionTank.getStack()), this::containsRecipeA, recipeCacheListener, 51, 43))
+        builder.addSlot(inputSlot = InputInventorySlot.inputAt( itemType-> containsRecipeAB(itemType, infusionTank.getResource()), this::containsRecipeA, recipeCacheListener, 51, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addSlot(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 109, 43))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

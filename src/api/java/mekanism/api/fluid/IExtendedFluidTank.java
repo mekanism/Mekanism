@@ -12,9 +12,14 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
 public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, IContentsListener {
+
+    default FluidResource getResource() {//TODO - 26.1: Re-evaluate and add docs
+        return FluidResource.of(getFluid());
+    }
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.

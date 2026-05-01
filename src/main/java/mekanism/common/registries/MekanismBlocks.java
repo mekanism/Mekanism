@@ -184,7 +184,6 @@ import mekanism.common.util.EnumUtils;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.Rarity;
 import net.minecraft.world.level.block.Block;
@@ -193,6 +192,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class MekanismBlocks {
@@ -753,7 +753,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>, ItemBlockTooltip<BlockTileModel<TileEntityModificationStation, BlockTypeTile<TileEntityModificationStation>>>> MODIFICATION_STATION =
           BLOCKS.registerDetails("modification_station", properties -> new BlockTileModel<>(MekanismBlockTypes.MODIFICATION_STATION, BlockTile.defaultProperties(properties).mapColor(BlockResourceInfo.STEEL.getMapColor())))
                 .forItemHolder(holder -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
-                      .addInput(s -> s.getItem() instanceof IModuleItem)
+                      .addInput(itemType -> itemType.getItem() instanceof IModuleItem)
                       .addInput(IModuleHelper.INSTANCE::isModuleContainer)
                       .addEnergy()
                       .build()
@@ -1019,16 +1019,16 @@ public class MekanismBlocks {
         BlockRegistryObject<BlockFactory<?>, ItemBlockFactory> factory = registerTieredBlock(tier, "_" + type.getFactoryType().getRegistryNameComponent() + "_factory", properties -> new BlockFactory<>(type, properties), ItemBlockFactory::new);
         factory.forItemHolder(holder -> {
             int processes = tier.processes;
-            Predicate<ItemStack> recipeInputPredicate = switch (type.getFactoryType()) {
-                case SMELTING -> s -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, s);
-                case ENRICHING -> s -> MekanismRecipeType.ENRICHING.getInputCache().containsInput(null, s);
-                case CRUSHING -> s -> MekanismRecipeType.CRUSHING.getInputCache().containsInput(null, s);
-                case COMPRESSING -> s -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputA(null, s);
-                case COMBINING -> s -> MekanismRecipeType.COMBINING.getInputCache().containsInputA(null, s);
-                case PURIFYING -> s -> MekanismRecipeType.PURIFYING.getInputCache().containsInputA(null, s);
-                case INJECTING -> s -> MekanismRecipeType.INJECTING.getInputCache().containsInputA(null, s);
-                case INFUSING -> s -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputA(null, s);
-                case SAWING -> s -> MekanismRecipeType.SAWING.getInputCache().containsInput(null, s);
+            Predicate<ItemResource> recipeInputPredicate = switch (type.getFactoryType()) {
+                case SMELTING -> itemType -> MekanismRecipeType.SMELTING.getInputCache().containsInput(null, itemType);
+                case ENRICHING -> itemType -> MekanismRecipeType.ENRICHING.getInputCache().containsInput(null, itemType);
+                case CRUSHING -> itemType -> MekanismRecipeType.CRUSHING.getInputCache().containsInput(null, itemType);
+                case COMPRESSING -> itemType -> MekanismRecipeType.COMPRESSING.getInputCache().containsInputA(null, itemType);
+                case COMBINING -> itemType -> MekanismRecipeType.COMBINING.getInputCache().containsInputA(null, itemType);
+                case PURIFYING -> itemType -> MekanismRecipeType.PURIFYING.getInputCache().containsInputA(null, itemType);
+                case INJECTING -> itemType -> MekanismRecipeType.INJECTING.getInputCache().containsInputA(null, itemType);
+                case INFUSING -> itemType -> MekanismRecipeType.METALLURGIC_INFUSING.getInputCache().containsInputA(null, itemType);
+                case SAWING -> itemType -> MekanismRecipeType.SAWING.getInputCache().containsInput(null, itemType);
             };
             switch (type.getFactoryType()) {
                 case SMELTING, ENRICHING, CRUSHING -> holder.addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()

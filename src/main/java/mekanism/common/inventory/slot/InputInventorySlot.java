@@ -6,8 +6,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -17,19 +16,19 @@ public class InputInventorySlot extends BasicInventorySlot {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
     }
 
-    public static InputInventorySlot at(Predicate<@NotNull ItemStack> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        return at(ConstantPredicates.alwaysTrue(), isItemValid, listener, x, y);
+    public static InputInventorySlot at(Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
+        return inputAt(ConstantPredicates.alwaysTrue(), isItemValid, listener, x, y);
     }
 
-    public static InputInventorySlot at(Predicate<@NotNull ItemStack> insertPredicate, Predicate<@NotNull ItemStack> isItemValid, @Nullable IContentsListener listener,
+    public static InputInventorySlot inputAt(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener,
           int x, int y) {
         Objects.requireNonNull(insertPredicate, "Insertion check cannot be null");
         Objects.requireNonNull(isItemValid, "Item validity check cannot be null");
         return new InputInventorySlot(insertPredicate, isItemValid, listener, x, y);
     }
 
-    protected InputInventorySlot(Predicate<@NotNull ItemStack> insertPredicate, Predicate<@NotNull ItemStack> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        super(ConstantPredicates.notExternal(), (stack, automationType) -> insertPredicate.test(stack), isItemValid, listener, x, y);
+    protected InputInventorySlot(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
+        super(ConstantPredicates.notExternal(), (itemType, _) -> insertPredicate.test(itemType), isItemValid, listener, x, y);
         setSlotType(ContainerSlotType.INPUT);
     }
 }

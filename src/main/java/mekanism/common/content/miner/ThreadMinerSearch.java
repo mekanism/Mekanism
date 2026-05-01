@@ -33,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BedPart;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ThreadMinerSearch extends Thread {
 
@@ -88,7 +89,7 @@ public class ThreadMinerSearch extends Thread {
             if (acceptedItems.containsKey(info)) {
                 accepted = acceptedItems.getBoolean(info);
             } else {
-                if (tile.isReplaceTarget(info.asItem())) {
+                if (tile.isReplaceTarget(ItemResource.of(info))) {
                     //If it is a replace target just mark it as never being accepted
                     accepted = false;
                 } else {

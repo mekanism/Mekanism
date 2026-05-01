@@ -210,10 +210,9 @@ public class MekanismEmi implements EmiPlugin {
     public static void registerItemSubtypes(EmiRegistry registry, Collection<? extends Holder<Item>> items) {
         for (Holder<Item> item : items) {
             //Handle items
-            ItemStack stack = new ItemStack(item);
-            ItemAccess itemAccess = ItemAccess.forStack(stack);
+            ItemAccess itemAccess = ItemAccess.forStack(new ItemStack(item));//TODO - 26.1: Re-evaluate if this is the most reasonable way to check this
             if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
-                registry.setDefaultComparison(stack.getItem(), MEKANISM_COMPARISON);
+                registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }
         }
     }

@@ -25,12 +25,12 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.entity.ContainerOpenersCounter;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
@@ -70,7 +70,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
         //Note: we allow access to the slots from all sides as long as it is public, unlike in 1.12 where we always denied the bottom face
         // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
-        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInteract = (stack, automationType) ->
+        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInteract = (_, automationType) ->
               automationType == AutomationType.MANUAL || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
         PersonalStorageManager.createSlots(builder::addSlot, canInteract, listener);
         return builder.build();

@@ -11,6 +11,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -53,8 +54,8 @@ import org.jetbrains.annotations.Nullable;
 
 public class BoilerMultiblockData extends MultiblockData implements IValveHandler {
 
-    public static final Predicate<ChemicalStack> IS_HEATED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null;
-    public static final Predicate<ChemicalStack> IS_COOLED_COOLANT = chemical -> chemical.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null;
+    public static final Predicate<ChemicalResource> IS_HEATED_COOLANT = type -> type.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant()) != null;
+    public static final Predicate<ChemicalResource> IS_COOLED_COOLANT = type -> type.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()) != null;
     public static final Object2BooleanMap<UUID> hotMap = new Object2BooleanOpenHashMap<>();
 
     public static final double CASING_HEAT_CAPACITY = 50;

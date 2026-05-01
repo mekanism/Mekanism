@@ -19,7 +19,7 @@ import mekanism.common.tile.machine.TileEntityPigmentExtractor;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentExtractor, MekanismTileContainer<TileEntityPigmentExtractor>> {
@@ -69,7 +69,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 IInventorySlot inputSlot = tile.getInputSlot();
                 if (!inputSlot.isEmpty()) {
-                    ItemStack input = inputSlot.getStack();
+                    ItemResource input = inputSlot.getResource();
                     ItemStackToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
@@ -80,7 +80,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                         }
                     }
                     if (recipe != null) {
-                        return getColor(recipe.getOutput(input).getChemicalColorRepresentation());
+                        return getColor(recipe.getOutput(input.toStack(inputSlot.getCount())).getChemicalColorRepresentation());
                     }
                 }
                 return 0xFFFFFFFF;

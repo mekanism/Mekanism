@@ -18,6 +18,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends BaseFilter<FILTER> {
@@ -64,6 +65,10 @@ public abstract class MinerFilter<FILTER extends MinerFilter<FILTER>> extends Ba
 
     public boolean replaceTargetMatches(@NotNull Item target) {
         return replaceTarget != Items.AIR && replaceTarget == target;
+    }
+
+    public boolean replaceTargetMatches(@NotNull ItemResource target) {
+        return replaceTarget != Items.AIR && target.is(replaceTarget);
     }
 
     public abstract boolean canFilter(BlockState state);

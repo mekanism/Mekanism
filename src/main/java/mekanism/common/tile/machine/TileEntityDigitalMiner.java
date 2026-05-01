@@ -192,10 +192,10 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         };
         InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
-        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canInsert = (stack, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(stack.getItem());
+        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInsert = (itemType, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(itemType);
         //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
         //Note: We don't currently use internal for extraction anywhere here as we just shrink replace stacks directly
-        BiPredicate<@NotNull ItemStack, @NotNull AutomationType> canExtract = (stack, automationType) -> automationType != AutomationType.EXTERNAL || !isReplaceTarget(stack.getItem());
+        BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canExtract = (itemType, automationType) -> automationType != AutomationType.EXTERNAL || !isReplaceTarget(itemType);
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, mainSlotListener, 8 + slotX * 18, 92 + slotY * 18);
@@ -605,14 +605,14 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return result;
     }
 
-    private ItemStack getReplace(Item replaceTarget, Predicate<Item> replaceStackMatches) {
+    private ItemStack getReplace(Item replaceTarget, Predicate<ItemResource> replaceStackMatches) {
         if (replaceTarget == Items.AIR) {
             return ItemStack.EMPTY;
         }
         //Start by sourcing from the miner's inventory
         for (IInventorySlot slot : mainSlots) {
             ItemResource slotContents = slot.getResource();
-            if (replaceStackMatches.test(slotContents.getItem())) {
+            if (replaceStackMatches.test(slotContents)) {
                 MekanismUtils.logMismatchedStackSize(slot.shrinkStack(1, Action.EXECUTE), 1);
                 return slotContents.toStack();
             }
@@ -835,17 +835,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         markForSave();
     }
 
-    public static boolean isSavedReplaceTarget(ItemStack stack, Item target) {
+    public static boolean isSavedReplaceTarget(ItemStack stack, ItemResource target) {
         //This method is here to make it easier to maintain parity if we change the logic of isReplaceTarget
         if (stack.getOrDefault(MekanismDataComponents.INVERSE, false)) {
             Item inverseReplaceTarget = stack.getOrDefault(MekanismDataComponents.REPLACE_STACK, Items.AIR);
-            return inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
+            return inverseReplaceTarget != Items.AIR && target.is(inverseReplaceTarget);
         }
         FilterAware filterAware = stack.get(MekanismDataComponents.FILTER_AWARE);
         return filterAware != null && filterAware.anyEnabledMatch(MinerFilter.class, filter -> filter.replaceTargetMatches(target));
     }
 
-    public boolean isReplaceTarget(Item target) {
+    public boolean isReplaceTarget(ItemResource target) {
         if (inverse) {
             //If we are in inverse mode only check our replace target, and not the filter's replace targets
             // as we don't have a matching filter once we are breaking blocks so there wouldn't actually
@@ -859,8 +859,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     /**
      * @apiNote Assumes that inverse is checked before this is called
      */
-    private boolean inverseReplaceTargetMatches(Item target) {
-        return inverseReplaceTarget != Items.AIR && inverseReplaceTarget == target;
+    private boolean inverseReplaceTargetMatches(ItemResource target) {
+        return inverseReplaceTarget != Items.AIR && target.is(inverseReplaceTarget);
     }
 
     @Override

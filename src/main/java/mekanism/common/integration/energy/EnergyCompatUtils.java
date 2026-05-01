@@ -22,6 +22,7 @@ import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,8 +117,16 @@ public class EnergyCompatUtils {
         return null;
     }
 
-    public static boolean hasStrictEnergyHandler(@NotNull ItemStack stack) {
-        return getStrictEnergyHandler(stack) != null;
+    public static boolean hasStrictEnergyHandler(@NotNull ItemResource itemType) {//TODO - 26.1: Re-evaluate this
+        return getStrictEnergyHandler(itemType) != null;
+    }
+
+    @Nullable
+    public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemResource itemType) {//TODO - 26.1: Re-evaluate this
+        if (!itemType.isEmpty()) {
+            return getStrictEnergyHandler(itemType.toStack(), IEnergyCompat::getStrictEnergyHandler);
+        }
+        return null;
     }
 
     @Nullable
