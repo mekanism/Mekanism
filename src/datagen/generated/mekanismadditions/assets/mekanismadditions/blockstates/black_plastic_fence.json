@@ -18,6 +18,16 @@
       "apply": {
         "model": "mekanismadditions:block/plastic/fence_side",
         "uvlock": true,
+        "y": 90
+      },
+      "when": {
+        "east": "true"
+      }
+    },
+    {
+      "apply": {
+        "model": "mekanismadditions:block/plastic/fence_side",
+        "uvlock": true,
         "y": 180
       },
       "when": {
@@ -32,16 +42,6 @@
       },
       "when": {
         "west": "true"
-      }
-    },
-    {
-      "apply": {
-        "model": "mekanismadditions:block/plastic/fence_side",
-        "uvlock": true,
-        "y": 90
-      },
-      "when": {
-        "east": "true"
       }
     }
   ]
