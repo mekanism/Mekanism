@@ -19,6 +19,7 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TexturedModel;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -59,13 +60,15 @@ public abstract class BaseModelProvider extends ModelProvider {
     /// @param targetModelPath Where the model will be saved at (inside models/)
     /// @param modelTemplate   the template to use
     /// @param textureMapping  the textures to use
+    /// @param itemModel       The item model to use. e.g. <code>ItemModelUtils.plainModel(targetModelPath)</code>
     ///
     /// @return The same Identifier passed as {@param targetModelPath}, for chaining
     @CanIgnoreReturnValue
-    protected static Identifier simpleCustomModel(BlockModelGenerators blockModels, Block block, Identifier targetModelPath, ModelTemplate modelTemplate, TextureMapping textureMapping) {
+    protected static Identifier simpleCustomModel(BlockModelGenerators blockModels, Block block, Identifier targetModelPath, ModelTemplate modelTemplate, TextureMapping textureMapping, ItemModel.Unbaked itemModel) {
         modelTemplate.create(targetModelPath, textureMapping, blockModels.modelOutput);
         MultiVariantGenerator variantGenerator = BlockModelGenerators.createSimpleBlock(block, BlockModelGenerators.plainVariant(targetModelPath));
         blockModels.blockStateOutput.accept(variantGenerator);
+        blockModels.itemModelOutput.accept(block.asItem(), itemModel);
         return targetModelPath;
     }
 

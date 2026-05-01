@@ -27,11 +27,13 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
+import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NullMarked;
@@ -43,17 +45,31 @@ public class AdditionsModelProvider extends BaseModelProvider {
         super(output, MekanismAdditions.MODID, clientResources);
     }
 
+    private static ItemModel.Unbaked tintedModel(Identifier location, EnumColor color) {
+        return ItemModelUtils.tintedModel(location, new Constant(color.getPackedColor()));
+    }
+
     @Override
     protected void registerModels(BlockModelGenerators blockModels, ItemModelGenerators itemModels) {
 
-        Identifier balloonModelLoc = modLocation("item/balloon");
+        //Identifier balloonModelLoc = modLocation("item/balloon");
         //ModelTemplate balloonParent = new ModelTemplate(Optional.of(balloonModelLoc), Optional.empty());
+        Identifier latchedBalloonLoc = modLocation("item/balloon_latched");
+        Identifier guiBalloonLoc = modLocation("item/balloon_gui");
+        Identifier fixedBalloonLoc = modLocation("item/balloon_fixed");
         for (Map.Entry<EnumColor, ItemRegistryObject<ItemBalloon>> entry : AdditionsItems.BALLOONS.entrySet()) {
             EnumColor color = entry.getKey();
             Item balloon = entry.getValue().value();
             //Identifier generatedModel = balloonParent.create(ModelLocationUtils.getModelLocation(balloon), new TextureMapping(), itemModels.modelOutput);
             //todo - 26.1: does this work, or does it need to define child model with parent? (previous line). check other usages if so
-            tintedItem(itemModels, balloon, balloonModelLoc, color);
+            //tintedItem(itemModels, balloon, balloonModelLoc, color);
+            ItemModel.Unbaked modelToRegister = ItemModelUtils.select(
+                  new DisplayContext(),
+                  tintedModel(latchedBalloonLoc, color),
+                  ItemModelUtils.when(ItemDisplayContext.GUI, tintedModel(guiBalloonLoc, color)),
+                  ItemModelUtils.when(List.of(ItemDisplayContext.GROUND, ItemDisplayContext.FIXED), tintedModel(fixedBalloonLoc, color))
+            );
+            itemModels.itemModelOutput.accept(balloon, modelToRegister);
         }
 
         //for now just copy the big spawn eggs, with a scale transform. TODO - 26.1 - check this works/looks ok

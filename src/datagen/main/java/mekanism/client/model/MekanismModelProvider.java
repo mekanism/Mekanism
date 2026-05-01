@@ -30,6 +30,7 @@ import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
@@ -68,9 +69,10 @@ public class MekanismModelProvider extends BaseModelProvider {
 
     private void addOreBlock(BlockModelGenerators blockModels, Holder<Block> oreBlock, String path) {
         Identifier modelPath = modLocation(path);
-        Identifier texPath = ModelLocationUtils.getModelLocation(oreBlock.value());
+        Block block = oreBlock.value();
+        Identifier texPath = ModelLocationUtils.getModelLocation(block);
         TextureMapping textureMapping = TextureMapping.cube(new Material(texPath));
-        simpleCustomModel(blockModels, oreBlock.value(), modelPath, ModelTemplates.CUBE_ALL, textureMapping);
+        simpleCustomModel(blockModels, block, modelPath, ModelTemplates.CUBE_ALL, textureMapping, ItemModelUtils.plainModel(modelPath));
     }
 
     @Override
@@ -133,10 +135,12 @@ public class MekanismModelProvider extends BaseModelProvider {
             Identifier targetModelPath = modLocation("block/storage/" + registrySuffix);
             TextureMapping textureMapping;
             ModelTemplate modelTemplate;
+            ItemModel.Unbaked itemModel;
             if (textureExists(texture)) {
                 //If we have an override we can just use a basic cube that has no color tints in it
                 textureMapping = TextureMapping.cube(texture);
                 modelTemplate = ModelTemplates.CUBE_ALL;
+                itemModel = ItemModelUtils.plainModel(targetModelPath);
             } else {
                 //If the texture does not exist fallback to the default texture and use a colorable base model
                 textureMapping = TextureMapping.cube(modTexture("block/resource_block"));
@@ -144,12 +148,12 @@ public class MekanismModelProvider extends BaseModelProvider {
                 int tint;
                 if (entry.getKey() instanceof PrimaryResource primaryResource) {
                     tint = primaryResource.getTint();
-                }/* else {
-                    throw new UnsupportedOperationException("No tint available?!");
-                }*/
-                //TODO - 26.1: is this needed??? blockModels.registerSimpleTintedItemModel(block, targetModelPath, new Constant(tint));
+                } else {
+                    throw new UnsupportedOperationException("Need tint wired in");
+                }
+                itemModel = ItemModelUtils.tintedModel(targetModelPath, new Constant(tint));
             }
-            simpleCustomModel(blockModels, block, targetModelPath, modelTemplate, textureMapping);
+            simpleCustomModel(blockModels, block, targetModelPath, modelTemplate, textureMapping, itemModel);
         }
         for (Map.Entry<OreType, OreBlockType> entry : MekanismBlocks.ORES.entrySet()) {
             String registrySuffix = entry.getKey().getResource().getRegistrySuffix();
