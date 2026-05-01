@@ -4,6 +4,8 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 import mekanism.additions.common.AdditionsLang;
 import mekanism.additions.common.config.MekanismAdditionsConfig;
 import mekanism.additions.common.registries.AdditionsDataComponents;
@@ -28,6 +30,8 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemWalkieTalkie extends Item implements IModeItem {
+
+    public static int MAX_CHANNEL = 9;
 
     public ItemWalkieTalkie(Item.Properties properties) {
         super(properties.stacksTo(1).component(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT));
@@ -64,7 +68,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
     public void changeMode(@NotNull Player player, @NotNull ItemStack stack, int shift, DisplayChange displayChange) {
         WalkieData data = stack.getOrDefault(AdditionsDataComponents.WALKIE_DATA, WalkieData.DEFAULT);
         if (data.running()) {
-            int newChannel = Math.floorMod(data.channel() + shift - 1, 8) + 1;
+            int newChannel = Math.floorMod(data.channel() + shift - 1, (MAX_CHANNEL - 1)) + 1;
             if (data.channel() != newChannel) {
                 stack.set(AdditionsDataComponents.WALKIE_DATA, new WalkieData(newChannel, true));
                 displayChange.sendMessage(player, newChannel, AdditionsLang.CHANNEL_CHANGE::translate);
@@ -84,7 +88,7 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         public static final WalkieData DEFAULT = new WalkieData(1, false);
 
         public static final Codec<WalkieData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              ExtraCodecs.intRange(1, 8).fieldOf(SerializationConstants.CHANNEL).forGetter(WalkieData::channel),
+              ExtraCodecs.intRange(1, MAX_CHANNEL).fieldOf(SerializationConstants.CHANNEL).forGetter(WalkieData::channel),
               Codec.BOOL.fieldOf(SerializationConstants.RUNNING).forGetter(WalkieData::running)
         ).apply(instance, WalkieData::new));
         public static final StreamCodec<ByteBuf, WalkieData> STREAM_CODEC = StreamCodec.composite(
@@ -97,6 +101,11 @@ public class ItemWalkieTalkie extends Item implements IModeItem {
         public void addToTooltip(@NotNull TooltipContext context, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag, @NotNull DataComponentGetter componentGetter) {
             tooltipAdder.accept(OnOff.of(running(), true).getTextComponent());
             tooltipAdder.accept(AdditionsLang.CHANNEL.translateColored(EnumColor.DARK_AQUA, EnumColor.GRAY, channel()));
+        }
+
+        /// A stream of possible data values, with running = true, for datagen
+        public static Stream<WalkieData> runningChannels() {
+            return IntStream.range(1, MAX_CHANNEL).mapToObj(chan -> new WalkieData(chan, true));
         }
     }
 }
