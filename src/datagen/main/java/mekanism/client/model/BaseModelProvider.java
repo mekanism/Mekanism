@@ -9,17 +9,20 @@ import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.ItemDeferredRegister;
+import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
+import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TexturedModel;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -70,6 +73,12 @@ public abstract class BaseModelProvider extends ModelProvider {
         blockModels.blockStateOutput.accept(variantGenerator);
         blockModels.itemModelOutput.accept(block.asItem(), itemModel);
         return targetModelPath;
+    }
+
+    protected static void simpleISTER(ItemModelGenerators itemModels, ItemRegistryObject<?> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
+        Item item = itemRegistryObject.value();
+        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(ModelLocationUtils.getModelLocation(item), unbakedRender);
+        itemModels.itemModelOutput.accept(item, unbaked);
     }
 
     public boolean textureExists(Identifier texture) {//todo - 26.1: check me

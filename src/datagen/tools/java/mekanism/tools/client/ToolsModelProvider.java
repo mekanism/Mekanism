@@ -2,6 +2,7 @@ package mekanism.tools.client;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import mekanism.client.model.BaseModelProvider;
 import mekanism.common.Mekanism;
 import mekanism.tools.client.render.item.RenderMekanismShieldItem;
@@ -14,8 +15,10 @@ import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelLocationUtils;
+import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
+import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.SelectItemModel;
 import net.minecraft.client.renderer.item.properties.select.TrimMaterialProperty;
@@ -123,11 +126,16 @@ public class ToolsModelProvider extends BaseModelProvider {
         return false;
     }
 
+
+    private static final ModelTemplate SHIELD = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield")), Optional.empty(), TextureSlot.PARTICLE);
+    private static final ModelTemplate SHIELD_BLOCKING = new ModelTemplate(Optional.of(Identifier.withDefaultNamespace("item/shield_blocking")), Optional.of("_blocking"), TextureSlot.PARTICLE);
+
     /// Inlined and adapted from [ItemModelGenerators#generateShield(Item)] to use our renderer and vanilla's base model
     private void addShieldModel(ItemModelGenerators itemModels, Holder<Item> shield, Identifier particle) {
         Item item = shield.value();
-        ItemModel.Unbaked normal = ItemModelUtils.specialModel(mcLocation("item/shield"), new RenderMekanismShieldItem.UnbakedShield());
-        ItemModel.Unbaked blocking = ItemModelUtils.specialModel(mcLocation("item/shield_blocking"), new RenderMekanismShieldItem.UnbakedShield());
+        TextureMapping textureMapping = TextureMapping.particle(new Material(particle));
+        ItemModel.Unbaked normal = ItemModelUtils.specialModel(SHIELD.create(item, textureMapping, itemModels.modelOutput), RenderMekanismShieldItem.UnbakedShield.INSTANCE);
+        ItemModel.Unbaked blocking = ItemModelUtils.specialModel(SHIELD_BLOCKING.create(item, textureMapping, itemModels.modelOutput), RenderMekanismShieldItem.UnbakedShield.INSTANCE);
         itemModels.itemModelOutput.accept(
               item,
               ItemModelUtils.conditional(

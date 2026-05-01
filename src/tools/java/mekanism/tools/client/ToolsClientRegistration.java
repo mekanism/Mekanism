@@ -33,6 +33,6 @@ public class ToolsClientRegistration {
 
     @SubscribeEvent
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
-        event.register(UnbakedShield.ID, UnbakedShield.MAP_CODEC);//todo - 26.1: register this in shield JSON
+        event.register(UnbakedShield.ID, UnbakedShield.MAP_CODEC);
     }
 }

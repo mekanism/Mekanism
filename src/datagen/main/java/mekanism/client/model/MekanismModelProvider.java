@@ -3,13 +3,16 @@ package mekanism.client.model;
 import com.google.common.collect.Table;
 import java.util.Map;
 import java.util.Optional;
+import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.FactoryType;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
+import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.resource.IResource;
@@ -31,6 +34,7 @@ import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.item.ItemModel;
+import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
@@ -94,19 +98,29 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         itemModels.declareCustomModelItem(MekanismItems.CONFIGURATION_CARD.asItem());
         //TODO? itemModels.declareCustomModelItem(MekanismItems.CONFIGURATION_CARD_ENCODED.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.CONFIGURATOR.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CONFIGURATOR_EMPTY.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CONFIGURATOR_ROTATE.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CONFIGURATOR_WRENCH.asItem());
+
+        Item configurator = MekanismItems.CONFIGURATOR.value();
+        ItemModel.Unbaked baseConfigurator = ItemModelUtils.plainModel(modLocation("item/configurator"));
+        itemModels.itemModelOutput.accept(
+              configurator,
+              ItemModelUtils.select(
+                    new ComponentContents<>(MekanismDataComponents.CONFIGURATOR_MODE.get()),
+                    baseConfigurator,
+                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.EMPTY, ItemModelUtils.plainModel(modLocation("item/configurator_empty"))),
+                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.ROTATE, ItemModelUtils.plainModel(modLocation("item/configurator_rotate"))),
+                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.WRENCH, ItemModelUtils.plainModel(modLocation("item/configurator_wrench")))
+              )
+        );
+
         itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA.asItem());
         //TODO? itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA_ENCODED.asItem());
         //TODO? itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA_INVALID.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ELECTRIC_BOW.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.ELECTRIC_BOW_PULLING_0.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.ELECTRIC_BOW_PULLING_1.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.ELECTRIC_BOW_PULLING_2.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.FREE_RUNNERS.asItem());//TODO renderer
-        itemModels.declareCustomModelItem(MekanismItems.ARMORED_FREE_RUNNERS.asItem()); //todo renderer
+
+        itemModels.generateBow(MekanismItems.ELECTRIC_BOW.asItem());
+
+        simpleISTER(itemModels, MekanismItems.FREE_RUNNERS, new RenderFreeRunners.Unbaked(false));
+        simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, new RenderFreeRunners.Unbaked(true));
+
         itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER.asItem());
         //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_0.asItem());
         //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_1.asItem());

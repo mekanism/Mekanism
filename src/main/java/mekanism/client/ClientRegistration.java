@@ -102,6 +102,7 @@ import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
+import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.layer.MekanismElytraLayer;
 import mekanism.client.render.tileentity.RenderBin;
@@ -173,6 +174,7 @@ import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
 import net.neoforged.neoforge.common.NeoForge;
@@ -226,8 +228,6 @@ public class ClientRegistration {
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
                   (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / (float) SharedConstants.TICKS_PER_SECOND : 0);
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pulling"),
-                  (stack, world, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
@@ -332,17 +332,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerClientReloadListeners(AddClientReloadListenersEvent event) {
-        //ISTERs
-        //TODO - 26.1 check if these need to be listening here to avoid races with layer definitions
-        //event.addListener(Mekanism.rl("render_energy_cube_item"), RenderEnergyCubeItem.RENDERER);
-        //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.ARMORED_RENDERER);
-        //event.addListener(Mekanism.rl("render_atomic_disassembler"), RenderAtomicDisassembler.RENDERER);
-        //event.addListener(Mekanism.rl("render_flame_thrower"), RenderFlameThrower.RENDERER);
-        //event.addListener(Mekanism.rl("render_free_runners"), RenderFreeRunners.RENDERER);
-        //event.addListener(Mekanism.rl("render_free_runners_armored"), RenderFreeRunners.ARMORED_RENDERER);
-        //event.addListener(Mekanism.rl("render_jetpack"), RenderJetpack.RENDERER);
-        //event.addListener(Mekanism.rl("render_scuba_mask"), RenderScubaMask.RENDERER);
-        //event.addListener(Mekanism.rl("render_scuba_tank"), RenderScubaTank.RENDERER);
         //Custom Armor
         event.addListener(Mekanism.rl("jetpack_armor_armored"), JetpackArmor.ARMORED_JETPACK);
         event.addListener(Mekanism.rl("jetpack_armor_jetpack"), JetpackArmor.JETPACK);
@@ -350,6 +339,11 @@ public class ClientRegistration {
         event.addListener(Mekanism.rl("free_runner_armor"), FreeRunnerArmor.FREE_RUNNERS);
         event.addListener(Mekanism.rl("scuba_mask_armor"), ScubaMaskArmor.SCUBA_MASK);
         event.addListener(Mekanism.rl("scuba_tank_armor"), ScubaTankArmor.SCUBA_TANK);
+    }
+
+    @SubscribeEvent
+    public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
+        event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
