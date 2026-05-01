@@ -8,6 +8,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
 @NothingNullByDefault
-public final class ChemicalStackIngredient implements InputIngredient<ChemicalStack> {
+public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalResource, ChemicalStack> {
 
     /**
      * The "flat" codec for {@link ChemicalStackIngredient}.
@@ -117,6 +118,12 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
         return testType(stack.typeHolder());
     }
 
+    @Override
+    public boolean testType(ChemicalResource type) {
+        Objects.requireNonNull(type);
+        return testType(type.typeHolder());
+    }
+
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
      *
@@ -139,6 +146,11 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     @Override
     public long getNeededAmount(ChemicalStack stack) {
         return testType(stack) ? amount : 0;
+    }
+
+    @Override
+    public long getNeededAmount(ChemicalResource type) {
+        return testType(type) ? amount : 0;
     }
 
     @Override

@@ -13,7 +13,6 @@ import java.util.function.BiFunction;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -43,9 +42,7 @@ import mekanism.api.recipes.basic.IBasicItemStackOutput;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
-import mekanism.api.recipes.ingredients.creator.IIngredientCreator;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
@@ -218,14 +215,14 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static <RECIPE extends ItemStackToChemicalRecipe & IBasicChemicalOutput>
-    RecipeSerializer<@NonNull RECIPE> itemToChemical(BiFunction<ItemStackIngredient, ChemicalStack, RECIPE> factory, MapCodec<ChemicalStack> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, ChemicalStack> stackStreamCodec) {
+    public static <RECIPE extends ItemStackToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<@NonNull RECIPE> itemToChemical(
+          BiFunction<ItemStackIngredient, ChemicalStack, RECIPE> factory) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
               ItemStackIngredient.CODEC.fieldOf(SerializationConstants.INPUT).forGetter(ItemStackToChemicalRecipe::getInput),
-              stackCodec.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
               ItemStackIngredient.STREAM_CODEC, ItemStackToChemicalRecipe::getInput,
-              stackStreamCodec, IBasicChemicalOutput::getOutputRaw,
+              ChemicalStack.STREAM_CODEC, IBasicChemicalOutput::getOutputRaw,
               factory
         ));
     }
@@ -246,17 +243,16 @@ public class MekanismRecipeSerializer {
         ));
     }
 
-    public static <RECIPE extends ChemicalChemicalToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<@NonNull RECIPE>
-    chemicalChemicalToChemical(Function3<ChemicalStackIngredient, ChemicalStackIngredient, ChemicalStack, RECIPE> factory, IIngredientCreator<Chemical, ChemicalStack, ChemicalStackIngredient> ingredientCreator,
-          MapCodec<ChemicalStack> stackCodec, StreamCodec<? super RegistryFriendlyByteBuf, ChemicalStack> stackStreamCodec) {
+    public static <RECIPE extends ChemicalChemicalToChemicalRecipe & IBasicChemicalOutput> RecipeSerializer<@NonNull RECIPE> chemicalChemicalToChemical(
+          Function3<ChemicalStackIngredient, ChemicalStackIngredient, ChemicalStack, RECIPE> factory) {
         return new RecipeSerializer<>(RecordCodecBuilder.mapCodec(instance -> instance.group(
-              ingredientCreator.codec().fieldOf(SerializationConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
-              ingredientCreator.codec().fieldOf(SerializationConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getRightInput),
-              stackCodec.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.LEFT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getLeftInput),
+              IngredientCreatorAccess.chemicalStack().codec().fieldOf(SerializationConstants.RIGHT_INPUT).forGetter(ChemicalChemicalToChemicalRecipe::getRightInput),
+              ChemicalStack.MAP_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(IBasicChemicalOutput::getOutputRaw)
         ).apply(instance, factory)), StreamCodec.composite(
-              ingredientCreator.streamCodec(), ChemicalChemicalToChemicalRecipe::getLeftInput,
-              ingredientCreator.streamCodec(), ChemicalChemicalToChemicalRecipe::getRightInput,
-              stackStreamCodec, IBasicChemicalOutput::getOutputRaw,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalChemicalToChemicalRecipe::getLeftInput,
+              IngredientCreatorAccess.chemicalStack().streamCodec(), ChemicalChemicalToChemicalRecipe::getRightInput,
+              ChemicalStack.STREAM_CODEC, IBasicChemicalOutput::getOutputRaw,
               factory
         ));
     }

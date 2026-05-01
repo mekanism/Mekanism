@@ -16,6 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote This is a wrapper around {@link SizedIngredient}
  */
 @NothingNullByDefault
-public final class ItemStackIngredient implements InputIngredient<@NotNull ItemStack> {
+public final class ItemStackIngredient implements InputIngredient<Item, ItemResource, ItemStack> {
 
     /**
      * A codec which can (de)encode item stack ingredients.
@@ -81,6 +82,12 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     }
 
     @Override
+    public boolean testType(ItemResource type) {
+        Objects.requireNonNull(type);
+        return testType(type.toStack());
+    }
+
+    @Override
     public ItemStack getMatchingInstance(ItemStack stack) {
         return test(stack) ? stack.copyWithCount(ingredient.count()) : ItemStack.EMPTY;
     }
@@ -88,6 +95,11 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     @Override
     public long getNeededAmount(ItemStack stack) {
         return testType(stack) ? ingredient.count() : 0;
+    }
+
+    @Override
+    public long getNeededAmount(ItemResource type) {
+        return testType(type) ? ingredient.count() : 0;
     }
 
     @Override

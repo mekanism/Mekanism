@@ -19,19 +19,21 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.util.strategy.BasicStrategy;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Extended input cache that implements the backend handling to allow for both the basic key based input lookup that {@link BaseInputCache} provides, and also a more
  * advanced mapping that is Data Component based.
  */
-public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInstance<KEY> & DataComponentHolder, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?>>
-      extends BaseInputCache<KEY, INPUT, INGREDIENT, RECIPE> {
+public abstract class ComponentSensitiveInputCache<KEY, RESOURCE extends RegisteredResource<KEY>, INPUT extends TypedInstance<KEY> & DataComponentHolder,
+      INGREDIENT extends InputIngredient<KEY, RESOURCE, INPUT>, RECIPE extends MekanismRecipe<?>> extends BaseInputCache<KEY, RESOURCE, INPUT, INGREDIENT, RECIPE> {
 
     /**
      * Map of ResourceKey to Map of components to lists.
      */
     //TODO - 26.1 can this use a Reference map now that it uses ResourceKey?
+    // Alternatively do we want this to be a Map<RESOURCE, List<RECIPE>>?
     private final Map<ResourceKey<KEY>, Map<DataComponentMap, List<RECIPE>>> componentInputCache = new HashMap<>();
 
     @Override
@@ -85,8 +87,7 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     }
 
     /**
-     * Adds a given recipe to the input cache using the corresponding Data Component based key.
-     * Works for EXACT matches only.
+     * Adds a given recipe to the input cache using the corresponding Data Component based key. Works for EXACT matches only.
      *
      * @param inputHolder Holder representing the KEY
      * @param patch       The component patch to apply against inputHolder for storing in the index

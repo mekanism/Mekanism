@@ -9,6 +9,8 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -19,9 +21,15 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -29,15 +37,17 @@ import org.jetbrains.annotations.Nullable;
  * Base class to help implement handling of recipes with two inputs.
  */
 @NothingNullByDefault
-public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
+public class TwoInputCachedRecipe<A_TYPE, A_RESOURCE extends RegisteredResource<A_TYPE>, INPUT_A extends TypedInstance<A_TYPE>,
+      B_TYPE, B_RESOURCE extends RegisteredResource<B_TYPE>, INPUT_B extends TypedInstance<B_TYPE>,
+      OUTPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>> extends CachedRecipe<RECIPE> {
 
-    private final IInputHandler<INPUT_A> inputHandler;
-    private final IInputHandler<INPUT_B> secondaryInputHandler;
+    private final IInputHandler<A_TYPE, A_RESOURCE, INPUT_A> inputHandler;
+    private final IInputHandler<B_TYPE, B_RESOURCE, INPUT_B> secondaryInputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;
     private final Predicate<INPUT_A> inputEmptyCheck;
     private final Predicate<INPUT_B> secondaryInputEmptyCheck;
-    private final Supplier<? extends InputIngredient<INPUT_A>> inputSupplier;
-    private final Supplier<? extends InputIngredient<INPUT_B>> secondaryInputSupplier;
+    private final Supplier<? extends InputIngredient<A_TYPE, A_RESOURCE, INPUT_A>> inputSupplier;
+    private final Supplier<? extends InputIngredient<B_TYPE, B_RESOURCE, INPUT_B>> secondaryInputSupplier;
     private final BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter;
     private final Predicate<OUTPUT> outputEmptyCheck;
     private final BiConsumer<INPUT_A, INPUT_B> inputsSetter;
@@ -65,8 +75,9 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param secondaryInputEmptyCheck Checks if the secondary input is empty.
      * @param outputEmptyCheck         Checks if the output is empty (indicating something went horribly wrong).
      */
-    protected TwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<INPUT_A> inputHandler, IInputHandler<INPUT_B> secondaryInputHandler,
-          IOutputHandler<OUTPUT> outputHandler, Supplier<InputIngredient<INPUT_A>> inputSupplier, Supplier<InputIngredient<INPUT_B>> secondaryInputSupplier,
+    protected TwoInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<A_TYPE, A_RESOURCE, INPUT_A> inputHandler,
+          IInputHandler<B_TYPE, B_RESOURCE, INPUT_B> secondaryInputHandler, IOutputHandler<OUTPUT> outputHandler,
+          Supplier<InputIngredient<A_TYPE, A_RESOURCE, INPUT_A>> inputSupplier, Supplier<InputIngredient<B_TYPE, B_RESOURCE, INPUT_B>> secondaryInputSupplier,
           BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Predicate<INPUT_A> inputEmptyCheck, Predicate<INPUT_B> secondaryInputEmptyCheck,
           Predicate<OUTPUT> outputEmptyCheck) {
         super(recipe, recheckAllErrors);
@@ -124,9 +135,9 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      */
-    public static <RECIPE extends FluidChemicalToChemicalRecipe> TwoInputCachedRecipe<@NotNull FluidStack, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
-    fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> fluidInputHandler,
-          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+    public static <RECIPE extends FluidChemicalToChemicalRecipe> TwoInputCachedRecipe<Fluid, FluidResource, FluidStack, Chemical, ChemicalResource, ChemicalStack,
+          ChemicalStack, RECIPE> fluidChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Fluid, FluidResource, FluidStack> fluidInputHandler,
+          IInputHandler<Chemical, ChemicalResource, ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, fluidInputHandler, chemicalInputHandler, outputHandler, recipe::getFluidInput,
               recipe::getChemicalInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
     }
@@ -141,9 +152,9 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler.
      */
-    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ItemStackTemplate, RECIPE>
-    itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
-          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
+    public static <RECIPE extends ItemStackChemicalToItemStackRecipe> TwoInputCachedRecipe<Item, ItemResource, ItemStack, Chemical, ChemicalResource, ChemicalStack,
+          ItemStackTemplate, RECIPE> itemChemicalToItem(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> itemInputHandler,
+          IInputHandler<Chemical, ChemicalResource, ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
               recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
@@ -160,9 +171,9 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      *
      * @since 10.7.0
      */
-    public static <RECIPE extends ChemicalDissolutionRecipe> TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE>
-    itemChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
-          IInputHandler<@NotNull ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+    public static <RECIPE extends ChemicalDissolutionRecipe> TwoInputCachedRecipe<Item, ItemResource, ItemStack, Chemical, ChemicalResource, ChemicalStack, ChemicalStack, RECIPE>
+    itemChemicalToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> itemInputHandler,
+          IInputHandler<Chemical, ChemicalResource, ChemicalStack> chemicalInputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, outputHandler, recipe::getItemInput, recipe::getChemicalInput,
               recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.CHEMICAL_EMPTY, ConstantPredicates.CHEMICAL_EMPTY);
     }
@@ -177,8 +188,8 @@ public class TwoInputCachedRecipe<INPUT_A, INPUT_B, OUTPUT, RECIPE extends Mekan
      * @param extraInputHandler Secondary/Extra input handler.
      * @param outputHandler     Output handler.
      */
-    public static TwoInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStack, @Nullable ItemStackTemplate, CombinerRecipe> combiner(CombinerRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IInputHandler<@NotNull ItemStack> extraInputHandler,
+    public static TwoInputCachedRecipe<Item, ItemResource, ItemStack, Item, ItemResource, ItemStack, ItemStackTemplate, CombinerRecipe> combiner(CombinerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> inputHandler, IInputHandler<Item, ItemResource, ItemStack> extraInputHandler,
           IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new TwoInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, extraInputHandler, outputHandler, recipe::getMainInput, recipe::getExtraInput,
               recipe::getOutput, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.ITEM_EMPTY, ConstantPredicates.INVALID_ITEM_TEMPLATE);

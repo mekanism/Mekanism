@@ -3,6 +3,8 @@ package mekanism.api.recipes.inputs;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import net.minecraft.core.TypedInstance;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 /**
  * Interface describing handling of an input that can handle long values.
@@ -10,7 +12,7 @@ import mekanism.api.recipes.ingredients.InputIngredient;
  * @param <INPUT> Type of input handled by this handler.
  */
 @NothingNullByDefault
-public interface ILongInputHandler<INPUT> extends IInputHandler<INPUT> {
+public interface ILongInputHandler<TYPE, RESOURCE extends RegisteredResource<TYPE>, INPUT extends TypedInstance<TYPE>> extends IInputHandler<TYPE, RESOURCE, INPUT> {
 
     @Override
     default void use(INPUT recipeInput, int operations) {
