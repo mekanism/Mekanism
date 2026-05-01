@@ -180,7 +180,7 @@ public class MekanismModelProvider extends BaseModelProvider {
                           barrelBlock,
                           BlockModelGenerators.plainVariant(barrelModel)
                     )
-                    .with(BlockModelGenerators.ROTATION_FACING)//todo fix this, rotations are different
+                    .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING)
                     .with(
                           PropertyDispatch.modify(BlockStateProperties.OPEN)
                                 .select(false, BlockModelGenerators.NOP)
