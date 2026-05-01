@@ -64,8 +64,8 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
         for (BakedQuad quad : quads) {
             int color = quad.tintIndex() == 0 ? state.balloonTint : 0xFFFFFFFF;
             builder.putBulkData(last, quad, ARGB.redFloat(color), ARGB.greenFloat(color), ARGB.blueFloat(color), ARGB.alphaFloat(color), state.lightCoords, OverlayTexture.NO_OVERLAY);
-        }
-        poseStack.popPose();*/
+        }*/
+        poseStack.popPose();
         super.submit(state, poseStack, nodeCollector, camera);
     }
 
