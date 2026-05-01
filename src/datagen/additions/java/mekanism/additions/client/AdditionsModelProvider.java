@@ -139,7 +139,7 @@ public class AdditionsModelProvider extends BaseModelProvider {
                               blockRO.value(),
                               BlockModelGenerators.plainVariant(model)
                         )
-                        .with(BlockModelGenerators.ROTATION_FACING)
+                        .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING)
             );
         }
     }
