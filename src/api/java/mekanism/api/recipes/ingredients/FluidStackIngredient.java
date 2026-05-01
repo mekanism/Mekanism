@@ -90,6 +90,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, FluidR
     @Override
     public boolean testType(FluidResource type) {
         Objects.requireNonNull(type);
+        //TODO - 26.1: Figure out if there is a better way to do this that doesn't require converting the resource to a stack
         return testType(type.toStack(FluidType.BUCKET_VOLUME));
     }
 

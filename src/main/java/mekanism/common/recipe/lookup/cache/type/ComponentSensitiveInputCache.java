@@ -19,14 +19,14 @@ import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.resources.ResourceKey;
 import net.neoforged.neoforge.common.util.strategy.BasicStrategy;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
+import net.neoforged.neoforge.transfer.resource.DataComponentHolderResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Extended input cache that implements the backend handling to allow for both the basic key based input lookup that {@link BaseInputCache} provides, and also a more
  * advanced mapping that is Data Component based.
  */
-public abstract class ComponentSensitiveInputCache<KEY, RESOURCE extends RegisteredResource<KEY>, INPUT extends TypedInstance<KEY> & DataComponentHolder,
+public abstract class ComponentSensitiveInputCache<KEY, RESOURCE extends DataComponentHolderResource<KEY>, INPUT extends TypedInstance<KEY> & DataComponentHolder,
       INGREDIENT extends InputIngredient<KEY, RESOURCE, INPUT>, RECIPE extends MekanismRecipe<?>> extends BaseInputCache<KEY, RESOURCE, INPUT, INGREDIENT, RECIPE> {
 
     /**
@@ -43,14 +43,22 @@ public abstract class ComponentSensitiveInputCache<KEY, RESOURCE extends Registe
     }
 
     /**
-     * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
+     * @implNote Checks the more specific Data Component based cache after checking the more generic base type.
      */
     @Override
     public boolean contains(INPUT input) {
         return super.contains(input) || componentCacheContains(input);
     }
 
-    private boolean componentCacheContains(INPUT input) {
+    /**
+     * @implNote Checks the more specific Data Component based cache after checking the more generic base type.
+     */
+    @Override
+    public boolean contains(RESOURCE inputType) {
+        return super.contains(inputType) || componentCacheContains(inputType);
+    }
+
+    private <TYPE extends TypedInstance<KEY> & DataComponentHolder> boolean componentCacheContains(TYPE input) {
         if (componentInputCache.isEmpty()) {
             return false;
         }
@@ -77,8 +85,27 @@ public abstract class ComponentSensitiveInputCache<KEY, RESOURCE extends Registe
         return Iterables.concat(nbtRecipes, basicRecipes);
     }
 
+    /**
+     * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
+     */
+    @Override
+    public Iterable<RECIPE> getRecipes(RESOURCE input) {
+        if (componentInputCache.isEmpty()) {
+            return super.getRecipes(input);
+        }
+        List<RECIPE> nbtRecipes = getComponentMatches(input);
+        if (nbtRecipes == null) {
+            return super.getRecipes(input);
+        }
+        Collection<RECIPE> basicRecipes = (Collection<RECIPE>) super.getRecipes(input);
+        if (basicRecipes.isEmpty()) {
+            return nbtRecipes;
+        }
+        return Iterables.concat(nbtRecipes, basicRecipes);
+    }
+
     @Nullable
-    private List<RECIPE> getComponentMatches(INPUT input) {
+    private <TYPE extends TypedInstance<KEY> & DataComponentHolder> List<RECIPE> getComponentMatches(TYPE input) {
         var holderMatches = componentInputCache.get(input.typeHolder().getKey());
         if (holderMatches == null) {
             return null;
