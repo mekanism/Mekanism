@@ -37,8 +37,9 @@ public interface IDoubleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for
-     * more details about when this method should be called versus when {@link #containsRecipeBA(TypedInstance, TypedInstance)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
+     * {@link #containsRecipeBA(TypedInstance, TypedInstance)} should be called.
      */
     default boolean containsRecipeAB(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
@@ -52,10 +53,43 @@ public interface IDoubleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for
-     * more details about when this method should be called versus when {@link #containsRecipeAB(TypedInstance, TypedInstance)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, RegisteredResource, RegisteredResource)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, RegisteredResource, RegisteredResource)} for more details about when this method should be called versus when
+     * {@link #containsRecipeBA(RegisteredResource, RegisteredResource)} should be called.
+     */
+    default boolean containsRecipeAB(A_RESOURCE inputA, B_RESOURCE inputB) {
+        return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
+    }
+
+    /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
+     *
+     * @param inputA Recipe input a.
+     * @param inputB Recipe input b.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     *
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
+     * {@link #containsRecipeAB(TypedInstance, TypedInstance)} should be called.
      */
     default boolean containsRecipeBA(INPUT_A inputA, INPUT_B inputB) {
+        return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
+    }
+
+    /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
+     *
+     * @param inputA Recipe input a.
+     * @param inputB Recipe input b.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     *
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, RegisteredResource, RegisteredResource)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, RegisteredResource, RegisteredResource)} for more details about when this method should be called versus when
+     * {@link #containsRecipeAB(RegisteredResource, RegisteredResource)} should be called.
+     */
+    default boolean containsRecipeBA(A_RESOURCE inputA, B_RESOURCE inputB) {
         return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
     }
 
@@ -77,7 +111,29 @@ public interface IDoubleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
+    default boolean containsRecipeA(A_RESOURCE input) {
+        return getRecipeType().getInputCache().containsInputA(getLevel(), input);
+    }
+
+    /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
+     *
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
     default boolean containsRecipeB(INPUT_B input) {
+        return getRecipeType().getInputCache().containsInputB(getLevel(), input);
+    }
+
+    /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
+     *
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
+    default boolean containsRecipeB(B_RESOURCE input) {
         return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 

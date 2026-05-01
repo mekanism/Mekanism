@@ -40,6 +40,17 @@ public interface ISingleRecipeLookupHandler<I_TYPE, I_RESOURCE extends Registere
     }
 
     /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
+     *
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
+    default boolean containsRecipe(I_RESOURCE input) {
+        return getRecipeType().getInputCache().containsInput(getLevel(), input);
+    }
+
+    /**
      * Finds the first recipe for the type of recipe we handle ({@link #getRecipeType()}) by looking up the given input against the recipe type's input cache.
      *
      * @param input Recipe input.

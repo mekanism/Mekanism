@@ -81,6 +81,18 @@ public abstract class TripleInputRecipeCache<
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
+    public boolean containsInputA(@Nullable Level world, A_RESOURCE input) {
+        return containsInput(world, input, inputAExtractor, cacheA, complexIngredientA);
+    }
+
+    /**
+     * Checks if there is a matching recipe that has the given input.
+     *
+     * @param world World.
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
     public boolean containsInputB(@Nullable Level world, INPUT_B input) {
         return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
     }
@@ -93,7 +105,31 @@ public abstract class TripleInputRecipeCache<
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
+    public boolean containsInputB(@Nullable Level world, B_RESOURCE input) {
+        return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
+    }
+
+    /**
+     * Checks if there is a matching recipe that has the given input.
+     *
+     * @param world World.
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
     public boolean containsInputC(@Nullable Level world, INPUT_C input) {
+        return containsInput(world, input, inputCExtractor, cacheC, complexIngredientC);
+    }
+
+    /**
+     * Checks if there is a matching recipe that has the given input.
+     *
+     * @param world World.
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
+    public boolean containsInputC(@Nullable Level world, C_RESOURCE input) {
         return containsInput(world, input, inputCExtractor, cacheC, complexIngredientC);
     }
 
@@ -113,6 +149,27 @@ public abstract class TripleInputRecipeCache<
      * {@link #containsInputCAB(Level, TypedInstance, TypedInstance, TypedInstance)} depending on which input is trying to be inserted.
      */
     public boolean containsInputABC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+        return containsGrouping(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB,
+              inputC, inputCExtractor, cacheC, complexIngredientC);
+    }
+
+    /**
+     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
+     * inputB and inputC is empty without doing any extra validation on inputA. If however inputA is not empty and only one of the other two inputs is empty this will do
+     * validation on inputA and the non-empty input.
+     *
+     * @param world  World.
+     * @param inputA Recipe input A.
+     * @param inputB Recipe input B.
+     * @param inputC Recipe input C.
+     *
+     * @return {@code true} if there is a match or if inputA is not empty and inputB and inputC are both empty.
+     *
+     * @apiNote If you are trying to insert inputA call this method, otherwise call
+     * {@link #containsInputBAC(Level, RegisteredResource, RegisteredResource, RegisteredResource)} or
+     * {@link #containsInputCAB(Level, RegisteredResource, RegisteredResource, RegisteredResource)} depending on which input is trying to be inserted.
+     */
+    public boolean containsInputABC(@Nullable Level world, A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
         return containsGrouping(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB,
               inputC, inputCExtractor, cacheC, complexIngredientC);
     }
@@ -138,6 +195,27 @@ public abstract class TripleInputRecipeCache<
     }
 
     /**
+     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputB is not empty and
+     * inputA and inputC is empty without doing any extra validation on inputB. If however inputB is not empty and only one of the other two inputs is empty this will do
+     * validation on inputB and the non-empty input.
+     *
+     * @param world  World.
+     * @param inputA Recipe input A.
+     * @param inputB Recipe input B.
+     * @param inputC Recipe input C.
+     *
+     * @return {@code true} if there is a match or if inputB is not empty and inputA and inputC are both empty.
+     *
+     * @apiNote If you are trying to insert inputB call this method, otherwise call
+     * {@link #containsInputABC(Level, RegisteredResource, RegisteredResource, RegisteredResource)} or
+     * {@link #containsInputCAB(Level, RegisteredResource, RegisteredResource, RegisteredResource)} depending on which input is trying to be inserted.
+     */
+    public boolean containsInputBAC(@Nullable Level world, A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
+        return containsGrouping(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA,
+              inputC, inputCExtractor, cacheC, complexIngredientC);
+    }
+
+    /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputC is not empty and
      * inputA and inputB is empty without doing any extra validation on inputC. If however inputC is not empty and only one of the other two inputs is empty this will do
      * validation on inputC and the non-empty input.
@@ -153,6 +231,27 @@ public abstract class TripleInputRecipeCache<
      * {@link #containsInputBAC(Level, TypedInstance, TypedInstance, TypedInstance)} depending on which input is trying to be inserted.
      */
     public boolean containsInputCAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+        return containsGrouping(world, inputC, inputCExtractor, cacheC, complexIngredientC, inputA, inputAExtractor, cacheA, complexIngredientA,
+              inputB, inputBExtractor, cacheB, complexIngredientB);
+    }
+
+    /**
+     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputC is not empty and
+     * inputA and inputB is empty without doing any extra validation on inputC. If however inputC is not empty and only one of the other two inputs is empty this will do
+     * validation on inputC and the non-empty input.
+     *
+     * @param world  World.
+     * @param inputA Recipe input A.
+     * @param inputB Recipe input B.
+     * @param inputC Recipe input C.
+     *
+     * @return {@code true} if there is a match or if inputC is not empty and inputA and inputB are both empty.
+     *
+     * @apiNote If you are trying to insert inputC call this method, otherwise call
+     * {@link #containsInputABC(Level, RegisteredResource, RegisteredResource, RegisteredResource)} or
+     * {@link #containsInputBAC(Level, RegisteredResource, RegisteredResource, RegisteredResource)} depending on which input is trying to be inserted.
+     */
+    public boolean containsInputCAB(@Nullable Level world, A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
         return containsGrouping(world, inputC, inputCExtractor, cacheC, complexIngredientC, inputA, inputAExtractor, cacheA, complexIngredientA,
               inputB, inputBExtractor, cacheB, complexIngredientB);
     }

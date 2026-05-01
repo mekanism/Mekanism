@@ -35,6 +35,17 @@ public interface IEitherSideRecipeLookupHandler<I_TYPE, I_RESOURCE extends Regis
     }
 
     /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
+     *
+     * @param input Recipe input.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     */
+    default boolean containsRecipe(I_RESOURCE input) {
+        return getRecipeType().getInputCache().containsInput(getLevel(), input);
+    }
+
+    /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
      *
      * @param inputA Recipe input a.
@@ -45,6 +56,20 @@ public interface IEitherSideRecipeLookupHandler<I_TYPE, I_RESOURCE extends Regis
      * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, TypedInstance, TypedInstance)} for more details about what order to pass the inputs.
      */
     default boolean containsRecipe(INPUT inputA, INPUT inputB) {
+        return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
+    }
+
+    /**
+     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
+     *
+     * @param inputA Recipe input a.
+     * @param inputB Recipe input b.
+     *
+     * @return {@code true} if there is a match, {@code false} if there isn't.
+     *
+     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, RegisteredResource, RegisteredResource)} for more details about what order to pass the inputs.
+     */
+    default boolean containsRecipe(I_RESOURCE inputA, I_RESOURCE inputB) {
         return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
     }
 
