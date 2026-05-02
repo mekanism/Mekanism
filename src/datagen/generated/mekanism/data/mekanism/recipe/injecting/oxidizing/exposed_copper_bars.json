@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": "minecraft:copper_bars"
+  },
+  "output": {
+    "id": "minecraft:exposed_copper_bars"
+  },
+  "per_tick_usage": true
+}

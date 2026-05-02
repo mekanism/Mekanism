@@ -1,0 +1,15 @@
+{
+  "type": "mekanism:injecting",
+  "chemical_input": {
+    "amount": 1,
+    "chemical": "mekanism:oxygen"
+  },
+  "item_input": {
+    "count": 1,
+    "ingredient": "minecraft:weathered_copper_chain"
+  },
+  "output": {
+    "id": "minecraft:oxidized_copper_chain"
+  },
+  "per_tick_usage": true
+}
