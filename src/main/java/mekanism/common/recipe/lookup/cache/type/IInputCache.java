@@ -19,7 +19,7 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      *
      * @return {@code true} if this cache does have the given input, {@code false} if there isn't.
      */
-    boolean contains(STACK input);
+    boolean contains(TypedInstance<TYPE> input);
 
     /**
      * Checks if this {@link IInputCache} knows about the given input, and if it does, checks if any of the recipes that match that input type match the given recipe
@@ -30,7 +30,7 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      *
      * @return {@code true} if this cache does have the given input and a recipe that matches, {@code false} if there isn't.
      */
-    boolean contains(STACK input, Predicate<RECIPE> matchCriteria);
+    boolean contains(TypedInstance<TYPE> input, Predicate<RECIPE> matchCriteria);
 
     /**
      * Gets the recipe for the given input. Note: that no validation is done here about the input matching the recipe's criteria in regard to required amounts, all that
@@ -40,7 +40,7 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      *
      * @return Recipes for the given input that matches the given criteria, or empty if no recipe matches.
      */
-    Iterable<RECIPE> getRecipes(STACK input);
+    Iterable<RECIPE> getRecipes(TypedInstance<TYPE> input);
 
     /**
      * Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
@@ -52,7 +52,7 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      * @return Recipe for the given input that matches the given criteria, or {@code null} if no recipe matches.
      */
     @Nullable
-    RECIPE findFirstRecipe(STACK input, Predicate<RECIPE> matchCriteria);
+    RECIPE findFirstRecipe(TypedInstance<TYPE> input, Predicate<RECIPE> matchCriteria);
 
     /**
      * Maps the given ingredient and adds it into this {@link IInputCache} as a quicker lookup for the given recipe.

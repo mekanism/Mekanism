@@ -30,12 +30,12 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
     }
 
     @Override
-    public boolean contains(INPUT input) {
-        return inputCache.containsKey(createKey(input));
+    public boolean contains(TypedInstance<KEY> input) {
+        return inputCache.containsKey(input.typeHolder().value());
     }
 
     @Override
-    public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
+    public boolean contains(TypedInstance<KEY> input, Predicate<RECIPE> matchCriteria) {
         for (RECIPE recipe : getRecipes(input)) {
             if (matchCriteria.test(recipe)) {
                 return true;
@@ -46,7 +46,7 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
 
     @Nullable
     @Override
-    public RECIPE findFirstRecipe(INPUT input, Predicate<RECIPE> matchCriteria) {
+    public RECIPE findFirstRecipe(TypedInstance<KEY> input, Predicate<RECIPE> matchCriteria) {
         for (RECIPE recipe : getRecipes(input)) {
             if (matchCriteria.test(recipe)) {
                 return recipe;
@@ -56,19 +56,8 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
     }
 
     @Override
-    public Iterable<RECIPE> getRecipes(INPUT input) {
-        return inputCache.getOrDefault(createKey(input), Collections.emptyList());
-    }
-
-    /**
-     * Creates a key for the given input for use in querying our input cache.
-     *
-     * @param input Input to convert into a key.
-     *
-     * @return Key representing the given input.
-     */
-    protected final KEY createKey(INPUT input) {
-        return input.typeHolder().value();
+    public Iterable<RECIPE> getRecipes(TypedInstance<KEY> input) {
+        return inputCache.getOrDefault(input.typeHolder().value(), Collections.emptyList());
     }
 
     /**

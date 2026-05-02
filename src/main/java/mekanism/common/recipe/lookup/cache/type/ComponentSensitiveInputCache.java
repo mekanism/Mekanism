@@ -44,27 +44,27 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
      * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
      */
     @Override
-    public boolean contains(INPUT input) {
-        return super.contains(input) || componentCacheContains(input);
+    public boolean contains(TypedInstance<KEY> input) {
+        return super.contains(input) || (input instanceof DataComponentHolder dCH && componentCacheContains(input, dCH));
     }
 
-    private boolean componentCacheContains(INPUT input) {
+    private boolean componentCacheContains(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
         if (componentInputCache.isEmpty()) {
             return false;
         }
         Map<DataComponentMap, List<RECIPE>> holderMatch = componentInputCache.get(input.typeHolder().getKey());
-        return holderMatch != null && holderMatch.containsKey(input.getComponents());
+        return holderMatch != null && holderMatch.containsKey(asDCHolder.getComponents());
     }
 
     /**
      * @implNote Checks the more specific Data Component based cache before checking the more generic base type.
      */
     @Override
-    public Iterable<RECIPE> getRecipes(INPUT input) {
-        if (componentInputCache.isEmpty()) {
+    public Iterable<RECIPE> getRecipes(TypedInstance<KEY> input) {
+        if (componentInputCache.isEmpty() || !(input instanceof DataComponentHolder dataComponentHolder)) {
             return super.getRecipes(input);
         }
-        List<RECIPE> nbtRecipes = getComponentMatches(input);
+        List<RECIPE> nbtRecipes = getComponentMatches(input, dataComponentHolder);
         if (nbtRecipes == null) {
             return super.getRecipes(input);
         }
@@ -76,12 +76,12 @@ public abstract class ComponentSensitiveInputCache<KEY, INPUT extends TypedInsta
     }
 
     @Nullable
-    private List<RECIPE> getComponentMatches(INPUT input) {
+    private List<RECIPE> getComponentMatches(TypedInstance<KEY> input, DataComponentHolder asDCHolder) {
         var holderMatches = componentInputCache.get(input.typeHolder().getKey());
         if (holderMatches == null) {
             return null;
         }
-        return holderMatches.get(input.getComponents());
+        return holderMatches.get(asDCHolder.getComponents());
     }
 
     /**
