@@ -3,13 +3,16 @@ package mekanism.common.recipe.lookup.cache;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.ChemicalInputCache;
 import mekanism.common.recipe.lookup.cache.type.FluidInputCache;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,7 +48,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable Level world, FluidStack input) {
+    public boolean containsInputFluid(@Nullable Level world, TypedInstance<Fluid> input) {
         return containsInput(world, input, RotaryRecipe::getFluidInput, fluidInputCache, complexFluidInputRecipes);
     }
 
@@ -57,7 +60,7 @@ public class RotaryInputRecipeCache extends AbstractInputRecipeCache<RotaryRecip
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable Level world, ChemicalStack input) {
+    public boolean containsInputChemical(@Nullable Level world, TypedInstance<Chemical> input) {
         return containsInput(world, input, RotaryRecipe::getChemicalInput, chemicalInputCache, complexChemicalInputRecipes);
     }
 

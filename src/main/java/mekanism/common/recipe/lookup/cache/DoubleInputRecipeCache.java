@@ -57,7 +57,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputA(@Nullable Level world, INPUT_A input) {
+    public boolean containsInputA(@Nullable Level world, TypedInstance<HOLDER_A> input) {
         return containsInput(world, input, inputAExtractor, cacheA, complexIngredientA);
     }
 
@@ -69,7 +69,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputB(@Nullable Level world, INPUT_B input) {
+    public boolean containsInputB(@Nullable Level world, TypedInstance<HOLDER_B> input) {
         return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -86,7 +86,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call
      * {@link #containsInputBA}.
      */
-    public boolean containsInputAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
+    public boolean containsInputAB(@Nullable Level world, TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return containsPairing(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -103,7 +103,7 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call
      * {@link #containsInputAB}.
      */
-    public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
+    public boolean containsInputBA(@Nullable Level world, TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);
     }
 

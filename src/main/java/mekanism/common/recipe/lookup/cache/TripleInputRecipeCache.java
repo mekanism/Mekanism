@@ -64,7 +64,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputA(@Nullable Level world, INPUT_A input) {
+    public boolean containsInputA(@Nullable Level world, TypedInstance<HOLDER_A> input) {
         return containsInput(world, input, inputAExtractor, cacheA, complexIngredientA);
     }
 
@@ -76,7 +76,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputB(@Nullable Level world, INPUT_B input) {
+    public boolean containsInputB(@Nullable Level world, TypedInstance<HOLDER_B> input) {
         return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -88,7 +88,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputC(@Nullable Level world, INPUT_C input) {
+    public boolean containsInputC(@Nullable Level world, TypedInstance<HOLDER_C> input) {
         return containsInput(world, input, inputCExtractor, cacheC, complexIngredientC);
     }
 

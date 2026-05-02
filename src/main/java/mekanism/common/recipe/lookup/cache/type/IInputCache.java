@@ -78,5 +78,5 @@ public interface IInputCache<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT
      *
      * @return {@code true} if the input is empty.
      */
-    boolean isEmpty(STACK input);
+    boolean isEmpty(TypedInstance<TYPE> input);
 }

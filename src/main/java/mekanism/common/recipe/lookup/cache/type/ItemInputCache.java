@@ -4,12 +4,15 @@ import java.util.List;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import org.jetbrains.annotations.UnknownNullability;
 
 //TODO - 26.1 - should it still use Item or should we use holders?
 public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Item, ItemStack, ItemStackIngredient, RECIPE> {
@@ -53,7 +56,12 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
     }
 
     @Override
-    public boolean isEmpty(ItemStack input) {
-        return input.isEmpty();
+    public boolean isEmpty(@UnknownNullability TypedInstance<Item> input) {
+        return switch (input) {
+            case ItemStack stack -> stack.isEmpty();
+            case ItemResource resource -> resource.isEmpty();
+            case null -> true;
+            default -> false;
+        };
     }
 }

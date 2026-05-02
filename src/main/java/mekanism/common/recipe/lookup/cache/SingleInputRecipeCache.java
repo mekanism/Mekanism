@@ -47,7 +47,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable Level world, STACK input) {
+    public boolean containsInput(@Nullable Level world, TypedInstance<TYPE> input) {
         return containsInput(world, input, inputExtractor, cache, complexRecipes);
     }
 

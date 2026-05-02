@@ -4,6 +4,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -11,6 +12,8 @@ import net.neoforged.neoforge.fluids.crafting.CompoundFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.DataComponentFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentSensitiveInputCache<Fluid, FluidStack, FluidStackIngredient, RECIPE> {
 
@@ -62,7 +65,12 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends Component
     }
 
     @Override
-    public boolean isEmpty(FluidStack input) {
-        return input.isEmpty();
+    public boolean isEmpty(@UnknownNullability TypedInstance<Fluid> input) {
+        return switch (input) {
+            case FluidStack stack -> stack.isEmpty();
+            case FluidResource resource -> resource.isEmpty();
+            case null -> true;
+            default -> false;
+        };
     }
 }

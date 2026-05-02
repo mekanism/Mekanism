@@ -2,10 +2,13 @@ package mekanism.common.recipe.lookup.cache.type;
 
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseInputCache<Chemical, ChemicalStack, ChemicalStackIngredient, RECIPE> {
 
@@ -21,7 +24,12 @@ public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseIn
     }
 
     @Override
-    public boolean isEmpty(ChemicalStack input) {
-        return input.isEmpty();
+    public boolean isEmpty(@UnknownNullability TypedInstance<Chemical> input) {
+        return switch (input) {
+            case ChemicalStack stack -> stack.isEmpty();
+            case ChemicalResource resource -> resource.isEmpty();
+            case null -> true;
+            default -> false;
+        };
     }
 }

@@ -156,7 +156,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     private boolean isValidGas(@NotNull ChemicalStack chemical) {
-        return getRecipeType().getInputCache().containsInput(level, chemical);
+        return getRecipeType().getInputCache().containsInputChemical(level, chemical);
     }
 
     @NotNull
@@ -169,7 +169,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     }
 
     private boolean isValidFluid(@NotNull FluidStack fluidStack) {
-        return getRecipeType().getInputCache().containsInput(level, fluidStack);
+        return getRecipeType().getInputCache().containsInputFluid(level, fluidStack);
     }
 
     @NotNull
