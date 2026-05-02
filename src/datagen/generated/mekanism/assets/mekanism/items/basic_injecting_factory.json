@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/basic_injecting_factory"
+    "model": "mekanism:block/factory/injecting/basic"
   }
 }

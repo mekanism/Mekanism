@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/basic_sawing_factory"
+    "model": "mekanism:block/factory/sawing/basic"
   }
 }

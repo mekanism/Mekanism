@@ -11,6 +11,7 @@ import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -258,6 +259,16 @@ public class MekanismModelProvider extends BaseModelProvider {
                                 .select(true, VariantMutator.MODEL.withValue(activeStabilizer))
                     )
         );
+
+        for (FactoryType factoryType : FactoryType.values()) {
+            for (FactoryTier tier : FactoryTier.values()) {
+                ItemBlockFactory item = MekanismBlocks.getFactory(tier, factoryType).asItem();
+                blockModels.itemModelOutput.accept(
+                      item,
+                      ItemModelUtils.plainModel(modLocation("block/factory/%s/%s".formatted(factoryType.getRegistryNameComponent(), tier.getBaseTier().getLowerName())))
+                );
+            }
+        }
     }
 
     private void registerManualItemModels(ItemModelGenerators itemModels) {

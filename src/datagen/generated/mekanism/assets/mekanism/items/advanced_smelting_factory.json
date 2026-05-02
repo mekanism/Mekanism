@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/advanced_smelting_factory"
+    "model": "mekanism:block/factory/smelting/advanced"
   }
 }

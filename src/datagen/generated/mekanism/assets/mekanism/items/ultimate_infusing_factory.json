@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/ultimate_infusing_factory"
+    "model": "mekanism:block/factory/infusing/ultimate"
   }
 }

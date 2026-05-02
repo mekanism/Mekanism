@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/elite_crushing_factory"
+    "model": "mekanism:block/factory/crushing/elite"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/ultimate_sawing_factory"
+    "model": "mekanism:block/factory/sawing/ultimate"
   }
 }

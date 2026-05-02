@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/advanced_purifying_factory"
+    "model": "mekanism:block/factory/purifying/advanced"
   }
 }
