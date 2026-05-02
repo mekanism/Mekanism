@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
@@ -53,6 +54,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,8 +85,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private long usedSoFar;
 
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
+    protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
+    protected final ILongInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")

@@ -8,6 +8,7 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.util.TriPredicate;
@@ -16,10 +17,10 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with three inputs.
  */
-public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends InputIngredient<INPUT_A>, INPUT_B, INGREDIENT_B extends InputIngredient<INPUT_B>,
-      INPUT_C, INGREDIENT_C extends InputIngredient<INPUT_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
-      CACHE_A extends IInputCache<INPUT_A, INGREDIENT_A, RECIPE>, CACHE_B extends IInputCache<INPUT_B, INGREDIENT_B, RECIPE>,
-      CACHE_C extends IInputCache<INPUT_C, INGREDIENT_C, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
+public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, INGREDIENT_A extends InputIngredient<HOLDER_A, INPUT_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, INGREDIENT_B extends InputIngredient<HOLDER_B, INPUT_B>,
+      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, INGREDIENT_C extends InputIngredient<HOLDER_C, INPUT_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+      CACHE_A extends IInputCache<HOLDER_A, INPUT_A, INGREDIENT_A, RECIPE>, CACHE_B extends IInputCache<HOLDER_B, INPUT_B, INGREDIENT_B, RECIPE>,
+      CACHE_C extends IInputCache<HOLDER_C, INPUT_C, INGREDIENT_C, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexIngredientA = new HashSet<>();
     private final Set<RECIPE> complexIngredientB = new HashSet<>();
@@ -103,8 +104,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputA is not empty and inputB and inputC are both empty.
      *
-     * @apiNote If you are trying to insert inputA call this method, otherwise call {@link #containsInputBAC(Level, Object, Object, Object)} or
-     * {@link #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputA call this method, otherwise call {@link #containsInputBAC} or
+     * {@link #containsInputCAB} depending on which input is trying to be inserted.
      */
     public boolean containsInputABC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB,
@@ -123,8 +124,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputB is not empty and inputA and inputC are both empty.
      *
-     * @apiNote If you are trying to insert inputB call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or
-     * {@link #containsInputCAB(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputB call this method, otherwise call {@link #containsInputABC} or
+     * {@link #containsInputCAB} depending on which input is trying to be inserted.
      */
     public boolean containsInputBAC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA,
@@ -143,8 +144,8 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      *
      * @return {@code true} if there is a match or if inputC is not empty and inputA and inputB are both empty.
      *
-     * @apiNote If you are trying to insert inputC call this method, otherwise call {@link #containsInputABC(Level, Object, Object, Object)} or
-     * {@link #containsInputBAC(Level, Object, Object, Object)} depending on which input is trying to be inserted.
+     * @apiNote If you are trying to insert inputC call this method, otherwise call {@link #containsInputABC} or
+     * {@link #containsInputBAC} depending on which input is trying to be inserted.
      */
     public boolean containsInputCAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return containsGrouping(world, inputC, inputCExtractor, cacheC, complexIngredientC, inputA, inputAExtractor, cacheA, complexIngredientA,
@@ -163,9 +164,9 @@ public abstract class TripleInputRecipeCache<INPUT_A, INGREDIENT_A extends Input
      * <li>If only the first input is not empty: This will return true.</li>
      * </ul>
      */
-    private <INPUT_1, INGREDIENT_1 extends InputIngredient<INPUT_1>, CACHE_1 extends IInputCache<INPUT_1, INGREDIENT_1, RECIPE>,
-          INPUT_2, INGREDIENT_2 extends InputIngredient<INPUT_2>, CACHE_2 extends IInputCache<INPUT_2, INGREDIENT_2, RECIPE>,
-          INPUT_3, INGREDIENT_3 extends InputIngredient<INPUT_3>, CACHE_3 extends IInputCache<INPUT_3, INGREDIENT_3, RECIPE>> boolean containsGrouping(@Nullable Level world,
+    private <HOLDER_1, INPUT_1 extends TypedInstance<HOLDER_1>, INGREDIENT_1 extends InputIngredient<HOLDER_1, INPUT_1>, CACHE_1 extends IInputCache<HOLDER_1, INPUT_1, INGREDIENT_1, RECIPE>,
+          HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>, INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>,
+          HOLDER_3, INPUT_3 extends TypedInstance<HOLDER_3>, INGREDIENT_3 extends InputIngredient<HOLDER_3, INPUT_3>, CACHE_3 extends IInputCache<HOLDER_3, INPUT_3, INGREDIENT_3, RECIPE>> boolean containsGrouping(@Nullable Level world,
           INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
           INPUT_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
           INPUT_3 input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {

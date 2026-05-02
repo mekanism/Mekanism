@@ -1,6 +1,7 @@
 package mekanism.common.recipe.lookup;
 
 import java.util.function.Predicate;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -9,14 +10,17 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleItem;
 import mekanism.common.recipe.lookup.cache.SingleInputRecipeCache;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that take a single input using the input cache.
  */
-public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, INPUT_CACHE extends SingleInputRecipeCache<INPUT, ?, RECIPE, ?>>
+public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>>
       extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
@@ -50,25 +54,25 @@ public interface ISingleRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<INPUT> inputHandler) {
+    default RECIPE findFirstRecipe(IInputHandler<TYPE, INPUT> inputHandler) {
         return findFirstRecipe(inputHandler.getInput());
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<ItemStack, RECIPE, SingleItem<RECIPE>> {
+    interface ItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ItemStack>> extends ISingleRecipeLookupHandler<Item, ItemStack, RECIPE, SingleItem<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<FluidStack, RECIPE, SingleFluid<RECIPE>> {
+    interface FluidRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<FluidStack>> extends ISingleRecipeLookupHandler<Fluid, FluidStack, RECIPE, SingleFluid<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link ISingleRecipeLookupHandler} not as messy.
      */
-    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>> extends ISingleRecipeLookupHandler<ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
+    interface ChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & Predicate<ChemicalStack>> extends ISingleRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, SingleChemical<RECIPE>> {
     }
 }

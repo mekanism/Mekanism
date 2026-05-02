@@ -5,13 +5,14 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
-public interface IIngredientCreator<TYPE, STACK, INGREDIENT extends InputIngredient<@NotNull STACK>> {//TODO - 26.1: Add helpers that take TypedInstance?
+public interface IIngredientCreator<TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, @NotNull STACK>> {//TODO - 26.1: Add helpers that take TypedInstance?
 
     /**
      * Creates an Ingredient that matches a given stack.

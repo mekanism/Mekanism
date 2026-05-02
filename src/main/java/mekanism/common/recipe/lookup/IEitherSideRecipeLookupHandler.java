@@ -1,6 +1,7 @@
 package mekanism.common.recipe.lookup;
 
 import java.util.function.BiPredicate;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.MekanismRecipe;
@@ -8,6 +9,7 @@ import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.EitherSideInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.EitherSideChemical;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,8 +17,8 @@ import org.jetbrains.annotations.Nullable;
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs of the same type that are
  * valid in either slot/tank.
  */
-public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
-      INPUT_CACHE extends EitherSideInputRecipeCache<INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
+      INPUT_CACHE extends EitherSideInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
@@ -37,7 +39,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, Object, Object)} for more details about what order to pass the inputs.
+     * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, INPUT, INPUT)} for more details about what order to pass the inputs.
      */
     default boolean containsRecipe(INPUT inputA, INPUT inputB) {
         return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
@@ -65,7 +67,7 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      */
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<INPUT> inputAHandler, IInputHandler<INPUT> inputBHandler) {
+    default RECIPE findFirstRecipe(IInputHandler<TYPE, INPUT> inputAHandler, IInputHandler<TYPE, INPUT> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 
@@ -73,6 +75,6 @@ public interface IEitherSideRecipeLookupHandler<INPUT, RECIPE extends MekanismRe
      * Helper interface to make the generics that we have to pass to {@link IEitherSideRecipeLookupHandler} not as messy.
      */
     interface EitherSideChemicalRecipeLookupHandler<RECIPE extends ChemicalChemicalToChemicalRecipe> extends
-          IEitherSideRecipeLookupHandler<ChemicalStack, RECIPE, EitherSideChemical<RECIPE>> {
+          IEitherSideRecipeLookupHandler<Chemical, ChemicalStack, RECIPE, EitherSideChemical<RECIPE>> {
     }
 }

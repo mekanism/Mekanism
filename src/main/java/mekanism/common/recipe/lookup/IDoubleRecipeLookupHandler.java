@@ -1,6 +1,7 @@
 package mekanism.common.recipe.lookup;
 
 import java.util.function.BiPredicate;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
@@ -9,16 +10,19 @@ import mekanism.common.recipe.lookup.cache.DoubleInputRecipeCache;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.DoubleItem;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemChemical;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs.
  */
-public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>,
-      INPUT_CACHE extends DoubleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, RECIPE, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>,
+      INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
@@ -28,8 +32,8 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} for
-     * more details about when this method should be called versus when {@link #containsRecipeBA(Object, Object)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, INPUT_A, INPUT_B)} and {@link DoubleInputRecipeCache#containsInputBA(Level, INPUT_A, INPUT_B)} for
+     * more details about when this method should be called versus when {@link #containsRecipeBA(INPUT_B, INPUT_A)} should be called.
      */
     default boolean containsRecipeAB(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
@@ -43,8 +47,8 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and {@link DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} for
-     * more details about when this method should be called versus when {@link #containsRecipeAB(Object, Object)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, INPUT_A, INPUT_B)} and {@link DoubleInputRecipeCache#containsInputBA(Level, INPUT_B, INPUT_A)} for
+     * more details about when this method should be called versus when {@link #containsRecipeAB(INPUT_A, INPUT_B)} should be called.
      */
     default boolean containsRecipeBA(INPUT_A inputA, INPUT_B inputB) {
         return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
@@ -94,7 +98,7 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      */
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<INPUT_A> inputAHandler, IInputHandler<INPUT_B> inputBHandler) {
+    default RECIPE findFirstRecipe(IInputHandler<HOLDER_A, INPUT_A> inputAHandler, IInputHandler<HOLDER_B, INPUT_B> inputBHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput());
     }
 
@@ -102,20 +106,20 @@ public interface IDoubleRecipeLookupHandler<INPUT_A, INPUT_B, RECIPE extends Mek
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
     interface DoubleItemRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ItemStack>> extends
-          IDoubleRecipeLookupHandler<ItemStack, ItemStack, RECIPE, DoubleItem<RECIPE>> {
+          IDoubleRecipeLookupHandler<Item, ItemStack, Item, ItemStack, RECIPE, DoubleItem<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
     interface ItemChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<ItemStack, ChemicalStack>> extends
-          IDoubleRecipeLookupHandler<ItemStack, ChemicalStack, RECIPE, ItemChemical<RECIPE>> {
+          IDoubleRecipeLookupHandler<Item, ItemStack, Chemical, ChemicalStack, RECIPE, ItemChemical<RECIPE>> {
     }
 
     /**
      * Helper interface to make the generics that we have to pass to {@link IDoubleRecipeLookupHandler} not as messy.
      */
     interface FluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & BiPredicate<FluidStack, ChemicalStack>> extends
-          IDoubleRecipeLookupHandler<FluidStack, ChemicalStack, RECIPE, FluidChemical<RECIPE>> {
+          IDoubleRecipeLookupHandler<Fluid, FluidStack, Chemical, ChemicalStack, RECIPE, FluidChemical<RECIPE>> {
     }
 }

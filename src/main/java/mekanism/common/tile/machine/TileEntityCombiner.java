@@ -39,6 +39,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeInput;
@@ -59,8 +60,8 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final IInputHandler<@NotNull ItemStack> inputHandler;
-    private final IInputHandler<@NotNull ItemStack> extraInputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> extraInputHandler;
 
     private MachineEnergyContainer<TileEntityCombiner> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getMainInput", docPlaceholder = "main input slot")

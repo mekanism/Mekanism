@@ -5,6 +5,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
@@ -84,8 +85,8 @@ public class TileEntityPigmentMixer extends TileEntityRecipeMachine<ChemicalChem
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
-    private final IInputHandler<@NotNull ChemicalStack> leftInputHandler;
-    private final IInputHandler<@NotNull ChemicalStack> rightInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> leftInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityPigmentMixer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem", docPlaceholder = "left input slot")

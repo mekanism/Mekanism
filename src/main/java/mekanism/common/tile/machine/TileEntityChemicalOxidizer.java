@@ -43,6 +43,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,7 +67,7 @@ public class TileEntityChemicalOxidizer extends TileEntityProgressMachine<ItemSt
     public IChemicalTank gasTank;
 
     private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
-    private final IInputHandler<@NotNull ItemStack> inputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalOxidizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")

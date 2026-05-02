@@ -37,6 +37,7 @@ import moze_intel.projecte.api.nss.NSSItem;
 import moze_intel.projecte.api.nss.NormalizedSimpleStack;
 import net.minecraft.core.Holder;
 import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
@@ -136,26 +137,26 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return false;
     }
 
-    protected static <INPUT, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<INPUT> inputs,
-          Function<INPUT, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker, Function<SequencedCollection<INPUT>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
+    protected static <HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDERTYPE, STACK> inputs,
+          Function<STACK, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker, Function<SequencedCollection<STACK>, Object2IntMap<NormalizedSimpleStack>> toIngredient,
           @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
           TriPredicate<IMappingCollector<NormalizedSimpleStack, Long>, OUTPUT, Object2IntMap<NormalizedSimpleStack>> conversionAdder) {
-        Map<OUTPUT, List<INPUT>> reverseLookup = hashStrategy == null ? new HashMap<>() : new Object2ObjectOpenCustomHashMap<>(hashStrategy);
-        for (INPUT representation : inputs.getRepresentations(ContextMap.EMPTY)) {
+        Map<OUTPUT, List<STACK>> reverseLookup = hashStrategy == null ? new HashMap<>() : new Object2ObjectOpenCustomHashMap<>(hashStrategy);
+        for (STACK representation : inputs.getRepresentations(ContextMap.EMPTY)) {
             OUTPUT output = recipe.apply(representation);
             if (!emptyChecker.test(output)) {
                 reverseLookup.computeIfAbsent(output, k -> new ArrayList<>()).add(representation);
             }
         }
         boolean handled = false;
-        for (Map.Entry<OUTPUT, List<INPUT>> entry : reverseLookup.entrySet()) {
+        for (Map.Entry<OUTPUT, List<STACK>> entry : reverseLookup.entrySet()) {
             handled |= conversionAdder.test(mapper, entry.getKey(), toIngredient.apply(entry.getValue()));
         }
         return handled;
     }
 
-    protected static <INPUT_A, INPUT_B, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<INPUT_A> inputA,
-          InputIngredient<INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
+          InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
           Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
           @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
@@ -163,8 +164,8 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return addConversions(mapper, inputA, inputB, recipe, emptyChecker, toIngredientA, toIngredientB, hashStrategy, conversionAdder, 1, contextMap);
     }
 
-    protected static <INPUT_A, INPUT_B, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<INPUT_A> inputA,
-          InputIngredient<INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
+          InputIngredient<HOLDER_B, INPUT_B> inputB, BiFunction<INPUT_A, INPUT_B, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
           Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
           @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
@@ -200,8 +201,8 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
         return handled;
     }
 
-    protected static <INPUT_A, INPUT_B, INPUT_C, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<INPUT_A> inputA,
-          InputIngredient<INPUT_B> inputB, InputIngredient<INPUT_C> inputC, Function3<INPUT_A, INPUT_B, INPUT_C, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
+    protected static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, OUTPUT> boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, InputIngredient<HOLDER_A, INPUT_A> inputA,
+          InputIngredient<HOLDER_B, INPUT_B> inputB, InputIngredient<HOLDER_C, INPUT_C> inputC, Function3<INPUT_A, INPUT_B, INPUT_C, OUTPUT> recipe, Predicate<OUTPUT> emptyChecker,
           Function<SequencedCollection<INPUT_A>, Object2IntMap<NormalizedSimpleStack>> toIngredientA,
           Function<SequencedCollection<INPUT_B>, Object2IntMap<NormalizedSimpleStack>> toIngredientB,
           Function<SequencedCollection<INPUT_C>, Object2IntMap<NormalizedSimpleStack>> toIngredientC, @Nullable Hash.Strategy<? super OUTPUT> hashStrategy,
@@ -287,9 +288,9 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
 
     protected record MekFakeGroupHelper(INSSFakeGroupManager manager) {
 
-        public Object2IntMap<NormalizedSimpleStack> forIngredients(ContextMap contextMap, InputIngredient<?>... ingredients) {
+        public Object2IntMap<NormalizedSimpleStack> forIngredients(ContextMap contextMap, InputIngredient<?, ?>... ingredients) {
             Object2IntMap<NormalizedSimpleStack> inputs = new Object2IntArrayMap<>(ingredients.length);
-            for (InputIngredient<?> ingredient : ingredients) {
+            for (InputIngredient<?, ?> ingredient : ingredients) {
                 Object2IntMap<NormalizedSimpleStack> representations = switch (ingredient) {
                     case ItemStackIngredient itemIngredient -> forIngredient(itemIngredient, contextMap);
                     case FluidStackIngredient fluidIngredient -> forIngredient(fluidIngredient, contextMap);

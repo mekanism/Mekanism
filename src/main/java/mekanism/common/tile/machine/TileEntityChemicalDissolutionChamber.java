@@ -6,6 +6,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalDissolutionRecipe;
@@ -52,6 +53,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StatUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -83,8 +85,8 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     private long usedSoFar;
 
     private final IOutputHandler<ChemicalStack> outputHandler;
-    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
+    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem", docPlaceholder = "gas input item slot")

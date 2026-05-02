@@ -8,6 +8,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -61,6 +62,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -101,8 +103,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     private final IOutputHandler<@NotNull ChemicalStack> gasOutputHandler;
     private final IOutputHandler<@NotNull FluidStackTemplate> fluidOutputHandler;
-    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
-    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
+    private final IInputHandler<Fluid, @NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
     private long clientEnergyUsed = 0;
     private int baselineMaxOperations = 1;

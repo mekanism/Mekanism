@@ -7,16 +7,19 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -29,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote This is a wrapper around {@link SizedFluidIngredient}
  */
 @NothingNullByDefault
-public final class FluidStackIngredient implements InputIngredient<@NotNull FluidStack> {
+public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNull FluidStack> {
 
     /**
      * A codec which can (de)encode fluid stack ingredients.
@@ -80,8 +83,17 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     }
 
     @Override
-    public boolean testType(FluidStack stack) {
-        Objects.requireNonNull(stack);
+    public boolean testType(TypedInstance<Fluid> instance) {
+        Objects.requireNonNull(instance);
+        FluidStack stack;
+        switch (instance) {
+            case FluidStack stackIn -> stack = stackIn;
+            case FluidStackTemplate template -> stack = template.create();
+            case FluidResource resource -> stack = resource.toStack(1);
+            default -> {
+                return false;
+            }
+        }
         return ingredient.ingredient().test(stack);
     }
 
@@ -91,8 +103,8 @@ public final class FluidStackIngredient implements InputIngredient<@NotNull Flui
     }
 
     @Override
-    public long getNeededAmount(FluidStack stack) {
-        return testType(stack) ? ingredient.amount() : 0;
+    public long getNeededAmount(TypedInstance<Fluid> instance) {
+        return testType(instance) ? ingredient.amount() : 0;
     }
 
     @Override

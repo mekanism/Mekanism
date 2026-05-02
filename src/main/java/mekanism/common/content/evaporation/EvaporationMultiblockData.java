@@ -50,6 +50,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -99,7 +100,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private final Int2ObjectMap<BlockCapabilityCache<IEvaporationSolar, Void>> cachedSolar = new Int2ObjectArrayMap<>(4);
 
     private final IOutputHandler<@NotNull FluidStackTemplate> outputHandler;
-    private final IInputHandler<@NotNull FluidStack> inputHandler;
+    private final IInputHandler<Fluid, @NotNull FluidStack> inputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItemInput", docPlaceholder = "input side's input slot")
     final FluidInventorySlot inputInputSlot;

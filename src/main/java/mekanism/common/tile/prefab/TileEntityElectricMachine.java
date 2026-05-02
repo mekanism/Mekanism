@@ -32,6 +32,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
@@ -49,7 +50,7 @@ public abstract class TileEntityElectricMachine extends TileEntityProgressMachin
     );
     public static final int BASE_TICKS_REQUIRED = 10 * SharedConstants.TICKS_PER_SECOND;
 
-    protected final IInputHandler<@NotNull ItemStack> inputHandler;
+    protected final IInputHandler<Item, @NotNull ItemStack> inputHandler;
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
 
     private MachineEnergyContainer<TileEntityElectricMachine> energyContainer;

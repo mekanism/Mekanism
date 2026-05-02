@@ -4,6 +4,7 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
@@ -49,6 +50,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
@@ -80,8 +82,8 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     private long usedSoFar;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<@NotNull ChemicalStack> pigmentInputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
+    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> pigmentInputHandler;
 
     private MachineEnergyContainer<TileEntityPaintingMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputPigmentItem", docPlaceholder = "pigment slot")

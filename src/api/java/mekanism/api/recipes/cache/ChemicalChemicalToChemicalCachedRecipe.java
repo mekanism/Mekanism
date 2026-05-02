@@ -7,6 +7,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
@@ -22,8 +23,8 @@ import org.jetbrains.annotations.Nullable;
 public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemicalToChemicalRecipe> extends CachedRecipe<RECIPE> {
 
     private final IOutputHandler<ChemicalStack> outputHandler;
-    private final IInputHandler<ChemicalStack> leftInputHandler;
-    private final IInputHandler<ChemicalStack> rightInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> leftInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> rightInputHandler;
     private final BiConsumer<ChemicalStack, ChemicalStack> inputsSetter;
     private final Consumer<ChemicalStack> outputSetter;
     private final Supplier<ChemicalStackIngredient> leftInput;
@@ -46,8 +47,8 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
      * @param rightInputHandler Right input handler.
      * @param outputHandler     Output handler.
      */
-    public ChemicalChemicalToChemicalCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<ChemicalStack> leftInputHandler,
-          IInputHandler<ChemicalStack> rightInputHandler, IOutputHandler<ChemicalStack> outputHandler) {
+    public ChemicalChemicalToChemicalCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Chemical, ChemicalStack> leftInputHandler,
+          IInputHandler<Chemical, ChemicalStack> rightInputHandler, IOutputHandler<ChemicalStack> outputHandler) {
         super(recipe, recheckAllErrors);
         this.leftInputHandler = Objects.requireNonNull(leftInputHandler, "Left input handler cannot be null.");
         this.rightInputHandler = Objects.requireNonNull(rightInputHandler, "Right input handler cannot be null.");

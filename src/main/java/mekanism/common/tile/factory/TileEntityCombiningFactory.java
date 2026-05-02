@@ -32,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderLookup.Provider;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.Block;
@@ -55,7 +56,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
           RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final IInputHandler<@NotNull ItemStack> extraInputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> extraInputHandler;
 
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getSecondaryInput", docPlaceholder = "secondary input slot")
     InputInventorySlot extraSlot;

@@ -3,6 +3,7 @@ package mekanism.api.recipes.ingredients;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.annotations.MethodsAreNotNullByDefault;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.util.context.ContextMap;
 import org.jetbrains.annotations.NotNull;
 
@@ -10,7 +11,7 @@ import org.jetbrains.annotations.NotNull;
  * Interface describing the base methods common to all inputs of our recipes.
  */
 @MethodsAreNotNullByDefault
-public interface InputIngredient<TYPE> extends Predicate<TYPE> {
+public interface InputIngredient<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> extends Predicate<STACK> {
 
     /**
      * Evaluates this predicate on the given argument, ignoring any size data.
@@ -19,7 +20,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return {@code true} if the input argument matches the predicate, otherwise {@code false}
      */
-    boolean testType(@NotNull TYPE type);
+    boolean testType(@NotNull TypedInstance<HOLDERTYPE> type);
 
     /**
      * Gets a copy of the internal instance that matches the given argument.
@@ -28,7 +29,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    TYPE getMatchingInstance(TYPE type);
+    STACK getMatchingInstance(STACK type);
 
     /**
      * Gets the amount of the given argument that is needed, or zero if the given argument doesn't match.
@@ -37,7 +38,7 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @return Amount of the given argument that is needed.
      */
-    long getNeededAmount(TYPE type);
+    long getNeededAmount(TypedInstance<HOLDERTYPE> type);
 
     /**
      * Checks if this ingredient has any matching instances, in most cases this should be {@code false}, but for cases like tags this may not always be the case.
@@ -55,5 +56,5 @@ public interface InputIngredient<TYPE> extends Predicate<TYPE> {
      *
      * @apiNote Do not modify any of the values returned by the representations
      */
-    List<TYPE> getRepresentations(ContextMap context);
+    List<STACK> getRepresentations(ContextMap context);
 }

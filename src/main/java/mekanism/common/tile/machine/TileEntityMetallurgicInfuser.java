@@ -5,6 +5,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
@@ -55,6 +56,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
@@ -86,8 +88,8 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     private long usedSoFar;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final ILongInputHandler<@NotNull ChemicalStack> infusionInputHandler;
-    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> infusionInputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInfuseTypeItem", docPlaceholder = "infusion (extra) input slot")

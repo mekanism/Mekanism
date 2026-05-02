@@ -3,14 +3,16 @@ package mekanism.api.recipes.inputs;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import net.minecraft.core.TypedInstance;
 
 /**
  * Interface describing handling of an input.
  *
- * @param <INPUT> Type of input handled by this handler.
+ * @param <HOLDERTYPE> Type of input handled by this handler.
+ * @param <STACK> Stack Type of HOLDERTYPE.
  */
 @NothingNullByDefault
-public interface IInputHandler<INPUT> {
+public interface IInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> {
 
     /**
      * Returns the currently stored input.
@@ -27,7 +29,7 @@ public interface IInputHandler<INPUT> {
      *
      * @apiNote <strong>IMPORTANT:</strong> Do not modify this value.
      */
-    INPUT getInput();
+    STACK getInput();
 
     /**
      * Gets a copy of the recipe's ingredient that matches the stored input.
@@ -36,7 +38,7 @@ public interface IInputHandler<INPUT> {
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    INPUT getRecipeInput(InputIngredient<INPUT> recipeIngredient);
+    STACK getRecipeInput(InputIngredient<HOLDERTYPE, STACK> recipeIngredient);
 
     /**
      * Adds {@code operations} operations worth of {@code recipeInput} from the input.
@@ -44,7 +46,7 @@ public interface IInputHandler<INPUT> {
      * @param recipeInput Recipe input result.
      * @param operations  Operations to perform.
      */
-    void use(INPUT recipeInput, int operations);
+    void use(STACK recipeInput, int operations);
 
     /**
      * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called
@@ -53,7 +55,7 @@ public interface IInputHandler<INPUT> {
      * @param tracker     Tracker of current errors and max operations.
      * @param recipeInput Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
      */
-    default void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput) {
+    default void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput) {
         calculateOperationsCanSupport(tracker, recipeInput, 1);
     }
 
@@ -65,5 +67,5 @@ public interface IInputHandler<INPUT> {
      * @param recipeInput     Recipe input gotten from {@link #getRecipeInput(InputIngredient)}.
      * @param usageMultiplier Usage multiplier to multiply the recipeInput's amount by per operation.
      */
-    void calculateOperationsCanSupport(OperationTracker tracker, INPUT recipeInput, int usageMultiplier);
+    void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, int usageMultiplier);
 }

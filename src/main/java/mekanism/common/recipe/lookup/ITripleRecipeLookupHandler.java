@@ -1,13 +1,17 @@
 package mekanism.common.recipe.lookup;
 
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.common.recipe.lookup.IRecipeLookupHandler.IRecipeTypedLookupHandler;
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.ItemFluidChemical;
 import mekanism.common.recipe.lookup.cache.TripleInputRecipeCache;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.util.TriPredicate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -15,8 +19,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes three inputs.
  */
-public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
-      INPUT_CACHE extends TripleInputRecipeCache<INPUT_A, ?, INPUT_B, ?, INPUT_C, ?, RECIPE, ?, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+      INPUT_CACHE extends TripleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, HOLDER_C, INPUT_C, ?, RECIPE, ?, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
@@ -27,10 +31,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
-     * for more details about when this method should be called versus when {@link #containsRecipeBAC(Object, Object, Object)} or
-     * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
+     * for more details about when this method should be called versus when {@link #containsRecipeBAC(INPUT_B, INPUT_A, INPUT_C)} or
+     * {@link #containsRecipeCAB(INPUT_C, INPUT_A, INPUT_B)} should be called.
      */
     default boolean containsRecipeABC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputABC(getLevel(), inputA, inputB, inputC);
@@ -45,10 +49,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
-     * for more details about when this method should be called versus when {@link #containsRecipeABC(Object, Object, Object)} or
-     * {@link #containsRecipeCAB(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
+     * for more details about when this method should be called versus when {@link #containsRecipeABC(INPUT_A, INPUT_B, INPUT_C)} or
+     * {@link #containsRecipeCAB(INPUT_C, INPUT_A, INPUT_B)} should be called.
      */
     default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputBAC(getLevel(), inputA, inputB, inputC);
@@ -63,10 +67,10 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, Object, Object, Object)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, Object, Object, Object)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, Object, Object, Object)}
-     * for more details about when this method should be called versus when {@link #containsRecipeABC(Object, Object, Object)} or
-     * {@link #containsRecipeBAC(Object, Object, Object)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
+     * for more details about when this method should be called versus when {@link #containsRecipeABC(INPUT_A, INPUT_B, INPUT_C)} or
+     * {@link #containsRecipeBAC(INPUT_B, INPUT_A, INPUT_C)} should be called.
      */
     default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
         return getRecipeType().getInputCache().containsInputCAB(getLevel(), inputA, inputB, inputC);
@@ -129,7 +133,7 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      */
     @Nullable
-    default RECIPE findFirstRecipe(IInputHandler<INPUT_A> inputAHandler, IInputHandler<INPUT_B> inputBHandler, IInputHandler<INPUT_C> inputCHandler) {
+    default RECIPE findFirstRecipe(IInputHandler<HOLDER_A, INPUT_A> inputAHandler, IInputHandler<HOLDER_B, INPUT_B> inputBHandler, IInputHandler<HOLDER_C, INPUT_C> inputCHandler) {
         return findFirstRecipe(inputAHandler.getInput(), inputBHandler.getInput(), inputCHandler.getInput());
     }
 
@@ -137,6 +141,6 @@ public interface ITripleRecipeLookupHandler<INPUT_A, INPUT_B, INPUT_C, RECIPE ex
      * Helper interface to make the generics that we have to pass to {@link ITripleRecipeLookupHandler} not as messy.
      */
     interface ItemFluidChemicalRecipeLookupHandler<RECIPE extends MekanismRecipe<?> & TriPredicate<ItemStack, FluidStack, ChemicalStack>> extends
-          ITripleRecipeLookupHandler<ItemStack, FluidStack, ChemicalStack, RECIPE, ItemFluidChemical<RECIPE>> {
+          ITripleRecipeLookupHandler<Item, ItemStack, Fluid, FluidStack, Chemical, ChemicalStack, RECIPE, ItemFluidChemical<RECIPE>> {
     }
 }

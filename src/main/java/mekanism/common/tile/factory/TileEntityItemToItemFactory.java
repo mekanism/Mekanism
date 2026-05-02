@@ -17,6 +17,7 @@ import mekanism.common.recipe.lookup.monitor.FactoryRecipeCacheLookupMonitor;
 import mekanism.common.tier.FactoryTier;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 
 public abstract class TileEntityItemToItemFactory<RECIPE extends MekanismRecipe<?>> extends TileEntityFactory<RECIPE> {
 
-    protected IInputHandler<@NotNull ItemStack>[] inputHandlers;
+    protected IInputHandler<Item, @NotNull ItemStack>[] inputHandlers;
     protected IOutputHandler<@NotNull ItemStackTemplate>[] outputHandlers;
 
     protected TileEntityItemToItemFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state, List<RecipeError> errorTypes, Set<RecipeError> globalErrorTypes) {

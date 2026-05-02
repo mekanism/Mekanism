@@ -6,6 +6,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
@@ -49,6 +50,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.Block;
@@ -82,8 +84,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     public IChemicalTank chemicalTank;
 
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
+    protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
+    protected final ILongInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")

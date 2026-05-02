@@ -5,6 +5,7 @@ import java.util.Objects;
 import mekanism.api.Action;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IExtendedFluidTank;
@@ -12,7 +13,9 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.InputIngredient;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -28,7 +31,7 @@ public class InputHelper {
      * @param slot           Slot to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<@NotNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
+    public static IInputHandler<Item, @NotNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new IInputHandler<>() {
@@ -39,7 +42,7 @@ public class InputHelper {
             }
 
             @Override
-            public ItemStack getRecipeInput(InputIngredient<@NotNull ItemStack> recipeIngredient) {
+            public ItemStack getRecipeInput(InputIngredient<Item, @NotNull ItemStack> recipeIngredient) {
                 ItemStack input = getInput();
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
@@ -88,7 +91,7 @@ public class InputHelper {
      * @param tank           Tank to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static ILongInputHandler<@NotNull ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
+    public static ILongInputHandler<Chemical, @NotNull ChemicalStack> getInputHandler(IChemicalTank tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new ChemicalInputHandler(tank, notEnoughError);
@@ -99,7 +102,7 @@ public class InputHelper {
      *
      * @param tank Tank to wrap.
      */
-    public static ILongInputHandler<@NotNull ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
+    public static ILongInputHandler<Chemical, @NotNull ChemicalStack> getConstantInputHandler(IChemicalTank tank) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         return new ChemicalInputHandler(tank, RecipeError.NOT_ENOUGH_SECONDARY_INPUT) {
             @Override
@@ -117,7 +120,7 @@ public class InputHelper {
      * @param tank           Tank to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<@NotNull FluidStack> getInputHandler(IExtendedFluidTank tank, RecipeError notEnoughError) {
+    public static IInputHandler<Fluid, @NotNull FluidStack> getInputHandler(IExtendedFluidTank tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new IInputHandler<>() {
@@ -130,7 +133,7 @@ public class InputHelper {
 
             @NotNull
             @Override
-            public FluidStack getRecipeInput(InputIngredient<@NotNull FluidStack> recipeIngredient) {
+            public FluidStack getRecipeInput(InputIngredient<Fluid, @NotNull FluidStack> recipeIngredient) {
                 FluidStack input = getInput();
                 if (input.isEmpty()) {
                     //All recipes currently require that we have an input. If we don't then return that we failed
@@ -181,7 +184,7 @@ public class InputHelper {
         }
     }
 
-    private static class ChemicalInputHandler implements ILongInputHandler<ChemicalStack> {
+    private static class ChemicalInputHandler implements ILongInputHandler<Chemical, ChemicalStack> {
 
         private final IChemicalTank tank;
         private final RecipeError notEnoughError;
@@ -197,7 +200,7 @@ public class InputHelper {
         }
 
         @Override
-        public ChemicalStack getRecipeInput(InputIngredient<ChemicalStack> recipeIngredient) {
+        public ChemicalStack getRecipeInput(InputIngredient<Chemical, ChemicalStack> recipeIngredient) {
             ChemicalStack input = getInput();
             if (input.isEmpty()) {
                 //All recipes currently require that we have an input. If we don't then return that we failed

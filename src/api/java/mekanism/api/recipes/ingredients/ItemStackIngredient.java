@@ -7,15 +7,18 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -28,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote This is a wrapper around {@link SizedIngredient}
  */
 @NothingNullByDefault
-public final class ItemStackIngredient implements InputIngredient<@NotNull ItemStack> {
+public final class ItemStackIngredient implements InputIngredient<Item, @NotNull ItemStack> {
 
     /**
      * A codec which can (de)encode item stack ingredients.
@@ -75,8 +78,17 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     }
 
     @Override
-    public boolean testType(ItemStack stack) {
-        Objects.requireNonNull(stack);
+    public boolean testType(TypedInstance<Item> instance) {
+        Objects.requireNonNull(instance);
+        ItemStack stack;
+        switch (instance) {
+            case ItemStack stackIn -> stack = stackIn;
+            case ItemStackTemplate template -> stack = template.create();
+            case ItemResource resource -> stack = resource.toStack();
+            default -> {
+                return false;
+            }
+        }
         return ingredient.ingredient().test(stack);
     }
 
@@ -86,8 +98,8 @@ public final class ItemStackIngredient implements InputIngredient<@NotNull ItemS
     }
 
     @Override
-    public long getNeededAmount(ItemStack stack) {
-        return testType(stack) ? ingredient.count() : 0;
+    public long getNeededAmount(TypedInstance<Item> instance) {
+        return testType(instance) ? ingredient.count() : 0;
     }
 
     @Override

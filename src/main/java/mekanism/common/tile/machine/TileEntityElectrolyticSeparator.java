@@ -71,6 +71,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -127,7 +128,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private long dumpRate = BASE_DUMP_RATE;
 
     private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
-    private final IInputHandler<@NotNull FluidStack> inputHandler;
+    private final IInputHandler<Fluid, @NotNull FluidStack> inputHandler;
 
     private ElectroSeparatorEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")

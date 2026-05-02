@@ -110,6 +110,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.ContainerLevelAccess;
 import net.minecraft.world.inventory.MenuType;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
@@ -181,7 +182,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     private final BooleanSupplier recheckAllRecipeErrors;
     private final boolean[] trackedErrors = new boolean[TRACKED_ERROR_TYPES.size()];
 
-    private final IInputHandler<@NotNull ItemStack> inputHandler;
+    private final IInputHandler<Item, @NotNull ItemStack> inputHandler;
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
 
     @NotNull

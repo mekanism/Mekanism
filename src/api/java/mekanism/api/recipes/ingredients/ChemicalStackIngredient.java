@@ -12,6 +12,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.chemical.ChemicalIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -27,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
 @NothingNullByDefault
-public final class ChemicalStackIngredient implements InputIngredient<ChemicalStack> {
+public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalStack> {
 
     /**
      * The "flat" codec for {@link ChemicalStackIngredient}.
@@ -112,7 +113,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     }
 
     @Override
-    public boolean testType(ChemicalStack stack) {
+    public boolean testType(TypedInstance<Chemical> stack) {
         Objects.requireNonNull(stack);
         return testType(stack.typeHolder());
     }
@@ -137,7 +138,7 @@ public final class ChemicalStackIngredient implements InputIngredient<ChemicalSt
     }
 
     @Override
-    public long getNeededAmount(ChemicalStack stack) {
+    public long getNeededAmount(TypedInstance<Chemical> stack) {
         return testType(stack) ? amount : 0;
     }
 
