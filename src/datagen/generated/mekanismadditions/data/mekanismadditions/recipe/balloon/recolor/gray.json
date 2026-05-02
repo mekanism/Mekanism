@@ -3,20 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:gray_balloon"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:gray_balloon"
     },
-    {
-      "tag": "c:dyes/gray"
-    }
+    "#c:dyes/gray"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:gray_balloon"
   }
 }

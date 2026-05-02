@@ -5,17 +5,14 @@
     "chemical": "mekanism:cyan"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanismadditions:balloons"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "mekanismadditions:cyan_balloon"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:cyan_balloon"
     }
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:cyan_balloon"
   },
   "per_tick_usage": false

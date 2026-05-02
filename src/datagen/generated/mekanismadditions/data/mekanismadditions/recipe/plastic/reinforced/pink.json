@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:pink_plastic"
-    },
-    "O": {
-      "tag": "c:dusts/osmium"
-    }
+    "#": "mekanismadditions:pink_plastic",
+    "O": "#c:dusts/osmium"
   },
   "pattern": [
     " # ",

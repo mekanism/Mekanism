@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:lime_reinforced_plastic"
+    "ingredient": "mekanismadditions:lime_reinforced_plastic"
   },
   "output": {
     "amount": 42,

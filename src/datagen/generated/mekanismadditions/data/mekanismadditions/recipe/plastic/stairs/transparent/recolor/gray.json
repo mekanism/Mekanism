@@ -3,17 +3,11 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_stairs/transparent"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:gray_plastic_transparent_stairs"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_stairs/transparent",
+      "subtracted": "mekanismadditions:gray_plastic_transparent_stairs"
     },
-    "D": {
-      "tag": "c:dyes/gray"
-    }
+    "D": "#c:dyes/gray"
   },
   "pattern": [
     "###",

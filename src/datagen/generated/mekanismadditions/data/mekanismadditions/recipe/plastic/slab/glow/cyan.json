@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:cyan_plastic_glow"
-    }
+    "#": "mekanismadditions:cyan_plastic_glow"
   },
   "pattern": [
     "###"

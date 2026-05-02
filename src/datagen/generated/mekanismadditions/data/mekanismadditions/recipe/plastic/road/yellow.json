@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:yellow_slick_plastic"
-    },
-    "S": {
-      "tag": "c:sands"
-    }
+    "#": "mekanismadditions:yellow_slick_plastic",
+    "S": "#c:sands"
   },
   "pattern": [
     "SSS",

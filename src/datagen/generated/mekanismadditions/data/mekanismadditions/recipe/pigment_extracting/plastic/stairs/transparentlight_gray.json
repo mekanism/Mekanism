@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:light_gray_plastic_transparent_stairs"
+    "ingredient": "mekanismadditions:light_gray_plastic_transparent_stairs"
   },
   "output": {
     "amount": 28,

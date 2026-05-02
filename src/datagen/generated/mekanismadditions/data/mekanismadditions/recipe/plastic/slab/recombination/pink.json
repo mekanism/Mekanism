@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:pink_plastic_slab"
-    }
+    "#": "mekanismadditions:pink_plastic_slab"
   },
   "pattern": [
     "#",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:pink_plastic"
   }
 }

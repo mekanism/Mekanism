@@ -3,17 +3,11 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_slabs/normal"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_blue_plastic_slab"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_slabs/normal",
+      "subtracted": "mekanismadditions:light_blue_plastic_slab"
     },
-    "D": {
-      "tag": "c:dyes/light_blue"
-    }
+    "D": "#c:dyes/light_blue"
   },
   "pattern": [
     " # ",

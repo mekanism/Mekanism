@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:cyan_plastic_transparent_slab"
-    }
+    "#": "mekanismadditions:cyan_plastic_transparent_slab"
   },
   "pattern": [
     "#",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:cyan_plastic_transparent"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:gray_plastic_road"
+    "ingredient": "mekanismadditions:gray_plastic_road"
   },
   "output": {
     "amount": 42,

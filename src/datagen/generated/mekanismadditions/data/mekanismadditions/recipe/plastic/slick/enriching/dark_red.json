@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:dark_red_plastic"
+    "ingredient": "mekanismadditions:dark_red_plastic"
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:dark_red_slick_plastic"
   }
 }

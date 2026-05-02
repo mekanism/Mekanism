@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanism:hdpe_sheet"
-    },
-    "D": {
-      "tag": "c:dyes/red"
-    }
+    "#": "mekanism:hdpe_sheet",
+    "D": "#c:dyes/red"
   },
   "pattern": [
     " # ",

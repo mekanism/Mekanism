@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:white_plastic_glow_slab"
+    "ingredient": "mekanismadditions:white_plastic_glow_slab"
   },
   "output": {
     "amount": 21,

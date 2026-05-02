@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanismadditions:light_blue_plastic"
-    },
-    "R": {
-      "tag": "c:rods/plastic"
-    }
+    "#": "mekanismadditions:light_blue_plastic",
+    "R": "#c:rods/plastic"
   },
   "pattern": [
     "#R#",

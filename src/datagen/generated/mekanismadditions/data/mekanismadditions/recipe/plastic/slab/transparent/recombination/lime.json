@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:lime_plastic_transparent_slab"
-    }
+    "#": "mekanismadditions:lime_plastic_transparent_slab"
   },
   "pattern": [
     "#",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:lime_plastic_transparent"
   }
 }

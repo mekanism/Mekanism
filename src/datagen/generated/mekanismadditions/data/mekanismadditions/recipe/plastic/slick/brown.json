@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:brown_plastic"
-    },
-    "S": {
-      "tag": "c:slimeballs"
-    }
+    "#": "mekanismadditions:brown_plastic",
+    "S": "#c:slime_balls"
   },
   "pattern": [
     " # ",

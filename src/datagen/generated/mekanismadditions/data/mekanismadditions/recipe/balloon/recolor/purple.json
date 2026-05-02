@@ -3,20 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:purple_balloon"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:purple_balloon"
     },
-    {
-      "tag": "c:dyes/purple"
-    }
+    "#c:dyes/purple"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:purple_balloon"
   }
 }

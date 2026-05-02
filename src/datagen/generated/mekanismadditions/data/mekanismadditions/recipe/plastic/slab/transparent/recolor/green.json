@@ -3,17 +3,11 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_slabs/transparent"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:green_plastic_transparent_slab"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_slabs/transparent",
+      "subtracted": "mekanismadditions:green_plastic_transparent_slab"
     },
-    "D": {
-      "tag": "c:dyes/green"
-    }
+    "D": "#c:dyes/green"
   },
   "pattern": [
     "###",

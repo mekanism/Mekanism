@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "D": {
-      "tag": "c:dyes/brown"
-    },
-    "G": {
-      "tag": "c:dusts/glowstone"
-    },
-    "H": {
-      "item": "mekanism:hdpe_sheet"
-    },
-    "P": {
-      "tag": "c:glass_panes"
-    }
+    "D": "#c:dyes/brown",
+    "G": "#c:dusts/glowstone",
+    "H": "mekanism:hdpe_sheet",
+    "P": "#c:glass_panes"
   },
   "pattern": [
     "PHP",

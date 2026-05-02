@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:dark_red_plastic_transparent"
-    }
+    "#": "mekanismadditions:dark_red_plastic_transparent"
   },
   "pattern": [
     "###"

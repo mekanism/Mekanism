@@ -3,17 +3,11 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_slabs/glow"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:white_plastic_glow_slab"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_slabs/glow",
+      "subtracted": "mekanismadditions:white_plastic_glow_slab"
     },
-    "D": {
-      "tag": "c:dyes/white"
-    }
+    "D": "#c:dyes/white"
   },
   "pattern": [
     " # ",

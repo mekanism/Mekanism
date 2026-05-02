@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:aqua_plastic_transparent_slab"
-    }
+    "#": "mekanismadditions:aqua_plastic_transparent_slab"
   },
   "pattern": [
     "#",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:aqua_plastic_transparent"
   }
 }

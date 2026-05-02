@@ -3,20 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:white_balloon"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:white_balloon"
     },
-    {
-      "tag": "c:dyes/white"
-    }
+    "#c:dyes/white"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:white_balloon"
   }
 }

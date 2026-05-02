@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:magenta_plastic"
+    "ingredient": "mekanismadditions:magenta_plastic"
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:magenta_slick_plastic"
   }
 }

@@ -3,20 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:lime_balloon"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:lime_balloon"
     },
-    {
-      "tag": "c:dyes/lime"
-    }
+    "#c:dyes/lime"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:lime_balloon"
   }
 }

@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "mekanismadditions:orange_plastic"
-    },
-    "R": {
-      "tag": "c:rods/plastic"
-    }
+    "#": "mekanismadditions:orange_plastic",
+    "R": "#c:rods/plastic"
   },
   "pattern": [
     "R#R",
     "R#R"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:orange_plastic_fence_gate"
   }
 }

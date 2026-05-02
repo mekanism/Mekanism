@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:green_plastic"
-    }
+    "#": "mekanismadditions:green_plastic"
   },
   "pattern": [
     "###"

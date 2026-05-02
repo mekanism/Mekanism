@@ -3,17 +3,11 @@
   "category": "building",
   "key": {
     "#": {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:plastic_blocks/glow"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:blue_plastic_glow"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_blocks/glow",
+      "subtracted": "mekanismadditions:blue_plastic_glow"
     },
-    "D": {
-      "tag": "c:dyes/blue"
-    }
+    "D": "#c:dyes/blue"
   },
   "pattern": [
     " # ",

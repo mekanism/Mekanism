@@ -2,16 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {
-    "#": {
-      "item": "mekanismadditions:yellow_plastic_glow_slab"
-    }
+    "#": "mekanismadditions:yellow_plastic_glow_slab"
   },
   "pattern": [
     "#",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:yellow_plastic_glow"
   }
 }

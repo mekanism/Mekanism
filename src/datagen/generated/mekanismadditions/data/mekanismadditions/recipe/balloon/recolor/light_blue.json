@@ -3,20 +3,13 @@
   "category": "misc",
   "ingredients": [
     {
-      "type": "neoforge:difference",
-      "base": {
-        "tag": "mekanismadditions:balloons"
-      },
-      "subtracted": {
-        "item": "mekanismadditions:light_blue_balloon"
-      }
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:light_blue_balloon"
     },
-    {
-      "tag": "c:dyes/light_blue"
-    }
+    "#c:dyes/light_blue"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:light_blue_balloon"
   }
 }

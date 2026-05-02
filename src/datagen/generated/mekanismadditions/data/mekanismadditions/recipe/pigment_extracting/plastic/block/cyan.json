@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:cyan_plastic"
+    "ingredient": "mekanismadditions:cyan_plastic"
   },
   "output": {
     "amount": 48,

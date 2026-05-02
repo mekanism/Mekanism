@@ -5,17 +5,14 @@
     "chemical": "mekanism:green"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanismadditions:plastic_slabs/transparent"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "mekanismadditions:green_plastic_transparent_slab"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_slabs/transparent",
+      "subtracted": "mekanismadditions:green_plastic_transparent_slab"
     }
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:green_plastic_transparent_slab"
   },
   "per_tick_usage": false

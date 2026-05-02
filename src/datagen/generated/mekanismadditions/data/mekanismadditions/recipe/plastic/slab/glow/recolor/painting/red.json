@@ -5,17 +5,14 @@
     "chemical": "mekanism:red"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanismadditions:plastic_slabs/glow"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "mekanismadditions:red_plastic_glow_slab"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_slabs/glow",
+      "subtracted": "mekanismadditions:red_plastic_glow_slab"
     }
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:red_plastic_glow_slab"
   },
   "per_tick_usage": false

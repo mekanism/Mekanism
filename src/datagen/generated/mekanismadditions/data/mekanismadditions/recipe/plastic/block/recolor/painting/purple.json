@@ -5,17 +5,14 @@
     "chemical": "mekanism:purple"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanismadditions:plastic_blocks/plastic"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "mekanismadditions:purple_plastic"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:plastic_blocks/plastic",
+      "subtracted": "mekanismadditions:purple_plastic"
     }
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:purple_plastic"
   },
   "per_tick_usage": false

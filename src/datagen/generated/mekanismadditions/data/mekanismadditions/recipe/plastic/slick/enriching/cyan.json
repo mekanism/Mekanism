@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:cyan_plastic"
+    "ingredient": "mekanismadditions:cyan_plastic"
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:cyan_slick_plastic"
   }
 }

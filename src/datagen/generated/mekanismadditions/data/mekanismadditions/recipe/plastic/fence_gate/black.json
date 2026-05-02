@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "redstone",
   "key": {
-    "#": {
-      "item": "mekanismadditions:black_plastic"
-    },
-    "R": {
-      "tag": "c:rods/plastic"
-    }
+    "#": "mekanismadditions:black_plastic",
+    "R": "#c:rods/plastic"
   },
   "pattern": [
     "R#R",
     "R#R"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismadditions:black_plastic_fence_gate"
   }
 }

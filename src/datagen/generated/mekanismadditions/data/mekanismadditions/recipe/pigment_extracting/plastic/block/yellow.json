@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "mekanismadditions:yellow_plastic"
+    "ingredient": "mekanismadditions:yellow_plastic"
   },
   "output": {
     "amount": 48,

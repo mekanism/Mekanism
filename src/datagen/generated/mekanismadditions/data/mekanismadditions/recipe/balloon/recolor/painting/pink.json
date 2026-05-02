@@ -5,17 +5,14 @@
     "chemical": "mekanism:pink"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanismadditions:balloons"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "mekanismadditions:pink_balloon"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanismadditions:balloons",
+      "subtracted": "mekanismadditions:pink_balloon"
     }
   },
   "output": {
-    "count": 1,
     "id": "mekanismadditions:pink_balloon"
   },
   "per_tick_usage": false
