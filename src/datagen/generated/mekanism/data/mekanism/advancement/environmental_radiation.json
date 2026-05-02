@@ -16,7 +16,6 @@
       "translate": "advancements.mekanism.environmental_radiation.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:geiger_counter"
     },
     "title": {

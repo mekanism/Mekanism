@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.plenisher.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:fluidic_plenisher"
     },
     "title": {

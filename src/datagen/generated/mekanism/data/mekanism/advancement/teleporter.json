@@ -20,7 +20,6 @@
       "translate": "advancements.mekanism.teleporter.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:teleporter"
     },
     "title": {

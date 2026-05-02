@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.personal_storage.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:personal_chest"
     },
     "title": {

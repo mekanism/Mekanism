@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.network_reader.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:network_reader"
     },
     "title": {

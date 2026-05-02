@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.restrictive_item_transport.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:restrictive_transporter"
     },
     "title": {

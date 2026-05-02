@@ -5,6 +5,7 @@
       "conditions": {
         "items": [
           {
+            "items": "mekanism:mekasuit_helmet",
             "predicates": {
               "mekanism:maxed_module_container": {
                 "item": "mekanism:mekasuit_helmet"
@@ -12,6 +13,7 @@
             }
           },
           {
+            "items": "mekanism:mekasuit_bodyarmor",
             "predicates": {
               "mekanism:maxed_module_container": {
                 "item": "mekanism:mekasuit_bodyarmor"
@@ -19,6 +21,7 @@
             }
           },
           {
+            "items": "mekanism:mekasuit_pants",
             "predicates": {
               "mekanism:maxed_module_container": {
                 "item": "mekanism:mekasuit_pants"
@@ -26,6 +29,7 @@
             }
           },
           {
+            "items": "mekanism:mekasuit_boots",
             "predicates": {
               "mekanism:maxed_module_container": {
                 "item": "mekanism:mekasuit_boots"
@@ -33,6 +37,7 @@
             }
           },
           {
+            "items": "mekanism:meka_tool",
             "predicates": {
               "mekanism:maxed_module_container": {
                 "item": "mekanism:meka_tool"
@@ -51,7 +56,6 @@
     "frame": "challenge",
     "hidden": true,
     "icon": {
-      "count": 1,
       "id": "mekanism:mekasuit_bodyarmor"
     },
     "title": {

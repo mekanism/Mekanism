@@ -17,7 +17,6 @@
       "translate": "advancements.mekanismgenerators.heat_generator.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanismgenerators:heat_generator"
     },
     "title": {

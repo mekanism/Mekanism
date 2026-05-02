@@ -17,7 +17,6 @@
       "translate": "advancements.mekanism.configurator.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:configurator"
     },
     "title": {

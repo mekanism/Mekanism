@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.chemical_transport.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:basic_pressurized_tube"
     },
     "title": {

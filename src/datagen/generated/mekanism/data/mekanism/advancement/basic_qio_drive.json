@@ -17,7 +17,6 @@
       "translate": "advancements.mekanism.basic_qio_drive.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:qio_drive_base"
     },
     "title": {

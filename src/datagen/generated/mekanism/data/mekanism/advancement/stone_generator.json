@@ -17,7 +17,6 @@
       "translate": "advancements.mekanism.stone_generator.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:upgrade_stone_generator"
     },
     "title": {

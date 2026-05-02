@@ -17,7 +17,6 @@
       "translate": "advancements.mekanism.running_free.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:free_runners"
     },
     "title": {

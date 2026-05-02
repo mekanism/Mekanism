@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.energy_cube.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:basic_energy_cube"
     },
     "title": {

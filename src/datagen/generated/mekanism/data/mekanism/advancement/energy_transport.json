@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.energy_transport.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:basic_universal_cable"
     },
     "title": {

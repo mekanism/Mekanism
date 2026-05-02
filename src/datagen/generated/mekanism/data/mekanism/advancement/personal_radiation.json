@@ -16,7 +16,6 @@
       "translate": "advancements.mekanism.personal_radiation.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:dosimeter"
     },
     "title": {

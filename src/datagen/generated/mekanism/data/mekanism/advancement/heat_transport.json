@@ -18,7 +18,6 @@
       "translate": "advancements.mekanism.heat_transport.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:basic_thermodynamic_conductor"
     },
     "title": {

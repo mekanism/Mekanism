@@ -26,7 +26,6 @@
       "translate": "advancements.mekanism.radiation_prevention.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:hazmat_gown"
     },
     "title": {

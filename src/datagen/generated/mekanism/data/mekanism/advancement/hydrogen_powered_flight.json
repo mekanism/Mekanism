@@ -17,7 +17,6 @@
       "translate": "advancements.mekanism.hydrogen_powered_flight.description"
     },
     "icon": {
-      "count": 1,
       "id": "mekanism:jetpack"
     },
     "title": {

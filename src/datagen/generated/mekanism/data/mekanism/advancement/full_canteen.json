@@ -5,6 +5,7 @@
       "conditions": {
         "items": [
           {
+            "items": "mekanism:canteen",
             "predicates": {
               "mekanism:full_canteen": {}
             }
@@ -21,7 +22,6 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "count": 1,
       "id": "mekanism:canteen"
     },
     "title": {

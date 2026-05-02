@@ -75,7 +75,6 @@
     "frame": "goal",
     "hidden": true,
     "icon": {
-      "count": 1,
       "id": "minecraft:creeper_head"
     },
     "title": {
