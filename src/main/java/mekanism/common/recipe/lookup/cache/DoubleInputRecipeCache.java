@@ -72,31 +72,7 @@ public abstract class DoubleInputRecipeCache<
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInputA(@Nullable Level world, A_RESOURCE input) {
-        return containsInput(world, input, inputAExtractor, cacheA, complexIngredientA);
-    }
-
-    /**
-     * Checks if there is a matching recipe that has the given input.
-     *
-     * @param world World.
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
     public boolean containsInputB(@Nullable Level world, INPUT_B input) {
-        return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
-    }
-
-    /**
-     * Checks if there is a matching recipe that has the given input.
-     *
-     * @param world World.
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
-    public boolean containsInputB(@Nullable Level world, B_RESOURCE input) {
         return containsInput(world, input, inputBExtractor, cacheB, complexIngredientB);
     }
 
@@ -118,23 +94,6 @@ public abstract class DoubleInputRecipeCache<
     }
 
     /**
-     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA.
-     *
-     * @param world  World.
-     * @param inputA Recipe input A.
-     * @param inputB Recipe input B.
-     *
-     * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
-     *
-     * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call
-     * {@link #containsInputBA(Level, TypedInstance, TypedInstance)}.
-     */
-    public boolean containsInputAB(@Nullable Level world, A_RESOURCE inputA, B_RESOURCE inputB) {
-        return containsPairing(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB);
-    }
-
-    /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputB is not empty and
      * inputA is empty without doing any extra validation on inputA.
      *
@@ -148,23 +107,6 @@ public abstract class DoubleInputRecipeCache<
      * {@link #containsInputAB(Level, TypedInstance, TypedInstance)}.
      */
     public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
-        return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);
-    }
-
-    /**
-     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputB is not empty and
-     * inputA is empty without doing any extra validation on inputA.
-     *
-     * @param world  World.
-     * @param inputA Recipe input A.
-     * @param inputB Recipe input B.
-     *
-     * @return {@code true} if there is a match or if inputB is not empty and inputA is empty.
-     *
-     * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call
-     * {@link #containsInputAB(Level, TypedInstance, TypedInstance)}.
-     */
-    public boolean containsInputBA(@Nullable Level world, A_RESOURCE inputA, B_RESOURCE inputB) {
         return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);
     }
 

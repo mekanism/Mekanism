@@ -58,25 +58,6 @@ public interface ITripleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, RegisteredResource, RegisteredResource, RegisteredResource)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, RegisteredResource, RegisteredResource, RegisteredResource)}, and
-     * {@link TripleInputRecipeCache#containsInputCAB(Level, RegisteredResource, RegisteredResource, RegisteredResource)} for more details about when this method should be called versus
-     * when {@link #containsRecipeBAC(RegisteredResource, RegisteredResource, RegisteredResource)} or {@link #containsRecipeCAB(RegisteredResource, RegisteredResource, RegisteredResource)} should be
-     * called.
-     */
-    default boolean containsRecipeABC(A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
-        return getRecipeType().getInputCache().containsInputABC(getLevel(), inputA, inputB, inputC);
-    }
-
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     * @param inputC Recipe input c.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
      * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, TypedInstance, TypedInstance, TypedInstance)},
      * {@link TripleInputRecipeCache#containsInputBAC(Level, TypedInstance, TypedInstance, TypedInstance)}, and
      * {@link TripleInputRecipeCache#containsInputCAB(Level, TypedInstance, TypedInstance, TypedInstance)} for more details about when this method should be called versus
@@ -84,25 +65,6 @@ public interface ITripleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      * called.
      */
     default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
-        return getRecipeType().getInputCache().containsInputBAC(getLevel(), inputA, inputB, inputC);
-    }
-
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     * @param inputC Recipe input c.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, RegisteredResource, RegisteredResource, RegisteredResource)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, RegisteredResource, RegisteredResource, RegisteredResource)}, and
-     * {@link TripleInputRecipeCache#containsInputCAB(Level, RegisteredResource, RegisteredResource, RegisteredResource)} for more details about when this method should be called versus
-     * when {@link #containsRecipeABC(RegisteredResource, RegisteredResource, RegisteredResource)} or {@link #containsRecipeCAB(RegisteredResource, RegisteredResource, RegisteredResource)} should be
-     * called.
-     */
-    default boolean containsRecipeBAC(A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
         return getRecipeType().getInputCache().containsInputBAC(getLevel(), inputA, inputB, inputC);
     }
 
@@ -126,25 +88,6 @@ public interface ITripleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
     }
 
     /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
-     *
-     * @param inputA Recipe input a.
-     * @param inputB Recipe input b.
-     * @param inputC Recipe input c.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, RegisteredResource, RegisteredResource, RegisteredResource)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, RegisteredResource, RegisteredResource, RegisteredResource)}, and
-     * {@link TripleInputRecipeCache#containsInputCAB(Level, RegisteredResource, RegisteredResource, RegisteredResource)} for more details about when this method should be called versus
-     * when {@link #containsRecipeABC(RegisteredResource, RegisteredResource, RegisteredResource)} or {@link #containsRecipeBAC(RegisteredResource, RegisteredResource, RegisteredResource)} should be
-     * called.
-     */
-    default boolean containsRecipeCAB(A_RESOURCE inputA, B_RESOURCE inputB, C_RESOURCE inputC) {
-        return getRecipeType().getInputCache().containsInputCAB(getLevel(), inputA, inputB, inputC);
-    }
-
-    /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
      *
      * @param input Recipe input.
@@ -152,17 +95,6 @@ public interface ITripleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
     default boolean containsRecipeA(INPUT_A input) {
-        return getRecipeType().getInputCache().containsInputA(getLevel(), input);
-    }
-
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
-    default boolean containsRecipeA(A_RESOURCE input) {
         return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
@@ -184,29 +116,7 @@ public interface ITripleRecipeLookupHandler<A_TYPE, A_RESOURCE extends Registere
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeB(B_RESOURCE input) {
-        return getRecipeType().getInputCache().containsInputB(getLevel(), input);
-    }
-
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
     default boolean containsRecipeC(INPUT_C input) {
-        return getRecipeType().getInputCache().containsInputC(getLevel(), input);
-    }
-
-    /**
-     * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
-     *
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
-    default boolean containsRecipeC(C_RESOURCE input) {
         return getRecipeType().getInputCache().containsInputC(getLevel(), input);
     }
 

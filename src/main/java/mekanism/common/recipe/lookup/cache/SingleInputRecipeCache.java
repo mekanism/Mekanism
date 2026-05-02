@@ -54,18 +54,6 @@ public abstract class SingleInputRecipeCache<I_TYPE, I_RESOURCE extends Register
     }
 
     /**
-     * Checks if there is a matching recipe that has the given input.
-     *
-     * @param world World.
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
-    public boolean containsInput(@Nullable Level world, I_RESOURCE input) {
-        return containsInput(world, input, inputExtractor, cache, complexRecipes);
-    }
-
-    /**
      * Finds the first recipe that matches the given input.
      *
      * @param world World.
