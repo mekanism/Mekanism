@@ -81,6 +81,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -169,11 +170,13 @@ import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.RegisterParticleProvidersEvent;
+import net.neoforged.neoforge.client.event.RegisterSelectItemModelPropertyEvent;
 import net.neoforged.neoforge.client.event.RegisterSpecialModelRendererEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
 import net.neoforged.neoforge.client.gui.VanillaGuiLayers;
@@ -205,15 +208,6 @@ public class ClientRegistration {
             }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX.getItemHolder(), Mekanism.rl("storage"),
                   (stack, world, entity, seed) -> stack.has(MekanismDataComponents.BLOCK_DATA) ? 1 : 0);
-
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("invalid"), (stack, world, entity, seed) -> {
-                FormulaAttachment attachment = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
-                return attachment.hasItems() && attachment.invalid() ? 1 : 0;
-            });
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CRAFTING_FORMULA, Mekanism.rl("encoded"), (stack, world, entity, seed) -> {
-                FormulaAttachment attachment = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY);
-                return attachment.hasItems() && !attachment.invalid() ? 1 : 0;
-            });
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
                   (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATOR, Mekanism.rl("mode"), (stack, world, entity, seed) -> {
@@ -253,6 +247,16 @@ public class ClientRegistration {
         //addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));
 
         addLitModel(MekanismItems.MEKA_TOOL);
+    }
+
+    @SubscribeEvent
+    public static void itemProps(RegisterSelectItemModelPropertyEvent event) {
+        event.register(Mekanism.rl("crafting_formula"), CraftingFormulaStatus.TYPE);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
+        
     }
 
     @SubscribeEvent

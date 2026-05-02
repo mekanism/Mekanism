@@ -3,6 +3,7 @@ package mekanism.client.model;
 import com.google.common.collect.Table;
 import java.util.Map;
 import java.util.Optional;
+import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPersonalBarrel;
@@ -112,9 +113,17 @@ public class MekanismModelProvider extends BaseModelProvider {
               )
         );
 
-        itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA_ENCODED.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CRAFTING_FORMULA_INVALID.asItem());
+        Item craftingFormula = MekanismItems.CRAFTING_FORMULA.value();
+        ItemModel.Unbaked baseFormula = ItemModelUtils.plainModel(modLocation("item/crafting_formula"));
+        itemModels.itemModelOutput.accept(
+              craftingFormula,
+              ItemModelUtils.select(
+                    new CraftingFormulaStatus(),
+                    baseFormula,
+                    ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.INVALID, ItemModelUtils.plainModel(modLocation("item/crafting_formula_invalid"))),
+                    ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.ENCODED, ItemModelUtils.plainModel(modLocation("item/crafting_formula_encoded")))
+              )
+        );
 
         itemModels.generateBow(MekanismItems.ELECTRIC_BOW.asItem());
 
