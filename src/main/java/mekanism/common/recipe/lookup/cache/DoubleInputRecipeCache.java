@@ -178,7 +178,8 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote This is mainly meant as a helper for factories so makes the assumption that if inputB is empty it doesn't factor it into the check at all.
      */
     @Nullable
-    public <DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, DATA data, CheckRecipeType<INPUT_A, INPUT_B, RECIPE, DATA> matchCriteria) {
+    public <INPUT1 extends TypedInstance<HOLDER_A>, INPUT2 extends TypedInstance<HOLDER_B>, DATA> RECIPE findTypeBasedRecipe(@Nullable Level world, INPUT1 inputA,
+          INPUT2 inputB, DATA data, CheckRecipeType<HOLDER_A, INPUT1, HOLDER_B, INPUT2, RECIPE, DATA> matchCriteria) {
         if (cacheA.isEmpty(inputA)) {
             //Don't allow empty primary inputs
             return null;
@@ -244,7 +245,8 @@ public abstract class DoubleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
     }
 
     @FunctionalInterface
-    public interface CheckRecipeType<INPUT_A, INPUT_B, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, DATA> {
+    public interface CheckRecipeType<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
+          RECIPE extends MekanismRecipe<?> & BiPredicate<? extends TypedInstance<HOLDER_A>, ? extends TypedInstance<HOLDER_B>>, DATA> {
 
         boolean testType(RECIPE recipe, INPUT_A inputA, INPUT_B inputB, DATA data);
     }

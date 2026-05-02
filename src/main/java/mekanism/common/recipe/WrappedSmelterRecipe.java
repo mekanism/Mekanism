@@ -10,9 +10,12 @@ import mekanism.api.recipes.basic.BasicSmeltingRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.context.ContextMap;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Recipe;
@@ -54,8 +57,9 @@ public class WrappedSmelterRecipe extends ItemStackToItemStackRecipe {
     }
 
     @Override
-    public ItemStackTemplate getOutput(ItemStack input) {
-        return ItemStackTemplate.fromNonEmptyStack(wrapped.assemble(new SingleRecipeInput(input)));
+    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input) {
+        ItemStack stack = IngredientCreatorAccess.createItemStack(input);
+        return ItemStackTemplate.fromNonEmptyStack(wrapped.assemble(new SingleRecipeInput(stack)));
     }
 
     @Override

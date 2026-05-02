@@ -6,6 +6,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
@@ -56,7 +58,7 @@ public abstract class SawmillRecipe extends MekanismRecipe<SingleRecipeInput> im
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract("_ -> new")
-    public abstract ChanceOutput getOutput(ItemStack input);
+    public abstract <INPUT extends TypedInstance<Item> & DataComponentHolder> ChanceOutput getOutput(INPUT input);
 
     /**
      * For JEI, gets the main output representations to display.

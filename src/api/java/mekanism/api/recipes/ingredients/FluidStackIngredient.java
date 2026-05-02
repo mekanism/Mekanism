@@ -7,6 +7,7 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,13 +15,10 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.display.ForFluidStacks;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -86,14 +84,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
     @Override
     public boolean testType(TypedInstance<Fluid> instance) {
         Objects.requireNonNull(instance);
-        FluidStack stack = switch (instance) {
-            case FluidStack stackIn -> stackIn;
-            case FluidStackTemplate template -> template.create();
-            case FluidResource resource -> resource.toStack(FluidType.BUCKET_VOLUME);
-            //TODO: Is there a decent way to grab any potential components patch?
-            default -> new FluidStack(instance.typeHolder(), FluidType.BUCKET_VOLUME);
-        };
-        return ingredient.ingredient().test(stack);
+        return ingredient.ingredient().test(IngredientCreatorAccess.createFluidStack(instance));
     }
 
     @Override

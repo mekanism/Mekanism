@@ -3,9 +3,19 @@ package mekanism.api.recipes.ingredients.creator;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.IMekanismAccess;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentExactPredicate;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -71,5 +81,27 @@ public class IngredientCreatorAccess {
             return builder.build();
         }
         return null;
+    }
+
+    //TODO - 26.1: Docs, and maybe move the impl out of the API
+    public static ItemStack createItemStack(TypedInstance<Item> instance) {
+        return switch (instance) {
+            case ItemStack stackIn -> stackIn;
+            case ItemStackTemplate template -> template.create();
+            case ItemResource resource -> resource.toStack();
+            //TODO: Is there a decent way to grab any potential components patch?
+            default -> new ItemStack(instance.typeHolder());
+        };
+    }
+
+    //TODO - 26.1: Docs, and maybe move the impl out of the API
+    public static FluidStack createFluidStack(TypedInstance<Fluid> instance) {
+        return switch (instance) {
+            case FluidStack stackIn -> stackIn;
+            case FluidStackTemplate template -> template.create();
+            case FluidResource resource -> resource.toStack(FluidType.BUCKET_VOLUME);
+            //TODO: Is there a decent way to grab any potential components patch?
+            default -> new FluidStack(instance.typeHolder(), FluidType.BUCKET_VOLUME);
+        };
     }
 }

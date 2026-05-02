@@ -3,10 +3,14 @@ package mekanism.api.recipes;
 import java.util.List;
 import java.util.function.BiPredicate;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Contract;
@@ -56,7 +60,7 @@ public abstract class ItemStackChemicalToObjectRecipe<OUTPUT> extends MekanismRe
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract OUTPUT getOutput(ItemStack inputItem, ChemicalStack inputChemical);
+    public abstract <ITEM_INPUT extends TypedInstance<Item> & DataComponentHolder> OUTPUT getOutput(ITEM_INPUT inputItem, TypedInstance<Chemical> inputChemical);
 
 
     @Override

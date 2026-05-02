@@ -7,6 +7,7 @@ import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
 import net.minecraft.core.TypedInstance;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -14,11 +15,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.display.DisplayContentsFactory.ForStacks;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.ApiStatus.Internal;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -83,14 +82,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
         Ingredient vanillaIngredient = ingredient.ingredient();
         if (vanillaIngredient.isCustom()) {
             //Component data might be necessary, make it into a stack and test it
-            ItemStack stack = switch (instance) {
-                case ItemStack stackIn -> stackIn;
-                case ItemStackTemplate template -> template.create();
-                case ItemResource resource -> resource.toStack();
-                //TODO: Is there a decent way to grab any potential components patch?
-                default -> new ItemStack(instance.typeHolder());
-            };
-            return vanillaIngredient.test(stack);
+            return vanillaIngredient.test(IngredientCreatorAccess.createItemStack(instance));
         }
         //Vanilla ingredients don't need to check component data so we can just skip converting the resource to a stack
         return vanillaIngredient.acceptsItem(instance.typeHolder());

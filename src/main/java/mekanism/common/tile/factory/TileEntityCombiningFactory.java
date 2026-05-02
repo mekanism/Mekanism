@@ -36,14 +36,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<CombinerRecipe> implements DoubleItemRecipeLookupHandler<CombinerRecipe> {
 
-    //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
-    private static final CheckRecipeType<Item, ItemResource, ItemStack, Item, ItemResource, ItemStack, CombinerRecipe, ItemResource> OUTPUT_CHECK =
-          (recipe, input, extra, output) -> output.matches(recipe.getOutput(input.toStack(), extra.toStack()));
+    private static final CheckRecipeType<Item, ItemResource, Item, ItemResource, CombinerRecipe, ItemResource> OUTPUT_CHECK =
+          (recipe, input, extra, output) -> output.matches(recipe.getOutput(input, extra));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,

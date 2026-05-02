@@ -5,11 +5,15 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -65,7 +69,7 @@ public class BasicNucleosynthesizingRecipe extends NucleosynthesizingRecipe impl
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStackTemplate getOutput(ItemStack inputItem, ChemicalStack inputChemical) {
+    public <ITEM_INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(ITEM_INPUT inputItem, TypedInstance<Chemical> inputChemical) {
         return output;
     }
 

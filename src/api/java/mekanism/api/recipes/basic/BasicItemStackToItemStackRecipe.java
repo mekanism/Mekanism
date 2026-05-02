@@ -7,6 +7,9 @@ import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -41,7 +44,7 @@ public abstract class BasicItemStackToItemStackRecipe extends ItemStackToItemSta
 
     @Override
     @Contract(pure = true)
-    public ItemStackTemplate getOutput(ItemStack input) {
+    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input) {
         return output;
     }
 

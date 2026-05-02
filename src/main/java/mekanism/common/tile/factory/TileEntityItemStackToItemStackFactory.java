@@ -29,9 +29,8 @@ import org.jetbrains.annotations.Nullable;
 //Smelting, enriching, crushing
 public class TileEntityItemStackToItemStackFactory extends TileEntityItemToItemFactory<ItemStackToItemStackRecipe> implements ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
-    //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
     private static final TriPredicate<ItemStackToItemStackRecipe, ItemResource, ItemResource> OUTPUT_CHECK =
-          (recipe, input, output) -> output.matches(recipe.getOutput(input.toStack()));
+          (recipe, input, output) -> output.matches(recipe.getOutput(input));
     private static final List<RecipeError> TRACKED_ERROR_TYPES = List.of(
           RecipeError.NOT_ENOUGH_ENERGY,
           RecipeError.NOT_ENOUGH_INPUT,

@@ -10,6 +10,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.SawmillRecipe;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -59,7 +62,7 @@ public class BasicSawmillRecipe extends SawmillRecipe {
 
     @Override
     @Contract("_ -> new")
-    public ChanceOutput getOutput(ItemStack input) {
+    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ChanceOutput getOutput(INPUT input) {
         return new BasicChanceOutput(secondaryChance > 0 ? RANDOM.nextDouble() : 0);
     }
 

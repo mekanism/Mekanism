@@ -43,14 +43,14 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySawingFactory extends TileEntityFactory<SawmillRecipe> implements ItemRecipeLookupHandler<SawmillRecipe> {
 
-    private static final CheckRecipeType<Item, ItemResource, ItemStack, SawmillRecipe, ItemResource, ItemResource> OUTPUT_CHECK = (recipe, input, output, extra) -> {
-        //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
-        ChanceOutput chanceOutput = recipe.getOutput(input.toStack());
+    private static final CheckRecipeType<Item, ItemResource, SawmillRecipe, ItemResource, ItemResource> OUTPUT_CHECK = (recipe, input, output, extra) -> {
+        ChanceOutput chanceOutput = recipe.getOutput(input);
         if (output.matches(chanceOutput.getMainOutput())) {
             //If the input is good and the primary output matches, make sure that the secondary
             // output of this recipe will stack with what is currently in the secondary slot

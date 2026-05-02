@@ -5,6 +5,9 @@ import java.util.Objects;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeType;
@@ -69,7 +72,7 @@ public abstract class ItemStackToItemStackRecipe extends MekanismRecipe<SingleRe
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(pure = true)
-    public abstract ItemStackTemplate getOutput(ItemStack input);
+    public abstract <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(INPUT input);
 
     /**
      * For JEI, gets the output representations to display.
