@@ -2,7 +2,6 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.List;
 import java.util.function.Consumer;
-import mekanism.api.Action;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -10,6 +9,8 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,11 +47,10 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         return false;
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
+    public int insertItem(ItemResource itemType, int amount,  TransactionContext transaction) {
         //Short circuit don't allow inserting into the output slot
-        return stack;
+        return 0;
     }
 
     @NotNull

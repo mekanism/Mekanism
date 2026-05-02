@@ -41,6 +41,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.CraftingRecipe;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -639,10 +641,17 @@ public class QIOServerCraftingTransferHandler {
      * @return Remaining stack that couldn't be inserted.
      */
     private ItemStack returnItemToInventory(ItemStack stack, @Nullable SelectedWindowData windowData) {
-        stack = MekanismContainer.insertItem(hotBarSlots, stack, true, windowData);
-        stack = MekanismContainer.insertItem(mainInventorySlots, stack, true, windowData);
-        stack = MekanismContainer.insertItem(hotBarSlots, stack, false, windowData);
-        return MekanismContainer.insertItem(mainInventorySlots, stack, false, windowData);
+        try (Transaction transaction = Transaction.openRoot()) {
+            ItemResource itemType = ItemResource.of(stack);
+            int amountToInsert = stack.count();
+            amountToInsert -= MekanismContainer.insertItem(hotBarSlots, itemType, amountToInsert, true, windowData, transaction);
+            amountToInsert -= MekanismContainer.insertItem(mainInventorySlots, itemType, amountToInsert, true, windowData, transaction);
+            amountToInsert -= MekanismContainer.insertItem(hotBarSlots, itemType, amountToInsert, false, windowData, transaction);
+            amountToInsert -= MekanismContainer.insertItem(mainInventorySlots, itemType, amountToInsert, false, windowData, transaction);
+            transaction.commit();
+            //Return as remainder
+            return itemType.toStack(amountToInsert);
+        }
     }
 
     /**

@@ -109,8 +109,9 @@ public class PortableQIODashboardContainer extends QIOItemViewerContainer {
                 }
 
                 @Override
-                public void set(@NotNull ItemStack item) {
-                    super.set(item);
+                public void setChanged() {
+                    super.setChanged();
+                    ItemStack item = getItem();
                     if (stack.is(item.getItem())) {
                         //Track changes to the main hand's slot
                         stack = item;

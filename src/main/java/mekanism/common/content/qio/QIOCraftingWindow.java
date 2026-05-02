@@ -46,6 +46,8 @@ import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.util.RecipeMatcher;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -303,11 +305,17 @@ public class QIOCraftingWindow implements IContentsListener {
                 if (!inputSlot.isEmpty()) {
                     ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
                     if (!toTransfer.isEmpty()) {
-                        ItemStack remainder = MekanismContainer.insertItem(hotBarSlots, toTransfer, true, windowData);
-                        remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, true, windowData);
-                        remainder = MekanismContainer.insertItem(hotBarSlots, remainder, false, windowData);
-                        remainder = MekanismContainer.insertItem(mainInventorySlots, remainder, false, windowData);
-                        inputSlot.extractItem(toTransfer.count() - remainder.count(), Action.EXECUTE, AutomationType.INTERNAL);
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            ItemResource resource = ItemResource.of(toTransfer);
+                            int amountToTransfer = toTransfer.count();
+                            amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, resource, amountToTransfer, true, windowData, transaction);
+                            amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, resource, amountToTransfer, true, windowData, transaction);
+                            amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, resource, amountToTransfer, false, windowData, transaction);
+                            amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, resource, amountToTransfer, false, windowData, transaction);
+                            inputSlot.extract(resource, amountToTransfer, transaction, AutomationType.INTERNAL);
+                            //Commit all the changes
+                            transaction.commit();
+                        }
                     }
                 }
             }
@@ -402,15 +410,19 @@ public class QIOCraftingWindow implements IContentsListener {
             // the secondary checks afterwards while working on actually inserting into it
             // The reason this is needed is that if we only have space for two more items, but our crafting recipe will
             // produce three more, then we won't have room for that singular extra item and need to exit
-            ItemStack simulatedRemainder = MekanismContainer.insertItemCheckAll(hotBarSlots, result, windowData, Action.SIMULATE);
-            simulatedRemainder = MekanismContainer.insertItemCheckAll(mainInventorySlots, simulatedRemainder, windowData, Action.SIMULATE);
-            if (!simulatedRemainder.isEmpty()) {
-                //Note: If we aren't able to fit all the items we are crafting into the player's inventory we exit
-                // instead of attempting to insert the overflow into the QIO as it is easy enough if the player is trying
-                // to fill the QIO with something to then just transfer the contents into the QIO, and otherwise they are
-                // likely just trying to top their inventory off on a specific item and may be confused or not notice if
-                // some contents ended up in their storage system instead
-                break;
+            try (Transaction simulation = Transaction.openRoot()) {
+                ItemResource itemType = ItemResource.of(result);
+                int toInsert = result.count();
+                toInsert -= MekanismContainer.insertItemCheckAll(hotBarSlots, itemType, toInsert, windowData, simulation);
+                toInsert -= MekanismContainer.insertItemCheckAll(mainInventorySlots, itemType, toInsert, windowData, simulation);
+                if (toInsert > 0) {
+                    //Note: If we aren't able to fit all the items we are crafting into the player's inventory we exit
+                    // instead of attempting to insert the overflow into the QIO as it is easy enough if the player is trying
+                    // to fill the QIO with something to then just transfer the contents into the QIO, and otherwise they are
+                    // likely just trying to top their inventory off on a specific item and may be confused or not notice if
+                    // some contents ended up in their storage system instead
+                    break;
+                }
             }
             //Actually transfer the output to the player's inventory now that we know it will fit
             ItemStack toInsert = lastInsertTarget.tryInserting(hotBarSlots, mainInventorySlots, windowData, result);
@@ -606,29 +618,37 @@ public class QIOCraftingWindow implements IContentsListener {
         private int lastIndex;
 
         public ItemStack tryInserting(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots, SelectedWindowData windowData, ItemStack toInsert) {
-            //Insert into stacks that already contain an item in the order hot bar -> main inventory
-            // Note: The target helps us skip checking some slot types that we know may not be valid
-            toInsert = insertItem(hotBarSlots, toInsert, true, true, windowData);
-            toInsert = insertItem(mainInventorySlots, toInsert, true, false, windowData);
-            //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
-            // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
-            // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
-            toInsert = insertItem(hotBarSlots, toInsert, false, true, windowData);
-            toInsert = insertItem(mainInventorySlots, toInsert, false, false, windowData);
-            return toInsert;
+            try (Transaction transaction = Transaction.openRoot()) {
+                ItemResource typeToInsert = ItemResource.of(toInsert);
+                int amountToInsert = toInsert.count();
+                //Insert into stacks that already contain an item in the order hot bar -> main inventory
+                // Note: The target helps us skip checking some slot types that we know may not be valid
+                amountToInsert -= insertItem(hotBarSlots, typeToInsert, amountToInsert, true, true, windowData, transaction);
+                amountToInsert -= insertItem(mainInventorySlots, typeToInsert, amountToInsert, true, false, windowData, transaction);
+                //If we still have any left then input into the empty stacks in the order of main inventory -> hot bar
+                // Note: Even though we are doing the main inventory, we still need to do both, ignoring empty then not instead of
+                // just directly inserting into the main inventory, in case there are empty slots before the one we can stack with
+                amountToInsert -= insertItem(hotBarSlots, typeToInsert, amountToInsert, false, true, windowData, transaction);
+                amountToInsert -= insertItem(mainInventorySlots, typeToInsert, amountToInsert, false, false, windowData, transaction);
+                transaction.commit();
+                return typeToInsert.toStack(amountToInsert);
+            }
         }
 
         /**
-         * Based on MekanismContainer#insertItem except with extra handling to keep track of where we last were.
+         * Based on {@link MekanismContainer#insertItem(List, ItemResource, int, boolean, boolean, SelectedWindowData, TransactionContext)} except with extra handling to
+         * keep track of where we last were.
+         *
+         * @return Amount inserted
          */
-        @NotNull
-        private <SLOT extends Slot & IInsertableSlot> ItemStack insertItem(List<SLOT> slots, @NotNull ItemStack stack, boolean ignoreEmpty, boolean isHotBar,
-              @Nullable SelectedWindowData selectedWindow) {
-            if (stack.isEmpty()) {
+        private <SLOT extends Slot & IInsertableSlot> int insertItem(List<SLOT> slots, ItemResource itemType, final int amount, boolean ignoreEmpty, boolean isHotBar,
+              @Nullable SelectedWindowData selectedWindow, TransactionContext transaction) {
+            if (itemType.isEmpty() || amount == 0) {
                 //Skip doing anything if the stack is already empty.
                 // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
-                return stack;
+                return 0;
             }
+            int toInsert = amount;
             //Note: We don't check if we just ignored empty or not, as we should be able to insert into
             // and filled slot so once we do that slot stops being "empty" and we want to start at it
             for (int i = ignoreEmpty && wasHotBar == isHotBar ? lastIndex : 0, slotCount = slots.size(); i < slotCount; i++) {
@@ -640,15 +660,16 @@ public class QIOCraftingWindow implements IContentsListener {
                     // or if the slot doesn't "exist" for the current window configuration
                     continue;
                 }
-                stack = slot.insertItem(stack, Action.EXECUTE);
-                if (stack.isEmpty()) {
+                //Decrease amount to insert by how much we were able to insert
+                toInsert -= slot.insertItem(itemType, toInsert, transaction);
+                if (toInsert == 0) {
                     //We finished inserting, update where we last targeted
                     wasHotBar = isHotBar;
                     lastIndex = i;
                     break;
                 }
             }
-            return stack;
+            return amount - toInsert;
         }
     }
 

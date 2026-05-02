@@ -17,7 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 import java.util.function.Supplier;
-import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.IHasTranslationKey.IHasEnumNameTranslationKey;
 import mekanism.api.text.ILangEntry;
@@ -62,6 +61,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.TranslatableEnum;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -362,17 +363,19 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 // and the stack we are trying to transfer was not the output from the crafting window
                 // as then shift clicking should be sending it into the QIO, then try transferring it
                 // into the crafting window before transferring into the frequency
-                ItemStack stackToInsert = slotStack;
                 List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
                 SelectedWindowData windowData = craftingWindow.getWindowData();
                 //Start by trying to stack it with other things and if that fails try to insert it into empty slots
-                stackToInsert = insertItem(craftingGridSlots, stackToInsert, windowData);
-                if (stackToInsert.count() != slotStack.count()) {
-                    //If something changed, decrease the stack by the amount we inserted,
-                    // and return it as a new stack for what is now in the slot
-                    return Optional.of(transferSuccess(currentSlot, player, slotStack, stackToInsert));
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), windowData, transaction);
+                    if (inserted > 0) {
+                        //If something changed, decrease the stack by the amount we inserted,
+                        // and return it as a new stack for what is now in the slot
+                        transaction.commit();
+                        return Optional.of(transferSuccess(currentSlot, player, inserted));
+                    }
+                    //Otherwise, if nothing changed, try to transfer into the QIO Frequency
                 }
-                //Otherwise, if nothing changed, try to transfer into the QIO Frequency
             }
         }
         return Optional.empty();
@@ -600,21 +603,31 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
      */
     public ItemStack insertIntoPlayerInventory(UUID player, ItemStack stack) {
         SelectedWindowData selectedWindow = getSelectedWindow(player);
-        stack = insertItem(hotBarSlots, stack, true, selectedWindow);
-        stack = insertItem(mainInventorySlots, stack, true, selectedWindow);
-        stack = insertItem(hotBarSlots, stack, false, selectedWindow);
-        stack = insertItem(mainInventorySlots, stack, false, selectedWindow);
-        return stack;
+        try (Transaction transaction = Transaction.openRoot()) {
+            ItemResource itemType = ItemResource.of(stack);
+            int toInsert = stack.count();
+            toInsert -= insertItem(hotBarSlots, itemType, toInsert, true, selectedWindow, transaction);
+            toInsert -= insertItem(mainInventorySlots, itemType, toInsert, true, selectedWindow, transaction);
+            toInsert -= insertItem(hotBarSlots, itemType, toInsert, false, selectedWindow, transaction);
+            toInsert -= insertItem(mainInventorySlots, itemType, toInsert, false, selectedWindow, transaction);
+            transaction.commit();
+            //Return as remainder
+            return itemType.toStack(toInsert);
+        }
     }
 
     /**
      * @apiNote Only call on server
      */
-    public ItemStack simulateInsertIntoPlayerInventory(UUID player, ItemStack stack) {
+    public int simulateInsertIntoPlayerInventory(UUID player, ItemStack stack) {
         SelectedWindowData selectedWindow = getSelectedWindow(player);
-        stack = insertItemCheckAll(hotBarSlots, stack, selectedWindow, Action.SIMULATE);
-        stack = insertItemCheckAll(mainInventorySlots, stack, selectedWindow, Action.SIMULATE);
-        return stack;
+        try (Transaction simulation = Transaction.openRoot()) {
+            ItemResource itemType = ItemResource.of(stack);
+            int toInsert = stack.count();
+            toInsert -= insertItemCheckAll(hotBarSlots, itemType, toInsert, selectedWindow, simulation);
+            toInsert -= insertItemCheckAll(mainInventorySlots, itemType, toInsert, selectedWindow, simulation);
+            return stack.count() - toInsert;
+        }
     }
 
     private void updateSort() {

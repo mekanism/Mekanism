@@ -13,13 +13,16 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.RootCommitJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //Like net.minecraftforge.items.SlotItemHandler, except directly interacts with the IInventorySlot instead
-public class InventoryContainerSlot extends Slot implements IInsertableSlot {
+public class InventoryContainerSlot extends Slot implements IInsertableSlot {//TODO - 26.1: Should this extend StackCopySlot instead? (Probably)
 
     private static final Container emptyInventory = new SimpleContainer(0);
+    private final RootCommitJournal setChangedJournal = new RootCommitJournal(this::setChanged);
     private final Consumer<ItemStack> uncheckedSetter;
     private final ContainerSlotType slotType;
     private final BasicInventorySlot slot;
@@ -48,14 +51,17 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         }
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(@NotNull ItemStack stack, Action action) {
-        ItemStack remainder = slot.insertItem(stack, action, AutomationType.MANUAL);
-        if (action.execute() && stack.count() != remainder.count()) {
-            setChanged();
+    public int insertItem(ItemResource resource, int amount, TransactionContext transaction) {
+        if (resource.isEmpty()) {
+            return 0;
         }
-        return remainder;
+        int inserted = slot.insert(resource, amount, transaction, AutomationType.MANUAL);
+        if (inserted > 0) {
+            //If we inserted anything, update the snapshots for our container so that we can fire the change listener when things end up changing
+            setChangedJournal.updateSnapshots(transaction);
+        }
+        return inserted;
     }
 
     @Override
@@ -65,7 +71,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
         }
         if (slot.isEmpty()) {
             //If the slot is currently empty, just try simulating the insertion
-            return insertItem(stack, Action.SIMULATE).count() < stack.count();
+            return slot.insertItem(stack, Action.SIMULATE, AutomationType.MANUAL).count() < stack.count();
         }
         //Otherwise, we need to check if we can extract the current item
         if (slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
