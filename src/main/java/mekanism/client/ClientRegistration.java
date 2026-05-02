@@ -81,6 +81,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
@@ -208,20 +209,6 @@ public class ClientRegistration {
             }
             ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX.getItemHolder(), Mekanism.rl("storage"),
                   (stack, world, entity, seed) -> stack.has(MekanismDataComponents.BLOCK_DATA) ? 1 : 0);
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATION_CARD, Mekanism.rl("encoded"),
-                  (stack, world, entity, seed) -> ((ItemConfigurationCard) stack.getItem()).hasData(stack) ? 1 : 0);
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.CONFIGURATOR, Mekanism.rl("mode"), (stack, world, entity, seed) -> {
-                ConfiguratorMode mode = ((ItemConfigurator) stack.getItem()).getMode(stack);
-                return switch (mode) {
-                    default -> 0;
-                    case EMPTY -> 1;
-                    case ROTATE -> 2;
-                    case WRENCH -> 3;
-                };
-            });
-
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.ELECTRIC_BOW, Mekanism.rl("pull"),
-                  (stack, world, entity, seed) -> entity != null && entity.getUseItem() == stack ? (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / (float) SharedConstants.TICKS_PER_SECOND : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {
@@ -256,7 +243,7 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void onRegisterConditionalItemModelProperties(RegisterConditionalItemModelPropertyEvent event) {
-        
+        event.register(Mekanism.rl("config_card"), ConfigCardEncoded.CODEC);
     }
 
     @SubscribeEvent

@@ -3,6 +3,7 @@ package mekanism.client.model;
 import com.google.common.collect.Table;
 import java.util.Map;
 import java.util.Optional;
+import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.Mekanism;
@@ -97,8 +98,14 @@ public class MekanismModelProvider extends BaseModelProvider {
             }
         }
 
-        itemModels.declareCustomModelItem(MekanismItems.CONFIGURATION_CARD.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.CONFIGURATION_CARD_ENCODED.asItem());
+        itemModels.itemModelOutput.accept(
+              MekanismItems.CONFIGURATION_CARD.asItem(),
+              ItemModelUtils.conditional(
+                    ConfigCardEncoded.INSTANCE,
+                    ItemModelUtils.plainModel(modLocation("item/configuration_card_encoded")),
+                    ItemModelUtils.plainModel(modLocation("item/configuration_card"))
+              )
+        );
 
         Item configurator = MekanismItems.CONFIGURATOR.value();
         ItemModel.Unbaked baseConfigurator = ItemModelUtils.plainModel(modLocation("item/configurator"));
