@@ -14,10 +14,12 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
-@NothingNullByDefault
+@NothingNullByDefault//TODO - 26.1: Do we want this to implement ItemStackResourceHandler?
 public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemStack, AttachedItems> implements IInventorySlot {
 
     private final BiPredicate<ItemResource, AutomationType> canExtract;
@@ -73,76 +75,70 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     /**
      * Ignores current contents
      */
-    private boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        ItemResource itemType = ItemResource.of(stack);
+    private boolean isItemValidForInsertion(ItemResource itemType, AutomationType automationType) {
         return isValid(itemType) && canInsert.test(itemType, automationType);
     }
 
     @Override
-    public final ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
+    public final int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (amount == 0) {
             //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
+            return 0;
         }
         AttachedItems attachedItems = getAttached();
-        return insertItem(attachedItems, getContents(attachedItems), stack, action, automationType);
+        return insertItem(attachedItems, getContents(attachedItems), resource, amount, transaction, automationType);
     }
 
-    public ItemStack insertItem(AttachedItems attachedItems, ItemStack current, ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
+    public int insertItem(AttachedItems attachedItems, ItemStack current, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (amount == 0) {
             //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
+            return 0;
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(stack) - current.count();
-        if (needed <= 0 || !isItemValidForInsertion(stack, automationType)) {
+        int needed = getLimit(resource) - current.count();
+        if (needed <= 0 || !isItemValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return stack;
-        } else if (current.isEmpty() || ItemStack.isSameItemSameComponents(current, stack)) {
-            int toAdd = Math.min(stack.count(), needed);
-            if (action.execute()) {
-                //Note: We let setStack handle updating the backing holding stack
-                // We use current.getCount + toAdd so that if we are empty we end up at toAdd
-                // but if we aren't then we grow by the given amount
-                setContents(attachedItems, stack.copyWithCount(current.count() + toAdd));
-            }
-            return stack.copyWithCount(stack.count() - toAdd);
+            return 0;
+        } else if (current.isEmpty() || resource.matches(current)) {
+            int toAdd = Math.min(amount, needed);
+            updateSnapshots(transaction);
+            //Note: We let setStack handle updating the backing holding stack
+            // We use current.getCount + toAdd so that if we are empty we end up at toAdd
+            // but if we aren't then we grow by the given amount
+            setContents(attachedItems, resource.toStack(current.count() + toAdd));
+            return toAdd;
         }
         //If we didn't accept this item, then just return the given stack
-        return stack;
+        return 0;
     }
 
     @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (amount < 1) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
-            return ItemStack.EMPTY;
+    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (amount == 0) {
+            //"Fail quick" if nothing is actually being extracted
+            return 0;
         }
         AttachedItems attachedItems = getAttached();
         ItemStack current = getContents(attachedItems);
-        if (current.isEmpty() || !canExtract.test(ItemResource.of(current), automationType)) {
-            return ItemStack.EMPTY;
+        if (current.isEmpty() || !resource.matches(current) || !canExtract.test(ItemResource.of(current), automationType)) {
+            //"Fail quick" if we are empty, a different type is trying to be extracted, or if we can never extract from this slot
+            return 0;
         }
-        //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
-        // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(current.count(), current.getMaxStackSize());
-        if (currentAmount < amount) {
-            //If we are trying to extract more than we have, just change it so that we are extracting it all
-            amount = currentAmount;
-        }
-        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = current.copyWithCount(amount);
-        if (action.execute()) {
-            //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedItems, current.copyWithCount(current.count() - amount));
-        }
-        return toReturn;
+        int currentStored = current.count();
+        //If we are trying to extract more than we have, just change it so that we are extracting it all
+        int toRemove = Math.min(amount, currentStored);
+        //Note: We know toRemove is greater than zero so we can just update the snapshot and then set the stack
+        updateSnapshots(transaction);
+        //Shrink the stack by the amount removed
+        setContents(attachedItems, current.copyWithCount(currentStored - toRemove));
+        return toRemove;
     }
 
     @Override
-    public int getLimit(ItemStack stack) {
-        return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
+    public int getLimit(ItemResource resource) {
+        return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 
     @Override
@@ -165,7 +161,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             }
             return 0;
         }
-        int maxStackSize = getLimit(current);
+        int maxStackSize = getLimit(ItemResource.of(current));
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -188,7 +184,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getLimit(stack));
+            amount = Math.min(amount, getLimit(ItemResource.of(stack)));
         }
         int newSize = setStackSize(attachedItems, stack, current + amount, action);
         return newSize - current;

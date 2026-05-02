@@ -67,7 +67,7 @@ public class QIORecipeData implements RecipeUpgradeData<QIORecipeData> {
             return itemCount == 0;
         }
         IQIODriveItem driveItem = (IQIODriveItem) stack.getItem();
-        if (itemCount == 0 || itemCount > driveItem.getCountCapacity(stack) || itemMap.size() > driveItem.getTypeCapacity(stack)) {
+        if (itemCount == 0 || itemCount > driveItem.getCountCapacity() || itemMap.size() > driveItem.getTypeCapacity()) {
             //If we have items stored but no types, have more items stored than the output item supports, or have more types stored
             // then return that we are not able to actually apply them to the stack
             return false;

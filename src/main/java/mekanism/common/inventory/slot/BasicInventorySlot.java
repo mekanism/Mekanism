@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -23,12 +22,14 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
-public class BasicInventorySlot implements IInventorySlot {
+public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements IInventorySlot {//TODO - 26.1: Docs on how this is similar to ItemStackResourceHandler
 
     private final ItemAccess itemAccess = ItemAccess.forHandlerIndex(new ResourceHandlerWrapper(), 0);
 
@@ -71,6 +72,7 @@ public class BasicInventorySlot implements IInventorySlot {
      * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ItemStack)} should be used
      * instead.
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Move this over to currentType and storedAmount
     protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<ItemResource, AutomationType> canExtract;
     private final BiPredicate<ItemResource, AutomationType> canInsert;
@@ -86,6 +88,9 @@ public class BasicInventorySlot implements IInventorySlot {
     private SlotOverlay slotOverlay;
     @Nullable
     private Consumer<ISupportsWarning<?>> warningAdder;
+
+    private ItemResource currentType = ItemResource.EMPTY;
+    private int storedAmount = 0;
 
     protected BasicInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator,
           @Nullable IContentsListener listener, int x, int y) {
@@ -119,6 +124,16 @@ public class BasicInventorySlot implements IInventorySlot {
     }
 
     @Override
+    public ItemResource getResource() {
+        return this.currentType;
+    }
+
+    @Override
+    public int getCount() {
+        return storedAmount;
+    }
+
+    @Override
     public void setStack(ItemResource itemType, int storedAmount) {
         setStack(itemType, storedAmount, true);
     }
@@ -135,82 +150,74 @@ public class BasicInventorySlot implements IInventorySlot {
     private void setStack(ItemResource itemType, int storedAmount, boolean validateStack) {
         TransferPreconditions.checkNonNegative(storedAmount);
         if (itemType.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
-            if (current.isEmpty()) {
+            if (isEmpty()) {
                 //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
             current = ItemStack.EMPTY;
+            this.currentType = ItemResource.EMPTY;
+            this.storedAmount = 0;
         } else if (!validateStack || isValid(itemType)) {
             current = itemType.toStack(storedAmount);
+            this.currentType = itemType;
+            this.storedAmount = storedAmount;
         } else {
             //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
             // As setStack is more meant to be used as an internal method
+            //TODO - 26.1: Evaluate if we still want to be throwing an exception
             throw new RuntimeException("Invalid stack for slot: " + itemType.value() + " " + itemType.getComponentsPatch());
         }
+        //TODO - 26.1: Delay this until the transactions are committed
         onContentsChanged();
     }
 
     @Override
-    public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
+    public int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (amount == 0) {
             //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
+            return 0;
         }
+        int currentStored = getCount();
         //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(stack) - current.count();
-        if (needed <= 0 || !isItemValidForInsertion(stack, automationType)) {
+        int needed = getLimit(resource) - currentStored;
+        if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return stack;
+            return 0;
+        } else if (!isEmpty() && !this.currentType.equals(resource)) {
+            //Fail if the type being inserted doesn't match our current stored type
+            //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
+            return 0;
         }
-        boolean sameType = false;
-        if (current.isEmpty() || (sameType = ItemStack.isSameItemSameComponents(current, stack))) {
-            int toAdd = Math.min(stack.count(), needed);
-            if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
-                if (sameType) {
-                    //We can just grow our stack by the amount we want to increase it
-                    current.grow(toAdd);
-                    onContentsChanged();
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Just set it unchecked as we have already validated it
-                    // Note: this also will mark that the contents changed
-                    setStackUnchecked(stack.copyWithCount(toAdd));
-                }
-            }
-            return stack.copyWithCount(stack.count() - toAdd);
-        }
-        //If we didn't accept this item, then just return the given stack
-        return stack;
+        int toAdd = Math.min(amount, needed);
+        //Note: We know toAdd is greater than zero so we can just update the snapshot and then set the stack
+        updateSnapshots(transaction);
+        // Note: We just set it as unchecked as we have already validated it
+        setStackUnchecked(resource, currentStored + toAdd);
+        return toAdd;
     }
 
     @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (current.isEmpty() || amount < 1 || !canExtract.test(ItemResource.of(current), automationType)) {
-            //"Fail quick" if we don't can never extract from this slot, have an item stored, or the amount being requested is less than one
-            return ItemStack.EMPTY;
+    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !canExtract.test(resource, automationType)) {
+            //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
+            return 0;
         }
-        //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
-        // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
-        if (currentAmount < amount) {
-            //If we are trying to extract more than we have, just change it so that we are extracting it all
-            amount = currentAmount;
-        }
-        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = current.copyWithCount(amount);
-        if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            current.shrink(amount);
-            onContentsChanged();
-        }
-        return toReturn;
+        int currentStored = getCount();
+        //If we are trying to extract more than we have, just change it so that we are extracting it all
+        int toRemove = Math.min(amount, currentStored);
+        //Note: We know toRemove is greater than zero so we can just update the snapshot and then set the stack
+        updateSnapshots(transaction);
+        //Shrink the stack by the amount removed
+        setStackUnchecked(resource, currentStored - toRemove);
+        //TODO - 26.1: Shrink and make shrink transactional?
+        return toRemove;
     }
 
     @Override
-    public int getLimit(ItemStack stack) {
-        return obeyStackLimit && !stack.isEmpty() ? Math.min(limit, stack.getMaxStackSize()) : limit;
+    public int getLimit(ItemResource resource) {
+        return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 
     @Override
@@ -222,7 +229,13 @@ public class BasicInventorySlot implements IInventorySlot {
      * Ignores current contents
      */
     public boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        ItemResource itemType = ItemResource.of(stack);
+        return isValidForInsertion(ItemResource.of(stack), automationType);
+    }
+
+    /**
+     * Ignores current contents
+     */
+    public boolean isValidForInsertion(ItemResource itemType, AutomationType automationType) {
         return isValid(itemType) && canInsert.test(itemType, automationType);
     }
 
@@ -274,6 +287,24 @@ public class BasicInventorySlot implements IInventorySlot {
     //TODO - 26.1: review this
     public ItemAccess itemAccess() {
         return itemAccess;
+    }
+
+    @Override
+    protected ItemStack createSnapshot() {
+        return this.currentType.toStack(this.storedAmount);
+    }
+
+    @Override
+    protected void revertToSnapshot(ItemStack snapshot) {
+        setStackUnchecked(ItemResource.of(snapshot), snapshot.count());
+    }
+
+    @Override
+    protected void onRootCommit(ItemStack originalState) {
+        if (this.storedAmount != originalState.count() || !this.currentType.matches(originalState)) {
+            //Fire content change listeners during root commit if the final state is different from the original one
+            onContentsChanged();
+        }
     }
 
     private class ResourceHandlerWrapper extends ItemStackResourceHandler {

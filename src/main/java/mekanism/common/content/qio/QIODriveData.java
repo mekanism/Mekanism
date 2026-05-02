@@ -6,9 +6,11 @@ import mekanism.api.Action;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
+import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class QIODriveData {
 
@@ -18,15 +20,14 @@ public class QIODriveData {
     private final Object2LongMap<HashedItem> itemMap = new Object2LongOpenHashMap<>();
     private long itemCount;
 
-    public QIODriveData(QIODriveKey key) {
+    public QIODriveData(QIODriveKey key, ItemResource driveData) {
         this.key = key;
-        ItemStack driveStack = key.getDriveStack();
-        IQIODriveItem driveItem = (IQIODriveItem) driveStack.getItem();
+        IQIODriveItem driveItem = (IQIODriveItem) driveData.getItem();
         // load capacity values
-        countCapacity = driveItem.getCountCapacity(driveStack);
-        typeCapacity = driveItem.getTypeCapacity(driveStack);
+        countCapacity = driveItem.getCountCapacity();
+        typeCapacity = driveItem.getTypeCapacity();
         // load item map from drive stack
-        driveStack.getOrDefault(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY).loadItemMap(this);
+        driveData.getOrDefault(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.EMPTY).loadItemMap(this);
         // update cached item count value
         itemCount = itemMap.values().longStream().sum();
 
@@ -97,7 +98,18 @@ public class QIODriveData {
     public record QIODriveKey(IQIODriveHolder holder, int driveSlot) {
 
         public void save(QIODriveData data) {
-            holder.save(driveSlot, data);
+            //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
+            // Also do we need to make sure the slot calls onContentsChanged?
+            QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
+            ItemResource itemType = slot.getResource();
+            if (itemType.value() instanceof IQIODriveItem) {
+                //Update stored items and metadata
+                ItemResource updatedItem = itemType.with(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.create(data))
+                      .with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
+                slot.setStack(updatedItem, slot.getCount());
+            } else {
+                Mekanism.logger.error("Tried to save data map to an invalid item ({}). Something has gone very wrong!", itemType.getItem());
+            }
         }
 
         public void dataUpdate() {
@@ -105,14 +117,19 @@ public class QIODriveData {
         }
 
         public void updateMetadata(QIODriveData data) {
-            ItemStack stack = getDriveStack();
-            if (stack.getItem() instanceof IQIODriveItem) {
-                stack.set(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
+            //TODO - 26.1: Evaluate callers to make sure that this is updating the correct stack
+            // Also do we need to make sure the slot calls onContentsChanged?
+            QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
+            ItemResource itemType = slot.getResource();
+            if (itemType.value() instanceof IQIODriveItem) {
+                slot.setStack(itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data)), slot.getCount());
             } else {
-                Mekanism.logger.error("Tried to update QIO meta values on an invalid ItemStack ({}). Something has gone very wrong!", stack.getItem());
+                Mekanism.logger.error("Tried to update QIO meta values on an invalid Item ({}). Something has gone very wrong!", itemType);
             }
         }
 
+        //TODO - 26.1: Re-evaluate usages of this as it is no longer valid with how things got changed to transactions
+        @Deprecated(forRemoval = true)
         public ItemStack getDriveStack() {
             return holder.getDriveSlots().get(driveSlot).getStack();
         }

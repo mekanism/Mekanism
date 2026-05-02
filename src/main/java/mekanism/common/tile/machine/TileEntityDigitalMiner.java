@@ -687,28 +687,29 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             return stackToInsert;
         }
         ItemResource resourceToInsert = ItemResource.of(stackToInsert);
-        ItemStack stack = stackToInsert.copy();
+        int amountToInsert = stackToInsert.getCount();
         //Try to simulate inserting into slots that are not currently empty
         for (int i = 0; i < slots; i++) {
             ItemCount cachedItem = cachedStacks.get(i);
-            if (cachedItem != null && cachedItem.resource.matches(stack)) {
+            if (cachedItem != null && cachedItem.resource.equals(resourceToInsert)) {
                 //Ensure that our stack can stack with the item that is already in the slot
                 IInventorySlot slot = mainSlots.get(i);
-                int limit = slot.getLimit(stack);
+                int limit = slot.getLimit(resourceToInsert);
                 if (cachedItem.count < limit) {
                     //If we still have space left before this slot is full, try adding the stacks together
-                    cachedItem.count += stack.count();
+                    cachedItem.count += amountToInsert;
                     if (cachedItem.count <= limit) {
                         //If we can fit it all, return we have no remainder
                         return ItemStack.EMPTY;
                     }
                     //Otherwise, we tried to store more than can fit, update stack to represent the remainder that didn't fit
-                    stack = stack.copyWithCount(cachedItem.count - limit);
+                    amountToInsert = cachedItem.count - limit;
                     // and update the actual amount stored to the limit of the slot
                     cachedItem.count = limit;
                 }
             }
         }
+        ItemStack stack = resourceToInsert.toStack(amountToInsert);
         //Try to simulate inserting into slots that are currently empty
         for (int i = 0; i < slots; i++) {
             if (!cachedStacks.containsKey(i)) {

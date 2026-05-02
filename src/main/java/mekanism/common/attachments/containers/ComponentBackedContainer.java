@@ -3,9 +3,10 @@ package mekanism.common.attachments.containers;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 
 @NothingNullByDefault
-public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> implements IContentsListener {
+public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends SnapshotJournal<TYPE> implements IContentsListener {
 
     protected final ItemStack attachedTo;
     protected final int containerIndex;
@@ -42,6 +43,8 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
         }
         if (shouldUpdate(attached, value)) {
             attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, copy(value)));
+            //TODO - 26.1: Do we want to be calling onContentsChanged here or should we instead just be marking the snapshot as taken here above setting it
+            // and then don't call onContentsChanged here
             onContentsChanged();
         }
     }
@@ -56,5 +59,24 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
 
     @Override
     public void onContentsChanged() {
+    }
+
+    @Override
+    protected TYPE createSnapshot() {
+        return getContents(getAttached());
+    }
+
+    @Override
+    protected void revertToSnapshot(TYPE snapshot) {
+        setContents(getAttached(), snapshot);
+    }
+
+    @Override
+    protected void onRootCommit(TYPE originalState) {
+        //TODO - 26.1: Evaluate if shouldUpdate is a good metric for if we should be calling onContentsChanged here
+        if (shouldUpdate(getAttached(), originalState)) {
+            //Fire content change listeners during root commit if the final state is different from the original one
+            onContentsChanged();
+        }
     }
 }

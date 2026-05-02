@@ -34,9 +34,9 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         DriveMetadata meta = stack.getOrDefault(MekanismDataComponents.DRIVE_METADATA, DriveMetadata.EMPTY);
         tooltipAdder.accept(MekanismLang.QIO_ITEMS_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              TextUtils.format(meta.count()), TextUtils.format(getCountCapacity(stack))));
+              TextUtils.format(meta.count()), TextUtils.format(getCountCapacity())));
         tooltipAdder.accept(MekanismLang.QIO_TYPES_DETAIL.translateColored(EnumColor.GRAY, EnumColor.INDIGO,
-              TextUtils.format(meta.types()), TextUtils.format(getTypeCapacity(stack))));
+              TextUtils.format(meta.types()), TextUtils.format(getTypeCapacity())));
     }
 
     @NotNull
@@ -46,12 +46,12 @@ public class ItemQIODrive extends Item implements IQIODriveItem {
     }
 
     @Override
-    public long getCountCapacity(ItemStack stack) {
+    public long getCountCapacity() {
         return tier.getMaxCount();
     }
 
     @Override
-    public int getTypeCapacity(ItemStack stack) {
+    public int getTypeCapacity() {
         return tier.getMaxTypes();
     }
 }

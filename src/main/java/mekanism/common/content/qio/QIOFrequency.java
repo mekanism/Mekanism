@@ -38,6 +38,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
+import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.WildcardMatcher;
 import mekanism.common.lib.collection.BiMultimap;
 import mekanism.common.lib.frequency.Frequency;
@@ -59,6 +60,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
@@ -557,8 +559,9 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         this.registries = tile.getLevel().registryAccess();
         boolean changedData = super.update(tile);
         if (tile instanceof IQIODriveHolder holder && driveHolders.add(holder)) {
-            for (int i = 0, slots = holder.getDriveSlots().size(); i < slots; i++) {
-                addDrive(new QIODriveKey(holder, i));
+            List<QIODriveSlot> driveSlots = holder.getDriveSlots();
+            for (int i = 0, slots = driveSlots.size(); i < slots; i++) {
+                addDrive(new QIODriveKey(holder, i), driveSlots.get(i).getResource());
             }
         }
         return changedData;
@@ -589,14 +592,14 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return code;
     }
 
-    public void addDrive(QIODriveKey key) {
-        if (key.getDriveStack().getItem() instanceof IQIODriveItem) {
+    public void addDrive(QIODriveKey key, ItemResource driveData) {
+        if (driveData.getItem() instanceof IQIODriveItem) {
             // if a drive in this position is already in the system, we remove it before adding this one
             if (driveMap.containsKey(key)) {
                 removeDrive(key, true);
             }
             // add drive and capacity info to core tracking
-            QIODriveData data = new QIODriveData(key);
+            QIODriveData data = new QIODriveData(key, driveData);
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
@@ -610,7 +613,12 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
     }
 
+    @Deprecated(forRemoval = true)//TODO - 26.1: Re-evaluate usages and fix things so that the proper stack gets updated
     public void removeDrive(QIODriveKey key, boolean updateItemMap) {
+        removeDrive(key, updateItemMap, ItemResource.of(key.getDriveStack()));
+    }
+
+    public void removeDrive(QIODriveKey key, boolean updateItemMap, ItemResource driveData) {
         if (!driveMap.containsKey(key)) {
             return;
         }
@@ -639,7 +647,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         totalTypeCapacity -= data.getTypeCapacity();
         driveMap.remove(key);
         // save the item list onto the physical drive
-        key.updateMetadata(data);
+        //TODO - 26.1: When doing it from the drive slot, we need to do this before extraction (and maybe even getting of the resource type??)
         key.save(data);
     }
 
@@ -647,7 +655,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         for (Entry<QIODriveKey, QIODriveData> entry : driveMap.entrySet()) {
             QIODriveKey key = entry.getKey();
             QIODriveData value = entry.getValue();
-            key.updateMetadata(value);
             key.save(value);
         }
     }

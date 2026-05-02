@@ -2,8 +2,6 @@ package mekanism.common.inventory.slot;
 
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -32,7 +30,9 @@ public class QIODriveSlot extends BasicInventorySlot {
         this.key = new QIODriveKey(this.driveHolder, slot);
     }
 
-    @Override
+    //TODO - 26.1: Re-evaluate these two overrides
+    // I think we don't want them, but we do need to make sure we add/remove when loading saved data
+    /*@Override
     public void setStack(ItemResource itemType, int storedAmount) {
         // if we're about to empty this slot and a drive already exists here, remove the current drive from the frequency
         // Note: We don't check to see if the new stack is empty so that we properly are able to handle direct changes
@@ -60,26 +60,28 @@ public class QIODriveSlot extends BasicInventorySlot {
         if (!isRemote() && !isEmpty()) {
             addDrive();
         }
-    }
+    }*/
+
+    //TODO - 26.1: On extracting we need to make sure that the drive's metadata is updated so that it returns the correct resource(?)
 
     @Override
-    public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        ItemStack ret = super.insertItem(stack, action, automationType);
-        if (!isRemote() && action.execute() && ret.isEmpty()) {
-            addDrive();
-        }
-        return ret;
-    }
-
-    @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (!isRemote() && action.execute()) {
-            ItemStack ret = super.extractItem(amount, Action.SIMULATE, automationType);
-            if (!ret.isEmpty()) {
-                removeDrive();
+    protected void onRootCommit(ItemStack originalState) {
+        super.onRootCommit(originalState);
+        //TODO - 26.1: Should we do this before or after calling super (and setting the contents changed)
+        ItemResource newDrive = getResource();
+        if (!isRemote() && !newDrive.matches(originalState)) {
+            QIOFrequency frequency = driveHolder.getQIOFrequency();
+            if (frequency != null) {
+                //If the item type changed, start by removing the old drive and then adding the new one
+                ItemResource originalDrive = ItemResource.of(originalState);
+                if (!originalState.isEmpty() && IS_QIO_ITEM.test(originalDrive)) {
+                    frequency.removeDrive(key, true, originalDrive);
+                }
+                if (!newDrive.isEmpty() && IS_QIO_ITEM.test(newDrive)) {
+                    frequency.addDrive(key, newDrive);
+                }
             }
         }
-        return super.extractItem(amount, action, automationType);
     }
 
     public QIODriveKey getKey() {
@@ -91,19 +93,5 @@ public class QIODriveSlot extends BasicInventorySlot {
         //Treat world as remote if it is null (hasn't been assigned yet)
         // which may happen when loading the drives from memory
         return level == null || level.isClientSide();
-    }
-
-    private void addDrive() {
-        QIOFrequency frequency = driveHolder.getQIOFrequency();
-        if (frequency != null) {
-            frequency.addDrive(key);
-        }
-    }
-
-    private void removeDrive() {
-        QIOFrequency frequency = driveHolder.getQIOFrequency();
-        if (frequency != null) {
-            frequency.removeDrive(key, true);
-        }
     }
 }

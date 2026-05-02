@@ -20,7 +20,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,28 +64,49 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
+    public int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (amount == 0) {
+            //"Fail quick" if there is nothing to add
+            return 0;
+        }
         if (isEmpty()) {
-            if (isLocked() && !lockType.matches(stack)) {
+            if (isLocked() && !lockType.equals(resource)) {
                 // When locked, we need to make sure the correct item type is being inserted
-                return stack;
-            } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
+                return 0;
+            } else if (isCreative && automationType != AutomationType.EXTERNAL) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
-                ItemStack simulatedRemainder = super.insertItem(stack, Action.SIMULATE, automationType);
-                if (simulatedRemainder.isEmpty()) {
-                    //If we are able to insert it then set perform the action of setting it to full
-                    setStackUnchecked(stack.copyWithCount(getLimit(stack)));
-                }
-                return simulatedRemainder;
+                int limit = getLimit(resource);
+                //Try to insert the entire limit so that then it just updates to being a full stack
+                int inserted = super.insert(resource, limit, transaction, automationType);
+                //If we did manage to insert anything then return that we inserted the entire amount that we were passed
+                return inserted == 0 ? 0 : amount;
             }
         }
-        return super.insertItem(stack, action.combine(!isCreative), automationType);
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes)
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(resource, amount, simulation, automationType);
+            }
+        }
+        return super.insert(resource, amount, transaction, automationType);
     }
 
     @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        return super.extractItem(amount, action.combine(!isCreative), automationType);
+    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (isEmpty() || amount == 0) {
+            //"Fail quick" if we are empty, nothing is being extracted
+            return 0;
+        }
+        if (isCreative) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 
     /**
@@ -118,7 +142,8 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        return current.copyWithCount(Math.min(getCount(), current.getMaxStackSize()));
+        ItemResource currentType = getResource();
+        return currentType.toStack(Math.min(getCount(), currentType.getMaxStackSize()));
     }
 
     /**
@@ -150,16 +175,20 @@ public class BinInventorySlot extends BasicInventorySlot {
     /**
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
-    public void setLockStack(ItemStack template) {
-        lockType = ItemResource.of(template);
+    public void setLockStack(ItemResource lockType) {
+        this.lockType = lockType;
     }
 
     public boolean isLocked() {
         return !lockType.isEmpty();
     }
 
-    public ItemStack getBinItemType() {
-        return isLocked() ? getLockStack() : getStack();
+    public ItemResource getBinItemType() {
+        return isLocked() ? lockType : getResource();
+    }
+
+    public ItemResource getLockType() {
+        return lockType;
     }
 
     public ItemStack getLockStack() {

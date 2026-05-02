@@ -13,8 +13,8 @@ import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,73 +81,23 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every
      * run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty()) {
             //"Fail quick" if the given stack is empty
             return ItemStack.EMPTY;
         }
-        ItemResource insertingResource = ItemResource.of(stack);
-        //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(insertingResource) - getCount();
-        if (needed <= 0 || !isValid(insertingResource)) {
-            //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return stack;
-        }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = insertingResource.equals(getResource()))) {
-            int toAdd = Math.min(stack.count(), needed);
+        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Re-evaluate this if we don't end up removing this method in general
+            int inserted = insert(ItemResource.of(stack), stack.count(), transaction, automationType);
             if (action.execute()) {
-                //If we want to actually insert the item, then update the current item
-                if (sameType) {
-                    // Note: this also will mark that the contents changed
-                    //We can just grow our stack by the amount we want to increase it
-                    growStack(toAdd, action);
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Note: this also will mark that the contents changed
-                    setStack(insertingResource, toAdd);
-                }
+                transaction.commit();
             }
-            return insertingResource.toStack(stack.count() - toAdd);
+            return stack.copyWithCount(stack.count() - inserted);
         }
-        //If we didn't accept this item, then just return the given stack
-        return stack;
     }
 
-    default int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        //TODO - 26.1: Docs and make overriders use this method
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (amount == 0) {
-            //"Fail quick" if there is nothing to add
-            return 0;
-        }
-        //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(resource) - getCount();
-        if (needed <= 0 || !isValid(resource)) {
-            //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return 0;
-        } else if (!isEmpty() && !resource.equals(getResource())) {
-            //Fail if we aren't empty and the given resource doesn't match the type that we have stored
-            return 0;
-        }
-        int toAdd = Math.min(amount, needed);
-        //TODO - 26.1: Implement this, I am unsure transaction wise if we need to not have this be a defaulted method so that it can capture the current state
-        // or if we want to adjust say setStack/growStack to support transactions
-        /*if (action.execute()) {
-            //If we want to actually insert the item, then update the current item
-            if (isEmpty()) {
-                //If we are not the same type then we have to copy the stack and set it
-                // Note: this also will mark that the contents changed
-                setStack(resource.toStack(toAdd));
-            } else {
-                // Note: this also will mark that the contents changed
-                //We can just grow our stack by the amount we want to increase it
-                growStack(toAdd, action);
-            }
-        }*/
-        //If we didn't accept this item, then just return that nothing could be inserted
-        return toAdd;
-    }
+    //TODO - 26.1: Docs
+    int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
 
     /**
      * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
@@ -167,49 +117,25 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be
      * made every run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1) {
-            //"Fail quick" if we can never extract from this slot, don't have an item stored, or the amount being requested is less than one
+        if (isEmpty() || amount < 0) {
+            //"Fail quick" if the given stack is empty, or we don't have anything stored
             return ItemStack.EMPTY;
         }
-        ItemResource current = getResource();
-        //Ensure that if this slot allows going past the max stack size of an item, that when extracting we don't act as if we have more than
-        // the max stack size, as the JavaDoc for IItemHandler requires that the returned stack is not larger than its stack size
-        int currentAmount = Math.min(getCount(), current.getMaxStackSize());
-        if (currentAmount < amount) {
-            //If we are trying to extract more than we have, just change it so that we are extracting it all
-            amount = currentAmount;
+        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Re-evaluate this if we don't end up removing this method in general
+            ItemResource resource = getResource();
+            int extracted = extract(resource, amount, transaction, automationType);
+            if (action.execute()) {
+                transaction.commit();
+            }
+            return resource.toStack(extracted);
         }
-        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        // especially for supporting the fact of limiting by the max stack size.
-        ItemStack toReturn = current.toStack(amount);
-        if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            // Note: this also will mark that the contents changed
-            shrinkStack(amount, action);
-        }
-        return toReturn;
     }
 
-    default int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        //TODO - 26.1: Docs and make overriders use this method
-        if (isEmpty() || amount == 0) {
-            //"Fail quick" if we can never extract from this slot, don't have an item stored, or the amount being requested is less than one
-            return 0;
-        }
-        //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past it would return at most max stack size
-        //If we are trying to extract more than we have, just change it so that we are extracting it all
-        amount = Math.min(amount, getCount());
-        //TODO - 26.1: Implement this, I am unsure transaction wise if we need to not have this be a defaulted method so that it can capture the current state
-        // or if we want to adjust say setStack/shrinkStack to support transactions
-        /*if (action.execute()) {
-            //If shrink gets the size to zero it will update the empty state so that isEmpty() returns true.
-            // Note: this also will mark that the contents changed
-            shrinkStack(amount, action);
-        }*/
-        return amount;
-    }
+    //TODO - 26.1: Docs
+    //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past it would return at most max stack size
+    int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
 
     /**
      * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use
@@ -222,12 +148,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @implNote The implementation of this CAN take into account the max size of this stack but is not required to.
      */
-    int getLimit(ItemStack stack);
-
-    //TODO - 26.1: Docs
-    default int getLimit(ItemResource resource) {
-        return getLimit(resource.toStack());
-    }
+    int getLimit(ItemResource resource);//TODO - 26.1: Update docs
 
     //TODO - 26.1: Re-evaluate name and add docs
     //TODO - 26.1: Should bin slots override this to check lock stack? Probably
@@ -346,7 +267,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @return True if the slot is empty, false otherwise.
      */
-    default boolean isEmpty() {
+    default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
         return getResource().isEmpty();
     }
 

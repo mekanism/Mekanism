@@ -1,10 +1,8 @@
 package mekanism.common.content.qio;
 
-import net.minecraft.world.item.ItemStack;
-
 public interface IQIODriveItem {
 
-    long getCountCapacity(ItemStack stack);
+    long getCountCapacity();
 
-    int getTypeCapacity(ItemStack stack);
+    int getTypeCapacity();
 }

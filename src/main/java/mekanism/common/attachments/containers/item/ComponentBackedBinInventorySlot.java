@@ -17,7 +17,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -38,29 +41,45 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public ItemStack insertItem(AttachedItems attachedItems, ItemStack current, ItemStack stack, Action action, AutomationType automationType) {
+    public int insertItem(AttachedItems attachedItems, ItemStack current, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         if (current.isEmpty()) {
             ItemStackTemplate lockStack = getLockStack();
-            if (lockStack != null && !ItemStack.isSameItemSameComponents(stack, lockStack)) {
+            if (lockStack != null && !resource.matches(lockStack)) {
                 // When locked, we need to make sure the correct item type is being inserted
-                return stack;
-            } else if (isCreative && action.execute() && automationType != AutomationType.EXTERNAL) {
+                return 0;
+            } else if (isCreative && automationType != AutomationType.EXTERNAL) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
-                ItemStack simulatedRemainder = super.insertItem(attachedItems, current, stack, Action.SIMULATE, automationType);
-                if (simulatedRemainder.isEmpty()) {
-                    //If we are able to insert it then set perform the action of setting it to full
-                    setContents(attachedItems, stack.copyWithCount(getLimit(stack)));
-                }
-                return simulatedRemainder;
+                int limit = getLimit(resource);
+                //Try to insert the entire limit so that then it just updates to being a full stack
+                int inserted = super.insertItem(attachedItems, current, resource, limit, transaction, automationType);
+                //If we did manage to insert anything then return that we inserted the entire amount that we were passed
+                return inserted == 0 ? 0 : amount;
             }
         }
-        return super.insertItem(attachedItems, current, stack, action.combine(!isCreative), automationType);
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insertItem(attachedItems, current, resource, amount, simulation, automationType);
+            }
+        }
+        return super.insertItem(attachedItems, current, resource, amount, transaction, automationType);
     }
 
     @Override
-    public ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        return super.extractItem(amount, action.combine(!isCreative), automationType);
+    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        if (amount == 0) {
+            //"Fail quick" if nothing is being extracted
+            return 0;
+        }
+        if (isCreative) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 
     /**

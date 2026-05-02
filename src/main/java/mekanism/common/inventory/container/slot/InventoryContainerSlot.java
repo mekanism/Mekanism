@@ -116,7 +116,7 @@ public class InventoryContainerSlot extends Slot implements IInsertableSlot {
 
     @Override
     public int getMaxStackSize(@NotNull ItemStack stack) {
-        return slot.getLimit(stack);
+        return slot.getLimit(ItemResource.of(stack));
     }
 
     @Override
