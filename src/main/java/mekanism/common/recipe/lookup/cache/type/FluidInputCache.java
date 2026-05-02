@@ -62,11 +62,6 @@ public class FluidInputCache<RECIPE extends MekanismRecipe<?>> extends Component
     }
 
     @Override
-    protected Fluid createKey(FluidStack stack) {
-        return stack.getFluid();
-    }
-
-    @Override
     public boolean isEmpty(FluidStack input) {
         return input.isEmpty();
     }

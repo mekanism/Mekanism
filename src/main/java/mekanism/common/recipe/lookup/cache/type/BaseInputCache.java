@@ -67,7 +67,9 @@ public abstract class BaseInputCache<KEY, INPUT extends TypedInstance<KEY>, INGR
      *
      * @return Key representing the given input.
      */
-    protected abstract KEY createKey(INPUT input);
+    protected final KEY createKey(INPUT input) {
+        return input.typeHolder().value();
+    }
 
     /**
      * Adds a given recipe to the input cache using the corresponding key.

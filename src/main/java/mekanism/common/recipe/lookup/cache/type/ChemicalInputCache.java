@@ -21,11 +21,6 @@ public class ChemicalInputCache<RECIPE extends MekanismRecipe<?>> extends BaseIn
     }
 
     @Override
-    protected Chemical createKey(ChemicalStack stack) {
-        return stack.getChemical();
-    }
-
-    @Override
     public boolean isEmpty(ChemicalStack input) {
         return input.isEmpty();
     }
