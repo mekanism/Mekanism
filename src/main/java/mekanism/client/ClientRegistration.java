@@ -207,8 +207,6 @@ public class ClientRegistration {
             for (Holder<Fluid> fluid : MekanismFluids.FLUIDS.getFluidEntries()) {
                 ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
             }
-            ClientRegistrationUtil.setPropertyOverride(MekanismBlocks.CARDBOARD_BOX.getItemHolder(), Mekanism.rl("storage"),
-                  (stack, world, entity, seed) -> stack.has(MekanismDataComponents.BLOCK_DATA) ? 1 : 0);
 
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
                 if (entity instanceof Player) {

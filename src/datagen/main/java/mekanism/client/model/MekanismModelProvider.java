@@ -156,11 +156,18 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         //Blocks
         registerFluidBlockStates(blockModels, MekanismFluids.FLUIDS);
+        blockModels.itemModelOutput.accept(
+              MekanismBlocks.CARDBOARD_BOX.asItem(),
+              ItemModelUtils.conditional(
+                    ItemModelUtils.hasComponent(MekanismDataComponents.BLOCK_DATA.get()),
+                    ItemModelUtils.plainModel(modLocation("block/cardboard_box_storage")),
+                    ItemModelUtils.plainModel(modLocation("block/cardboard_box"))
+              )
+        );
 
         for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
             String registrySuffix = entry.getKey().getRegistrySuffix();
             Block block = entry.getValue().value();
-            Item asItem = entry.getValue().asItem();
             Material texture = modTexture("block/block_" + registrySuffix);
             Identifier targetModelPath = modLocation("block/storage/" + registrySuffix);
             TextureMapping textureMapping;
