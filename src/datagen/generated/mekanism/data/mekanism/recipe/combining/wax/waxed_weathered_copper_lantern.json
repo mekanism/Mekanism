@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:combining",
+  "extra_input": {
+    "count": 1,
+    "ingredient": "minecraft:honeycomb"
+  },
+  "main_input": {
+    "count": 1,
+    "ingredient": "minecraft:weathered_copper_lantern"
+  },
+  "output": {
+    "id": "minecraft:waxed_weathered_copper_lantern"
+  }
+}

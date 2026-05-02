@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:combining",
+  "extra_input": {
+    "count": 1,
+    "ingredient": "minecraft:honeycomb"
+  },
+  "main_input": {
+    "count": 1,
+    "ingredient": "minecraft:lightning_rod"
+  },
+  "output": {
+    "id": "minecraft:waxed_lightning_rod"
+  }
+}

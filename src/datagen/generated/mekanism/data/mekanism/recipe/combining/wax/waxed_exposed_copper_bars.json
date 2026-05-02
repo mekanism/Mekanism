@@ -1,0 +1,14 @@
+{
+  "type": "mekanism:combining",
+  "extra_input": {
+    "count": 1,
+    "ingredient": "minecraft:honeycomb"
+  },
+  "main_input": {
+    "count": 1,
+    "ingredient": "minecraft:exposed_copper_bars"
+  },
+  "output": {
+    "id": "minecraft:waxed_exposed_copper_bars"
+  }
+}
