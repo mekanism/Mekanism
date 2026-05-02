@@ -223,8 +223,8 @@ built_in_tables:
     fields:
       dimension:
         description: The dimension component
-        java_type: net.minecraft.resources.ResourceLocation
-        type: String (ResourceLocation)
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
       x:
         description: The x component
         java_type: int
@@ -280,8 +280,8 @@ built_in_tables:
         type: String
       name:
         description: The Fluid's registered name, e.g. minecraft:water
-        java_type: net.minecraft.resources.ResourceLocation
-        type: String (ResourceLocation)
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
     human_name: Table (FluidStack)
 enums:
   mekanism.api.RelativeSide:
@@ -465,9 +465,9 @@ methods:
       an output item
     methodName: createOredictionificatorItemFilter
     params:
-    - java_type: net.minecraft.resources.ResourceLocation
+    - java_type: net.minecraft.resources.Identifier
       name: filterTag
-      type: String (ResourceLocation)
+      type: String (Identifier)
     returns:
       java_type: mekanism.common.content.oredictionificator.OredictionificatorItemFilter
       type: Table (OredictionificatorItemFilter)
@@ -475,9 +475,9 @@ methods:
       The output is not validated.
     methodName: createOredictionificatorItemFilter
     params:
-    - java_type: net.minecraft.resources.ResourceLocation
+    - java_type: net.minecraft.resources.Identifier
       name: filterTag
-      type: String (ResourceLocation)
+      type: String (Identifier)
     - java_type: net.minecraft.world.item.Item
       name: selectedOutput
       type: String (Item)
@@ -1959,9 +1959,9 @@ methods:
       type: String
   - methodName: setFilter
     params:
-    - java_type: net.minecraft.resources.ResourceLocation
+    - java_type: net.minecraft.resources.Identifier
       name: tag
-      type: String (ResourceLocation)
+      type: String (Identifier)
   Filter Wrapper (QIO):
   - methodName: clone
     returns:
@@ -3898,9 +3898,9 @@ methods:
     requires_public_security: true
   - methodName: setTargetItem
     params:
-    - java_type: net.minecraft.resources.ResourceLocation
+    - java_type: net.minecraft.resources.Identifier
       name: itemName
-      type: String (ResourceLocation)
+      type: String (Identifier)
     requires_public_security: true
   - methodName: setTriggerAmount
     params:

@@ -82,8 +82,8 @@
       "methodName": "createOredictionificatorItemFilter",
       "params": [
         {
-          "type": "String (ResourceLocation)",
-          "java_type": "net.minecraft.resources.ResourceLocation",
+          "type": "String (Identifier)",
+          "java_type": "net.minecraft.resources.Identifier",
           "name": "filterTag"
         }
       ],
@@ -97,8 +97,8 @@
       "methodName": "createOredictionificatorItemFilter",
       "params": [
         {
-          "type": "String (ResourceLocation)",
-          "java_type": "net.minecraft.resources.ResourceLocation",
+          "type": "String (Identifier)",
+          "java_type": "net.minecraft.resources.Identifier",
           "name": "filterTag"
         },
         {
@@ -2530,8 +2530,8 @@
       "methodName": "setFilter",
       "params": [
         {
-          "type": "String (ResourceLocation)",
-          "java_type": "net.minecraft.resources.ResourceLocation",
+          "type": "String (Identifier)",
+          "java_type": "net.minecraft.resources.Identifier",
           "name": "tag"
         }
       ]
@@ -5804,8 +5804,8 @@
       "methodName": "setTargetItem",
       "params": [
         {
-          "type": "String (ResourceLocation)",
-          "java_type": "net.minecraft.resources.ResourceLocation",
+          "type": "String (Identifier)",
+          "java_type": "net.minecraft.resources.Identifier",
           "name": "itemName"
         }
       ],

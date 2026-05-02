@@ -4,8 +4,8 @@ API Global: computerEnergyHelper,joulesToFE,joules: Number (long),Number (long),
 API Global: computerFilterHelper,createMinerItemFilter,item: String (Item),Table (MinerItemStackFilter),,false,Create a Digital Miner Item Filter from an Item name
 API Global: computerFilterHelper,createMinerModIdFilter,modId: String,Table (MinerModIDFilter),,false,Create a Digital Miner Mod Id Filter from a mod id
 API Global: computerFilterHelper,createMinerTagFilter,tag: String,Table (MinerTagFilter),,false,Create a Digital Miner Tag Filter from a Tag name
-API Global: computerFilterHelper,createOredictionificatorItemFilter,filterTag: String (ResourceLocation),Table (OredictionificatorItemFilter),,false,"Create an Oredictionificator filter from a tag, without specifying an output item"
-API Global: computerFilterHelper,createOredictionificatorItemFilter,"filterTag: String (ResourceLocation), selectedOutput: String (Item)",Table (OredictionificatorItemFilter),,false,Create an Oredictionificator filter from a tag and a selected output. The output is not validated.
+API Global: computerFilterHelper,createOredictionificatorItemFilter,filterTag: String (Identifier),Table (OredictionificatorItemFilter),,false,"Create an Oredictionificator filter from a tag, without specifying an output item"
+API Global: computerFilterHelper,createOredictionificatorItemFilter,"filterTag: String (Identifier), selectedOutput: String (Item)",Table (OredictionificatorItemFilter),,false,Create an Oredictionificator filter from a tag and a selected output. The output is not validated.
 API Global: computerFilterHelper,createQIOItemFilter,item: String (Item),Table (QIOItemStackFilter),,false,Create a QIO Item Filter structure from an Item name
 API Global: computerFilterHelper,createQIOModIdFilter,modId: String,Table (QIOModIDFilter),,false,Create a QIO Mod Id Filter from a mod id
 API Global: computerFilterHelper,createQIOTagFilter,tag: String,Table (QIOTagFilter),,false,Create a QIO Tag Filter from a Tag name
@@ -283,7 +283,7 @@ Filter Wrapper (Oredictionificator Item),getSelectedOutput,,String (Item),,false
 Filter Wrapper (Oredictionificator Item),setSelectedOutput,item: String (Item),,,false,
 Filter Wrapper (Oredictionificator),clone,,Table (OredictionificatorFilter),,false,
 Filter Wrapper (Oredictionificator),getFilter,,String,,false,
-Filter Wrapper (Oredictionificator),setFilter,tag: String (ResourceLocation),,,false,
+Filter Wrapper (Oredictionificator),setFilter,tag: String (Identifier),,,false,
 Filter Wrapper (QIO),clone,,Table (QIOFilter),,false,
 Filter Wrapper (Tag),getTagName,,String,,false,
 Filter Wrapper (Tag),setTagName,name: String,,,false,
@@ -661,7 +661,7 @@ QIO Redstone Adapter,invertSignal,,,,true,
 QIO Redstone Adapter,isInverted,,boolean,,false,
 QIO Redstone Adapter,setFuzzyMode,fuzzy: boolean,,,true,
 QIO Redstone Adapter,setSignalInverted,inverted: boolean,,,true,
-QIO Redstone Adapter,setTargetItem,itemName: String (ResourceLocation),,,true,
+QIO Redstone Adapter,setTargetItem,itemName: String (Identifier),,,true,
 QIO Redstone Adapter,setTriggerAmount,amount: Number (long),,,true,
 QIO Redstone Adapter,toggleFuzzyMode,,,,true,
 Quantum Entangloporter,createFrequency,name: String,,,true,Requires frequency to not already exist and for it to be public so that it can make it as the player who owns the block. Also sets the frequency after creation
