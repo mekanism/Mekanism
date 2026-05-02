@@ -89,7 +89,7 @@ public abstract class SingleInputRecipeCache<TYPE, STACK extends TypedInstance<T
      * @return Recipe matching the given input, or {@code null} if no recipe matches.
      */
     @Nullable
-    public RECIPE findTypeBasedRecipe(@Nullable Level world, STACK input) {
+    public RECIPE findTypeBasedRecipe(@Nullable Level world, TypedInstance<TYPE> input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return null;

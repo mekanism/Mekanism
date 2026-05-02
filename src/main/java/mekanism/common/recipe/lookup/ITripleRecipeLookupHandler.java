@@ -19,7 +19,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes three inputs.
  */
-public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
+public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
+      HOLDER_C, INPUT_C extends TypedInstance<HOLDER_C>, RECIPE extends MekanismRecipe<?> & TriPredicate<INPUT_A, INPUT_B, INPUT_C>,
       INPUT_CACHE extends TripleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, HOLDER_C, INPUT_C, ?, RECIPE, ?, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
@@ -31,12 +32,13 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
-     * for more details about when this method should be called versus when {@link #containsRecipeBAC(INPUT_B, INPUT_A, INPUT_C)} or
-     * {@link #containsRecipeCAB(INPUT_C, INPUT_A, INPUT_B)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, TypedInstance, TypedInstance, TypedInstance)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, TypedInstance, TypedInstance, TypedInstance)}, and
+     * {@link TripleInputRecipeCache#containsInputCAB(Level, TypedInstance, TypedInstance, TypedInstance)} for more details about when this method should be called versus
+     * when {@link #containsRecipeBAC(TypedInstance, TypedInstance, TypedInstance)} or {@link #containsRecipeCAB(TypedInstance, TypedInstance, TypedInstance)} should be
+     * called.
      */
-    default boolean containsRecipeABC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    default boolean containsRecipeABC(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return getRecipeType().getInputCache().containsInputABC(getLevel(), inputA, inputB, inputC);
     }
 
@@ -49,12 +51,13 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
-     * for more details about when this method should be called versus when {@link #containsRecipeABC(INPUT_A, INPUT_B, INPUT_C)} or
-     * {@link #containsRecipeCAB(INPUT_C, INPUT_A, INPUT_B)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, TypedInstance, TypedInstance, TypedInstance)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, TypedInstance, TypedInstance, TypedInstance)}, and
+     * {@link TripleInputRecipeCache#containsInputCAB(Level, TypedInstance, TypedInstance, TypedInstance)} for more details about when this method should be called versus
+     * when {@link #containsRecipeABC(TypedInstance, TypedInstance, TypedInstance)} or {@link #containsRecipeCAB(TypedInstance, TypedInstance, TypedInstance)} should be
+     * called.
      */
-    default boolean containsRecipeBAC(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    default boolean containsRecipeBAC(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return getRecipeType().getInputCache().containsInputBAC(getLevel(), inputA, inputB, inputC);
     }
 
@@ -67,12 +70,13 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, INPUT_A, INPUT_B, INPUT_C)},
-     * {@link TripleInputRecipeCache#containsInputBAC(Level, INPUT_B, INPUT_A, INPUT_C)}, and {@link TripleInputRecipeCache#containsInputCAB(Level, INPUT_C, INPUT_A, INPUT_B)}
-     * for more details about when this method should be called versus when {@link #containsRecipeABC(INPUT_A, INPUT_B, INPUT_C)} or
-     * {@link #containsRecipeBAC(INPUT_B, INPUT_A, INPUT_C)} should be called.
+     * @apiNote See {@link TripleInputRecipeCache#containsInputABC(Level, TypedInstance, TypedInstance, TypedInstance)},
+     * {@link TripleInputRecipeCache#containsInputBAC(Level, TypedInstance, TypedInstance, TypedInstance)}, and
+     * {@link TripleInputRecipeCache#containsInputCAB(Level, TypedInstance, TypedInstance, TypedInstance)} for more details about when this method should be called versus
+     * when {@link #containsRecipeABC(TypedInstance, TypedInstance, TypedInstance)} or {@link #containsRecipeBAC(TypedInstance, TypedInstance, TypedInstance)} should be
+     * called.
      */
-    default boolean containsRecipeCAB(INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    default boolean containsRecipeCAB(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return getRecipeType().getInputCache().containsInputCAB(getLevel(), inputA, inputB, inputC);
     }
 
@@ -83,7 +87,7 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeA(INPUT_A input) {
+    default boolean containsRecipeA(TypedInstance<HOLDER_A> input) {
         return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
@@ -94,7 +98,7 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeB(INPUT_B input) {
+    default boolean containsRecipeB(TypedInstance<HOLDER_B> input) {
         return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 
@@ -105,7 +109,7 @@ public interface ITripleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeC(INPUT_C input) {
+    default boolean containsRecipeC(TypedInstance<HOLDER_C> input) {
         return getRecipeType().getInputCache().containsInputC(getLevel(), input);
     }
 

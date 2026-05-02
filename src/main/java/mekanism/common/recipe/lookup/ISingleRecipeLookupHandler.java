@@ -20,8 +20,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that take a single input using the input cache.
  */
-public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>, INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>>
-      extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TYPE>, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>,
+      INPUT_CACHE extends SingleInputRecipeCache<TYPE, INPUT, ?, RECIPE, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given input.
@@ -30,7 +30,7 @@ public interface ISingleRecipeLookupHandler<TYPE, INPUT extends TypedInstance<TY
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipe(INPUT input) {
+    default boolean containsRecipe(TypedInstance<TYPE> input) {
         return getRecipeType().getInputCache().containsInput(getLevel(), input);
     }
 

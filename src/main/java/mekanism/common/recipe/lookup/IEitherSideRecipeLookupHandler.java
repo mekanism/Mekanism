@@ -27,7 +27,7 @@ public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstanc
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipe(INPUT input) {
+    default boolean containsRecipe(TypedInstance<TYPE> input) {
         return getRecipeType().getInputCache().containsInput(getLevel(), input);
     }
 
@@ -41,7 +41,7 @@ public interface IEitherSideRecipeLookupHandler<TYPE, INPUT extends TypedInstanc
      *
      * @apiNote See {@link EitherSideInputRecipeCache#containsInput(Level, INPUT, INPUT)} for more details about what order to pass the inputs.
      */
-    default boolean containsRecipe(INPUT inputA, INPUT inputB) {
+    default boolean containsRecipe(TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB) {
         return getRecipeType().getInputCache().containsInput(getLevel(), inputA, inputB);
     }
 

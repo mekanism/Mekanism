@@ -48,7 +48,7 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    public boolean containsInput(@Nullable Level world, STACK input) {
+    public boolean containsInput(@Nullable Level world, TypedInstance<TYPE> input) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return false;
@@ -79,7 +79,7 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
      *
      * @apiNote Pass the input you are trying to insert as inputA and the input you already have as inputB.
      */
-    public boolean containsInput(@Nullable Level world, STACK inputA, STACK inputB) {
+    public boolean containsInput(@Nullable Level world, TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB) {
         if (cache.isEmpty(inputA)) {
             //Note: We don't bother checking if b is empty here as it will be verified in containsInputB
             return containsInput(world, inputB);
@@ -99,7 +99,7 @@ public abstract class EitherSideInputRecipeCache<TYPE, STACK extends TypedInstan
         return containsInput(inputA, inputB, complexRecipes);
     }
 
-    private boolean containsInput(STACK inputA, STACK inputB, Iterable<RECIPE> recipes) {
+    private boolean containsInput(TypedInstance<TYPE> inputA, TypedInstance<TYPE> inputB, Iterable<RECIPE> recipes) {
         for (RECIPE recipe : recipes) {
             INGREDIENT ingredientA = inputAExtractor.apply(recipe);
             INGREDIENT ingredientB = inputBExtractor.apply(recipe);

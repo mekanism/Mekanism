@@ -21,8 +21,9 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper expansion of {@link IRecipeLookupHandler} for easily implementing contains and find recipe lookups for recipes that takes two inputs.
  */
-public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>,
-      INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>> extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
+public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>,
+      RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, INPUT_CACHE extends DoubleInputRecipeCache<HOLDER_A, INPUT_A, ?, HOLDER_B, INPUT_B, ?, RECIPE, ?, ?>>
+      extends IRecipeTypedLookupHandler<RECIPE, INPUT_CACHE> {
 
     /**
      * Checks if there is a matching recipe of type {@link #getRecipeType()} that has the given inputs.
@@ -32,10 +33,11 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, INPUT_A, INPUT_B)} and {@link DoubleInputRecipeCache#containsInputBA(Level, INPUT_A, INPUT_B)} for
-     * more details about when this method should be called versus when {@link #containsRecipeBA(INPUT_B, INPUT_A)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
+     * {@link #containsRecipeBA(TypedInstance, TypedInstance)} should be called.
      */
-    default boolean containsRecipeAB(INPUT_A inputA, INPUT_B inputB) {
+    default boolean containsRecipeAB(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return getRecipeType().getInputCache().containsInputAB(getLevel(), inputA, inputB);
     }
 
@@ -47,10 +49,11 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      *
-     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, INPUT_A, INPUT_B)} and {@link DoubleInputRecipeCache#containsInputBA(Level, INPUT_B, INPUT_A)} for
-     * more details about when this method should be called versus when {@link #containsRecipeAB(INPUT_A, INPUT_B)} should be called.
+     * @apiNote See {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} for more details about when this method should be called versus when
+     * {@link #containsRecipeAB(TypedInstance, TypedInstance)} should be called.
      */
-    default boolean containsRecipeBA(INPUT_A inputA, INPUT_B inputB) {
+    default boolean containsRecipeBA(TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB) {
         return getRecipeType().getInputCache().containsInputBA(getLevel(), inputA, inputB);
     }
 
@@ -61,7 +64,7 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeA(INPUT_A input) {
+    default boolean containsRecipeA(TypedInstance<HOLDER_A> input) {
         return getRecipeType().getInputCache().containsInputA(getLevel(), input);
     }
 
@@ -72,7 +75,7 @@ public interface IDoubleRecipeLookupHandler<HOLDER_A, INPUT_A extends TypedInsta
      *
      * @return {@code true} if there is a match, {@code false} if there isn't.
      */
-    default boolean containsRecipeB(INPUT_B input) {
+    default boolean containsRecipeB(TypedInstance<HOLDER_B> input) {
         return getRecipeType().getInputCache().containsInputB(getLevel(), input);
     }
 

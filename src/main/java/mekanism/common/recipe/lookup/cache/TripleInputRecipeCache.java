@@ -107,7 +107,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote If you are trying to insert inputA call this method, otherwise call {@link #containsInputBAC} or
      * {@link #containsInputCAB} depending on which input is trying to be inserted.
      */
-    public boolean containsInputABC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    public boolean containsInputABC(@Nullable Level world, TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return containsGrouping(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB,
               inputC, inputCExtractor, cacheC, complexIngredientC);
     }
@@ -127,7 +127,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote If you are trying to insert inputB call this method, otherwise call {@link #containsInputABC} or
      * {@link #containsInputCAB} depending on which input is trying to be inserted.
      */
-    public boolean containsInputBAC(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    public boolean containsInputBAC(@Nullable Level world, TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return containsGrouping(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA,
               inputC, inputCExtractor, cacheC, complexIngredientC);
     }
@@ -147,7 +147,7 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      * @apiNote If you are trying to insert inputC call this method, otherwise call {@link #containsInputABC} or
      * {@link #containsInputBAC} depending on which input is trying to be inserted.
      */
-    public boolean containsInputCAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB, INPUT_C inputC) {
+    public boolean containsInputCAB(@Nullable Level world, TypedInstance<HOLDER_A> inputA, TypedInstance<HOLDER_B> inputB, TypedInstance<HOLDER_C> inputC) {
         return containsGrouping(world, inputC, inputCExtractor, cacheC, complexIngredientC, inputA, inputAExtractor, cacheA, complexIngredientA,
               inputB, inputBExtractor, cacheB, complexIngredientB);
     }
@@ -166,10 +166,11 @@ public abstract class TripleInputRecipeCache<HOLDER_A, INPUT_A extends TypedInst
      */
     private <HOLDER_1, INPUT_1 extends TypedInstance<HOLDER_1>, INGREDIENT_1 extends InputIngredient<HOLDER_1, INPUT_1>, CACHE_1 extends IInputCache<HOLDER_1, INPUT_1, INGREDIENT_1, RECIPE>,
           HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>, INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>,
-          HOLDER_3, INPUT_3 extends TypedInstance<HOLDER_3>, INGREDIENT_3 extends InputIngredient<HOLDER_3, INPUT_3>, CACHE_3 extends IInputCache<HOLDER_3, INPUT_3, INGREDIENT_3, RECIPE>> boolean containsGrouping(@Nullable Level world,
-          INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          INPUT_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
-          INPUT_3 input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {
+          HOLDER_3, INPUT_3 extends TypedInstance<HOLDER_3>, INGREDIENT_3 extends InputIngredient<HOLDER_3, INPUT_3>, CACHE_3 extends IInputCache<HOLDER_3, INPUT_3, INGREDIENT_3, RECIPE>>
+    boolean containsGrouping(@Nullable Level world,
+          TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
+          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
+          TypedInstance<HOLDER_3> input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {
         if (cache1.isEmpty(input1)) {
             if (cache3.isEmpty(input3)) {
                 //If 1 and 3 are empty just check 2. We have this extra check here as containsPairing will always return true

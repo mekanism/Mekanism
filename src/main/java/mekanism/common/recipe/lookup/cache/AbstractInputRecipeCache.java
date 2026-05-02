@@ -77,10 +77,11 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
      * <li>If the first input is not empty but the second input is empty: This will return true.</li>
      * </ul>
      */
-    protected <HOLDER_1, INPUT_1 extends TypedInstance<HOLDER_1>, INGREDIENT_1 extends InputIngredient<HOLDER_1, INPUT_1>, CACHE_1 extends IInputCache<HOLDER_1, INPUT_1, INGREDIENT_1, RECIPE>, HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>,
-          INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(@Nullable Level world,
-          TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1, TypedInstance<HOLDER_2> input2,
-          Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
+    protected <HOLDER_1, INPUT_1 extends TypedInstance<HOLDER_1>, INGREDIENT_1 extends InputIngredient<HOLDER_1, INPUT_1>,
+          CACHE_1 extends IInputCache<HOLDER_1, INPUT_1, INGREDIENT_1, RECIPE>, HOLDER_2, INPUT_2 extends TypedInstance<HOLDER_2>,
+          INGREDIENT_2 extends InputIngredient<HOLDER_2, INPUT_2>, CACHE_2 extends IInputCache<HOLDER_2, INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(
+                @Nullable Level world, TypedInstance<HOLDER_1> input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
+          TypedInstance<HOLDER_2> input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
         if (cache1.isEmpty(input1)) {
             //Note: We don't bother checking if 2 is empty here as it will be verified in containsInput
             return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);
