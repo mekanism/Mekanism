@@ -4,39 +4,18 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": [
-    {
-      "item": "mekanismtools:refined_glowstone_helmet"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_chestplate"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_leggings"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_boots"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_sword"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_pickaxe"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_axe"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_shovel"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_hoe"
-    },
-    {
-      "item": "mekanismtools:refined_glowstone_paxel"
-    }
+    "mekanismtools:refined_glowstone_helmet",
+    "mekanismtools:refined_glowstone_chestplate",
+    "mekanismtools:refined_glowstone_leggings",
+    "mekanismtools:refined_glowstone_boots",
+    "mekanismtools:refined_glowstone_sword",
+    "mekanismtools:refined_glowstone_pickaxe",
+    "mekanismtools:refined_glowstone_axe",
+    "mekanismtools:refined_glowstone_shovel",
+    "mekanismtools:refined_glowstone_hoe",
+    "mekanismtools:refined_glowstone_paxel"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:nugget_refined_glowstone"
   }
 }

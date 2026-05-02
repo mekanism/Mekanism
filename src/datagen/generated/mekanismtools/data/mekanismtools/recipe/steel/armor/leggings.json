@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/steel"
-    }
+    "I": "#c:ingots/steel"
   },
   "pattern": [
     "III",
@@ -12,7 +10,6 @@
     "I I"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:steel_leggings"
   }
 }

@@ -2,18 +2,10 @@
   "type": "mekanismtools:paxel",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "minecraft:iron_axe"
-    },
-    "P": {
-      "item": "minecraft:iron_pickaxe"
-    },
-    "R": {
-      "tag": "c:rods/wooden"
-    },
-    "S": {
-      "item": "minecraft:iron_shovel"
-    }
+    "A": "minecraft:iron_axe",
+    "P": "minecraft:iron_pickaxe",
+    "R": "#c:rods/wooden",
+    "S": "minecraft:iron_shovel"
   },
   "pattern": [
     "APS",
@@ -21,7 +13,6 @@
     " R "
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:iron_paxel"
   }
 }

@@ -4,39 +4,18 @@
   "cookingtime": 100,
   "experience": 0.1,
   "ingredient": [
-    {
-      "item": "mekanismtools:refined_obsidian_helmet"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_chestplate"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_leggings"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_boots"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_sword"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_pickaxe"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_axe"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_shovel"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_hoe"
-    },
-    {
-      "item": "mekanismtools:refined_obsidian_paxel"
-    }
+    "mekanismtools:refined_obsidian_helmet",
+    "mekanismtools:refined_obsidian_chestplate",
+    "mekanismtools:refined_obsidian_leggings",
+    "mekanismtools:refined_obsidian_boots",
+    "mekanismtools:refined_obsidian_sword",
+    "mekanismtools:refined_obsidian_pickaxe",
+    "mekanismtools:refined_obsidian_axe",
+    "mekanismtools:refined_obsidian_shovel",
+    "mekanismtools:refined_obsidian_hoe",
+    "mekanismtools:refined_obsidian_paxel"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:nugget_refined_obsidian"
   }
 }

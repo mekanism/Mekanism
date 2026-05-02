@@ -2,18 +2,10 @@
   "type": "mekanismtools:paxel",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "mekanismtools:osmium_axe"
-    },
-    "P": {
-      "item": "mekanismtools:osmium_pickaxe"
-    },
-    "R": {
-      "tag": "c:rods/wooden"
-    },
-    "S": {
-      "item": "mekanismtools:osmium_shovel"
-    }
+    "A": "mekanismtools:osmium_axe",
+    "P": "mekanismtools:osmium_pickaxe",
+    "R": "#c:rods/wooden",
+    "S": "mekanismtools:osmium_shovel"
   },
   "pattern": [
     "APS",
@@ -21,7 +13,6 @@
     " R "
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:osmium_paxel"
   }
 }

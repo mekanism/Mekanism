@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    },
-    "R": {
-      "tag": "c:rods/wooden"
-    }
+    "I": "#c:ingots/refined_obsidian",
+    "R": "#c:rods/wooden"
   },
   "pattern": [
     "II",
@@ -15,7 +11,6 @@
     " R"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:refined_obsidian_axe"
   }
 }

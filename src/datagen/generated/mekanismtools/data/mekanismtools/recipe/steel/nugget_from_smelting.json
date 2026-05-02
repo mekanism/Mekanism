@@ -4,39 +4,18 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": [
-    {
-      "item": "mekanismtools:steel_helmet"
-    },
-    {
-      "item": "mekanismtools:steel_chestplate"
-    },
-    {
-      "item": "mekanismtools:steel_leggings"
-    },
-    {
-      "item": "mekanismtools:steel_boots"
-    },
-    {
-      "item": "mekanismtools:steel_sword"
-    },
-    {
-      "item": "mekanismtools:steel_pickaxe"
-    },
-    {
-      "item": "mekanismtools:steel_axe"
-    },
-    {
-      "item": "mekanismtools:steel_shovel"
-    },
-    {
-      "item": "mekanismtools:steel_hoe"
-    },
-    {
-      "item": "mekanismtools:steel_paxel"
-    }
+    "mekanismtools:steel_helmet",
+    "mekanismtools:steel_chestplate",
+    "mekanismtools:steel_leggings",
+    "mekanismtools:steel_boots",
+    "mekanismtools:steel_sword",
+    "mekanismtools:steel_pickaxe",
+    "mekanismtools:steel_axe",
+    "mekanismtools:steel_shovel",
+    "mekanismtools:steel_hoe",
+    "mekanismtools:steel_paxel"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:nugget_steel"
   }
 }

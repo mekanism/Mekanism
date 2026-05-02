@@ -4,39 +4,18 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": [
-    {
-      "item": "mekanismtools:bronze_helmet"
-    },
-    {
-      "item": "mekanismtools:bronze_chestplate"
-    },
-    {
-      "item": "mekanismtools:bronze_leggings"
-    },
-    {
-      "item": "mekanismtools:bronze_boots"
-    },
-    {
-      "item": "mekanismtools:bronze_sword"
-    },
-    {
-      "item": "mekanismtools:bronze_pickaxe"
-    },
-    {
-      "item": "mekanismtools:bronze_axe"
-    },
-    {
-      "item": "mekanismtools:bronze_shovel"
-    },
-    {
-      "item": "mekanismtools:bronze_hoe"
-    },
-    {
-      "item": "mekanismtools:bronze_paxel"
-    }
+    "mekanismtools:bronze_helmet",
+    "mekanismtools:bronze_chestplate",
+    "mekanismtools:bronze_leggings",
+    "mekanismtools:bronze_boots",
+    "mekanismtools:bronze_sword",
+    "mekanismtools:bronze_pickaxe",
+    "mekanismtools:bronze_axe",
+    "mekanismtools:bronze_shovel",
+    "mekanismtools:bronze_hoe",
+    "mekanismtools:bronze_paxel"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:nugget_bronze"
   }
 }

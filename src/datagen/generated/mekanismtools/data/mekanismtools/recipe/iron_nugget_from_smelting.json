@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.1,
-  "ingredient": {
-    "item": "mekanismtools:iron_paxel"
-  },
+  "ingredient": "mekanismtools:iron_paxel",
   "result": {
-    "count": 1,
     "id": "minecraft:iron_nugget"
   }
 }

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:gems/lapis"
-    }
+    "I": "#c:gems/lapis"
   },
   "pattern": [
     "III",
@@ -12,7 +10,6 @@
     "I I"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:lapis_lazuli_leggings"
   }
 }

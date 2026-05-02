@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "I": {
-      "tag": "c:ingots/osmium"
-    }
+    "I": "#c:ingots/osmium"
   },
   "pattern": [
     "III",
@@ -12,7 +10,6 @@
     "I I"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:osmium_leggings"
   }
 }

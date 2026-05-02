@@ -2,18 +2,10 @@
   "type": "mekanismtools:paxel",
   "category": "equipment",
   "key": {
-    "A": {
-      "item": "minecraft:stone_axe"
-    },
-    "P": {
-      "item": "minecraft:stone_pickaxe"
-    },
-    "R": {
-      "tag": "c:rods/wooden"
-    },
-    "S": {
-      "item": "minecraft:stone_shovel"
-    }
+    "A": "minecraft:stone_axe",
+    "P": "minecraft:stone_pickaxe",
+    "R": "#c:rods/wooden",
+    "S": "minecraft:stone_shovel"
   },
   "pattern": [
     "APS",
@@ -21,7 +13,6 @@
     " R "
   ],
   "result": {
-    "count": 1,
     "id": "mekanismtools:stone_paxel"
   }
 }

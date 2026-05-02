@@ -4,39 +4,18 @@
   "cookingtime": 200,
   "experience": 0.1,
   "ingredient": [
-    {
-      "item": "mekanismtools:osmium_helmet"
-    },
-    {
-      "item": "mekanismtools:osmium_chestplate"
-    },
-    {
-      "item": "mekanismtools:osmium_leggings"
-    },
-    {
-      "item": "mekanismtools:osmium_boots"
-    },
-    {
-      "item": "mekanismtools:osmium_sword"
-    },
-    {
-      "item": "mekanismtools:osmium_pickaxe"
-    },
-    {
-      "item": "mekanismtools:osmium_axe"
-    },
-    {
-      "item": "mekanismtools:osmium_shovel"
-    },
-    {
-      "item": "mekanismtools:osmium_hoe"
-    },
-    {
-      "item": "mekanismtools:osmium_paxel"
-    }
+    "mekanismtools:osmium_helmet",
+    "mekanismtools:osmium_chestplate",
+    "mekanismtools:osmium_leggings",
+    "mekanismtools:osmium_boots",
+    "mekanismtools:osmium_sword",
+    "mekanismtools:osmium_pickaxe",
+    "mekanismtools:osmium_axe",
+    "mekanismtools:osmium_shovel",
+    "mekanismtools:osmium_hoe",
+    "mekanismtools:osmium_paxel"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:nugget_osmium"
   }
 }
