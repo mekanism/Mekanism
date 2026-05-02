@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/tin_ore"
+    "model": "mekanism:block/ore/tin"
   }
 }

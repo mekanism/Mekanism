@@ -1,6 +1,14 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/configuration_card"
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/configuration_card"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/configuration_card_encoded"
+    },
+    "property": "mekanism:config_card"
   }
 }

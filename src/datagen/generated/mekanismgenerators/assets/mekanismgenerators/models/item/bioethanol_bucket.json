@@ -1,5 +1,0 @@
-{
-  "parent": "neoforge:item/bucket",
-  "fluid": "mekanismgenerators:bioethanol",
-  "loader": "neoforge:fluid_container"
-}

@@ -1,6 +1,15 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:block/cardboard_box"
+    "type": "minecraft:condition",
+    "component": "mekanism:block_data",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "mekanism:block/cardboard_box"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "mekanism:block/cardboard_box_storage"
+    },
+    "property": "minecraft:has_component"
   }
 }

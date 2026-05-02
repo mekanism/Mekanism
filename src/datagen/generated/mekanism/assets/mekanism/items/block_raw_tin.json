@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/block_raw_tin"
+    "model": "mekanism:block/storage/raw_tin"
   }
 }

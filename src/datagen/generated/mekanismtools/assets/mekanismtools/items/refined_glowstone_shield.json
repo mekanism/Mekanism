@@ -1,0 +1,44 @@
+{
+  "model": {
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:special",
+      "base": "mekanismtools:item/refined_glowstone_shield",
+      "model": {
+        "type": "mekanismtools:shield"
+      }
+    },
+    "on_true": {
+      "type": "minecraft:special",
+      "base": "mekanismtools:item/refined_glowstone_shield_blocking",
+      "model": {
+        "type": "mekanismtools:shield"
+      }
+    },
+    "property": "minecraft:using_item",
+    "transformation": {
+      "left_rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "right_rotation": [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale": [
+        1.0,
+        -1.0,
+        -1.0
+      ],
+      "translation": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  }
+}

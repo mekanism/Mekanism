@@ -1,0 +1,93 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch1"
+        },
+        "when": {
+          "channel": 1,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch2"
+        },
+        "when": {
+          "channel": 2,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch3"
+        },
+        "when": {
+          "channel": 3,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch4"
+        },
+        "when": {
+          "channel": 4,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch5"
+        },
+        "when": {
+          "channel": 5,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch6"
+        },
+        "when": {
+          "channel": 6,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch7"
+        },
+        "when": {
+          "channel": 7,
+          "running": true
+        }
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/walkie_talkie_ch8"
+        },
+        "when": {
+          "channel": 8,
+          "running": true
+        }
+      }
+    ],
+    "component": "mekanismadditions:walkie_data",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanismadditions:item/walkie_talkie"
+    },
+    "property": "minecraft:component"
+  }
+}

@@ -1,5 +1,0 @@
-{
-  "parent": "neoforge:item/bucket",
-  "fluid": "mekanismgenerators:deuterium",
-  "loader": "neoforge:fluid_container"
-}

@@ -1,6 +1,10 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/free_runners_armored"
+    "type": "minecraft:special",
+    "base": "mekanism:item/free_runners_armored",
+    "model": {
+      "type": "mekanism:free_runner",
+      "armored": true
+    }
   }
 }

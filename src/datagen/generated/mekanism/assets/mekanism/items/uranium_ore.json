@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/uranium_ore"
+    "model": "mekanism:block/ore/uranium"
   }
 }

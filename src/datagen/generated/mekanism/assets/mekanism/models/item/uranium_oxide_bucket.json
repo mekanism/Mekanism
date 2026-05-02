@@ -1,5 +1,0 @@
-{
-  "parent": "neoforge:item/bucket",
-  "fluid": "mekanism:uranium_oxide",
-  "loader": "neoforge:fluid_container"
-}

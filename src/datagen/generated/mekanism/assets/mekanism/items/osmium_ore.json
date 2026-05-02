@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/osmium_ore"
+    "model": "mekanism:block/ore/osmium"
   }
 }

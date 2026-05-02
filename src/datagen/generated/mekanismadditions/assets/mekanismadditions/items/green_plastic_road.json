@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanismadditions:block/plastic/road",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -10895009
+      }
+    ]
+  }
+}

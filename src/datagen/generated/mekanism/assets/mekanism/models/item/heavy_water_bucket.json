@@ -1,5 +1,0 @@
-{
-  "parent": "neoforge:item/bucket",
-  "fluid": "mekanism:heavy_water",
-  "loader": "neoforge:fluid_container"
-}

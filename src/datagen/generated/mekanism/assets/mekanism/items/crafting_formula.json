@@ -1,6 +1,26 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/crafting_formula"
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/crafting_formula_invalid"
+        },
+        "when": "invalid"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/crafting_formula_encoded"
+        },
+        "when": "encoded"
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/crafting_formula"
+    },
+    "property": "mekanism:crafting_formula"
   }
 }

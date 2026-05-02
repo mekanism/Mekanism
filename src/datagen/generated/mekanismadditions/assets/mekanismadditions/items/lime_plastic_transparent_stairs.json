@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanismadditions:block/plastic/transparent_stairs",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -9044087
+      }
+    ]
+  }
+}

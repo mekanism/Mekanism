@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanismadditions:block/plastic/glow_slab",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -16714800
+      }
+    ]
+  }
+}

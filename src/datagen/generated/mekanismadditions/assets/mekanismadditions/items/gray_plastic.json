@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "mekanismadditions:block/plastic/block",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -8750470
+      }
+    ]
+  }
+}

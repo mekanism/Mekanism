@@ -1,0 +1,47 @@
+{
+  "model": {
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/balloon_gui",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -3158065
+            }
+          ]
+        },
+        "when": "gui"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanismadditions:item/balloon_fixed",
+          "tints": [
+            {
+              "type": "minecraft:constant",
+              "value": -3158065
+            }
+          ]
+        },
+        "when": [
+          "ground",
+          "fixed"
+        ]
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanismadditions:item/balloon_latched",
+      "tints": [
+        {
+          "type": "minecraft:constant",
+          "value": -3158065
+        }
+      ]
+    },
+    "property": "minecraft:display_context"
+  }
+}

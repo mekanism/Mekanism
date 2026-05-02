@@ -1,6 +1,34 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/configurator"
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/configurator_empty"
+        },
+        "when": "empty"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/configurator_rotate"
+        },
+        "when": "rotate"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/configurator_wrench"
+        },
+        "when": "wrench"
+      }
+    ],
+    "component": "mekanism:configurator_mode",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/configurator"
+    },
+    "property": "minecraft:component"
   }
 }
