@@ -1,4 +1,4 @@
-// 1.21.1	2025-03-10T22:00:13.5855997	Datapack registries: mekanism
+// 26.1.2	2026-05-02T17:07:55.3786584	Datapack registries: mekanism
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
@@ -42,7 +42,7 @@ dbe7a34185ae1e314b0e8220232e262497754653 data/mekanism/worldgen/configured_featu
 dc7673564b6469c49a48c49a4b47cf0b3d115481 data/mekanism/worldgen/configured_feature/ore_uranium_buried_retrogen.json
 29c28d624203af88c9cb3733aaabd3f49bbe36e6 data/mekanism/worldgen/configured_feature/ore_uranium_small.json
 e6492de677b0fde4ac012dacd496c8c66f58e4f8 data/mekanism/worldgen/configured_feature/ore_uranium_small_retrogen.json
-d59ce8a4e31b6b2d4b767e1cd76f638dd4668edb data/mekanism/worldgen/configured_feature/salt.json
+9859f54625631aee0714a1c977a915af3ba29ce7 data/mekanism/worldgen/configured_feature/salt.json
 384188c1bdf8076c06d423aca84a894efebd00f9 data/mekanism/worldgen/placed_feature/ore_fluorite_buried.json
 52507f3661f79b40f01be94c2160ec514c22fd7c data/mekanism/worldgen/placed_feature/ore_fluorite_buried_retrogen.json
 02ece9a2f64212d53e4996c699a89d871f64efb3 data/mekanism/worldgen/placed_feature/ore_fluorite_normal.json
