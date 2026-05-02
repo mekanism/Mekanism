@@ -84,14 +84,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, ItemReso
     @Override
     public boolean testType(ItemResource type) {
         Objects.requireNonNull(type);
-        Ingredient vanillaIngredient = ingredient.ingredient();
-        if (vanillaIngredient.isCustom()) {
-            //Component data might be necessary, make it into a stack and test it
-            //TODO - 26.1: Figure out if there is a better way to do this
-            return vanillaIngredient.test(type.toStack());
-        }
-        //Vanilla ingredients don't need to check component data so we can just skip converting the resource to a stack
-        return vanillaIngredient.acceptsItem(type.typeHolder());
+        return testType(type.toStack());
     }
 
     @Override

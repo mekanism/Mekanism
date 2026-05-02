@@ -24,15 +24,6 @@ public interface IInputCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYP
     boolean contains(INPUT input);
 
     /**
-     * Checks if this {@link IInputCache} knows about the given input.
-     *
-     * @param inputType Input to check.
-     *
-     * @return {@code true} if this cache does have the given input, {@code false} if there isn't.
-     */
-    boolean contains(I_RESOURCE inputType);
-
-    /**
      * Checks if this {@link IInputCache} knows about the given input, and if it does, checks if any of the recipes that match that input type match the given recipe
      * predicate.
      *
@@ -42,17 +33,6 @@ public interface IInputCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYP
      * @return {@code true} if this cache does have the given input and a recipe that matches, {@code false} if there isn't.
      */
     boolean contains(INPUT input, Predicate<RECIPE> matchCriteria);
-
-    /**
-     * Checks if this {@link IInputCache} knows about the given input, and if it does, checks if any of the recipes that match that input type match the given recipe
-     * predicate.
-     *
-     * @param input         Input to check.
-     * @param matchCriteria Predicate to further validate recipes with.
-     *
-     * @return {@code true} if this cache does have the given input and a recipe that matches, {@code false} if there isn't.
-     */
-    boolean contains(I_RESOURCE input, Predicate<RECIPE> matchCriteria);
 
     /**
      * Gets the recipe for the given input. Note: that no validation is done here about the input matching the recipe's criteria in regard to required amounts, all that
@@ -65,16 +45,6 @@ public interface IInputCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYP
     Iterable<RECIPE> getRecipes(INPUT input);
 
     /**
-     * Gets the recipe for the given input. Note: that no validation is done here about the input matching the recipe's criteria in regard to required amounts, all that
-     * is done regarding the input is that the type is used in the recipe.
-     *
-     * @param input Input to check.
-     *
-     * @return Recipes for the given input that matches the given criteria, or empty if no recipe matches.
-     */
-    Iterable<RECIPE> getRecipes(I_RESOURCE input);
-
-    /**
      * Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
      * criteria in regard to required amounts, all that is done regarding the input is that the type is used in the recipe.
      *
@@ -85,18 +55,6 @@ public interface IInputCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYP
      */
     @Nullable
     RECIPE findFirstRecipe(INPUT input, Predicate<RECIPE> matchCriteria);
-
-    /**
-     * Finds the first recipe for the given input that matches the given match criteria. Note: that no validation is done here about the input matching the recipe's
-     * criteria in regard to required amounts, all that is done regarding the input is that the type is used in the recipe.
-     *
-     * @param input         Input to check.
-     * @param matchCriteria Predicate to further validate recipes with.
-     *
-     * @return Recipe for the given input that matches the given criteria, or {@code null} if no recipe matches.
-     */
-    @Nullable
-    RECIPE findFirstRecipe(I_RESOURCE input, Predicate<RECIPE> matchCriteria);
 
     /**
      * Maps the given ingredient and adds it into this {@link IInputCache} as a quicker lookup for the given recipe.

@@ -169,10 +169,12 @@ public abstract class TripleInputRecipeCache<
      * <li>If only the first input is not empty: This will return true.</li>
      * </ul>
      */
-    private <TYPE_1, INPUT_1 extends TypedInstance<TYPE_1>, INGREDIENT_1 extends InputIngredient<TYPE_1, ?, INPUT_1>, CACHE_1 extends IInputCache<TYPE_1, ?, INPUT_1, INGREDIENT_1, RECIPE>,
-          TYPE_2, INPUT_2 extends TypedInstance<TYPE_2>, INGREDIENT_2 extends InputIngredient<TYPE_2, ?, INPUT_2>, CACHE_2 extends IInputCache<TYPE_2, ?, INPUT_2, INGREDIENT_2, RECIPE>,
-          TYPE_3, INPUT_3 extends TypedInstance<TYPE_3>, INGREDIENT_3 extends InputIngredient<TYPE_3, ?, INPUT_3>, CACHE_3 extends IInputCache<TYPE_3, ?, INPUT_3, INGREDIENT_3, RECIPE>>
-    boolean containsGrouping(@Nullable Level world,
+    private <TYPE_1, RESOURCE_1 extends RegisteredResource<TYPE_1>, INPUT_1 extends TypedInstance<TYPE_1>, INGREDIENT_1 extends InputIngredient<TYPE_1, RESOURCE_1, INPUT_1>,
+          CACHE_1 extends IInputCache<TYPE_1, RESOURCE_1, INPUT_1, INGREDIENT_1, RECIPE>,
+          TYPE_2, RESOURCE_2 extends RegisteredResource<TYPE_2>, INPUT_2 extends TypedInstance<TYPE_2>, INGREDIENT_2 extends InputIngredient<TYPE_2, RESOURCE_2, INPUT_2>,
+          CACHE_2 extends IInputCache<TYPE_2, RESOURCE_2, INPUT_2, INGREDIENT_2, RECIPE>,
+          TYPE_3, RESOURCE_3 extends RegisteredResource<TYPE_3>, INPUT_3 extends TypedInstance<TYPE_3>, INGREDIENT_3 extends InputIngredient<TYPE_3, RESOURCE_3, INPUT_3>,
+          CACHE_3 extends IInputCache<TYPE_3, RESOURCE_3, INPUT_3, INGREDIENT_3, RECIPE>> boolean containsGrouping(@Nullable Level world,
           INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
           INPUT_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
           INPUT_3 input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {
@@ -188,57 +190,6 @@ public abstract class TripleInputRecipeCache<
             //Note: We don't bother checking if 3 is empty here as it will be verified in containsPairing
             return containsPairing(world, input1, input1Extractor, cache1, complexIngredients1, input3, input3Extractor, cache3, complexIngredients3);
         } else if (cache3.isEmpty(input3)) {
-            return containsPairing(world, input1, input1Extractor, cache1, complexIngredients1, input2, input2Extractor, cache2, complexIngredients2);
-        }
-        initCacheIfNeeded(world);
-        //Note: If cache 1 contains input 1 then we only need to test the type of input 2 and 3 as we already know input 1 matches
-        for (RECIPE recipe : cache1.getRecipes(input1)) {
-            if (input2Extractor.apply(recipe).testType(input2) && input3Extractor.apply(recipe).testType(input3)) {
-                return true;
-            }
-        }
-        //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        for (RECIPE recipe : complexIngredients1) {
-            if (input1Extractor.apply(recipe).testType(input1) &&
-                input2Extractor.apply(recipe).testType(input2) &&
-                input3Extractor.apply(recipe).testType(input3)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Helper to check if a cache contains a given input grouping, or if not, if the complex recipe fallback set contains a matching recipe. This method is mainly used
-     * for purposes of implementing insertion predicates, so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
-     * valid (the last case in the below list).
-     * <ul>
-     * <li>If only the first input is empty: This will check if input two and three are contained.</li>
-     * <li>If only the second input is empty: This will check if input one and three are contained.</li>
-     * <li>If only the third input is empty: This will check if input one and two are contained.</li>
-     * <li>If only the first and third input is empty: This will check if the second input is contained.</li>
-     * <li>If only the first input is not empty: This will return true.</li>
-     * </ul>
-     */
-    private <TYPE_1, RESOURCE_1 extends RegisteredResource<TYPE_1>, INGREDIENT_1 extends InputIngredient<TYPE_1, RESOURCE_1, ?>, CACHE_1 extends IInputCache<TYPE_1, RESOURCE_1, ?, INGREDIENT_1, RECIPE>,
-          TYPE_2, RESOURCE_2 extends RegisteredResource<TYPE_2>, INGREDIENT_2 extends InputIngredient<TYPE_2, RESOURCE_2, ?>, CACHE_2 extends IInputCache<TYPE_2, RESOURCE_2, ?, INGREDIENT_2, RECIPE>,
-          TYPE_3, RESOURCE_3 extends RegisteredResource<TYPE_3>, INGREDIENT_3 extends InputIngredient<TYPE_3, RESOURCE_3, ?>, CACHE_3 extends IInputCache<TYPE_3, RESOURCE_3, ?, INGREDIENT_3, RECIPE>>
-    boolean containsGrouping(@Nullable Level world,
-          RESOURCE_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          RESOURCE_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2,
-          RESOURCE_3 input3, Function<RECIPE, INGREDIENT_3> input3Extractor, CACHE_3 cache3, Set<RECIPE> complexIngredients3) {
-        if (input1.isEmpty()) {
-            if (input3.isEmpty()) {
-                //If 1 and 3 are empty just check 2. We have this extra check here as containsPairing will always return true
-                // if the secondary type is empty, but this is the special case when we don't want that to actually happen
-                return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);
-            }
-            //Note: We don't bother checking if 2 is empty here as it will be verified in containsPairing
-            return containsPairing(world, input2, input2Extractor, cache2, complexIngredients2, input3, input3Extractor, cache3, complexIngredients3);
-        } else if (input2.isEmpty()) {
-            //Note: We don't bother checking if 3 is empty here as it will be verified in containsPairing
-            return containsPairing(world, input1, input1Extractor, cache1, complexIngredients1, input3, input3Extractor, cache3, complexIngredients3);
-        } else if (input3.isEmpty()) {
             return containsPairing(world, input1, input1Extractor, cache1, complexIngredients1, input2, input2Extractor, cache2, complexIngredients2);
         }
         initCacheIfNeeded(world);

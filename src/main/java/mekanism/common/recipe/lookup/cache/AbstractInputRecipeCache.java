@@ -51,8 +51,8 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
     /**
      * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
      */
-    protected <I_TYPE, INPUT extends TypedInstance<I_TYPE>, INGREDIENT extends InputIngredient<I_TYPE, ?, INPUT>,
-          CACHE extends IInputCache<I_TYPE, ?, INPUT, INGREDIENT, RECIPE>> boolean containsInput(@Nullable Level world, INPUT input,
+    protected <I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>, INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>,
+          CACHE extends IInputCache<I_TYPE, I_RESOURCE, INPUT, INGREDIENT, RECIPE>> boolean containsInput(@Nullable Level world, INPUT input,
           Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
@@ -71,28 +71,6 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
     }
 
     /**
-     * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
-     */
-    protected <I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, ?>,
-          CACHE extends IInputCache<I_TYPE, I_RESOURCE, ?, INGREDIENT, RECIPE>> boolean containsInput(@Nullable Level world, I_RESOURCE input,
-          Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
-        if (input.isEmpty()) {
-            //Don't allow empty inputs
-            return false;
-        }
-        initCacheIfNeeded(world);
-        if (cache.contains(input)) {
-            return true;
-        }
-        for (RECIPE recipe : complexRecipes) {
-            if (inputExtractor.apply(recipe).testType(input)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Helper to check if a cache contains a given input grouping, or if not, if the complex recipe fallback set contains a matching recipe. This method is mainly used
      * for purposes of implementing insertion predicates, so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
      * valid (the last case in the below list).
@@ -101,49 +79,16 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
      * <li>If the first input is not empty but the second input is empty: This will return true.</li>
      * </ul>
      */
-    protected <TYPE_1, INPUT_1 extends TypedInstance<TYPE_1>, INGREDIENT_1 extends InputIngredient<TYPE_1, ?, INPUT_1>, CACHE_1 extends IInputCache<TYPE_1, ?, INPUT_1, INGREDIENT_1, RECIPE>,
-          TYPE_2, INPUT_2 extends TypedInstance<TYPE_2>, INGREDIENT_2 extends InputIngredient<TYPE_2, ?, INPUT_2>, CACHE_2 extends IInputCache<TYPE_2, ?, INPUT_2, INGREDIENT_2, RECIPE>>
+    protected <TYPE_1, RESOURCE_1 extends RegisteredResource<TYPE_1>, INPUT_1 extends TypedInstance<TYPE_1>,
+          INGREDIENT_1 extends InputIngredient<TYPE_1, RESOURCE_1, INPUT_1>, CACHE_1 extends IInputCache<TYPE_1, RESOURCE_1, INPUT_1, INGREDIENT_1, RECIPE>,
+          TYPE_2, RESOURCE_2 extends RegisteredResource<TYPE_2>, INPUT_2 extends TypedInstance<TYPE_2>,
+          INGREDIENT_2 extends InputIngredient<TYPE_2, RESOURCE_2, INPUT_2>, CACHE_2 extends IInputCache<TYPE_2, RESOURCE_2, INPUT_2, INGREDIENT_2, RECIPE>>
     boolean containsPairing(@Nullable Level world, INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
           INPUT_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
         if (cache1.isEmpty(input1)) {
             //Note: We don't bother checking if 2 is empty here as it will be verified in containsInput
             return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);
         } else if (cache2.isEmpty(input2)) {
-            return true;
-        }
-        initCacheIfNeeded(world);
-        //Note: If cache 1 contains input 1 then we only need to test the type of input 2 as we already know input 1 matches
-        for (RECIPE recipe : cache1.getRecipes(input1)) {
-            if (input2Extractor.apply(recipe).testType(input2)) {
-                return true;
-            }
-        }
-        //Our quick lookup 1 cache does not contain it, check any recipes where the 1 ingredient was complex
-        for (RECIPE recipe : complexIngredients1) {
-            if (input1Extractor.apply(recipe).testType(input1) && input2Extractor.apply(recipe).testType(input2)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Helper to check if a cache contains a given input grouping, or if not, if the complex recipe fallback set contains a matching recipe. This method is mainly used
-     * for purposes of implementing insertion predicates, so it has the following behaviors. This allows it to short circuit in cases where we already know the input is
-     * valid (the last case in the below list).
-     * <ul>
-     * <li>If the first input is empty: This will check if there is a recipe that the second input is valid for.</li>
-     * <li>If the first input is not empty but the second input is empty: This will return true.</li>
-     * </ul>
-     */
-    protected <TYPE_1, RESOURCE_1 extends RegisteredResource<TYPE_1>, INGREDIENT_1 extends InputIngredient<TYPE_1, RESOURCE_1, ?>, CACHE_1 extends IInputCache<TYPE_1, RESOURCE_1, ?, INGREDIENT_1, RECIPE>,
-          TYPE_2, RESOURCE_2 extends RegisteredResource<TYPE_2>, INGREDIENT_2 extends InputIngredient<TYPE_2, RESOURCE_2, ?>, CACHE_2 extends IInputCache<TYPE_2, RESOURCE_2, ?, INGREDIENT_2, RECIPE>>
-    boolean containsPairing(@Nullable Level world, RESOURCE_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          RESOURCE_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
-        if (input1.isEmpty()) {
-            //Note: We don't bother checking if 2 is empty here as it will be verified in containsInput
-            return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);
-        } else if (input2.isEmpty()) {
             return true;
         }
         initCacheIfNeeded(world);

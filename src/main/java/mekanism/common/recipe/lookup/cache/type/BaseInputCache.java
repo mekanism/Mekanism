@@ -36,22 +36,7 @@ public abstract class BaseInputCache<KEY, RESOURCE extends RegisteredResource<KE
     }
 
     @Override
-    public boolean contains(RESOURCE inputType) {
-        return inputCache.containsKey(createKey(inputType));
-    }
-
-    @Override
     public boolean contains(INPUT input, Predicate<RECIPE> matchCriteria) {
-        for (RECIPE recipe : getRecipes(input)) {
-            if (matchCriteria.test(recipe)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public boolean contains(RESOURCE input, Predicate<RECIPE> matchCriteria) {
         for (RECIPE recipe : getRecipes(input)) {
             if (matchCriteria.test(recipe)) {
                 return true;
@@ -71,24 +56,8 @@ public abstract class BaseInputCache<KEY, RESOURCE extends RegisteredResource<KE
         return null;
     }
 
-    @Nullable
-    @Override
-    public RECIPE findFirstRecipe(RESOURCE input, Predicate<RECIPE> matchCriteria) {
-        for (RECIPE recipe : getRecipes(input)) {
-            if (matchCriteria.test(recipe)) {
-                return recipe;
-            }
-        }
-        return null;
-    }
-
     @Override
     public Iterable<RECIPE> getRecipes(INPUT input) {
-        return inputCache.getOrDefault(createKey(input), Collections.emptyList());
-    }
-
-    @Override
-    public Iterable<RECIPE> getRecipes(RESOURCE input) {
         return inputCache.getOrDefault(createKey(input), Collections.emptyList());
     }
 
@@ -99,9 +68,7 @@ public abstract class BaseInputCache<KEY, RESOURCE extends RegisteredResource<KE
      *
      * @return Key representing the given input.
      */
-    protected KEY createKey(TypedInstance<KEY> input) {
-        return input.typeHolder().value();
-    }
+    protected abstract KEY createKey(INPUT input);
 
     /**
      * Adds a given recipe to the input cache using the corresponding key.

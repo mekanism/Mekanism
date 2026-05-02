@@ -50,6 +50,11 @@ public class ItemInputCache<RECIPE extends MekanismRecipe<?>> extends ComponentS
     }
 
     @Override
+    protected Item createKey(ItemStack stack) {
+        return stack.getItem();
+    }
+
+    @Override
     public boolean isEmpty(ItemStack input) {
         return input.isEmpty();
     }

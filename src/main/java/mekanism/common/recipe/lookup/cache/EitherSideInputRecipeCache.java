@@ -68,31 +68,6 @@ public abstract class EitherSideInputRecipeCache<I_TYPE, I_RESOURCE extends Regi
     }
 
     /**
-     * Checks if there is a matching recipe that has the given input.
-     *
-     * @param world World.
-     * @param input Recipe input.
-     *
-     * @return {@code true} if there is a match, {@code false} if there isn't.
-     */
-    public boolean containsInput(@Nullable Level world, I_RESOURCE input) {
-        if (input.isEmpty()) {
-            //Don't allow empty inputs
-            return false;
-        }
-        initCacheIfNeeded(world);
-        if (cache.contains(input)) {
-            return true;
-        }
-        for (RECIPE recipe : complexRecipes) {
-            if (inputAExtractor.apply(recipe).testType(input) || inputBExtractor.apply(recipe).testType(input)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
      * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
      * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type
@@ -127,51 +102,6 @@ public abstract class EitherSideInputRecipeCache<I_TYPE, I_RESOURCE extends Regi
     }
 
     private boolean containsInput(INPUT inputA, INPUT inputB, Iterable<RECIPE> recipes) {
-        for (RECIPE recipe : recipes) {
-            INGREDIENT ingredientA = inputAExtractor.apply(recipe);
-            INGREDIENT ingredientB = inputBExtractor.apply(recipe);
-            if (ingredientB.testType(inputB) && ingredientA.testType(inputA) || ingredientA.testType(inputB) && ingredientB.testType(inputA)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
-     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type
-     * and that the order doesn't matter we just have one method and require the inputs to be passed in the corresponding order instead.
-     *
-     * @param world  World.
-     * @param inputA Recipe input A.
-     * @param inputB Recipe input B.
-     *
-     * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
-     *
-     * @apiNote Pass the input you are trying to insert as inputA and the input you already have as inputB.
-     */
-    public boolean containsInput(@Nullable Level world, I_RESOURCE inputA, I_RESOURCE inputB) {
-        if (inputA.isEmpty()) {
-            //Note: We don't bother checking if b is empty here as it will be verified in containsInputB
-            return containsInput(world, inputB);
-        } else if (inputB.isEmpty()) {
-            return true;
-        }
-        initCacheIfNeeded(world);
-        //Note: Even though we know the cache contains input A, we need to check both input A and input B
-        // This is because we want to ensure that we allow the inputs being in either order, but in our
-        // secondary validation we check inputB first as we know the recipe contains inputA as one of the
-        // inputs, but we want to make sure that we only mark it as valid if the same input is on both sides
-        // if the recipe combines two of the same type of ingredient
-        if (containsInput(inputA, inputB, cache.getRecipes(inputA))) {
-            return true;
-        }
-        //Our quick lookup cache does not contain it, check any recipes where the ingredients are complex
-        return containsInput(inputA, inputB, complexRecipes);
-    }
-
-    private boolean containsInput(I_RESOURCE inputA, I_RESOURCE inputB, Iterable<RECIPE> recipes) {
         for (RECIPE recipe : recipes) {
             INGREDIENT ingredientA = inputAExtractor.apply(recipe);
             INGREDIENT ingredientB = inputBExtractor.apply(recipe);
