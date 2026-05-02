@@ -8,6 +8,9 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.CombinerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -50,7 +53,7 @@ public class BasicCombinerRecipe extends CombinerRecipe {
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public ItemStackTemplate getOutput(@NotNull ItemStack input, @NotNull ItemStack extra) {
+    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(@NotNull INPUT input, @NotNull ItemStack extra) {
         return output;
     }
     @Override

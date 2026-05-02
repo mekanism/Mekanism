@@ -6,6 +6,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -77,7 +79,7 @@ public abstract class CombinerRecipe extends MekanismRecipe<RecipeInput> impleme
      * @implNote The passed in inputs should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_, _ -> new", pure = true)
-    public abstract ItemStackTemplate getOutput(@NotNull ItemStack input, @NotNull ItemStack extra);
+    public abstract <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(@NotNull INPUT input, @NotNull INPUT extra);
 
     /**
      * For JEI, gets the output representations to display.
