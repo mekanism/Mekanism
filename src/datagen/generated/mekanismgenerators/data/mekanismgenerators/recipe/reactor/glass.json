@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks/cheap"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    },
-    "S": {
-      "item": "mekanism:enriched_iron"
-    }
+    "G": "#c:glass_blocks/cheap",
+    "I": "#c:ingots/lead",
+    "S": "mekanism:enriched_iron"
   },
   "pattern": [
     "SIS",

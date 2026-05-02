@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanismgenerators:turbine_casing"
-    },
-    "B": {
-      "item": "minecraft:iron_bars"
-    }
+    "#": "mekanismgenerators:turbine_casing",
+    "B": "minecraft:iron_bars"
   },
   "pattern": [
     " # ",

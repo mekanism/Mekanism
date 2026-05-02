@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:deuterium"
+    "ingredient": "#c:deuterium"
   },
   "fluid_output": {
     "amount": 1,

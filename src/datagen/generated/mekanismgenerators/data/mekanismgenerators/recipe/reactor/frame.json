@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:pellets/polonium"
-    },
-    "A": {
-      "tag": "c:alloys/ultimate"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "#": "#c:pellets/polonium",
+    "A": "#c:alloys/ultimate",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "A#A",

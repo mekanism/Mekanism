@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:fusion_fuel"
+    "ingredient": "#c:fusion_fuel"
   },
   "fluid_output": {
     "amount": 1,

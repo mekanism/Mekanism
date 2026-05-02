@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "I": {
-      "tag": "c:ingots/lead"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "I": "#c:ingots/lead",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     " I ",

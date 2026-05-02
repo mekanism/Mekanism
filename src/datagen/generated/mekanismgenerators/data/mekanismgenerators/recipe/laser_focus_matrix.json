@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "item": "mekanismgenerators:reactor_glass"
-    },
-    "R": {
-      "tag": "c:storage_blocks/redstone"
-    }
+    "G": "mekanismgenerators:reactor_glass",
+    "R": "#c:storage_blocks/redstone"
   },
   "pattern": [
     " G ",

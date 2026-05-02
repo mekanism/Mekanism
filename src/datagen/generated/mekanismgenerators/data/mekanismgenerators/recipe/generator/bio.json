@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "B": {
-      "tag": "c:fuels/bio"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "A": "#mekanism:alloys/infused",
+    "B": "#c:fuels/bio",
+    "C": "#c:circuits/basic",
+    "I": "#c:ingots/iron",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "RAR",
@@ -24,7 +14,6 @@
     "IAI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismgenerators:bio_generator"
   }
 }

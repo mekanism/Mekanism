@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "F": {
-      "item": "mekanismgenerators:fusion_reactor_frame"
-    }
+    "C": "#c:circuits/ultimate",
+    "F": "mekanismgenerators:fusion_reactor_frame"
   },
   "pattern": [
     " F ",

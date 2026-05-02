@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:tritium"
+    "ingredient": "#c:tritium"
   },
   "fluid_output": {
     "amount": 1,

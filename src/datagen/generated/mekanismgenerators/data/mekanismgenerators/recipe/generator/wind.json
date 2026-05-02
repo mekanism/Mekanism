@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    }
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/basic",
+    "E": "mekanism:energy_tablet",
+    "O": "#c:ingots/osmium"
   },
   "pattern": [
     " O ",
@@ -21,7 +13,6 @@
     "ECE"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismgenerators:wind_generator"
   }
 }

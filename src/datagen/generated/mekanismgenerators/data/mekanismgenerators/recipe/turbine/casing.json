@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "O": {
-      "tag": "c:ingots/osmium"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "O": "#c:ingots/osmium",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     " S ",

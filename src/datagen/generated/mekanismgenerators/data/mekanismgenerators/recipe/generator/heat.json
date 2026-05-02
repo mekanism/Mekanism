@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:ingots/copper"
-    },
-    "F": {
-      "item": "minecraft:furnace"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    },
-    "W": {
-      "tag": "minecraft:planks"
-    }
+    "C": "#c:ingots/copper",
+    "F": "minecraft:furnace",
+    "I": "#c:ingots/iron",
+    "O": "#c:ingots/osmium",
+    "W": "#minecraft:planks"
   },
   "pattern": [
     "III",
@@ -24,7 +14,6 @@
     "CFC"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismgenerators:heat_generator"
   }
 }

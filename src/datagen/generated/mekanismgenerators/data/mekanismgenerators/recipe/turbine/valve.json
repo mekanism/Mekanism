@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanismgenerators:turbine_casing"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    }
+    "#": "mekanismgenerators:turbine_casing",
+    "C": "#c:circuits/advanced"
   },
   "pattern": [
     " # ",

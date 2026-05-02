@@ -3,7 +3,7 @@
   "energy_multiplier": 2,
   "input": {
     "amount": 2,
-    "tag": "c:heavy_water"
+    "ingredient": "#c:heavy_water"
   },
   "left_chemical_output": {
     "amount": 2,

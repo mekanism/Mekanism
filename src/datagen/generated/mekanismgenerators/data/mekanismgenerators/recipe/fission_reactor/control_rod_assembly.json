@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/elite"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "C": "#c:circuits/elite",
+    "I": "#c:ingots/lead",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "ICI",
@@ -18,7 +12,6 @@
     "SIS"
   ],
   "result": {
-    "count": 1,
     "id": "mekanismgenerators:control_rod_assembly"
   }
 }

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 4,
-    "tag": "c:dusts/gold"
+    "ingredient": "#c:dusts/gold"
   },
   "output": {
-    "count": 1,
     "id": "mekanismgenerators:hohlraum"
   },
   "per_tick_usage": false
