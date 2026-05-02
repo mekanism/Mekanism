@@ -15,6 +15,7 @@ import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.crafting.FluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SimpleFluidIngredient;
 import net.neoforged.neoforge.fluids.crafting.SizedFluidIngredient;
@@ -85,15 +86,13 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
     @Override
     public boolean testType(TypedInstance<Fluid> instance) {
         Objects.requireNonNull(instance);
-        FluidStack stack;
-        switch (instance) {
-            case FluidStack stackIn -> stack = stackIn;
-            case FluidStackTemplate template -> stack = template.create();
-            case FluidResource resource -> stack = resource.toStack(1);
-            default -> {
-                return false;
-            }
-        }
+        FluidStack stack = switch (instance) {
+            case FluidStack stackIn -> stackIn;
+            case FluidStackTemplate template -> template.create();
+            case FluidResource resource -> resource.toStack(FluidType.BUCKET_VOLUME);
+            //TODO: Is there a decent way to grab any potential components patch?
+            default -> new FluidStack(instance.typeHolder(), FluidType.BUCKET_VOLUME);
+        };
         return ingredient.ingredient().test(stack);
     }
 

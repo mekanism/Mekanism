@@ -83,16 +83,14 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
         Ingredient vanillaIngredient = ingredient.ingredient();
         if (vanillaIngredient.isCustom()) {
             //Component data might be necessary, make it into a stack and test it
-            ItemStack stack;
-            switch (instance) {
-                case ItemStack stackIn -> stack = stackIn;
-                case ItemStackTemplate template -> stack = template.create();
-                case ItemResource resource -> stack = resource.toStack();
-                default -> {
-                    return false;
-                }
-            }
-            return ingredient.ingredient().test(stack);
+            ItemStack stack = switch (instance) {
+                case ItemStack stackIn -> stackIn;
+                case ItemStackTemplate template -> template.create();
+                case ItemResource resource -> resource.toStack();
+                //TODO: Is there a decent way to grab any potential components patch?
+                default -> new ItemStack(instance.typeHolder());
+            };
+            return vanillaIngredient.test(stack);
         }
         //Vanilla ingredients don't need to check component data so we can just skip converting the resource to a stack
         return vanillaIngredient.acceptsItem(instance.typeHolder());
