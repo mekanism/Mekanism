@@ -80,16 +80,22 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
     @Override
     public boolean testType(TypedInstance<Item> instance) {
         Objects.requireNonNull(instance);
-        ItemStack stack;
-        switch (instance) {
-            case ItemStack stackIn -> stack = stackIn;
-            case ItemStackTemplate template -> stack = template.create();
-            case ItemResource resource -> stack = resource.toStack();
-            default -> {
-                return false;
+        Ingredient vanillaIngredient = ingredient.ingredient();
+        if (vanillaIngredient.isCustom()) {
+            //Component data might be necessary, make it into a stack and test it
+            ItemStack stack;
+            switch (instance) {
+                case ItemStack stackIn -> stack = stackIn;
+                case ItemStackTemplate template -> stack = template.create();
+                case ItemResource resource -> stack = resource.toStack();
+                default -> {
+                    return false;
+                }
             }
+            return ingredient.ingredient().test(stack);
         }
-        return ingredient.ingredient().test(stack);
+        //Vanilla ingredients don't need to check component data so we can just skip converting the resource to a stack
+        return vanillaIngredient.acceptsItem(instance.typeHolder());
     }
 
     @Override
