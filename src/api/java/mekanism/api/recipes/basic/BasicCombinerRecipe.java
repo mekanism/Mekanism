@@ -53,9 +53,10 @@ public class BasicCombinerRecipe extends CombinerRecipe {
 
     @Override
     @Contract(value = "_, _ -> new", pure = true)
-    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(@NotNull INPUT input, @NotNull ItemStack extra) {
+    public <INPUT extends TypedInstance<Item> & DataComponentHolder> ItemStackTemplate getOutput(@NotNull INPUT input, @NotNull INPUT extra) {
         return output;
     }
+
     @Override
     public List<ItemStack> getOutputDefinition() {
         return Collections.singletonList(output.create());
