@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:rods/blaze"
+    "ingredient": "#c:rods/blaze"
   },
   "output": {
     "count": 4,

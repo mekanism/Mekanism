@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ores/gold"
+    "ingredient": "#c:ores/gold"
   },
   "output": {
     "count": 3,

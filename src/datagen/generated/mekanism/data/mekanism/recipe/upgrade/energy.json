@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:dusts/gold"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "G": {
-      "tag": "c:glass_blocks/cheap"
-    }
+    "#": "#c:dusts/gold",
+    "A": "#mekanism:alloys/infused",
+    "G": "#c:glass_blocks/cheap"
   },
   "pattern": [
     " G ",
@@ -18,7 +12,6 @@
     " G "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:upgrade_energy"
   }
 }

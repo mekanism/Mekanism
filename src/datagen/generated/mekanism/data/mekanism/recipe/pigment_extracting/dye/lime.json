@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "tag": "c:dyes/lime"
+    "ingredient": "#c:dyes/lime"
   },
   "output": {
     "amount": 256,

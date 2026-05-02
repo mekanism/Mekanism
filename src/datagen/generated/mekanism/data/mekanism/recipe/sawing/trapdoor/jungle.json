@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:jungle_trapdoor"
+    "ingredient": "minecraft:jungle_trapdoor"
   },
   "main_output": {
     "count": 3,

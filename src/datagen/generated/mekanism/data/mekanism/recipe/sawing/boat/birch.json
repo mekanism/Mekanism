@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:birch_boat"
+    "ingredient": "minecraft:birch_boat"
   },
   "main_output": {
     "count": 5,

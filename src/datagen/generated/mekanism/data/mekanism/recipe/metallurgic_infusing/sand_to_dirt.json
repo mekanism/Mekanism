@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:sands"
+    "ingredient": "#c:sands"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:dirt"
   },
   "per_tick_usage": false

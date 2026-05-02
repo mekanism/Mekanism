@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:storage_blocks/wheat"
+    "ingredient": "#c:storage_blocks/wheat"
   },
   "output": {
     "count": 2,

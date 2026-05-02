@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:crops/pumpkin"
+    "ingredient": "#c:crops/pumpkin"
   },
   "output": {
     "count": 6,

@@ -2,7 +2,13 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "minecraft:cyan_banner"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/banners",
+        "#c:dyed/cyan"
+      ]
+    }
   },
   "output": {
     "amount": 64,

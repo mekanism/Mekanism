@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:pellets/antimatter"
-    },
-    "I": {
-      "tag": "c:pellets/polonium"
-    },
-    "P": {
-      "item": "mekanism:qio_drive_time_dilating"
-    }
+    "#": "#c:pellets/antimatter",
+    "I": "#c:pellets/polonium",
+    "P": "mekanism:qio_drive_time_dilating"
   },
   "pattern": [
     "IPI",
@@ -18,7 +12,6 @@
     "IPI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:qio_drive_supermassive"
   }
 }

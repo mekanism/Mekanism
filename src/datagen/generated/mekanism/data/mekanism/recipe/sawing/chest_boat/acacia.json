@@ -2,15 +2,13 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:acacia_chest_boat"
+    "ingredient": "minecraft:acacia_chest_boat"
   },
   "main_output": {
-    "count": 1,
     "id": "minecraft:acacia_boat"
   },
   "secondary_chance": 1.0,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:chest"
   }
 }

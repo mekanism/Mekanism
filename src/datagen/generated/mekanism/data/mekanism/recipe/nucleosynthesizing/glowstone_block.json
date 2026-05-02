@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "item": "minecraft:yellow_wool"
+    "ingredient": "minecraft:yellow_wool"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:glowstone"
   },
   "per_tick_usage": false

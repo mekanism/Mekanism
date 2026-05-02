@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "c:fuels/block/bio"
+    "ingredient": "#c:fuels/block/bio"
   },
   "output": {
     "amount": 45,

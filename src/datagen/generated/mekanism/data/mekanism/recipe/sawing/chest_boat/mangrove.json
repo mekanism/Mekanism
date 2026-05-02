@@ -2,15 +2,13 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:mangrove_chest_boat"
+    "ingredient": "minecraft:mangrove_chest_boat"
   },
   "main_output": {
-    "count": 1,
     "id": "minecraft:mangrove_boat"
   },
   "secondary_chance": 1.0,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:chest"
   }
 }

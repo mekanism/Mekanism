@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:mangrove_trapdoor"
+    "ingredient": "minecraft:mangrove_trapdoor"
   },
   "main_output": {
     "count": 3,

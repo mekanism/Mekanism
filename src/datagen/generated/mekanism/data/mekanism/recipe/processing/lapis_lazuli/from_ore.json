@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:ores/lapis"
+    "ingredient": "#c:ores/lapis"
   },
   "output": {
     "count": 12,

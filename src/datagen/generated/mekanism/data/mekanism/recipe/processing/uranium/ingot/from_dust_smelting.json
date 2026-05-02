@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.3,
-  "ingredient": {
-    "item": "mekanism:dust_uranium"
-  },
+  "ingredient": "mekanism:dust_uranium",
   "result": {
-    "count": 1,
     "id": "mekanism:ingot_uranium"
   }
 }

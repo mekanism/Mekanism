@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:buckets/water"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "B": {
-      "tag": "c:buckets/lava"
-    },
-    "G": {
-      "tag": "c:glass_blocks/cheap"
-    }
+    "#": "#c:buckets/water",
+    "A": "#mekanism:alloys/infused",
+    "B": "#c:buckets/lava",
+    "G": "#c:glass_blocks/cheap"
   },
   "pattern": [
     " G ",
@@ -21,7 +13,6 @@
     " G "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:upgrade_stone_generator"
   }
 }

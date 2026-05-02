@@ -2,11 +2,11 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:dyes/red"
+    "ingredient": "#c:dyes/red"
   },
   "main_input": {
     "count": 1,
-    "tag": "c:dyes/blue"
+    "ingredient": "#c:dyes/blue"
   },
   "output": {
     "count": 4,

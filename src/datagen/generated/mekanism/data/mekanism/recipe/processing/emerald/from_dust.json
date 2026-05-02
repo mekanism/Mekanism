@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dusts/emerald"
+    "ingredient": "#c:dusts/emerald"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:emerald"
   }
 }

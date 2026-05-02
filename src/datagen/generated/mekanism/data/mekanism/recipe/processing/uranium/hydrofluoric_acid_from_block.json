@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:storage_blocks/fluorite"
+    "ingredient": "#c:storage_blocks/fluorite"
   },
   "output": {
     "amount": 9000,

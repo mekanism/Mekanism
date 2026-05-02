@@ -7,10 +7,9 @@
   "duration": 750,
   "item_input": {
     "count": 1,
-    "tag": "minecraft:beds"
+    "ingredient": "#minecraft:beds"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:respawn_anchor"
   },
   "per_tick_usage": false

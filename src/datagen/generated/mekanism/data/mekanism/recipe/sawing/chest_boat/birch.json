@@ -2,15 +2,13 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:birch_chest_boat"
+    "ingredient": "minecraft:birch_chest_boat"
   },
   "main_output": {
-    "count": 1,
     "id": "minecraft:birch_boat"
   },
   "secondary_chance": 1.0,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:chest"
   }
 }

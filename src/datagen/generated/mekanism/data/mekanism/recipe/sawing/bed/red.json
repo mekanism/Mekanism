@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:red_bed"
+    "ingredient": "minecraft:red_bed"
   },
   "main_output": {
     "count": 3,

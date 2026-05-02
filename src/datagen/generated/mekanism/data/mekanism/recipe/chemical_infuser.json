@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/basic",
+    "T": "mekanism:basic_chemical_tank",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:chemical_infuser"
   }
 }

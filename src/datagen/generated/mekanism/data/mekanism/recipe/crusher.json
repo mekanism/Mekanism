@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": {
-      "tag": "c:buckets/lava"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "B": "#c:buckets/lava",
+    "C": "#c:circuits/basic",
+    "R": "#c:dusts/redstone",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "RCR",
@@ -21,7 +13,6 @@
     "RCR"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:crusher"
   }
 }

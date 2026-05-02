@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "item": "minecraft:light_gray_wool"
+    "ingredient": "minecraft:light_gray_wool"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:quartz_block"
   },
   "per_tick_usage": false

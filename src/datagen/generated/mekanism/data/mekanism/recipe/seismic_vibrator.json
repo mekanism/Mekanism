@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:gems/lapis"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "I": {
-      "tag": "c:ingots/tin"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "#": "#c:gems/lapis",
+    "C": "#c:circuits/basic",
+    "I": "#c:ingots/tin",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "I#I",
@@ -21,7 +13,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:seismic_vibrator"
   }
 }

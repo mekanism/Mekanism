@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "minecraft:wooden_slabs"
+    "ingredient": "#minecraft:wooden_slabs"
   },
   "main_output": {
     "count": 3,
@@ -10,7 +10,6 @@
   },
   "secondary_chance": 0.125,
   "secondary_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

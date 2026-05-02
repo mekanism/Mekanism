@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:carved_pumpkin"
+    "ingredient": "minecraft:carved_pumpkin"
   },
   "output": {
     "count": 2,

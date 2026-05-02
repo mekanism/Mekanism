@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/basic"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "_": {
-      "tag": "mekanism:stone_crafting_materials"
-    }
+    "A": "#mekanism:alloys/basic",
+    "C": "#c:circuits/basic",
+    "_": "#mekanism:stone_crafting_materials"
   },
   "pattern": [
     "_C_",
@@ -18,7 +12,6 @@
     "___"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:basic_bin"
   }
 }

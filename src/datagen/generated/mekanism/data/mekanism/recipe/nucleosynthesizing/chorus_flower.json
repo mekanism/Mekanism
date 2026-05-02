@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "tag": "minecraft:small_flowers"
+    "ingredient": "#minecraft:small_flowers"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:chorus_flower"
   },
   "per_tick_usage": false

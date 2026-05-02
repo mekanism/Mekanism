@@ -11,18 +11,16 @@
   "duration": 15,
   "fluid_input": {
     "amount": 10,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "tag": "minecraft:wooden_slabs"
-      },
-      {
-        "item": "minecraft:bamboo_mosaic_slab"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "type": "neoforge:or",
+      "values": [
+        "#minecraft:wooden_slabs",
+        "minecraft:bamboo_mosaic_slab"
+      ]
+    }
   }
 }

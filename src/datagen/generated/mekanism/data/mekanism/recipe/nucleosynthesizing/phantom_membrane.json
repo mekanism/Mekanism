@@ -7,10 +7,9 @@
   "duration": 750,
   "item_input": {
     "count": 1,
-    "tag": "c:leathers"
+    "ingredient": "#c:leathers"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:phantom_membrane"
   },
   "per_tick_usage": false

@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:block_steel"
-    }
+    "mekanism:block_steel"
   ],
   "result": {
     "count": 9,

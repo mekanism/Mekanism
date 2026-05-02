@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "mekanism:dye_base"
+    "ingredient": "mekanism:dye_base"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:purple_dye"
   },
   "per_tick_usage": false

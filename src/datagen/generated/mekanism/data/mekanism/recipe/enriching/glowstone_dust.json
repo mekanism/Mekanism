@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:glowstone"
+    "ingredient": "minecraft:glowstone"
   },
   "output": {
     "count": 4,

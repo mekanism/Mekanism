@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:dandelion"
+    "ingredient": "minecraft:dandelion"
   },
   "output": {
     "count": 2,

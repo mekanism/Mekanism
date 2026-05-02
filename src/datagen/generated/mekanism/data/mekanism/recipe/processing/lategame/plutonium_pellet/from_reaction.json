@@ -11,14 +11,13 @@
   "duration": 100,
   "fluid_input": {
     "amount": 1000,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
     "count": 1,
-    "tag": "c:dusts/fluorite"
+    "ingredient": "#c:dusts/fluorite"
   },
   "item_output": {
-    "count": 1,
     "id": "mekanism:pellet_plutonium"
   }
 }

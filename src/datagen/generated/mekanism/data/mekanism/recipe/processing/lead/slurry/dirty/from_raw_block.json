@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:storage_blocks/raw_lead"
+    "ingredient": "#c:storage_blocks/raw_lead"
   },
   "output": {
     "amount": 6000,

@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "I": {
-      "tag": "c:ingots/tin"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+    "C": "#c:circuits/basic",
+    "I": "#c:ingots/tin",
+    "S": "#c:ingots/steel",
+    "T": "mekanism:basic_chemical_tank"
   },
   "pattern": [
     "SCS",
@@ -21,7 +13,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:jetpack"
   }
 }

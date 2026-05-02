@@ -8,14 +8,13 @@
   "energy_required": 10,
   "fluid_input": {
     "amount": 50,
-    "tag": "c:ethene"
+    "ingredient": "#c:ethene"
   },
   "item_input": {
     "count": 1,
-    "item": "mekanism:substrate"
+    "ingredient": "mekanism:substrate"
   },
   "item_output": {
-    "count": 1,
     "id": "mekanism:hdpe_pellet"
   }
 }

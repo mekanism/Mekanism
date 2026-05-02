@@ -2,21 +2,11 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:dynamic_tank"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "P": {
-      "tag": "mekanism:personal_storage"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+    "#": "mekanism:dynamic_tank",
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/basic",
+    "P": "#mekanism:personal_storage",
+    "T": "mekanism:basic_chemical_tank"
   },
   "pattern": [
     "ACA",
@@ -24,7 +14,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:chemical_oxidizer"
   }
 }

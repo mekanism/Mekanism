@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/normal"
+    "ingredient": "#c:cobblestones/normal"
   },
   "main_input": {
     "count": 5,
-    "tag": "c:dusts/emerald"
+    "ingredient": "#c:dusts/emerald"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:emerald_ore"
   }
 }

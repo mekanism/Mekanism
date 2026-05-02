@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:fuels/block/bio"
+    "ingredient": "#c:fuels/block/bio"
   },
   "output": {
     "amount": 45,

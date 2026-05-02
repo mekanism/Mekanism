@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/redstone"
+    "ingredient": "#c:dusts/redstone"
   },
   "output": {
     "amount": 10,

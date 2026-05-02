@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:dirt"
+    "ingredient": "minecraft:dirt"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:mud"
   },
   "per_tick_usage": true

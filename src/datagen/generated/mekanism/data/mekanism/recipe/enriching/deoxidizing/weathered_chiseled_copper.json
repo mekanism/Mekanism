@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:oxidized_chiseled_copper"
+    "ingredient": "minecraft:oxidized_chiseled_copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:weathered_chiseled_copper"
   }
 }

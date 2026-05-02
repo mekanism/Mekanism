@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:cut_copper"
+    "ingredient": "minecraft:cut_copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:exposed_cut_copper"
   },
   "per_tick_usage": true

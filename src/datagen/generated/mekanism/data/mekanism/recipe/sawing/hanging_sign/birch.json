@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:birch_hanging_sign"
+    "ingredient": "minecraft:birch_hanging_sign"
   },
   "main_output": {
     "count": 2,
@@ -10,7 +10,6 @@
   },
   "secondary_chance": 0.5,
   "secondary_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

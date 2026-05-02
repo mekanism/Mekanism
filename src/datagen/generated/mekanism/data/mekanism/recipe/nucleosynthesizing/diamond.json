@@ -7,10 +7,9 @@
   "duration": 1000,
   "item_input": {
     "count": 1,
-    "item": "minecraft:coal"
+    "ingredient": "minecraft:coal"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:diamond"
   },
   "per_tick_usage": false

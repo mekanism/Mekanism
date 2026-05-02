@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "mekanism:dirty_netherite_scrap"
+    "ingredient": "mekanism:dirty_netherite_scrap"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:netherite_scrap"
   }
 }

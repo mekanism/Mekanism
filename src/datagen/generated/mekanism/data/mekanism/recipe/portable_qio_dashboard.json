@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:qio_dashboard"
-    },
-    "A": {
-      "tag": "c:pellets/polonium"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+    "#": "mekanism:qio_dashboard",
+    "A": "#c:pellets/polonium",
+    "T": "mekanism:teleportation_core"
   },
   "pattern": [
     "AAA",
@@ -18,7 +12,6 @@
     "ATA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:portable_qio_dashboard"
   }
 }

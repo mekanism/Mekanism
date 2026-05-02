@@ -5,7 +5,6 @@
     "chemical": "mekanism:clean_uranium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:crystal_uranium"
   }
 }

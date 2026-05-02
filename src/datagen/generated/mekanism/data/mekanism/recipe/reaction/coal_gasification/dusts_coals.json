@@ -11,22 +11,19 @@
   "duration": 100,
   "fluid_input": {
     "amount": 100,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "tag": "c:dusts/coal"
-      },
-      {
-        "tag": "c:dusts/charcoal"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "type": "neoforge:or",
+      "values": [
+        "#c:dusts/coal",
+        "#c:dusts/charcoal"
+      ]
+    }
   },
   "item_output": {
-    "count": 1,
     "id": "mekanism:dust_sulfur"
   }
 }

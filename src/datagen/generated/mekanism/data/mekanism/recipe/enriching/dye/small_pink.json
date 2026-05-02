@@ -1,16 +1,11 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:pink_tulip"
-      },
-      {
-        "item": "minecraft:pink_petals"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:pink_tulip",
+      "minecraft:pink_petals"
+    ]
   },
   "output": {
     "count": 2,

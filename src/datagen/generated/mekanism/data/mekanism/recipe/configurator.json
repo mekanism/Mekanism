@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:ingots/osmium"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "A": "#c:ingots/osmium",
+    "I": "#c:ingots/iron",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "II",
@@ -18,7 +12,6 @@
     " S"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:configurator"
   }
 }

@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:oxidized_cut_copper_stairs"
+    "ingredient": "minecraft:oxidized_cut_copper_stairs"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:weathered_cut_copper_stairs"
   }
 }

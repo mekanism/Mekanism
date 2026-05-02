@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/diamond"
+    "ingredient": "#mekanism:enriched/diamond"
   },
   "output": {
     "amount": 80,

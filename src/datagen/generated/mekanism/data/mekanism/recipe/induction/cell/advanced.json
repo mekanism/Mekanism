@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:advanced_energy_cube"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "P": {
-      "item": "mekanism:basic_induction_cell"
-    }
+    "#": "mekanism:advanced_energy_cube",
+    "E": "mekanism:energy_tablet",
+    "P": "mekanism:basic_induction_cell"
   },
   "pattern": [
     "EPE",
@@ -18,7 +12,6 @@
     "EPE"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:advanced_induction_cell"
   }
 }

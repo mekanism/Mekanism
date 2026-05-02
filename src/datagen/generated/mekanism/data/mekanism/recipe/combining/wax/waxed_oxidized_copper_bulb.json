@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:honeycomb"
+    "ingredient": "minecraft:honeycomb"
   },
   "main_input": {
     "count": 1,
-    "item": "minecraft:oxidized_copper_bulb"
+    "ingredient": "minecraft:oxidized_copper_bulb"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:waxed_oxidized_copper_bulb"
   }
 }

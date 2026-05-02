@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "I": {
-      "tag": "c:ingots/osmium"
-    },
-    "P": {
-      "item": "mekanism:basic_energy_cube"
-    }
+    "A": "#mekanism:alloys/infused",
+    "E": "mekanism:energy_tablet",
+    "I": "#c:ingots/osmium",
+    "P": "mekanism:basic_energy_cube"
   },
   "pattern": [
     "AEA",
@@ -21,7 +13,6 @@
     "AEA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:advanced_energy_cube"
   }
 }

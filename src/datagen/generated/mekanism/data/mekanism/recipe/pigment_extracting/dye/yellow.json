@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "tag": "c:dyes/yellow"
+    "ingredient": "#c:dyes/yellow"
   },
   "output": {
     "amount": 256,

@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:sulfur_trioxide"
+    "ingredient": "#c:sulfur_trioxide"
   },
   "fluid_output": {
     "amount": 1,

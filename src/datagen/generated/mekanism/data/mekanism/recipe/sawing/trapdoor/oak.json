@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:oak_trapdoor"
+    "ingredient": "minecraft:oak_trapdoor"
   },
   "main_output": {
     "count": 3,

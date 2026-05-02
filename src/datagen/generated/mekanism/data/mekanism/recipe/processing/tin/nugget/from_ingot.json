@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:ingot_tin"
-    }
+    "mekanism:ingot_tin"
   ],
   "result": {
     "count": 9,

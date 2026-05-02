@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:dusts/diamond"
-    },
-    "I": {
-      "tag": "c:ingots/bronze"
-    },
-    "P": {
-      "item": "mekanism:free_runners"
-    },
-    "S": {
-      "tag": "c:storage_blocks/steel"
-    }
+    "#": "#c:dusts/diamond",
+    "I": "#c:ingots/bronze",
+    "P": "mekanism:free_runners",
+    "S": "#c:storage_blocks/steel"
   },
   "pattern": [
     " S ",
@@ -21,7 +13,6 @@
     "I I"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:free_runners_armored"
   }
 }

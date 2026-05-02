@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "P": {
-      "item": "mekanism:elite_pressurized_tube"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "P": "mekanism:elite_pressurized_tube"
   },
   "pattern": [
     "PPP",

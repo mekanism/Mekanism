@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:sodium"
+    "ingredient": "#c:sodium"
   },
   "fluid_output": {
     "amount": 1,

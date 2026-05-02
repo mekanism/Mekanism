@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/basic"
-    },
-    "I": {
-      "tag": "c:ingots/copper"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "A": "#mekanism:alloys/basic",
+    "I": "#c:ingots/copper",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "AIA",
@@ -18,7 +12,6 @@
     "AIA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:superheating_element"
   }
 }

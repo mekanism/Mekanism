@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "tag": "c:gems/amethyst"
+    "ingredient": "#c:gems/amethyst"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:echo_shard"
   },
   "per_tick_usage": false

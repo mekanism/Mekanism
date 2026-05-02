@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:bucket"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "minecraft:bucket",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "S#S"

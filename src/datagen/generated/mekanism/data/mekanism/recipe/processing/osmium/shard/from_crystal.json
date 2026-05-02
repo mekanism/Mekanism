@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:crystals/osmium"
+    "ingredient": "#c:crystals/osmium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:shard_osmium"
   },
   "per_tick_usage": true

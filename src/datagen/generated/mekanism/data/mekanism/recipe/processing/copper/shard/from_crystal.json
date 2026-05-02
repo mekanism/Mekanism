@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:crystals/copper"
+    "ingredient": "#c:crystals/copper"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:shard_copper"
   },
   "per_tick_usage": true

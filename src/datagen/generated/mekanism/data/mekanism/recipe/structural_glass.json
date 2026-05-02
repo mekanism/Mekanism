@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks/cheap"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "G": "#c:glass_blocks/cheap",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     " S ",

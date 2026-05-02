@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:cobblestone"
+    "ingredient": "minecraft:cobblestone"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:mossy_cobblestone"
   },
   "per_tick_usage": false

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:copper_grate"
+    "ingredient": "minecraft:copper_grate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:exposed_copper_grate"
   },
   "per_tick_usage": true

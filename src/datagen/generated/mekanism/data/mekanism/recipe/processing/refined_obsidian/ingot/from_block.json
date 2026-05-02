@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:block_refined_obsidian"
-    }
+    "mekanism:block_refined_obsidian"
   ],
   "result": {
     "count": 9,

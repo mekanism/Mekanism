@@ -2,7 +2,13 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "minecraft:light_gray_banner"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/banners",
+        "#c:dyed/light_gray"
+      ]
+    }
   },
   "output": {
     "amount": 64,

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "P": {
-      "item": "mekanism:basic_mechanical_pipe"
-    }
+    "A": "#mekanism:alloys/infused",
+    "P": "mekanism:basic_mechanical_pipe"
   },
   "pattern": [
     "PPP",

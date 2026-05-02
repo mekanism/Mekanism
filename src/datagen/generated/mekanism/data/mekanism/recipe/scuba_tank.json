@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "equipment",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/basic",
+    "S": "#c:ingots/steel",
+    "T": "mekanism:basic_chemical_tank"
   },
   "pattern": [
     " C ",
@@ -21,7 +13,6 @@
     "SSS"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:scuba_tank"
   }
 }

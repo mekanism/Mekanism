@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "C": "#c:circuits/ultimate",
+    "I": "#c:ingots/refined_obsidian",
+    "T": "mekanism:basic_chemical_tank",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "ITI",
@@ -21,7 +13,6 @@
     "ITI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:chemical_dissolution_chamber"
   }
 }

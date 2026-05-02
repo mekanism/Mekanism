@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "c:bookshelves"
+    "ingredient": "#c:bookshelves"
   },
   "main_output": {
     "count": 6,

@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:mud"
+    "ingredient": "minecraft:mud"
   },
   "main_input": {
     "count": 1,
-    "tag": "c:crops/wheat"
+    "ingredient": "#c:crops/wheat"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:packed_mud"
   }
 }

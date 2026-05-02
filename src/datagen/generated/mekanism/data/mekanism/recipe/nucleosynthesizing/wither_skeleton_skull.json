@@ -7,10 +7,9 @@
   "duration": 1250,
   "item_input": {
     "count": 1,
-    "item": "minecraft:skeleton_skull"
+    "ingredient": "minecraft:skeleton_skull"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:wither_skeleton_skull"
   },
   "per_tick_usage": false

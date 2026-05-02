@@ -7,10 +7,9 @@
   "duration": 200,
   "item_input": {
     "count": 1,
-    "tag": "c:obsidians/normal"
+    "ingredient": "#c:obsidians/normal"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:crying_obsidian"
   },
   "per_tick_usage": false

@@ -5,7 +5,6 @@
     "chemical": "mekanism:antimatter"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:pellet_antimatter"
   }
 }

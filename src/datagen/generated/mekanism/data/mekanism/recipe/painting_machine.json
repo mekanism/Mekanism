@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:dye_base"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "#": "mekanism:dye_base",
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/advanced",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:painting_machine"
   }
 }

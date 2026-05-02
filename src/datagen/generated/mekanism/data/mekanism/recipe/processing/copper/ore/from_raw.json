@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/normal"
+    "ingredient": "#c:cobblestones/normal"
   },
   "main_input": {
     "count": 20,
-    "tag": "c:raw_materials/copper"
+    "ingredient": "#c:raw_materials/copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:copper_ore"
   }
 }

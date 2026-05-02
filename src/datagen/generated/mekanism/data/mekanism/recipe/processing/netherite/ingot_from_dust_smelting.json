@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 1.0,
-  "ingredient": {
-    "item": "mekanism:dust_netherite"
-  },
+  "ingredient": "mekanism:dust_netherite",
   "result": {
-    "count": 1,
     "id": "minecraft:netherite_ingot"
   }
 }

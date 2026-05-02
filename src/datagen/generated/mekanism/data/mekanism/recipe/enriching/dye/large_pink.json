@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:peony"
+    "ingredient": "minecraft:peony"
   },
   "output": {
     "count": 4,

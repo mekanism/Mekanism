@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ender_pearls"
-    },
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "I": {
-      "tag": "c:ingots/gold"
-    }
+    "#": "#c:ender_pearls",
+    "A": "#mekanism:alloys/atomic",
+    "D": "#c:gems/diamond",
+    "I": "#c:ingots/gold"
   },
   "pattern": [
     "#A#",
@@ -21,7 +13,6 @@
     "#A#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:teleportation_core"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/lithium"
+    "ingredient": "#c:dusts/lithium"
   },
   "output": {
     "amount": 100,

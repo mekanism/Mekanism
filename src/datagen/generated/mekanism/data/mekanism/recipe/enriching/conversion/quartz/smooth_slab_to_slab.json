@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:smooth_quartz_slab"
+    "ingredient": "minecraft:smooth_quartz_slab"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:quartz_slab"
   }
 }

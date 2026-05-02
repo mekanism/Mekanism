@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:ethene"
+    "ingredient": "#c:ethene"
   },
   "fluid_output": {
     "amount": 1,

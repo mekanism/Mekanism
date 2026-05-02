@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/normal"
+    "ingredient": "#c:cobblestones/normal"
   },
   "main_input": {
     "count": 1,
-    "item": "minecraft:flint"
+    "ingredient": "minecraft:flint"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:gravel"
   }
 }

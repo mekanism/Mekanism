@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "tag": "c:chests/wooden"
+    "ingredient": "#c:chests/wooden"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:ender_chest"
   },
   "per_tick_usage": false

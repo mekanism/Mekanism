@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:waxed_exposed_copper_trapdoor"
+    "ingredient": "minecraft:waxed_exposed_copper_trapdoor"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:exposed_copper_trapdoor"
   }
 }

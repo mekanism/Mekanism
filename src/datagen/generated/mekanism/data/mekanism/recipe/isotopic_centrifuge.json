@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+    "C": "#c:circuits/ultimate",
+    "I": "#c:ingots/lead",
+    "T": "mekanism:basic_chemical_tank"
   },
   "pattern": [
     "III",
@@ -18,7 +12,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:isotopic_centrifuge"
   }
 }

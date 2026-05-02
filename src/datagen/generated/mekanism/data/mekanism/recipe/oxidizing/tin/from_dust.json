@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/tin"
+    "ingredient": "#c:dusts/tin"
   },
   "output": {
     "amount": 10,

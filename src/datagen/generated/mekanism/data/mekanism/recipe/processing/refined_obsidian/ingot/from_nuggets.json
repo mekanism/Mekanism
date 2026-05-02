@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:nuggets/refined_obsidian"
-    },
-    "P": {
-      "item": "mekanism:nugget_refined_obsidian"
-    }
+    "#": "#c:nuggets/refined_obsidian",
+    "P": "mekanism:nugget_refined_obsidian"
   },
   "pattern": [
     "###",
@@ -15,7 +11,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:ingot_refined_obsidian"
   }
 }

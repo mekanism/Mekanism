@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/deepslate"
+    "ingredient": "#c:cobblestones/deepslate"
   },
   "main_input": {
     "count": 5,
-    "tag": "c:dusts/diamond"
+    "ingredient": "#c:dusts/diamond"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:deepslate_diamond_ore"
   }
 }

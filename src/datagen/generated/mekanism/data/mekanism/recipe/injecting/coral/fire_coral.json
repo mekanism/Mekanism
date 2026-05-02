@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:dead_fire_coral"
+    "ingredient": "minecraft:dead_fire_coral"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:fire_coral"
   },
   "per_tick_usage": true

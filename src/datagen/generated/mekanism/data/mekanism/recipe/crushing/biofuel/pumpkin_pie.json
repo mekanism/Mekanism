@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:pumpkin_pie"
+    "ingredient": "minecraft:pumpkin_pie"
   },
   "output": {
     "count": 7,

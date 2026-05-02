@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:ingots/refined_obsidian"
+    "ingredient": "#c:ingots/refined_obsidian"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_refined_obsidian"
   }
 }

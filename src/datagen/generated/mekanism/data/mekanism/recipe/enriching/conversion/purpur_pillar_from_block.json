@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:purpur_block"
+    "ingredient": "minecraft:purpur_block"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:purpur_pillar"
   }
 }

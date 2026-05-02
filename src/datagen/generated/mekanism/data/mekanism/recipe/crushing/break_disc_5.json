@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:music_disc_5"
+    "ingredient": "minecraft:music_disc_5"
   },
   "output": {
     "count": 9,

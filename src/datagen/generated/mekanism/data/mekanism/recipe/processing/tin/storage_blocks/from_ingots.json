@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/tin"
-    },
-    "P": {
-      "item": "mekanism:ingot_tin"
-    }
+    "#": "#c:ingots/tin",
+    "P": "mekanism:ingot_tin"
   },
   "pattern": [
     "###",
@@ -15,7 +11,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:block_tin"
   }
 }

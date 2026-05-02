@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:block_lead"
-    }
+    "mekanism:block_lead"
   ],
   "result": {
     "count": 9,

@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:pellets/antimatter"
+    "ingredient": "#c:pellets/antimatter"
   },
   "output": {
     "amount": 1000,

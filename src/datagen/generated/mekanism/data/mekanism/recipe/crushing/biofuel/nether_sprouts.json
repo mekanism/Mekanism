@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:nether_sprouts"
+    "ingredient": "minecraft:nether_sprouts"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

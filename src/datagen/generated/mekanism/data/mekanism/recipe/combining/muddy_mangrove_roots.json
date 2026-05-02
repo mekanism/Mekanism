@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:mud"
+    "ingredient": "minecraft:mud"
   },
   "main_input": {
     "count": 1,
-    "item": "minecraft:mangrove_roots"
+    "ingredient": "minecraft:mangrove_roots"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:muddy_mangrove_roots"
   }
 }

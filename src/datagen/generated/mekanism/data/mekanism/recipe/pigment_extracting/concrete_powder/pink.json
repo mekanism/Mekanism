@@ -1,16 +1,14 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "type": "neoforge:intersection",
-    "children": [
-      {
-        "tag": "mekanism:colorable/concrete_powder"
-      },
-      {
-        "tag": "c:dyed/pink"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/concrete_powder",
+        "#c:dyed/pink"
+      ]
+    }
   },
   "output": {
     "amount": 32,

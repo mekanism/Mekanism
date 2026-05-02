@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:blackstone"
+    "ingredient": "minecraft:blackstone"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:gilded_blackstone"
   },
   "per_tick_usage": false

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:cyan_concrete_powder"
+    "ingredient": "minecraft:cyan_concrete_powder"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cyan_concrete"
   },
   "per_tick_usage": true

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:dyes/orange"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    }
+    "D": "#c:dyes/orange",
+    "I": "#c:ingots/lead"
   },
   "pattern": [
     "IDI",
@@ -15,7 +11,6 @@
     "III"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:hazmat_gown"
   }
 }

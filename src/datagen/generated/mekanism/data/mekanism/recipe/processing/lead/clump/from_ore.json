@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ores/lead"
+    "ingredient": "#c:ores/lead"
   },
   "output": {
     "count": 3,

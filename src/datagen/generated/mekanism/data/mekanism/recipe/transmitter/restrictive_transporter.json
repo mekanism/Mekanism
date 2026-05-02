@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:iron_bars"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "minecraft:iron_bars",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "S#S"

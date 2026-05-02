@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:quartz_block"
+    "ingredient": "minecraft:quartz_block"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:smooth_quartz"
   }
 }

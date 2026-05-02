@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:tuff_brick_slab"
+    "ingredient": "minecraft:tuff_brick_slab"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:polished_tuff_slab"
   }
 }

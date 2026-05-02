@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 3,
-    "tag": "c:raw_materials/uranium"
+    "ingredient": "#c:raw_materials/uranium"
   },
   "output": {
     "count": 8,

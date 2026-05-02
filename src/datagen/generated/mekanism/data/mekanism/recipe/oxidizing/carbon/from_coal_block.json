@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:storage_blocks/coal"
+    "ingredient": "#c:storage_blocks/coal"
   },
   "output": {
     "amount": 90,

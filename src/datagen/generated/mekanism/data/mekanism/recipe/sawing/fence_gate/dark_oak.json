@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:dark_oak_fence_gate"
+    "ingredient": "minecraft:dark_oak_fence_gate"
   },
   "main_output": {
     "count": 2,

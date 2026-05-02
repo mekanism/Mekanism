@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:oak_door"
+    "ingredient": "minecraft:oak_door"
   },
   "main_output": {
     "count": 2,

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "G": {
-      "tag": "c:glass_panes"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    }
+    "G": "#c:glass_panes",
+    "O": "#c:ingots/osmium"
   },
   "pattern": [
     " O ",
@@ -15,7 +11,6 @@
     "GGG"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:gauge_dropper"
   }
 }

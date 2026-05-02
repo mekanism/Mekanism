@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.35,
-  "ingredient": {
-    "item": "mekanism:dust_iron"
-  },
+  "ingredient": "mekanism:dust_iron",
   "result": {
-    "count": 1,
     "id": "minecraft:iron_ingot"
   }
 }

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:ingots/refined_glowstone"
-    },
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    }
+    "G": "#c:ingots/refined_glowstone",
+    "I": "#c:ingots/refined_obsidian"
   },
   "pattern": [
     "III",

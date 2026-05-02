@@ -12,11 +12,11 @@
   "energy_required": 2,
   "fluid_input": {
     "amount": 200,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
     "count": 1,
-    "item": "mekanism:substrate"
+    "ingredient": "mekanism:substrate"
   },
   "item_output": {
     "count": 8,

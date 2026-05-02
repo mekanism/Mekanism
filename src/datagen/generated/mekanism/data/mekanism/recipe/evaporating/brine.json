@@ -2,7 +2,7 @@
   "type": "mekanism:evaporating",
   "input": {
     "amount": 10,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "output": {
     "amount": 1,

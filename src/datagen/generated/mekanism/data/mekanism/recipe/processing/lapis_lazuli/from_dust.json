@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dusts/lapis"
+    "ingredient": "#c:dusts/lapis"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:lapis_lazuli"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:acacia_trapdoor"
+    "ingredient": "minecraft:acacia_trapdoor"
   },
   "main_output": {
     "count": 3,

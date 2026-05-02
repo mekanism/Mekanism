@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:dark_oak_door"
+    "ingredient": "minecraft:dark_oak_door"
   },
   "main_output": {
     "count": 2,

@@ -11,22 +11,19 @@
   "duration": 600,
   "fluid_input": {
     "amount": 400,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "tag": "minecraft:planks"
-      },
-      {
-        "item": "minecraft:bamboo_mosaic"
-      }
-    ],
-    "count": 20
+    "count": 20,
+    "ingredient": {
+      "type": "neoforge:or",
+      "values": [
+        "#minecraft:planks",
+        "minecraft:bamboo_mosaic"
+      ]
+    }
   },
   "item_output": {
-    "count": 1,
     "id": "mekanism:dust_charcoal"
   }
 }

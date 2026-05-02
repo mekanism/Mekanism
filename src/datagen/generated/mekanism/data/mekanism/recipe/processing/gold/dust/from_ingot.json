@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:ingots/gold"
+    "ingredient": "#c:ingots/gold"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_gold"
   }
 }

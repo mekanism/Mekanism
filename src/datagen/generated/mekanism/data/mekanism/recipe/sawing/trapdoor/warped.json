@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:warped_trapdoor"
+    "ingredient": "minecraft:warped_trapdoor"
   },
   "main_output": {
     "count": 3,

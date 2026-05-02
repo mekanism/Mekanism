@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    },
-    "P": {
-      "item": "mekanism:basic_bin"
-    },
-    "_": {
-      "tag": "mekanism:stone_crafting_materials"
-    }
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/advanced",
+    "P": "mekanism:basic_bin",
+    "_": "#mekanism:stone_crafting_materials"
   },
   "pattern": [
     "_C_",
@@ -21,7 +13,6 @@
     "___"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:advanced_bin"
   }
 }

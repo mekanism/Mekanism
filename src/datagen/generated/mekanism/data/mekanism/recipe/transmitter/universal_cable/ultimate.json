@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "P": {
-      "item": "mekanism:elite_universal_cable"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "P": "mekanism:elite_universal_cable"
   },
   "pattern": [
     "PPP",

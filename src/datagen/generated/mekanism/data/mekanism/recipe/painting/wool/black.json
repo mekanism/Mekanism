@@ -5,17 +5,14 @@
     "chemical": "mekanism:black"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/wool"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:black_wool"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/wool",
+      "subtracted": "minecraft:black_wool"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:black_wool"
   },
   "per_tick_usage": false

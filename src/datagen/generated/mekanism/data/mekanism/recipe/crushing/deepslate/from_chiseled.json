@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:chiseled_deepslate"
+    "ingredient": "minecraft:chiseled_deepslate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:deepslate"
   }
 }

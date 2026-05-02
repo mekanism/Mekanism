@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:lime_bed"
+    "ingredient": "minecraft:lime_bed"
   },
   "main_output": {
     "count": 3,

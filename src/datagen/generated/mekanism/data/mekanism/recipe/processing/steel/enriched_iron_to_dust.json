@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "mekanism:enriched_iron"
+    "ingredient": "mekanism:enriched_iron"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_steel"
   },
   "per_tick_usage": false

@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:hydrogen_chloride"
+    "ingredient": "#c:hydrogen_chloride"
   },
   "fluid_output": {
     "amount": 1,

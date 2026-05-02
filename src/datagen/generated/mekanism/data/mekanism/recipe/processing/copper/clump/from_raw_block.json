@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:storage_blocks/raw_copper"
+    "ingredient": "#c:storage_blocks/raw_copper"
   },
   "output": {
     "count": 18,

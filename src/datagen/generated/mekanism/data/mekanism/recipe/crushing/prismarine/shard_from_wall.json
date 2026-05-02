@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:prismarine_wall"
+    "ingredient": "minecraft:prismarine_wall"
   },
   "output": {
     "count": 4,

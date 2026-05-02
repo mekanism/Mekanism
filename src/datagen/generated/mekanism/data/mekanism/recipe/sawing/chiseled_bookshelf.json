@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:chiseled_bookshelf"
+    "ingredient": "minecraft:chiseled_bookshelf"
   },
   "main_output": {
     "count": 6,

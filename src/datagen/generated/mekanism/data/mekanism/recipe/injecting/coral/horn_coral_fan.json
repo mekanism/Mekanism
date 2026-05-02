@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:dead_horn_coral_fan"
+    "ingredient": "minecraft:dead_horn_coral_fan"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:horn_coral_fan"
   },
   "per_tick_usage": true

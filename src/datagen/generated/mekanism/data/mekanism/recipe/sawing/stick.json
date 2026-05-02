@@ -2,10 +2,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "c:rods/wooden"
+    "ingredient": "#c:rods/wooden"
   },
   "main_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

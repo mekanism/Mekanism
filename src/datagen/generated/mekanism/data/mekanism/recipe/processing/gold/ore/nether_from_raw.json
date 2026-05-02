@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:netherrack"
+    "ingredient": "minecraft:netherrack"
   },
   "main_input": {
     "count": 8,
-    "tag": "c:raw_materials/gold"
+    "ingredient": "#c:raw_materials/gold"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:nether_gold_ore"
   }
 }

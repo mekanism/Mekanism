@@ -11,19 +11,17 @@
   "duration": 900,
   "fluid_input": {
     "amount": 1000,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "tag": "c:storage_blocks/coal"
-      },
-      {
-        "tag": "c:storage_blocks/charcoal"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "type": "neoforge:or",
+      "values": [
+        "#c:storage_blocks/coal",
+        "#c:storage_blocks/charcoal"
+      ]
+    }
   },
   "item_output": {
     "count": 9,

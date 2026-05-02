@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:jungle_fence_gate"
+    "ingredient": "minecraft:jungle_fence_gate"
   },
   "main_output": {
     "count": 2,

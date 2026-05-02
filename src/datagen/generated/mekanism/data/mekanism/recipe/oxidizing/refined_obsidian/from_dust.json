@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/refined_obsidian"
+    "ingredient": "#c:dusts/refined_obsidian"
   },
   "output": {
     "amount": 10,

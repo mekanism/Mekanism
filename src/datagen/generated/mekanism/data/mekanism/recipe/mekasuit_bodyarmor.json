@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": {
-      "item": "minecraft:netherite_chestplate"
-    },
-    "A": {
-      "tag": "c:pellets/polonium"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "E": {
-      "item": "mekanism:basic_induction_cell"
-    },
-    "P": {
-      "item": "mekanism:hdpe_sheet"
-    }
+    "#": "minecraft:netherite_chestplate",
+    "A": "#c:pellets/polonium",
+    "C": "#c:circuits/ultimate",
+    "E": "mekanism:basic_induction_cell",
+    "P": "mekanism:hdpe_sheet"
   },
   "pattern": [
     "PCP",
@@ -24,7 +14,6 @@
     "AEA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:mekasuit_bodyarmor"
   }
 }

@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:gems/diamond"
+    "ingredient": "#c:gems/diamond"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:enriched_diamond"
   }
 }

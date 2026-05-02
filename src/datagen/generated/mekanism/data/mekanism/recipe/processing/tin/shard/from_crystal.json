@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:crystals/tin"
+    "ingredient": "#c:crystals/tin"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:shard_tin"
   },
   "per_tick_usage": true

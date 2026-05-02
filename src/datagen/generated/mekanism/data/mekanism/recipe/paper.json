@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:dusts/wood"
-    }
+    "#": "#c:dusts/wood"
   },
   "pattern": [
     "###"

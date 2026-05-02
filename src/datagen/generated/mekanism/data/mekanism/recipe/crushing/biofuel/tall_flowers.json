@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "minecraft:tall_flowers"
+    "ingredient": "#c:flowers/tall"
   },
   "output": {
     "count": 2,

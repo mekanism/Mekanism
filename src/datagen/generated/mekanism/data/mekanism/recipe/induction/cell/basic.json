@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:basic_energy_cube"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "L": {
-      "tag": "c:dusts/lithium"
-    }
+    "#": "mekanism:basic_energy_cube",
+    "E": "mekanism:energy_tablet",
+    "L": "#c:dusts/lithium"
   },
   "pattern": [
     "LEL",
@@ -18,7 +12,6 @@
     "LEL"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:basic_induction_cell"
   }
 }

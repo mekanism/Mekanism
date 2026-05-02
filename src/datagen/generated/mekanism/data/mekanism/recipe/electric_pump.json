@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "B": {
-      "item": "minecraft:bucket"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "A": "#mekanism:alloys/infused",
+    "B": "minecraft:bucket",
+    "O": "#c:ingots/osmium",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     " B ",
@@ -21,7 +13,6 @@
     "OOO"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:electric_pump"
   }
 }

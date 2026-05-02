@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:honeycomb_block"
+    "ingredient": "minecraft:honeycomb_block"
   },
   "output": {
     "count": 4,

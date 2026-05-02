@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:book"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    }
+    "#": "minecraft:book",
+    "C": "#c:circuits/basic"
   },
   "pattern": [
     "C",
     "#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:dictionary"
   }
 }

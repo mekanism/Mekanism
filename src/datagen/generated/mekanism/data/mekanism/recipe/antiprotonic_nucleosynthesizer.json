@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:alloy_atomic"
-    },
-    "A": {
-      "tag": "c:pellets/antimatter"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "#": "mekanism:alloy_atomic",
+    "A": "#c:pellets/antimatter",
+    "C": "#c:circuits/ultimate",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "#C#",
@@ -21,7 +13,6 @@
     "#C#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:antiprotonic_nucleosynthesizer"
   }
 }

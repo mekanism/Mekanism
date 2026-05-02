@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:sulfuric_acid"
+    "ingredient": "#c:sulfuric_acid"
   },
   "fluid_output": {
     "amount": 1,

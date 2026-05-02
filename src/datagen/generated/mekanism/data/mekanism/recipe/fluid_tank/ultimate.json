@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "P": {
-      "item": "mekanism:elite_fluid_tank"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "I": "#c:ingots/iron",
+    "P": "mekanism:elite_fluid_tank"
   },
   "pattern": [
     "AIA",
@@ -18,7 +12,6 @@
     "AIA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:ultimate_fluid_tank"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:cyan_bed"
+    "ingredient": "minecraft:cyan_bed"
   },
   "main_output": {
     "count": 3,

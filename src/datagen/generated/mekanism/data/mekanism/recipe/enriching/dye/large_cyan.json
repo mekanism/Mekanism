@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:pitcher_plant"
+    "ingredient": "minecraft:pitcher_plant"
   },
   "output": {
     "count": 4,

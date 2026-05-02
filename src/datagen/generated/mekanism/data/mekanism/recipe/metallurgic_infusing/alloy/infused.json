@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ingots/copper"
+    "ingredient": "#c:ingots/copper"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:alloy_infused"
   },
   "per_tick_usage": false

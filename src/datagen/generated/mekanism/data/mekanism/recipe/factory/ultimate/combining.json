@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "I": {
-      "tag": "c:gems/diamond"
-    },
-    "P": {
-      "item": "mekanism:elite_combining_factory"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "C": "#c:circuits/ultimate",
+    "I": "#c:gems/diamond",
+    "P": "mekanism:elite_combining_factory"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:ultimate_combining_factory"
   }
 }

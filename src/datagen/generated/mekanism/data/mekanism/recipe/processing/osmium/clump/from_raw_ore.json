@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:raw_materials/osmium"
+    "ingredient": "#c:raw_materials/osmium"
   },
   "output": {
     "count": 2,

@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:fern"
+    "ingredient": "minecraft:fern"
   },
   "output": {
     "count": 2,

@@ -7,10 +7,9 @@
   "duration": 1250,
   "item_input": {
     "count": 1,
-    "tag": "c:nether_stars"
+    "ingredient": "#c:nether_stars"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:heart_of_the_sea"
   },
   "per_tick_usage": false

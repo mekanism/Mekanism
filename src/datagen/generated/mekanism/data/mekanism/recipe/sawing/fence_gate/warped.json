@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:warped_fence_gate"
+    "ingredient": "minecraft:warped_fence_gate"
   },
   "main_output": {
     "count": 2,

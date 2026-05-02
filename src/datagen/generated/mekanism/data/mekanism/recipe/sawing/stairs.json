@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "minecraft:wooden_stairs"
+    "ingredient": "#minecraft:wooden_stairs"
   },
   "main_output": {
     "count": 9,
@@ -10,7 +10,6 @@
   },
   "secondary_chance": 0.375,
   "secondary_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/carbon"
+    "ingredient": "#mekanism:enriched/carbon"
   },
   "output": {
     "amount": 80,

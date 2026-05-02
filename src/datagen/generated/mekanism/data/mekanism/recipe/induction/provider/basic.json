@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:basic_energy_cube"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "L": {
-      "tag": "c:dusts/lithium"
-    }
+    "#": "mekanism:basic_energy_cube",
+    "C": "#c:circuits/basic",
+    "L": "#c:dusts/lithium"
   },
   "pattern": [
     "LCL",
@@ -18,7 +12,6 @@
     "LCL"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:basic_induction_provider"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:ingots/uranium"
+    "ingredient": "#c:ingots/uranium"
   },
   "output": {
     "count": 2,

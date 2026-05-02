@@ -2,9 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:block_uranium"
-    }
+    "mekanism:block_uranium"
   ],
   "result": {
     "count": 9,

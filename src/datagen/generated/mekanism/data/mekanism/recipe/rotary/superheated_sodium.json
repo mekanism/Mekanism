@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:superheated_sodium"
+    "ingredient": "#c:superheated_sodium"
   },
   "fluid_output": {
     "amount": 1,

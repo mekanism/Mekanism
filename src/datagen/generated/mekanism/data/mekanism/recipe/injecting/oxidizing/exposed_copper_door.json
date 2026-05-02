@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:copper_door"
+    "ingredient": "minecraft:copper_door"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:exposed_copper_door"
   },
   "per_tick_usage": true

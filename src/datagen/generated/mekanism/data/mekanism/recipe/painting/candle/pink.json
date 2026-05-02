@@ -5,17 +5,14 @@
     "chemical": "mekanism:pink"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/candle"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:pink_candle"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/candle",
+      "subtracted": "minecraft:pink_candle"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:pink_candle"
   },
   "per_tick_usage": false

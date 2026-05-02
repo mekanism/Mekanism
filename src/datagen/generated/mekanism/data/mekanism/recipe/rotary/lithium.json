@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:lithium"
+    "ingredient": "#c:lithium"
   },
   "fluid_output": {
     "amount": 1,

@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:cherry_door"
+    "ingredient": "minecraft:cherry_door"
   },
   "main_output": {
     "count": 2,

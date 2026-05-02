@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:lime_concrete_powder"
+    "ingredient": "minecraft:lime_concrete_powder"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:lime_concrete"
   },
   "per_tick_usage": true

@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:mossy_stone_brick_wall"
+    "ingredient": "minecraft:mossy_stone_brick_wall"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:stone_brick_wall"
   }
 }

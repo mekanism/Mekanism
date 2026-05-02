@@ -2,19 +2,14 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "D": {
-      "tag": "c:dyes/black"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    }
+    "D": "#c:dyes/black",
+    "I": "#c:ingots/lead"
   },
   "pattern": [
     "I I",
     "IDI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:hazmat_boots"
   }
 }

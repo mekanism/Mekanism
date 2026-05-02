@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:red_concrete_powder"
+    "ingredient": "minecraft:red_concrete_powder"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:red_concrete"
   },
   "per_tick_usage": true

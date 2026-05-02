@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:dead_bubble_coral"
+    "ingredient": "minecraft:dead_bubble_coral"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:bubble_coral"
   },
   "per_tick_usage": true

@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:storage_blocks/raw_gold"
+    "ingredient": "#c:storage_blocks/raw_gold"
   },
   "output": {
     "count": 12,

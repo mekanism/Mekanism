@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:cut_copper_slab"
+    "ingredient": "minecraft:cut_copper_slab"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:exposed_cut_copper_slab"
   },
   "per_tick_usage": true

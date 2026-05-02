@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:storage_blocks/raw_tin"
+    "ingredient": "#c:storage_blocks/raw_tin"
   },
   "output": {
     "count": 18,

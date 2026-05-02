@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ingots/osmium"
-    },
-    "P": {
-      "item": "mekanism:ingot_osmium"
-    }
+    "#": "#c:ingots/osmium",
+    "P": "mekanism:ingot_osmium"
   },
   "pattern": [
     "###",
@@ -15,7 +11,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:block_osmium"
   }
 }

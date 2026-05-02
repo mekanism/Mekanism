@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:purpur_pillar"
+    "ingredient": "minecraft:purpur_pillar"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:purpur_block"
   }
 }

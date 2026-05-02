@@ -7,10 +7,9 @@
   "duration": 1000,
   "item_input": {
     "count": 1,
-    "item": "minecraft:diamond"
+    "ingredient": "minecraft:diamond"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:emerald"
   },
   "per_tick_usage": false

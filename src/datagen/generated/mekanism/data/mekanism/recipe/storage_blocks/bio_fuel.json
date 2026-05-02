@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:fuels/bio"
-    },
-    "P": {
-      "item": "mekanism:bio_fuel"
-    }
+    "#": "#c:fuels/bio",
+    "P": "mekanism:bio_fuel"
   },
   "pattern": [
     "###",
@@ -15,7 +11,6 @@
     "###"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:block_bio_fuel"
   }
 }

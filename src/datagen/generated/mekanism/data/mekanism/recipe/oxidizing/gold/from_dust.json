@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/gold"
+    "ingredient": "#c:dusts/gold"
   },
   "output": {
     "amount": 10,

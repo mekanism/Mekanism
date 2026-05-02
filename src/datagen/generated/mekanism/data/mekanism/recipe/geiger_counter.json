@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    }
+    "C": "#c:circuits/basic",
+    "I": "#c:ingots/lead"
   },
   "pattern": [
     " I ",
@@ -15,7 +11,6 @@
     " I "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:geiger_counter"
   }
 }

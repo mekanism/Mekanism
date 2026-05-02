@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:terracotta"
+    "ingredient": "minecraft:terracotta"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:clay"
   },
   "per_tick_usage": true

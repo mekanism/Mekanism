@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.5,
-  "ingredient": {
-    "item": "mekanism:dust_gold"
-  },
+  "ingredient": "mekanism:dust_gold",
   "result": {
-    "count": 1,
     "id": "minecraft:gold_ingot"
   }
 }

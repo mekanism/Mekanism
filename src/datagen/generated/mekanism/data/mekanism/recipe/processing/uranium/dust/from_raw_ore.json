@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 3,
-    "tag": "c:raw_materials/uranium"
+    "ingredient": "#c:raw_materials/uranium"
   },
   "output": {
     "count": 4,

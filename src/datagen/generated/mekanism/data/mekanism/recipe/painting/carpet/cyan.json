@@ -5,17 +5,14 @@
     "chemical": "mekanism:cyan"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/carpets"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:cyan_carpet"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/carpets",
+      "subtracted": "minecraft:cyan_carpet"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cyan_carpet"
   },
   "per_tick_usage": false

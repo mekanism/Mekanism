@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:dusts/diamond"
-    },
-    "I": {
-      "tag": "c:ingots/bronze"
-    },
-    "P": {
-      "item": "mekanism:jetpack"
-    },
-    "S": {
-      "tag": "c:storage_blocks/steel"
-    }
+    "#": "#c:dusts/diamond",
+    "I": "#c:ingots/bronze",
+    "P": "mekanism:jetpack",
+    "S": "#c:storage_blocks/steel"
   },
   "pattern": [
     "# #",
@@ -21,7 +13,6 @@
     " P "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:jetpack_armored"
   }
 }

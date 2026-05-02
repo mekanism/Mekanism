@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:dirt"
+    "ingredient": "minecraft:dirt"
   },
   "main_input": {
     "count": 3,
-    "item": "minecraft:hanging_roots"
+    "ingredient": "minecraft:hanging_roots"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:rooted_dirt"
   }
 }

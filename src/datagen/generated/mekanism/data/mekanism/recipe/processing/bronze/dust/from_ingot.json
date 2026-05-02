@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:ingots/bronze"
+    "ingredient": "#c:ingots/bronze"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_bronze"
   }
 }

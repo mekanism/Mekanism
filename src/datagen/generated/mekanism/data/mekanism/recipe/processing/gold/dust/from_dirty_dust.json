@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dirty_dusts/gold"
+    "ingredient": "#c:dirty_dusts/gold"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_gold"
   }
 }

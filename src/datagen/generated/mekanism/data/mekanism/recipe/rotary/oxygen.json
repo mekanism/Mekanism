@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:oxygen"
+    "ingredient": "#c:oxygen"
   },
   "fluid_output": {
     "amount": 1,

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:hdpe_sheet"
-    },
-    "I": {
-      "tag": "c:ingots/tin"
-    },
-    "N": {
-      "tag": "c:nuggets/bronze"
-    }
+    "#": "mekanism:hdpe_sheet",
+    "I": "#c:ingots/tin",
+    "N": "#c:nuggets/bronze"
   },
   "pattern": [
     "NIN",

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:weathered_copper"
+    "ingredient": "minecraft:weathered_copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:oxidized_copper"
   },
   "per_tick_usage": true

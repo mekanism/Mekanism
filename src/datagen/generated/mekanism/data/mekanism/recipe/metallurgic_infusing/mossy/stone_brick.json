@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:stone_bricks"
+    "ingredient": "minecraft:stone_bricks"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:mossy_stone_bricks"
   },
   "per_tick_usage": false

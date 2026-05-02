@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:chiseled_stone_bricks"
+    "ingredient": "minecraft:chiseled_stone_bricks"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:stone_bricks"
   }
 }

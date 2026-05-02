@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "G": {
-      "tag": "c:glass_blocks/cheap"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "G": "#c:glass_blocks/cheap",
+    "O": "#c:ingots/osmium",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "SGS",
@@ -18,7 +12,6 @@
     "SGS"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:steel_casing"
   }
 }

@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:waxed_weathered_chiseled_copper"
+    "ingredient": "minecraft:waxed_weathered_chiseled_copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:weathered_chiseled_copper"
   }
 }

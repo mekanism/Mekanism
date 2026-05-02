@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:exposed_copper_trapdoor"
+    "ingredient": "minecraft:exposed_copper_trapdoor"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:copper_trapdoor"
   }
 }

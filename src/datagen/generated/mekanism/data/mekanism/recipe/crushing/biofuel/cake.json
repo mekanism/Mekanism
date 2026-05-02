@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:cake"
+    "ingredient": "minecraft:cake"
   },
   "output": {
     "count": 6,

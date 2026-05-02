@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:sunflower"
+    "ingredient": "minecraft:sunflower"
   },
   "output": {
     "count": 4,

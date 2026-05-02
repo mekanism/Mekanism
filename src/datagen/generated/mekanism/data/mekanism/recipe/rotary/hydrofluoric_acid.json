@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:hydrofluoric_acid"
+    "ingredient": "#c:hydrofluoric_acid"
   },
   "fluid_output": {
     "amount": 1,

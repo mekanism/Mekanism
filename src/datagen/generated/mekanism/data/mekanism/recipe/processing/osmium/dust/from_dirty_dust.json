@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dirty_dusts/osmium"
+    "ingredient": "#c:dirty_dusts/osmium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_osmium"
   }
 }

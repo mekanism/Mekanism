@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/normal"
+    "ingredient": "#c:cobblestones/normal"
   },
   "main_input": {
     "count": 14,
-    "tag": "c:dusts/fluorite"
+    "ingredient": "#c:dusts/fluorite"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:fluorite_ore"
   }
 }

@@ -11,10 +11,10 @@
   "duration": 37,
   "fluid_input": {
     "amount": 25,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "item_input": {
     "count": 8,
-    "tag": "c:dusts/wood"
+    "ingredient": "#c:dusts/wood"
   }
 }

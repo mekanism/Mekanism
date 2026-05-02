@@ -2,21 +2,11 @@
   "type": "mekanism:mek_data",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "c:ingots/bronze"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    },
-    "I": {
-      "tag": "c:ingots/tin"
-    },
-    "S": {
-      "item": "minecraft:flint_and_steel"
-    },
-    "T": {
-      "item": "mekanism:basic_chemical_tank"
-    }
+    "#": "#c:ingots/bronze",
+    "C": "#c:circuits/advanced",
+    "I": "#c:ingots/tin",
+    "S": "minecraft:flint_and_steel",
+    "T": "mekanism:basic_chemical_tank"
   },
   "pattern": [
     "III",
@@ -24,7 +14,6 @@
     "#C#"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:flamethrower"
   }
 }

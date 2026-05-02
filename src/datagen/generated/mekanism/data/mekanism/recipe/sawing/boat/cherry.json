@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:cherry_boat"
+    "ingredient": "minecraft:cherry_boat"
   },
   "main_output": {
     "count": 5,

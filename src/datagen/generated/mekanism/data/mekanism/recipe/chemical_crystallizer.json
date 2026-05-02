@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:gems/fluorite"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "A": "#c:gems/fluorite",
+    "C": "#c:circuits/ultimate",
+    "I": "#c:ingots/refined_obsidian",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "IAI",
@@ -21,7 +13,6 @@
     "IAI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:chemical_crystallizer"
   }
 }

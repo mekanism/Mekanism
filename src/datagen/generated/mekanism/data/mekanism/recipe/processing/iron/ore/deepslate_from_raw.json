@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/deepslate"
+    "ingredient": "#c:cobblestones/deepslate"
   },
   "main_input": {
     "count": 8,
-    "tag": "c:raw_materials/iron"
+    "ingredient": "#c:raw_materials/iron"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:deepslate_iron_ore"
   }
 }

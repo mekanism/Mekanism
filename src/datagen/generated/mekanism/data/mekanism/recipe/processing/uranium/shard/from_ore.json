@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ores/uranium"
+    "ingredient": "#c:ores/uranium"
   },
   "output": {
     "count": 4,

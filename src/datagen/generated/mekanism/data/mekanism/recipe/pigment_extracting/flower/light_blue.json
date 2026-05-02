@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "minecraft:blue_orchid"
+    "ingredient": "minecraft:blue_orchid"
   },
   "output": {
     "amount": 768,

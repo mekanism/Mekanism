@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "tag": "c:dyes/green"
+    "ingredient": "#c:dyes/green"
   },
   "output": {
     "amount": 256,

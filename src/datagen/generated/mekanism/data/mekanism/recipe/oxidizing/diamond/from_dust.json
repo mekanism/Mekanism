@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/diamond"
+    "ingredient": "#c:dusts/diamond"
   },
   "output": {
     "amount": 10,

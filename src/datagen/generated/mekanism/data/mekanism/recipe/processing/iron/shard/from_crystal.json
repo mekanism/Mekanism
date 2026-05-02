@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:crystals/iron"
+    "ingredient": "#c:crystals/iron"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:shard_iron"
   },
   "per_tick_usage": true

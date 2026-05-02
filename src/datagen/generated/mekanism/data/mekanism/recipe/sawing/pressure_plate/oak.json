@@ -2,10 +2,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:oak_pressure_plate"
+    "ingredient": "minecraft:oak_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "minecraft:oak_planks"
   },
   "secondary_chance": 0.25,

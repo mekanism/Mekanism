@@ -5,17 +5,14 @@
     "chemical": "mekanism:light_gray"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/beds"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:light_gray_bed"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/beds",
+      "subtracted": "minecraft:light_gray_bed"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:light_gray_bed"
   },
   "per_tick_usage": false

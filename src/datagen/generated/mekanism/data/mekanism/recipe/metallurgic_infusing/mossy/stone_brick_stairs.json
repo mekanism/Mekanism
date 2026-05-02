@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:stone_brick_stairs"
+    "ingredient": "minecraft:stone_brick_stairs"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:mossy_stone_brick_stairs"
   },
   "per_tick_usage": false

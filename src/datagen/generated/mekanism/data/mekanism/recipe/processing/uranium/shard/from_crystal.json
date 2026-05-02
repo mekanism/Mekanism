@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:crystals/uranium"
+    "ingredient": "#c:crystals/uranium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:shard_uranium"
   },
   "per_tick_usage": true

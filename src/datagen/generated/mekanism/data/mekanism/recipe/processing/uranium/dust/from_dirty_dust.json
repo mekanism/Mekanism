@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dirty_dusts/uranium"
+    "ingredient": "#c:dirty_dusts/uranium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_uranium"
   }
 }

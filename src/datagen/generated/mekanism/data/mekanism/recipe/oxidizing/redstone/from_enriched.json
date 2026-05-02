@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/redstone"
+    "ingredient": "#mekanism:enriched/redstone"
   },
   "output": {
     "amount": 80,

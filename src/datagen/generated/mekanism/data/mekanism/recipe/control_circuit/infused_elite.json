@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:circuits/advanced"
+    "ingredient": "#c:circuits/advanced"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:elite_control_circuit"
   },
   "per_tick_usage": false

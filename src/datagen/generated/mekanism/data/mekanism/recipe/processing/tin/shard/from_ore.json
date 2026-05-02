@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ores/tin"
+    "ingredient": "#c:ores/tin"
   },
   "output": {
     "count": 4,

@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:crimson_roots"
+    "ingredient": "minecraft:crimson_roots"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

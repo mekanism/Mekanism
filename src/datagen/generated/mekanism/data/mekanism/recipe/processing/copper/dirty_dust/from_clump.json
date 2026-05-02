@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:clumps/copper"
+    "ingredient": "#c:clumps/copper"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dirty_dust_copper"
   }
 }

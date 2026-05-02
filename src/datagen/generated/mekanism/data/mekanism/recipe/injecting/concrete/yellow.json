@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:yellow_concrete_powder"
+    "ingredient": "minecraft:yellow_concrete_powder"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:yellow_concrete"
   },
   "per_tick_usage": true

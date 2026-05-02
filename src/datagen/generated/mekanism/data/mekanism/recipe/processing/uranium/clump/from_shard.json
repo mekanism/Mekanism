@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:shards/uranium"
+    "ingredient": "#c:shards/uranium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:clump_uranium"
   },
   "per_tick_usage": true

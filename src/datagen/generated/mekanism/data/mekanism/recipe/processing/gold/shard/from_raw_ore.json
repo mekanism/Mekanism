@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 3,
-    "tag": "c:raw_materials/gold"
+    "ingredient": "#c:raw_materials/gold"
   },
   "output": {
     "count": 8,

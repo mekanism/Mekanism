@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    },
-    "C": {
-      "tag": "c:circuits/elite"
-    },
-    "I": {
-      "tag": "c:ingots/gold"
-    },
-    "P": {
-      "item": "mekanism:advanced_purifying_factory"
-    }
+    "A": "#mekanism:alloys/reinforced",
+    "C": "#c:circuits/elite",
+    "I": "#c:ingots/gold",
+    "P": "mekanism:advanced_purifying_factory"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:elite_purifying_factory"
   }
 }

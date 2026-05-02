@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:warped_wart_block"
+    "ingredient": "minecraft:warped_wart_block"
   },
   "output": {
     "count": 4,

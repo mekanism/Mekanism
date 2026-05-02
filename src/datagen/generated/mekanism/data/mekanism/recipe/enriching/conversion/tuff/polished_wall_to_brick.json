@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:polished_tuff_wall"
+    "ingredient": "minecraft:polished_tuff_wall"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:tuff_brick_wall"
   }
 }

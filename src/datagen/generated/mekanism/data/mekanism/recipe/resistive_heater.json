@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "I": {
-      "tag": "c:ingots/tin"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "E": "mekanism:energy_tablet",
+    "I": "#c:ingots/tin",
+    "R": "#c:dusts/redstone",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "IRI",
@@ -21,7 +13,6 @@
     "IEI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:resistive_heater"
   }
 }

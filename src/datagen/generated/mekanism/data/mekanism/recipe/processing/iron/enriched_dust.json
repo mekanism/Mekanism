@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:dusts/iron"
+    "ingredient": "#c:dusts/iron"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:enriched_iron"
   },
   "per_tick_usage": false

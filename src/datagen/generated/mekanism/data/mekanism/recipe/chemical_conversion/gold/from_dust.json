@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "c:dusts/gold"
+    "ingredient": "#c:dusts/gold"
   },
   "output": {
     "amount": 10,

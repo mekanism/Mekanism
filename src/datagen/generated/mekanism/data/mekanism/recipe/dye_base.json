@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "c:dusts/wood"
-    },
-    {
-      "tag": "c:dusts/wood"
-    },
-    {
-      "item": "minecraft:clay_ball"
-    }
+    "#c:dusts/wood",
+    "#c:dusts/wood",
+    "minecraft:clay_ball"
   ],
   "result": {
     "count": 3,

@@ -7,10 +7,9 @@
   "duration": 1000,
   "item_input": {
     "count": 1,
-    "item": "minecraft:diamond_sword"
+    "ingredient": "minecraft:diamond_sword"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:trident"
   },
   "per_tick_usage": false

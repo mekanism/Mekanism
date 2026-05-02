@@ -5,17 +5,14 @@
     "chemical": "mekanism:cyan"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/banners"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:cyan_banner"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/banners",
+      "subtracted": "minecraft:cyan_banner"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cyan_banner"
   },
   "per_tick_usage": false

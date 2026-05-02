@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:dead_brain_coral"
+    "ingredient": "minecraft:dead_brain_coral"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:brain_coral"
   },
   "per_tick_usage": true

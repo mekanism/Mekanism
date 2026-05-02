@@ -2,7 +2,7 @@
   "type": "mekanism:separating",
   "input": {
     "amount": 10,
-    "tag": "c:brine"
+    "ingredient": "#c:brine"
   },
   "left_chemical_output": {
     "amount": 1,

@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:cobblestones/deepslate"
+    "ingredient": "#c:cobblestones/deepslate"
   },
   "main_input": {
     "count": 4,
-    "tag": "c:dusts/obsidian"
+    "ingredient": "#c:dusts/obsidian"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:obsidian"
   }
 }

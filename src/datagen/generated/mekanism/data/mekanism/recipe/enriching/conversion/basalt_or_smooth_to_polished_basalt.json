@@ -1,19 +1,13 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:basalt"
-      },
-      {
-        "item": "minecraft:smooth_basalt"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:basalt",
+      "minecraft:smooth_basalt"
+    ]
   },
   "output": {
-    "count": 1,
     "id": "minecraft:polished_basalt"
   }
 }

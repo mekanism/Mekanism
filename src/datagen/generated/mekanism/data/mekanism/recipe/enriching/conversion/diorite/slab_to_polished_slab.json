@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:diorite_slab"
+    "ingredient": "minecraft:diorite_slab"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:polished_diorite_slab"
   }
 }

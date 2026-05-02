@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:polished_deepslate"
+    "ingredient": "minecraft:polished_deepslate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:chiseled_deepslate"
   }
 }

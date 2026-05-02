@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "mekanism:alloys/reinforced"
+    "ingredient": "#mekanism:alloys/reinforced"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:alloy_atomic"
   },
   "per_tick_usage": false

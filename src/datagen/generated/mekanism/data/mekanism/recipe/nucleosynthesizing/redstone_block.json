@@ -7,10 +7,9 @@
   "duration": 500,
   "item_input": {
     "count": 1,
-    "item": "minecraft:red_wool"
+    "ingredient": "minecraft:red_wool"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:redstone_block"
   },
   "per_tick_usage": false

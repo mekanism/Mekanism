@@ -5,7 +5,6 @@
     "chemical": "mekanism:lithium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_lithium"
   }
 }

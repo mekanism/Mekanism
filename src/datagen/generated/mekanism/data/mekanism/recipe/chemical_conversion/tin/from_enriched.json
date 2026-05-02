@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/tin"
+    "ingredient": "#mekanism:enriched/tin"
   },
   "output": {
     "amount": 80,

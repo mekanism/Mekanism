@@ -2,11 +2,11 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:dyes/pink"
+    "ingredient": "#c:dyes/pink"
   },
   "main_input": {
     "count": 1,
-    "tag": "c:dyes/purple"
+    "ingredient": "#c:dyes/purple"
   },
   "output": {
     "count": 4,

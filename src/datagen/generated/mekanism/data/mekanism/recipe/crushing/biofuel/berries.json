@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:foods/berry"
+    "ingredient": "#c:foods/berry"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

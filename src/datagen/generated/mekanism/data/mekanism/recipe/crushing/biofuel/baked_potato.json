@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:baked_potato"
+    "ingredient": "minecraft:baked_potato"
   },
   "output": {
     "count": 2,

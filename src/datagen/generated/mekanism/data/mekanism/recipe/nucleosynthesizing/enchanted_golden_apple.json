@@ -7,10 +7,9 @@
   "duration": 750,
   "item_input": {
     "count": 1,
-    "item": "minecraft:golden_apple"
+    "ingredient": "minecraft:golden_apple"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:enchanted_golden_apple"
   },
   "per_tick_usage": false

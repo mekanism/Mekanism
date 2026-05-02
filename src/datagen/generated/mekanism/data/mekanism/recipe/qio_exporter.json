@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:piston"
-    },
-    "A": {
-      "tag": "c:ender_pearls"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+    "#": "minecraft:piston",
+    "A": "#c:ender_pearls",
+    "C": "#c:circuits/ultimate",
+    "I": "#c:ingots/lead",
+    "T": "mekanism:teleportation_core"
   },
   "pattern": [
     "ITI",
@@ -24,7 +14,6 @@
     " # "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:qio_exporter"
   }
 }

@@ -1,19 +1,12 @@
 {
   "type": "mekanism:enriching",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:oxeye_daisy"
-      },
-      {
-        "item": "minecraft:azure_bluet"
-      },
-      {
-        "item": "minecraft:white_tulip"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:oxeye_daisy",
+      "minecraft:azure_bluet",
+      "minecraft:white_tulip"
+    ]
   },
   "output": {
     "count": 2,

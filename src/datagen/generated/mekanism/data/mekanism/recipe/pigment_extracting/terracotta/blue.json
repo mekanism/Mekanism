@@ -1,16 +1,14 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "type": "neoforge:intersection",
-    "children": [
-      {
-        "tag": "mekanism:colorable/terracotta"
-      },
-      {
-        "tag": "c:dyed/blue"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:intersection",
+      "children": [
+        "#mekanism:colorable/terracotta",
+        "#c:dyed/blue"
+      ]
+    }
   },
   "output": {
     "amount": 24,

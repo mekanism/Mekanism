@@ -3,22 +3,12 @@
   "category": "misc",
   "key": {
     "#": [
-      {
-        "item": "mekanism:jetpack"
-      },
-      {
-        "item": "mekanism:jetpack_armored"
-      }
+      "mekanism:jetpack",
+      "mekanism:jetpack_armored"
     ],
-    "A": {
-      "tag": "c:alloys/elite"
-    },
-    "H": {
-      "tag": "c:pellets/polonium"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    }
+    "A": "#c:alloys/elite",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base"
   },
   "pattern": [
     "A#A",
@@ -26,7 +16,6 @@
     "HHH"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:module_jetpack_unit"
   }
 }

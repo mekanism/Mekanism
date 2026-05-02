@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "fluid_output": {
     "amount": 1,

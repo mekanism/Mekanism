@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:circuits/basic"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "#c:circuits/basic",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "S#S"

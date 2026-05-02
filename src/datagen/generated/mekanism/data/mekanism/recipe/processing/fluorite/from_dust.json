@@ -2,10 +2,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "tag": "c:dusts/fluorite"
+    "ingredient": "#c:dusts/fluorite"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:fluorite_gem"
   }
 }

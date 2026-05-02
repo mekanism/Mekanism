@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:sulfur_dioxide"
+    "ingredient": "#c:sulfur_dioxide"
   },
   "fluid_output": {
     "amount": 1,

@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:ender_pearls"
-    },
-    "C": {
-      "item": "mekanism:ultimate_control_circuit"
-    },
-    "I": {
-      "tag": "c:ingots/lead"
-    }
+    "#": "#c:ender_pearls",
+    "C": "mekanism:ultimate_control_circuit",
+    "I": "#c:ingots/lead"
   },
   "pattern": [
     "ICI",
@@ -18,7 +12,6 @@
     "ICI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:qio_drive_base"
   }
 }

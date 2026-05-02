@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "item": "minecraft:flint"
+    "ingredient": "minecraft:flint"
   },
   "output": {
     "amount": 10,

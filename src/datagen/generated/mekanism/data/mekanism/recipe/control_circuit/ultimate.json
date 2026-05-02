@@ -2,18 +2,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "C": {
-      "tag": "c:circuits/elite"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "C": "#c:circuits/elite"
   },
   "pattern": [
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:ultimate_control_circuit"
   }
 }

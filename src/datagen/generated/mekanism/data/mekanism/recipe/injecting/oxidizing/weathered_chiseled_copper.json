@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:exposed_chiseled_copper"
+    "ingredient": "minecraft:exposed_chiseled_copper"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:weathered_chiseled_copper"
   },
   "per_tick_usage": true

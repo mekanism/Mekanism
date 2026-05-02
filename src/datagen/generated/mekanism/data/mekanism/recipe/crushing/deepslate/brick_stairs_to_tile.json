@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:deepslate_brick_stairs"
+    "ingredient": "minecraft:deepslate_brick_stairs"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:deepslate_tile_stairs"
   }
 }

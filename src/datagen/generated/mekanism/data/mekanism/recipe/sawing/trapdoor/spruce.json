@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:spruce_trapdoor"
+    "ingredient": "minecraft:spruce_trapdoor"
   },
   "main_output": {
     "count": 3,

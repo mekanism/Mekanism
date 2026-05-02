@@ -2,21 +2,11 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/atomic"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "I": {
-      "tag": "c:ingots/refined_obsidian"
-    },
-    "P": {
-      "tag": "mekanism:personal_storage"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "A": "#mekanism:alloys/atomic",
+    "E": "mekanism:energy_tablet",
+    "I": "#c:ingots/refined_obsidian",
+    "P": "#mekanism:personal_storage",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     " S ",
@@ -24,7 +14,6 @@
     "IPI"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:robit"
   }
 }

@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:dripstone_block"
+    "ingredient": "minecraft:dripstone_block"
   },
   "output": {
     "count": 4,

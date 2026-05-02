@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:bamboo_door"
+    "ingredient": "minecraft:bamboo_door"
   },
   "main_output": {
     "count": 2,

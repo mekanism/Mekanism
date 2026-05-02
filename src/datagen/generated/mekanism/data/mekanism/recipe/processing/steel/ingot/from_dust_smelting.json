@@ -3,11 +3,8 @@
   "category": "misc",
   "cookingtime": 200,
   "experience": 0.4,
-  "ingredient": {
-    "item": "mekanism:dust_steel"
-  },
+  "ingredient": "mekanism:dust_steel",
   "result": {
-    "count": 1,
     "id": "mekanism:ingot_steel"
   }
 }

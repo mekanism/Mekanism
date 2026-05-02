@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:crafting_table"
+    "ingredient": "minecraft:crafting_table"
   },
   "main_output": {
     "count": 4,

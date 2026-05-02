@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "c:storage_blocks/coal"
+    "ingredient": "#c:storage_blocks/coal"
   },
   "output": {
     "amount": 90,

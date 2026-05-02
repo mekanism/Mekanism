@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 4,
-    "item": "minecraft:netherite_scrap"
+    "ingredient": "minecraft:netherite_scrap"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dust_netherite"
   },
   "per_tick_usage": false

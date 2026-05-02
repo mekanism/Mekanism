@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:big_dripleaf"
+    "ingredient": "minecraft:big_dripleaf"
   },
   "output": {
     "count": 2,

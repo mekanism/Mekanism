@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:shards/osmium"
+    "ingredient": "#c:shards/osmium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:clump_osmium"
   },
   "per_tick_usage": true

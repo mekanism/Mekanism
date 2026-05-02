@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:hdpe_elytra"
-    },
-    "A": {
-      "tag": "c:alloys/elite"
-    },
-    "H": {
-      "tag": "c:pellets/polonium"
-    },
-    "N": {
-      "tag": "c:pellets/antimatter"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    }
+    "#": "mekanism:hdpe_elytra",
+    "A": "#c:alloys/elite",
+    "H": "#c:pellets/polonium",
+    "N": "#c:pellets/antimatter",
+    "P": "mekanism:module_base"
   },
   "pattern": [
     "A#A",
@@ -24,7 +14,6 @@
     "HNH"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:module_elytra_unit"
   }
 }

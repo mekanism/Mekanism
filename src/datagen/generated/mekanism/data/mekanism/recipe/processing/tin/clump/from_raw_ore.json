@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:raw_materials/tin"
+    "ingredient": "#c:raw_materials/tin"
   },
   "output": {
     "count": 2,

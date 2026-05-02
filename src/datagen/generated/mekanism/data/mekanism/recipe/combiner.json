@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    },
-    "C": {
-      "tag": "c:circuits/elite"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    },
-    "_": {
-      "tag": "mekanism:stone_crafting_materials"
-    }
+    "A": "#mekanism:alloys/reinforced",
+    "C": "#c:circuits/elite",
+    "X": "mekanism:steel_casing",
+    "_": "#mekanism:stone_crafting_materials"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:combiner"
   }
 }

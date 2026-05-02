@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 3,
-    "tag": "c:dusts/copper"
+    "ingredient": "#c:dusts/copper"
   },
   "output": {
     "count": 4,

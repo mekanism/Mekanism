@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "item": "mekanism:yellow_cake_uranium"
+    "ingredient": "mekanism:yellow_cake_uranium"
   },
   "output": {
     "amount": 250,

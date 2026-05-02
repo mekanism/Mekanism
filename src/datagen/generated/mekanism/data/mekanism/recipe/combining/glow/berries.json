@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "tag": "c:dusts/glowstone"
+    "ingredient": "#c:dusts/glowstone"
   },
   "main_input": {
     "count": 1,
-    "item": "minecraft:sweet_berries"
+    "ingredient": "minecraft:sweet_berries"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:glow_berries"
   }
 }

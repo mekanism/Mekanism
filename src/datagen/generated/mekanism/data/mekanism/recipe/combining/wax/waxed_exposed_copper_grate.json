@@ -2,14 +2,13 @@
   "type": "mekanism:combining",
   "extra_input": {
     "count": 1,
-    "item": "minecraft:honeycomb"
+    "ingredient": "minecraft:honeycomb"
   },
   "main_input": {
     "count": 1,
-    "item": "minecraft:exposed_copper_grate"
+    "ingredient": "minecraft:exposed_copper_grate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:waxed_exposed_copper_grate"
   }
 }

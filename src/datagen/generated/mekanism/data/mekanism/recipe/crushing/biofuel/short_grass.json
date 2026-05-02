@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:short_grass"
+    "ingredient": "minecraft:short_grass"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

@@ -1,16 +1,11 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:ink_sac"
-      },
-      {
-        "item": "minecraft:wither_rose"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:ink_sac",
+      "minecraft:wither_rose"
+    ]
   },
   "output": {
     "amount": 768,

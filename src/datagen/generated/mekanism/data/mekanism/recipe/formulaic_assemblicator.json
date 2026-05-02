@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:chests/wooden"
-    },
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "P": {
-      "item": "minecraft:crafter"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "#": "#c:chests/wooden",
+    "C": "#c:circuits/basic",
+    "P": "minecraft:crafter",
+    "S": "#c:ingots/steel",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "SPS",
@@ -24,7 +14,6 @@
     "S#S"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:formulaic_assemblicator"
   }
 }

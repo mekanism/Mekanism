@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:sea_pickle"
+    "ingredient": "minecraft:sea_pickle"
   },
   "output": {
     "count": 2,

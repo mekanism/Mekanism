@@ -3,25 +3,13 @@
   "category": "misc",
   "key": {
     "#": [
-      {
-        "item": "mekanism:free_runners"
-      },
-      {
-        "item": "mekanism:free_runners_armored"
-      }
+      "mekanism:free_runners",
+      "mekanism:free_runners_armored"
     ],
-    "A": {
-      "tag": "c:alloys/elite"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "H": {
-      "tag": "c:pellets/polonium"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    }
+    "A": "#c:alloys/elite",
+    "E": "mekanism:energy_tablet",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base"
   },
   "pattern": [
     "A#A",
@@ -29,7 +17,6 @@
     "HHH"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:module_hydraulic_propulsion_unit"
   }
 }

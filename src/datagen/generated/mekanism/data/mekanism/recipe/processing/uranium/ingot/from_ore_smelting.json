@@ -4,15 +4,10 @@
   "cookingtime": 200,
   "experience": 0.6,
   "ingredient": [
-    {
-      "item": "mekanism:uranium_ore"
-    },
-    {
-      "item": "mekanism:deepslate_uranium_ore"
-    }
+    "mekanism:uranium_ore",
+    "mekanism:deepslate_uranium_ore"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:ingot_uranium"
   }
 }

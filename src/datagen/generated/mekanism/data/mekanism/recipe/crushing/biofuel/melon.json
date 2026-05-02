@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:crops/melon"
+    "ingredient": "#c:crops/melon"
   },
   "output": {
     "count": 6,

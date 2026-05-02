@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:storage_blocks/refined_glowstone"
-    },
-    "A": {
-      "tag": "c:alloys/elite"
-    },
-    "D": {
-      "tag": "c:storage_blocks/diamond"
-    },
-    "H": {
-      "tag": "c:pellets/polonium"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    }
+    "#": "#c:storage_blocks/refined_glowstone",
+    "A": "#c:alloys/elite",
+    "D": "#c:storage_blocks/diamond",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base"
   },
   "pattern": [
     "A#A",
@@ -24,7 +14,6 @@
     "HHH"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:module_fortune_unit"
   }
 }

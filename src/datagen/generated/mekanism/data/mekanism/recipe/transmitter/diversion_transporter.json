@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:iron_bars"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "minecraft:iron_bars",
+    "R": "#c:dusts/redstone",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "RRR",

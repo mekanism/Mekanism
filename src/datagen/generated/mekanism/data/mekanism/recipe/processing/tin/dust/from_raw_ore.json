@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 3,
-    "tag": "c:raw_materials/tin"
+    "ingredient": "#c:raw_materials/tin"
   },
   "output": {
     "count": 4,

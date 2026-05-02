@@ -1,19 +1,27 @@
 {
   "type": "mekanism:chemical_conversion",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "tag": "c:mushrooms"
-      },
-      {
-        "item": "minecraft:warped_fungus"
-      },
-      {
-        "item": "minecraft:crimson_fungus"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": {
+      "type": "neoforge:or",
+      "values": [
+        {
+          "type": "neoforge:or",
+          "values": [
+            "#c:mushrooms"
+          ]
+        },
+        {
+          "type": "neoforge:or",
+          "values": [
+            [
+              "minecraft:warped_fungus",
+              "minecraft:crimson_fungus"
+            ]
+          ]
+        }
+      ]
+    }
   },
   "output": {
     "amount": 10,

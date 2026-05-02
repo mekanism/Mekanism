@@ -7,10 +7,9 @@
   "duration": 200,
   "item_input": {
     "count": 1,
-    "tag": "c:ingots/tin"
+    "ingredient": "#c:ingots/tin"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:iron_ingot"
   },
   "per_tick_usage": false

@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "E": "mekanism:energy_tablet",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     " S ",

@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:kelp"
+    "ingredient": "minecraft:kelp"
   },
   "output": {
     "count": 2,

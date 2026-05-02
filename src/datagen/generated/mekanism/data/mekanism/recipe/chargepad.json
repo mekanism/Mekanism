@@ -2,22 +2,15 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:polished_blackstone_pressure_plate"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "minecraft:polished_blackstone_pressure_plate",
+    "E": "mekanism:energy_tablet",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "###",
     "SES"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:chargepad"
   }
 }

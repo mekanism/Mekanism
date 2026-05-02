@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "c:dusts/salt"
+    "ingredient": "#c:dusts/salt"
   },
   "output": {
     "amount": 15,

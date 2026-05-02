@@ -2,12 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "item": "mekanism:dust_sulfur"
-    }
+    "mekanism:dust_sulfur"
   ],
   "result": {
-    "count": 1,
     "id": "minecraft:yellow_dye"
   }
 }

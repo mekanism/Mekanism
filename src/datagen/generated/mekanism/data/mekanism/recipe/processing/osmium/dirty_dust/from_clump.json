@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:clumps/osmium"
+    "ingredient": "#c:clumps/osmium"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:dirty_dust_osmium"
   }
 }

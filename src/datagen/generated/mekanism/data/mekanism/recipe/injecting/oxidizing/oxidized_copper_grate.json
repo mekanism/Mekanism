@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:weathered_copper_grate"
+    "ingredient": "minecraft:weathered_copper_grate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:oxidized_copper_grate"
   },
   "per_tick_usage": true

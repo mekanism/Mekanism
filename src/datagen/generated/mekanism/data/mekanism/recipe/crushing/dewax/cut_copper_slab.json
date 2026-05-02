@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:waxed_cut_copper_slab"
+    "ingredient": "minecraft:waxed_cut_copper_slab"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cut_copper_slab"
   }
 }

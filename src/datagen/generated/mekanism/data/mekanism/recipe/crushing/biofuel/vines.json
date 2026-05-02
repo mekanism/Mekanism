@@ -1,22 +1,14 @@
 {
   "type": "mekanism:crushing",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:vine"
-      },
-      {
-        "item": "minecraft:twisting_vines"
-      },
-      {
-        "item": "minecraft:weeping_vines"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:vine",
+      "minecraft:twisting_vines",
+      "minecraft:weeping_vines"
+    ]
   },
   "output": {
-    "count": 1,
     "id": "mekanism:bio_fuel"
   }
 }

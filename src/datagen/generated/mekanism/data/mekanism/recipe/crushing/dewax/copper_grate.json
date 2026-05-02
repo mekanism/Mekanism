@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:waxed_copper_grate"
+    "ingredient": "minecraft:waxed_copper_grate"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:copper_grate"
   }
 }

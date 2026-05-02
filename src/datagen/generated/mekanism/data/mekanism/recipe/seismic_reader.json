@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "c:gems/lapis"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "S": {
-      "tag": "c:ingots/steel"
-    }
+    "#": "#c:gems/lapis",
+    "E": "mekanism:energy_tablet",
+    "S": "#c:ingots/steel"
   },
   "pattern": [
     "S#S",
@@ -18,7 +12,6 @@
     "SSS"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:seismic_reader"
   }
 }

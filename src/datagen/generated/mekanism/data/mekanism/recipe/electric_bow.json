@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "equipment",
   "key": {
-    "#": {
-      "tag": "c:strings"
-    },
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    }
+    "#": "#c:strings",
+    "A": "#mekanism:alloys/infused",
+    "E": "mekanism:energy_tablet"
   },
   "pattern": [
     "#A ",
@@ -18,7 +12,6 @@
     "#A "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:electric_bow"
   }
 }

@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "P": {
-      "item": "mekanism:basic_fluid_tank"
-    }
+    "A": "#mekanism:alloys/infused",
+    "I": "#c:ingots/iron",
+    "P": "mekanism:basic_fluid_tank"
   },
   "pattern": [
     "AIA",
@@ -18,7 +12,6 @@
     "AIA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:advanced_fluid_tank"
   }
 }

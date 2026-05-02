@@ -10,7 +10,7 @@
   },
   "fluid_input": {
     "amount": 1,
-    "tag": "c:steam"
+    "ingredient": "#c:steam"
   },
   "fluid_output": {
     "amount": 1,

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:shards/copper"
+    "ingredient": "#c:shards/copper"
   },
   "output": {
-    "count": 1,
     "id": "mekanism:clump_copper"
   },
   "per_tick_usage": true

@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:bamboo_block"
+    "ingredient": "minecraft:bamboo_block"
   },
   "main_output": {
     "count": 9,

@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 1,
-    "tag": "c:ores/osmium"
+    "ingredient": "#c:ores/osmium"
   },
   "output": {
     "count": 3,

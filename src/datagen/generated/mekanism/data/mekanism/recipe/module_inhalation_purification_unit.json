@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "mekanism:hazmat_mask"
-    },
-    "A": {
-      "tag": "c:alloys/elite"
-    },
-    "H": {
-      "tag": "c:pellets/polonium"
-    },
-    "P": {
-      "item": "mekanism:module_base"
-    },
-    "o": {
-      "item": "mekanism:scuba_mask"
-    }
+    "#": "mekanism:hazmat_mask",
+    "A": "#c:alloys/elite",
+    "H": "#c:pellets/polonium",
+    "P": "mekanism:module_base",
+    "o": "mekanism:scuba_mask"
   },
   "pattern": [
     "A#A",
@@ -24,7 +14,6 @@
     "HoH"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:module_inhalation_purification_unit"
   }
 }

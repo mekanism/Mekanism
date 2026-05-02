@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "tag": "c:dyes/cyan"
+    "ingredient": "#c:dyes/cyan"
   },
   "output": {
     "amount": 256,

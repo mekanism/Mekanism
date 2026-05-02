@@ -2,21 +2,11 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "#": {
-      "tag": "mekanism:personal_storage"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "G": {
-      "tag": "c:glass_panes"
-    },
-    "I": {
-      "tag": "c:ender_pearls"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+    "#": "#mekanism:personal_storage",
+    "C": "#c:circuits/ultimate",
+    "G": "#c:glass_panes",
+    "I": "#c:ender_pearls",
+    "T": "mekanism:teleportation_core"
   },
   "pattern": [
     "TGT",
@@ -24,7 +14,6 @@
     "TIT"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:qio_drive_array"
   }
 }

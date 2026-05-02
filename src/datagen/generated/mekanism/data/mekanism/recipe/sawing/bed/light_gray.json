@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:light_gray_bed"
+    "ingredient": "minecraft:light_gray_bed"
   },
   "main_output": {
     "count": 3,

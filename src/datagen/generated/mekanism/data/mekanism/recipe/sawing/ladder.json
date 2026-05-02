@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 3,
-    "item": "minecraft:ladder"
+    "ingredient": "minecraft:ladder"
   },
   "main_output": {
     "count": 7,

@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:black_concrete_powder"
+    "ingredient": "minecraft:black_concrete_powder"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:black_concrete"
   },
   "per_tick_usage": true

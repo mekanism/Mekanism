@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    },
-    "P": {
-      "item": "mekanism:advanced_thermodynamic_conductor"
-    }
+    "A": "#mekanism:alloys/reinforced",
+    "P": "mekanism:advanced_thermodynamic_conductor"
   },
   "pattern": [
     "PPP",

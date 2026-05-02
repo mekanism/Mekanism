@@ -5,17 +5,14 @@
     "chemical": "mekanism:lime"
   },
   "item_input": {
-    "type": "neoforge:difference",
-    "base": {
-      "tag": "mekanism:colorable/carpets"
-    },
     "count": 1,
-    "subtracted": {
-      "item": "minecraft:lime_carpet"
+    "ingredient": {
+      "neoforge:ingredient_type": "neoforge:difference",
+      "base": "#mekanism:colorable/carpets",
+      "subtracted": "minecraft:lime_carpet"
     }
   },
   "output": {
-    "count": 1,
     "id": "minecraft:lime_carpet"
   },
   "per_tick_usage": false

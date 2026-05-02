@@ -2,21 +2,11 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "c:pellets/polonium"
-    },
-    "C": {
-      "tag": "c:circuits/ultimate"
-    },
-    "P": {
-      "item": "mekanism:hdpe_sheet"
-    },
-    "W": {
-      "tag": "c:chests/wooden"
-    },
-    "X": {
-      "item": "mekanism:steel_casing"
-    }
+    "A": "#c:pellets/polonium",
+    "C": "#c:circuits/ultimate",
+    "P": "mekanism:hdpe_sheet",
+    "W": "#c:chests/wooden",
+    "X": "mekanism:steel_casing"
   },
   "pattern": [
     "PWP",
@@ -24,7 +14,6 @@
     "PAP"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:modification_station"
   }
 }

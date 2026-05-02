@@ -6,10 +6,9 @@
   },
   "item_input": {
     "count": 1,
-    "item": "minecraft:clay_ball"
+    "ingredient": "minecraft:clay_ball"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:slime_ball"
   },
   "per_tick_usage": false

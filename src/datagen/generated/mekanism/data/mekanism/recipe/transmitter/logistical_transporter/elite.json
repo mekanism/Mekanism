@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/reinforced"
-    },
-    "P": {
-      "item": "mekanism:advanced_logistical_transporter"
-    }
+    "A": "#mekanism:alloys/reinforced",
+    "P": "mekanism:advanced_logistical_transporter"
   },
   "pattern": [
     "PPP",

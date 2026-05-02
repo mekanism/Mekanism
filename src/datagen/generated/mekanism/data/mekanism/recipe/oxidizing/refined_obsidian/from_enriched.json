@@ -2,7 +2,7 @@
   "type": "mekanism:oxidizing",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/obsidian"
+    "ingredient": "#mekanism:enriched/obsidian"
   },
   "output": {
     "amount": 80,

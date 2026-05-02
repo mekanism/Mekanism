@@ -2,7 +2,7 @@
   "type": "mekanism:separating",
   "input": {
     "amount": 2,
-    "tag": "minecraft:water"
+    "ingredient": "#minecraft:water"
   },
   "left_chemical_output": {
     "amount": 2,

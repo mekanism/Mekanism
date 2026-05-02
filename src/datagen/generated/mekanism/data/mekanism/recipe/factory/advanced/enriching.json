@@ -2,18 +2,10 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "A": {
-      "tag": "mekanism:alloys/infused"
-    },
-    "C": {
-      "tag": "c:circuits/advanced"
-    },
-    "I": {
-      "tag": "c:ingots/osmium"
-    },
-    "P": {
-      "item": "mekanism:basic_enriching_factory"
-    }
+    "A": "#mekanism:alloys/infused",
+    "C": "#c:circuits/advanced",
+    "I": "#c:ingots/osmium",
+    "P": "mekanism:basic_enriching_factory"
   },
   "pattern": [
     "ACA",
@@ -21,7 +13,6 @@
     "ACA"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:advanced_enriching_factory"
   }
 }

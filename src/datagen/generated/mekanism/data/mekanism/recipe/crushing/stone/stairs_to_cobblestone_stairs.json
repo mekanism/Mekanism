@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:stone_stairs"
+    "ingredient": "minecraft:stone_stairs"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cobblestone_stairs"
   }
 }

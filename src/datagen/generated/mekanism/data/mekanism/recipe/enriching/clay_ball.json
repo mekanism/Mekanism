@@ -2,7 +2,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "minecraft:clay"
+    "ingredient": "minecraft:clay"
   },
   "output": {
     "count": 4,

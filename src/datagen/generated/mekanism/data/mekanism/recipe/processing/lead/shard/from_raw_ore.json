@@ -6,7 +6,7 @@
   },
   "item_input": {
     "count": 3,
-    "tag": "c:raw_materials/lead"
+    "ingredient": "#c:raw_materials/lead"
   },
   "output": {
     "count": 8,

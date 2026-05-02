@@ -2,7 +2,7 @@
   "type": "mekanism:chemical_conversion",
   "input": {
     "count": 1,
-    "tag": "mekanism:enriched/gold"
+    "ingredient": "#mekanism:enriched/gold"
   },
   "output": {
     "amount": 80,

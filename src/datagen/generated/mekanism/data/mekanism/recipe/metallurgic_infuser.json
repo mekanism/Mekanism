@@ -2,18 +2,10 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "#": {
-      "item": "minecraft:furnace"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "O": {
-      "tag": "c:ingots/osmium"
-    },
-    "R": {
-      "tag": "c:dusts/redstone"
-    }
+    "#": "minecraft:furnace",
+    "I": "#c:ingots/iron",
+    "O": "#c:ingots/osmium",
+    "R": "#c:dusts/redstone"
   },
   "pattern": [
     "I#I",
@@ -21,7 +13,6 @@
     "I#I"
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:metallurgic_infuser"
   }
 }

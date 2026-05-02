@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:birch_door"
+    "ingredient": "minecraft:birch_door"
   },
   "main_output": {
     "count": 2,

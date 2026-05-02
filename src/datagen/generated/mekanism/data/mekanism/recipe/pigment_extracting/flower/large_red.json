@@ -2,7 +2,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "minecraft:rose_bush"
+    "ingredient": "minecraft:rose_bush"
   },
   "output": {
     "amount": 1536,

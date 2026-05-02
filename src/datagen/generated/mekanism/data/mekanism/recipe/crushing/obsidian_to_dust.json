@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:obsidians/normal"
+    "ingredient": "#c:obsidians/normal"
   },
   "output": {
     "count": 4,

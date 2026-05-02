@@ -2,10 +2,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:deepslate_tiles"
+    "ingredient": "minecraft:deepslate_tiles"
   },
   "output": {
-    "count": 1,
     "id": "minecraft:cracked_deepslate_tiles"
   }
 }

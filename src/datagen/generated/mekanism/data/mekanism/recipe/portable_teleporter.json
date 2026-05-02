@@ -2,15 +2,9 @@
   "type": "mekanism:mek_data",
   "category": "misc",
   "key": {
-    "C": {
-      "tag": "c:circuits/basic"
-    },
-    "E": {
-      "item": "mekanism:energy_tablet"
-    },
-    "T": {
-      "item": "mekanism:teleportation_core"
-    }
+    "C": "#c:circuits/basic",
+    "E": "mekanism:energy_tablet",
+    "T": "mekanism:teleportation_core"
   },
   "pattern": [
     " E ",
@@ -18,7 +12,6 @@
     " E "
   ],
   "result": {
-    "count": 1,
     "id": "mekanism:portable_teleporter"
   }
 }

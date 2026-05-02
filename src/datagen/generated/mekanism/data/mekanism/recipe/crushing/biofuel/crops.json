@@ -2,7 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "minecraft:poisonous_potato"
+    "ingredient": "minecraft:poisonous_potato"
   },
   "output": {
     "count": 2,

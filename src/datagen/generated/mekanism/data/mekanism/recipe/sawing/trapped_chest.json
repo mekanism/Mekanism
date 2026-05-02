@@ -2,7 +2,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "minecraft:trapped_chest"
+    "ingredient": "minecraft:trapped_chest"
   },
   "main_output": {
     "count": 8,
@@ -10,7 +10,6 @@
   },
   "secondary_chance": 0.75,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:tripwire_hook"
   }
 }

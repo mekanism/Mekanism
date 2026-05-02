@@ -2,15 +2,13 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "minecraft:wooden_buttons"
+    "ingredient": "#minecraft:wooden_buttons"
   },
   "main_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   },
   "secondary_chance": 0.25,
   "secondary_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

@@ -1,19 +1,12 @@
 {
   "type": "mekanism:pigment_extracting",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "minecraft:beetroot"
-      },
-      {
-        "item": "minecraft:poppy"
-      },
-      {
-        "item": "minecraft:red_tulip"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "minecraft:beetroot",
+      "minecraft:poppy",
+      "minecraft:red_tulip"
+    ]
   },
   "output": {
     "amount": 768,
