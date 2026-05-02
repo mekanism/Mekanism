@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:waxed_oxidized_copper_chest"
+  },
+  "output": {
+    "id": "minecraft:oxidized_copper_chest"
+  }
+}

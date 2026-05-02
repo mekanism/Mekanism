@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:weathered_copper_chain"
+  },
+  "output": {
+    "id": "minecraft:exposed_copper_chain"
+  }
+}

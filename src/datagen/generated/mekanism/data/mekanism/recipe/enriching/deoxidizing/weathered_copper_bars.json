@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:oxidized_copper_bars"
+  },
+  "output": {
+    "id": "minecraft:weathered_copper_bars"
+  }
+}

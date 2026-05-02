@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:waxed_weathered_copper_bars"
+  },
+  "output": {
+    "id": "minecraft:weathered_copper_bars"
+  }
+}

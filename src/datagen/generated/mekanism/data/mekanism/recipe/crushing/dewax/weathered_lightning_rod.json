@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:waxed_weathered_lightning_rod"
+  },
+  "output": {
+    "id": "minecraft:weathered_lightning_rod"
+  }
+}

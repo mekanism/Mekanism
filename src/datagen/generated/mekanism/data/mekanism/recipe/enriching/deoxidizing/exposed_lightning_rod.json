@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:weathered_lightning_rod"
+  },
+  "output": {
+    "id": "minecraft:exposed_lightning_rod"
+  }
+}

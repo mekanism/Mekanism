@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:crushing",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:waxed_exposed_copper_lantern"
+  },
+  "output": {
+    "id": "minecraft:exposed_copper_lantern"
+  }
+}

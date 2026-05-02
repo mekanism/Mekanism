@@ -1,0 +1,10 @@
+{
+  "type": "mekanism:enriching",
+  "input": {
+    "count": 1,
+    "ingredient": "minecraft:exposed_copper_bars"
+  },
+  "output": {
+    "id": "minecraft:copper_bars"
+  }
+}
