@@ -3,8 +3,6 @@ package mekanism.common.tile.machine;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -45,6 +43,7 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -67,7 +66,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     public IChemicalTank inputTank;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final ILongInputHandler<Chemical, ChemicalResource, ChemicalStack> inputHandler;
+    private final ILongInputHandler<@NotNull ChemicalStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")

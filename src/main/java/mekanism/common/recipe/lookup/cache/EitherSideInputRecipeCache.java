@@ -9,18 +9,15 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Similar in concept to {@link DoubleInputRecipeCache} except that it requires both input types to be the same and also allows for them to be in any order.
  */
-public abstract class EitherSideInputRecipeCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>,
-      INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
-      CACHE extends IInputCache<I_TYPE, I_RESOURCE, INPUT, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
+public abstract class EitherSideInputRecipeCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
+      CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexRecipes = new HashSet<>();
     private final Function<RECIPE, INGREDIENT> inputAExtractor;
@@ -69,8 +66,8 @@ public abstract class EitherSideInputRecipeCache<I_TYPE, I_RESOURCE extends Regi
 
     /**
      * Checks is there is a matching recipe with the given inputs. This method exists as a helper for insertion predicates and will return true if inputA is not empty and
-     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, TypedInstance, TypedInstance)} and
-     * {@link DoubleInputRecipeCache#containsInputBA(Level, TypedInstance, TypedInstance)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type
+     * inputB is empty without doing any extra validation on inputA. This is similar to {@link DoubleInputRecipeCache#containsInputAB(Level, Object, Object)} and
+     * {@link DoubleInputRecipeCache#containsInputBA(Level, Object, Object)} except that because {@link EitherSideInputRecipeCache} assumes both inputs are the same type
      * and that the order doesn't matter we just have one method and require the inputs to be passed in the corresponding order instead.
      *
      * @param world  World.

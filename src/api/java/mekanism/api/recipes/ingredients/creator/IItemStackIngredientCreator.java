@@ -20,10 +20,9 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.registries.holdersets.OrHolderSet;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault
-public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemResource, ItemStack, ItemStackIngredient> {
+public interface IItemStackIngredientCreator extends IIngredientCreator<Item, ItemStack, ItemStackIngredient> {
 
     /**
      * @implNote If the stack has any non-default data components, a non-strict component matching those additions will be used.

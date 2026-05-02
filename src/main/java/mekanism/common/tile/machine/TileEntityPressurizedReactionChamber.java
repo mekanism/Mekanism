@@ -5,8 +5,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -52,14 +50,10 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,9 +90,9 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
 
     private long recipeEnergyRequired = 0;
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
-    private final IInputHandler<Item, ItemResource, ItemStack> itemInputHandler;
-    private final IInputHandler<Fluid, FluidResource, FluidStack> fluidInputHandler;
-    private final IInputHandler<Chemical, ChemicalResource, ChemicalStack> gasInputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private PRCEnergyContainer energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "item input slot")

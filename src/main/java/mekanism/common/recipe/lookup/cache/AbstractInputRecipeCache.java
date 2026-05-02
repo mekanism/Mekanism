@@ -7,10 +7,8 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -51,9 +49,8 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
     /**
      * Helper to check if a cache contains a given input, or if not, if the complex recipe fallback set contains a matching recipe.
      */
-    protected <I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>, INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>,
-          CACHE extends IInputCache<I_TYPE, I_RESOURCE, INPUT, INGREDIENT, RECIPE>> boolean containsInput(@Nullable Level world, INPUT input,
-          Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
+    protected <INPUT, INGREDIENT extends InputIngredient<INPUT>, CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> boolean containsInput(
+          @Nullable Level world, INPUT input, Function<RECIPE, INGREDIENT> inputExtractor, CACHE cache, Set<RECIPE> complexRecipes) {
         if (cache.isEmpty(input)) {
             //Don't allow empty inputs
             return false;
@@ -79,12 +76,10 @@ public abstract class AbstractInputRecipeCache<RECIPE extends MekanismRecipe<?>>
      * <li>If the first input is not empty but the second input is empty: This will return true.</li>
      * </ul>
      */
-    protected <TYPE_1, RESOURCE_1 extends RegisteredResource<TYPE_1>, INPUT_1 extends TypedInstance<TYPE_1>,
-          INGREDIENT_1 extends InputIngredient<TYPE_1, RESOURCE_1, INPUT_1>, CACHE_1 extends IInputCache<TYPE_1, RESOURCE_1, INPUT_1, INGREDIENT_1, RECIPE>,
-          TYPE_2, RESOURCE_2 extends RegisteredResource<TYPE_2>, INPUT_2 extends TypedInstance<TYPE_2>,
-          INGREDIENT_2 extends InputIngredient<TYPE_2, RESOURCE_2, INPUT_2>, CACHE_2 extends IInputCache<TYPE_2, RESOURCE_2, INPUT_2, INGREDIENT_2, RECIPE>>
-    boolean containsPairing(@Nullable Level world, INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1,
-          INPUT_2 input2, Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
+    protected <INPUT_1, INGREDIENT_1 extends InputIngredient<INPUT_1>, CACHE_1 extends IInputCache<INPUT_1, INGREDIENT_1, RECIPE>, INPUT_2,
+          INGREDIENT_2 extends InputIngredient<INPUT_2>, CACHE_2 extends IInputCache<INPUT_2, INGREDIENT_2, RECIPE>> boolean containsPairing(@Nullable Level world,
+          INPUT_1 input1, Function<RECIPE, INGREDIENT_1> input1Extractor, CACHE_1 cache1, Set<RECIPE> complexIngredients1, INPUT_2 input2,
+          Function<RECIPE, INGREDIENT_2> input2Extractor, CACHE_2 cache2, Set<RECIPE> complexIngredients2) {
         if (cache1.isEmpty(input1)) {
             //Note: We don't bother checking if 2 is empty here as it will be verified in containsInput
             return containsInput(world, input2, input2Extractor, cache2, complexIngredients2);

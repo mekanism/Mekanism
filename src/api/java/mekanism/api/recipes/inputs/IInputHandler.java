@@ -3,8 +3,6 @@ package mekanism.api.recipes.inputs;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import net.minecraft.core.TypedInstance;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 /**
  * Interface describing handling of an input.
@@ -12,7 +10,7 @@ import net.neoforged.neoforge.transfer.resource.RegisteredResource;
  * @param <INPUT> Type of input handled by this handler.
  */
 @NothingNullByDefault
-public interface IInputHandler<TYPE, RESOURCE extends RegisteredResource<TYPE>, INPUT extends TypedInstance<TYPE>> {
+public interface IInputHandler<INPUT> {
 
     /**
      * Returns the currently stored input.
@@ -38,7 +36,7 @@ public interface IInputHandler<TYPE, RESOURCE extends RegisteredResource<TYPE>, 
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    INPUT getRecipeInput(InputIngredient<TYPE, RESOURCE, INPUT> recipeIngredient);
+    INPUT getRecipeInput(InputIngredient<INPUT> recipeIngredient);
 
     /**
      * Adds {@code operations} operations worth of {@code recipeInput} from the input.

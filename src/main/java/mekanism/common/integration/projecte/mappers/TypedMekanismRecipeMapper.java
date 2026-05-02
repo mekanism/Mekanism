@@ -287,9 +287,9 @@ public abstract class TypedMekanismRecipeMapper<RECIPE extends MekanismRecipe<?>
 
     protected record MekFakeGroupHelper(INSSFakeGroupManager manager) {
 
-        public Object2IntMap<NormalizedSimpleStack> forIngredients(ContextMap contextMap, InputIngredient<?, ?, ?>... ingredients) {
+        public Object2IntMap<NormalizedSimpleStack> forIngredients(ContextMap contextMap, InputIngredient<?>... ingredients) {
             Object2IntMap<NormalizedSimpleStack> inputs = new Object2IntArrayMap<>(ingredients.length);
-            for (InputIngredient<?, ?, ?> ingredient : ingredients) {
+            for (InputIngredient<?> ingredient : ingredients) {
                 Object2IntMap<NormalizedSimpleStack> representations = switch (ingredient) {
                     case ItemStackIngredient itemIngredient -> forIngredient(itemIngredient, contextMap);
                     case FluidStackIngredient fluidIngredient -> forIngredient(fluidIngredient, contextMap);

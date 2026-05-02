@@ -10,20 +10,16 @@ import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.recipe.MekanismRecipeType;
 import mekanism.common.recipe.lookup.cache.type.IInputCache;
-import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Basic implementation for {@link IInputRecipeCache} for handling recipes with two inputs.
  */
-public abstract class DoubleInputRecipeCache<
-      A_TYPE, A_RESOURCE extends RegisteredResource<A_TYPE>, INPUT_A extends TypedInstance<A_TYPE>, INGREDIENT_A extends InputIngredient<A_TYPE, A_RESOURCE, INPUT_A>,
-      B_TYPE, B_RESOURCE extends RegisteredResource<B_TYPE>, INPUT_B extends TypedInstance<B_TYPE>, INGREDIENT_B extends InputIngredient<B_TYPE, B_RESOURCE, INPUT_B>,
-      RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, CACHE_A extends IInputCache<A_TYPE, A_RESOURCE, INPUT_A, INGREDIENT_A, RECIPE>,
-      CACHE_B extends IInputCache<B_TYPE, B_RESOURCE, INPUT_B, INGREDIENT_B, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
+public abstract class DoubleInputRecipeCache<INPUT_A, INGREDIENT_A extends InputIngredient<INPUT_A>, INPUT_B, INGREDIENT_B extends InputIngredient<INPUT_B>,
+      RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT_A, INPUT_B>, CACHE_A extends IInputCache<INPUT_A, INGREDIENT_A, RECIPE>,
+      CACHE_B extends IInputCache<INPUT_B, INGREDIENT_B, RECIPE>> extends AbstractInputRecipeCache<RECIPE> {
 
     private final Set<RECIPE> complexIngredientA = new HashSet<>();
     private final Set<RECIPE> complexIngredientB = new HashSet<>();
@@ -87,7 +83,7 @@ public abstract class DoubleInputRecipeCache<
      * @return {@code true} if there is a match or if inputA is not empty and inputB is empty.
      *
      * @apiNote If you are trying to insert inputA and already have inputB in the machine call this method, otherwise call
-     * {@link #containsInputBA(Level, TypedInstance, TypedInstance)}.
+     * {@link #containsInputBA(Level, Object, Object)}.
      */
     public boolean containsInputAB(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputA, inputAExtractor, cacheA, complexIngredientA, inputB, inputBExtractor, cacheB, complexIngredientB);
@@ -104,7 +100,7 @@ public abstract class DoubleInputRecipeCache<
      * @return {@code true} if there is a match or if inputB is not empty and inputA is empty.
      *
      * @apiNote If you are trying to insert inputA and already have inputA in the machine call this method, otherwise call
-     * {@link #containsInputAB(Level, TypedInstance, TypedInstance)}.
+     * {@link #containsInputAB(Level, Object, Object)}.
      */
     public boolean containsInputBA(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
         return containsPairing(world, inputB, inputBExtractor, cacheB, complexIngredientB, inputA, inputAExtractor, cacheA, complexIngredientA);
@@ -120,7 +116,7 @@ public abstract class DoubleInputRecipeCache<
      * @return Recipe matching the given inputs, or {@code null} if no recipe matches.
      *
      * @implNote Lookups up the recipe first from the A input map (the fact that it is A is arbitrary and just as well could be B).
-     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(Level, TypedInstance, TypedInstance, boolean)}.
+     * @apiNote To force using the B input map instead for recipe lookup use {@link #findFirstRecipe(Level, Object, Object, boolean)}.
      */
     @Nullable
     public RECIPE findFirstRecipe(@Nullable Level world, INPUT_A inputA, INPUT_B inputB) {
@@ -237,10 +233,8 @@ public abstract class DoubleInputRecipeCache<
     /**
      * Helper expansion class for {@link DoubleInputRecipeCache} to simplify the generics when both inputs are of the same type.
      */
-    public abstract static class DoubleSameInputRecipeCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>,
-          INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
-          CACHE extends IInputCache<I_TYPE, I_RESOURCE, INPUT, INGREDIENT, RECIPE>>
-          extends DoubleInputRecipeCache<I_TYPE, I_RESOURCE, INPUT, INGREDIENT, I_TYPE, I_RESOURCE, INPUT, INGREDIENT, RECIPE, CACHE, CACHE> {
+    public abstract static class DoubleSameInputRecipeCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?> & BiPredicate<INPUT, INPUT>,
+          CACHE extends IInputCache<INPUT, INGREDIENT, RECIPE>> extends DoubleInputRecipeCache<INPUT, INGREDIENT, INPUT, INGREDIENT, RECIPE, CACHE, CACHE> {
 
         protected DoubleSameInputRecipeCache(MekanismRecipeType<?, RECIPE, ?> recipeType, Function<RECIPE, INGREDIENT> inputAExtractor,
               Function<RECIPE, INGREDIENT> inputBExtractor, Supplier<CACHE> cacheSupplier) {

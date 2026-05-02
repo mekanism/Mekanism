@@ -4,8 +4,6 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
@@ -82,8 +80,8 @@ public class TileEntityChemicalInfuser extends TileEntityRecipeMachine<ChemicalC
     private int baselineMaxOperations = 1;
 
     private final IOutputHandler<@NotNull ChemicalStack> outputHandler;
-    private final IInputHandler<Chemical, ChemicalResource, ChemicalStack> leftInputHandler;
-    private final IInputHandler<Chemical, ChemicalResource, ChemicalStack> rightInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> leftInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> rightInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalInfuser> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getLeftInputItem", docPlaceholder = "left input item slot")

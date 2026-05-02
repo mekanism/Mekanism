@@ -3,16 +3,13 @@ package mekanism.common.recipe.lookup.cache.type;
 import java.util.function.Predicate;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.ingredients.InputIngredient;
-import net.minecraft.core.TypedInstance;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Base interface describing how a specific input type is cached to allow for quick lookup of recipes by input both for finding the recipes and checking if any even exist
  * with the given input.
  */
-public interface IInputCache<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>,
-      INGREDIENT extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>, RECIPE extends MekanismRecipe<?>> {
+public interface IInputCache<INPUT, INGREDIENT extends InputIngredient<INPUT>, RECIPE extends MekanismRecipe<?>> {
 
     /**
      * Checks if this {@link IInputCache} knows about the given input.

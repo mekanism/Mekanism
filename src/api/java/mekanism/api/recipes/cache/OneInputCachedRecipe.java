@@ -7,8 +7,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
@@ -27,16 +25,10 @@ import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.core.TypedInstance;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,17 +36,16 @@ import org.jetbrains.annotations.Nullable;
  * Base class to help implement handling of recipes with one input.
  */
 @NothingNullByDefault
-public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>, OUTPUT,
-      RECIPE extends MekanismRecipe<?> & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
+public class OneInputCachedRecipe<INPUT, OUTPUT, RECIPE extends MekanismRecipe<?> & Predicate<INPUT>> extends CachedRecipe<RECIPE> {
 
     private static final Predicate<ElectrolysisRecipeOutput> SEPARATOR_OUTPUT_EMPTY = output -> output.left().isEmpty() || output.right().isEmpty();
     //TODO - 26.1: Re-evaluate this as this is never null? So should this always just return false?
     private static final Predicate<FluidOptionalItemOutput> FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY = output -> output.fluid() == null;
 
-    private final IInputHandler<I_TYPE, I_RESOURCE, INPUT> inputHandler;
+    private final IInputHandler<INPUT> inputHandler;
     private final IOutputHandler<OUTPUT> outputHandler;
     private final Predicate<INPUT> inputEmptyCheck;
-    private final Supplier<? extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>> inputSupplier;
+    private final Supplier<? extends InputIngredient<INPUT>> inputSupplier;
     private final Function<INPUT, OUTPUT> outputGetter;
     private final Predicate<OUTPUT> outputEmptyCheck;
     private final Consumer<INPUT> inputSetter;
@@ -77,8 +68,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputEmptyCheck  Checks if the input is empty.
      * @param outputEmptyCheck Checks if the output is empty (indicating something went horribly wrong).
      */
-    protected OneInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<I_TYPE, I_RESOURCE, INPUT> inputHandler, IOutputHandler<OUTPUT> outputHandler,
-          Supplier<? extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>> inputSupplier, Function<INPUT, OUTPUT> outputGetter, Predicate<INPUT> inputEmptyCheck,
+    protected OneInputCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<INPUT> inputHandler, IOutputHandler<OUTPUT> outputHandler,
+          Supplier<? extends InputIngredient<INPUT>> inputSupplier, Function<INPUT, OUTPUT> outputGetter, Predicate<INPUT> inputEmptyCheck,
           Predicate<OUTPUT> outputEmptyCheck) {
         super(recipe, recheckAllErrors);
         this.inputHandler = Objects.requireNonNull(inputHandler, "Input handler cannot be null.");
@@ -123,8 +114,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      *
      * @since 10.7.0
      */
-    public static OneInputCachedRecipe<Chemical, ChemicalResource, ChemicalStack, ItemStackTemplate, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Chemical, ChemicalResource, ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ItemStackTemplate, ChemicalCrystallizerRecipe> crystallizing(ChemicalCrystallizerRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
               ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
@@ -138,8 +129,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler, handles both the left and right outputs.
      */
-    public static OneInputCachedRecipe<Fluid, FluidResource, FluidStack, ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Fluid, FluidResource, FluidStack> inputHandler, IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull ElectrolysisRecipeOutput, ElectrolysisRecipe> separating(ElectrolysisRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
               SEPARATOR_OUTPUT_EMPTY);
     }
@@ -153,8 +144,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<Fluid, FluidResource, FluidStack, FluidStackTemplate, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Fluid, FluidResource, FluidStack> inputHandler, IOutputHandler<@NotNull FluidStackTemplate> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull FluidStack, @NotNull FluidStackTemplate, FluidToFluidRecipe> fluidToFluid(FluidToFluidRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull FluidStack> inputHandler, IOutputHandler<@NotNull FluidStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.FLUID_EMPTY,
               ConstantPredicates.INVALID_FLUID_TEMPLATE);
     }
@@ -168,8 +159,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<Item, ItemResource, ItemStack, ItemStackTemplate, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ItemStackTemplate, ItemStackToItemStackRecipe> itemToItem(ItemStackToItemStackRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
@@ -183,8 +174,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<Item, ItemResource, ItemStack, FluidStack, ItemStackToFluidRecipe> itemToFluid(ItemStackToFluidRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidStack, ItemStackToFluidRecipe> itemToFluid(ItemStackToFluidRecipe recipe,
+          BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.FLUID_EMPTY);
     }
@@ -200,8 +191,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      *
      * @since 10.6.3
      */
-    public static <RECIPE extends ItemStackToFluidOptionalItemRecipe> OneInputCachedRecipe<Item, ItemResource, ItemStack, FluidOptionalItemOutput, RECIPE> itemToFluidOptionalItem(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> inputHandler, IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler) {
+    public static <RECIPE extends ItemStackToFluidOptionalItemRecipe> OneInputCachedRecipe<@NotNull ItemStack, @NotNull FluidOptionalItemOutput, RECIPE> itemToFluidOptionalItem(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               FLUID_OPTIONAL_ITEM_OUTPUT_EMPTY);
     }
@@ -215,8 +206,9 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <RECIPE extends ItemStackToChemicalRecipe> OneInputCachedRecipe<Item, ItemResource, ItemStack, ChemicalStack, RECIPE> itemToChemical(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+    public static <RECIPE extends ItemStackToChemicalRecipe>
+    OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChemicalStack, RECIPE> itemToChemical(RECIPE recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.CHEMICAL_EMPTY);
     }
@@ -230,8 +222,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static <RECIPE extends ChemicalToChemicalRecipe> OneInputCachedRecipe<Chemical, ChemicalResource, ChemicalStack, ChemicalStack, RECIPE> chemicalToChemical(
-          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Chemical, ChemicalResource, ChemicalStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+    public static <RECIPE extends ChemicalToChemicalRecipe> OneInputCachedRecipe<@NotNull ChemicalStack, @NotNull ChemicalStack, RECIPE> chemicalToChemical(
+          RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ChemicalStack> inputHandler, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.CHEMICAL_EMPTY,
               ConstantPredicates.CHEMICAL_EMPTY);
     }
@@ -245,8 +237,8 @@ public class OneInputCachedRecipe<I_TYPE, I_RESOURCE extends RegisteredResource<
      * @param inputHandler     Input handler.
      * @param outputHandler    Output handler.
      */
-    public static OneInputCachedRecipe<Item, ItemResource, ItemStack, ChanceOutput, SawmillRecipe> sawing(SawmillRecipe recipe, BooleanSupplier recheckAllErrors,
-          IInputHandler<Item, ItemResource, ItemStack> inputHandler, IOutputHandler<@NotNull ChanceOutput> outputHandler) {
+    public static OneInputCachedRecipe<@NotNull ItemStack, @NotNull ChanceOutput, SawmillRecipe> sawing(SawmillRecipe recipe, BooleanSupplier recheckAllErrors,
+          IInputHandler<@NotNull ItemStack> inputHandler, IOutputHandler<@NotNull ChanceOutput> outputHandler) {
         return new OneInputCachedRecipe<>(recipe, recheckAllErrors, inputHandler, outputHandler, recipe::getInput, recipe::getOutput, ConstantPredicates.ITEM_EMPTY,
               ConstantPredicates.alwaysFalse());
     }

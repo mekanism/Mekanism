@@ -3,19 +3,13 @@ package mekanism.api.recipes.cache;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.PressurizedReactionRecipe;
 import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeOutput;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -26,9 +20,9 @@ import org.jetbrains.annotations.Nullable;
 public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedReactionRecipe> {
 
     private final IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler;
-    private final IInputHandler<Item, ItemResource, ItemStack> itemInputHandler;
-    private final IInputHandler<Fluid, FluidResource, FluidStack> fluidInputHandler;
-    private final IInputHandler<Chemical, ChemicalResource, ChemicalStack> chemicalInputHandler;
+    private final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    private final IInputHandler<@NotNull FluidStack> fluidInputHandler;
+    private final IInputHandler<@NotNull ChemicalStack> chemicalInputHandler;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     private FluidStack recipeFluid = FluidStack.EMPTY;
@@ -46,8 +40,8 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
      * @param chemicalInputHandler Chemical input handler.
      * @param outputHandler        Output handler, handles both the item and chemical outputs.
      */
-    public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, ItemResource, ItemStack> itemInputHandler,
-          IInputHandler<Fluid, FluidResource, FluidStack> fluidInputHandler, IInputHandler<Chemical, ChemicalResource, ChemicalStack> chemicalInputHandler,
+    public PressurizedReactionCachedRecipe(PressurizedReactionRecipe recipe, BooleanSupplier recheckAllErrors, IInputHandler<@NotNull ItemStack> itemInputHandler,
+          IInputHandler<@NotNull FluidStack> fluidInputHandler, IInputHandler<@NotNull ChemicalStack> chemicalInputHandler,
           IOutputHandler<@NotNull PressurizedReactionRecipeOutput> outputHandler) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");

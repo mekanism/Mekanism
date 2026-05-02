@@ -10,8 +10,6 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
-import net.minecraft.core.TypedInstance;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 /**
  * Helper class for implementing simple variants of calculateOperationsThisTick
@@ -33,9 +31,9 @@ public class CachedRecipeHelper {
      * @param outputSetter    Consumer to set the cached value of the output to not have to recalculate it again.
      * @param emptyCheck      Checks if the input is empty.
      */
-    public static <I_TYPE, I_RESOURCE extends RegisteredResource<I_TYPE>, INPUT extends TypedInstance<I_TYPE>, OUTPUT> void oneInputCalculateOperationsThisTick(
-          OperationTracker tracker, IInputHandler<I_TYPE, I_RESOURCE, INPUT> inputHandler, Supplier<? extends InputIngredient<I_TYPE, I_RESOURCE, INPUT>> inputIngredient,
-          Consumer<INPUT> inputSetter, IOutputHandler<OUTPUT> outputHandler, Function<INPUT, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT> emptyCheck) {
+    public static <INPUT, OUTPUT> void oneInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<INPUT> inputHandler,
+          Supplier<? extends InputIngredient<INPUT>> inputIngredient, Consumer<INPUT> inputSetter, IOutputHandler<OUTPUT> outputHandler,
+          Function<INPUT, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT> emptyCheck) {
         if (tracker.shouldContinueChecking()) {
             INPUT input = inputHandler.getRecipeInput(inputIngredient.get());
             inputSetter.accept(input);
@@ -71,11 +69,9 @@ public class CachedRecipeHelper {
      * @param emptyCheckA      Checks if the primary input is empty.
      * @param emptyCheckB      Checks if the secondary input is empty.
      */
-    public static <A_TYPE, A_RESOURCE extends RegisteredResource<A_TYPE>, INPUT_A extends TypedInstance<A_TYPE>,
-          B_TYPE, B_RESOURCE extends RegisteredResource<B_TYPE>, INPUT_B extends TypedInstance<B_TYPE>,
-          OUTPUT> void twoInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<A_TYPE, A_RESOURCE, INPUT_A> inputAHandler,
-          Supplier<? extends InputIngredient<A_TYPE, A_RESOURCE, INPUT_A>> inputAIngredient, IInputHandler<B_TYPE, B_RESOURCE, INPUT_B> inputBHandler,
-          Supplier<? extends InputIngredient<B_TYPE, B_RESOURCE, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter, IOutputHandler<OUTPUT> outputHandler,
+    public static <INPUT_A, INPUT_B, OUTPUT> void twoInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<INPUT_A> inputAHandler,
+          Supplier<? extends InputIngredient<INPUT_A>> inputAIngredient, IInputHandler<INPUT_B> inputBHandler,
+          Supplier<? extends InputIngredient<INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter, IOutputHandler<OUTPUT> outputHandler,
           BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT_A> emptyCheckA, Predicate<INPUT_B> emptyCheckB) {
         if (tracker.shouldContinueChecking()) {
             INPUT_A inputA = inputAHandler.getRecipeInput(inputAIngredient.get());

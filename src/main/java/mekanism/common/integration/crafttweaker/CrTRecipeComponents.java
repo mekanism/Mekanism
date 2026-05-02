@@ -15,8 +15,6 @@ import mekanism.api.recipes.ingredients.InputIngredient;
 import mekanism.common.Mekanism;
 import mekanism.common.integration.crafttweaker.chemical.ICrTChemicalStack;
 import mekanism.common.integration.crafttweaker.ingredient.CrTChemicalStackIngredient;
-import net.minecraft.core.TypedInstance;
-import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 public class CrTRecipeComponents {
 
@@ -63,7 +61,7 @@ public class CrTRecipeComponents {
           )
     );
 
-    private static <TYPE, STACK extends TypedInstance<TYPE>, INGREDIENT extends InputIngredient<TYPE, ?, STACK>> boolean ingredientsMatch(INGREDIENT a, INGREDIENT b) {
+    private static <TYPE, INGREDIENT extends InputIngredient<TYPE>> boolean ingredientsMatch(INGREDIENT a, INGREDIENT b) {
         return Objects.equals(a, b) || a.getRepresentations().stream().allMatch(b) && b.getRepresentations().stream().allMatch(a);
     }
 

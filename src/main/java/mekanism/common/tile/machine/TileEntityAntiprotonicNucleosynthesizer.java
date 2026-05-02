@@ -4,8 +4,6 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.recipes.NucleosynthesizingRecipe;
@@ -55,14 +53,12 @@ import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,8 +83,8 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     private long usedSoFar;
 
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    protected final IInputHandler<Item, ItemResource, ItemStack> itemInputHandler;
-    protected final ILongInputHandler<Chemical, ChemicalResource, ChemicalStack> gasInputHandler;
+    protected final IInputHandler<@NotNull ItemStack> itemInputHandler;
+    protected final ILongInputHandler<@NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")
