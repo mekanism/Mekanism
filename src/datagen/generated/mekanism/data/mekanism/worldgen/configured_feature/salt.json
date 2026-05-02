@@ -5,13 +5,9 @@
       "type": "mekanism:configurable_uniform"
     },
     "state_provider": {
-      "fallback": {
-        "type": "minecraft:simple_state_provider",
-        "state": {
-          "Name": "mekanism:block_salt"
-        }
-      },
-      "rules": []
+      "state": {
+        "Name": "mekanism:block_salt"
+      }
     },
     "target": {
       "type": "minecraft:matching_blocks",
