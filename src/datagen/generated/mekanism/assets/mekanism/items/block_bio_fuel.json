@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/block_bio_fuel"
+    "model": "mekanism:block/storage/bio_fuel"
   }
 }

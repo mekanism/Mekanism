@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/block_refined_glowstone"
+    "model": "mekanism:block/storage/refined_glowstone"
   }
 }

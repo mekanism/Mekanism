@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/creative_bin"
+    "model": "mekanism:block/bin/creative"
   }
 }

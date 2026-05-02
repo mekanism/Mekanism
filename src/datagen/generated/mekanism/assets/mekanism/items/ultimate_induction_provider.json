@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/ultimate_induction_provider"
+    "model": "mekanism:block/induction/provider/ultimate"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/elite_chemical_tank"
+    "model": "mekanism:block/chemical_tank/elite"
   }
 }

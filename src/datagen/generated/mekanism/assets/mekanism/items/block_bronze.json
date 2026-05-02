@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/block_bronze"
+    "model": "mekanism:block/storage/bronze"
   }
 }

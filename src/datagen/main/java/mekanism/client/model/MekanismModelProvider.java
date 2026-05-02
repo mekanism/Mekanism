@@ -11,7 +11,6 @@ import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemConfigurator;
-import mekanism.common.item.block.machine.ItemBlockFactory;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -262,13 +261,59 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         for (FactoryType factoryType : FactoryType.values()) {
             for (FactoryTier tier : FactoryTier.values()) {
-                ItemBlockFactory item = MekanismBlocks.getFactory(tier, factoryType).asItem();
-                blockModels.itemModelOutput.accept(
-                      item,
-                      ItemModelUtils.plainModel(modLocation("block/factory/%s/%s".formatted(factoryType.getRegistryNameComponent(), tier.getBaseTier().getLowerName())))
+                plainBlockItemModel(
+                      blockModels,
+                      MekanismBlocks.getFactory(tier, factoryType),
+                      "block/factory/%s/%s".formatted(factoryType.getRegistryNameComponent(), tier.getBaseTier().getLowerName())
                 );
             }
         }
+
+        plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_BIN, "block/bin/advanced");
+        plainBlockItemModel(blockModels, MekanismBlocks.BASIC_BIN, "block/bin/basic");
+        plainBlockItemModel(blockModels, MekanismBlocks.ELITE_BIN, "block/bin/elite");
+        plainBlockItemModel(blockModels, MekanismBlocks.ULTIMATE_BIN, "block/bin/ultimate");
+        plainBlockItemModel(blockModels, MekanismBlocks.CREATIVE_BIN, "block/bin/creative");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_CHEMICAL_TANK, "block/chemical_tank/advanced");
+        plainBlockItemModel(blockModels, MekanismBlocks.BASIC_CHEMICAL_TANK, "block/chemical_tank/basic");
+        plainBlockItemModel(blockModels, MekanismBlocks.ELITE_CHEMICAL_TANK, "block/chemical_tank/elite");
+        plainBlockItemModel(blockModels, MekanismBlocks.ULTIMATE_CHEMICAL_TANK, "block/chemical_tank/ultimate");
+        plainBlockItemModel(blockModels, MekanismBlocks.CREATIVE_CHEMICAL_TANK, "block/chemical_tank/creative");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_INDUCTION_CELL, "block/induction/cell/advanced");
+        plainBlockItemModel(blockModels, MekanismBlocks.BASIC_INDUCTION_CELL, "block/induction/cell/basic");
+        plainBlockItemModel(blockModels, MekanismBlocks.ELITE_INDUCTION_CELL, "block/induction/cell/elite");
+        plainBlockItemModel(blockModels, MekanismBlocks.ULTIMATE_INDUCTION_CELL, "block/induction/cell/ultimate");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_INDUCTION_PROVIDER, "block/induction/provider/advanced");
+        plainBlockItemModel(blockModels, MekanismBlocks.BASIC_INDUCTION_PROVIDER, "block/induction/provider/basic");
+        plainBlockItemModel(blockModels, MekanismBlocks.ELITE_INDUCTION_PROVIDER, "block/induction/provider/elite");
+        plainBlockItemModel(blockModels, MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER, "block/induction/provider/ultimate");
+        plainBlockItemModel(blockModels, MekanismBlocks.INDUCTION_CASING, "block/induction/casing");
+        plainBlockItemModel(blockModels, MekanismBlocks.INDUCTION_PORT, "block/induction/port");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.BRONZE_BLOCK, "block/storage/bronze");
+        plainBlockItemModel(blockModels, MekanismBlocks.REFINED_OBSIDIAN_BLOCK, "block/storage/refined_obsidian");
+        plainBlockItemModel(blockModels, MekanismBlocks.CHARCOAL_BLOCK, "block/storage/charcoal");
+        plainBlockItemModel(blockModels, MekanismBlocks.REFINED_GLOWSTONE_BLOCK, "block/storage/refined_glowstone");
+        plainBlockItemModel(blockModels, MekanismBlocks.STEEL_BLOCK, "block/storage/steel");
+        plainBlockItemModel(blockModels, MekanismBlocks.FLUORITE_BLOCK, "block/storage/fluorite");
+        plainBlockItemModel(blockModels, MekanismBlocks.SALT_BLOCK, "block/storage/salt");
+        plainBlockItemModel(blockModels, MekanismBlocks.BIO_FUEL_BLOCK, "block/storage/bio_fuel");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.THERMAL_EVAPORATION_BLOCK, "block/thermal_evaporation/block");
+        plainBlockItemModel(blockModels, MekanismBlocks.THERMAL_EVAPORATION_CONTROLLER, "block/thermal_evaporation/controller");
+        plainBlockItemModel(blockModels, MekanismBlocks.THERMAL_EVAPORATION_VALVE, "block/thermal_evaporation/valve");
+
+        plainBlockItemModel(blockModels, MekanismBlocks.BOILER_VALVE, "block/boiler_valve_input");
+    }
+
+    private void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {
+        blockModels.itemModelOutput.accept(
+              registryObject.asItem(),
+              ItemModelUtils.plainModel(modLocation(name))
+        );
     }
 
     private void registerManualItemModels(ItemModelGenerators itemModels) {

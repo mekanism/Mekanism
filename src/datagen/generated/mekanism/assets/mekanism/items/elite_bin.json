@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/elite_bin"
+    "model": "mekanism:block/bin/elite"
   }
 }

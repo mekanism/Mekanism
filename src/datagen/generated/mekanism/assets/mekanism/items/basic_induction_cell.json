@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/basic_induction_cell"
+    "model": "mekanism:block/induction/cell/basic"
   }
 }

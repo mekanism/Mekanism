@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/induction_port"
+    "model": "mekanism:block/induction/port"
   }
 }
