@@ -1,9 +1,0 @@
-// 1.21.1	2024-08-16T20:25:50.0793062	Block state provider: mekanismgenerators
-a353033fbcd010ebe124fc1aac50039776a3048f assets/mekanismgenerators/blockstates/bioethanol.json
-b202b7a3936790c3a258e7cbd6283e27a2b4aa99 assets/mekanismgenerators/blockstates/deuterium.json
-ba24be891e64a552dae6d362e5c058bb557b01a1 assets/mekanismgenerators/blockstates/fusion_fuel.json
-0a28d0cc1de3d89c5a5d544defd214357b71efc2 assets/mekanismgenerators/blockstates/tritium.json
-ca3bd3e771d6426187a6cae668f0115583cf08ff assets/mekanismgenerators/models/block/bioethanol.json
-ca3bd3e771d6426187a6cae668f0115583cf08ff assets/mekanismgenerators/models/block/deuterium.json
-ca3bd3e771d6426187a6cae668f0115583cf08ff assets/mekanismgenerators/models/block/fusion_fuel.json
-ca3bd3e771d6426187a6cae668f0115583cf08ff assets/mekanismgenerators/models/block/tritium.json
