@@ -1,6 +1,8 @@
 {
 	"credit": "Model by CyanideX",
-	"loader": "mekanism:robit",
+    "textures": {
+        "robit": "mekanism:item/robit"
+    },
 	"elements": [
 		{
 			"name": "eyeLeft",
