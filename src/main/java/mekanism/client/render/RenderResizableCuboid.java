@@ -586,6 +586,8 @@ public class RenderResizableCuboid {
         return glow;
     }
 
+    /// avoid allocating a new one just to be non-null
+    private static final Vector3f UNUSED = new Vector3f();
     /**
      * Used to only have to calculate normals once rather than transforming based on the matrix for every vertex call. If a face shouldn't be displayed the normal vector
      * will be zero.
@@ -593,8 +595,8 @@ public class RenderResizableCuboid {
     private record NormalData(Vector3f front, Vector3f back) {
 
         private NormalData(Matrix3f normalMatrix, Vector3f normal, FaceDisplay faceDisplay) {
-            this(faceDisplay.front ? calculate(normalMatrix, normal.x(), normal.y(), normal.z()) : new Vector3f(),
-                  faceDisplay.back ? calculate(normalMatrix, -normal.x(), -normal.y(), -normal.z()) : new Vector3f());
+            this(faceDisplay.front ? calculate(normalMatrix, normal.x(), normal.y(), normal.z()) : UNUSED,
+                  faceDisplay.back ? calculate(normalMatrix, -normal.x(), -normal.y(), -normal.z()) : UNUSED);
         }
 
         private static Vector3f calculate(Matrix3f normalMatrix, float x, float y, float z) {
