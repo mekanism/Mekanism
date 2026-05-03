@@ -10,7 +10,6 @@ import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
-import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
@@ -19,7 +18,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
@@ -33,13 +31,10 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
           .setTexture(MekanismRenderer.whiteIcon)
           .bounds(0, 1)
     );
-    private static final int[] colors = new int[EnumUtils.DIRECTIONS.length];
 
-    static {
-        colors[Direction.UP.ordinal()] = colors[Direction.DOWN.ordinal()] = ARGB.white(0.82F);
-        colors[Direction.SOUTH.ordinal()] = colors[Direction.NORTH.ordinal()] = ARGB.white(0.8F);
-        colors[Direction.EAST.ordinal()] = colors[Direction.WEST.ordinal()] = ARGB.white(0.78F);
-    }
+    private static final int UP_DOWN_COLOR = ARGB.white(0.82F);
+    private static final int EAST_WEST_COLOR = ARGB.white(0.78F);
+    private static final int NORTH_SOUTH_COLOR = ARGB.white(0.8F);
 
     public static void resetCachedVisuals() {
         model.reset();
@@ -77,7 +72,7 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
               state.blockPos.getX() - state.radius, state.minY, state.blockPos.getZ() - state.radius,
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-        RenderResizableCuboid.renderCube(model.get(), poseStack, Sheets.translucentBlockSheet(), nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null);
+        RenderResizableCuboid.renderCube(model.get(), poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, UP_DOWN_COLOR, UP_DOWN_COLOR, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR);
         poseStack.popPose();
     }
 

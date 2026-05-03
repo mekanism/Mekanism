@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import java.util.Arrays;
 import java.util.List;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.FluidRenderData;
@@ -29,12 +28,7 @@ import org.joml.Vector3f;
  * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
  */
 public class RenderResizableCuboid {
-
-    /**
-     * Used to not need to create multiple arrays when we just want to fill it differently at times, and given rendering TERs is not multithreaded it is perfectly safe to
-     * just use one backing "temporary" array.
-     */
-    private static final int[] combinedARGB = new int[EnumUtils.DIRECTIONS.length];
+    
     private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
     private static final int X_AXIS_MASK = 1 << Axis.X.ordinal();
     private static final int Y_AXIS_MASK = 1 << Axis.Y.ordinal();
@@ -45,15 +39,14 @@ public class RenderResizableCuboid {
 
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos) {
-        Arrays.fill(combinedARGB, argb);
-        renderCube(cube, matrix, renderType, nodeCollector, combinedARGB, light, overlay, faceDisplay, camPos, renderPos);
+        renderCube(cube, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb);
     }
 
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
-          @Nullable Vec3 renderPos) {
+    public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
+          @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
         //TODO: Eventually try not rendering faces that are covered by things? At the very least for things like multiblocks
@@ -124,24 +117,24 @@ public class RenderResizableCuboid {
 
         if ((axisToRender & X_AXIS_MASK) != 0) {
             nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideXAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+                renderSideXAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), westColor, eastColor);
             }));
         }
         if ((axisToRender & Y_AXIS_MASK) != 0) {
             nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideYAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+                renderSideYAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), downColor, upColor);
             }));
         }
         if ((axisToRender & Z_AXIS_MASK) != 0) {
             nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideZAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+                renderSideZAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), northColor, southColor);
             }));
         }
 
         matrix.popPose();
     }
 
-    private static void renderSideZAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+    private static void renderSideZAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int northColor, int southColor) {
 
         TextureAtlasSprite northSprite = sprites[Direction.NORTH.ordinal()];
         TextureAtlasSprite southSprite = sprites[Direction.SOUTH.ordinal()];
@@ -151,9 +144,6 @@ public class RenderResizableCuboid {
         if (!hasNorth && !hasSouth) {
             return; //sanity check failed
         }
-
-        int colorNorth = colors[Direction.NORTH.ordinal()];
-        int colorSouth = colors[Direction.SOUTH.ordinal()];
 
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
@@ -217,7 +207,7 @@ public class RenderResizableCuboid {
                     float z1 = zBounds[0];
                     // add quads
 
-                    drawFace(buffer, matrix4f, minUNorth, maxUNorth, minVNorth, maxVNorth, light, overlay, faceDisplay, normal, colorNorth,
+                    drawFace(buffer, matrix4f, minUNorth, maxUNorth, minVNorth, maxVNorth, light, overlay, faceDisplay, normal, northColor,
                           x1, y1, z1,
                           x1, y2, z1,
                           x2, y2, z1,
@@ -226,7 +216,7 @@ public class RenderResizableCuboid {
                 if (hasSouth) {
                     float z2 = zBounds[zDelta + 1];
                     // add quads
-                    drawFace(buffer, matrix4f, minUSouth, maxUSouth, minVSouth, maxVSouth, light, overlay, faceDisplay, normal, colorSouth,
+                    drawFace(buffer, matrix4f, minUSouth, maxUSouth, minVSouth, maxVSouth, light, overlay, faceDisplay, normal, southColor,
                           x2, y1, z2,
                           x2, y2, z2,
                           x1, y2, z2,
@@ -237,8 +227,8 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void renderSideXAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
-          TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+    private static void renderSideXAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta,
+          TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int westColor, int eastColor) {
         TextureAtlasSprite westSprite = sprites[Direction.WEST.ordinal()];
         TextureAtlasSprite eastSprite = sprites[Direction.EAST.ordinal()];
         boolean hasWest = westSprite != null;
@@ -247,9 +237,6 @@ public class RenderResizableCuboid {
         if (!hasWest && !hasEast) {
             return; //sanity check failed
         }
-
-        int westColor = colors[Direction.WEST.ordinal()];
-        int eastColor = colors[Direction.EAST.ordinal()];
 
         // render each side
         for (int y = 0; y <= yDelta; y += 1) {
@@ -328,7 +315,7 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void renderSideYAxis(VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal) {
+    private static void renderSideYAxis(VertexConsumer buffer, int light, int overlay, FaceDisplay faceDisplay, int xDelta, int yDelta, int zDelta, TextureAtlasSprite[] sprites, float[] yBounds, float[] zBounds, float[] xBounds, Matrix4f matrix4f, NormalData normal, int downColor, int upColor) {
         TextureAtlasSprite upSprite = sprites[Direction.UP.ordinal()];
         TextureAtlasSprite downSprite = sprites[Direction.DOWN.ordinal()];
         boolean hasUp = upSprite != null;
@@ -337,9 +324,6 @@ public class RenderResizableCuboid {
         if (!hasUp && !hasDown) {
             return; //sanity check failed
         }
-
-        int downColor = colors[Direction.DOWN.ordinal()];
-        int upColor = colors[Direction.UP.ordinal()];
 
         // render each side
         for (int z = 0; z <= zDelta; z += 1) {

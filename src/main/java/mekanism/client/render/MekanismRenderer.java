@@ -305,6 +305,7 @@ public class MekanismRenderer {
         FLOWING
     }
 
+    //TODO - 26.1: Thiakil to poke at this
     public static class Model3D {
 
         public float minX, minY, minZ;
