@@ -27,10 +27,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 
@@ -176,11 +177,18 @@ public final class InventoryUtils {
         // shuffle the order we look at our slots to avoid ejection patterns
         List<IInventorySlot> shuffled = new ArrayList<>(slots);
         Collections.shuffle(shuffled);
-        for (IInventorySlot slot : shuffled) {
-            //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
-            ItemStack simulatedExtraction = slot.extractItem(slot.getCount(), Action.SIMULATE, AutomationType.EXTERNAL);
-            if (!simulatedExtraction.isEmpty()) {
-                request.addItem(simulatedExtraction, slots.indexOf(slot));
+        //TODO - 26.1: Validate if any callers are in a transactional context, also should we be doing this here or around each extract call?
+        // I believe it is fine to just do this once, but maybe some slot extractions depend on what is already extracted
+        try (Transaction simulation = Transaction.openRoot()) {
+            for (IInventorySlot slot : shuffled) {
+                ItemResource resource = slot.getResource();
+                if (!resource.isEmpty()) {
+                    //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
+                    int extracted = slot.extract(resource, slot.getCount(), simulation, AutomationType.EXTERNAL);
+                    if (extracted > 0) {
+                        request.addItem(resource, extracted, slots.indexOf(slot));
+                    }
+                }
             }
         }
         return request;
@@ -196,48 +204,78 @@ public final class InventoryUtils {
      *
      * @return Remainder
      *
-     * @see ItemHandlerHelper#insertItemStacked(IItemHandler, ItemStack, boolean)
+     * @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Move over to the transactional caller so that we make sure that we don't accidentally call this method from within a transactional context
     public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, Action action, AutomationType automationType) {
-        stack = insertItem(slots, stack, true, false, action, automationType);
-        return insertItem(slots, stack, false, false, action, automationType);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = insertItem(slots, ItemResource.of(stack), stack.count(), transaction, automationType);
+            if (action.execute()) {
+                transaction.commit();
+            }
+            //Return as remainder
+            return stack.copyWithCount(stack.count() - inserted);
+        }
     }
 
     /**
-     * Helper to try inserting a stack into a list of inventory slots only inserting into either empty slots or inserting into non-empty slots.
+     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
      *
      * @param slots          Slots to insert into
-     * @param stack          Stack to insert (do not modify).
-     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
-     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
+     * @param itemType       Type of item to insert.
+     * @param amount         Amount of the item to insert.
+     * @param transaction    The transaction that this operation is part of.
      * @param automationType The method that this slot is being interacted from.
      *
      * @return Remainder
      *
-     * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemStack, boolean, boolean, SelectedWindowData, Action)
+     * @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
      */
-    @NotNull
-    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, boolean ignoreEmpty, boolean checkAll, Action action,
-          AutomationType automationType) {
-        if (stack.isEmpty()) {
+    public static int insertItem(List<? extends IInventorySlot> slots, ItemResource itemType, final int amount, TransactionContext transaction, AutomationType automationType) {
+        int amountToInsert = amount;
+        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, true, false, automationType);
+        amountToInsert -= insertItem(slots, itemType, amountToInsert, transaction, false, false, automationType);
+        //Return how much was actually inserted
+        return amount - amountToInsert;
+    }
+
+    /**
+     * Helper to try inserting a given amount of a resource into a list of inventory slots only inserting into either empty slots or inserting into non-empty slots.
+     *
+     * @param slots          Slots to insert into
+     * @param itemType       Type of item to insert.
+     * @param amount         Amount of the item to insert.
+     * @param transaction    The transaction that this operation is part of.
+     * @param ignoreEmpty    {@code true} to ignore/skip empty slots, {@code false} to ignore/skip non-empty slots.
+     * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
+     * @param automationType The method that this slot is being interacted from.
+     *
+     * @return Remainder
+     *
+     * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, SelectedWindowData)
+     */
+    public static int insertItem(List<? extends IInventorySlot> slots, ItemResource itemType, final int amount, TransactionContext transaction, boolean ignoreEmpty,
+          boolean checkAll, AutomationType automationType) {
+        if (itemType.isEmpty() || amount == 0) {
             //Skip doing anything if the stack is already empty.
             // Makes it easier to chain calls, rather than having to check if the stack is empty after our previous call
-            return stack;
+            return 0;
         }
+        int toInsert = amount;
         for (IInventorySlot slot : slots) {
             if (!checkAll && ignoreEmpty == slot.isEmpty()) {
                 //Skip checking empty stacks if we want to ignore them, and skip non-empty stacks if we don't want ot ignore them
                 continue;
             }
-            stack = slot.insertItem(stack, action, automationType);
-            if (stack.isEmpty()) {
+            toInsert -= slot.insert(itemType, toInsert, transaction, automationType);
+            if (toInsert == 0) {
                 break;
             }
         }
-        return stack;
+        return amount - toInsert;
     }
 
+    @FunctionalInterface
     public interface ItemDropper {
 
         void drop(Level level, BlockPos pos, Direction side, ItemStack stack);

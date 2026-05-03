@@ -9,7 +9,6 @@ import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismDataComponents;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class QIODriveData {
@@ -126,12 +125,6 @@ public class QIODriveData {
             } else {
                 Mekanism.logger.error("Tried to update QIO meta values on an invalid Item ({}). Something has gone very wrong!", itemType);
             }
-        }
-
-        //TODO - 26.1: Re-evaluate usages of this as it is no longer valid with how things got changed to transactions
-        @Deprecated(forRemoval = true)
-        public ItemStack getDriveStack() {
-            return holder.getDriveSlots().get(driveSlot).getStack();
         }
     }
 }

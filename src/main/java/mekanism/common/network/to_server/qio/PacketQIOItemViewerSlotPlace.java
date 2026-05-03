@@ -10,6 +10,7 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket {
@@ -33,15 +34,10 @@ public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket
                 ItemStack curStack = container.getCarried();
                 //Count should always be greater than zero but validate against invalid packets
                 if (!curStack.isEmpty() && count > 0) {
-                    ItemStack toAdd;
-                    if (count < curStack.count()) {//Only adding part of the stack
-                        toAdd = curStack.copyWithCount(count);
-                    } else {//Try to add the full held stack
-                        toAdd = curStack;
-                    }
-                    ItemStack rejects = freq.addItem(toAdd);
-                    //Calculate actual amount we were able to add of what we tried to add
-                    int placed = toAdd.count() - rejects.count();
+                    ItemResource curType = ItemResource.of(curStack);
+                    //Calculate how much we are adding, whether it is only part of the stack or the full stack
+                    int toAdd = Math.min(count, curStack.count());
+                    int placed = freq.addItem(curType, toAdd);
                     if (placed > 0) {
                         //If we added any from the held stack, shrink the held stack (which will cause it to be updated on the client)
                         curStack.shrink(placed);

@@ -21,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -116,8 +115,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                 if (extractable == 0) {//Nothing can be extracted, skip it
                     continue;
                 }
-                ItemStack frequencyRemainder = freq.addItem(type.toStack(extractable));
-                if (frequencyRemainder.isEmpty()) {
+                int inserted = freq.addItem(type, extractable);
+                if (extractable == inserted) {
                     //Everything from our initial extraction could be inserted, just commit the transaction as the changes made are the ones we want
                     tx.commit();
                     // and add it as a type that was successful
@@ -125,7 +124,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                     countAdded += extractable;
                     continue;
                 }
-                amountInserted = extractable - frequencyRemainder.count();
+                amountInserted = extractable - inserted;
             }
             if (amountInserted > 0) {
                 //We were unable to add everything our initial extraction attempt got to the frequency

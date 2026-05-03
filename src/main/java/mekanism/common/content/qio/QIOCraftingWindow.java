@@ -18,7 +18,7 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.IInsertableSlot;
+import mekanism.common.inventory.container.slot.ITransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
@@ -302,20 +302,24 @@ public class QIOCraftingWindow implements IContentsListener {
     public void emptyTo(boolean toPlayerInv, List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
         if (toPlayerInv) {
             for (IInventorySlot inputSlot : inputSlots) {
-                if (!inputSlot.isEmpty()) {
-                    ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
-                    if (!toTransfer.isEmpty()) {
-                        try (Transaction transaction = Transaction.openRoot()) {
-                            ItemResource resource = ItemResource.of(toTransfer);
-                            int amountToTransfer = toTransfer.count();
-                            amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, resource, amountToTransfer, true, windowData, transaction);
-                            amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, resource, amountToTransfer, true, windowData, transaction);
-                            amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, resource, amountToTransfer, false, windowData, transaction);
-                            amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, resource, amountToTransfer, false, windowData, transaction);
-                            inputSlot.extract(resource, amountToTransfer, transaction, AutomationType.INTERNAL);
-                            //Commit all the changes
-                            transaction.commit();
+                ItemResource slotResource = inputSlot.getResource();
+                if (!slotResource.isEmpty()) {
+                    int extracted;
+                    try (Transaction simulation = Transaction.openRoot()) {
+                        extracted = inputSlot.extract(slotResource, inputSlot.getCount(), simulation, AutomationType.INTERNAL);
+                        if (extracted == 0) {
+                            continue;
                         }
+                    }
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int amountToTransfer = extracted;
+                        amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, slotResource, amountToTransfer, transaction, true, windowData);
+                        amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, slotResource, amountToTransfer, transaction, true, windowData);
+                        amountToTransfer -= MekanismContainer.insertItem(hotBarSlots, slotResource, amountToTransfer, transaction, false, windowData);
+                        amountToTransfer -= MekanismContainer.insertItem(mainInventorySlots, slotResource, amountToTransfer, transaction, false, windowData);
+                        inputSlot.extract(slotResource, amountToTransfer, transaction, AutomationType.INTERNAL);
+                        //Commit all the changes
+                        transaction.commit();
                     }
                 }
             }
@@ -324,11 +328,19 @@ public class QIOCraftingWindow implements IContentsListener {
             //NO-OP if the frequency is null and that is the target
             if (frequency != null) {
                 for (IInventorySlot inputSlot : inputSlots) {
-                    if (!inputSlot.isEmpty()) {
-                        ItemStack toTransfer = inputSlot.extractItem(inputSlot.getCount(), Action.SIMULATE, AutomationType.INTERNAL);
-                        if (!toTransfer.isEmpty()) {
-                            ItemStack remainder = frequency.addItem(toTransfer);
-                            inputSlot.extractItem(toTransfer.count() - remainder.count(), Action.EXECUTE, AutomationType.INTERNAL);
+                    ItemResource slotResource = inputSlot.getResource();
+                    if (!slotResource.isEmpty()) {
+                        int extracted;
+                        try (Transaction simulation = Transaction.openRoot()) {
+                            extracted = inputSlot.extract(slotResource, inputSlot.getCount(), simulation, AutomationType.INTERNAL);
+                            if (extracted == 0) {
+                                continue;
+                            }
+                        }
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int inserted = frequency.addItem(slotResource, extracted);
+                            inputSlot.extract(slotResource, inserted, transaction, AutomationType.INTERNAL);
+                            transaction.commit();
                         }
                     }
                 }
@@ -413,8 +425,8 @@ public class QIOCraftingWindow implements IContentsListener {
             try (Transaction simulation = Transaction.openRoot()) {
                 ItemResource itemType = ItemResource.of(result);
                 int toInsert = result.count();
-                toInsert -= MekanismContainer.insertItemCheckAll(hotBarSlots, itemType, toInsert, windowData, simulation);
-                toInsert -= MekanismContainer.insertItemCheckAll(mainInventorySlots, itemType, toInsert, windowData, simulation);
+                toInsert -= MekanismContainer.insertItemCheckAll(hotBarSlots, itemType, toInsert, simulation, windowData);
+                toInsert -= MekanismContainer.insertItemCheckAll(mainInventorySlots, itemType, toInsert, simulation, windowData);
                 if (toInsert > 0) {
                     //Note: If we aren't able to fit all the items we are crafting into the player's inventory we exit
                     // instead of attempting to insert the overflow into the QIO as it is easy enough if the player is trying
@@ -591,10 +603,12 @@ public class QIOCraftingWindow implements IContentsListener {
             }
             //If some or all of the stack could not be returned to the input slot add it to the player's inventory
             if (!player.getInventory().add(remainder)) {
+                ItemResource itemType = ItemResource.of(remainder);
+                toInsert = remainder.count();
                 //failing that try adding it to the qio frequency if there is one
                 if (frequency != null) {
-                    remainder = frequency.addItem(remainder);
-                    if (remainder.isEmpty()) {
+                    toInsert -= frequency.addItem(itemType, toInsert);
+                    if (toInsert == 0) {
                         //If we added it all to the QIO, don't bother trying to drop it
                         return;
                     }
@@ -604,7 +618,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 // convoluted so has been skipped for now and probably ever. If it does get implemented then we need to make sure to
                 // mark the output as needing an update in the "shift crafting" version that calls this method
                 //If there is no frequency or we couldn't add it all to the QIO, drop the remaining item as the player
-                player.drop(remainder, false);
+                player.drop(itemType.toStack(toInsert), false);
             }
         }
     }
@@ -636,12 +650,12 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         /**
-         * Based on {@link MekanismContainer#insertItem(List, ItemResource, int, boolean, boolean, SelectedWindowData, TransactionContext)} except with extra handling to
+         * Based on {@link MekanismContainer#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, SelectedWindowData)} except with extra handling to
          * keep track of where we last were.
          *
          * @return Amount inserted
          */
-        private <SLOT extends Slot & IInsertableSlot> int insertItem(List<SLOT> slots, ItemResource itemType, final int amount, boolean ignoreEmpty, boolean isHotBar,
+        private <SLOT extends Slot & ITransactionalSlot> int insertItem(List<SLOT> slots, ItemResource itemType, final int amount, boolean ignoreEmpty, boolean isHotBar,
               @Nullable SelectedWindowData selectedWindow, TransactionContext transaction) {
             if (itemType.isEmpty() || amount == 0) {
                 //Skip doing anything if the stack is already empty.
@@ -661,7 +675,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     continue;
                 }
                 //Decrease amount to insert by how much we were able to insert
-                toInsert -= slot.insertItem(itemType, toInsert, transaction);
+                toInsert -= slot.insert(itemType, toInsert, transaction);
                 if (toInsert == 0) {
                     //We finished inserting, update where we last targeted
                     wasHotBar = isHotBar;

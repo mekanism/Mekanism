@@ -178,7 +178,7 @@ public class BinInsertRecipe extends BinRecipe {
             //Remove the marker that the bin was crafted from a bin recipe
             Boolean fromRecipe = result.remove(MekanismDataComponents.FROM_RECIPE);
             if (fromRecipe != null && fromRecipe) {
-                //And if it was try to move extra items from the container into it
+                //And if it was, try to move extra items from the container into it
                 ComponentBackedBinInventorySlot slot = convertToSlot(result);
                 ItemResource storedResource = slot.getResource();
                 if (!storedResource.isEmpty()) {

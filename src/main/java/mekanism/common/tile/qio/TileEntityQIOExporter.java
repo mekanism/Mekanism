@@ -265,11 +265,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         if (frequency != null) {
             for (ItemData data : request) {
                 ItemResource itemType = data.getItemType();
-                int totalCount = data.getTotalCount();
-                ItemStack remainder = frequency.addItem(itemType.toStack(totalCount));
-                //TODO - 26.1: Can total count be zero? If so then we should just skip handling that, and then we can remove oure check for if the remainder is empty here
-                if (remainder.isEmpty() || remainder.count() < totalCount) {
-                    return request.createResponse(itemType.toStack(totalCount - remainder.count()), data);
+                int inserted = frequency.addItem(itemType, data.getTotalCount());
+                if (inserted > 0) {
+                    return request.createResponse(itemType.toStack(inserted), data);
                 }
             }
         }

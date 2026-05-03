@@ -3,20 +3,26 @@ package mekanism.common.inventory.container.slot;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.container.SelectedWindowData;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface IInsertableSlot {
+public interface ITransactionalSlot {
 
     //TODO: Improve these java docs at some point
 
     /**
      * Basically a container slot's equivalent of {@link IInventorySlot#insert(ItemResource, int, TransactionContext, AutomationType)} with {@link AutomationType#MANUAL}
      */
-    int insertItem(ItemResource resource, int amount, TransactionContext transaction);
+    int insert(ItemResource resource, int amount, TransactionContext transaction);
+
+    /**
+     * Basically a container slot's equivalent of {@link IInventorySlot#extract(ItemResource, int, TransactionContext, AutomationType)} with {@link AutomationType#MANUAL}
+     */
+    int extract(Player player, ItemResource resource, int amount, TransactionContext transaction);
 
     /**
      * Used for determining if this slot can merge with the given stack when the stack is double-clicked.

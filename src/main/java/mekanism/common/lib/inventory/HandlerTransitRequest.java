@@ -24,11 +24,14 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
     }
 
     public void addItem(ItemStack stack, int slot) {
-        ItemResource type = ItemResource.of(stack);
+        addItem(ItemResource.of(stack), stack.count(), slot);
+    }
+
+    public void addItem(ItemResource type, int amount, int slot) {
         if (itemMap.isEmpty()) {
             itemMap = new LinkedHashMap<>();
         }
-        itemMap.computeIfAbsent(type, HandlerItemData::new).addSlot(slot, stack);
+        itemMap.computeIfAbsent(type, HandlerItemData::new).addSlot(slot, amount);
     }
 
     public int getCount(ItemResource itemType) {
@@ -59,9 +62,9 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
             super(itemType);
         }
 
-        public void addSlot(int id, ItemStack stack) {
-            slotMap.put(id, stack.count());
-            totalCount += stack.count();
+        public void addSlot(int id, int amount) {
+            slotMap.put(id, amount);
+            totalCount += amount;
         }
 
         @Override

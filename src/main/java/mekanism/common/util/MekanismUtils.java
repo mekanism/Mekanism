@@ -680,7 +680,7 @@ public final class MekanismUtils {
      *
      * @return A redstone level based on the percentage of the amount stored.
      */
-    public static int redstoneLevelFromContents(List<IInventorySlot> slots) {
+    public static int redstoneLevelFromContents(List<IInventorySlot> slots) {//TODO - 26.1: Can we just replace this with the ResourceHandlerUtil variant?
         long totalCount = 0;
         long totalLimit = 0;
         for (IInventorySlot slot : slots) {

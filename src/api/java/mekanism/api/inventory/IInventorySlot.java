@@ -99,40 +99,6 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     //TODO - 26.1: Docs
     int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
 
-    /**
-     * Extracts an {@link ItemStack} from this {@link IInventorySlot}.
-     * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount} and
-     * {@link ItemStack#getMaxStackSize()}.
-     * </p>
-     *
-     * @param amount         Amount to extract (may be greater than the current stack's max limit)
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this slot is being interacted from.
-     *
-     * @return {@link ItemStack} extracted from the slot, must be empty if nothing can be extracted. The returned {@link ItemStack} can be safely modified after, so the
-     * slot should return a new or copied stack.
-     *
-     * @implNote The returned {@link ItemStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
-     * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be
-     * made every run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default ItemStack extractItem(int amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 0) {
-            //"Fail quick" if the given stack is empty, or we don't have anything stored
-            return ItemStack.EMPTY;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Re-evaluate this if we don't end up removing this method in general
-            ItemResource resource = getResource();
-            int extracted = extract(resource, amount, transaction, automationType);
-            if (action.execute()) {
-                transaction.commit();
-            }
-            return resource.toStack(extracted);
-        }
-    }
-
     //TODO - 26.1: Docs
     //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past it would return at most max stack size
     int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);

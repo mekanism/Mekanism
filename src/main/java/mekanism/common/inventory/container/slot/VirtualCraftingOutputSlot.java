@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.List;
 import java.util.function.Consumer;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
@@ -48,14 +49,28 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     }
 
     @Override
-    public int insertItem(ItemResource itemType, int amount,  TransactionContext transaction) {
+    public int insert(ItemResource itemType, int amount, TransactionContext transaction) {
         //Short circuit don't allow inserting into the output slot
+        return 0;
+    }
+
+    @Override
+    public int extract(Player player, ItemResource itemType, int amount, TransactionContext transaction) {
+        IInventorySlot slot = getInventorySlot();
+        if (mayPickup(player) && itemType.equals(slot.getResource())) {
+            int amountPerRecipe = slot.getCount();
+            //Return how many full recipe extractions we would be able to do. We don't modify the
+            // actual slot as we want it to maintain its contents
+            //TODO - 26.1: Do we need to add a snapshot listener for the transaction being committed to increment amountCrafted?
+            // I suspect it doesn't matter as we don't actually ever call this method except for vanilla slots that we wrap into ITransactionalSlot
+            return (amount / amountPerRecipe) * amountPerRecipe;
+        }
         return 0;
     }
 
     @NotNull
     @Override
-    public ItemStack remove(int amount) {
+    public ItemStack remove(int amount) {//TODO - 26.1: Requires https://github.com/neoforged/NeoForge/pull/3147
         //Note: This method is only called if mayPickup returns true
         if (amount == 0) {
             return ItemStack.EMPTY;
@@ -70,9 +85,11 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
-        ItemStack extracted = getInventorySlot().getStack().copy();
+        ItemStack extracted = getStackCopy().copy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.count();
+        //TODO - 26.1: Do we want to scale this up by how many times the full stack could be extracted while still being under amount
+        // Unlike #extract, we do need to make sure that it is at least one recipe's worth, even if we don't have to round up for other cases
         return extracted;
     }
 
@@ -108,10 +125,10 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @NotNull
     @Override
-    public ItemStack getItem() {
+    public ItemStack getStackCopy() {
         //Note: We check canCraft even on the server side, as we don't have a player context here and as there is only one container per player
         // we can just hackily update the canCraft variable while syncing it to the client
-        return canCraft ? super.getItem() : ItemStack.EMPTY;
+        return canCraft ? super.getStackCopy() : ItemStack.EMPTY;
     }
 
     @Override

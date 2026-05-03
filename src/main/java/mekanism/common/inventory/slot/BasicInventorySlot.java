@@ -167,7 +167,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
             //TODO - 26.1: Evaluate if we still want to be throwing an exception
             throw new RuntimeException("Invalid stack for slot: " + itemType.value() + " " + itemType.getComponentsPatch());
         }
-        //TODO - 26.1: Delay this until the transactions are committed
+        //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
         onContentsChanged();
     }
 
@@ -200,7 +200,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     @Override
     public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !canExtract.test(resource, automationType)) {
+        if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
@@ -228,8 +228,8 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     /**
      * Ignores current contents
      */
-    public boolean isItemValidForInsertion(ItemStack stack, AutomationType automationType) {
-        return isValidForInsertion(ItemResource.of(stack), automationType);
+    public boolean isCurrentValidForExtraction(AutomationType automationType) {
+        return canExtract.test(this.currentType, automationType);
     }
 
     /**

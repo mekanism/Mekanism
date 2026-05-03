@@ -182,29 +182,33 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return amount - data.add(amount, action);
     }
 
-    public ItemStack addItem(ItemStack stack) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
+    /**
+     * @return Amount inserted
+     */
+    public int addItem(ItemResource itemType, int amount) {//TODO - 26.1: Make this transactional
+        if (itemType.isEmpty() || amount == 0) {
+            return 0;
         } else if (totalCount == totalCountCapacity) {
             //This check and the pre-check in the computeIfAbsent are extremely important; they prevent us from wasting CPU searching for
             // a place to put the new items, and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
-            return stack;
+            return 0;
         }
-        HashedItem type = HashedItem.create(stack);
+        HashedItem type = HashedItem.fromResource(itemType);
         QIOItemTypeData data = itemDataMap.get(type);
         if (data == null) {
             if (itemDataMap.size() == totalTypeCapacity) {
                 //Don't add any ghost item types if there is no room for new ones. We do this inside of a computeIfAbsent
                 // so that we don't have to check if the map contains it twice
                 //Failed to insert
-                return stack;
+                return 0;
             } else {
                 // at this point we're guaranteed at least part of the input stack will be inserted
                 data = createTypeDataForAbsent(type);
                 itemDataMap.put(type, data);
             }
         }
-        return type.createStack(Ints.saturatedCast(data.add(stack.count(), Action.EXECUTE)));
+        int excess = Ints.saturatedCast(data.add(amount, Action.EXECUTE));
+        return amount - excess;
     }
 
     private QIOItemTypeData createTypeDataForAbsent(HashedItem type) {
@@ -257,7 +261,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     public ItemStack removeItem(int amount) {
-        return removeByType(null, amount);
+        return removeByType((HashedItem) null, amount);
     }
 
     public ItemStack removeItem(ItemStack stack, int amount) {
@@ -265,6 +269,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             return ItemStack.EMPTY;
         }
         return removeByType(HashedItem.raw(stack), amount);
+    }
+
+    public int removeByType(ItemResource itemType, int amount) {//TODO - 26.1: Make this transactional
+        return removeByType(HashedItem.fromResource(itemType), amount).count();
     }
 
     public ItemStack removeByType(@Nullable HashedItem itemType, int amount) {
@@ -615,7 +623,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     @Deprecated(forRemoval = true)//TODO - 26.1: Re-evaluate usages and fix things so that the proper stack gets updated
     public void removeDrive(QIODriveKey key, boolean updateItemMap) {
-        removeDrive(key, updateItemMap, ItemResource.of(key.getDriveStack()));
+        removeDrive(key, updateItemMap, key.holder().getDriveSlots().get(key.driveSlot()).getResource());
     }
 
     public void removeDrive(QIODriveKey key, boolean updateItemMap, ItemResource driveData) {

@@ -57,7 +57,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
                     if (toUse == 0) {
                         continue; // continue if we don't need any more of this item type
                     }
-                    ret.addItem(itemType.toStack(toUse), i);
+                    ret.addItem(itemType, toUse, i);
                 }
             }
         }

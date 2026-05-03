@@ -14,6 +14,8 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekanismPacket {
@@ -43,17 +45,21 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
                     //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
                     ItemStack extracted = freq.removeByType(itemType, amountInserted);
                     if (!extracted.isEmpty()) {
-                        ItemStack remainder = container.insertIntoPlayerInventory(player.getUUID(), extracted);
-                        //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
-                        // but validate it just in case and handle it gracefully
-                        if (!remainder.isEmpty()) {
-                            remainder = freq.addItem(remainder);
-                            if (!remainder.isEmpty()) {
-                                //Something went wrong, and we couldn't add it back into the frequency after just removing
-                                // log an error and just drop the item on the ground to avoid voiding it
-                                Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({}). This shouldn't happen!", remainder);
-                                player.drop(remainder, false);
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            ItemResource type = ItemResource.of(extracted);
+                            int toInsert = container.insertIntoPlayerInventory(player.getUUID(), type, extracted.count(), transaction);
+                            //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
+                            // but validate it just in case and handle it gracefully
+                            if (toInsert > 0) {
+                                toInsert -= freq.addItem(type, toInsert);
+                                if (toInsert > 0) {
+                                    //Something went wrong, and we couldn't add it back into the frequency after just removing
+                                    // log an error and just drop the item on the ground to avoid voiding it
+                                    Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({} {}). This shouldn't happen!", toInsert, type);
+                                    player.drop(type.toStack(toInsert), false);
+                                }
                             }
+                            transaction.commit();
                         }
                     }
                 }

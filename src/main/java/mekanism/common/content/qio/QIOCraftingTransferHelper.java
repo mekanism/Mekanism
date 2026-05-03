@@ -18,17 +18,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.InsertableSlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,18 +58,20 @@ public class QIOCraftingTransferHelper {
         byte inventorySlotIndex = 0;
         for (; inventorySlotIndex < 9; inventorySlotIndex++) {
             IInventorySlot slot = craftingWindow.getInputSlot(inventorySlotIndex);
-            if (!slot.isEmpty()) {
+            ItemResource storedType = slot.getResource();
+            if (!storedType.isEmpty()) {
                 //Note: This isn't a super accurate validation of if we can take the stack or not, given in theory we
                 // always should be able to, but we have this check that mimics our implementation here just in case
-                if (!slot.extractItem(1, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
-                    reverseLookup.computeIfAbsent(HashedItem.fromResource(slot.getResource()), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
-                } else {
-                    isValid = false;
-                    //Can stop initializing things if we are not valid due to not being able to remove things from the input.
-                    // Eventually, we may want to make this be able to special case and allow this to happen for if the items
-                    // would end up in this slot anyway, but for now it doesn't really matter as this should never happen
-                    return;
+                try (Transaction simulation = Transaction.openRoot()) {
+                    if (slot.extract(storedType, 1, simulation, AutomationType.MANUAL) == 0) {
+                        isValid = false;
+                        //Can stop initializing things if we are not valid due to not being able to remove things from the input.
+                        // Eventually, we may want to make this be able to special case and allow this to happen for if the items
+                        // would end up in this slot anyway, but for now it doesn't really matter as this should never happen
+                        return;
+                    }
                 }
+                reverseLookup.computeIfAbsent(HashedItem.fromResource(storedType), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);
@@ -284,7 +287,7 @@ public class QIOCraftingTransferHelper {
             inventory = new ItemStack[slots];
             stackSizes = new int[slots];
             slotLimits = new int[slots];
-            InsertableSlot inventorySlot;
+            TransactionalSlot inventorySlot;
             for (int slot = 0; slot < slots; slot++) {
                 if (slot < hotBarSize) {
                     inventorySlot = hotBarSlots.get(slot);

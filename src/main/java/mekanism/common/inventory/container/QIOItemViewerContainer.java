@@ -33,8 +33,8 @@ import mekanism.common.inventory.GuiComponents.IDropdownEnum;
 import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.inventory.ISlotClickHandler;
 import mekanism.common.inventory.container.SelectedWindowData.WindowType;
-import mekanism.common.inventory.container.slot.InsertableSlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
 import mekanism.common.lib.inventory.HashedItem;
@@ -256,22 +256,22 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     private void doDoubleClickTransfer(Player player) {
         QIOFrequency freq = getFrequency();
         if (freq != null) {
-            for (InsertableSlot slot : mainInventorySlots) {
+            for (TransactionalSlot slot : mainInventorySlots) {
                 handleDoDoubleClickTransfer(player, slot, freq);
             }
-            for (InsertableSlot slot : hotBarSlots) {
+            for (TransactionalSlot slot : hotBarSlots) {
                 handleDoDoubleClickTransfer(player, slot, freq);
             }
         }
     }
 
-    private void handleDoDoubleClickTransfer(Player player, InsertableSlot slot, QIOFrequency freq) {
+    private void handleDoDoubleClickTransfer(Player player, TransactionalSlot slot, QIOFrequency freq) {
         if (slot.hasItem() && slot.mayPickup(player)) {
             //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotItem = slot.getItem();
             if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
-                this.transferSuccess(slot, player, slotItem, freq.addItem(slotItem));
+                transferSuccess(slot, player, freq.addItem(ItemResource.of(slotItem), slotItem.count()));
             }
         }
     }
@@ -329,12 +329,12 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (frequency != null) {
                 if (!slotStack.isEmpty()) {
                     //There is an item in the slot
-                    ItemStack ret = frequency.addItem(slotStack);
-                    if (slotStack.count() != ret.count()) {
+                    int inserted = frequency.addItem(ItemResource.of(slotStack), slotStack.count());
+                    if (inserted > 0) {
                         //We were able to insert some of it
                         //Make sure that we copy it so that we aren't just pointing to the reference of it
                         setTransferTracker(slotStack.copy(), slotID);
-                        return transferSuccess(currentSlot, player, slotStack, ret);
+                        return transferSuccess(currentSlot, player, inserted);
                     }
                 } else {
                     if (slotID == lastSlot && !lastStack.isEmpty()) {
@@ -367,7 +367,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 SelectedWindowData windowData = craftingWindow.getWindowData();
                 //Start by trying to stack it with other things and if that fails try to insert it into empty slots
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), windowData, transaction);
+                    int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), transaction, windowData);
                     if (inserted > 0) {
                         //If something changed, decrease the stack by the amount we inserted,
                         // and return it as a new stack for what is now in the slot
@@ -601,19 +601,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     /**
      * @apiNote Only call on server
      */
-    public ItemStack insertIntoPlayerInventory(UUID player, ItemStack stack) {
+    public int insertIntoPlayerInventory(UUID player, ItemResource itemType, int toInsert, Transaction transaction) {
         SelectedWindowData selectedWindow = getSelectedWindow(player);
-        try (Transaction transaction = Transaction.openRoot()) {
-            ItemResource itemType = ItemResource.of(stack);
-            int toInsert = stack.count();
-            toInsert -= insertItem(hotBarSlots, itemType, toInsert, true, selectedWindow, transaction);
-            toInsert -= insertItem(mainInventorySlots, itemType, toInsert, true, selectedWindow, transaction);
-            toInsert -= insertItem(hotBarSlots, itemType, toInsert, false, selectedWindow, transaction);
-            toInsert -= insertItem(mainInventorySlots, itemType, toInsert, false, selectedWindow, transaction);
-            transaction.commit();
-            //Return as remainder
-            return itemType.toStack(toInsert);
-        }
+        toInsert -= insertItem(hotBarSlots, itemType, toInsert, transaction, true, selectedWindow);
+        toInsert -= insertItem(mainInventorySlots, itemType, toInsert, transaction, true, selectedWindow);
+        toInsert -= insertItem(hotBarSlots, itemType, toInsert, transaction, false, selectedWindow);
+        toInsert -= insertItem(mainInventorySlots, itemType, toInsert, transaction, false, selectedWindow);
+        return toInsert;
     }
 
     /**
@@ -624,8 +618,8 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         try (Transaction simulation = Transaction.openRoot()) {
             ItemResource itemType = ItemResource.of(stack);
             int toInsert = stack.count();
-            toInsert -= insertItemCheckAll(hotBarSlots, itemType, toInsert, selectedWindow, simulation);
-            toInsert -= insertItemCheckAll(mainInventorySlots, itemType, toInsert, selectedWindow, simulation);
+            toInsert -= insertItemCheckAll(hotBarSlots, itemType, toInsert, simulation, selectedWindow);
+            toInsert -= insertItemCheckAll(mainInventorySlots, itemType, toInsert, simulation, selectedWindow);
             return stack.count() - toInsert;
         }
     }
