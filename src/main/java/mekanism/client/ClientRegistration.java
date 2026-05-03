@@ -83,6 +83,7 @@ import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
+import mekanism.client.model.robit.RobitModel;
 import mekanism.client.particle.JetpackFlameParticle;
 import mekanism.client.particle.JetpackSmokeParticle;
 import mekanism.client.particle.LaserParticle;
@@ -317,6 +318,7 @@ public class ClientRegistration {
 
         //Entity layer definitions
         event.registerLayerDefinition(FlameModel.FLAME_LAYER, FlameModel::createLayerDefinition);
+        event.registerLayerDefinition(RobitModel.ROBIT_LAYER, RobitModel::createBodyLayer);
     }
 
     @SubscribeEvent
@@ -333,6 +335,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
         event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("robit"), RenderRobit.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
