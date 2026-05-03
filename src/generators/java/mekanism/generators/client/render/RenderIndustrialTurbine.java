@@ -2,17 +2,20 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.data.RenderData;
 import mekanism.client.render.tileentity.MultiblockTileEntityRenderer;
 import mekanism.generators.client.render.RenderIndustrialTurbine.TurbineRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.content.turbine.TurbineMultiblockData;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -47,10 +50,9 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
 
     @Override
     public void submit(TurbineRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.1 renderObject
-        //if (state.steamData != null) {
-        //    renderObject(camera.pos, state.steamData, state.blockPos, poseStack, Sheets.translucentCullBlockSheet(), OverlayTexture.NO_OVERLAY, state.steamScale);
-        //}
+        if (state.steamData != null) {
+            RenderResizableCuboid.renderObject(camera.pos, state.steamData, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.steamScale);
+        }
     }
 
     @Override

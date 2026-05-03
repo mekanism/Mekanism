@@ -10,15 +10,19 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -66,15 +70,16 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     @Override
     public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         //todo - 26.1 rendering
-        /*buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        //TODO move model gathering to the extract
+        RenderType renderType = Sheets.translucentBlockSheet();
         if (state.fluidScale > 0) {
-            MekanismRenderer.renderObject(getFluidModel(state.fluid, state.fluidScale), poseStack, buffer, state.fluidTint, state.fluidGlow,
-                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+            Model3D object = getFluidModel(state.fluid, state.fluidScale);
+            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
         }
         if (!state.valveFluid.isEmpty()) {
-            MekanismRenderer.renderObject(getValveModel(state.valveFluid, state.fluidScale), poseStack, buffer, state.valveTint, state.valveGlow,
-                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
-        }*/
+            Model3D object = getValveModel(state.valveFluid, state.fluidScale);
+            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
+        }
     }
 
     @Override

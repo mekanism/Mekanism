@@ -15,6 +15,7 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.transmitter.TransmitterRenderState.PipeRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.FluidNetwork;
@@ -22,10 +23,12 @@ import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
@@ -74,8 +77,9 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
+        state.stage = stage;
         //TODO - 26.1: Should we overwrite lightCoords with glow?
-        int glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
+        state.glow = MekanismRenderer.calculateGlowLight(state.lightCoords, fluidStack);
 
 
         List<String> connectionContents = new ArrayList<>();
@@ -97,6 +101,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
                 }
             }
         }
+        state.connectionContents = connectionContents;
         //Render the base part if there is a horizontal connection, or we only have one vertical connection
         boolean renderBase = hasHorizontalSide || verticalSides < 2;
         Model3D model = getModel(fluidStack, stage, renderBase);
@@ -106,6 +111,15 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             // small gaps if we didn't render
             model.setSideRender(side, renderSides[side.ordinal()] || (side.getAxis().isVertical() && renderBase && stage != stages - 1));
         }
+        state.model = model;
+        state.sideModels.clear();
+        for (Direction side : EnumUtils.DIRECTIONS) {
+            ConnectionType connectionType = transmitter.getConnectionType(side);
+            if (connectionType == ConnectionType.NORMAL) {
+                //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
+                state.sideModels.add(getModel(side, fluidStack, stage));
+            }
+        }
     }
 
     @Override
@@ -113,23 +127,22 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (state.fluidTexture == null) {
             return;
         }
-        //todo - 26.1: rendering
-        /*for (Direction side : EnumUtils.DIRECTIONS) {
-            ConnectionType connectionType = transmitter.getConnectionType(side);
-            if (connectionType == ConnectionType.NORMAL) {
-                //If it is normal we need to render it manually so to have it be the correct dimensions instead of too narrow
-                MekanismRenderer.renderObject(getModel(side, fluidStack, stage), poseStack, buffer, state.fluidTint, glow, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
-            }
+
+        for (Model3D side : state.sideModels) {
+            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
         }
-        MekanismRenderer.renderObject(model, poseStack, buffer, state.fluidTint, glow, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
-        if (!connectionContents.isEmpty()) {
-            poseStack.pushPose();
+        if (state.model != null) {
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
+        }
+        //todo - 26.1: rendering
+        if (state.connectionContents != null && !state.connectionContents.isEmpty()) {
+            /*poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
             renderModel(state, poseStack, buffer, ARGB.redFloat(state.fluidTint), ARGB.greenFloat(state.fluidTint), ARGB.blueFloat(state.fluidTint),
-                  ARGB.alphaFloat(state.fluidTint), glow, OverlayTexture.NO_OVERLAY,
-                  state.fluidTexture, connectionContents);
-            poseStack.popPose();
-        }*/
+                  ARGB.alphaFloat(state.fluidTint), state.glow, OverlayTexture.NO_OVERLAY,
+                  state.fluidTexture, state.connectionContents);
+            poseStack.popPose();*/
+        }
     }
 
     @Override

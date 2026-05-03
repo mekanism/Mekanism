@@ -1,16 +1,23 @@
 package mekanism.client.render;
 
+import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
+import java.util.List;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.data.FluidRenderData;
+import mekanism.client.render.data.RenderData;
+import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -34,16 +41,6 @@ public class RenderResizableCuboid {
     private static final int Z_AXIS_MASK = 1 << Axis.Z.ordinal();
 
     private RenderResizableCuboid() {
-    }
-
-    @Deprecated(forRemoval = true)
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos, @Nullable Vec3 renderPos) {
-        //no-op: convert to use nodeCollector
-    }
-
-    @Deprecated(forRemoval = true)
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos, @Nullable Vec3 renderPos) {
-        //no-op: convert to use nodeCollector
     }
 
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
@@ -530,6 +527,63 @@ public class RenderResizableCuboid {
             return max;
         }
         return max == 0 ? 1 : max;
+    }
+
+    public static boolean isInsideBounds(Vec3 camera, double minX, double minY, double minZ, double maxX, double maxY, double maxZ) {
+        return minX <= camera.x && camera.x <= maxX &&
+               minY <= camera.y && camera.y <= maxY &&
+               minZ <= camera.z && camera.z <= maxZ;
+    }
+
+    protected static FaceDisplay getFaceDisplay(Vec3 camPos, RenderData data, Model3D model) {
+        return isInsideBounds(camPos, data.location.getX(), data.location.getY(), data.location.getZ(),
+              data.location.getX() + data.length, data.location.getY() + ModelRenderer.getActualHeight(model), data.location.getZ() + data.width)
+               ? FaceDisplay.BACK : FaceDisplay.FRONT;
+    }
+
+    //TODO - 26.1 valves -> valveRenderData (map in state setup)
+    public static void renderObject(Vec3 camPos, FluidRenderData data, List<ValveRenderData> valves, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
+        Model3D model = ModelRenderer.getModel(data, scale);
+        int glow = renderObject(camPos, data, rendererPos, model, matrix, renderType, nodeCollector, overlay, scale);
+        if (!valves.isEmpty()) {
+            //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
+            //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
+            // if we aren't in the multiblock though we can just get away with only rendering the front faces
+            FaceDisplay faceDisplay = isInsideBounds(camPos, data.location.getX(), data.location.getY(), data.location.getZ(), data.location.getX() + data.length,
+                  data.location.getY() + data.height, data.location.getZ() + data.width) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            for (ValveRenderData valveRenderData : valves) {
+                renderValve(camPos, data, rendererPos, matrix, renderType, nodeCollector, overlay, valveRenderData, model, glow, faceDisplay);
+            }
+        }
+    }
+
+    private static void renderValve(Vec3 camPos, FluidRenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay) {
+        Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, model.maxY - model.minY);
+        if (valveModel != null) {
+            matrix.pushPose();
+            matrix.translate(valveRenderData.getValveLocation().getX() - rendererPos.getX(), valveRenderData.getValveLocation().getY() - rendererPos.getY(), valveRenderData.getValveLocation().getZ() - rendererPos.getZ());
+            int argb = data.getColorARGB();
+            renderCube(valveModel, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()));
+            matrix.popPose();
+        }
+    }
+
+
+    public static void renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
+        renderObject(camPos, data, rendererPos, ModelRenderer.getModel(data, scale), matrix, renderType, nodeCollector, overlay, scale);
+    }
+
+    //TODO - 26.1: Should we no-op all the cases of scale == 0
+    @CanIgnoreReturnValue
+    public static int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
+        int glow = data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
+        matrix.pushPose();
+        matrix.translate(data.location.getX() - rendererPos.getX(), data.location.getY() - rendererPos.getY(), data.location.getZ() - rendererPos.getZ());
+        int argb = data.getColorARGB(scale);
+        FaceDisplay faceDisplay = getFaceDisplay(camPos, data, object);
+        renderCube(object, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(data.location));
+        matrix.popPose();
+        return glow;
     }
 
     /**

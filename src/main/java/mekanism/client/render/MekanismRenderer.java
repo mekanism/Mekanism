@@ -1,13 +1,11 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
@@ -17,9 +15,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
-import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -33,7 +28,6 @@ import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -45,14 +39,12 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -125,34 +117,6 @@ public class MekanismRenderer {
             spriteLocation = MissingTextureAtlasSprite.getLocation();
         }
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(spriteLocation);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay, Vec3 camPos, BlockPos renderPos) {
-        if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(renderPos));
-        }
-    }
-
-    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
-          FaceDisplay faceDisplay, Vec3 camPos) {
-        if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camPos, null);
-        }
-    }
-
-    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, float fluidHeight, BlockPos pos, int glow,
-          int overlay, FaceDisplay faceDisplay, Vec3 camPos) {
-        for (ValveData valveData : valves) {
-            ValveRenderData valveRenderData = ValveRenderData.get(data, valveData);
-            Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, fluidHeight);
-            if (valveModel != null) {
-                matrix.pushPose();
-                matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camPos, valveData.location);
-                matrix.popPose();
-            }
-        }
     }
 
     //Color

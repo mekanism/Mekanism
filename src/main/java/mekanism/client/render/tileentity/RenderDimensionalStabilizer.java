@@ -10,20 +10,24 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderDimensionalStabilizer.StabilizerRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDimensionalStabilizer;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -143,14 +147,14 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             }
             //If we are inside the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
             // we want to be able to see all faces easily
-            FaceDisplay faceDisplay = isInsideBounds(camera.pos, startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
+            FaceDisplay faceDisplay = RenderResizableCuboid.isInsideBounds(camera.pos, startChunk.getMinBlockX(), Double.NEGATIVE_INFINITY, startChunk.getMinBlockZ(),
                   endChunk.getMaxBlockX() + 1, Double.POSITIVE_INFINITY, endChunk.getMaxBlockZ() + 1) ? FaceDisplay.BACK : FaceDisplay.BOTH;
             poseStack.pushPose();
             poseStack.translate(startChunk.getMinBlockX() - pos.getX() + xShift, state.minY - pos.getY(), startChunk.getMinBlockZ() - pos.getZ() + zShift);
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
-            //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds on block sized quads?
-            //MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos);
+            //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds of block sized quads?
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null);
             poseStack.popPose();
         }
     }

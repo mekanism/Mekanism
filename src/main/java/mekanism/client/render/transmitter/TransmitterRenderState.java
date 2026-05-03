@@ -1,9 +1,11 @@
 package mekanism.client.render.transmitter;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
+import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -14,6 +16,11 @@ import org.joml.Vector3f;
 //TODO - 26.1: Do we want to override fillCrashReportCategory to add more details to it?
 @NothingNullByDefault
 public class TransmitterRenderState extends BlockEntityRenderState {
+
+    @Nullable
+    public MekanismRenderer.Model3D model;
+    @Nullable
+    public List<String> connectionContents;
 
     public static class BufferedTransmitterRenderState extends TransmitterRenderState {
         public float currentScale = 1;
@@ -32,6 +39,9 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         @Nullable
         public TextureAtlasSprite fluidTexture;
         public int fluidTint = 0XFFFFFFFF;
+        public int glow;
+        public int stage;
+        public List<MekanismRenderer.Model3D> sideModels = new ArrayList<>();
     }
 
     public static class TransporterRenderState extends TransmitterRenderState {

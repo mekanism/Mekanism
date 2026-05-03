@@ -1,18 +1,26 @@
 package mekanism.client.render.tileentity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.render.RenderResizableCuboid;
+import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
+import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.tileentity.RenderDynamicTank.DynamicTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
 import mekanism.common.content.tank.TankMultiblockData;
+import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,14 +43,20 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         TankMultiblockData multiblock = tank.getMultiblock();
         state.renderData = getRenderData(multiblock);
         state.scale = multiblock.prevScale;
+        state.valves.clear();
+        if (state.renderData instanceof FluidRenderData fluidRenderData) {
+            for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                state.valves.add(ValveRenderData.get(fluidRenderData, valve));
+            }
+        }
     }
 
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        if (state.renderData != null) {
-            //TODO - 26.1 rendering
-            /*VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-            renderObject(camera.pos, state.renderData, state.valves, state.blockPos, poseStack, buffer, OverlayTexture.NO_OVERLAY, state.scale);*/
+        if (state.renderData instanceof FluidRenderData fluidRenderData) {
+            RenderResizableCuboid.renderObject(camera.pos, fluidRenderData, state.valves, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale);
+        } else if (state.renderData != null) {
+            RenderResizableCuboid.renderObject(camera.pos, state.renderData, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale);
         }
     }
 
@@ -74,5 +88,6 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         @Nullable
         public RenderData renderData;
         public float scale;
+        public List<ValveRenderData> valves = new ArrayList<>();
     }
 }

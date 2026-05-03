@@ -5,19 +5,23 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
 import mekanism.client.render.tileentity.RenderDigitalMiner.DigitalMinerRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntityDigitalMiner;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -69,13 +73,11 @@ public class RenderDigitalMiner extends MekanismTileEntityRenderer<TileEntityDig
         Vec3 camPos = camera.pos;
         //If we are inside the visualization we don't have to render the "front" face, otherwise we need to render both given how the visualization works
         // we want to be able to see all faces easily
-        FaceDisplay faceDisplay = isInsideBounds(camPos,
+        FaceDisplay faceDisplay = RenderResizableCuboid.isInsideBounds(camPos,
               state.blockPos.getX() - state.radius, state.minY, state.blockPos.getZ() - state.radius,
               state.blockPos.getX() + state.radius + 1, state.maxY, state.blockPos.getZ() + state.radius + 1
         ) ? FaceDisplay.BACK : FaceDisplay.BOTH;
-        //TODO - 26.1 rendering
-        //MekanismRenderer.renderObject(model.get(), poseStack, nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-        //      faceDisplay, camPos);
+        RenderResizableCuboid.renderCube(model.get(), poseStack, Sheets.translucentBlockSheet(), nodeCollector, colors, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camPos, null);
         poseStack.popPose();
     }
 

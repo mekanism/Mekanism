@@ -10,11 +10,13 @@ public class ValveRenderData extends FluidRenderData {
 
     private final Direction side;
     private final int valveFluidHeight;
+    private final BlockPos valveLocation;
 
     private ValveRenderData(FluidRenderData renderData, Direction side, BlockPos valveLocation) {
         super(renderData.location, renderData.width, renderData.height, renderData.length, renderData.fluidType);
         this.side = side;
-        this.valveFluidHeight = valveLocation.getY() - location.getY();
+        this.valveFluidHeight = valveLocation.getY() - renderData.location.getY();
+        this.valveLocation = valveLocation;
     }
 
     public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
@@ -36,7 +38,7 @@ public class ValveRenderData extends FluidRenderData {
         } else if (data == null) {
             return false;
         }
-        return data.getClass() == ValveRenderData.class && equalsCommonFluid(data) && side == ((ValveRenderData) data).side && valveFluidHeight == ((ValveRenderData) data).valveFluidHeight;
+        return data.getClass() == ValveRenderData.class && /*equalsCommonFluid(data) &&*/ side == ((ValveRenderData) data).side && valveFluidHeight == ((ValveRenderData) data).valveFluidHeight;
     }
 
     @Override
@@ -45,5 +47,9 @@ public class ValveRenderData extends FluidRenderData {
         result = 31 * result + side.hashCode();
         result = 31 * result + valveFluidHeight;
         return result;
+    }
+
+    public BlockPos getValveLocation() {
+        return valveLocation;
     }
 }

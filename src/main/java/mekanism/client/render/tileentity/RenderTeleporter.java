@@ -7,18 +7,22 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.MekanismRenderer.Model3D.ModelBoundsSetter;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderTeleporter.TeleporterRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityTeleporter;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -53,11 +57,9 @@ public class RenderTeleporter extends MekanismTileEntityRenderer<TileEntityTelep
 
     @Override
     public void submit(TeleporterRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //todo - 26.1: rendering
-        /*if (state.model != null) {
-            MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentCullBlockSheet(), state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,
-                  FaceDisplay.FRONT, camera.pos, state.blockPos);
-        }*/
+        if (state.model != null) {
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
+        }
     }
 
     @Override

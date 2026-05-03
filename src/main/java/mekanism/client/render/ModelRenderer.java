@@ -22,7 +22,9 @@ public final class ModelRenderer {
 
     private static final int BLOCK_STAGES = FluidType.BUCKET_VOLUME;
 
+    //TODO - 26.1: this can be replaced with an int key, packing the l,w,h into it
     private static final Map<RenderData, Int2ObjectMap<Model3D>> cachedCenterData = new Object2ObjectOpenHashMap<>();
+    //this can probably also be moved to an int key
     private static final Map<ValveRenderData, Float2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenHashMap<>();
 
     public static int getStage(FluidStack stack, int stages, double scale) {
