@@ -28,7 +28,7 @@ import org.joml.Vector3f;
  * Adapted from Mantle's FluidRenderer and Tinker's SmelteryTankRenderer
  */
 public class RenderResizableCuboid {
-    
+
     private static final Vector3f NORMAL = new Vector3f(1, 1, 1).normalize();
     private static final int X_AXIS_MASK = 1 << Axis.X.ordinal();
     private static final int Y_AXIS_MASK = 1 << Axis.Y.ordinal();
@@ -42,8 +42,10 @@ public class RenderResizableCuboid {
         renderCube(cube, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb);
     }
 
+    //TODO - 26.1: Try use some kind of ColorGetter instead of unrolling arrays?
     /**
      * @implNote Based off of Tinker's
+     * NB: if ever different colours are used for axis side, this won't handle that like it does sprites. (e.g. currently EAST+WEST colours are the same)
      */
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor) {
