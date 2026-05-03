@@ -60,6 +60,9 @@ public class RenderResizableCuboid {
             Vec3 minPos = renderPos.add(cube.minX, cube.minY, cube.minZ);
             Vec3 maxPos = renderPos.add(cube.maxX, cube.maxY, cube.maxZ);
             for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (!cube.shouldRenderSide(direction)) {
+                    continue;
+                }
                 TextureAtlasSprite sprite = spriteFromDirection.apply(direction);
                 if (sprite != null) {
                     Axis axis = direction.getAxis();
@@ -84,6 +87,9 @@ public class RenderResizableCuboid {
             }
         } else {
             for (Direction direction : EnumUtils.DIRECTIONS) {
+                if (!cube.shouldRenderSide(direction)) {
+                    continue;
+                }
                 TextureAtlasSprite sprite = spriteFromDirection.apply(direction);
                 if (sprite != null) {
                     sprites[direction.ordinal()] = sprite;

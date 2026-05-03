@@ -330,7 +330,7 @@ public class MekanismRenderer {
 
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
-        
+
         private final boolean[] renderSides = {true, true, true, true, true, true};
 
         public Model3D setSideRender(Predicate<Direction> shouldRender) {
@@ -343,6 +343,10 @@ public class MekanismRenderer {
         public Model3D setSideRender(Direction side, boolean value) {
             renderSides[side.ordinal()] = value;
             return this;
+        }
+
+        public boolean shouldRenderSide(Direction side) {
+            return renderSides[side.ordinal()];
         }
 
         public Model3D copy() {
