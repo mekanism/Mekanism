@@ -2,9 +2,7 @@ package mekanism.client.render.data;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
-import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.util.MekanismUtils;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -36,11 +34,6 @@ public class FluidRenderData extends RenderData {
     @Override
     public int calculateGlowLight(int light) {
         return MekanismRenderer.calculateGlowLight(light, fluidType);
-    }
-
-    @Override
-    public TextureAtlasSprite getTexture() {
-        return MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL);
     }
 
     @Override

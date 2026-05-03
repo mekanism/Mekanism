@@ -7,7 +7,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.ModelRenderer;
 import mekanism.common.lib.multiblock.MultiblockData;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -27,8 +26,6 @@ public abstract class RenderData {
         this.height = height;
         this.length = length;
     }
-
-    public abstract TextureAtlasSprite getTexture();
 
     public abstract boolean isGaseous();
 
