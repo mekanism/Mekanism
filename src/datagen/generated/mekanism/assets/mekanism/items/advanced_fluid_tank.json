@@ -1,6 +1,10 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:block/advanced_fluid_tank"
+    "type": "minecraft:special",
+    "base": "mekanism:item/advanced_fluid_tank",
+    "model": {
+      "type": "mekanism:fluid_tank",
+      "tank_tier": "advanced"
+    }
   }
 }

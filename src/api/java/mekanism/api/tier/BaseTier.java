@@ -1,5 +1,6 @@
 package mekanism.api.tier;
 
+import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
@@ -38,6 +39,8 @@ public enum BaseTier implements StringRepresentable, SupportsColorMap {
      * @since 10.6.0
      */
     public static final StreamCodec<ByteBuf, BaseTier> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, BaseTier::ordinal);
+
+    public static final Codec<BaseTier> CODEC = StringRepresentable.fromEnum(BaseTier::values);
 
     private final String name;
     private final MapColor mapColor;

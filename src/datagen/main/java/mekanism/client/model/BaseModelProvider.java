@@ -9,7 +9,6 @@ import mekanism.common.item.ItemModule;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.FluidDeferredRegister;
 import mekanism.common.registration.impl.ItemDeferredRegister;
-import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.util.RegistryUtils;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
@@ -75,7 +74,7 @@ public abstract class BaseModelProvider extends ModelProvider {
         return targetModelPath;
     }
 
-    protected static void simpleISTER(ItemModelGenerators itemModels, ItemRegistryObject<?> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
+    protected static void simpleISTER(ItemModelGenerators itemModels, Holder<Item> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
         Item item = itemRegistryObject.value();
         ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(ModelLocationUtils.getModelLocation(item), unbakedRender);
         itemModels.itemModelOutput.accept(item, unbaked);

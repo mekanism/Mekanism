@@ -5,6 +5,8 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.Arrays;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.common.util.EnumUtils;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
@@ -34,16 +36,26 @@ public class RenderResizableCuboid {
     private RenderResizableCuboid() {
     }
 
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
+    @Deprecated(forRemoval = true)
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos, @Nullable Vec3 renderPos) {
+        //no-op: convert to use nodeCollector
+    }
+
+    @Deprecated(forRemoval = true)
+    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos, @Nullable Vec3 renderPos) {
+        //no-op: convert to use nodeCollector
+    }
+
+    public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos) {
         Arrays.fill(combinedARGB, argb);
-        renderCube(cube, matrix, buffer, combinedARGB, light, overlay, faceDisplay, camPos, renderPos);
+        renderCube(cube, matrix, renderType, nodeCollector, combinedARGB, light, overlay, faceDisplay, camPos, renderPos);
     }
 
     /**
      * @implNote Based off of Tinker's
      */
-    public static void renderCube(Model3D cube, PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
+    public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int[] colors, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
           @Nullable Vec3 renderPos) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
@@ -112,18 +124,21 @@ public class RenderResizableCuboid {
 
         matrix.pushPose();
         matrix.translate(xShift, yShift, zShift);
-        PoseStack.Pose lastMatrix = matrix.last();
-        Matrix4f matrix4f = lastMatrix.pose();
-        NormalData normal = new NormalData(lastMatrix.normal(), NORMAL, faceDisplay);
 
         if ((axisToRender & X_AXIS_MASK) != 0) {
-            renderSideXAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
+            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
+                renderSideXAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+            }));
         }
         if ((axisToRender & Y_AXIS_MASK) != 0) {
-            renderSideYAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
+            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
+                renderSideYAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+            }));
         }
         if ((axisToRender & Z_AXIS_MASK) != 0) {
-            renderSideZAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, matrix4f, normal);
+            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
+                renderSideZAxis(buffer, colors, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay));
+            }));
         }
 
         matrix.popPose();
