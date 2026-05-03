@@ -129,6 +129,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Fill the container from the item
             if (!fillContainerFromItem()) {
                 //If filling from item failed, try doing it by conversion
+                ItemStack current = getStack();
                 ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
@@ -162,7 +163,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
      */
     private boolean fillContainerFromItem() {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
-        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(current);
+        IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(getStack());
         if (itemEnergyHandler != null) {
             long energyInItem = itemEnergyHandler.extractEnergy(energyContainer.getNeeded(), Action.SIMULATE);
             if (energyInItem > 0L) {
@@ -197,7 +198,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
     public void drainContainer() {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         if (!isEmpty() && !energyContainer.isEmpty()) {
-            IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(current);
+            IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(getStack());
             if (itemEnergyHandler != null) {
                 long storedEnergy = energyContainer.getEnergy();
                 long simulatedRemainder = itemEnergyHandler.insertEnergy(storedEnergy, Action.SIMULATE);

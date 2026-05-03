@@ -223,6 +223,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             //Fill the tank from the item
             if (!fillChemicalTankFromItem(this, chemicalTank, getCapability())) {
                 //If filling from item failed, try doing it by conversion
+                ItemStack current = getStack();
                 ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);

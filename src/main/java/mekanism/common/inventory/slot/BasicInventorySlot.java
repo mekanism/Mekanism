@@ -68,12 +68,6 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
         return new BasicInventorySlot(canExtract, canInsert, validator, listener, x, y);
     }
 
-    /**
-     * @apiNote This is only protected for direct querying access. To modify this stack the external methods or {@link #setStackUnchecked(ItemStack)} should be used
-     * instead.
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Move this over to currentType and storedAmount
-    protected ItemStack current = ItemStack.EMPTY;
     private final BiPredicate<ItemResource, AutomationType> canExtract;
     private final BiPredicate<ItemResource, AutomationType> canInsert;
     private final Predicate<ItemResource> validator;
@@ -119,11 +113,6 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     }
 
     @Override
-    public ItemStack getStack() {
-        return current;
-    }
-
-    @Override
     public ItemResource getResource() {
         return this.currentType;
     }
@@ -154,11 +143,9 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
                 //If we are already empty just exit, to not fire onContentsChanged
                 return;
             }
-            current = ItemStack.EMPTY;
             this.currentType = ItemResource.EMPTY;
             this.storedAmount = 0;
         } else if (!validateStack || isValid(itemType)) {
-            current = itemType.toStack(storedAmount);
             this.currentType = itemType;
             this.storedAmount = storedAmount;
         } else {

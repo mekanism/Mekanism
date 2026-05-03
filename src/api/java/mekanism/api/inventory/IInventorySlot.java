@@ -41,12 +41,12 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @apiNote <strong>IMPORTANT:</strong> Do not modify this {@link ItemStack}.
      */
-    ItemStack getStack();
+    default ItemStack getStack() {
+        return getResource().toStack(getCount());
+    }
 
     //TODO - 26.1: Docs and replace getStack/etc with this and getAmount
-    default ItemResource getResource() {
-        return ItemResource.of(getStack());
-    }
+    ItemResource getResource();
 
     /**
      * Overrides the stack in this {@link IInventorySlot}.
@@ -249,11 +249,9 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @return The size of the stored stack, or zero is the stack is empty.
      */
-    default int getCount() {
-        //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
-        // Also do we want to rename this to getAmount if we potentially make a generic super interface between inventory slots and other resource types?
-        return getStack().count();
-    }
+    int getCount();
+    //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
+    // Also do we want to rename this to getAmount if we potentially make a generic super interface between inventory slots and other resource types?
 
     @Override
     default void serialize(ValueOutput output) {

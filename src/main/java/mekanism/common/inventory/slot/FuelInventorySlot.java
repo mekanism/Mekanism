@@ -34,9 +34,10 @@ public class FuelInventorySlot extends BasicInventorySlot {
         if (isEmpty()) {
             return 0;
         }
-        int burnTime = current.getBurnTime(null, fuelValues) / 2;
+        ItemResource currentType = getResource();
+        int burnTime = currentType.toStack().getBurnTime(null, fuelValues) / 2;
         if (burnTime != 0) {
-            UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
+            UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
             //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
             if (remainder != null) {
                 if (getCount() > 1) {

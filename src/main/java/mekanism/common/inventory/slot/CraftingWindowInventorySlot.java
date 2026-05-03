@@ -7,7 +7,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -22,7 +21,7 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     protected final QIOCraftingWindow craftingWindow;
     @Nullable
     private final IContentsListener inputTypeChange;
-    private ItemStack lastCurrent = ItemStack.EMPTY;
+    private ItemResource lastType = ItemResource.EMPTY;
     private boolean wasEmpty = true;
 
     protected CraftingWindowInventorySlot(BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
@@ -42,10 +41,11 @@ public class CraftingWindowInventorySlot extends BasicInventorySlot {
     public void onContentsChanged() {
         super.onContentsChanged();
         if (inputTypeChange != null) {
-            if (isEmpty() != wasEmpty || current != lastCurrent && !ItemStack.isSameItemSameComponents(current, lastCurrent)) {
-                //If empty state changed, or they are not the same object, and they are not the same type, then mark our input type changed
+            ItemResource currentType = getResource();
+            if (isEmpty() != wasEmpty || !currentType.equals(lastType)) {
+                //If empty state changed, or they are not the same type, then mark our input type changed
                 // Note: If they are the same object (growing or shrinking) then we know they are the same type given they are not empty
-                lastCurrent = current;
+                lastType = currentType;
                 wasEmpty = isEmpty();
                 inputTypeChange.onContentsChanged();
             }

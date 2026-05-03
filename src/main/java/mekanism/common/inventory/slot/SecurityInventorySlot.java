@@ -11,6 +11,7 @@ import mekanism.api.security.IOwnerObject;
 import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.lib.security.SecurityFrequency;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -42,6 +43,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void unlock(@NotNull UUID ownerUUID) {
         if (!isEmpty()) {
+            ItemStack current = getStack();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
@@ -58,6 +60,7 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void lock(UUID ownerUUID, SecurityFrequency frequency) {
         if (!isEmpty()) {
+            ItemStack current = getStack();
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();

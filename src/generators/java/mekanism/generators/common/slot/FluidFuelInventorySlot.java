@@ -68,9 +68,10 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             //Fill the tank from the item
             if (needed > 0 && !fillTank()) {
                 //If filling from item failed, try doing it by conversion
-                int fuel = fuelValue.applyAsInt(getResource());
+                ItemResource currentType = getResource();
+                int fuel = fuelValue.applyAsInt(currentType);
                 if (fuel > 0 && fuel <= needed) {
-                    UseRemainder remainder = current.get(DataComponents.USE_REMAINDER);
+                    UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
                     //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
                     boolean hasContainer = remainder != null;
                     if (hasContainer && getCount() > 1) {
