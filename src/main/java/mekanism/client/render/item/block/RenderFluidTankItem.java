@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.OctahedralGroup;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.render.MekanismRenderer;
@@ -21,9 +22,11 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.joml.Matrix4f;
@@ -48,14 +51,10 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
             return;
         }
         if (argument.fluidScale > 0) {
-            //TODO - 26.1: fluid rendering
             int lightToUse = MekanismRenderer.calculateGlowLight(lightCoords, argument.fluidLight);
             RenderResizableCuboid.renderCube(argument.fluidModel(), poseStack, Sheets.translucentBlockSheet(), submitNodeCollector,
                   argument.fluidColor, lightToUse, overlayCoords, RenderResizableCuboid.FaceDisplay.FRONT,
-                  Minecraft.getInstance().gameRenderer.getMainCamera().position(), null);
-            /*RenderResizableCuboid.renderCube(argument.fluidModel(), poseStack, renderer.getBuffer(Sheets.translucentCullBlockSheet()),
-                  argument.fluidColor, lightToUse, overlayCoords, FaceDisplay.FRONT,
-                  camera, null);*/
+                  Minecraft.getInstance().gameRenderer.getMainCamera().position(), null, argument);
         }
         argument.blockModelRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
     }
@@ -75,6 +74,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         int fluidLight = 0;
         int fluidColor = 0;
         Model3D fluidModel = null;
+        TextureAtlasSprite fluidTexture = null;
         if (attachment != null) {
             FluidStack fluid = attachment.getFluidInTank(0);
             if (!fluid.isEmpty()) {
@@ -82,16 +82,23 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
                 fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
                 fluidLight = fluid.getFluidType().getLightLevel(fluid);
                 fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                fluidTexture = MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL);
             }
         }
         BlockModelRenderState blockModel = new BlockModelRenderState();
         blockModel.setupModel(new Matrix4f(), true).add(fluidTankmodel);
         blockModel.tintLayers().add(tierTint);
-        return new TankRenderState(fluidScale, fluidLight, fluidColor, fluidModel, blockModel);
+        return new TankRenderState(fluidScale, fluidLight, fluidColor, fluidModel, fluidTexture, blockModel);
     }
 
-    //todo - 26.1: can this be singleton?
-    public record TankRenderState(float fluidScale, int fluidLight, int fluidColor, @Nullable Model3D fluidModel, BlockModelRenderState blockModelRenderState) {}
+    public record TankRenderState(float fluidScale, int fluidLight, int fluidColor, @Nullable Model3D fluidModel, @Nullable TextureAtlasSprite fluidTexture,
+                                  BlockModelRenderState blockModelRenderState) implements Function<Direction, TextureAtlasSprite> {
+
+        @Override
+        public @Nullable TextureAtlasSprite apply(Direction direction) {
+            return fluidTexture;
+        }
+    }
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<TankRenderState> {
 

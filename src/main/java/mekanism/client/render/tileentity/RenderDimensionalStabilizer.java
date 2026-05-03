@@ -37,7 +37,6 @@ import org.jetbrains.annotations.Nullable;
 public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<TileEntityDimensionalStabilizer, StabilizerRenderState> {
 
     private static final MekanismRenderer.LazyModel model = new LazyModel(() -> new Model3D()
-          .setTexture(MekanismRenderer.whiteIcon)
           .bounds(0, 1)
           //Don't bother rendering the top or the bottom as it is always at world bounds
           .setSideRender(direction -> direction.getAxis().isHorizontal())
@@ -149,7 +148,7 @@ public class RenderDimensionalStabilizer extends MekanismTileEntityRenderer<Tile
             poseStack.scale(16 * piece.xLength - xScaleShift, state.height, 16 * piece.zLength - zScaleShift);
 
             //TODO - 26.1: rendering. Do we _really_ need to draw it as hundreds of block sized quads?
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR);
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, faceDisplay, camera.pos, null, EAST_WEST_COLOR, EAST_WEST_COLOR, 0, 0, NORTH_SOUTH_COLOR, NORTH_SOUTH_COLOR, MekanismRenderer.WHITE_ICON_GETTER);
             poseStack.popPose();
         }
     }

@@ -129,10 +129,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         for (Model3D side : state.sideModels) {
-            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
+            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
         }
         if (state.model != null) {
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos));
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
         }
         //todo - 26.1: rendering
         if (state.connectionContents != null && !state.connectionContents.isEmpty()) {
@@ -181,7 +181,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
               .computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
         Model3D model = modelMap.get(stage);
         if (model == null) {
-            model = new Model3D().setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
+            model = new Model3D();
             float stageRatio = (stage / (float) stages) * height;
             if (side == null) {
                 float min;

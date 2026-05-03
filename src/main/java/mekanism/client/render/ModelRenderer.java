@@ -56,7 +56,6 @@ public final class ModelRenderer {
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D()
-                  .setTexture(data.getTexture())
                   .xBounds(0.01F, data.length - 0.02F)
                   .yBounds(0.01F, Math.max(0.02F, data.height * (stage / (float) maxStages) - 0.02F))
                   .zBounds(0.01F, data.width - 0.02F);
@@ -83,7 +82,6 @@ public final class ModelRenderer {
         Model3D model = modelMap.get(height);
         if (model == null) {
             model = new Model3D()
-                  .prepFlowing(data.fluidType)
                   .setSideRender(Direction.DOWN, height == 0)
                   .xBounds(0.3F, 0.7F)
                   .zBounds(0.3F, 0.7F);

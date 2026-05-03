@@ -38,7 +38,7 @@ public class ValveRenderData extends FluidRenderData {
         } else if (data == null) {
             return false;
         }
-        return data.getClass() == ValveRenderData.class && /*equalsCommonFluid(data) &&*/ side == ((ValveRenderData) data).side && valveFluidHeight == ((ValveRenderData) data).valveFluidHeight;
+        return data.getClass() == ValveRenderData.class && equalsCommonFluid(data) && side == ((ValveRenderData) data).side && valveFluidHeight == ((ValveRenderData) data).valveFluidHeight;
     }
 
     @Override

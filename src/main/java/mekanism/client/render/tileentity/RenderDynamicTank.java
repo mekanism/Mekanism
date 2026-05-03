@@ -3,7 +3,10 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
@@ -21,6 +24,8 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,9 +47,12 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         TankMultiblockData multiblock = tank.getMultiblock();
         state.renderData = getRenderData(multiblock);
+        state.tankTexture = getContentsTexture(multiblock);
         state.scale = multiblock.prevScale;
         state.valves.clear();
+        state.valveTexture = null;
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
+            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().getFluid());
             for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
                 state.valves.add(ValveRenderData.get(fluidRenderData, valve));
             }
@@ -54,9 +62,11 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            RenderResizableCuboid.renderObject(camera.pos, fluidRenderData, state.valves, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale);
+            MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(fluidRenderData, state.scale);
+            RenderResizableCuboid.renderObject(camera.pos, fluidRenderData, state.valves, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale, fluidModel, state, state.valveTexture);
         } else if (state.renderData != null) {
-            RenderResizableCuboid.renderObject(camera.pos, state.renderData, state.blockPos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale);
+            MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
+            RenderResizableCuboid.renderObject(camera.pos, state.renderData, state.blockPos, model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, OverlayTexture.NO_OVERLAY, state.scale, state);
         }
     }
 
@@ -73,6 +83,19 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         }).of(multiblock).build();
     }
 
+    @Nullable
+    private TextureAtlasSprite getContentsTexture(TankMultiblockData multiblock) {
+        CurrentType currentType = multiblock.mergedTank.getCurrentType();
+        if (currentType == CurrentType.EMPTY) {
+            return null;
+        }
+        return switch (currentType) {
+            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().getFluid(), MekanismRenderer.FluidTextureType.STILL);
+            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().getStack());
+            default -> throw new IllegalStateException("Unknown current type.");
+        };
+    }
+
     @Override
     protected String getProfilerSection() {
         return ProfilerConstants.DYNAMIC_TANK;
@@ -83,11 +106,19 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         return super.shouldRender(tile, multiblock, camera) && !multiblock.isEmpty();
     }
 
-    public static class DynamicTankRenderState extends BlockEntityRenderState {
+    public static class DynamicTankRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
 
         @Nullable
         public RenderData renderData;
         public float scale;
         public List<ValveRenderData> valves = new ArrayList<>();
+        public @Nullable TextureAtlasSprite tankTexture;
+        @Nullable
+        public MekanismRenderer.ValveTextureGetter valveTexture;
+
+        @Override
+        public TextureAtlasSprite apply(Direction direction) {
+            return tankTexture;
+        }
     }
 }

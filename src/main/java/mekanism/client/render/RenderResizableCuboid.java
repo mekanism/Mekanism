@@ -4,6 +4,7 @@ import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
+import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
@@ -38,8 +39,8 @@ public class RenderResizableCuboid {
     }
 
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
-          @Nullable Vec3 renderPos) {
-        renderCube(cube, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb);
+          @Nullable Vec3 renderPos, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
+        renderCube(cube, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb, spriteFromDirection);
     }
 
     //TODO - 26.1: Try use some kind of ColorGetter instead of unrolling arrays?
@@ -48,7 +49,7 @@ public class RenderResizableCuboid {
      * NB: if ever different colours are used for axis side, this won't handle that like it does sprites. (e.g. currently EAST+WEST colours are the same)
      */
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
-          @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor) {
+          @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
         //TODO: Eventually try not rendering faces that are covered by things? At the very least for things like multiblocks
@@ -59,7 +60,7 @@ public class RenderResizableCuboid {
             Vec3 minPos = renderPos.add(cube.minX, cube.minY, cube.minZ);
             Vec3 maxPos = renderPos.add(cube.maxX, cube.maxY, cube.maxZ);
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                TextureAtlasSprite sprite = cube.getSpriteToRender(direction);
+                TextureAtlasSprite sprite = spriteFromDirection.apply(direction);
                 if (sprite != null) {
                     Axis axis = direction.getAxis();
                     AxisDirection axisDirection = direction.getAxisDirection();
@@ -83,7 +84,7 @@ public class RenderResizableCuboid {
             }
         } else {
             for (Direction direction : EnumUtils.DIRECTIONS) {
-                TextureAtlasSprite sprite = cube.getSpriteToRender(direction);
+                TextureAtlasSprite sprite = spriteFromDirection.apply(direction);
                 if (sprite != null) {
                     sprites[direction.ordinal()] = sprite;
                     axisToRender |= 1 << direction.getAxis().ordinal();
@@ -528,9 +529,8 @@ public class RenderResizableCuboid {
     }
 
     //TODO - 26.1 valves -> valveRenderData (map in state setup)
-    public static void renderObject(Vec3 camPos, FluidRenderData data, List<ValveRenderData> valves, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
-        Model3D model = ModelRenderer.getModel(data, scale);
-        int glow = renderObject(camPos, data, rendererPos, model, matrix, renderType, nodeCollector, overlay, scale);
+    public static void renderObject(Vec3 camPos, FluidRenderData data, List<ValveRenderData> valves, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale, Model3D fluidModel, Function<Direction, TextureAtlasSprite> spriteFromDirection, Function<Direction, TextureAtlasSprite> valveTexture) {
+        int glow = renderObject(camPos, data, rendererPos, fluidModel, matrix, renderType, nodeCollector, overlay, scale, spriteFromDirection);
         if (!valves.isEmpty()) {
             //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
             //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
@@ -538,36 +538,31 @@ public class RenderResizableCuboid {
             FaceDisplay faceDisplay = isInsideBounds(camPos, data.location.getX(), data.location.getY(), data.location.getZ(), data.location.getX() + data.length,
                   data.location.getY() + data.height, data.location.getZ() + data.width) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveRenderData valveRenderData : valves) {
-                renderValve(camPos, data, rendererPos, matrix, renderType, nodeCollector, overlay, valveRenderData, model, glow, faceDisplay);
+                renderValve(camPos, data, rendererPos, matrix, renderType, nodeCollector, overlay, valveRenderData, fluidModel, glow, faceDisplay, valveTexture);
             }
         }
     }
 
-    private static void renderValve(Vec3 camPos, FluidRenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay) {
+    private static void renderValve(Vec3 camPos, FluidRenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay, Function<Direction, TextureAtlasSprite> valveTexture) {
         Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, model.maxY - model.minY);
         if (valveModel != null) {
             matrix.pushPose();
             matrix.translate(valveRenderData.getValveLocation().getX() - rendererPos.getX(), valveRenderData.getValveLocation().getY() - rendererPos.getY(), valveRenderData.getValveLocation().getZ() - rendererPos.getZ());
             int argb = data.getColorARGB();
-            renderCube(valveModel, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()));
+            renderCube(valveModel, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()), valveTexture);
             matrix.popPose();
         }
     }
 
-
-    public static void renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
-        renderObject(camPos, data, rendererPos, ModelRenderer.getModel(data, scale), matrix, renderType, nodeCollector, overlay, scale);
-    }
-
     //TODO - 26.1: Should we no-op all the cases of scale == 0
     @CanIgnoreReturnValue
-    public static int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale) {
+    public static int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
         int glow = data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
         matrix.pushPose();
         matrix.translate(data.location.getX() - rendererPos.getX(), data.location.getY() - rendererPos.getY(), data.location.getZ() - rendererPos.getZ());
         int argb = data.getColorARGB(scale);
         FaceDisplay faceDisplay = getFaceDisplay(camPos, data, object);
-        renderCube(object, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(data.location));
+        renderCube(object, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(data.location), spriteFromDirection);
         matrix.popPose();
         return glow;
     }

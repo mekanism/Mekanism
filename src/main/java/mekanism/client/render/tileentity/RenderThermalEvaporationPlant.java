@@ -3,7 +3,10 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.data.FluidRenderData;
 import mekanism.client.render.data.RenderData;
@@ -21,7 +24,10 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -41,10 +47,13 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         EvaporationMultiblockData multiblock = controller.getMultiblock();
         state.scale = Math.min(1, multiblock.prevScale);
-        state.data = RenderData.Builder.create(multiblock.inputTank.getFluid())
+        FluidStack fluid = multiblock.inputTank.getFluid();
+        state.data = RenderData.Builder.create(fluid)
               .of(multiblock)
               .height(multiblock.height() - 1)
               .build();
+        state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL);
+        state.valveTexture = fluid.isEmpty() ? null : MekanismRenderer.getValveTexture(fluid);
         state.valves.clear();
         for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
             state.valves.add(ValveRenderData.get(state.data, valve));
@@ -56,7 +65,8 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         //todo - 26.1: rendering
         if (state.data != null) {
             RenderType renderType = Sheets.translucentBlockSheet();
-            RenderResizableCuboid.renderObject(camera.pos, state.data, state.valves, state.blockPos, poseStack, renderType, nodeCollector, OverlayTexture.NO_OVERLAY, state.scale);
+            MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(state.data, state.scale);
+            RenderResizableCuboid.renderObject(camera.pos, state.data, state.valves, state.blockPos, poseStack, renderType, nodeCollector, OverlayTexture.NO_OVERLAY, state.scale, fluidModel, state, state.valveTexture);
         }
     }
 
@@ -70,11 +80,21 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         return super.shouldRender(tile, multiblock, camera) && !multiblock.inputTank.isEmpty();
     }
 
-    public static class TEPRenderState extends BlockEntityRenderState {
+    public static class TEPRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
 
         @Nullable
         public FluidRenderData data;
         public float scale;
         public List<ValveRenderData> valves = new ArrayList<>();
+        @Nullable
+        public TextureAtlasSprite fluidTexture;
+        @Nullable
+        public MekanismRenderer.ValveTextureGetter valveTexture;
+
+        @Override
+        @Nullable
+        public TextureAtlasSprite apply(Direction direction) {
+            return fluidTexture;
+        }
     }
 }
