@@ -1,13 +1,13 @@
 package mekanism.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
-import java.util.Arrays;
+import it.unimi.dsi.fastutil.Hash;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
@@ -17,9 +17,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.SpecialColors;
 import mekanism.client.gui.element.GuiElementHolder;
-import mekanism.client.render.RenderResizableCuboid.FaceDisplay;
-import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.ValveRenderData;
 import mekanism.client.render.lib.ColorAtlas;
 import mekanism.client.render.lib.ColorAtlas.ColorRegistryObject;
 import mekanism.client.render.tileentity.RenderDigitalMiner;
@@ -33,7 +30,6 @@ import mekanism.client.render.transmitter.RenderMechanicalPipe;
 import mekanism.client.render.transmitter.RenderTransmitterBase;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.Color;
-import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
@@ -45,14 +41,12 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelManager;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -72,8 +66,21 @@ public class MekanismRenderer {
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
     public static TextureAtlasSprite whiteIcon;
+    //todo - 26.1: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
+    public static final Function<Direction, TextureAtlasSprite> WHITE_ICON_GETTER = _ -> whiteIcon;
     public static TextureAtlasSprite teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
+    private static final Map<FluidStack, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new Object2ObjectOpenCustomHashMap<>(new Hash.Strategy<>() {
+        @Override
+        public int hashCode(FluidStack o) {
+            return FluidStack.hashFluidAndComponents(o);
+        }
+
+        @Override
+        public boolean equals(FluidStack a, FluidStack b) {
+            return a == b || (a != null && b != null && FluidStack.isSameFluidSameComponents(a, b));
+        }
+    });
 
     /**
      * Get a fluid texture when a stack does not exist.
@@ -125,34 +132,6 @@ public class MekanismRenderer {
             spriteLocation = MissingTextureAtlasSprite.getLocation();
         }
         return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(AtlasIds.BLOCKS).getSprite(spriteLocation);
-    }
-
-    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int argb, int light, int overlay,
-          FaceDisplay faceDisplay, Vec3 camPos, BlockPos renderPos) {
-        if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, argb, light, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(renderPos));
-        }
-    }
-
-    public static void renderObject(@Nullable Model3D object, @NotNull PoseStack matrix, VertexConsumer buffer, int[] colors, int light, int overlay,
-          FaceDisplay faceDisplay, Vec3 camPos) {
-        if (object != null) {
-            RenderResizableCuboid.renderCube(object, matrix, buffer, colors, light, overlay, faceDisplay, camPos, null);
-        }
-    }
-
-    public static void renderValves(PoseStack matrix, VertexConsumer buffer, Set<ValveData> valves, FluidRenderData data, float fluidHeight, BlockPos pos, int glow,
-          int overlay, FaceDisplay faceDisplay, Vec3 camPos) {
-        for (ValveData valveData : valves) {
-            ValveRenderData valveRenderData = ValveRenderData.get(data, valveData);
-            Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, fluidHeight);
-            if (valveModel != null) {
-                matrix.pushPose();
-                matrix.translate(valveData.location.getX() - pos.getX(), valveData.location.getY() - pos.getY(), valveData.location.getZ() - pos.getZ());
-                renderObject(valveModel, matrix, buffer, valveRenderData.getColorARGB(), glow, overlay, faceDisplay, camPos, valveData.location);
-                matrix.popPose();
-            }
-        }
     }
 
     //Color
@@ -328,6 +307,7 @@ public class MekanismRenderer {
         RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
+        VALVE_FLUID_TEX_CACHE.clear();
 
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
         parseColorAtlas(Mekanism.rl("textures/colormap/tiers.png"), EnumUtils.TIERS);
@@ -336,17 +316,21 @@ public class MekanismRenderer {
         GuiElementHolder.updateBackgroundColor();
     }
 
+    public static ValveTextureGetter getValveTexture(FluidStack fluid) {
+        return VALVE_FLUID_TEX_CACHE.computeIfAbsent(fluid, ValveTextureGetter::create);
+    }
+
     public enum FluidTextureType {
         STILL,
         FLOWING
     }
 
+    //TODO - 26.1: Thiakil to poke at this
     public static class Model3D {
 
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
 
-        private final TextureAtlasSprite[] textures = new TextureAtlasSprite[6];
         private final boolean[] renderSides = {true, true, true, true, true, true};
 
         public Model3D setSideRender(Predicate<Direction> shouldRender) {
@@ -361,17 +345,14 @@ public class MekanismRenderer {
             return this;
         }
 
-        public Model3D copy() {
-            Model3D copy = new Model3D();
-            System.arraycopy(textures, 0, copy.textures, 0, textures.length);
-            System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
-            return copy.bounds(minX, minY, minZ, maxX, maxY, maxZ);
+        public boolean shouldRenderSide(Direction side) {
+            return renderSides[side.ordinal()];
         }
 
-        @Nullable
-        public TextureAtlasSprite getSpriteToRender(Direction side) {
-            int ordinal = side.ordinal();
-            return renderSides[ordinal] ? textures[ordinal] : null;
+        public Model3D copy() {
+            Model3D copy = new Model3D();
+            System.arraycopy(renderSides, 0, copy.renderSides, 0, renderSides.length);
+            return copy.bounds(minX, minY, minZ, maxX, maxY, maxZ);
         }
 
         public Model3D shrink(float amount) {
@@ -422,33 +403,6 @@ public class MekanismRenderer {
             };
         }
 
-        public Model3D prepFlowing(@NotNull FluidStack fluid) {
-            TextureAtlasSprite still = getFluidTexture(fluid, FluidTextureType.STILL);
-            TextureAtlasSprite flowing = getFluidTexture(fluid, FluidTextureType.FLOWING);
-            return setTextures(still, still, flowing, flowing, flowing, flowing);
-        }
-
-        public Model3D setTexture(Direction side, @Nullable TextureAtlasSprite sprite) {
-            textures[side.ordinal()] = sprite;
-            return this;
-        }
-
-        public Model3D setTexture(TextureAtlasSprite tex) {
-            Arrays.fill(textures, tex);
-            return this;
-        }
-
-        public Model3D setTextures(TextureAtlasSprite down, TextureAtlasSprite up, TextureAtlasSprite north, TextureAtlasSprite south, TextureAtlasSprite west,
-              TextureAtlasSprite east) {
-            textures[0] = down;
-            textures[1] = up;
-            textures[2] = north;
-            textures[3] = south;
-            textures[4] = west;
-            textures[5] = east;
-            return this;
-        }
-
         public interface ModelBoundsSetter {
 
             Model3D set(float min, float max);
@@ -475,6 +429,20 @@ public class MekanismRenderer {
                 model = supplier.get();
             }
             return model;
+        }
+    }
+
+    public record ValveTextureGetter(TextureAtlasSprite still, TextureAtlasSprite flowing) implements Function<Direction, TextureAtlasSprite> {
+
+        @Override
+        public TextureAtlasSprite apply(Direction direction) {
+            return null;
+        }
+
+        public static ValveTextureGetter create(FluidStack fluid) {
+            TextureAtlasSprite still = getFluidTexture(fluid, FluidTextureType.STILL);
+            TextureAtlasSprite flowing = getFluidTexture(fluid, FluidTextureType.FLOWING);
+            return new ValveTextureGetter(still, flowing);
         }
     }
 }

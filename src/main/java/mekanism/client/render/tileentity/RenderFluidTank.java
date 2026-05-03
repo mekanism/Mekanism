@@ -5,20 +5,26 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.RenderFluidTank.FluidTankRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.MekanismUtils;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -55,26 +61,31 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
         state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;
+        state.fluidTexture = state.fluid.isEmpty() ? null : MekanismRenderer.getFluidTexture(state.fluid, FluidTextureType.STILL);
         if (!tank.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tank.valveFluid)) {
             //If it is lighter than air we don't need to render the valve
             state.valveFluid = tank.valveFluid;
             state.valveTint = MekanismRenderer.getColorARGB(state.valveFluid);
             state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.valveFluid);
+            state.valveFluidTexture = MekanismRenderer.getValveTexture(state.valveFluid);
+        } else {
+            state.valveFluidTexture = null;
         }
     }
 
     @Override
     public void submit(FluidTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         //todo - 26.1 rendering
-        /*buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
+        //TODO move model gathering to the extract
+        RenderType renderType = Sheets.translucentBlockSheet();
         if (state.fluidScale > 0) {
-            MekanismRenderer.renderObject(getFluidModel(state.fluid, state.fluidScale), poseStack, buffer, state.fluidTint, state.fluidGlow,
-                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+            Model3D object = getFluidModel(state.fluid, state.fluidScale);
+            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.fluidTint, state.fluidGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
         }
         if (!state.valveFluid.isEmpty()) {
-            MekanismRenderer.renderObject(getValveModel(state.valveFluid, state.fluidScale), poseStack, buffer, state.valveTint, state.valveGlow,
-                  OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
-        }*/
+            Model3D object = getValveModel(state.valveFluid, state.fluidScale);
+            RenderResizableCuboid.renderCube(object, poseStack, renderType, nodeCollector, state.valveTint, state.valveGlow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.valveFluidTexture);
+        }
     }
 
     @Override
@@ -89,7 +100,6 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         if (model == null) {
             model = new Model3D()
                   .setSideRender(side -> side.getAxis().isHorizontal())
-                  .prepFlowing(fluid)
                   .xBounds(0.3225F, 0.6775F)
                   .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
                   .zBounds(0.3225F, 0.6775F);
@@ -104,7 +114,6 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D()
-                  .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
                   .setSideRender(Direction.DOWN, false)
                   .setSideRender(Direction.UP, stage < stages)
                   .xBounds(0.135F, 0.865F)
@@ -115,7 +124,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         return model;
     }
 
-    public static class FluidTankRenderState extends BlockEntityRenderState {
+    public static class FluidTankRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
 
         //TODO - 26.1: Store the textures instead of the fluid stacks
         public FluidStack fluid = FluidStack.EMPTY;
@@ -125,5 +134,14 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         public FluidStack valveFluid = FluidStack.EMPTY;
         public int valveTint = 0xFFFFFFFF;
         public int valveGlow;
+        @Nullable
+        public TextureAtlasSprite fluidTexture;
+        @Nullable
+        public MekanismRenderer.ValveTextureGetter valveFluidTexture;
+
+        @Override
+        public TextureAtlasSprite apply(Direction direction) {
+            return fluidTexture;
+        }
     }
 }

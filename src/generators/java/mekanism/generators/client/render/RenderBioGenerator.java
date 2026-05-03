@@ -5,22 +5,28 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
+import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.ModelRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.tileentity.MekanismTileEntityRenderer;
 import mekanism.common.util.EnumUtils;
 import mekanism.generators.client.render.RenderBioGenerator.BioGeneratorRenderState;
 import mekanism.generators.common.GeneratorsProfilerConstants;
 import mekanism.generators.common.tile.TileEntityBioGenerator;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -51,6 +57,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         FluidStack fluid = generator.bioFuelTank.getFluid();
         float fluidScale = fluid.amount() / (float) generator.bioFuelTank.getCapacity();
         state.model = getModel(fluid, generator.getDirection(), fluidScale);
+        state.fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL);
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
     }
 
@@ -58,9 +65,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.model != null) {
             //TODO - 26.1: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
-            //todo renderObject
-            //MekanismRenderer.renderObject(state.model, poseStack, Sheets.translucentBlockSheet(), state.tint, LightCoordsUtil.FULL_BRIGHT,
-            //      OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, camera.pos, state.blockPos);
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
         }
     }
 
@@ -80,7 +85,6 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D()
-                  .setTexture(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL))
                   .yBounds(0.4385F, 0.4385F + 0.4375F * (stage / (float) stages));
             Direction opposite = side.getOpposite();
             for (Direction direction : EnumUtils.DIRECTIONS) {
@@ -105,10 +109,18 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         return model;
     }
 
-    public static class BioGeneratorRenderState extends BlockEntityRenderState {
+    public static class BioGeneratorRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
 
         @Nullable
         public Model3D model;
         public int tint = 0xFFFFFFFF;
+        @Nullable
+        public TextureAtlasSprite fluidTexture;
+
+        @Override
+        @Nullable
+        public TextureAtlasSprite apply(Direction direction) {
+            return fluidTexture;
+        }
     }
 }

@@ -3,8 +3,10 @@ package mekanism.client.model;
 import com.google.common.collect.Table;
 import java.util.Map;
 import java.util.Optional;
+import mekanism.api.tier.BaseTier;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
+import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPersonalBarrel;
@@ -136,6 +138,13 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         simpleISTER(itemModels, MekanismItems.FREE_RUNNERS, new RenderFreeRunners.Unbaked(false));
         simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, new RenderFreeRunners.Unbaked(true));
+
+        //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
+        simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ADVANCED));
+        simpleISTER(itemModels, MekanismBlocks.BASIC_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.BASIC));
+        simpleISTER(itemModels, MekanismBlocks.ELITE_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ELITE));
+        simpleISTER(itemModels, MekanismBlocks.ULTIMATE_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ULTIMATE));
+        simpleISTER(itemModels, MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.CREATIVE));
 
         itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER.asItem());
         //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_0.asItem());

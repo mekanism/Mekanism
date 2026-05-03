@@ -4,7 +4,6 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.client.render.MekanismRenderer;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import org.jetbrains.annotations.NotNull;
@@ -24,11 +23,6 @@ public class ChemicalRenderData extends RenderData {
     @Override
     public int getColorARGB(float scale) {
         return MekanismRenderer.getColorARGB(chemical, scale);
-    }
-
-    @Override
-    public TextureAtlasSprite getTexture() {
-        return MekanismRenderer.getChemicalTexture(chemical);
     }
 
     @Override

@@ -417,6 +417,7 @@ public class RenderTickHandler {
                                 Vec3 viewPosition = info.position();
                                 matrix.pushPose();
                                 matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
+                                TextureAtlasSprite tex = MekanismRenderer.overlays.get(type);
                                 @Nullable Model3D object = getOverlayModel(face, type);
                                 VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
                                 int argb = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
@@ -479,7 +480,7 @@ public class RenderTickHandler {
         Map<TransmissionType, Model3D> modelMap = cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class));
         Model3D model = modelMap.get(type);
         if (model == null) {
-            model = new Model3D().setTexture(MekanismRenderer.overlays.get(type))
+            model = new Model3D()
                   .prepSingleFaceModelSize(side);
             modelMap.put(type, model);
         }

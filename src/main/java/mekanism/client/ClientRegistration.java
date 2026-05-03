@@ -105,6 +105,7 @@ import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
+import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.layer.MekanismElytraLayer;
@@ -336,6 +337,7 @@ public class ClientRegistration {
     public static void registerSpecialRenderer(RegisterSpecialModelRendererEvent event) {
         event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("robit"), RenderRobit.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent
