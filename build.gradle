@@ -26,7 +26,7 @@ plugins {
 
 tasks.named('wrapper', Wrapper) {
     //Define wrapper values here so as to not have to always do so when updating gradlew.properties
-    gradleVersion = '9.4.1'
+    gradleVersion = '9.5'
     distributionType = Wrapper.DistributionType.ALL
 }
 
@@ -569,9 +569,8 @@ dependencies {
     compileOnly("top.theillusivec4.curios:curios-neoforge:${curios_version}:api")
     compileOnly("com.blamejared.recipestages:RecipeStages:${recipe_stages_version}")
     compileOnly("curse.maven:opencomputers2-437654:${oc2_id}")
-    //TODO - 26.1 fix to use mc version prop if it updates
-    compileOnly("cc.tweaked:cc-tweaked-1.21.8-forge-api:${cc_tweaked_version}")
-    //localRuntime("cc.tweaked:cc-tweaked-1.21.8-forge:${cc_tweaked_version}")
+    compileOnly("cc.tweaked:cc-tweaked-${minecraft_version}-forge-api:${cc_tweaked_version}")
+    //localRuntime("cc.tweaked:cc-tweaked-${minecraft_version}-forge:${cc_tweaked_version}")
     compileOnly("curse.maven:female-gender-forge-481655:${wildfire_gender_mod_id}")
     //compileOnly("curse.maven:framedblocks-441647:${framedblocks_id}")
     compileOnly("io.github.xfacthd.framedblocks:FramedBlocks-26.1:${framedblocks_version}")
@@ -580,10 +579,9 @@ dependencies {
     //TODO - 26.1 change back to datagenMainImplementation
     datagenMainCompileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}")
 
-    //datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
-    //datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty
-    //TODO - 26.1 change back to datagenMainImplementation
-    datagenMainCompileOnly("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
+    datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
+    datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty and Biomes we've gone
+    datagenMainImplementation("com.github.glitchfiend:BiomesOPlenty-neoforge:${biomesoplenty_version}")
 
     //datagenMainRuntimeOnly("curse.maven:corgilib-693313:${corgilib_id}")//Biomes we've gone
     //datagenMainRuntimeOnly("curse.maven:geckolib-388172:${geckolib_id}")//Biomes we've gone

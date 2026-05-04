@@ -4,7 +4,7 @@ Mekanism is developed for Minecraft 26.1 using NeoForge.
 
 ## Prerequisites
 
-* Gradle - Version 9.4.1 is known to work, your mileage with other versions may vary
+* Gradle - Version 9.5 is known to work, your mileage with other versions may vary
 * JDK - Version 25 is the target as that is what Mojang ships, but to run gradle you must use a minimum of JDK 17.
 
 ## Directory Structure
