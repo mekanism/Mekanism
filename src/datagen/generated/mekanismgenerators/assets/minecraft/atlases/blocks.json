@@ -3,14 +3,6 @@
     {
       "type": "minecraft:single",
       "resource": "mekanism:liquid/liquid"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/liquid_flow"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "minecraft:block/water_overlay"
     }
   ]
 }
