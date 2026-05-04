@@ -120,21 +120,19 @@ public class RenderResizableCuboid {
         matrix.pushPose();
         matrix.translate(xShift, yShift, zShift);
 
-        if ((axisToRender & X_AXIS_MASK) != 0) {
-            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideXAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), westColor, eastColor);
-            }));
-        }
-        if ((axisToRender & Y_AXIS_MASK) != 0) {
-            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideYAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), downColor, upColor);
-            }));
-        }
-        if ((axisToRender & Z_AXIS_MASK) != 0) {
-            nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
-                renderSideZAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), new NormalData(pose.normal(), NORMAL, faceDisplay), northColor, southColor);
-            }));
-        }
+        int finalAxisToRender = axisToRender;
+        nodeCollector.submitCustomGeometry(matrix, renderType, ((pose, buffer) -> {
+            NormalData normalData = new NormalData(pose.normal(), NORMAL, faceDisplay);
+            if ((finalAxisToRender & X_AXIS_MASK) != 0) {
+                renderSideXAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), normalData, westColor, eastColor);
+            }
+            if ((finalAxisToRender & Y_AXIS_MASK) != 0) {
+                renderSideYAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), normalData, downColor, upColor);
+            }
+            if ((finalAxisToRender & Z_AXIS_MASK) != 0) {
+                renderSideZAxis(buffer, light, overlay, faceDisplay, xDelta, yDelta, zDelta, sprites, yBounds, zBounds, xBounds, pose.pose(), normalData, northColor, southColor);
+            }
+        }));
 
         matrix.popPose();
     }
