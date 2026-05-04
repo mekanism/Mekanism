@@ -1,12 +1,12 @@
 package mekanism.common.registration.impl;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.UnaryOperator;
 import mekanism.common.Mekanism;
 import mekanism.common.base.IChemicalConstant;
-import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.dispenser.BlockSource;
@@ -14,8 +14,10 @@ import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.dispenser.DispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.ARGB;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.DispensibleContainerItem;
 import net.minecraft.world.item.Item;
@@ -74,6 +76,7 @@ public class FluidDeferredRegister {
     private final DeferredRegister<Fluid> fluidRegister;
     private final DeferredRegister<Block> blockRegister;
     private final ItemDeferredRegister itemRegister;
+    private final List<FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, ? extends BucketItem>> allRegistered = new ArrayList<>();
 
     public FluidDeferredRegister(String modid) {
         blockRegister = DeferredRegister.create(Registries.BLOCK, modid);
@@ -135,7 +138,9 @@ public class FluidDeferredRegister {
         DeferredHolder<Block, LiquidBlock> block = blockRegister.register(name, key -> new LiquidBlock(stillFluid.get(), BlockBehaviour.Properties.of()
               .setId(ResourceKey.create(blockRegister.getRegistryKey(), key))
               .noCollision().strength(100.0F).noLootTable().replaceable().pushReaction(PushReaction.DESTROY).liquid().mapColor(color)));
-        return new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
+        FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BUCKET> registryObject = new FluidRegistryObject<>(fluidType, stillFluid, flowingFluid, bucket, block);
+        allRegistered.add(registryObject);
+        return registryObject;
     }
 
     public static MapColor getClosestColor(int tint) {
@@ -196,6 +201,10 @@ public class FluidDeferredRegister {
 
     public Collection<DeferredHolder<Item, ? extends Item>> getBucketEntries() {
         return itemRegister.getEntries();
+    }
+
+    public Collection<FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, ? extends BucketItem>> getEntries() {
+        return allRegistered;
     }
 
     public void registerBucketDispenserBehavior() {

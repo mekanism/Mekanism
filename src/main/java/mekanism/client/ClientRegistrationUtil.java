@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.client.gui.machine.GuiAdvancedElectricMachine;
 import mekanism.client.gui.machine.GuiElectricMachine;
+import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.RenderPropertiesProvider;
 import mekanism.common.block.BlockMekanism;
 import mekanism.common.block.interfaces.IColoredBlock;
@@ -17,31 +18,43 @@ import mekanism.common.registration.impl.FluidDeferredRegister.MekanismFluidType
 import mekanism.common.registration.impl.TileEntityTypeRegistryObject;
 import mekanism.common.tile.prefab.TileEntityAdvancedElectricMachine;
 import mekanism.common.tile.prefab.TileEntityElectricMachine;
+import net.minecraft.client.Camera;
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockTintSource;
 import net.minecraft.client.gui.screens.MenuScreens.ScreenConstructor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.MenuAccess;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.block.FluidModel;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.fog.FogData;
+import net.minecraft.client.renderer.fog.environment.FogEnvironment;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
+import net.minecraft.world.attribute.EnvironmentAttributes;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
+import net.neoforged.neoforge.client.fluid.FluidTintSources;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Vector4f;
+import org.jspecify.annotations.NullMarked;
 
 public class ClientRegistrationUtil {
 
@@ -182,27 +195,12 @@ public class ClientRegistrationUtil {
         }
     }
 
+    @NullMarked
     public static void registerFluidExtensions(RegisterClientExtensionsEvent event, FluidDeferredRegister allFluids) {
         for (Holder<FluidType> fluidTypeEntry : allFluids.getFluidTypeEntries()) {
             if (fluidTypeEntry.value() instanceof MekanismFluidType fluidType) {
+                int fluidTint = fluidType.color;
                 event.registerFluidType(new IClientFluidTypeExtensions() {
-                    //TODO - 26.1 fluid models
-                    /*@NotNull
-                    @Override
-                    public Identifier getStillTexture() {
-                        return fluidType.stillTexture;
-                    }
-
-                    @NotNull
-                    @Override
-                    public Identifier getFlowingTexture() {
-                        return fluidType.flowingTexture;
-                    }
-
-                    @Override
-                    public Identifier getOverlayTexture() {
-                        return fluidType.overlayTexture;
-                    }*/
 
                     @Nullable
                     @Override
@@ -210,35 +208,37 @@ public class ClientRegistrationUtil {
                         return fluidType.renderOverlayTexture;
                     }
 
-                    //TODO - 26.1 fluid model/properties
-                    /*@NotNull
                     @Override
-                    public Vector3f modifyFogColor(@NotNull Camera camera, float partialTick, @NotNull ClientLevel level, int renderDistance, float darkenWorldAmount,
-                          @NotNull Vector3f fluidFogColor) {
-                        return new Vector3f(ARGB.redFloat(getTintColor()), ARGB.greenFloat(getTintColor()), ARGB.blueFloat(getTintColor()));
+                    public void modifyFogColor(Camera camera, float partialTick, ClientLevel level, int renderDistance, float darkenWorldAmount, Vector4f fluidFogColor) {
+                        //TODO - 26.1: is alpha needed?
+                        fluidFogColor.set(ARGB.redFloat(fluidTint), ARGB.greenFloat(fluidTint), ARGB.blueFloat(fluidTint));
                     }
 
                     @Override
-                    public void modifyFogRender(@NotNull Camera camera, @NotNull FogRenderer.FogMode mode, float renderDistance, float partialTick, float nearDistance,
-                          float farDistance, @NotNull FogShape shape) {
+                    public void modifyFogRender(Camera camera, @Nullable FogEnvironment environment, float renderDistance, float partialTick, FogData fog) {
                         //Copy of logic for water except always treating it as if it was a player who has no water vision
                         // and does not take the biome's closer water fog into account
-                        farDistance = 24F;
-                        if (farDistance > renderDistance) {
-                            farDistance = renderDistance;
-                            shape = FogShape.CYLINDER;
-                        }
-                        RenderSystem.setShaderFogStart(-8);
-                        RenderSystem.setShaderFogEnd(farDistance);
-                        RenderSystem.setShaderFogShape(shape);
-                    }
+                        float partialTicks = MekanismRenderer.getPartialTick();
+                        fog.environmentalStart = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_START_DISTANCE, partialTicks);
+                        fog.environmentalEnd = camera.attributeProbe().getValue(EnvironmentAttributes.WATER_FOG_END_DISTANCE, partialTicks);
 
-                    @Override
-                    public int getTintColor() {
-                        return fluidType.color;
-                    }*/
+                        fog.skyEnd = fog.environmentalEnd;
+                        fog.cloudEnd = fog.environmentalEnd;
+                    }
                 }, fluidType);
             }
+        }
+    }
+
+    public static void registerFluidModels(RegisterFluidModelsEvent event, FluidDeferredRegister fluidDeferredRegister) {
+        for (var registryObject : fluidDeferredRegister.getEntries()) {
+            MekanismFluidType fluidType = registryObject.getFluidType();
+            event.register(new FluidModel.Unbaked(
+                  new Material(fluidType.stillTexture),
+                  new Material(fluidType.flowingTexture),
+                  new Material(fluidType.overlayTexture),
+                  FluidTintSources.constant(fluidType.color)
+            ), registryObject, registryObject.getFlowingFluid());
         }
     }
 }

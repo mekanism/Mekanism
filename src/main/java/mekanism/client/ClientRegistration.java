@@ -173,6 +173,7 @@ import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterBlockStateModels;
 import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.neoforged.neoforge.client.event.RegisterConditionalItemModelPropertyEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
 import net.neoforged.neoforge.client.event.RegisterItemDecorationsEvent;
 import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
@@ -431,6 +432,11 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerAdditionalModels(ModelEvent.RegisterStandalone event) {
         MekanismModelCache.INSTANCE.setup(event);
+    }
+
+    @SubscribeEvent
+    public static void fluidModels(RegisterFluidModelsEvent event) {
+        ClientRegistrationUtil.registerFluidModels(event, MekanismFluids.FLUIDS);
     }
 
     @SubscribeEvent

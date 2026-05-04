@@ -44,6 +44,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.client.event.AddClientReloadListenersEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterFluidModelsEvent;
 import net.neoforged.neoforge.client.event.RegisterMenuScreensEvent;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.extensions.common.RegisterClientExtensionsEvent;
@@ -125,10 +126,10 @@ public class GeneratorsClientRegistration {
         ClientRegistrationUtil.registerScreen(event, GeneratorsContainerTypes.WIND_GENERATOR, GuiWindGenerator::new);
     }
 
-    //@SubscribeEvent TODO - 26.1 Is this needed?
-    //public static void registerItemColorHandlers(RegisterColorHandlersEvent.Item event) {
-    //    ClientRegistrationUtil.registerBucketColorHandler(event, GeneratorsFluids.FLUIDS);
-    //}
+    @SubscribeEvent
+    public static void fluidModels(RegisterFluidModelsEvent event) {
+        ClientRegistrationUtil.registerFluidModels(event, GeneratorsFluids.FLUIDS);
+    }
 
     @SubscribeEvent
     public static void onStitch(TextureAtlasStitchedEvent event) {
