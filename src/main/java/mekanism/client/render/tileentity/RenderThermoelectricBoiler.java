@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
@@ -25,8 +24,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -61,7 +58,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
                   .of(multiblock)
                   .height(height)
                   .build();
-            state.waterTexture = MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL);
+            state.waterTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
             state.valveTexture = MekanismRenderer.getValveTexture(fluid);
         } else {
             state.waterData = null;
@@ -76,7 +73,7 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
                   .location(multiblock.upperRenderLocation.offset(1, 0, 1))
                   .height(steamHeight)
                   .build();
-            state.steamTexture = MekanismRenderer.getChemicalTexture(chemicalStack);
+            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
         } else {
             state.steamData = null;
         }
@@ -97,12 +94,12 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
             int fluidColor = state.waterData.getColorARGB();
             int fluidColorScaled = state.waterData.getColorARGB(state.waterScale);
             int glowLight = state.waterData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.waterTexGetter, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.waterTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, fluidColor, glowLight);
         }
         if (state.steamScale > 0 && state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.steamTexGetter, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
         }
     }
 
@@ -121,14 +118,12 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         @Nullable
         public FluidRenderData waterData;
         @Nullable
-        public TextureAtlasSprite waterTexture;
-        public Function<Direction, TextureAtlasSprite> waterTexGetter = _ -> waterTexture;
+        public RenderResizableCuboid.TexturePicker waterTexture;
         public float waterScale;
         @Nullable
         public RenderData steamData;
         @Nullable
-        public TextureAtlasSprite steamTexture;
-        public Function<Direction, TextureAtlasSprite> steamTexGetter = _ -> steamTexture;
+        public RenderResizableCuboid.TexturePicker steamTexture;
         public float steamScale;
         public List<ValveRenderData> valves = new ArrayList<>();
         @Nullable

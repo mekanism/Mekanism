@@ -3,15 +3,14 @@ package mekanism.client.render.transmitter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.EnumColor;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.client.render.RenderResizableCuboid;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.SpriteId;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -36,20 +35,14 @@ public class TransmitterRenderState extends BlockEntityRenderState {
         public int tempColor = 0xFFFFFFFF;
     }
 
-    public static class PipeRenderState extends BufferedTransmitterRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class PipeRenderState extends BufferedTransmitterRenderState {
 
         @Nullable
-        public TextureAtlasSprite fluidTexture;
+        public RenderResizableCuboid.TexturePicker fluidTexture;
         public int fluidTint = 0XFFFFFFFF;
         public int glow;
         public int stage;
         public List<MekanismRenderer.Model3D> sideModels = new ArrayList<>();
-
-        @Override
-        @Nullable
-        public TextureAtlasSprite apply(Direction direction) {
-            return fluidTexture;
-        }
     }
 
     public static class TransporterRenderState extends TransmitterRenderState {

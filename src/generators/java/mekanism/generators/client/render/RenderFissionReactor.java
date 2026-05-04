@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
@@ -32,9 +31,7 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
@@ -93,11 +90,11 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
             FluidStack fluid = multiblock.coolantTank.getFluidTank().getFluid();
             state.coolantData = RenderData.Builder.create(fluid).of(multiblock).buildScaled(state.coolantScale);
-            state.coolantTexture = MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL);
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             ChemicalStack chemicalStack = multiblock.coolantTank.getChemicalTank().getStack();
             state.coolantData = RenderData.Builder.create(chemicalStack).of(multiblock).buildScaled(state.coolantScale);
-            state.coolantTexture = MekanismRenderer.getChemicalTexture(chemicalStack);
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
         }
         if (state.coolantData != null) {
             state.coolantModel = getCoolantModel(state.coolantData);
@@ -107,7 +104,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
             state.heatedCoolantData = RenderData.Builder.create(chemicalStack).of(multiblock).build();
             //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
             state.heatedCoolantModel = cachedHeatedCoolantModels.computeIfAbsent(state.heatedCoolantData, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
-            state.heatedCoolantTexture = MekanismRenderer.getChemicalTexture(chemicalStack);
+            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
         }
 
         if (multiblock.isBurning()) {
@@ -136,10 +133,10 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         }
         //TODO - 26.1 - renderObject
         if (state.coolantData != null && state.coolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantGetter, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width, state.coolantData.asRenderData().height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantTexture, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width, state.coolantData.asRenderData().height);
         }
         if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantGetter, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width, state.heatedCoolantData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantTexture, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width, state.heatedCoolantData.height);
         }
     }
 
@@ -154,16 +151,14 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         @Nullable
         public ScaledRenderData coolantData;
         @Nullable
-        public TextureAtlasSprite coolantTexture;
-        public Function<Direction, TextureAtlasSprite> coolantGetter = _ -> coolantTexture;
+        public RenderResizableCuboid.TexturePicker coolantTexture;
         @Nullable
         public Model3D coolantModel;
         public float coolantScale;
         @Nullable
         public RenderData heatedCoolantData;
         @Nullable
-        public TextureAtlasSprite heatedCoolantTexture;
-        public Function<Direction, TextureAtlasSprite> heatedCoolantGetter = _ -> heatedCoolantTexture;
+        public RenderResizableCuboid.TexturePicker heatedCoolantTexture;
         @Nullable
         public Model3D heatedCoolantModel;
         public float heatedCoolantScale;

@@ -3,7 +3,6 @@ package mekanism.client.render;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.EnumUtils;
@@ -35,7 +34,7 @@ public class RenderResizableCuboid {
     }
 
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int argb, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
-          @Nullable Vec3 renderPos, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
+          @Nullable Vec3 renderPos, TexturePicker spriteFromDirection) {
         renderCube(cube, matrix, renderType, nodeCollector, light, overlay, faceDisplay, camPos, renderPos, argb, argb, argb, argb, argb, argb, spriteFromDirection);
     }
 
@@ -45,7 +44,7 @@ public class RenderResizableCuboid {
      * NB: if ever different colours are used for axis side, this won't handle that like it does sprites. (e.g. currently EAST+WEST colours are the same)
      */
     public static void renderCube(Model3D cube, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int light, int overlay, FaceDisplay faceDisplay, Vec3 camPos,
-          @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
+          @Nullable Vec3 renderPos, int westColor, int eastColor, int downColor, int upColor, int northColor, int southColor, TexturePicker spriteFromDirection) {
         TextureAtlasSprite[] sprites = new TextureAtlasSprite[6];
         int axisToRender = 0;
         //TODO: Eventually try not rendering faces that are covered by things? At the very least for things like multiblocks
@@ -528,7 +527,7 @@ public class RenderResizableCuboid {
                ? FaceDisplay.BACK : FaceDisplay.FRONT;
     }
 
-    public static void renderValves(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D fluidModel, List<ValveRenderData> valves, int overlay, Function<Direction, TextureAtlasSprite> valveTexture, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, int physicalHeight, int fluidColor, int glowLight) {
+    public static void renderValves(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D fluidModel, List<ValveRenderData> valves, int overlay, TexturePicker valveTexture, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, int physicalHeight, int fluidColor, int glowLight) {
         if (!valves.isEmpty()) {
             //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
             //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
@@ -541,7 +540,7 @@ public class RenderResizableCuboid {
         }
     }
 
-    private static void renderValve(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, BlockPos rendererPos, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay, Function<Direction, TextureAtlasSprite> valveTexture, int fluidColor) {
+    private static void renderValve(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, BlockPos rendererPos, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay, TexturePicker valveTexture, int fluidColor) {
         Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, model.maxY - model.minY);
         if (valveModel != null) {
             matrix.pushPose();
@@ -552,7 +551,7 @@ public class RenderResizableCuboid {
     }
 
     //TODO - 26.1: Should we no-op all the cases of scale == 0
-    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D object, Function<Direction, TextureAtlasSprite> spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, float physicalHeight) {
+    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D object, TexturePicker spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, float physicalHeight) {
         matrix.pushPose();
         matrix.translate(renderStartPos.getX() - terPos.getX(), renderStartPos.getY() - terPos.getY(), renderStartPos.getZ() - terPos.getZ());
         FaceDisplay faceDisplay = getFaceDisplay(camPos, renderStartPos, physicalLength, physicalWidth, physicalHeight);
@@ -591,5 +590,10 @@ public class RenderResizableCuboid {
             this.front = front;
             this.back = back;
         }
+    }
+
+    public sealed interface TexturePicker permits MekanismRenderer.SingleTexturePicker, MekanismRenderer.ValveTextureGetter {
+
+        TextureAtlasSprite apply(Direction direction);
     }
 }

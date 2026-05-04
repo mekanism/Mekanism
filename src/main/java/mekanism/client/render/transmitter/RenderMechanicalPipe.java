@@ -73,7 +73,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             return;//Shouldn't be the case but validate it
         }
         state.currentScale = network.currentScale;
-        state.fluidTexture = MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL);
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL));
         state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
@@ -129,10 +129,10 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         }
 
         for (Model3D side : state.sideModels) {
-            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
+            RenderResizableCuboid.renderCube(side, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         if (state.model != null) {
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.fluidTint, state.glow, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
         //todo - 26.1: rendering
         if (state.connectionContents != null && !state.connectionContents.isEmpty()) {

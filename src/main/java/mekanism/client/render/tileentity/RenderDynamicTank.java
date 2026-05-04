@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -26,7 +25,6 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -49,7 +47,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         TankMultiblockData multiblock = tank.getMultiblock();
         state.renderData = getRenderData(multiblock);
-        state.tankTexture = getContentsTexture(multiblock);
+        state.tankTexture = MekanismRenderer.getSinglePicker(getContentsTexture(multiblock));
         state.scale = multiblock.prevScale;
         state.valves.clear();
         state.valveTexture = null;
@@ -69,11 +67,11 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             int fluidColor = fluidRenderData.getColorARGB();
             int fluidColorScaled = fluidRenderData.getColorARGB(state.scale);
             int glowLight = fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.tankTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
         } else if (state.renderData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.tankTexture, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
         }
     }
 
@@ -113,19 +111,14 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         return super.shouldRender(tile, multiblock, camera) && !multiblock.isEmpty();
     }
 
-    public static class DynamicTankRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class DynamicTankRenderState extends BlockEntityRenderState {
 
         @Nullable
         public RenderData renderData;
         public float scale;
         public List<ValveRenderData> valves = new ArrayList<>();
-        public @Nullable TextureAtlasSprite tankTexture;
+        public @Nullable RenderResizableCuboid.TexturePicker tankTexture;
         @Nullable
         public MekanismRenderer.ValveTextureGetter valveTexture;
-
-        @Override
-        public TextureAtlasSprite apply(Direction direction) {
-            return tankTexture;
-        }
     }
 }

@@ -1,7 +1,6 @@
 package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.client.render.MekanismRenderer;
@@ -20,8 +19,6 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -53,7 +50,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
                       .of(multiblock)
                       .height(height)
                       .build();
-                state.steamTexture = MekanismRenderer.getChemicalTexture(chemicalStack);
+                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
             }
         }
     }
@@ -62,7 +59,7 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
     public void submit(TurbineRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, state.steamTexture, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width, state.steamData.height);
         }
     }
 
@@ -76,17 +73,12 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         return super.shouldRender(tile, multiblock, camera) && multiblock.complex != null;
     }
 
-    public static class TurbineRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class TurbineRenderState extends BlockEntityRenderState {
 
         @Nullable
         public RenderData steamData;
         public float steamScale;
         @Nullable
-        public TextureAtlasSprite steamTexture;
-
-        @Override
-        public TextureAtlasSprite apply(Direction direction) {
-            return steamTexture;
-        }
+        public RenderResizableCuboid.TexturePicker steamTexture;
     }
 }

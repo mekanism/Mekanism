@@ -5,9 +5,9 @@ import com.mojang.math.Axis;
 import it.unimi.dsi.fastutil.Hash;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
 import java.util.EnumMap;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.MekanismAPI;
@@ -65,11 +65,11 @@ public class MekanismRenderer {
     // effect block light for the glow rather than having it actually become full light
     public static TextureAtlasSprite energyIcon;
     public static TextureAtlasSprite heatIcon;
-    public static TextureAtlasSprite whiteIcon;
     //todo - 26.1: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
-    public static final Function<Direction, TextureAtlasSprite> WHITE_ICON_GETTER = _ -> whiteIcon;
-    public static TextureAtlasSprite teleporterPortal;
+    public static RenderResizableCuboid.TexturePicker WHITE_ICON_GETTER;
+    public static RenderResizableCuboid.TexturePicker teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
+    private static final Map<TextureAtlasSprite, RenderResizableCuboid.TexturePicker> SINGLE_TEXTURE_PICKERS = new IdentityHashMap<>();
     private static final Map<FluidStack, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new Object2ObjectOpenCustomHashMap<>(new Hash.Strategy<>() {
         @Override
         public int hashCode(FluidStack o) {
@@ -288,10 +288,10 @@ public class MekanismRenderer {
             overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
         }
 
-        whiteIcon = map.getSprite(Mekanism.rl("block/overlay/overlay_white"));
+        WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
         energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
         heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
-        teleporterPortal = map.getSprite(Mekanism.rl("block/teleporter_portal"));
+        teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached
         RenderTransmitterBase.onStitch();
@@ -307,6 +307,7 @@ public class MekanismRenderer {
         RenderSeismicVibrator.resetCached();
         RenderTickHandler.resetCached();
         RenderTeleporter.resetCachedModels();
+        SINGLE_TEXTURE_PICKERS.clear();
         VALVE_FLUID_TEX_CACHE.clear();
 
         parseColorAtlas(Mekanism.rl("textures/colormap/primary.png"), EnumUtils.COLORS);
@@ -318,6 +319,10 @@ public class MekanismRenderer {
 
     public static ValveTextureGetter getValveTexture(FluidStack fluid) {
         return VALVE_FLUID_TEX_CACHE.computeIfAbsent(fluid, ValveTextureGetter::create);
+    }
+
+    public static RenderResizableCuboid.TexturePicker getSinglePicker(TextureAtlasSprite sprite) {
+        return SINGLE_TEXTURE_PICKERS.computeIfAbsent(sprite, SingleTexturePicker::new);
     }
 
     public enum FluidTextureType {
@@ -432,7 +437,7 @@ public class MekanismRenderer {
         }
     }
 
-    public record ValveTextureGetter(TextureAtlasSprite still, TextureAtlasSprite flowing) implements Function<Direction, TextureAtlasSprite> {
+    public record ValveTextureGetter(TextureAtlasSprite still, TextureAtlasSprite flowing) implements RenderResizableCuboid.TexturePicker {
 
         @Override
         public TextureAtlasSprite apply(Direction direction) {
@@ -443,6 +448,14 @@ public class MekanismRenderer {
             TextureAtlasSprite still = getFluidTexture(fluid, FluidTextureType.STILL);
             TextureAtlasSprite flowing = getFluidTexture(fluid, FluidTextureType.FLOWING);
             return new ValveTextureGetter(still, flowing);
+        }
+    }
+
+    public record SingleTexturePicker(TextureAtlasSprite sprite) implements RenderResizableCuboid.TexturePicker {
+
+        @Override
+        public TextureAtlasSprite apply(Direction direction) {
+            return sprite;
         }
     }
 }

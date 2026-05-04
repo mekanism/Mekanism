@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -83,7 +82,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
             float fluidScale = paste.amount() / (float) liquifier.fluidTank.getCapacity();
             state.pasteTint = MekanismRenderer.getColorARGB(paste, fluidScale);
             state.pasteModel = getPasteModel(paste, fluidScale);
-            state.pasteTexture = MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL);
+            state.pasteTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL));
         } else {
             state.pasteModel = null;
         }
@@ -104,7 +103,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
     @Override
     public void submit(LiquifierRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.pasteModel != null) {
-            RenderResizableCuboid.renderCube(state.pasteModel, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
+            RenderResizableCuboid.renderCube(state.pasteModel, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.pasteTint, state.lightCoords, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.pasteTexture);
         }
         //TODO - 26.1: rendering
         /*if (state.active) {
@@ -185,7 +184,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         return model;
     }
 
-    public static class LiquifierRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class LiquifierRenderState extends BlockEntityRenderState {
 
         public final ItemStackRenderState item = new ItemStackRenderState();
         public float bladeRotation;
@@ -195,13 +194,7 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         public Model3D pasteModel;
         public int pasteTint = 0xFFFFFFFF;
         @Nullable
-        public TextureAtlasSprite pasteTexture;
-
-        @Override
-        @Nullable
-        public TextureAtlasSprite apply(Direction direction) {
-            return pasteTexture;
-        }
+        public RenderResizableCuboid.TexturePicker pasteTexture;
     }
 
     private static class PseudoParticleData {

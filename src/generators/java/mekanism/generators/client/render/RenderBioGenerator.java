@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.EnumMap;
 import java.util.Map;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -24,7 +23,6 @@ import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
@@ -57,7 +55,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         FluidStack fluid = generator.bioFuelTank.getFluid();
         float fluidScale = fluid.amount() / (float) generator.bioFuelTank.getCapacity();
         state.model = getModel(fluid, generator.getDirection(), fluidScale);
-        state.fluidTexture = MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL);
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
     }
 
@@ -65,7 +63,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public void submit(BioGeneratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
         if (state.model != null) {
             //TODO - 26.1: Do we want to use the block light? (Also check other full bright usages and see if they should be switched over)
-            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state);
+            RenderResizableCuboid.renderCube(state.model, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderResizableCuboid.FaceDisplay.FRONT, camera.pos, Vec3.atLowerCornerOf(state.blockPos), state.fluidTexture);
         }
     }
 
@@ -109,18 +107,13 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         return model;
     }
 
-    public static class BioGeneratorRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class BioGeneratorRenderState extends BlockEntityRenderState {
 
         @Nullable
         public Model3D model;
         public int tint = 0xFFFFFFFF;
         @Nullable
-        public TextureAtlasSprite fluidTexture;
+        public RenderResizableCuboid.TexturePicker fluidTexture;
 
-        @Override
-        @Nullable
-        public TextureAtlasSprite apply(Direction direction) {
-            return fluidTexture;
-        }
     }
 }

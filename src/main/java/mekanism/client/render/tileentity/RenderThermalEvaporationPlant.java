@@ -3,7 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -24,8 +23,6 @@ import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
-import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -53,7 +50,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
               .of(multiblock)
               .height(multiblock.height() - 1)
               .build();
-        state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL);
+        state.fluidTexture = fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
         state.valveTexture = fluid.isEmpty() ? null : MekanismRenderer.getValveTexture(fluid);
         state.valves.clear();
         for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
@@ -70,7 +67,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
             int fluidColor = state.data.getColorARGB();
             int fluidColorScaled = state.data.getColorARGB(state.scale);
             int glowLight = state.data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.fluidTexture, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height, fluidColor, glowLight);
         }
     }
@@ -85,21 +82,16 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         return super.shouldRender(tile, multiblock, camera) && !multiblock.inputTank.isEmpty();
     }
 
-    public static class TEPRenderState extends BlockEntityRenderState implements Function<Direction, TextureAtlasSprite> {
+    public static class TEPRenderState extends BlockEntityRenderState {
 
         @Nullable
         public FluidRenderData data;
         public float scale;
         public List<ValveRenderData> valves = new ArrayList<>();
         @Nullable
-        public TextureAtlasSprite fluidTexture;
+        public RenderResizableCuboid.TexturePicker fluidTexture;
         @Nullable
         public MekanismRenderer.ValveTextureGetter valveTexture;
 
-        @Override
-        @Nullable
-        public TextureAtlasSprite apply(Direction direction) {
-            return fluidTexture;
-        }
     }
 }
