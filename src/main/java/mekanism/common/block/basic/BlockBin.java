@@ -9,7 +9,6 @@ import mekanism.common.tile.TileEntityBin;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -24,6 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityBin>> {
@@ -89,29 +90,42 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getCurrentLimit();
             if (binSlot.getCount() < binMaxSize) {
+                ItemResource binItemType = binSlot.getBinItemType();
                 //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
                     if (!stack.isEmpty()) {
-                        ItemStack remain = binSlot.insertItem(stack, Action.EXECUTE, AutomationType.MANUAL);
-                        player.setItemInHand(hand, remain);//TODO - 26.1: shouldn't this end up with returning SUCCESS_SERVER.heldItemTransformedTo() ? it does seem to have a fallback to getItemInHand, but...
-                    }
-                    //Note: We set the add ticks regardless so that we can allow double right-clicking to insert items from the player's inventory
-                    // without requiring them to first be holding the same item
-                    bin.addTicks = 5;
-                } else if (bin.addTicks > 0 && (binSlot.isLocked() || !binSlot.isEmpty())) {
-                    NonNullList<ItemStack> inv = player.getInventory().getNonEquipmentItems();
-                    for (int i = 0; i < inv.size(); i++) {
-                        if (binSlot.getCount() == binMaxSize) {
-                            break;
-                        }
-                        ItemStack stackToAdd = inv.get(i);
-                        if (!stackToAdd.isEmpty()) {
-                            ItemStack remain = binSlot.insertItem(stackToAdd, Action.EXECUTE, AutomationType.MANUAL);
-                            inv.set(i, remain);
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int toInsert = stack.count();
+                            int inserted = binSlot.insert(ItemResource.of(stack), toInsert, transaction, AutomationType.MANUAL);
                             bin.addTicks = 5;
+                            if (inserted > 0) {
+                                transaction.commit();
+                                return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack.copyWithCount(toInsert - inserted));
+                            }
                         }
-                        player.containerMenu.sendAllDataToRemote();
+                    } else if (!binItemType.isEmpty()) {
+                        //Note: We set the add ticks if the stack is empty but the bin isn't empty so that we can allow double right-clicking
+                        // to insert items from the player's inventory without requiring them to first be holding the same item
+                        bin.addTicks = 5;
+                    }
+                } else if (bin.addTicks > 0 && !binItemType.isEmpty()) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        boolean added = false;
+                        for (ItemStack stackToAdd : player.getInventory().getNonEquipmentItems()) {
+                            if (!stackToAdd.isEmpty() && binItemType.matches(stackToAdd)) {
+                                stackToAdd.shrink(binSlot.insert(binItemType, stackToAdd.count(), transaction, AutomationType.MANUAL));
+                                added = true;
+                                if (binSlot.getCount() == binMaxSize) {
+                                    break;
+                                }
+                            }
+                        }
+                        if (added) {
+                            transaction.commit();
+                            bin.addTicks = 5;
+                            player.containerMenu.sendAllDataToRemote();
+                        }
                     }
                 }
             }
