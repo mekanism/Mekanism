@@ -1319,13 +1319,13 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return mainSlots.size();
     }
 
-    @ComputerMethod(methodDescription = "Get the contents of the internal inventory slot. 0 based.")
-    ItemStack getItemInSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "internal inventory slot. 0 based.")
+    IInventorySlot getCorrespondingSlot(int slot) throws ComputerException {
         int slots = getSlotCount();
         if (slot < 0 || slot >= slots) {
             throw new ComputerException("Slot: '%d' is out of bounds, as this digital miner only has '%d' slots (zero indexed).", slot, slots);
         }
-        return mainSlots.get(slot).getStack();
+        return mainSlots.get(slot);
     }
 
     @ComputerMethod(methodDescription = "Get the state of the Miner's search")

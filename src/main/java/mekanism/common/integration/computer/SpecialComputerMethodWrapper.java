@@ -74,7 +74,7 @@ public class SpecialComputerMethodWrapper {
 
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static ItemStack getStack(IInventorySlot slot) {
-            return slot.getStack();
+            return slot.getResource().toStack(slot.getCount());
         }
     }
 

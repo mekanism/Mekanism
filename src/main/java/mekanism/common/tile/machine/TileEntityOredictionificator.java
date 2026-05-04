@@ -87,7 +87,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.setStack(result);
                     didProcess = true;
-                } else if (ItemStack.isSameItemSameComponents(outputSlot.getStack(), result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
+                } else if (outputSlot.getResource().matches(result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
                     inputSlot.shrinkStack(1, Action.EXECUTE);
                     outputSlot.growStack(1, Action.EXECUTE);
                     didProcess = true;

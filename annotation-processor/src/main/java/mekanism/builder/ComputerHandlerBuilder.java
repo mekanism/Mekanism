@@ -178,6 +178,7 @@ public class ComputerHandlerBuilder {
      * @param annotationValues an annotation helper for this annotation's values
      */
     private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues) {
+        //TODO - 26.1: Make sure this supports wrapping methods that take a parameter (for example getting specific slots)
         //get the wrapper type and find its static methods
         TypeElement wrapperTypeEl;
         TypeMirror wrapperTypeMirror = annotationValues.getClassValue("wrapper");

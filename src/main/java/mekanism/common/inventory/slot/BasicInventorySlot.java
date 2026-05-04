@@ -288,6 +288,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
 
     @Override
     protected void onRootCommit(ItemStack originalState) {
+        //TODO - 26.1: Should we have the snapshot journal be of a ResourceStack instead?
         if (this.storedAmount != originalState.count() || !this.currentType.matches(originalState)) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();

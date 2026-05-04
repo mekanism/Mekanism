@@ -693,7 +693,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
             // to change the size of it. We also add it regardless of it is empty as that is what the method expects
             // We also copy it to a count of one, to validate that no mods are trying to do stupid stacked recipe input based hacks
-            items.add(inputSlot.getStack().copyWithCount(1));
+            items.add(inputSlot.getResource().toStack(1));
         }
         return CraftingInput.ofPositioned(3, 3, items);
     }

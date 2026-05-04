@@ -109,6 +109,7 @@ public interface IMekanismInventory extends ResourceHandler<ItemResource>, ICont
 
     @Override
     default int insert(int index, ItemResource resource, int amount, TransactionContext transaction) {
+        //TODO - 26.1: Evaluate calls to this and extract for all resource handlers and see what can be moved over to indexless interactions
         return insert(resource, amount, transaction, AutomationType.INTERNAL);
     }
 

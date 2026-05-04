@@ -733,12 +733,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Methods relating to IComputerTile
-    @ComputerMethod
-    ItemStack getCraftingInputSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInputSlot", docPlaceholder = "crafting input slot")
+    IInventorySlot getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
         }
-        return craftingGridSlots.get(slot).getStack();
+        return craftingGridSlots.get(slot);
     }
 
     @ComputerMethod
@@ -746,13 +746,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return outputSlots.size();
     }
 
-    @ComputerMethod
-    ItemStack getCraftingOutputSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutputSlot", docPlaceholder = "crafting output slot")
+    IInventorySlot getCraftingOutputSlot(int slot) throws ComputerException {
         int size = getCraftingOutputSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Crafting Output Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
         }
-        return outputSlots.get(slot).getStack();
+        return outputSlots.get(slot);
     }
 
     @ComputerMethod(nameOverride = "getSlots")
@@ -760,13 +760,13 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.size();
     }
 
-    @ComputerMethod
-    ItemStack getItemInSlot(int slot) throws ComputerException {
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "input slot")
+    IInventorySlot getCorrespondingSlot(int slot) throws ComputerException {
         int size = computerGetSlots();
         if (slot < 0 || slot >= size) {
             throw new ComputerException("Slot '%d' is out of bounds, must be between 0 and %d.", slot, size);
         }
-        return inputSlots.get(slot).getStack();
+        return inputSlots.get(slot);
     }
 
     @ComputerMethod(nameOverride = "encodeFormula", requiresPublicSecurity = true, methodDescription = "Requires an unencoded formula in the formula slot and a valid recipe")
