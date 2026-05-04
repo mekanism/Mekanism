@@ -64,11 +64,6 @@ public final class ModelRenderer {
         return model;
     }
 
-    //Undoes the z-fighting height shift from the model
-    public static float getActualHeight(Model3D model) {
-        return model.maxY + 0.02F;
-    }
-
     @Nullable
     public static Model3D getValveModel(ValveRenderData data, float height) {
         if (switch (data.getSide()) {

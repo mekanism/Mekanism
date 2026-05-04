@@ -70,7 +70,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
             int fluidColor = state.data.getColorARGB();
             int fluidColorScaled = state.data.getColorARGB(state.scale);
             int glowLight = state.data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.data.location, state.data.length, state.data.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height, fluidColor, glowLight);
         }
     }

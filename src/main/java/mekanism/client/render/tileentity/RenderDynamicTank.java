@@ -69,11 +69,11 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             int fluidColor = fluidRenderData.getColorARGB();
             int fluidColorScaled = fluidRenderData.getColorARGB(state.scale);
             int glowLight = fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height);
             RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
         } else if (state.renderData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width, state.renderData.height);
         }
     }
 

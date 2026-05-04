@@ -554,10 +554,10 @@ public class RenderResizableCuboid {
     }
 
     //TODO - 26.1: Should we no-op all the cases of scale == 0
-    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D object, Function<Direction, TextureAtlasSprite> spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth) {
+    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D object, Function<Direction, TextureAtlasSprite> spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, float physicalHeight) {
         matrix.pushPose();
         matrix.translate(renderStartPos.getX() - terPos.getX(), renderStartPos.getY() - terPos.getY(), renderStartPos.getZ() - terPos.getZ());
-        FaceDisplay faceDisplay = getFaceDisplay(camPos, renderStartPos, physicalLength, physicalWidth, ModelRenderer.getActualHeight(object));
+        FaceDisplay faceDisplay = getFaceDisplay(camPos, renderStartPos, physicalLength, physicalWidth, physicalHeight);
         renderCube(object, matrix, renderType, nodeCollector, scaledColor, glowLight, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(renderStartPos), spriteFromDirection);
         matrix.popPose();
     }
