@@ -27,9 +27,9 @@ import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 //TODO: Clean this up as a lot of the code can probably be reduced due to the slot knowing some of that information
@@ -145,21 +145,21 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     public void removeUpgrade(Upgrade upgrade, boolean removeAll) {
         int installed = getUpgrades(upgrade);
         if (installed > 0) {
-            int toRemove = removeAll ? installed : 1;
-            ItemStack simulatedRemainder = upgradeOutputSlot.insertItem(UpgradeUtils.getStack(upgrade, toRemove), Action.SIMULATE, AutomationType.INTERNAL);
-            if (simulatedRemainder.count() < toRemove) {
-                //We can fit at least one in the output slot
-                //Actually remove them and put them in the output slot
-                toRemove -= simulatedRemainder.count();
-                if (installed == toRemove) {
-                    upgrades.remove(upgrade);
-                } else {
-                    upgrades.put(upgrade, installed - toRemove);
+            try (Transaction transaction = Transaction.openRoot()) {
+                int removed = upgradeOutputSlot.insert(UpgradeUtils.getResource(upgrade), removeAll ? installed : 1, transaction, AutomationType.INTERNAL);
+                if (removed > 0) {
+                    //We can fit at least one in the output slot
+                    transaction.commit();
+                    //Actually remove them and put them in the output slot
+                    if (installed == removed) {
+                        upgrades.remove(upgrade);
+                    } else {
+                        upgrades.put(upgrade, installed - removed);
+                    }
+                    tile.recalculateUpgrades(upgrade);
+                    //If we have some upgrades in the input slot, mark that we should check if they can be transferred
+                    canCheckUpgrades = !upgradeSlot.isEmpty();
                 }
-                tile.recalculateUpgrades(upgrade);
-                upgradeOutputSlot.insertItem(UpgradeUtils.getStack(upgrade, toRemove), Action.EXECUTE, AutomationType.INTERNAL);
-                //If we have some upgrades in the input slot, mark that we check if they can be transferred
-                canCheckUpgrades = !upgradeSlot.isEmpty();
             }
         }
     }
