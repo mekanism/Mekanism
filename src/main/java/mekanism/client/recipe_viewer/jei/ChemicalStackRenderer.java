@@ -10,7 +10,6 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils;
-import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.recipe_viewer.RecipeViewerUtils;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
@@ -19,6 +18,7 @@ import mezz.jei.api.ingredients.IIngredientRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
+import net.minecraft.util.ARGB;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
@@ -61,8 +61,10 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
             }
             MekanismRenderer.color(guiGraphics, stack);
             //Tile upwards and to the right as the majority of things we render are gauges which look better when tiling upwards
-            GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
-                  TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT);
+            //TODO - 26.1: reimplement the directional tiling
+            //GuiUtils.drawTiledSprite(guiGraphics, 0, 0, height, width, desiredHeight, MekanismRenderer.getChemicalTexture(stack),
+            //      TEXTURE_SIZE, TEXTURE_SIZE, 100, TilingDirection.UP_RIGHT);
+            GuiUtils.drawTiledSpriteVanilla(guiGraphics, 0, 0, width, height, ARGB.color(255, stack.getChemicalTint()), desiredHeight, MekanismRenderer.getChemicalTexture(stack));
             MekanismRenderer.resetColor(guiGraphics);
         }
     }

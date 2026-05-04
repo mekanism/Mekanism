@@ -14,7 +14,10 @@ import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.texture.SpriteContents;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.resources.metadata.gui.GuiSpriteScaling;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
@@ -78,6 +81,34 @@ public class GuiUtils {
             //TODO - 26.1: Can we merge the multiply and argb calls into one?
             guiGraphics.fill(x - 2, y - 2, x + width + 2, y + height + 2, ARGB.multiply(backgroundColor, argb));
         }
+    }
+
+    //Copied from JEI
+    public static void drawTiledSpriteVanilla(GuiGraphicsExtractor guiGraphics, int posX, int posY, int tiledWidth, int tiledHeight, int color, int scaledAmount, TextureAtlasSprite sprite) {
+        SpriteContents spriteContents = sprite.contents();
+        GuiSpriteScaling.Tile tileScaling = new GuiSpriteScaling.Tile(spriteContents.width(), spriteContents.height());
+
+        posY = posY + tiledHeight - scaledAmount;
+
+        guiGraphics.enableScissor(posX, posY, posX + tiledWidth, posY + scaledAmount);
+        {
+            guiGraphics.blitTiledSprite(
+                  RenderPipelines.GUI_TEXTURED,
+                  sprite,
+                  posX,
+                  posY,
+                  tiledWidth,
+                  scaledAmount,
+                  0,
+                  0,
+                  tileScaling.width(),
+                  tileScaling.height(),
+                  tileScaling.width(),
+                  tileScaling.height(),
+                  color
+            );
+        }
+        guiGraphics.disableScissor();
     }
 
     public static void drawTiledSprite(GuiGraphicsExtractor guiGraphics, int xPosition, int yPosition, int yOffset, int desiredWidth, int desiredHeight, TextureAtlasSprite sprite,
