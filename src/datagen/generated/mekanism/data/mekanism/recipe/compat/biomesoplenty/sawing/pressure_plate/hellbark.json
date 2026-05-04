@@ -8,10 +8,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:hellbark_pressure_plate"
+    "ingredient": "biomesoplenty:hellbark_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:hellbark_planks"
   },
   "secondary_chance": 0.25,

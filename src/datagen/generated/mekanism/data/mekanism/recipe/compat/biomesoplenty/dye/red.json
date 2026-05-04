@@ -7,16 +7,11 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:rose"
-      },
-      {
-        "item": "biomesoplenty:waterlily"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:origin_rose",
+      "biomesoplenty:waterlily"
+    ]
   },
   "output": {
     "count": 2,

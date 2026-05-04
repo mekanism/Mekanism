@@ -8,7 +8,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:blue_hydrangea"
+    "ingredient": "biomesoplenty:blue_hydrangea"
   },
   "output": {
     "amount": 768,

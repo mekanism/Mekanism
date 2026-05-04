@@ -7,22 +7,13 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:white_sandstone"
-      },
-      {
-        "item": "biomesoplenty:chiseled_white_sandstone"
-      },
-      {
-        "item": "biomesoplenty:cut_white_sandstone"
-      },
-      {
-        "item": "biomesoplenty:smooth_white_sandstone"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:white_sandstone",
+      "biomesoplenty:chiseled_white_sandstone",
+      "biomesoplenty:cut_white_sandstone",
+      "biomesoplenty:smooth_white_sandstone"
+    ]
   },
   "output": {
     "count": 2,

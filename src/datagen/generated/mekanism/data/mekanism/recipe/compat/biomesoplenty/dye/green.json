@@ -8,7 +8,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:tiny_cactus"
+    "ingredient": "biomesoplenty:tiny_cactus"
   },
   "output": {
     "count": 2,

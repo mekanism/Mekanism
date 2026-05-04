@@ -8,15 +8,13 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:maple_chest_boat"
+    "ingredient": "biomesoplenty:maple_chest_boat"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:maple_boat"
   },
   "secondary_chance": 1.0,
   "secondary_output": {
-    "count": 1,
     "id": "minecraft:chest"
   }
 }

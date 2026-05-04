@@ -7,16 +7,11 @@
   ],
   "type": "mekanism:pigment_extracting",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:pink_daffodil"
-      },
-      {
-        "item": "biomesoplenty:pink_hibiscus"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:pink_daffodil",
+      "biomesoplenty:pink_hibiscus"
+    ]
   },
   "output": {
     "amount": 768,

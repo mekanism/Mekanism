@@ -8,7 +8,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:blue_hydrangea"
+    "ingredient": "biomesoplenty:blue_hydrangea"
   },
   "output": {
     "count": 2,

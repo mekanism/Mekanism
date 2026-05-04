@@ -8,7 +8,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:endbloom"
+    "ingredient": "biomesoplenty:endbloom"
   },
   "output": {
     "amount": 768,

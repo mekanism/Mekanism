@@ -8,10 +8,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:dead_pressure_plate"
+    "ingredient": "biomesoplenty:dead_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:dead_planks"
   },
   "secondary_chance": 0.25,

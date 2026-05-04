@@ -8,7 +8,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:tall_lavender"
+    "ingredient": "biomesoplenty:tall_lavender"
   },
   "output": {
     "amount": 1536,

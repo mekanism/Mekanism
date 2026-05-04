@@ -7,16 +7,11 @@
   ],
   "type": "mekanism:enriching",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:violet"
-      },
-      {
-        "item": "biomesoplenty:lavender"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:violet",
+      "biomesoplenty:lavender"
+    ]
   },
   "output": {
     "count": 2,

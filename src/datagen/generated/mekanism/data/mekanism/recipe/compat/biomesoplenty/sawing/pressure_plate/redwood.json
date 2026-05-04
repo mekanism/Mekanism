@@ -8,10 +8,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:redwood_pressure_plate"
+    "ingredient": "biomesoplenty:redwood_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:redwood_planks"
   },
   "secondary_chance": 0.25,

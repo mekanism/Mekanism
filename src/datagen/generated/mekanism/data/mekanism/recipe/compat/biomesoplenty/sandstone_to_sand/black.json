@@ -7,22 +7,13 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:black_sandstone"
-      },
-      {
-        "item": "biomesoplenty:chiseled_black_sandstone"
-      },
-      {
-        "item": "biomesoplenty:cut_black_sandstone"
-      },
-      {
-        "item": "biomesoplenty:smooth_black_sandstone"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:black_sandstone",
+      "biomesoplenty:chiseled_black_sandstone",
+      "biomesoplenty:cut_black_sandstone",
+      "biomesoplenty:smooth_black_sandstone"
+    ]
   },
   "output": {
     "count": 2,

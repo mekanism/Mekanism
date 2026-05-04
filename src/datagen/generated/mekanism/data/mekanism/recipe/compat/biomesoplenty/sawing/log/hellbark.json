@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "tag": "biomesoplenty:hellbark_logs"
+    "ingredient": "#biomesoplenty:hellbark_logs"
   },
   "main_output": {
     "count": 6,
@@ -16,7 +16,6 @@
   },
   "secondary_chance": 0.25,
   "secondary_output": {
-    "count": 1,
     "id": "mekanism:sawdust"
   }
 }

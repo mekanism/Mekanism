@@ -8,7 +8,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:goldenrod"
+    "ingredient": "biomesoplenty:goldenrod"
   },
   "output": {
     "amount": 768,

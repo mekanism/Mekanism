@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:empyreal_boat"
+    "ingredient": "biomesoplenty:empyreal_boat"
   },
   "main_output": {
     "count": 5,

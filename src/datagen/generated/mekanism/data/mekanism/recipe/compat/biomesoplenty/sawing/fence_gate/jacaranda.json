@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:jacaranda_fence_gate"
+    "ingredient": "biomesoplenty:jacaranda_fence_gate"
   },
   "main_output": {
     "count": 2,

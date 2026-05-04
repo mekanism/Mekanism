@@ -8,10 +8,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:magic_pressure_plate"
+    "ingredient": "biomesoplenty:magic_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:magic_planks"
   },
   "secondary_chance": 0.25,

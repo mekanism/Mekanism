@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:willow_fence_gate"
+    "ingredient": "biomesoplenty:willow_fence_gate"
   },
   "main_output": {
     "count": 2,

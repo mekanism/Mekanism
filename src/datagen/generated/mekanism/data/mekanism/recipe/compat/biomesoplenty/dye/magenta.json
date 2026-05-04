@@ -8,7 +8,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:wildflower"
+    "ingredient": "biomesoplenty:purple_wildflowers"
   },
   "output": {
     "count": 2,

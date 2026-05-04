@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:jacaranda_boat"
+    "ingredient": "biomesoplenty:jacaranda_boat"
   },
   "main_output": {
     "count": 5,

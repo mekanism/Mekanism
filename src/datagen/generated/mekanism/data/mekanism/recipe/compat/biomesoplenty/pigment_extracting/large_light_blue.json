@@ -8,7 +8,7 @@
   "type": "mekanism:pigment_extracting",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:icy_iris"
+    "ingredient": "biomesoplenty:icy_iris"
   },
   "output": {
     "amount": 1536,

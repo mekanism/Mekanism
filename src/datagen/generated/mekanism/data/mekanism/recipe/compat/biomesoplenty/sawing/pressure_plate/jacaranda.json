@@ -8,10 +8,9 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:jacaranda_pressure_plate"
+    "ingredient": "biomesoplenty:jacaranda_pressure_plate"
   },
   "main_output": {
-    "count": 1,
     "id": "biomesoplenty:jacaranda_planks"
   },
   "secondary_chance": 0.25,

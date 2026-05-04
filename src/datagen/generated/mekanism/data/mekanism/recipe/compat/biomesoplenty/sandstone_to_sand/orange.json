@@ -7,22 +7,13 @@
   ],
   "type": "mekanism:crushing",
   "input": {
-    "type": "neoforge:compound",
-    "children": [
-      {
-        "item": "biomesoplenty:orange_sandstone"
-      },
-      {
-        "item": "biomesoplenty:chiseled_orange_sandstone"
-      },
-      {
-        "item": "biomesoplenty:cut_orange_sandstone"
-      },
-      {
-        "item": "biomesoplenty:smooth_orange_sandstone"
-      }
-    ],
-    "count": 1
+    "count": 1,
+    "ingredient": [
+      "biomesoplenty:orange_sandstone",
+      "biomesoplenty:chiseled_orange_sandstone",
+      "biomesoplenty:cut_orange_sandstone",
+      "biomesoplenty:smooth_orange_sandstone"
+    ]
   },
   "output": {
     "count": 2,

@@ -8,7 +8,7 @@
   "type": "mekanism:sawing",
   "input": {
     "count": 1,
-    "item": "biomesoplenty:mahogany_trapdoor"
+    "ingredient": "biomesoplenty:mahogany_trapdoor"
   },
   "main_output": {
     "count": 3,
