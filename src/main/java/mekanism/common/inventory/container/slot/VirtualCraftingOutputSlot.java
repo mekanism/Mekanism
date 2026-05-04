@@ -70,7 +70,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
 
     @NotNull
     @Override
-    public ItemStack remove(int amount) {//TODO - 26.1: Requires https://github.com/neoforged/NeoForge/pull/3147
+    public ItemStack remove(int amount) {
         //Note: This method is only called if mayPickup returns true
         if (amount == 0) {
             return ItemStack.EMPTY;
@@ -85,6 +85,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
         // by taking it and then just setting the contents again, but effectively it is just returning
         // a copy so if mods cause any duplication glitches because of how we handle this, then in theory
         // they probably also cause duplication glitches with some of vanilla's slots as well.
+        //TODO - 26.1: Do we want to just get it from the slot to skip setting the cached stack?
         ItemStack extracted = getStackCopy().copy();
         //Adjust amount crafted by the amount that would have actually been extracted
         amountCrafted += extracted.count();

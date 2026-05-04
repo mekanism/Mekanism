@@ -16,6 +16,7 @@ import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -77,32 +78,33 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         ItemStack outputStack = ItemStack.EMPTY;
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
-                ItemStack slotInStack = slot.getStack().copy();
-                Upgrade upgrade = slotInStack.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
+                ItemResource resource = slot.getResource();
+                int amount = slot.getCount();
+                Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
                 if (upgrade == null) {
                     //Not an upgrade
                     return false;
                 }
                 if (supportedUpgrades.contains(upgrade)) {
                     if (inputStack.isEmpty()) {
-                        inputStack = slotInStack;
+                        inputStack = resource.toStack(amount);
                         continue;
-                    } else if (inputStack.count() < inputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(inputStack, slotInStack)) {
+                    } else if (inputStack.count() < inputStack.getMaxStackSize() && resource.matches(inputStack)) {
                         int needed = inputStack.getMaxStackSize() - inputStack.count();
-                        if (slotInStack.count() <= needed) {
-                            inputStack.grow(slotInStack.count());
+                        if (amount <= needed) {
+                            inputStack.grow(amount);
                             continue;
                         } else {
                             inputStack.grow(needed);
-                            slotInStack.shrink(needed);
+                            amount -= needed;
                         }
                     }
                 }
                 if (outputStack.isEmpty()) {
-                    outputStack = slotInStack;
-                } else if (outputStack.count() < outputStack.getMaxStackSize() && ItemStack.isSameItemSameComponents(outputStack, slotInStack)) {
+                    outputStack = resource.toStack(amount);
+                } else if (outputStack.count() < outputStack.getMaxStackSize() && resource.matches(outputStack)) {
                     int needed = outputStack.getMaxStackSize() - outputStack.count();
-                    if (slotInStack.count() > needed) {
+                    if (amount > needed) {
                         //Doesn't all fit
                         return false;
                     }

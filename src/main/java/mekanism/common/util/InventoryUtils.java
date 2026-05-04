@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
@@ -33,7 +32,6 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
-import org.jetbrains.annotations.NotNull;
 
 public final class InventoryUtils {
 
@@ -192,30 +190,6 @@ public final class InventoryUtils {
             }
         }
         return request;
-    }
-
-    /**
-     * Helper to first try inserting ignoring empty slots, and then insert not ignoring empty slots
-     *
-     * @param slots          Slots to insert into
-     * @param stack          Stack to insert (do not modify).
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this slot is being interacted from.
-     *
-     * @return Remainder
-     *
-     * @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Move over to the transactional caller so that we make sure that we don't accidentally call this method from within a transactional context
-    public static ItemStack insertItem(List<? extends IInventorySlot> slots, @NotNull ItemStack stack, Action action, AutomationType automationType) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            int inserted = insertItem(slots, ItemResource.of(stack), stack.count(), transaction, automationType);
-            if (action.execute()) {
-                transaction.commit();
-            }
-            //Return as remainder
-            return stack.copyWithCount(stack.count() - inserted);
-        }
     }
 
     /**

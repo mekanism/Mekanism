@@ -69,6 +69,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -354,43 +356,37 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private boolean canMoveLastRemaining() {
-        for (ItemStack it : lastRemainingItems) {
-            if (!it.isEmpty() && !tryMoveToOutput(it, Action.SIMULATE)) {
+    private boolean doSingleCraft() {
+        if (lastOutputStack.isEmpty()) {
+            return false;
+        }
+        ItemResource output = ItemResource.of(lastOutputStack);
+        int outputAmount = lastOutputStack.count();
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (!tryMoveToOutput(output, outputAmount, transaction)) {
+                //Can't fit it all, bail and revert changes
                 return false;
             }
+            for (ItemStack remainingItem : lastRemainingItems) {
+                //TODO: Check if it matters that we are not actually updating the list of remaining items?
+                // The better solution would be to not allow continuing until we moved output AND all remaining items
+                // instead of trying to move all at once??
+                if (!remainingItem.isEmpty() && !tryMoveToOutput(ItemResource.of(remainingItem), remainingItem.count(), transaction)) {
+                    //Can't fit it all, bail and revert changes
+                    return false;
+                }
+            }
+            transaction.commit();
+        }
+        for (IInventorySlot craftingSlot : craftingGridSlots) {
+            if (!craftingSlot.isEmpty()) {
+                MekanismUtils.logMismatchedStackSize(craftingSlot.shrinkStack(1, Action.EXECUTE), 1);
+            }
+        }
+        if (!formula.isEmpty()) {
+            moveItemsToGrid();
         }
         return true;
-    }
-
-    private boolean doSingleCraft() {
-        ItemStack output = lastOutputStack;
-        if (!output.isEmpty() && tryMoveToOutput(output, Action.SIMULATE) && canMoveLastRemaining()) {
-            tryMoveToOutput(output, Action.EXECUTE);
-            //TODO: Fix this as I believe if things overlap there is a chance it won't work properly.
-            // For example if there are multiple stacks of dirt, or even just different item types, in remaining and we have room for one stack,
-            // but given we only check one stack at a time...)
-            // Basically simulating fitting the last remaining items doesn't do enough validation about intermediary state
-            for (ItemStack remainingItem : lastRemainingItems) {
-                if (!remainingItem.isEmpty()) {
-                    //TODO: Check if it matters that we are not actually updating the list of remaining items?
-                    // The better solution would be to not allow continuing until we moved output AND all remaining items
-                    // instead of trying to move all at once??
-                    tryMoveToOutput(remainingItem, Action.EXECUTE);
-                }
-            }
-
-            for (IInventorySlot craftingSlot : craftingGridSlots) {
-                if (!craftingSlot.isEmpty()) {
-                    MekanismUtils.logMismatchedStackSize(craftingSlot.shrinkStack(1, Action.EXECUTE), 1);
-                }
-            }
-            if (!formula.isEmpty()) {
-                moveItemsToGrid();
-            }
-            return true;
-        }
-        return false;
     }
 
     public boolean craftSingle() {
@@ -437,7 +433,10 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     ret = false;
                 }
             } else {
-                tryMoveToInput(recipeSlot);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    tryMoveToInput(recipeSlot, transaction);
+                    transaction.commit();
+                }
                 if (!recipeSlot.isEmpty()) {
                     ret = false;
                 }
@@ -470,11 +469,14 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void moveItemsToInput(boolean forcePush) {
-        for (int i = 0; i < craftingGridSlots.size(); i++) {
-            IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            if (!recipeSlot.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeSlot.getResource(), i)))) {
-                tryMoveToInput(recipeSlot);
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (int i = 0; i < craftingGridSlots.size(); i++) {
+                IInventorySlot recipeSlot = craftingGridSlots.get(i);
+                if (!recipeSlot.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeSlot.getResource(), i)))) {
+                    tryMoveToInput(recipeSlot, transaction);
+                }
             }
+            transaction.commit();
         }
     }
 
@@ -640,17 +642,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         }
     }
 
-    private void tryMoveToInput(IInventorySlot recipeSlot) {
-        recipeSlot.setStack(InventoryUtils.insertItem(inputSlots, recipeSlot.getStack(), Action.EXECUTE, AutomationType.INTERNAL));
+    private void tryMoveToInput(IInventorySlot recipeSlot, TransactionContext transaction) {
+        ItemResource resource = recipeSlot.getResource();
+        int stored = recipeSlot.getCount();
+        int inserted = InventoryUtils.insertItem(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
+        if (inserted > 0) {
+            recipeSlot.setStack(resource, stored - inserted);
+        }
     }
 
-    private boolean tryMoveToOutput(ItemStack stack, Action action) {
+    private boolean tryMoveToOutput(ItemResource itemType, int amount, TransactionContext transaction) {
         //Try to insert the item (simulating as needed), and overwrite our local reference to point to the remainder
         // We can then continue on to the next slot if we did not fit it all and try to insert it.
         // The logic is relatively simple due to only having one stack we are trying to insert, so we don't have to worry
         // about the fact the slot doesn't actually get updated if we simulated, and then is invalid for the next simulation
-        stack = InventoryUtils.insertItem(outputSlots, stack, action, AutomationType.INTERNAL);
-        return stack.isEmpty();
+        int inserted = InventoryUtils.insertItem(outputSlots, itemType, amount, transaction, AutomationType.INTERNAL);
+        return inserted == amount;
     }
 
     public void encodeFormula() {

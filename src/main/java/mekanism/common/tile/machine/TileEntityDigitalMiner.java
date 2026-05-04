@@ -65,7 +65,6 @@ import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
 import mekanism.common.lib.chunkloading.IChunkLoader;
 import mekanism.common.lib.inventory.Finder;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.registries.MekanismBlocks;
@@ -113,6 +112,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -143,9 +143,9 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     private boolean doPull = false;
     public ItemStack missingStack = ItemStack.EMPTY;
 
-    private final Predicate<ItemStack> overflowCollector = this::trackOverflow;
+    private final Predicate<ItemStack> overflowCollector = item -> trackOverflow(ItemResource.of(item), item.count());
     //Note: Linked map to ensure each call to save is in the same order so that there is more uniformity
-    private final Object2IntSortedMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
+    private final Object2IntSortedMap<ItemResource> overflow = new Object2IntLinkedOpenHashMap<>();
     private boolean hasOverflow;
     private boolean recheckOverflow;
 
@@ -736,55 +736,67 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
     }
 
     private void add(List<ItemStack> stacks) {
-        for (ItemStack stack : stacks) {
-            //Try inserting it first where it can stack and then into empty slots
-            stack = InventoryUtils.insertItem(mainSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
-            if (!stack.isEmpty()) {
-                //Because of the simulated insertion the stack should never be able to be empty here,
-                // but in case it is keep track of any excess as overflow
-                trackOverflow(stack);
+        if (stacks.isEmpty()) {
+            return;
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (ItemStack stack : stacks) {
+                if (!stack.isEmpty()) {//Sanitize that we don't have any empty stacks
+                    ItemResource resource = ItemResource.of(stack);
+                    int toInsert = stack.getCount();
+                    //Try inserting it first where it can stack and then into empty slots
+                    toInsert -= InventoryUtils.insertItem(mainSlots, resource, toInsert, transaction, AutomationType.INTERNAL);
+                    if (toInsert > 0) {
+                        //Because of the simulated insertion the stack should never be able to be empty here,
+                        // but in case it is keep track of any excess as overflow
+                        trackOverflow(resource, toInsert);
+                    }
+                }
             }
+            transaction.commit();
         }
     }
 
-    private boolean trackOverflow(ItemStack stack) {
+    private boolean trackOverflow(ItemResource itemType, int overflowAmount) {
         //Note: We never expect the stack to be empty but in case it is just don't handle the stack
-        if (!stack.isEmpty()) {
-            //Note: While we probably could get away by using a raw hashed item given we are removing the item entity for the stack
-            // we don't bother in case any other mods are doing weird things with it as this is just an edge case handler so shouldn't
-            // be a hotspot in regard to copying stacks
-            overflow.mergeInt(HashedItem.create(stack), stack.count(), Integer::sum);
-            //If we add something to the overflow map, mark that we have overflow
-            hasOverflow = true;
-            //Mark that we need to recheck if we can insert the overflow as we now have some
-            recheckOverflow = true;
-            markForSave();
-            return true;
+        if (itemType.isEmpty() || overflowAmount <= 0) {
+            return false;
         }
-        return false;
+        //Note: While we probably could get away by using a raw hashed item given we are removing the item entity for the stack
+        // we don't bother in case any other mods are doing weird things with it as this is just an edge case handler so shouldn't
+        // be a hotspot in regard to copying stacks
+        overflow.mergeInt(itemType, overflowAmount, Integer::sum);
+        //If we add something to the overflow map, mark that we have overflow
+        hasOverflow = true;
+        //Mark that we need to recheck if we can insert the overflow as we now have some
+        recheckOverflow = true;
+        markForSave();
+        return true;
     }
 
     private void tryAddOverflow() {
         if (hasOverflow) {
             //Try to add any existing overflow to our inventory
             boolean recheck = false;
-            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iter = Object2IntMaps.fastIterator(overflow); iter.hasNext(); ) {
-                Object2IntMap.Entry<HashedItem> entry = iter.next();
-                int amount = entry.getIntValue();
-                ItemStack stack = entry.getKey().createStack(amount);
-                //Note: Inserting properly handles oversized stacks, so we don't have to handle the case that amount might be greater than
-                // the max stack size here as the different slots will only accept up to the item's max stack size
-                stack = InventoryUtils.insertItem(mainSlots, stack, Action.EXECUTE, AutomationType.INTERNAL);
-                //Note: We do not need to mark the miner for saving if something gets moved from overflow to a slot as the slot will do so
-                // when it accepts the item, so we can skip marking that we need to save because overflow changed
-                if (stack.isEmpty()) {
-                    //We were able to fully fit the stack, so we can remove it from our list of overflow
-                    iter.remove();
-                    recheck = true;
-                } else if (stack.count() != amount) {
-                    //Some was able to fit, update the amount that is actually still part of the overflow
-                    entry.setValue(stack.count());
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iter = Object2IntMaps.fastIterator(overflow); iter.hasNext(); ) {
+                    Object2IntMap.Entry<ItemResource> entry = iter.next();
+                    int toInsert = entry.getIntValue();
+                    //Note: Inserting properly handles oversized stacks, so we don't have to handle the case that amount might be greater than
+                    // the max stack size here as the different slots will only accept up to the item's max stack size
+                    toInsert -= InventoryUtils.insertItem(mainSlots, entry.getKey(), toInsert, transaction, AutomationType.INTERNAL);
+                    //Note: We do not need to mark the miner for saving if something gets moved from overflow to a slot as the slot will do so
+                    // when it accepts the item, so we can skip marking that we need to save because overflow changed
+                    if (toInsert == 0) {
+                        //We were able to fully fit the stack, so we can remove it from our list of overflow
+                        iter.remove();
+                        recheck = true;
+                    } else if (toInsert < entry.getIntValue()) {
+                        //Some was able to fit, update the amount that is actually still part of the overflow
+                        entry.setValue(toInsert);
+                    }
                 }
+                transaction.commit();
             }
             if (recheck) {
                 //Update if we still have an overflow as at least one stack was able to fit

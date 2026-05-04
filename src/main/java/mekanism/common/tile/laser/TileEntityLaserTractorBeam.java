@@ -1,7 +1,6 @@
 package mekanism.common.tile.laser;
 
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.inventory.IInventorySlot;
@@ -26,6 +25,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
@@ -66,34 +67,48 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
             BlockPos dropPos = null;
             Direction opposite = null;
             List<IInventorySlot> inventorySlots = getInventorySlots();
-            for (ItemStack drop : drops) {
-                //Try inserting it first where it can stack and then into empty slots
-                drop = InventoryUtils.insertItem(inventorySlots, drop, Action.EXECUTE, AutomationType.INTERNAL);
-                if (!drop.isEmpty()) {
-                    //If we have some drop left over that we couldn't fit, then spawn it into the world
-                    // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
-                    // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
-                    if (dropPos == null) {
-                        Direction direction = getDirection();
-                        dropPos = worldPosition.relative(direction, 2);
-                        opposite = direction.getOpposite();
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (ItemStack drop : drops) {
+                    if (drop.isEmpty()) {//Not sure if this can ever be the case, but handle it just in case
+                        continue;
                     }
-                    Block.popResourceFromFace(level, dropPos, opposite, drop);
+                    int toInsert = drop.count();
+                    //Try inserting it first where it can stack and then into empty slots
+                    toInsert -= InventoryUtils.insertItem(inventorySlots, ItemResource.of(drop), toInsert, transaction, AutomationType.INTERNAL);
+                    if (toInsert > 0) {
+                        //If we have some drop left over that we couldn't fit, then spawn it into the world
+                        // Note: We use an adjusted position and an opposite direction to provide the item with momentum towards the tractor beam
+                        // so that even though we couldn't fit the items into our inventory we can still have them appear to be "pulled" to the tractor beam
+                        if (dropPos == null) {
+                            Direction direction = getDirection();
+                            dropPos = worldPosition.relative(direction, 2);
+                            opposite = direction.getOpposite();
+                        }
+                        Block.popResourceFromFace(level, dropPos, opposite, drop.copyWithCount(toInsert));
+                    }
                 }
+                transaction.commit();
             }
         }
     }
 
     @Override
     protected boolean handleHitItem(ItemEntity entity) {
-        ItemStack stack = entity.getItem();
-        //Try inserting it first where it can stack and then into empty slots
-        stack = InventoryUtils.insertItem(getInventorySlots(), stack, Action.EXECUTE, AutomationType.INTERNAL);
-        if (stack.isEmpty()) {
-            //If we have finished grabbing it all then remove the entity
-            entity.discard();
+        try (Transaction transaction = Transaction.openRoot()) {
+            ItemStack stack = entity.getItem();
+            //Try inserting it first where it can stack and then into empty slots
+            int inserted = InventoryUtils.insertItem(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
+            if (inserted == stack.count()) {
+                //If we have finished grabbing it all then remove the entity
+                entity.discard();
+            } else {
+                //TODO - 26.1: Validate this, it didn't used to be part of this method but I think it is needed?
+                //If we couldn't fit it all, shrink how much of the item the entity is representing
+                stack.shrink(inserted);
+            }
+            transaction.commit();
+            return true;
         }
-        return true;
     }
 
     //Methods relating to IComputerTile

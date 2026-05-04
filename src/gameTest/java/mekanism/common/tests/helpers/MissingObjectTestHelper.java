@@ -39,6 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault
 public class MissingObjectTestHelper extends MekGameTestHelper {
@@ -60,6 +61,10 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public HashedItem failureHashedItem() {
         return HashedItem.raw(failureItem());
+    }
+
+    public ItemResource failureItemType() {
+        return ItemResource.of(failureItem());
     }
 
     public ItemStack failureItem() {
@@ -130,20 +135,20 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public OverflowAware makeOverflow() {
-        Object2IntSortedMap<HashedItem> overflow = new Object2IntLinkedOpenHashMap<>();
-        overflow.put(hashedStack(Items.DIAMOND), 10);
-        overflow.put(hashedStack(Items.STICK), 4);
-        overflow.put(failureHashedItem(), 7);
-        overflow.put(hashedStack(Items.STONE), 2);
+        Object2IntSortedMap<ItemResource> overflow = new Object2IntLinkedOpenHashMap<>();
+        overflow.put(ItemResource.of(Items.DIAMOND), 10);
+        overflow.put(ItemResource.of(Items.STICK), 4);
+        overflow.put(failureItemType(), 7);
+        overflow.put(ItemResource.of(Items.STONE), 2);
         return new OverflowAware(overflow);
     }
 
     public boolean validateOverflow(OverflowAware overflowAware) {
-        Object2IntSortedMap<HashedItem> overflow = overflowAware.overflow();
+        Object2IntSortedMap<ItemResource> overflow = overflowAware.overflow();
         return overflow.size() == 3 &&
-               overflow.getInt(hashedStack(Items.DIAMOND)) == 10 &&
-               overflow.getInt(hashedStack(Items.STICK)) == 4 &&
-               overflow.getInt(hashedStack(Items.STONE)) == 2;
+               overflow.getInt(ItemResource.of(Items.DIAMOND)) == 10 &&
+               overflow.getInt(ItemResource.of(Items.STICK)) == 4 &&
+               overflow.getInt(ItemResource.of(Items.STONE)) == 2;
     }
 
     public PortableDashboardContents makeDashboard() {
