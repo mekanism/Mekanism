@@ -136,7 +136,7 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         }
         //TODO - 26.1 - renderObject
         if (state.coolantData != null && state.coolantModel != null) {
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantGetter, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.coolantModel, state.coolantGetter, OverlayTexture.NO_OVERLAY, state.coolantData.asRenderData().calculateGlowLight(LightCoordsUtil.FULL_SKY), state.coolantData.asRenderData().getColorARGB(state.coolantScale), state.blockPos, state.coolantData.asRenderData().location, state.coolantData.asRenderData().length, state.coolantData.asRenderData().width);
         }
         if (state.heatedCoolantData != null && state.heatedCoolantModel != null) {
             RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, state.heatedCoolantModel, state.heatedCoolantGetter, OverlayTexture.NO_OVERLAY, state.heatedCoolantData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.heatedCoolantData.getColorARGB(state.heatedCoolantScale), state.blockPos, state.heatedCoolantData.location, state.heatedCoolantData.length, state.heatedCoolantData.width);
