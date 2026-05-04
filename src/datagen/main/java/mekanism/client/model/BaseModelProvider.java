@@ -44,7 +44,7 @@ public abstract class BaseModelProvider extends ModelProvider {
           Optional.of(new Material(Identifier.parse("minecraft:item/bucket"))),
           Optional.of(new Material(Identifier.parse("minecraft:item/bucket"))),
           Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid"))),
-          Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid_cover")))
+          Optional.empty()// Neo bug: cover doesn't work. Optional.of(new Material(Identifier.parse("neoforge:item/mask/bucket_fluid_cover")))
     );
     protected final ResourceManager clientResources;
     /// Blocks to ignore for validation of everything generated (i.e. a manual blockstate exists in the normal source set)
@@ -112,7 +112,7 @@ public abstract class BaseModelProvider extends ModelProvider {
         for (Holder<Item> holder : register.getBucketEntries()) {
             //Note: We expect this to always be the case
             if (holder.value() instanceof BucketItem bucket) {
-                itemModels.itemModelOutput.accept(bucket, new DynamicFluidContainerModel.Unbaked(DEFAULT_BUCKET, bucket.content, true, true, true));
+                itemModels.itemModelOutput.accept(bucket, new DynamicFluidContainerModel.Unbaked(DEFAULT_BUCKET, bucket.content, true, false, true));
             }
         }
     }

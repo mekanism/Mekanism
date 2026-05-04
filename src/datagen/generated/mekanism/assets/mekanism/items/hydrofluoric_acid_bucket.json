@@ -1,11 +1,11 @@
 {
   "model": {
     "type": "neoforge:fluid_container",
+    "cover_is_mask": false,
     "flip_gas": true,
     "fluid": "mekanism:hydrofluoric_acid",
     "textures": {
       "base": "minecraft:item/bucket",
-      "cover": "neoforge:item/mask/bucket_fluid_cover",
       "fluid": "neoforge:item/mask/bucket_fluid",
       "particle": "minecraft:item/bucket"
     }
