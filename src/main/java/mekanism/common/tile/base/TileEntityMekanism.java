@@ -1254,7 +1254,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         boolean hasNonEmpty = false;
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            stacks.add(slot.getStack().copy());
+            stacks.add(slot.getResource().toStack(slot.getCount()));
             if (!slot.isEmpty()) {
                 hasNonEmpty = true;
             }

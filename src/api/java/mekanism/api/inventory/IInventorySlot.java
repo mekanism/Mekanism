@@ -162,7 +162,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @return Actual size the stack was set to.
      */
-    default int setStackSize(int amount, Action action) {
+    default int setStackSize(int amount, Action action) {//TODO - 26.1: Make this, shrinkStack, and growStack be transactional
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -256,6 +256,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     @Override
     default void serialize(ValueOutput output) {
         if (!isEmpty()) {
+            //TODO - 26.1: Reimplement this to save the resource and amount rather than having it as an oversized stack
             output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, getStack());
         }
     }

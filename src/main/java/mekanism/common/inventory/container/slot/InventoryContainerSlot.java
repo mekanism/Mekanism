@@ -35,6 +35,9 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
         this.slotOverlay = slotOverlay;
         this.warningAdder = warningAdder;
         this.uncheckedSetter = uncheckedSetter;
+        //TODO - 26.1: Evaluate callers of getItem in cases where it may be an InventoryContainerSlot (such as for the module tweaker)
+        // as it is possible we might be relying on being able to edit the item. While StackCopySlot may be able to handle that
+        // we also might be missing the setChanged calls it would be relying on
     }
 
     public IInventorySlot getInventorySlot() {

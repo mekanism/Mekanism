@@ -725,7 +725,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                     // Given the slot is empty the expected result is that we will always end up inserting into the first empty slot
                     // and end up inserting the entire stack
                     cachedStacks.put(i, new ItemCount(resourceToInsert, stackSize - remainderSize));
-                    if (stack.isEmpty()) {
+                    if (remainderSize == 0) {
                         //Stack was fully accepted, return that we have no remainder
                         return ItemStack.EMPTY;
                     }

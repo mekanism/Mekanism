@@ -31,7 +31,8 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
             QIOCraftingWindow craftingWindow = new QIOCraftingWindow(this, (byte) tableIndex, slot -> () -> {
                 //Skip contents change handling until we actually have our crafting window updated
                 if (!initializing) {
-                    ItemStack stored = craftingWindows[finalTableIndex].getInputSlot(slot).getStack().copy();
+                    IInventorySlot inputSlot = craftingWindows[finalTableIndex].getInputSlot(slot);
+                    ItemStack stored = inputSlot.getResource().toStack(inputSlot.getCount());
                     PortableDashboardContents content = stack.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY);
                     stack.set(MekanismDataComponents.QIO_DASHBOARD, content.with(finalTableIndex, slot, stored));
                 }

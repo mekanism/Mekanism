@@ -82,7 +82,7 @@ public final class InventoryUtils {
     }
 
     private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper dropper) {
-        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getStack().copy());
+        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getResource().toStack(slot.getCount()));
     }
 
     /**

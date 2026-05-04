@@ -367,7 +367,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
-        ItemStack result = outputSlot.getStack().copy();
+        ItemStack result = outputSlot.getResource().toStack(outputSlot.getCount());
         Item resultItem = result.getItem();
         resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
