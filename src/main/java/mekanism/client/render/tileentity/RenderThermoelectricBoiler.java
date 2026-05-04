@@ -27,6 +27,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -93,11 +94,11 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         RenderType renderType = Sheets.translucentBlockSheet();
         if (state.waterScale > 0 && state.waterData != null) {
             MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(state.waterData, state.waterScale);
-            RenderResizableCuboid.renderObject(camera.pos, state.waterData, state.valves, state.blockPos, poseStack, renderType, nodeCollector, OverlayTexture.NO_OVERLAY, state.waterScale, fluidModel, state.waterTexGetter, state.valveTexture);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.waterTexGetter, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, state.waterData.getColorARGB(), state.waterData.getColorARGB(state.waterScale), state.waterData.calculateGlowLight(LightCoordsUtil.FULL_SKY));
         }
         if (state.steamScale > 0 && state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);
-            RenderResizableCuboid.renderObject(camera.pos, state.steamData, state.blockPos, model, poseStack, renderType, nodeCollector, OverlayTexture.NO_OVERLAY, state.steamScale, state.steamTexGetter);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state.steamTexGetter, OverlayTexture.NO_OVERLAY, state.steamData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.steamData.getColorARGB(state.steamScale), state.blockPos, state.steamData.location, state.steamData.length, state.steamData.width);
         }
     }
 

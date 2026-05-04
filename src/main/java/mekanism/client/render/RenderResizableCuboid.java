@@ -1,13 +1,10 @@
 package mekanism.client.render;
 
-import com.google.errorprone.annotations.CanIgnoreReturnValue;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import java.util.List;
 import java.util.function.Function;
 import mekanism.client.render.MekanismRenderer.Model3D;
-import mekanism.client.render.data.FluidRenderData;
-import mekanism.client.render.data.RenderData;
 import mekanism.client.render.data.ValveRenderData;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.SubmitNodeCollector;
@@ -17,7 +14,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
-import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -528,49 +524,44 @@ public class RenderResizableCuboid {
                minZ <= camera.z && camera.z <= maxZ;
     }
 
-    protected static FaceDisplay getFaceDisplay(Vec3 camPos, RenderData data, Model3D model) {
-        return isInsideBounds(camPos, data.location.getX(), data.location.getY(), data.location.getZ(),
-              data.location.getX() + data.length, data.location.getY() + ModelRenderer.getActualHeight(model), data.location.getZ() + data.width)
+    protected static FaceDisplay getFaceDisplay(Vec3 camPos, BlockPos renderStart, int length, int width, float height) {
+        return isInsideBounds(camPos, renderStart.getX(), renderStart.getY(), renderStart.getZ(),
+              renderStart.getX() + length, renderStart.getY() + height, renderStart.getZ() + width)
                ? FaceDisplay.BACK : FaceDisplay.FRONT;
     }
 
     //TODO - 26.1 valves -> valveRenderData (map in state setup)
-    public static void renderObject(Vec3 camPos, FluidRenderData data, List<ValveRenderData> valves, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale, Model3D fluidModel, Function<Direction, TextureAtlasSprite> spriteFromDirection, Function<Direction, TextureAtlasSprite> valveTexture) {
-        int glow = renderObject(camPos, data, rendererPos, fluidModel, matrix, renderType, nodeCollector, overlay, scale, spriteFromDirection);
+    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D fluidModel, List<ValveRenderData> valves, int overlay, Function<Direction, TextureAtlasSprite> spriteFromDirection, Function<Direction, TextureAtlasSprite> valveTexture, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, int physicalHeight, int fluidColor, int fluidColorScaled, int glowLight) {
+        renderObject(camPos, matrix, renderType, nodeCollector, fluidModel, spriteFromDirection, overlay, glowLight, fluidColorScaled, terPos, renderStartPos, physicalLength, physicalWidth);
         if (!valves.isEmpty()) {
             //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
             //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them
             // if we aren't in the multiblock though we can just get away with only rendering the front faces
-            FaceDisplay faceDisplay = isInsideBounds(camPos, data.location.getX(), data.location.getY(), data.location.getZ(), data.location.getX() + data.length,
-                  data.location.getY() + data.height, data.location.getZ() + data.width) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
+            FaceDisplay faceDisplay = isInsideBounds(camPos, renderStartPos.getX(), renderStartPos.getY(), renderStartPos.getZ(), renderStartPos.getX() + physicalLength,
+                  renderStartPos.getY() + physicalHeight, renderStartPos.getZ() + physicalWidth) ? FaceDisplay.BOTH : FaceDisplay.FRONT;
             for (ValveRenderData valveRenderData : valves) {
-                renderValve(camPos, data, rendererPos, matrix, renderType, nodeCollector, overlay, valveRenderData, fluidModel, glow, faceDisplay, valveTexture);
+                renderValve(camPos, matrix, renderType, nodeCollector, terPos, overlay, valveRenderData, fluidModel, glowLight, faceDisplay, valveTexture, fluidColor);
             }
         }
     }
 
-    private static void renderValve(Vec3 camPos, FluidRenderData data, BlockPos rendererPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay, Function<Direction, TextureAtlasSprite> valveTexture) {
+    private static void renderValve(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, BlockPos rendererPos, int overlay, ValveRenderData valveRenderData, Model3D model, int glow, FaceDisplay faceDisplay, Function<Direction, TextureAtlasSprite> valveTexture, int fluidColor) {
         Model3D valveModel = ModelRenderer.getValveModel(valveRenderData, model.maxY - model.minY);
         if (valveModel != null) {
             matrix.pushPose();
             matrix.translate(valveRenderData.getValveLocation().getX() - rendererPos.getX(), valveRenderData.getValveLocation().getY() - rendererPos.getY(), valveRenderData.getValveLocation().getZ() - rendererPos.getZ());
-            int argb = data.getColorARGB();
-            renderCube(valveModel, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()), valveTexture);
+            renderCube(valveModel, matrix, renderType, nodeCollector, fluidColor, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(valveRenderData.getValveLocation()), valveTexture);
             matrix.popPose();
         }
     }
 
     //TODO - 26.1: Should we no-op all the cases of scale == 0
-    @CanIgnoreReturnValue
-    public static int renderObject(Vec3 camPos, RenderData data, BlockPos rendererPos, Model3D object, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, int overlay, float scale, Function<Direction, TextureAtlasSprite> spriteFromDirection) {
-        int glow = data.calculateGlowLight(LightCoordsUtil.FULL_SKY);
+    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D object, Function<Direction, TextureAtlasSprite> spriteFromDirection, int overlay, int glowLight, int scaledColor, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth) {
         matrix.pushPose();
-        matrix.translate(data.location.getX() - rendererPos.getX(), data.location.getY() - rendererPos.getY(), data.location.getZ() - rendererPos.getZ());
-        int argb = data.getColorARGB(scale);
-        FaceDisplay faceDisplay = getFaceDisplay(camPos, data, object);
-        renderCube(object, matrix, renderType, nodeCollector, argb, glow, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(data.location), spriteFromDirection);
+        matrix.translate(renderStartPos.getX() - terPos.getX(), renderStartPos.getY() - terPos.getY(), renderStartPos.getZ() - terPos.getZ());
+        FaceDisplay faceDisplay = getFaceDisplay(camPos, renderStartPos, physicalLength, physicalWidth, ModelRenderer.getActualHeight(object));
+        renderCube(object, matrix, renderType, nodeCollector, scaledColor, glowLight, overlay, faceDisplay, camPos, Vec3.atLowerCornerOf(renderStartPos), spriteFromDirection);
         matrix.popPose();
-        return glow;
     }
 
     /// avoid allocating a new one just to be non-null

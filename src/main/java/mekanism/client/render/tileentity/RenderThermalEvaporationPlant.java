@@ -26,6 +26,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.core.Direction;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
@@ -66,7 +67,7 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         if (state.data != null) {
             RenderType renderType = Sheets.translucentBlockSheet();
             MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(state.data, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, state.data, state.valves, state.blockPos, poseStack, renderType, nodeCollector, OverlayTexture.NO_OVERLAY, state.scale, fluidModel, state, state.valveTexture);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state, state.valveTexture, state.blockPos, state.data.location, state.data.length, state.data.width, state.data.height, state.data.getColorARGB(), state.data.getColorARGB(state.scale), state.data.calculateGlowLight(LightCoordsUtil.FULL_SKY));
         }
     }
 
