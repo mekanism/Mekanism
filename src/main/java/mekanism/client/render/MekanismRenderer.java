@@ -331,7 +331,7 @@ public class MekanismRenderer {
     }
 
     //TODO - 26.1: Thiakil to poke at this
-    public static class Model3D {
+    public static final class Model3D {
 
         public float minX, minY, minZ;
         public float maxX, maxY, maxZ;
