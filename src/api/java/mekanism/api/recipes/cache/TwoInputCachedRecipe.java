@@ -26,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,9 +113,12 @@ public class TwoInputCachedRecipe<HOLDER_A, INPUT_A extends TypedInstance<HOLDER
         //Validate something didn't go horribly wrong
         if (input != null && secondaryInput != null && output != null && !inputEmptyCheck.test(input) && !secondaryInputEmptyCheck.test(secondaryInput) &&
             !outputEmptyCheck.test(output)) {
-            inputHandler.use(input, operations);
-            secondaryInputHandler.use(secondaryInput, operations);
-            outputHandler.handleOutput(output, operations);
+            try (Transaction transaction = Transaction.openRoot()) {
+                inputHandler.use(input, operations, transaction);
+                secondaryInputHandler.use(secondaryInput, operations, transaction);
+                outputHandler.handleOutput(output, operations, transaction);
+                transaction.commit();
+            }
         }
     }
 

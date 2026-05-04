@@ -2,6 +2,7 @@ package mekanism.api.recipes.outputs;
 
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Interface describing handling of an output.
@@ -14,10 +15,11 @@ public interface IOutputHandler<OUTPUT> {
     /**
      * Adds {@code operations} operations worth of {@code toOutput} to the output.
      *
-     * @param toOutput   Output result.
-     * @param operations Operations to perform.
+     * @param toOutput    Output result.
+     * @param operations  Operations to perform.
+     * @param transaction The transaction that this operation is part of.
      */
-    void handleOutput(OUTPUT toOutput, int operations);
+    void handleOutput(OUTPUT toOutput, int operations, TransactionContext transaction);
 
     /**
      * Calculates how many operations the output has room for and updates the given operation tracker. It can be assumed that when this method is called

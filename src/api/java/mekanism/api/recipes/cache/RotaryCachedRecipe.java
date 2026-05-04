@@ -17,6 +17,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,13 +125,19 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
         if (modeSupplier.getAsBoolean()) {
             //Validate something didn't go horribly wrong and the fluid is somehow empty
             if (recipe.hasFluidToChemical() && !recipeFluid.isEmpty() && !chemicalOutput.isEmpty()) {
-                fluidInputHandler.use(recipeFluid, operations);
-                chemicalOutputHandler.handleOutput(chemicalOutput, operations);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    fluidInputHandler.use(recipeFluid, operations, transaction);
+                    chemicalOutputHandler.handleOutput(chemicalOutput, operations, transaction);
+                    transaction.commit();
+                }
             }
         } else if (recipe.hasChemicalToFluid() && !recipeChemical.isEmpty() && fluidOutput != null) {
             //Validate something didn't go horribly wrong and the chemical is somehow empty
-            chemicalInputHandler.use(recipeChemical, operations);
-            fluidOutputHandler.handleOutput(fluidOutput, operations);
+            try (Transaction transaction = Transaction.openRoot()) {
+                chemicalInputHandler.use(recipeChemical, operations, transaction);
+                fluidOutputHandler.handleOutput(fluidOutput, operations, transaction);
+                transaction.commit();
+            }
         }
     }
 }

@@ -20,6 +20,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -166,11 +167,14 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
         if (recipeChemical != null && output != null && !recipeItem.isEmpty() && !recipeChemical.isEmpty() && !outputEmptyCheck.test(output)) {
-            itemInputHandler.use(recipeItem, operations);
-            if (chemicalUsageMultiplier > 0) {
-                chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier);
+            try (Transaction transaction = Transaction.openRoot()) {
+                itemInputHandler.use(recipeItem, operations, transaction);
+                if (chemicalUsageMultiplier > 0) {
+                    chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier, transaction);
+                }
+                outputHandler.handleOutput(output, operations, transaction);
+                transaction.commit();
             }
-            outputHandler.handleOutput(output, operations);
         }
     }
 

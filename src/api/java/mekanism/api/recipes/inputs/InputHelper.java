@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
@@ -38,7 +39,7 @@ public class InputHelper {
 
             @Override
             public ItemStack getInput() {
-                return slot.getStack();
+                return slot.getResource().toStack(slot.getCount());
             }
 
             @Override
@@ -52,11 +53,12 @@ public class InputHelper {
             }
 
             @Override
-            public void use(ItemStack recipeInput, int operations) {
+            public void use(ItemStack recipeInput, int operations, TransactionContext transaction) {
                 if (operations == 0) {
                     //Just exit if we are somehow here at zero operations
                     return;
                 }
+                //TODO - 26.1: Why do input tanks check the current stack isn't empty instead of the recipe input not being empty?
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.count() * operations;
                     logMismatchedStackSize(slot.shrinkStack(amount, Action.EXECUTE), amount);
@@ -72,7 +74,7 @@ public class InputHelper {
                     // where we may want to allow not having the input be required for recipe matching
                     if (!recipeInput.isEmpty()) {
                         //TODO: Simulate?
-                        int operations = getInput().count() / (recipeInput.count() * usageMultiplier);
+                        int operations = slot.getCount() / (recipeInput.count() * usageMultiplier);
                         if (operations > 0) {
                             tracker.updateOperations(operations);
                             return;
@@ -143,7 +145,7 @@ public class InputHelper {
             }
 
             @Override
-            public void use(FluidStack recipeInput, int operations) {
+            public void use(FluidStack recipeInput, int operations, TransactionContext transaction) {
                 if (operations == 0 || recipeInput.isEmpty()) {
                     //Just exit if we are somehow here at zero operations
                     // or if something went wrong, this if should never really be true if we got to finishProcessing
@@ -210,7 +212,7 @@ public class InputHelper {
         }
 
         @Override
-        public void use(ChemicalStack recipeInput, long operations) {
+        public void use(ChemicalStack recipeInput, long operations, TransactionContext transaction) {
             if (operations == 0 || recipeInput.isEmpty()) {
                 //Just exit if we are somehow here at zero operations
                 // or if something went wrong, this if should never really be true if we got to finishProcessing
@@ -232,7 +234,7 @@ public class InputHelper {
                 // where we may want to allow not having the input be required for recipe matching
                 if (!recipeInput.isEmpty()) {
                     //TODO: Simulate the drain?
-                    int operations = Ints.saturatedCast(getInput().amount() / (recipeInput.amount() * usageMultiplier));
+                    int operations = Ints.saturatedCast(tank.getStored() / (recipeInput.amount() * usageMultiplier));
                     if (operations > 0) {
                         tracker.updateOperations(operations);
                         return;

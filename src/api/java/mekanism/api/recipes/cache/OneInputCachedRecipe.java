@@ -33,6 +33,7 @@ import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,8 +103,11 @@ public class OneInputCachedRecipe<HOLDER, INPUT extends TypedInstance<HOLDER>, O
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
         if (input != null && output != null && !inputEmptyCheck.test(input) && !outputEmptyCheck.test(output)) {
-            inputHandler.use(input, operations);
-            outputHandler.handleOutput(output, operations);
+            try (Transaction transaction = Transaction.openRoot()) {
+                inputHandler.use(input, operations, transaction);
+                outputHandler.handleOutput(output, operations, transaction);
+                transaction.commit();
+            }
         }
     }
 

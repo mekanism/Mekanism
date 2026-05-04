@@ -4,12 +4,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Interface describing handling of an input.
  *
  * @param <HOLDERTYPE> Type of input handled by this handler.
- * @param <STACK> Stack Type of HOLDERTYPE.
+ * @param <STACK>      Stack Type of HOLDERTYPE.
  */
 @NothingNullByDefault
 public interface IInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> {
@@ -45,8 +46,9 @@ public interface IInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYP
      *
      * @param recipeInput Recipe input result.
      * @param operations  Operations to perform.
+     * @param transaction The transaction that this operation is part of.
      */
-    void use(STACK recipeInput, int operations);
+    void use(STACK recipeInput, int operations, TransactionContext transaction);
 
     /**
      * Calculates how many operations the input can sustain and updates the given operation tracker. It can be assumed that when this method is called

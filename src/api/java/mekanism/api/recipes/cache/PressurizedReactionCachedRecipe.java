@@ -13,6 +13,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -117,10 +118,13 @@ public class PressurizedReactionCachedRecipe extends CachedRecipe<PressurizedRea
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
         if (output != null && !recipeItem.isEmpty() && !recipeFluid.isEmpty() && !recipeChemical.isEmpty()) {
-            itemInputHandler.use(recipeItem, operations);
-            fluidInputHandler.use(recipeFluid, operations);
-            chemicalInputHandler.use(recipeChemical, operations);
-            outputHandler.handleOutput(output, operations);
+            try (Transaction transaction = Transaction.openRoot()) {
+                itemInputHandler.use(recipeItem, operations, transaction);
+                fluidInputHandler.use(recipeFluid, operations, transaction);
+                chemicalInputHandler.use(recipeChemical, operations, transaction);
+                outputHandler.handleOutput(output, operations, transaction);
+                transaction.commit();
+            }
         }
     }
 }

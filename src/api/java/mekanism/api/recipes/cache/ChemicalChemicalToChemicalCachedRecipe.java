@@ -14,6 +14,7 @@ import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -110,9 +111,12 @@ public class ChemicalChemicalToChemicalCachedRecipe<RECIPE extends ChemicalChemi
     protected void finishProcessing(int operations) {
         //Validate something didn't go horribly wrong
         if (leftRecipeInput != null && rightRecipeInput != null && output != null && !leftRecipeInput.isEmpty() && !rightRecipeInput.isEmpty() && !output.isEmpty()) {
-            leftInputHandler.use(leftRecipeInput, operations);
-            rightInputHandler.use(rightRecipeInput, operations);
-            outputHandler.handleOutput(output, operations);
+            try (Transaction transaction = Transaction.openRoot()) {
+                leftInputHandler.use(leftRecipeInput, operations, transaction);
+                rightInputHandler.use(rightRecipeInput, operations, transaction);
+                outputHandler.handleOutput(output, operations, transaction);
+                transaction.commit();
+            }
         }
     }
 }

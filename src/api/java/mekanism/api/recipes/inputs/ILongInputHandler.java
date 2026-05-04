@@ -4,6 +4,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Interface describing handling of an input that can handle long values.
@@ -14,9 +15,9 @@ import net.minecraft.core.TypedInstance;
 public interface ILongInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> extends IInputHandler<HOLDERTYPE, STACK> {
 
     @Override
-    default void use(STACK recipeInput, int operations) {
+    default void use(STACK recipeInput, int operations, TransactionContext transaction) {
         //Wrap to the long implementation
-        use(recipeInput, (long) operations);
+        use(recipeInput, (long) operations, transaction);
     }
 
     /**
@@ -24,8 +25,9 @@ public interface ILongInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDE
      *
      * @param recipeInput Recipe input result.
      * @param operations  Operations to perform.
+     * @param transaction The transaction that this operation is part of.
      */
-    void use(STACK recipeInput, long operations);
+    void use(STACK recipeInput, long operations, TransactionContext transaction);
 
     @Override
     default void calculateOperationsCanSupport(OperationTracker tracker, STACK recipeInput, int usageMultiplier) {

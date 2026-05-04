@@ -16,10 +16,12 @@ import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,8 +43,8 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(ChemicalStack toOutput, int operations) {
-                OutputHelper.handleOutput(tank, toOutput, operations);
+            public void handleOutput(ChemicalStack toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(tank, toOutput, operations, transaction);
             }
 
             @Override
@@ -64,8 +66,8 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(FluidStackTemplate toOutput, int operations) {
-                OutputHelper.handleOutput(tank, toOutput, operations);
+            public void handleOutput(FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(tank, toOutput, operations, transaction);
             }
 
             @Override
@@ -87,8 +89,8 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(ItemStackTemplate toOutput, int operations) {
-                OutputHelper.handleOutput(slot, toOutput, operations);
+            public void handleOutput(ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(slot, toOutput, operations, transaction);
             }
 
             @Override
@@ -115,12 +117,12 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(ChanceOutput toOutput, int operations) {
-                OutputHelper.handleOutput(mainSlot, toOutput.getMainOutput(), operations);
+            public void handleOutput(ChanceOutput toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(mainSlot, toOutput.getMainOutput(), operations, transaction);
                 //TODO: Batch this into a single addition call, by looping over and calculating things?
                 ItemStackTemplate secondaryOutput = toOutput.getSecondaryOutput();
                 for (int i = 0; i < operations; i++) {
-                    OutputHelper.handleOutput(secondarySlot, secondaryOutput, operations);
+                    OutputHelper.handleOutput(secondarySlot, secondaryOutput, operations, transaction);
                     if (i < operations - 1) {
                         secondaryOutput = toOutput.nextSecondaryOutput();
                     }
@@ -154,9 +156,9 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(PressurizedReactionRecipeOutput toOutput, int operations) {
-                OutputHelper.handleOutput(slot, toOutput.item(), operations);
-                OutputHelper.handleOutput(tank, toOutput.chemical(), operations);
+            public void handleOutput(PressurizedReactionRecipeOutput toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(slot, toOutput.item(), operations, transaction);
+                OutputHelper.handleOutput(tank, toOutput.chemical(), operations, transaction);
             }
 
             @Override
@@ -188,9 +190,9 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(FluidOptionalItemOutput toOutput, int operations) {
-                OutputHelper.handleOutput(tank, toOutput.fluid(), operations);
-                OutputHelper.handleOutput(slot, toOutput.optionalItem(), operations);
+            public void handleOutput(FluidOptionalItemOutput toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(tank, toOutput.fluid(), operations, transaction);
+                OutputHelper.handleOutput(slot, toOutput.optionalItem(), operations, transaction);
             }
 
             @Override
@@ -220,9 +222,9 @@ public class OutputHelper {
         return new IOutputHandler<>() {
 
             @Override
-            public void handleOutput(ElectrolysisRecipeOutput toOutput, int operations) {
-                OutputHelper.handleOutput(leftTank, toOutput.left(), operations);
-                OutputHelper.handleOutput(rightTank, toOutput.right(), operations);
+            public void handleOutput(ElectrolysisRecipeOutput toOutput, int operations, TransactionContext transaction) {
+                OutputHelper.handleOutput(leftTank, toOutput.left(), operations, transaction);
+                OutputHelper.handleOutput(rightTank, toOutput.right(), operations, transaction);
             }
 
             @Override
@@ -242,7 +244,7 @@ public class OutputHelper {
      * @param toOutput   Output result.
      * @param operations Operations to perform.
      */
-    private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations) {
+    private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations, TransactionContext transaction) {
         if (operations == 0) {
             //This should not happen
             return;
@@ -251,7 +253,7 @@ public class OutputHelper {
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(IExtendedFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations) {
+    private static void handleOutput(IExtendedFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
         if (operations == 0 || toOutput == null) {
             //This should not happen
             return;
@@ -259,17 +261,17 @@ public class OutputHelper {
         fluidTank.insert(toOutput.withAmount(toOutput.amount() * operations).create(), Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations) {
+    private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
         if (operations == 0 || toOutput == null) {
             return;
         }
-        ItemStack output = toOutput.create();
+        int outputCount = toOutput.count();
         if (operations > 1) {
             //If we are doing more than one operation we need to make a copy of our stack and change the amount
             // that we are using the fill the tank with
-            output.setCount(output.count() * operations);
+            outputCount *= operations;
         }
-        inventorySlot.insertItem(output, Action.EXECUTE, AutomationType.INTERNAL);
+        inventorySlot.insert(ItemResource.of(toOutput), outputCount, transaction, AutomationType.INTERNAL);
     }
 
     /**
@@ -280,8 +282,7 @@ public class OutputHelper {
      * @param toOutput       Output result.
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank,
-          ChemicalStack toOutput) {
+    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, ChemicalStack toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
             //Copy the stack and make it be max size
@@ -326,18 +327,19 @@ public class OutputHelper {
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IInventorySlot slot, @Nullable ItemStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (toOutput != null) {
-            //Make a copy of the stack we are outputting with its maximum size
-            ItemStack output = toOutput.apply(toOutput.getMaxStackSize(), DataComponentPatch.EMPTY);
-            ItemStack remainder = slot.insertItem(output, Action.SIMULATE, AutomationType.INTERNAL);
-            int amountUsed = output.count() - remainder.count();
-            //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = amountUsed / toOutput.count();
-            tracker.updateOperations(operations);
-            if (operations == 0) {
-                if (amountUsed == 0 && slot.getCurrentLimit() - slot.getCount() > 0) {
-                    tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
-                } else {
-                    tracker.addError(notEnoughSpace);
+            //TODO - 26.1: Should a parent transaction be passed in/have the operation tracker keep track of that?
+            try (Transaction simulation = Transaction.openRoot()) {
+                //Try inserting an amount corresponding to the maximum size of the output
+                int amountUsed = slot.insert(ItemResource.of(toOutput), toOutput.getMaxStackSize(), simulation, AutomationType.INTERNAL);
+                //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
+                int operations = amountUsed / toOutput.count();
+                tracker.updateOperations(operations);
+                if (operations == 0) {
+                    if (amountUsed == 0 && slot.getCurrentLimit() - slot.getCount() > 0) {
+                        tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
+                    } else {
+                        tracker.addError(notEnoughSpace);
+                    }
                 }
             }
         }
