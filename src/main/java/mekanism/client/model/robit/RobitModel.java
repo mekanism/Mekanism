@@ -18,7 +18,6 @@ public class RobitModel extends EntityModel<RobitRenderState> {
 
     public static LayerDefinition createBodyLayer() {
         MeshDefinition mesh = new MeshDefinition();
-        // todo: maping geometry robit
         return LayerDefinition.create(mesh, 32, 32);
     }
 }
