@@ -4,15 +4,18 @@ import com.mojang.serialization.Codec;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.text.IHasTextComponent;
+import mekanism.api.text.IHasTranslationKey;
 import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 //TODO - 26.1: Update docs on this
 @NothingNullByDefault
-public final class ChemicalResource implements RegisteredResource<Chemical> {
+public final class ChemicalResource implements RegisteredResource<Chemical>, IHasTextComponent, IHasTranslationKey {
 
     /**
      * The empty resource instance of a {@link ChemicalResource}
@@ -162,5 +165,17 @@ public final class ChemicalResource implements RegisteredResource<Chemical> {
     @Override
     public String toString() {
         return this.chemicalType.unwrapKey().map(key -> key.identifier().toString()).orElse("[unregistered]");
+    }
+
+    @Override
+    public Component getTextComponent() {
+        //Wrapper to get display name of the chemical type easier
+        return getChemical().getTextComponent();
+    }
+
+    @Override
+    public String getTranslationKey() {
+        //Wrapper to get translation key of the chemical type easier
+        return getChemical().getTranslationKey();
     }
 }

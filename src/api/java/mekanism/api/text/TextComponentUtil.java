@@ -3,6 +3,7 @@ package mekanism.api.text;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import mekanism.api.MekanismAPI;
 import mekanism.api.inventory.IHashedItem;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;
@@ -17,10 +18,15 @@ import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class TextComponentUtil {
 
@@ -76,10 +82,14 @@ public class TextComponentUtil {
                 case ClickEvent event -> cachedStyle = cachedStyle.withClickEvent(event);
                 case HoverEvent event -> cachedStyle = cachedStyle.withHoverEvent(event);
                 case Block block -> current = block.getName().copy();
-                case Item item -> current = item.getName(new ItemStack(item)).copy();//todo - 26.1: find and remove these?
+                case Item item -> current = logLiteralItemUsage(item);
                 case ItemStack stack -> current = stack.getHoverName().copy();
+                case ItemStackTemplate template -> current = template.create().getHoverName().copy();
+                case ItemResource resource -> current = resource.getHoverName().copy();
                 case IHashedItem item -> current = item.getInternalStack().getHoverName().copy();
                 case FluidStack stack -> current = stack.getHoverName().copy();
+                case FluidStackTemplate template -> current = template.create().getHoverName().copy();
+                case FluidResource resource -> current = resource.getHoverName().copy();
                 case Fluid fluid -> current = fluid.getFluidType().getDescription().copy();
                 case EntityType<?> entityType -> current = entityType.getDescription().copy();
                 case Level level -> current = level.getDescription().copy();
@@ -209,13 +219,21 @@ public class TextComponentUtil {
             } else if (component instanceof Block block) {
                 current = block.getName().copy();
             } else if (component instanceof Item item) {
-                current = item.getName(new ItemStack(item)).copy();//todo - 26.1: find and remove these?
+                current = logLiteralItemUsage(item);
             } else if (component instanceof ItemStack stack) {
                 current = stack.getHoverName().copy();
+            } else if (component instanceof ItemStackTemplate template) {
+                current = template.create().getHoverName().copy();
+            } else if (component instanceof ItemResource resource) {
+                current = resource.getHoverName().copy();
             } else if (component instanceof IHashedItem item) {
                 current = item.getInternalStack().getHoverName().copy();
             } else if (component instanceof FluidStack stack) {
                 current = stack.getHoverName().copy();
+            } else if (component instanceof FluidStackTemplate template) {
+                current = template.create().getHoverName().copy();
+            } else if (component instanceof FluidResource resource) {
+                current = resource.getHoverName().copy();
             } else if (component instanceof Fluid fluid) {
                 current = fluid.getFluidType().getDescription().copy();
             } else if (component instanceof EntityType<?> entityType) {
@@ -314,5 +332,13 @@ public class TextComponentUtil {
             case RESET -> current.isEmpty();
             default -> current.getColor() != null;
         };
+    }
+
+    //TODO - 26.1: find and remove these?
+    private static MutableComponent logLiteralItemUsage(Item item) {
+        if (!FMLEnvironment.isProduction()) {
+            MekanismAPI.logger.error("Item instance ({}) passed directly to translate method", item, new Exception());
+        }
+        return item.getName(new ItemStack(item)).copy();
     }
 }
