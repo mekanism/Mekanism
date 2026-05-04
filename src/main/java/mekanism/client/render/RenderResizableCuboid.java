@@ -530,9 +530,7 @@ public class RenderResizableCuboid {
                ? FaceDisplay.BACK : FaceDisplay.FRONT;
     }
 
-    //TODO - 26.1 valves -> valveRenderData (map in state setup)
-    public static void renderObject(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D fluidModel, List<ValveRenderData> valves, int overlay, Function<Direction, TextureAtlasSprite> spriteFromDirection, Function<Direction, TextureAtlasSprite> valveTexture, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, int physicalHeight, int fluidColor, int fluidColorScaled, int glowLight) {
-        renderObject(camPos, matrix, renderType, nodeCollector, fluidModel, spriteFromDirection, overlay, glowLight, fluidColorScaled, terPos, renderStartPos, physicalLength, physicalWidth);
+    public static void renderValves(Vec3 camPos, PoseStack matrix, RenderType renderType, SubmitNodeCollector nodeCollector, Model3D fluidModel, List<ValveRenderData> valves, int overlay, Function<Direction, TextureAtlasSprite> valveTexture, BlockPos terPos, BlockPos renderStartPos, int physicalLength, int physicalWidth, int physicalHeight, int fluidColor, int glowLight) {
         if (!valves.isEmpty()) {
             //Use the full multiblock's render data unlike getFaceDisplay which gets the current height for calculating if it is inside
             //If we are in the multiblock, render both faces of the valves as we may be "inside" of them or inside and outside them

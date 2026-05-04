@@ -94,7 +94,11 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         RenderType renderType = Sheets.translucentBlockSheet();
         if (state.waterScale > 0 && state.waterData != null) {
             MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(state.waterData, state.waterScale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.waterTexGetter, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, state.waterData.getColorARGB(), state.waterData.getColorARGB(state.waterScale), state.waterData.calculateGlowLight(LightCoordsUtil.FULL_SKY));
+            int fluidColor = state.waterData.getColorARGB();
+            int fluidColorScaled = state.waterData.getColorARGB(state.waterScale);
+            int glowLight = state.waterData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.waterTexGetter, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width);
+            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, state.waterData.location, state.waterData.length, state.waterData.width, state.waterData.height, fluidColor, glowLight);
         }
         if (state.steamScale > 0 && state.steamData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.steamData, state.steamScale);

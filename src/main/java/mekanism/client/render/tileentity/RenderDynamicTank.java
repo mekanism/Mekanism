@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
@@ -62,12 +63,17 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
 
     @Override
     public void submit(DynamicTankRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        RenderType renderType = Sheets.translucentBlockSheet();
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
             MekanismRenderer.Model3D fluidModel = ModelRenderer.getModel(fluidRenderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidRenderData.getColorARGB(), fluidRenderData.getColorARGB(state.scale), fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY));
+            int fluidColor = fluidRenderData.getColorARGB();
+            int fluidColorScaled = fluidRenderData.getColorARGB(state.scale);
+            int glowLight = fluidRenderData.calculateGlowLight(LightCoordsUtil.FULL_SKY);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state, OverlayTexture.NO_OVERLAY, glowLight, fluidColorScaled, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width);
+            RenderResizableCuboid.renderValves(camera.pos, poseStack, renderType, nodeCollector, fluidModel, state.valves, OverlayTexture.NO_OVERLAY, state.valveTexture, state.blockPos, fluidRenderData.location, fluidRenderData.length, fluidRenderData.width, fluidRenderData.height, fluidColor, glowLight);
         } else if (state.renderData != null) {
             MekanismRenderer.Model3D model = ModelRenderer.getModel(state.renderData, state.scale);
-            RenderResizableCuboid.renderObject(camera.pos, poseStack, Sheets.translucentBlockSheet(), nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width);
+            RenderResizableCuboid.renderObject(camera.pos, poseStack, renderType, nodeCollector, model, state, OverlayTexture.NO_OVERLAY, state.renderData.calculateGlowLight(LightCoordsUtil.FULL_SKY), state.renderData.getColorARGB(state.scale), state.blockPos, state.renderData.location, state.renderData.length, state.renderData.width);
         }
     }
 
