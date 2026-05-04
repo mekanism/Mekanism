@@ -693,7 +693,7 @@ public class QIOCraftingWindow implements IContentsListener {
             //Note: We copy this as we don't want to allow someone trying to interact with the stack directly
             // to change the size of it. We also add it regardless of it is empty as that is what the method expects
             // We also copy it to a count of one, to validate that no mods are trying to do stupid stacked recipe input based hacks
-            items.add(inputSlot.getResource().toStack(1));
+            items.add(inputSlot.getResource().toStack());
         }
         return CraftingInput.ofPositioned(3, 3, items);
     }
@@ -724,15 +724,15 @@ public class QIOCraftingWindow implements IContentsListener {
             }
         }
 
-        public void updateInputsWithReplacement(int index, ItemStack old) {
+        public void updateInputsWithReplacement(int index, ItemResource oldType) {
             //If it has already been updated, no reason to update it again
             if (!updated) {
                 //Update inputs and mark that we have updated them
                 for (int i = 0; i < inputSlots.length; i++) {
                     //If our index matches the one we are replacing the value of instead of getting from the slot
                     // use the stack we are replacing it with instead
-                    ItemStack stack = i == index ? old : inputSlots[i].getStack();
-                    dummy.set(i, stack.copyWithCount(1));
+                    ItemResource type = i == index ? oldType : inputSlots[i].getResource();
+                    dummy.set(i, type.toStack());
                 }
                 updated = true;
             }
@@ -868,7 +868,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     return;
                 }
                 //Ensure our remainder helper has been initialized as we will make use of it in validation
-                remainderHelper.updateInputsWithReplacement(index, used);
+                remainderHelper.updateInputsWithReplacement(index, ItemResource.of(used));
                 if (lastRecipe.value() instanceof ShapedRecipe shapedRecipe) {
                     //It is a shaped recipe, make use of this information to attempt to find the proper match
                     mapShapedRecipe(shapedRecipe, ingredients, index, used);

@@ -149,11 +149,14 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
-        //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
-        long toUse = operations * chemicalUsageMultiplier;
-        chemicalInputHandler.use(recipeChemical, toUse);
-        chemicalUsedSoFar += toUse;
-        chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
+            long toUse = operations * chemicalUsageMultiplier;
+            chemicalInputHandler.use(recipeChemical, toUse, transaction);
+            chemicalUsedSoFar += toUse;
+            chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
+            transaction.commit();
+        }
     }
 
     @Override

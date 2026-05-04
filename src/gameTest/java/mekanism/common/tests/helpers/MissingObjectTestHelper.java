@@ -183,15 +183,15 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
         return new UpgradeAware(getUpgrades(),
-              validFirstSlot ? MekanismItems.SPEED_UPGRADE.asStack(3) : failureItem(3),
-              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asStack(5) : failureItem(5)
+              validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3,
+              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5
         );
     }
 
     private boolean validateUpgrades(UpgradeAware upgradeAware, boolean validFirstSlot, boolean validSecondSlot) {
         if (upgradeAware.upgrades().equals(getUpgrades())) {
-            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.asStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot().isEmpty();
-            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.asStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot().isEmpty();
+            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.asStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot() == null;
+            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.asStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot() == null;
             return firstSlot && secondSlot;
         }
         return false;

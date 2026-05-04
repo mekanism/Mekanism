@@ -74,8 +74,10 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             //Not all upgrades are supported, fail
             return false;
         }
-        ItemStack inputStack = ItemStack.EMPTY;
-        ItemStack outputStack = ItemStack.EMPTY;
+        ItemResource inputType = ItemResource.EMPTY;
+        ItemResource outputType = ItemResource.EMPTY;
+        int inputAmount = 0;
+        int outputAmount = 0;
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
                 ItemResource resource = slot.getResource();
@@ -86,29 +88,32 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                     return false;
                 }
                 if (supportedUpgrades.contains(upgrade)) {
-                    if (inputStack.isEmpty()) {
-                        inputStack = resource.toStack(amount);
+                    if (inputType.isEmpty()) {
+                        inputType = resource;
+                        inputAmount = amount;
                         continue;
-                    } else if (inputStack.count() < inputStack.getMaxStackSize() && resource.matches(inputStack)) {
-                        int needed = inputStack.getMaxStackSize() - inputStack.count();
+                    } else if (inputAmount < inputType.getMaxStackSize() && resource.equals(inputType)) {
+                        int needed = inputType.getMaxStackSize() - inputAmount;
                         if (amount <= needed) {
-                            inputStack.grow(amount);
+                            //All fits, increment and continue
+                            inputAmount += amount;
                             continue;
-                        } else {
-                            inputStack.grow(needed);
-                            amount -= needed;
                         }
+                        //Add what we can from it, and then see if we can add it to the output slot
+                        inputAmount += needed;
+                        amount -= needed;
                     }
                 }
-                if (outputStack.isEmpty()) {
-                    outputStack = resource.toStack(amount);
-                } else if (outputStack.count() < outputStack.getMaxStackSize() && resource.matches(outputStack)) {
-                    int needed = outputStack.getMaxStackSize() - outputStack.count();
+                if (outputType.isEmpty()) {
+                    outputType = resource;
+                    outputAmount = amount;
+                } else if (outputAmount < outputType.getMaxStackSize() && resource.equals(outputType)) {
+                    int needed = outputType.getMaxStackSize() - outputAmount;
                     if (amount > needed) {
                         //Doesn't all fit
                         return false;
                     }
-                    outputStack.grow(outputStack.count());
+                    outputAmount += amount;
                 } else {
                     //Can't fit all the items
                     return false;
@@ -116,7 +121,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        stack.set(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, inputStack, outputStack));
+        stack.set(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, inputType, inputAmount, outputType, outputAmount));
         //Try merging stored stacks
         return true;
     }

@@ -14,6 +14,7 @@ import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.registration.MekanismDeferredHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.Item;
@@ -60,6 +61,10 @@ public class ItemRegistryObject<ITEM extends Item> extends MekanismDeferredHolde
 
     public ItemStack asStack(int count) {
         return new ItemStack(value(), count);
+    }
+
+    public ItemResource asResource() {
+        return ItemResource.of((Holder<Item>) this);
     }
 
     public boolean is(ItemResource resource) {

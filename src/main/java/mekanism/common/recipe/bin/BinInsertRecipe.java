@@ -163,7 +163,7 @@ public class BinInsertRecipe extends BinRecipe {
                 if (inserted == 0) {
                     //Can't insert the stack so just mark that we still have a left-over item in that slot
                     //TODO - 26.1: Is this meant to be returning a stack of the size that was in the position of the crafting grid?
-                    remainingItems.set(entry.getIntKey(), foundType.toStack(1));
+                    remainingItems.set(entry.getIntKey(), foundType.toStack());
                 }
             }
             transaction.commit();

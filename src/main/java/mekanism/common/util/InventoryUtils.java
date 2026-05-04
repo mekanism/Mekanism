@@ -71,7 +71,7 @@ public final class InventoryUtils {
             }
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
-                dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, ItemStack::copy);
+                dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, template -> template == null ? ItemStack.EMPTY : template.create());
                 dropItemContents(level, blockPos, upgradeAware.upgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);

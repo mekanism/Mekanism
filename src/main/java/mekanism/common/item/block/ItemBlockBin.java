@@ -39,7 +39,7 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
             if (slot.isEmpty()) {
                 tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
             } else {
-                tooltipAdder.accept(MekanismLang.STORING.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, slot.getStack()));
+                tooltipAdder.accept(MekanismLang.STORING.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, slot.getResource()));
                 if (tier == BinTier.CREATIVE) {
                     tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, MekanismLang.INFINITE));
                 } else {
