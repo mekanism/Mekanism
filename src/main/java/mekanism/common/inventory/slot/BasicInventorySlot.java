@@ -11,6 +11,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.inventory.InventorySlotItemAccess;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -21,7 +22,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.item.ItemStackResourceHandler;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -30,8 +30,6 @@ import org.jetbrains.annotations.Nullable;
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
 public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements IInventorySlot {//TODO - 26.1: Docs on how this is similar to ItemStackResourceHandler
-
-    private final ItemAccess itemAccess = ItemAccess.forHandlerIndex(new ResourceHandlerWrapper(), 0);
 
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
@@ -68,6 +66,8 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
         return new BasicInventorySlot(canExtract, canInsert, validator, listener, x, y);
     }
 
+    //TODO - 26.1: Figure out what automation type this should have
+    private final ItemAccess itemAccess = new InventorySlotItemAccess(this, AutomationType.MANUAL);
     private final BiPredicate<ItemResource, AutomationType> canExtract;
     private final BiPredicate<ItemResource, AutomationType> canInsert;
     private final Predicate<ItemResource> validator;
@@ -292,30 +292,6 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
         if (this.storedAmount != originalState.count() || !this.currentType.matches(originalState)) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();
-        }
-    }
-
-    private class ResourceHandlerWrapper extends ItemStackResourceHandler {
-
-        @Override
-        protected ItemStack getStack() {
-            return BasicInventorySlot.this.getStack().copy();
-        }
-
-        @Override
-        public long getAmountAsLong(int index) {
-            Objects.checkIndex(index, 1);
-            return BasicInventorySlot.this.getCount();
-        }
-
-        @Override
-        protected void setStack(ItemStack stack) {
-            BasicInventorySlot.this.setStackUnchecked(stack);
-        }
-
-        @Override
-        protected boolean isValid(ItemResource resource) {
-            return BasicInventorySlot.this.isValid(resource);
         }
     }
 }
