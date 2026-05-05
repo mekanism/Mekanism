@@ -66,16 +66,7 @@ public class ClientRegistrationUtil {
         return -1;
     });
     //TODO - 26.1 item models
-    /*private static final ItemColor COLORED_BLOCK_ITEM_COLOR = (stack, tintIndex) -> {
-        Item item = stack.getItem();
-        if (item instanceof BlockItem blockItem) {
-            Block block = blockItem.getBlock();
-            if (block instanceof IColoredBlock coloredBlock) {
-                return coloredBlock.getColor().getPackedColor();
-            }
-        }
-        return -1;
-    };
+    /*
     private static final ItemColor COLORED_ITEM_COLOR = (stack, tintIndex) -> {
         Item item = stack.getItem();
         if (tintIndex == 1 && item instanceof IColoredItem) {
@@ -164,12 +155,6 @@ public class ClientRegistrationUtil {
     public static void registerBlockColorHandler(RegisterColorHandlersEvent.BlockTintSources event, BlockTintSource tintSource, Holder<Block>... blocks) {
         registerBlockColorHandler(event, Collections.singletonList(tintSource), blocks);
     }
-
-    /*public static void registerBucketColorHandler(RegisterColorHandlersEvent.ItemTintSources event, FluidDeferredRegister register) {
-        for (Holder<Item> bucket : register.getBucketEntries()) {
-            event.register(BUCKET_ITEM_COLOR, bucket.value());
-        }
-    }*/
 
     public static void registerIColoredBlockHandler(RegisterColorHandlersEvent event, BlockRegistryObject<?, ?>... blocks) {
         //TODO - 26.1: do this with the models themselves?

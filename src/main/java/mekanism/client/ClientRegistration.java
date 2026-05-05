@@ -454,17 +454,6 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
         //TODO - 26.1 item colours
-        /*ClientRegistrationUtil.registerItemColorHandler(event, (stack, tintIndex) -> {
-                  Item item = stack.getItem();
-                  if (tintIndex == 1 && item instanceof ItemBlockFluidTank tank) {
-                      return tank.getTier().getBaseTier().getPackedColor();
-                  }
-                  return -1;
-              }, MekanismBlocks.BASIC_FLUID_TANK, MekanismBlocks.ADVANCED_FLUID_TANK, MekanismBlocks.ELITE_FLUID_TANK, MekanismBlocks.ULTIMATE_FLUID_TANK,
-              MekanismBlocks.CREATIVE_FLUID_TANK);*/
-        //TODO - 26.1 fluid models
-        //ClientRegistrationUtil.registerBucketColorHandler(event, MekanismFluids.FLUIDS);
-        //TODO - 26.1 item colours
         /*
         ClientRegistrationUtil.registerIColoredItemHandler(event, MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER);
@@ -480,12 +469,7 @@ public class ClientRegistration {
             return -1;
         }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
 
-        for (Map.Entry<IResource, BlockRegistryObject<?, ?>> entry : MekanismBlocks.PROCESSED_RESOURCE_BLOCKS.entrySet()) {
-            if (entry.getKey() instanceof PrimaryResource primaryResource) {
-                int tint = primaryResource.getTint();
-                ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> index == 1 ? tint : -1, entry.getValue());
-            }
-        }*/
+       */
     }
 
     @SubscribeEvent
