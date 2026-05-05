@@ -13,8 +13,6 @@ import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
-import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.BasicInventorySlot;
@@ -191,7 +189,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         }
     }
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInput", docPlaceholder = "crafting input slot")
+    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
+    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInput", docPlaceholder = "crafting input slot")
     IInventorySlot getCraftingInputSlot(int window, int slot) throws ComputerException {
         validateWindow(window);
         if (slot < 0 || slot >= 9) {
@@ -200,7 +199,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         return craftingWindows[window].getInputSlot(slot);
     }
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutput", docPlaceholder = "crafting output slot")
+    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
+    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutput", docPlaceholder = "crafting output slot")
     IInventorySlot getCraftingOutputSlot(int window) throws ComputerException {
         validateWindow(window);
         return craftingWindows[window].getOutputSlot();

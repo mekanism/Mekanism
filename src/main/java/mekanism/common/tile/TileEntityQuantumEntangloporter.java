@@ -34,7 +34,6 @@ import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -300,7 +299,8 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     //Note: A bunch of the below buffer getters are rather "hardcoded", but they should be fine unless we decide to add support for more buffers at some point
     // in which case we can just add some overloads while we deprecate these
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getBufferItem", docPlaceholder = "buffer slot")
+    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
+    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getBufferItem", docPlaceholder = "buffer slot")
     IInventorySlot getBufferItemSlot() throws ComputerException {
         return getFrequency().getInventorySlots().getFirst();
     }

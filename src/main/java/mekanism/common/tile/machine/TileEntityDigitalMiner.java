@@ -1245,7 +1245,8 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         return mainSlots.size();
     }
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "internal inventory slot. 0 based.")
+    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
+    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "internal inventory slot. 0 based.")
     IInventorySlot getCorrespondingSlot(int slot) throws ComputerException {
         int slots = getSlotCount();
         if (slot < 0 || slot >= slots) {

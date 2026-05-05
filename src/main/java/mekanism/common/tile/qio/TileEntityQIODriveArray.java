@@ -18,9 +18,7 @@ import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
-import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
-import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
@@ -162,7 +160,8 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         }
     }
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrive", docPlaceholder = "drive slot")
+    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
+    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrive", docPlaceholder = "drive slot")
     IInventorySlot getDriveSlot(int slot) throws ComputerException {
         validateSlot(slot);
         return driveSlots.get(slot);
