@@ -62,7 +62,7 @@ public class BlockDeferredRegister extends DoubleDeferredRegister<Block, Item> {
             if (Attribute.has(block, AttributeUpgradeSupport.class)) {
                 properties.component(MekanismDataComponents.UPGRADES, UpgradeAware.EMPTY);
             }
-            return itemCreator.apply(block.get(), properties.setId(createSecondaryId(key)));
+            return itemCreator.apply(block.get(), properties.setId(createSecondaryId(key)).useBlockDescriptionPrefix());
         }, BlockRegistryObject::new);
     }
 }
