@@ -169,8 +169,8 @@ public class MekanismModelProvider extends BaseModelProvider {
             );
         }
 
-        itemModels.declareCustomModelItem(MekanismItems.HDPE_REINFORCED_ELYTRA.asItem());
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.HDPE_BROKEN_ELYTRA.asItem());
+        itemModels.generateElytra(MekanismItems.HDPE_REINFORCED_ELYTRA.asItem());
+
         itemModels.declareCustomModelItem(MekanismItems.JETPACK.asItem());//todo renderer
         itemModels.declareCustomModelItem(MekanismItems.ARMORED_JETPACK.asItem());//todo renderer
         itemModels.declareCustomModelItem(MekanismItems.MEKA_TOOL.asItem());

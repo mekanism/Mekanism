@@ -204,21 +204,6 @@ public class ClientRegistration {
         moduleHelper.addMekaSuitModuleModelSpec("modulator", MekanismModules.GRAVITATIONAL_MODULATING_UNIT, EquipmentSlot.CHEST);
         moduleHelper.addMekaSuitModuleModelSpec("elytra", MekanismModules.ELYTRA_UNIT, EquipmentSlot.CHEST, LivingEntity::isFallFlying);
 
-        //TODO - 26.1 item models
-        /*event.enqueueWork(() -> {
-            //Note: Our implementation allows for a null entity so don't worry about it and pass it
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"), (stack, world, entity, seed) -> {
-                boolean canFly;
-                if (entity == null) {
-                    //Fallback to the vanilla check in case any mods like quark are making vanilla actually make use of the entity
-                    canFly = stack.getDamageValue() < stack.getMaxDamage() - 1;
-                } else {
-                    canFly = MekanismItems.HDPE_REINFORCED_ELYTRA.get().canElytraFly(stack, entity);
-                }
-                return canFly ? 0.0F : 1.0F;
-            });
-        });*/
-
         //TODO - 26.1 models
         //addCustomModel(MekanismBlocks.QIO_DRIVE_ARRAY, (orig, evt) -> new DriveArrayBakedModel(orig));
         //addCustomModel(MekanismBlocks.DIGITAL_MINER, (orig, evt) -> new DigitalMinerBakedModel(orig));

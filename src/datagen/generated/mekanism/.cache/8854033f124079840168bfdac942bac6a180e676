@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-05T10:35:41.9950832	Model Definitions - mekanism
+// 26.1.2	2026-05-05T11:15:42.67189	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -233,7 +233,7 @@ db32dde25504ba34c3c5d3346319a560d499fd42 assets/mekanism/items/hazmat_boots.json
 a1e69268e556cf9b83fe034a216374b698edf86f assets/mekanism/items/hazmat_gown.json
 ba455d164da9543dc28c37600465b92c2b91b22c assets/mekanism/items/hazmat_mask.json
 f2fa8e80c76cda32f0c2fd2ba77775b0828a680a assets/mekanism/items/hazmat_pants.json
-1e482c618d4642f33f4ab311fdc7631f1a3c3fee assets/mekanism/items/hdpe_elytra.json
+fcf7cb5619ea48edea5c0f525456760af5945f84 assets/mekanism/items/hdpe_elytra.json
 e23751228214147e7ba433be618b4a0b82425a89 assets/mekanism/items/hdpe_pellet.json
 a1a57c56a980b3714446ad49a9e115a870c4f7a9 assets/mekanism/items/hdpe_rod.json
 542a852152ffdd3e450d59b31ebf5afcd6eddb26 assets/mekanism/items/hdpe_sheet.json
@@ -489,6 +489,8 @@ f5f6d3db01db68c6dd8848a837da7a43af8e7f20 assets/mekanism/models/item/dust_iron.j
 8f1fdbff729e4cb4ea61b945aef4ba53c947ce80 assets/mekanism/models/item/electric_bow_pulling_0.json
 12a2dfe0663d86d8eff4ff1c7d70531829a2bc89 assets/mekanism/models/item/electric_bow_pulling_1.json
 58ba78e103d5f466763ccd8a3698f73c0b7f3a31 assets/mekanism/models/item/electric_bow_pulling_2.json
+4d9d2a9b67c418e3195669d7b78fe53dfdc21d85 assets/mekanism/models/item/hdpe_elytra.json
+625d7b99146a358136a0abb891ee6afc4c42dbba assets/mekanism/models/item/hdpe_elytra_broken.json
 7e53cd755540a1903634c27543130fa044a0f6df assets/mekanism/models/item/ingot_lead.json
 8e393c8c941261b64a7c0bf514865ae2c4d5893f assets/mekanism/models/item/ingot_osmium.json
 7e186c1dae022a71354dbe0c5bb9947d7941379c assets/mekanism/models/item/ingot_tin.json

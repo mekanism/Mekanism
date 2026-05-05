@@ -1,6 +1,14 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/hdpe_elytra"
+    "type": "minecraft:condition",
+    "on_false": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/hdpe_elytra"
+    },
+    "on_true": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/hdpe_elytra_broken"
+    },
+    "property": "minecraft:broken"
   }
 }
