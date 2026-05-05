@@ -59,7 +59,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     }
 
     //TODO - 26.1: Docs, and transition calls to setStack(ItemStack) to this
-    void setStack(ItemResource itemType, int storedAmount);
+    void setStack(ItemResource itemType, int storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
     //TODO - 26.1: Docs
     int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
@@ -127,7 +127,8 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @return Actual size the stack was set to.
      */
-    default int setStackSize(int amount, Action action) {//TODO - 26.1: Make this, shrinkStack, and growStack be transactional
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
+    default int setStackSize(int amount, Action action) {
         if (isEmpty()) {
             return 0;
         } else if (amount <= 0) {
@@ -148,6 +149,9 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
         return amount;
     }
 
+    //TODO - 26.1: Docs and state that it throws if amount is negative
+    int setStackSize(int amount, TransactionContext transaction);
+
     /**
      * Convenience method for growing the size of the stored stack.
      * <p>
@@ -162,6 +166,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
     default int growStack(int amount, Action action) {
         int current = getCount();
         if (current == 0) {
@@ -172,6 +177,20 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
             amount = Math.min(amount, getCurrentLimit());
         }
         int newSize = setStackSize(current + amount, action);
+        return newSize - current;
+    }
+
+    default int growStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs
+        int current = getCount();
+        if (current == 0) {
+            //"Fail quick" if our stack is empty, so we can't grow it
+            return 0;
+        } else if (amount > 0) {
+            //Cap adding amount at how much we need, so that we don't risk integer overflow
+            amount = Math.min(amount, getCurrentLimit() - current);
+            //TODO - 26.1: Should we cap shrinking, if we even allow shrinking to go via grow stack
+        }
+        int newSize = setStackSize(current + amount, transaction);
         return newSize - current;
     }
 
@@ -189,8 +208,13 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
     default int shrinkStack(int amount, Action action) {
         return -growStack(-amount, action);
+    }
+
+    default int shrinkStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs
+        return -growStack(-amount, transaction);
     }
 
     /**

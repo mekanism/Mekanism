@@ -2,7 +2,6 @@ package mekanism.common.attachments.containers.item;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
@@ -157,34 +156,33 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    public final int setStackSize(int amount, Action action) {
+    public int setStackSize(int amount, TransactionContext transaction) {
         AttachedItems attachedItems = getAttached();
-        return setStackSize(attachedItems, getContents(attachedItems), amount, action);
+        return setStackSize(attachedItems, getContents(attachedItems), amount, transaction);
     }
 
-    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, Action action) {
+    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
         if (current.isEmpty()) {
             return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setContents(attachedItems, ItemStack.EMPTY);
-            }
+        } else if (amount == 0) {
+            updateSnapshots(transaction);
+            setContents(attachedItems, ItemStack.EMPTY);
             return 0;
         }
-        int maxStackSize = getLimit(ItemResource.of(current));
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (current.count() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
+        //Limit the max stack size to the limit of the stored stack
+        amount = Math.min(amount, getLimit(ItemResource.of(current)));
+        if (current.count() == amount) {
+            //If our size is not changing, we don't need to bother changing anything or updating snapshots
             return amount;
         }
+        updateSnapshots(transaction);
         setContents(attachedItems, current.copyWithCount(amount));
         return amount;
     }
 
     @Override
-    public int growStack(int amount, Action action) {
+    public int growStack(int amount, TransactionContext transaction) {
         AttachedItems attachedItems = getAttached();
         //Avoid extra getStack lookup calls
         ItemStack stack = getContents(attachedItems);
@@ -194,9 +192,9 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getLimit(ItemResource.of(stack)));
+            amount = Math.min(amount, getLimit(ItemResource.of(stack)) - current);
         }
-        int newSize = setStackSize(attachedItems, stack, current + amount, action);
+        int newSize = setStackSize(attachedItems, stack, current + amount, transaction);
         return newSize - current;
     }
 

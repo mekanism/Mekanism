@@ -1,7 +1,6 @@
 
 package mekanism.common.attachments.containers.item;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
@@ -85,12 +84,18 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     /**
      * {@inheritDoc}
      *
-     * Note: We are only patching {@link #setStackSize(AttachedItems, ItemStack, int, Action)}, as both {@link #growStack(int, Action)} and
-     * {@link #shrinkStack(int, Action)} are wrapped through this method.
+     * Note: We are only patching {@link #setStackSize(AttachedItems, ItemStack, int, TransactionContext)}, as both {@link #growStack(int, TransactionContext)} and
+     * {@link #shrinkStack(int, TransactionContext)} are wrapped through this method.
      */
     @Override
-    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, Action action) {
-        return super.setStackSize(attachedItems, current, amount, action.combine(!isCreative));
+    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, TransactionContext transaction) {
+        if (isCreative) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.setStackSize(attachedItems, current, amount, simulation);
+            }
+        }
+        return super.setStackSize(attachedItems, current, amount, transaction);
     }
 
     /**

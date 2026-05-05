@@ -76,6 +76,7 @@ import mekanism.common.registries.MekanismRobitSkins.SkinLookup;
 import mekanism.common.registries.MekanismTicketTypes;
 import mekanism.common.tile.TileEntityChargepad;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
+import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
@@ -125,6 +126,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -344,38 +347,29 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         }
     }
 
-    public boolean isItemValid(ItemEntity item) {
+    public static boolean isItemValid(ItemEntity item) {
         return item.isAlive() && !item.hasPickUpDelay() && !(item.getItem().getItem() instanceof ItemRobit);
     }
 
     private void collectItems() {
-        List<ItemEntity> items = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5));
-        if (!items.isEmpty()) {
+        List<ItemEntity> items = level().getEntitiesOfClass(ItemEntity.class, getBoundingBox().inflate(1.5, 1.5, 1.5), RobitAIPickup.ITEM_PREDICATE);
+        if (items.isEmpty()) {
+            return;
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
             for (ItemEntity item : items) {
-                if (isItemValid(item)) {
-                    for (IInventorySlot slot : inventoryContainerSlots) {
-                        if (slot.isEmpty()) {
-                            slot.setStack(item.getItem());
-                            take(item, item.getItem().count());
-                            item.discard();
-                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            break;
-                        }
-                        int currentCount = slot.getCount();
-                        int maxSize = slot.getCurrentLimit();
-                        if (slot.getResource().matches(item.getItem()) && currentCount < maxSize) {
-                            int needed = maxSize - currentCount;
-                            int toAdd = Math.min(needed, item.getItem().count());
-                            MekanismUtils.logMismatchedStackSize(slot.growStack(toAdd, Action.EXECUTE), toAdd);
-                            item.getItem().shrink(toAdd);
-                            take(item, toAdd);
-                            if (item.getItem().isEmpty()) {
-                                item.discard();
-                            }
-                            playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
-                            break;
-                        }
+                ItemStack stack = item.getItem();
+                int toPickUp = stack.count();
+                int inserted = InventoryUtils.insertItem(inventoryContainerSlots, ItemResource.of(stack), toPickUp, transaction, AutomationType.INTERNAL);
+                if (inserted > 0) {
+                    transaction.commit();
+                    take(item, inserted);
+                    stack.shrink(inserted);
+                    if (stack.isEmpty()) {
+                        item.discard();
                     }
+                    playSound(SoundEvents.ITEM_PICKUP, 1, ((random.nextFloat() - random.nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                    break;
                 }
             }
         }

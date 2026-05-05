@@ -203,6 +203,28 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     }
 
     @Override
+    public int setStackSize(int amount, TransactionContext transaction) {
+        TransferPreconditions.checkNonNegative(amount);
+        if (isEmpty()) {
+            return 0;
+        } else if (amount == 0) {
+            updateSnapshots(transaction);
+            setEmpty();
+            return 0;
+        }
+        //Limit the max stack size to the limit of the stored stack
+        amount = Math.min(amount, getCurrentLimit());
+        if (getCount() == amount) {
+            //If our size is not changing, we don't need to bother changing anything or updating snapshots
+            return amount;
+        }
+        updateSnapshots(transaction);
+        //Note: We don't need to check the resource type as it is the same type that is currently stored
+        setStackUnchecked(getResource(), amount);
+        return amount;
+    }
+
+    @Override
     public int getLimit(ItemResource resource) {
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }

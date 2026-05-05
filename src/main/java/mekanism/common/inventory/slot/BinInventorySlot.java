@@ -3,7 +3,6 @@ package mekanism.common.inventory.slot;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -112,12 +111,18 @@ public class BinInventorySlot extends BasicInventorySlot {
     /**
      * {@inheritDoc}
      *
-     * Note: We are only patching {@link #setStackSize(int, Action)}, as both {@link #growStack(int, Action)} and {@link #shrinkStack(int, Action)} are wrapped through
-     * this method.
+     * Note: We are only patching {@link #setStackSize(int, TransactionContext)}, as both {@link #growStack(int, TransactionContext)} and
+     * {@link #shrinkStack(int, TransactionContext)} are wrapped through this method.
      */
     @Override
-    public int setStackSize(int amount, Action action) {
-        return super.setStackSize(amount, action.combine(!isCreative));
+    public int setStackSize(int amount, TransactionContext transaction) {
+        if (isCreative) {
+            try (Transaction simulation = Transaction.open(transaction)) {
+                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
+                return super.setStackSize(amount, simulation);
+            }
+        }
+        return super.setStackSize(amount, transaction);
     }
 
     @Override

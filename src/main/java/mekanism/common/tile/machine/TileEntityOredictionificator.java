@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.common.CommonWorldTickHandler;
@@ -39,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - V11: Make this support other tag types, such as fluids
@@ -83,14 +83,17 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         if (canFunction() && !inputSlot.isEmpty()) {
             ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getResource());
             if (!result.isEmpty()) {
-                if (outputSlot.isEmpty()) {
-                    inputSlot.shrinkStack(1, Action.EXECUTE);
-                    outputSlot.setStack(result);
-                    didProcess = true;
-                } else if (outputSlot.getResource().matches(result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
-                    inputSlot.shrinkStack(1, Action.EXECUTE);
-                    outputSlot.growStack(1, Action.EXECUTE);
-                    didProcess = true;
+                try (Transaction transaction = Transaction.openRoot()) {
+                    if (outputSlot.isEmpty()) {
+                        inputSlot.shrinkStack(1, transaction);
+                        outputSlot.setStack(ItemResource.of(result), result.count());
+                        didProcess = true;
+                    } else if (outputSlot.getResource().matches(result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
+                        inputSlot.shrinkStack(1, transaction);
+                        outputSlot.growStack(1, transaction);
+                        didProcess = true;
+                    }
+                    transaction.commit();
                 }
             }
         }
