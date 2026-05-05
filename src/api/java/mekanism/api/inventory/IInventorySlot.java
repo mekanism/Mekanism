@@ -12,6 +12,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -127,30 +128,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @return Actual size the stack was set to.
      */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
-    default int setStackSize(int amount, Action action) {
-        if (isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        int maxStackSize = getCurrentLimit();
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (getCount() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setStack(getResource(), amount);
-        return amount;
-    }
-
-    //TODO - 26.1: Docs and state that it throws if amount is negative
-    int setStackSize(int amount, TransactionContext transaction);
+    int setStackSize(int amount, TransactionContext transaction);//TODO - 26.1: Update docs and state that it throws if amount is negative
 
     /**
      * Convenience method for growing the size of the stored stack.
@@ -166,21 +144,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
-    default int growStack(int amount, Action action) {
-        int current = getCount();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getCurrentLimit());
-        }
-        int newSize = setStackSize(current + amount, action);
-        return newSize - current;
-    }
-
-    default int growStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs
+    default int growStack(int amount, TransactionContext transaction) {//TODO - 26.1: Update docs
         int current = getCount();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
@@ -210,10 +174,16 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      */
     @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
     default int shrinkStack(int amount, Action action) {
-        return -growStack(-amount, action);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int amountShrunken = shrinkStack(amount, transaction);
+            if (action.execute()) {
+                transaction.commit();
+            }
+            return amountShrunken;
+        }
     }
 
-    default int shrinkStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs
+    default int shrinkStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs and decide if we want to be sending this via growStack?
         return -growStack(-amount, transaction);
     }
 

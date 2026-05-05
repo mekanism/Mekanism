@@ -61,7 +61,9 @@ public class InputHelper {
                 //TODO - 26.1: Why do input tanks check the current stack isn't empty instead of the recipe input not being empty?
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.count() * operations;
-                    logMismatchedStackSize(slot.shrinkStack(amount, Action.EXECUTE), amount);
+                    //TODO - 26.1: If it shrinks by a different amount, do we want to abort the transaction?
+                    // Should this actually be an automation type internal and extract call?
+                    logMismatchedStackSize(slot.shrinkStack(amount, transaction), amount);
                 }
             }
 

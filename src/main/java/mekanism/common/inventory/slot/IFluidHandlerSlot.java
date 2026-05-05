@@ -15,6 +15,7 @@ import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public interface IFluidHandlerSlot extends IInventorySlot {
 
@@ -227,17 +228,21 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      * @return True if we are able to move the stack and did so, false otherwise
      */
     private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
-        if (outputSlot.isEmpty()) {
-            outputSlot.setStack(stackToMove);
-        } else {
-            if (!outputSlot.getResource().matches(stackToMove) || outputSlot.getCount() >= outputSlot.getCurrentLimit()) {
-                //We won't be able to move our container to the output slot so exit
-                return false;
+        //TODO - 26.1: Rewrite this method to not rely on grow/shrink, or at least potentially bail instead of logging a mismatched stack size if something goes wrong?
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (outputSlot.isEmpty()) {
+                outputSlot.setStack(stackToMove);
+            } else {
+                if (!outputSlot.getResource().matches(stackToMove) || outputSlot.getCount() >= outputSlot.getCurrentLimit()) {
+                    //We won't be able to move our container to the output slot so exit
+                    return false;
+                }
+                MekanismUtils.logMismatchedStackSize(outputSlot.growStack(1, transaction), 1);
             }
-            MekanismUtils.logMismatchedStackSize(outputSlot.growStack(1, Action.EXECUTE), 1);
+            //Note: We do not need to call onContentsChanged, because it will be done due to the stack changing from calling shrinkStack
+            MekanismUtils.logMismatchedStackSize(shrinkStack(1, transaction), 1);
+            transaction.commit();
         }
-        //Note: We do not need to call onContentsChanged, because it will be done due to the stack changing from calling shrinkStack
-        MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
         return true;
     }
 

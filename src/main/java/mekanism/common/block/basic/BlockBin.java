@@ -1,6 +1,5 @@
 package mekanism.common.block.basic;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.common.block.prefab.BlockTile;
 import mekanism.common.content.blocktype.BlockTypeTile;
@@ -13,7 +12,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -24,6 +22,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -43,25 +42,25 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                     BinInventorySlot binSlot = bin.getBinSlot();
                     if (!binSlot.isEmpty() && bin.removeTicks == 0) {
                         bin.removeTicks = 3;
-                        ItemStack stack;
-                        if (player.isShiftKeyDown()) {
-                            stack = binSlot.getBottomStack();
-                            if (!stack.isEmpty()) {
-                                MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(stack.count(), Action.EXECUTE), stack.count());
+                        ItemResource binItemType = binSlot.getBinItemType();
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int extracted = binSlot.extract(binItemType, player.isShiftKeyDown() ? binItemType.getMaxStackSize() : 1, transaction, AutomationType.MANUAL);
+                            if (extracted > 0) {
+                                PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+                                int inserted = playerInv.insert(binItemType, extracted, transaction);
+                                transaction.commit();
+                                if (inserted < extracted) {
+                                    // If we couldn't insert all of it, drop the remainder.
+                                    //TODO - 26.1: Would we rather use this instead of manually adding the entity?
+                                    // The main different I think would be that it fires the toss event, and also that it has a pick up delay (and positioning might be different)
+                                    //playerInv.drop(binItemType, extracted - inserted, false, false, transaction);
+                                    Vec3 dropPos = Vec3.upFromBottomCenterOf(pos.relative(bin.getDirection()), 0.3);
+                                    world.addFreshEntity(new ItemEntity(world, dropPos.x(), dropPos.y(), dropPos.z(), binItemType.toStack(extracted - inserted), 0, 0, 0));
+                                } else {
+                                    world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
+                                          0.2F, ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
+                                }
                             }
-                        } else {
-                            stack = binSlot.getResource().toStack();
-                            MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(1, Action.EXECUTE), 1);
-                        }
-                        if (!player.getInventory().add(stack)) {
-                            BlockPos dropPos = pos.relative(bin.getDirection());
-                            Entity item = new ItemEntity(world, dropPos.getX() + .5f, dropPos.getY() + .3f, dropPos.getZ() + .5f, stack);
-                            Vec3 motion = item.getDeltaMovement();
-                            item.push(-motion.x(), -motion.y(), -motion.z());
-                            world.addFreshEntity(item);
-                        } else {
-                            world.playSound(null, pos.getX() + .5f, pos.getY() + .5f, pos.getZ() + .5f, SoundEvents.ITEM_PICKUP, SoundSource.PLAYERS,
-                                  0.2F, ((world.getRandom().nextFloat() - world.getRandom().nextFloat()) * 0.7F + 1.0F) * 2.0F);
                         }
                     }
                 }

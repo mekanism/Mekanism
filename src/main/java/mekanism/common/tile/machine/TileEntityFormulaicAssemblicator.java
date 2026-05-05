@@ -371,17 +371,22 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                 //TODO: Check if it matters that we are not actually updating the list of remaining items?
                 // The better solution would be to not allow continuing until we moved output AND all remaining items
                 // instead of trying to move all at once??
+                //TODO - 26.1: validate we don't have to clear the list anywhere
                 if (!remainingItem.isEmpty() && !tryMoveToOutput(ItemResource.of(remainingItem), remainingItem.count(), transaction)) {
                     //Can't fit it all, bail and revert changes
                     return false;
                 }
             }
-            transaction.commit();
-        }
-        for (IInventorySlot craftingSlot : craftingGridSlots) {
-            if (!craftingSlot.isEmpty()) {
-                MekanismUtils.logMismatchedStackSize(craftingSlot.shrinkStack(1, Action.EXECUTE), 1);
+            for (IInventorySlot craftingSlot : craftingGridSlots) {
+                if (!craftingSlot.isEmpty()) {
+                    int extracted = craftingSlot.extract(craftingSlot.getResource(), 1, transaction, AutomationType.INTERNAL);
+                    if (extracted == 0) {
+                        //Something went horribly wrong when removing the inputs from the input slots, bail and revert changes
+                        return false;
+                    }
+                }
             }
+            transaction.commit();
         }
         if (!formula.isEmpty()) {
             moveItemsToGrid();

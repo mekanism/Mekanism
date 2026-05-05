@@ -2,6 +2,9 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMaps;
+import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -18,16 +21,18 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockCache.RejectContents;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.InventoryUtils;
+import mekanism.common.util.InventoryUtils.ItemDropper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class FormationProtocol<T extends MultiblockData> {
 
@@ -115,8 +120,10 @@ public class FormationProtocol<T extends MultiblockData> {
                         //If there is one drop at the player instead of at the block that triggered the formation
                         dropPosition = nearestPlayer.position();
                     }
-                    for (ItemStack rejectedItem : rejectContents.rejectedItems) {
-                        world.addFreshEntity(new ItemEntity(world, dropPosition.x, dropPosition.y, dropPosition.z, rejectedItem));
+                    ItemDropper<Vec3> dropper = (level, pos, _, stack) -> level.addFreshEntity(new ItemEntity(level, pos.x(), pos.y(), pos.z(), stack));
+                    for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iter = Object2IntMaps.fastIterator(rejectContents.rejectedItems); iter.hasNext(); ) {
+                        Object2IntMap.Entry<ItemResource> rejectedItem = iter.next();
+                        InventoryUtils.dropStack(world, dropPosition, null, rejectedItem.getKey(), rejectedItem.getIntValue(), dropper);
                     }
                 }
                 if (!rejectContents.rejectedChemicals.isEmpty() && RadiationManager.isGlobalRadiationEnabled()) {

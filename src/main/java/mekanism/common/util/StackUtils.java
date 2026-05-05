@@ -1,8 +1,8 @@
 package mekanism.common.util;
 
-import java.util.ArrayList;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import java.util.List;
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,86 +28,26 @@ public final class StackUtils {
     private StackUtils() {
     }
 
-    //TODO: Evaluate moving remainder of uses to copyWithCount. This method mainly is just useful for better handling when size is <= 0
+    //TODO - 26.1: Evaluate moving remainder of uses to copyWithCount. This method mainly is just useful for better handling when size is <= 0
     public static ItemStack size(ItemStack stack, int size) {
         return size <= 0 ? ItemStack.EMPTY : stack.copyWithCount(size);
     }
 
-    public static List<ItemStack> merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd) {
-        List<ItemStack> rejects = new ArrayList<>();
-        merge(orig, toAdd, rejects);
-        return rejects;
-    }
-
-    public static void merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd, List<ItemStack> rejects) {
+    //TODO - 26.1: validate and then add as docs that we don't need to also be modifying toAdd
+    public static void merge(@NotNull List<IInventorySlot> orig, @NotNull List<IInventorySlot> toAdd, Object2IntMap<ItemResource> rejects, TransactionContext transaction) {
         StorageUtils.validateSizeMatches(orig, toAdd, "slot");
-        for (int i = 0; i < toAdd.size(); i++) {
+        for (int i = 0, slotCount = toAdd.size(); i < slotCount; i++) {
             IInventorySlot toAddSlot = toAdd.get(i);
             if (!toAddSlot.isEmpty()) {
-                IInventorySlot origSlot = orig.get(i);
                 ItemResource toAddResource = toAddSlot.getResource();
                 int toAddAmount = toAddSlot.getCount();
-                if (origSlot.isEmpty()) {
-                    int max = origSlot.getLimit(toAddResource);
-                    if (toAddAmount <= max) {
-                        origSlot.setStack(toAddResource, toAddAmount);
-                    } else {
-                        origSlot.setStack(toAddResource, max);
-                        //Add any remainder to the rejects (if this is zero this will no-op
-                        addStack(rejects, toAddResource.toStack(toAddAmount - max));
-                    }
-                } else if (origSlot.getResource().equals(toAddResource)) {
-                    int added = origSlot.growStack(toAddAmount, Action.EXECUTE);
-                    //Add any remainder to the rejects (if this is zero this will no-op
-                    addStack(rejects, toAddResource.toStack(toAddAmount - added));
-                } else {
-                    addStack(rejects, toAddResource.toStack(toAddAmount));
-                }
-            }
-        }
-    }
-
-    /**
-     * @implNote Assumes the passed in stack and stacks in the list can be safely modified.
-     */
-    private static void addStack(List<ItemStack> stacks, ItemStack stack) {
-        if (!stack.isEmpty()) {
-            for (ItemStack existingStack : stacks) {
-                int needed = existingStack.getMaxStackSize() - existingStack.count();
-                if (needed > 0 && ItemStack.isSameItemSameComponents(existingStack, stack)) {
-                    //This stack needs some items and can stack with the one we are adding
-                    int toAdd = Math.min(needed, stack.count());
-                    //Add the amount we can
-                    existingStack.grow(toAdd);
-                    stack.shrink(toAdd);
-                    //And break out of checking as even if we have any remaining it won't be able to stack with later things
-                    // as they will have a different type or this existing stack would have already been full
-                    break;
-                }
-            }
-            if (!stack.isEmpty()) {
-                //If we have any we weren't able to add to existing stacks, we need to go ahead and add it as new stacks
-                // making sure to split it if it is an oversized stack
-                int count = stack.count();
-                int max = stack.getMaxStackSize();
-                if (count > max) {
-                    //If we have more than a stack of the item stack counts,
-                    int excess = count % max;
-                    int stacksToAdd = count / max;
-                    if (excess > 0) {
-                        // start by adding any excess that won't go into full stack sizes (so that we have a lower index
-                        // and have less to iterate when adding more of the same type)
-                        stacks.add(stack.copyWithCount(excess));
-                    }
-                    // and then add as many max size stacks as needed
-                    ItemStack maxSize = stack.copyWithCount(max);
-                    stacks.add(maxSize);
-                    for (int i = 1; i < stacksToAdd; i++) {
-                        stacks.add(maxSize.copy());
-                    }
-                } else {
-                    //Valid stack, just add it directly
-                    stacks.add(stack);
+                //TODO - 26.1: Validate all callers have this work with the given automation type
+                // Also how much do we care about merging identical slots? Should we use the InventoryUtils#insertItem helper
+                // to try inserting against all the slots of the other?
+                int added = orig.get(i).insert(toAddResource, toAddAmount, transaction, AutomationType.INTERNAL);
+                if (added < toAddAmount) {
+                    //Add any remainder to the rejects
+                    rejects.mergeInt(toAddResource, toAddAmount - added, Integer::sum);
                 }
             }
         }

@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BooleanSupplier;
 import java.util.function.ToIntBiFunction;
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
@@ -730,12 +729,9 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         // happen if the recipe requires a stacked input (minPerSlot > 1)), then we need to set the slot to empty
                         inputSlot.setEmpty();
                     } else if (inputSlot.getCount() != sizeForSlot) {
-                        //Otherwise, if our slot doesn't already contain the amount we want it to,
-                        // we need to adjust how much is stored in it, and log an error if it changed
-                        // by a different amount then we expected
-                        //Note: We use setStackSize here rather than setStack to avoid an unnecessary stack copy call
-                        // as copying item stacks can sometimes be rather expensive in a heavily modded environment
-                        MekanismUtils.logMismatchedStackSize(sizeForSlot, inputSlot.setStackSize(sizeForSlot, Action.EXECUTE));
+                        //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
+                        //TODO - 26.1: Is resource the same as item?
+                        inputSlot.setStackUnchecked(inputSlot.getResource(), sizeForSlot);
                     }
                 }
             }

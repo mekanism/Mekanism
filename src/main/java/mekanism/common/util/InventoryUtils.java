@@ -56,7 +56,7 @@ public final class InventoryUtils {
             }
             int scalar = stack.count();
             BlockPos blockPos = entity.blockPosition();
-            ItemDropper dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
+            ItemDropper<BlockPos> dropper = (lvl, pos, ignored, slotStack) -> lvl.addFreshEntity(new ItemEntity(lvl, pos.getX(), pos.getY(), pos.getZ(), slotStack));
             //Note: This instanceof check must be checked before the container type to allow overriding what contents can be dropped
             if (stack.getItem() instanceof IDroppableContents inventory) {
                 if (inventory.canContentsDrop(stack)) {
@@ -81,14 +81,14 @@ public final class InventoryUtils {
         }
     }
 
-    private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper dropper) {
+    private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper<BlockPos> dropper) {
         dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getResource().toStack(slot.getCount()));
     }
 
     /**
      * @param stackExtractor It is expected the stack returned by the stack extractor can be safely mutated
      */
-    private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper dropper,
+    private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper<BlockPos> dropper,
           Function<T, ItemStack> stackExtractor) {
         for (T drop : toDrop) {
             ItemStack stackToDrop = stackExtractor.apply(drop);
@@ -119,7 +119,7 @@ public final class InventoryUtils {
      * @param stack   Item Stack to drop, may be passed directly to the dropper.
      * @param dropper Called to drop the item.
      */
-    public static void dropStack(Level level, BlockPos pos, Direction side, ItemStack stack, ItemDropper dropper) {
+    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemStack stack, ItemDropper<POS> dropper) {
         int count = stack.count();
         int max = stack.getMaxStackSize();
         if (count > max) {
@@ -136,6 +136,31 @@ public final class InventoryUtils {
         } else {
             //If we have a valid stack, we can just directly drop that instead without requiring any copies
             dropper.drop(level, pos, side, stack);
+        }
+    }
+
+    /**
+     * Helper to drop a stack that may potentially be oversized.
+     *
+     * @param stack   Item Stack to drop, may be passed directly to the dropper.
+     * @param dropper Called to drop the item.
+     */
+    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, int amount, ItemDropper<POS> dropper) {
+        int max = itemType.getMaxStackSize();
+        if (amount > max) {
+            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
+            // stack counts, drop as many stacks as we need at their max size
+            while (amount > max) {
+                dropper.drop(level, pos, side, itemType.toStack(max));
+                amount -= max;
+            }
+            if (amount > 0) {
+                //If we have anything left to drop afterward, do so
+                dropper.drop(level, pos, side, itemType.toStack(amount));
+            }
+        } else {
+            //If we have a valid stack, we can just directly drop that instead without requiring any copies
+            dropper.drop(level, pos, side, itemType.toStack(amount));
         }
     }
 
@@ -250,8 +275,8 @@ public final class InventoryUtils {
     }
 
     @FunctionalInterface
-    public interface ItemDropper {
+    public interface ItemDropper<POS> {
 
-        void drop(Level level, BlockPos pos, Direction side, ItemStack stack);
+        void drop(Level level, POS pos, Direction side, ItemStack stack);
     }
 }

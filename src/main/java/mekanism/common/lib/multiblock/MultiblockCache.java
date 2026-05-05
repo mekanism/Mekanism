@@ -1,5 +1,7 @@
 package mekanism.common.lib.multiblock;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.BasicChemicalTank;
@@ -23,11 +25,12 @@ import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.util.StackUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,16 +90,19 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             type.preHandleMerge(this, mergeCache);
         }
 
-        // Items
-        StackUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems);
-        // Fluid
-        StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
-        // Chemical
-        StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
-        // Energy
-        StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
-        // Heat
-        StorageUtils.mergeHeatCapacitors(getHeatCapacitors(null), mergeCache.getHeatCapacitors(null));
+        try (Transaction transaction = Transaction.openRoot()) {
+            // Items
+            StackUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
+            // Fluid
+            StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
+            // Chemical
+            StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
+            // Energy
+            StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
+            // Heat
+            StorageUtils.mergeHeatCapacitors(getHeatCapacitors(null), mergeCache.getHeatCapacitors(null));
+            transaction.commit();
+        }
     }
 
     @Override
@@ -135,7 +141,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     public static class RejectContents {
 
-        public final List<ItemStack> rejectedItems = new ArrayList<>();
+        public final Object2IntMap<ItemResource> rejectedItems = new Object2IntOpenHashMap<>();
         public final List<FluidStack> rejectedFluids = new ArrayList<>();
         public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
     }
