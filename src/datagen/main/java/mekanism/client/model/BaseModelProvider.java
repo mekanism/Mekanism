@@ -96,6 +96,29 @@ public abstract class BaseModelProvider extends ModelProvider {
         return RegistryUtils.getName(holder, BuiltInRegistries.ITEM).getPath();
     }
 
+    protected Identifier existingModel(Item item) {
+        return validateModelExists(defaultModelLoc(item));
+    }
+
+    protected static Identifier defaultModelLoc(Item item) {
+        return ModelLocationUtils.getModelLocation(item);
+    }
+
+    protected Identifier existingModel(Block block) {
+        return validateModelExists(defaultModelLoc(block));
+    }
+
+    protected static Identifier defaultModelLoc(Block block) {
+        return ModelLocationUtils.getModelLocation(block);
+    }
+
+    protected Identifier validateModelExists(Identifier modelLocation) {
+        if (!modelExists(modelLocation)) {
+            throw new IllegalStateException("model does not exist: " + modelLocation);
+        }
+        return modelLocation;
+    }
+
     /**
      * @deprecated use {@link #modLocation(String)} instead
      */
