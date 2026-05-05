@@ -260,18 +260,10 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         return removed;
     }
 
-    public ItemStack removeItem(int amount) {
-        return removeByType((HashedItem) null, amount);
-    }
-
-    public ItemStack removeItem(ItemStack stack, int amount) {
-        if (stack.isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        return removeByType(HashedItem.raw(stack), amount);
-    }
-
     public int removeByType(ItemResource itemType, int amount) {//TODO - 26.1: Make this transactional
+        if (itemType.isEmpty()) {
+            return 0;
+        }
         return removeByType(HashedItem.fromResource(itemType), amount).count();
     }
 
