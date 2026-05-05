@@ -36,7 +36,6 @@ import net.minecraft.client.data.models.ItemModelGenerators;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelLocationUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
@@ -62,6 +61,8 @@ public class MekanismModelProvider extends BaseModelProvider {
 
     /// Like regular cube, but with the faces having tint index 0
     public static final ModelTemplate COLORED_CUBE = new ModelTemplate(Optional.of(Mekanism.rl("block/colored_cube")), Optional.empty(), TextureSlot.ALL);
+    /// Used to skip a tint index
+    private static final Constant IGNORE_LAYER = new Constant(-1);
 
     public MekanismModelProvider(PackOutput packOutput, ResourceManager clientResources) {
         super(packOutput, Mekanism.MODID, clientResources);
@@ -79,14 +80,14 @@ public class MekanismModelProvider extends BaseModelProvider {
             textures.put(TextureSlot.LAYER1, overlay);
         }
 
-        Identifier generatedModel = template.create(ModelLocationUtils.getModelLocation(item1), textures, itemModels.modelOutput);
+        Identifier generatedModel = template.create(defaultModelLoc(item1), textures, itemModels.modelOutput);
         itemModels.itemModelOutput.accept(item1, ItemModelUtils.tintedModel(generatedModel, new Constant(tint)));
     }
 
     private void addOreBlock(BlockModelGenerators blockModels, Holder<Block> oreBlock, String path) {
         Identifier modelPath = modLocation(path);
         Block block = oreBlock.value();
-        Identifier texPath = ModelLocationUtils.getModelLocation(block);
+        Identifier texPath = defaultModelLoc(block);
         TextureMapping textureMapping = TextureMapping.cube(new Material(texPath));
         simpleCustomModel(blockModels, block, modelPath, ModelTemplates.CUBE_ALL, textureMapping, ItemModelUtils.plainModel(modelPath));
     }
@@ -192,20 +193,14 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         registerManualItemModels(itemModels);
 
-        {
-            Constant untintedBase = new Constant(-1);
-            for (ItemLike holder : List.of(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
-                  MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER)) {
-                Identifier modelLocation = switch (holder) {
-                    case BlockRegistryObject<?, ?> block -> ModelLocationUtils.getModelLocation(block.value());
-                    case ItemRegistryObject<?> item -> ModelLocationUtils.getModelLocation(item.value());
-                    default -> throw new IllegalArgumentException("unknown type");
-                };
-                if (!modelExists(modelLocation)) {
-                    throw new IllegalStateException("model does not exist: " + modelLocation);
-                }
-                itemModels.itemModelOutput.accept(holder.asItem(), ItemModelUtils.tintedModel(modelLocation, untintedBase, ColorComponent.INSTANCE));
-            }
+        for (ItemLike holder : List.of(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
+              MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER)) {
+            Identifier modelLocation = switch (holder) {
+                case BlockRegistryObject<?, ?> block -> existingModel(block.value());
+                case ItemRegistryObject<?> item -> existingModel(item.value());
+                default -> throw new IllegalArgumentException("unknown type");
+            };
+            itemModels.itemModelOutput.accept(holder.asItem(), ItemModelUtils.tintedModel(modelLocation, IGNORE_LAYER, ColorComponent.INSTANCE));
         }
 
         //Blocks
