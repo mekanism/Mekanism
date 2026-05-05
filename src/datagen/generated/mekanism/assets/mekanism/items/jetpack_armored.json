@@ -4,7 +4,7 @@
     "base": "mekanism:item/jetpack_armored",
     "model": {
       "type": "mekanism:jetpack",
-      "jetpack_type": "ARMORED"
+      "armor_type": "ARMORED"
     }
   }
 }

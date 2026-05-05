@@ -10,14 +10,13 @@ import mekanism.client.model.ModelJetpack;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.util.StringRepresentable;
 import org.joml.Vector3fc;
 
 @NothingNullByDefault
 public class RenderJetpack implements NoDataSpecialModelRenderer {
 
-    public static final Unbaked REGULAR = new Unbaked(JetpackType.REGULAR);
-    public static final Unbaked ARMORED = new Unbaked(JetpackType.ARMORED);
+    public static final Unbaked REGULAR = new Unbaked(GearArmorType.UNARMORED);
+    public static final Unbaked ARMORED = new Unbaked(GearArmorType.ARMORED);
 
     private final ModelJetpack jetpack;
 
@@ -41,29 +40,19 @@ public class RenderJetpack implements NoDataSpecialModelRenderer {
         this.jetpack.root().getExtentsForGui(poseStack, output);
     }
 
-    private enum JetpackType implements StringRepresentable {
-        REGULAR,
-        ARMORED;
+    public record Unbaked(GearArmorType armorType) implements NoDataSpecialModelRenderer.Unbaked {
 
-        @Override
-        public String getSerializedName() {
-            return name();
-        }
-    }
-
-    public record Unbaked(JetpackType jetpackType) implements NoDataSpecialModelRenderer.Unbaked {
-
-        public static final MapCodec<Unbaked> MAP_CODEC = StringRepresentable.fromEnum(JetpackType::values)
-              .xmap(Unbaked::new, Unbaked::jetpackType)
-              .fieldOf("jetpack_type");
+        public static final MapCodec<Unbaked> MAP_CODEC = GearArmorType.CODEC
+              .xmap(Unbaked::new, Unbaked::armorType)
+              .fieldOf("armor_type");
 
         @Override
         public SpecialModelRenderer<Void> bake(BakingContext context) {
-            ModelJetpack jetpack = switch (jetpackType) {
-                case REGULAR -> new ModelJetpack(context.entityModelSet());
+            ModelJetpack model = switch (armorType) {
+                case UNARMORED -> new ModelJetpack(context.entityModelSet());
                 case ARMORED -> new ModelArmoredJetpack(context.entityModelSet());
             };
-            return new RenderJetpack(jetpack);
+            return new RenderJetpack(model);
         }
 
         @Override

@@ -152,8 +152,8 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         itemModels.generateBow(MekanismItems.ELECTRIC_BOW.asItem());
 
-        simpleISTER(itemModels, MekanismItems.FREE_RUNNERS, new RenderFreeRunners.Unbaked(false));
-        simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, new RenderFreeRunners.Unbaked(true));
+        simpleISTER(itemModels, MekanismItems.FREE_RUNNERS, RenderFreeRunners.REGULAR);
+        simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, RenderFreeRunners.ARMORED);
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
         simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);

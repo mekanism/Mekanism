@@ -4,7 +4,7 @@
     "base": "mekanism:item/free_runners_armored",
     "model": {
       "type": "mekanism:free_runner",
-      "armored": true
+      "armor_type": "ARMORED"
     }
   }
 }
