@@ -431,7 +431,6 @@ public class ClientRegistration {
 
     @SubscribeEvent
     public static void registerBlockColorHandlers(RegisterColorHandlersEvent.BlockTintSources event) {
-        //TODO - 26.1 check these are the right tint index, or if they need an empty entry in the list??
         ClientRegistrationUtil.registerBlockColorHandler(event, (state) -> {
                   BaseTier tier = Attribute.getBaseTier(state.typeHolder());
                   if (tier != null) {
