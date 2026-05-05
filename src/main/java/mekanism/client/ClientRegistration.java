@@ -110,6 +110,7 @@ import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.client.render.layer.MekanismArmorLayer;
@@ -319,6 +320,7 @@ public class ClientRegistration {
         event.register(Mekanism.rl("free_runner"), RenderFreeRunners.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("atomic_disassembler"), RenderAtomicDisassembler.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

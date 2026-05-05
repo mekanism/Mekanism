@@ -2,22 +2,23 @@ package mekanism.client.render.item.gear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelAtomicDisassembler;
-import mekanism.client.render.item.MekanismISTER;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderAtomicDisassembler implements NoDataSpecialModelRenderer {
 
-    public static final RenderAtomicDisassembler RENDERER = new RenderAtomicDisassembler();
     private final ModelAtomicDisassembler atomicDisassembler;
 
-    public RenderAtomicDisassembler() {
-        atomicDisassembler = new ModelAtomicDisassembler(MekanismISTER.getEntityModels());
+    public RenderAtomicDisassembler(ModelAtomicDisassembler atomicDisassembler) {
+        this.atomicDisassembler = atomicDisassembler;
     }
 
     @Override
@@ -34,5 +35,21 @@ public class RenderAtomicDisassembler implements NoDataSpecialModelRenderer {
         PoseStack poseStack = new PoseStack();
         this.atomicDisassembler.setupAnim();
         this.atomicDisassembler.root().getExtentsForGui(poseStack, output);
+    }
+
+    public static class Unbaked implements NoDataSpecialModelRenderer.Unbaked {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        public @Nullable SpecialModelRenderer<Void> bake(BakingContext context) {
+            return new RenderAtomicDisassembler(new ModelAtomicDisassembler(context.entityModelSet()));
+        }
+
+        @Override
+        public MapCodec<? extends NoDataSpecialModelRenderer.Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

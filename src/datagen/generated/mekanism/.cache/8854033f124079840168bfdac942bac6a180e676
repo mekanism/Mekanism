@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-05T17:57:28.0966175	Model Definitions - mekanism
+// 26.1.2	2026-05-05T18:14:24.4571529	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -63,7 +63,7 @@ fff3274a73496dbed47bbf6836c758c5c78a06aa assets/mekanism/items/advanced_purifyin
 044658d90105bd53135f47592ba98fcfd0f322e9 assets/mekanism/items/alloy_infused.json
 6c07d5a6fb2dbce9201fa69d93c1af6ba415f70f assets/mekanism/items/alloy_reinforced.json
 f9e411f13a00a15b88631b7bbc78f44875b24771 assets/mekanism/items/antiprotonic_nucleosynthesizer.json
-80ef3efefb44ba29cd234d3a5d15d2c39ed1f8c7 assets/mekanism/items/atomic_disassembler.json
+a956b3d8f7d4b5005fbbd7095cfebf42e6484fcf assets/mekanism/items/atomic_disassembler.json
 eac0f5ff14cbb60195fdb33c0d31137dbd99493f assets/mekanism/items/basic_bin.json
 dbac48fb0fb0e380fe62b96e197a43de78828bdc assets/mekanism/items/basic_chemical_tank.json
 6f5a1ba90d89ff143f98b630349c48d12a41d504 assets/mekanism/items/basic_combining_factory.json

@@ -12,6 +12,7 @@ import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.block.RenderFluidTankItem;
+import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.Mekanism;
@@ -155,6 +156,10 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, new RenderFreeRunners.Unbaked(true));
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
+        simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);
+        itemModels.declareCustomModelItem(MekanismItems.FLAMETHROWER.asItem());
+        itemModels.declareCustomModelItem(MekanismItems.SCUBA_MASK.asItem());
+        itemModels.declareCustomModelItem(MekanismItems.SCUBA_TANK.asItem());
 
         //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ADVANCED));
@@ -378,7 +383,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.ATOMIC_ALLOY.asItem());
         itemModels.declareCustomModelItem(MekanismItems.INFUSED_ALLOY.asItem());
         itemModels.declareCustomModelItem(MekanismItems.REINFORCED_ALLOY.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.ATOMIC_DISASSEMBLER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BASIC_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BASIC_TIER_INSTALLER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BIO_FUEL.asItem());
@@ -398,7 +402,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.ENRICHED_REDSTONE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ENRICHED_OBSIDIAN.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ENRICHED_TIN.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.FLAMETHROWER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.FLUORITE_GEM.asItem());
         itemModels.declareCustomModelItem(MekanismItems.GAUGE_DROPPER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HAZMAT_BOOTS.asItem());
@@ -422,8 +425,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.REPROCESSED_FISSILE_FRAGMENT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SALT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SAWDUST.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SCUBA_MASK.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SCUBA_TANK.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SEISMIC_READER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.SUBSTRATE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.TELEPORTATION_CORE.asItem());
