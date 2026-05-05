@@ -10,6 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -46,7 +47,8 @@ public class FuelInventorySlot extends BasicInventorySlot {
                     return 0;
                 }
                 //If the item has a container, then replace it with the container
-                setStack(remainder.convertInto().create());
+                ItemStackTemplate container = remainder.convertInto();
+                setStack(ItemResource.of(container), container.count());
             } else {
                 //Otherwise, shrink the size of the stack by one
                 MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

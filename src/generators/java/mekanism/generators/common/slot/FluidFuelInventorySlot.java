@@ -13,6 +13,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.component.DataComponents;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.UseRemainder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
@@ -81,7 +82,8 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                     fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
                     if (hasContainer) {
                         //If the item has a container, then replace it with the container
-                        setStack(remainder.convertInto().create());
+                        ItemStackTemplate container = remainder.convertInto();
+                        setStack(ItemResource.of(container), container.count());
                     } else {
                         //Otherwise, shrink the size of the stack by one
                         MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);

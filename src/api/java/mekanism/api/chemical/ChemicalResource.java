@@ -82,7 +82,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
                 throw new IllegalArgumentException("Cannot create a ChemicalStack from a direct holder for a chemical that is not yet registered");
             }
         }
-        return of(chemical);
+        return new ChemicalResource(chemical);
     }
 
     private final Holder<Chemical> chemicalType;

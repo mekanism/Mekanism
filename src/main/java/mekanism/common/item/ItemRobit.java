@@ -51,6 +51,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -120,11 +121,13 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                             if (stackInSlot.isEmpty()) {
                                 continue;
                             }
+                            ItemResource itemType = ItemResource.of(stackInSlot);
+                            int stackSize = stackInSlot.count();
                             IInventorySlot robitSlot = robitSlots.get(slot);
                             if (robitSlot instanceof BasicInventorySlot basicInventorySlot) {
-                                basicInventorySlot.setStackUnchecked(stackInSlot.copy());
+                                basicInventorySlot.setStackUnchecked(itemType, stackSize);
                             } else {
-                                robitSlot.setStack(stackInSlot.copy());
+                                robitSlot.setStack(itemType, stackSize);
                             }
                         }
                     }

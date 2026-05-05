@@ -15,6 +15,7 @@ import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public interface IFluidHandlerSlot extends IInventorySlot {
@@ -52,7 +53,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                     if (isFilling()) {
                         //if we were filling, but can no longer fill the tank, attempt to move the item to the output slot
-                        if (moveItem(outputSlot, stack)) {
+                        if (moveItem(outputSlot, ItemResource.of(stack), stack.count())) {
                             setFilling(false);
                         }
                     }
@@ -223,17 +224,19 @@ public interface IFluidHandlerSlot extends IInventorySlot {
      * Tries to move a stack from our slot to the output slot
      *
      * @param outputSlot  The slot we are trying to move our item to
-     * @param stackToMove The stack we are moving, this is our container
+     * @param container The type of the item we are moving, this is our container
+     * @param containerSize The size of the container stack being moved
      *
      * @return True if we are able to move the stack and did so, false otherwise
      */
-    private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {
+    private boolean moveItem(IInventorySlot outputSlot, ItemResource container, int containerSize) {
         //TODO - 26.1: Rewrite this method to not rely on grow/shrink, or at least potentially bail instead of logging a mismatched stack size if something goes wrong?
+        //TODO - 26.1: Should container size be taken into account for all of these instead of just using 1
         try (Transaction transaction = Transaction.openRoot()) {
             if (outputSlot.isEmpty()) {
-                outputSlot.setStack(stackToMove);
+                outputSlot.setStack(container, containerSize);
             } else {
-                if (!outputSlot.getResource().matches(stackToMove) || outputSlot.getCount() >= outputSlot.getCurrentLimit()) {
+                if (!outputSlot.getResource().equals(container) || outputSlot.getCount() >= outputSlot.getCurrentLimit()) {
                     //We won't be able to move our container to the output slot so exit
                     return false;
                 }
