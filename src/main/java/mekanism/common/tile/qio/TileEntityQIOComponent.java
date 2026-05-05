@@ -29,6 +29,7 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public class TileEntityQIOComponent extends TileEntityMekanism implements IQIOFrequencyHolder {
 
+    //todo - 26.1: when this changes, block needs to be marked for re-rendering
     public static final BlockTintSource TINT_SOURCE = new BlockTintSource() {
         @Override
         public int color(BlockState state) {
