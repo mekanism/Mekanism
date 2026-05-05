@@ -2,9 +2,11 @@ package mekanism.client.model;
 
 import com.google.common.collect.Table;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
@@ -48,6 +50,7 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jspecify.annotations.NullMarked;
@@ -178,6 +181,22 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.ROBIT.asItem());//todo renderer?
 
         registerManualItemModels(itemModels);
+
+        {
+            Constant untintedBase = new Constant(-1);
+            for (ItemLike holder : List.of(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
+                  MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER)) {
+                Identifier modelLocation = switch (holder) {
+                    case BlockRegistryObject<?, ?> block -> ModelLocationUtils.getModelLocation(block.value());
+                    case ItemRegistryObject<?> item -> ModelLocationUtils.getModelLocation(item.value());
+                    default -> throw new IllegalArgumentException("unknown type");
+                };
+                if (!modelExists(modelLocation)) {
+                    throw new IllegalStateException("model does not exist: " + modelLocation);
+                }
+                itemModels.itemModelOutput.accept(holder.asItem(), ItemModelUtils.tintedModel(modelLocation, untintedBase, ColorComponent.INSTANCE));
+            }
+        }
 
         //Blocks
         registerFluidBlockStates(blockModels, MekanismFluids.FLUIDS);
@@ -387,7 +406,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.ANTIMATTER_PELLET.asItem());
         itemModels.declareCustomModelItem(MekanismItems.PLUTONIUM_PELLET.asItem());
         itemModels.declareCustomModelItem(MekanismItems.POLONIUM_PELLET.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.PORTABLE_QIO_DASHBOARD.asItem());
         itemModels.declareCustomModelItem(MekanismItems.PORTABLE_TELEPORTER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.BASE_QIO_DRIVE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HYPER_DENSE_QIO_DRIVE.asItem());

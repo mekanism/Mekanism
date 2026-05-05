@@ -176,7 +176,7 @@ public enum EnumColor implements IIncrementalEnum<EnumColor>, SupportsColorMap, 
     @Override
     public void setColorFromAtlas(int[] color) {
         rgbCode = color;
-        this.argb = ARGB.color(rgbCode[0], rgbCode[1], rgbCode[2]);
+        this.argb = ARGB.color(0xFF, rgbCode[0], rgbCode[1], rgbCode[2]);
         this.color = TextColor.fromRgb(this.argb);
     }
 

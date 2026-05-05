@@ -1,6 +1,15 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:item/portable_qio_dashboard"
+    "model": "mekanism:item/portable_qio_dashboard",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "mekanism:color_component"
+      }
+    ]
   }
 }

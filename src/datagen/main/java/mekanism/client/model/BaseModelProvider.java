@@ -80,8 +80,12 @@ public abstract class BaseModelProvider extends ModelProvider {
         itemModels.itemModelOutput.accept(item, unbaked);
     }
 
-    public boolean textureExists(Identifier texture) {//todo - 26.1: check me
+    public boolean textureExists(Identifier texture) {
         return clientResources.getResource(texture.withPrefix("textures/").withSuffix(".png")).isPresent();
+    }
+
+    public boolean modelExists(Identifier model) {
+        return clientResources.getResource(model.withPrefix("models/").withSuffix(".json")).isPresent();
     }
 
     public boolean textureExists(Material material) {
