@@ -188,7 +188,6 @@ public class MekanismModelProvider extends BaseModelProvider {
             itemModels.itemModelOutput.accept(MekanismItems.MEKA_TOOL.asItem(), modelToRegister);
         }
 
-        //TODO? itemModels.declareCustomModelItem(MekanismItems.MEKA_TOOL_LEFT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ROBIT.asItem());//todo renderer?
 
         registerManualItemModels(itemModels);
