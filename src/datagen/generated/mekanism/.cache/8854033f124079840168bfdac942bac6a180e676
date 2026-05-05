@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-05T14:35:19.1121138	Model Definitions - mekanism
+// 26.1.2	2026-05-05T17:20:34.570116	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -262,10 +262,10 @@ db78981ca50246c0b0ed27e49130dd1321ec466f assets/mekanism/items/laser.json
 0d87abc9d0c3caa87585719df2e53362871d6456 assets/mekanism/items/lead_ore.json
 1131ddf621930c44d8a6f19be934b184c80406d7 assets/mekanism/items/lithium_bucket.json
 fc1d9c364a8b6cb2347cc2f8cc0437cdc36369af assets/mekanism/items/logistical_sorter.json
-fa544337accd499400354721f2334bfd388d69e7 assets/mekanism/items/mekasuit_bodyarmor.json
-662e8ebf2af97616f004da46d28bdc7cd5708466 assets/mekanism/items/mekasuit_boots.json
-3b995c09e2890f7bec59093140c7bb81b3f2d6b0 assets/mekanism/items/mekasuit_helmet.json
-487165fa0dfb472287baa558b71ba882a961f5f9 assets/mekanism/items/mekasuit_pants.json
+fc73b5a52371b96324dbf044cdf693bad63f02ab assets/mekanism/items/mekasuit_bodyarmor.json
+eaa1234e0ed57c0fdb8c88c5e22f3f84d435ff69 assets/mekanism/items/mekasuit_boots.json
+14f16bf27fccb8ca38d6d8eafbfdbf2392cb62c2 assets/mekanism/items/mekasuit_helmet.json
+62823cabbbc2a82e071612958731967a931d8eba assets/mekanism/items/mekasuit_pants.json
 306ca15f1198f3ea38bd39c732b101cfb6f7b499 assets/mekanism/items/meka_tool.json
 e1170d15a4464074ee2b63d3ae30d3db234b5a53 assets/mekanism/items/metallurgic_infuser.json
 f9054917a9f8e33e444617a6423df430fcfa8eb1 assets/mekanism/items/modification_station.json

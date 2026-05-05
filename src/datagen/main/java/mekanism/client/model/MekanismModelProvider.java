@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.itemtint.ColorComponent;
+import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
@@ -196,11 +197,17 @@ public class MekanismModelProvider extends BaseModelProvider {
         for (ItemLike holder : List.of(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER)) {
             Identifier modelLocation = switch (holder) {
-                case BlockRegistryObject<?, ?> block -> existingModel(block.value());
-                case ItemRegistryObject<?> item -> existingModel(item.value());
+                case BlockRegistryObject<?, ?> block -> existingModel(block);
+                case ItemRegistryObject<?> item -> existingModel(item);
                 default -> throw new IllegalArgumentException("unknown type");
             };
             itemModels.itemModelOutput.accept(holder.asItem(), ItemModelUtils.tintedModel(modelLocation, IGNORE_LAYER, ColorComponent.INSTANCE));
+        }
+
+        for (ItemRegistryObject<?> registryObject : List.of(MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS)) {
+            itemModels.itemModelOutput.accept(
+                  registryObject.value(), ItemModelUtils.tintedModel(existingModel(registryObject), IGNORE_LAYER, ColorModulationTint.INSTANCE)
+            );
         }
 
         //Blocks
@@ -402,10 +409,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.HDPE_ROD.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HDPE_SHEET.asItem());
         itemModels.declareCustomModelItem(MekanismItems.HDPE_STICK.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MEKASUIT_BODYARMOR.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MEKASUIT_BOOTS.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MEKASUIT_HELMET.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.MEKASUIT_PANTS.asItem());
         itemModels.declareCustomModelItem(MekanismItems.MODULE_BASE.asItem());
         itemModels.declareCustomModelItem(MekanismItems.NETWORK_READER.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ANTIMATTER_PELLET.asItem());

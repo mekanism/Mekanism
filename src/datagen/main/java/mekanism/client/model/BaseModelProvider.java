@@ -96,12 +96,20 @@ public abstract class BaseModelProvider extends ModelProvider {
         return RegistryUtils.getName(holder, BuiltInRegistries.ITEM).getPath();
     }
 
+    protected Identifier existingModel(Holder<Item> item) {
+        return existingModel(item.value());
+    }
+
     protected Identifier existingModel(Item item) {
         return validateModelExists(defaultModelLoc(item));
     }
 
     protected static Identifier defaultModelLoc(Item item) {
         return ModelLocationUtils.getModelLocation(item);
+    }
+
+    protected Identifier existingModel(BlockRegistryObject<?, ?> block) {
+        return existingModel(block.value());
     }
 
     protected Identifier existingModel(Block block) {

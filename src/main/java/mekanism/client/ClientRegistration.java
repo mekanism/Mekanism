@@ -83,6 +83,7 @@ import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.model.itemtint.ColorComponent;
+import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
@@ -457,21 +458,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void registerItemColorHandlers(RegisterColorHandlersEvent.ItemTintSources event) {
         event.register(Mekanism.rl("color_component"), ColorComponent.MAP_CODEC);
-        //TODO - 26.1 item colours
-        /*
-
-        ClientRegistrationUtil.registerItemColorHandler(event, (stack, index) -> {
-            if (index == 1) {
-                IModule<ModuleColorModulationUnit> colorModulationUnit = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.COLOR_MODULATION_UNIT);
-                if (colorModulationUnit == null) {
-                    return -1;
-                }
-                return colorModulationUnit.getCustomInstance().tintARGB();
-            }
-            return -1;
-        }, MekanismItems.MEKASUIT_HELMET, MekanismItems.MEKASUIT_BODYARMOR, MekanismItems.MEKASUIT_PANTS, MekanismItems.MEKASUIT_BOOTS);
-
-       */
+        event.register(Mekanism.rl("color_modulation_unit"), ColorModulationTint.MAP_CODEC);
     }
 
     @SubscribeEvent

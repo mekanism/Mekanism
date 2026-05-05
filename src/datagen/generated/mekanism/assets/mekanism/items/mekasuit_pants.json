@@ -1,6 +1,15 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:item/mekasuit_pants"
+    "model": "mekanism:item/mekasuit_pants",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1
+      },
+      {
+        "type": "mekanism:color_modulation_unit"
+      }
+    ]
   }
 }
