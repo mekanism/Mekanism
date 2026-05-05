@@ -150,13 +150,15 @@ public class AdditionsModelProvider extends BaseModelProvider {
     private void glowPanels(BlockModelGenerators blockModels) {
         Identifier model = modLocation("block/glow_panel");
         for (BlockRegistryObject<BlockGlowPanel, ?> blockRO : AdditionsBlocks.GLOW_PANELS.values()) {
+            BlockGlowPanel glowPanel = blockRO.value();
             blockModels.blockStateOutput.accept(
                   MultiVariantGenerator.dispatch(
-                              blockRO.value(),
+                              glowPanel,
                               BlockModelGenerators.plainVariant(model)
                         )
                         .with(BlockModelGenerators.ROTATIONS_COLUMN_WITH_FACING)
             );
+            blockModels.itemModelOutput.accept(blockRO.asItem(), ItemModelUtils.tintedModel(model, new Constant(glowPanel.getColor().getPackedColor())));
         }
     }
 

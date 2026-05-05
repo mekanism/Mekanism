@@ -1,6 +1,12 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismadditions:block/light_blue_glow_panel"
+    "model": "mekanismadditions:block/glow_panel",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -11165953
+      }
+    ]
   }
 }

@@ -1,6 +1,12 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismadditions:block/pink_glow_panel"
+    "model": "mekanismadditions:block/glow_panel",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -17212
+      }
+    ]
   }
 }
