@@ -2,22 +2,24 @@ package mekanism.client.render.item.gear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelScubaMask;
-import mekanism.client.render.item.MekanismISTER;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 
 @NothingNullByDefault
 public class RenderScubaMask implements NoDataSpecialModelRenderer {
 
-    public static final RenderScubaMask RENDERER = new RenderScubaMask();
     private final ModelScubaMask scubaMask;
 
-    public RenderScubaMask() {
-        scubaMask = new ModelScubaMask(MekanismISTER.getEntityModels());
+    public RenderScubaMask(EntityModelSet entityModels) {
+        scubaMask = new ModelScubaMask(entityModels);
     }
 
     @Override
@@ -34,5 +36,21 @@ public class RenderScubaMask implements NoDataSpecialModelRenderer {
         PoseStack poseStack = new PoseStack();
         this.scubaMask.setupAnim();
         this.scubaMask.root().getExtentsForGui(poseStack, output);
+    }
+
+    public static class Unbaked implements NoDataSpecialModelRenderer.Unbaked {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        public @Nullable SpecialModelRenderer<Void> bake(BakingContext context) {
+            return new RenderScubaMask(context.entityModelSet());
+        }
+
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/scuba_mask"
+    "type": "minecraft:special",
+    "base": "mekanism:item/scuba_mask",
+    "model": {
+      "type": "mekanism:scuba_mask"
+    }
   }
 }

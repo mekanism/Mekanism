@@ -2,22 +2,24 @@ package mekanism.client.render.item.gear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.render.item.MekanismISTER;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3fc;
 
 @NothingNullByDefault
 public class RenderScubaTank implements NoDataSpecialModelRenderer {
 
-    public static final RenderScubaTank RENDERER = new RenderScubaTank();
     private final ModelScubaTank scubaTank;
 
-    public RenderScubaTank() {
-        scubaTank = new ModelScubaTank(MekanismISTER.getEntityModels());
+    public RenderScubaTank(EntityModelSet entityModels) {
+        scubaTank = new ModelScubaTank(entityModels);
     }
 
     @Override
@@ -34,5 +36,21 @@ public class RenderScubaTank implements NoDataSpecialModelRenderer {
         PoseStack poseStack = new PoseStack();
         this.scubaTank.setupAnim();
         this.scubaTank.root().getExtentsForGui(poseStack, output);
+    }
+
+    public static class Unbaked implements NoDataSpecialModelRenderer.Unbaked {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        public @Nullable SpecialModelRenderer<Void> bake(BakingContext context) {
+            return new RenderScubaTank(context.entityModelSet());
+        }
+
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

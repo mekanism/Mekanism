@@ -111,8 +111,11 @@ import mekanism.client.render.item.MekaSuitBarDecorator;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
+import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.gear.RenderScubaMask;
+import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.client.render.layer.MekanismArmorLayer;
 import mekanism.client.render.layer.MekanismElytraLayer;
 import mekanism.client.render.tileentity.RenderBin;
@@ -321,6 +324,9 @@ public class ClientRegistration {
         event.register(Mekanism.rl("fluid_tank"), RenderFluidTankItem.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("jetpack"), RenderJetpack.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("atomic_disassembler"), RenderAtomicDisassembler.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("flamethrower"), RenderFlameThrower.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("scuba_mask"), RenderScubaMask.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

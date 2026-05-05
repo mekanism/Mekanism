@@ -2,22 +2,24 @@ package mekanism.client.render.item.gear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.ModelFlamethrower;
-import mekanism.client.render.item.MekanismISTER;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.special.NoDataSpecialModelRenderer;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import org.joml.Vector3fc;
+import org.jspecify.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderFlameThrower implements NoDataSpecialModelRenderer {
 
-    public static final RenderFlameThrower RENDERER = new RenderFlameThrower();
     private final ModelFlamethrower flamethrower;
 
-    public RenderFlameThrower() {
-        flamethrower = new ModelFlamethrower(MekanismISTER.getEntityModels());
+    public RenderFlameThrower(EntityModelSet entityModels) {
+        flamethrower = new ModelFlamethrower(entityModels);
     }
 
     @Override
@@ -34,5 +36,21 @@ public class RenderFlameThrower implements NoDataSpecialModelRenderer {
         PoseStack poseStack = new PoseStack();
         this.flamethrower.setupAnim();
         this.flamethrower.root().getExtentsForGui(poseStack, output);
+    }
+
+    public static class Unbaked implements NoDataSpecialModelRenderer.Unbaked {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        public @Nullable SpecialModelRenderer<Void> bake(BakingContext context) {
+            return new RenderFlameThrower(context.entityModelSet());
+        }
+
+        @Override
+        public MapCodec<Unbaked> type() {
+            return MAP_CODEC;
+        }
     }
 }

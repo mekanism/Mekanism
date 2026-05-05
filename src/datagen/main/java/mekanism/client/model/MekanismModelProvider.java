@@ -13,8 +13,11 @@ import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
+import mekanism.client.render.item.gear.RenderFlameThrower;
 import mekanism.client.render.item.gear.RenderFreeRunners;
 import mekanism.client.render.item.gear.RenderJetpack;
+import mekanism.client.render.item.gear.RenderScubaMask;
+import mekanism.client.render.item.gear.RenderScubaTank;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -157,9 +160,9 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
         simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
         simpleISTER(itemModels, MekanismItems.ATOMIC_DISASSEMBLER, RenderAtomicDisassembler.Unbaked.INSTANCE);
-        itemModels.declareCustomModelItem(MekanismItems.FLAMETHROWER.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SCUBA_MASK.asItem());
-        itemModels.declareCustomModelItem(MekanismItems.SCUBA_TANK.asItem());
+        simpleISTER(itemModels, MekanismItems.FLAMETHROWER, RenderFlameThrower.Unbaked.INSTANCE);
+        simpleISTER(itemModels, MekanismItems.SCUBA_MASK, RenderScubaMask.Unbaked.INSTANCE);
+        simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
 
         //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ADVANCED));

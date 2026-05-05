@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-05T18:24:18.1007481	Model Definitions - mekanism
+// 26.1.2	2026-05-05T19:13:27.7283561	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -219,7 +219,7 @@ c7425864db3098f868cfdb86b852f73afb335a10 assets/mekanism/items/enriched_refined_
 205d062877e8d8ccd25d5c80a745146a4d9c6222 assets/mekanism/items/enriched_tin.json
 8eabc530219f56eb93c54fea1a23fefe96e03006 assets/mekanism/items/enrichment_chamber.json
 d4312a15c973eb76f2d14109ce1d05bb5cc4c2bf assets/mekanism/items/ethene_bucket.json
-575743e6438b0e74d5acc1162ffae3bbcc79f061 assets/mekanism/items/flamethrower.json
+44d7f8c6af91c8e370f77cdd95197c81a1ae3630 assets/mekanism/items/flamethrower.json
 276c7d162ebfa37d82f1233c411f8f274bf99e5d assets/mekanism/items/fluidic_plenisher.json
 f9e2e400e1f9add4bfa99314de2d49b03dfdf93c assets/mekanism/items/fluorite_gem.json
 87c1f88097a4bef388ddb9aa01c16343ebb5e2ad assets/mekanism/items/fluorite_ore.json
@@ -352,8 +352,8 @@ cc10ace181f8524e795932e3db277cc8ddc4da13 assets/mekanism/items/restrictive_trans
 7e5e7814e582ef66d6771656f286bc05779bccdb assets/mekanism/items/rotary_condensentrator.json
 1c128725c0cec682400ab393937bd7607020f1ce assets/mekanism/items/salt.json
 a548abbe57e9c10cd4eb810780110a576e9101c6 assets/mekanism/items/sawdust.json
-ef18edb3c84a5bc009acd407b0f771076ba1b1cd assets/mekanism/items/scuba_mask.json
-9e45ab5cb5bf99a808e0d6453437f96f9a092dfa assets/mekanism/items/scuba_tank.json
+486333e7c3969e2a969bc4516c3e1c457c928b15 assets/mekanism/items/scuba_mask.json
+a119b0e9fee21c6a1ede0bd44a1897a28a71b7de assets/mekanism/items/scuba_tank.json
 5dc2744d163895c436f9713b8aee89acae56fc18 assets/mekanism/items/security_desk.json
 796358e5652a5c19de6a3d90f48abb774cf4295e assets/mekanism/items/seismic_reader.json
 788ff8a159ee7babb2e50545d345190099f8c4c8 assets/mekanism/items/seismic_vibrator.json
