@@ -10,11 +10,8 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -63,38 +60,6 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
 
     //TODO - 26.1: Docs, and transition calls to setStack(ItemStack) to this
     void setStack(ItemResource itemType, int storedAmount);
-
-    /**
-     * <p>
-     * Inserts an {@link ItemStack} into this {@link IInventorySlot} and return the remainder. The {@link ItemStack} <em>should not</em> be modified in this function!
-     * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
-     *
-     * @param stack          {@link ItemStack} to insert. This must not be modified by the slot.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this slot is being interacted from.
-     *
-     * @return The remaining {@link ItemStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ItemStack}). May be the same as the
-     * input {@link ItemStack} if unchanged, otherwise a new {@link ItemStack}. The returned ItemStack can be safely modified after
-     *
-     * @implNote The {@link ItemStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
-     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ItemStack} is mutable so that a copy does not have to be made every
-     * run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default ItemStack insertItem(ItemStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
-            //"Fail quick" if the given stack is empty
-            return ItemStack.EMPTY;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Re-evaluate this if we don't end up removing this method in general
-            int inserted = insert(ItemResource.of(stack), stack.count(), transaction, automationType);
-            if (action.execute()) {
-                transaction.commit();
-            }
-            return stack.copyWithCount(stack.count() - inserted);
-        }
-    }
 
     //TODO - 26.1: Docs
     int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);

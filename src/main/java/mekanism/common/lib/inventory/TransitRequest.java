@@ -37,6 +37,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return definedItem(inventory, 1, amount, finder);
     }
 
+    //TODO - 26.1: Evaluate what callers of this could just be replaced with using ResourceHandlerUtil calls
     public static TransitRequest definedItem(ResourceHandler<ItemResource> inventory, int min, int max, Finder finder) {
         HandlerTransitRequest ret = new HandlerTransitRequest(inventory);
         if (inventory == null) {
