@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -39,6 +40,7 @@ import mekanism.common.tier.FactoryTier;
 import net.minecraft.client.color.item.Constant;
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
+import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.blockstates.PropertyDispatch;
 import net.minecraft.client.data.models.model.ItemModelUtils;
@@ -60,6 +62,9 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
+import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -333,6 +338,13 @@ public class MekanismModelProvider extends BaseModelProvider {
             }
         }
 
+        energyCube(blockModels, MekanismBlocks.BASIC_ENERGY_CUBE, BaseTier.BASIC);
+        energyCube(blockModels, MekanismBlocks.ADVANCED_ENERGY_CUBE, BaseTier.ADVANCED);
+        energyCube(blockModels, MekanismBlocks.ELITE_ENERGY_CUBE, BaseTier.ELITE);
+        energyCube(blockModels, MekanismBlocks.ULTIMATE_ENERGY_CUBE, BaseTier.ULTIMATE);
+        energyCube(blockModels, MekanismBlocks.CREATIVE_ENERGY_CUBE, BaseTier.CREATIVE);
+
+
         plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_BIN, "block/bin/advanced");
         plainBlockItemModel(blockModels, MekanismBlocks.BASIC_BIN, "block/bin/basic");
         plainBlockItemModel(blockModels, MekanismBlocks.ELITE_BIN, "block/bin/elite");
@@ -371,6 +383,21 @@ public class MekanismModelProvider extends BaseModelProvider {
         plainBlockItemModel(blockModels, MekanismBlocks.THERMAL_EVAPORATION_VALVE, "block/thermal_evaporation/valve");
 
         plainBlockItemModel(blockModels, MekanismBlocks.BOILER_VALVE, "block/boiler_valve_input");
+    }
+
+    private void energyCube(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, BaseTier tier) {
+        Block block = registryObject.value();
+        Identifier baseModel = validateModelExists(modLocation("block/energy_cube/" + tier.getLowerName()));
+        EnergyCubeModel.Unbaked blockStateModel = new EnergyCubeModel.Unbaked(BlockModelGenerators.plainModel(baseModel));
+        CustomBlockStateModelBuilder blockStateModelBuilder = new EnergyCubeBuilder(blockStateModel);
+        MultiVariant multiVariant = MultiVariant.of(blockStateModelBuilder);
+        blockModels.blockStateOutput.accept(
+              MultiVariantGenerator.dispatch(
+                          block,
+                          multiVariant
+                    )
+                    .with(BlockModelGenerators.ROTATION_FACING)
+        );
     }
 
     private void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {
@@ -472,7 +499,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.COMPRESSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.CRUSHING));
-        markManualBlockState(MekanismBlocks.ADVANCED_ENERGY_CUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.ENRICHING));
         markManualBlockState(MekanismBlocks.ADVANCED_FLUID_TANK);
         markManualBlockState(MekanismBlocks.ADVANCED_INDUCTION_CELL);
@@ -493,7 +519,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.COMPRESSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.CRUSHING));
-        markManualBlockState(MekanismBlocks.BASIC_ENERGY_CUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.ENRICHING));
         markManualBlockState(MekanismBlocks.BASIC_FLUID_TANK);
         markManualBlockState(MekanismBlocks.BASIC_INDUCTION_CELL);
@@ -530,7 +555,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.COMBINER);
         markManualBlockState(MekanismBlocks.CREATIVE_BIN);
         markManualBlockState(MekanismBlocks.CREATIVE_CHEMICAL_TANK);
-        markManualBlockState(MekanismBlocks.CREATIVE_ENERGY_CUBE);
         markManualBlockState(MekanismBlocks.CREATIVE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.CRUSHER);
         markManualBlockState(MekanismBlocks.DIGITAL_MINER);
@@ -544,7 +568,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.COMPRESSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.CRUSHING));
-        markManualBlockState(MekanismBlocks.ELITE_ENERGY_CUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.ENRICHING));
         markManualBlockState(MekanismBlocks.ELITE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.ELITE_INDUCTION_CELL);
@@ -614,7 +637,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.COMBINING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.COMPRESSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.CRUSHING));
-        markManualBlockState(MekanismBlocks.ULTIMATE_ENERGY_CUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.ENRICHING));
         markManualBlockState(MekanismBlocks.ULTIMATE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.ULTIMATE_INDUCTION_CELL);
@@ -631,4 +653,27 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
     }
 
+    public static final class EnergyCubeBuilder extends CustomBlockStateModelBuilder {
+
+        private final EnergyCubeModel.Unbaked blockStateModel;
+
+        public EnergyCubeBuilder(EnergyCubeModel.Unbaked blockStateModel) {
+            this.blockStateModel = blockStateModel;
+        }
+
+        @Override
+        public EnergyCubeBuilder with(VariantMutator variantMutator) {
+            return new EnergyCubeBuilder(new EnergyCubeModel.Unbaked(variantMutator.apply(this.blockStateModel.tierModel())));
+        }
+
+        @Override
+        public CustomBlockStateModelBuilder with(UnbakedMutator variantMutator) {
+            return new EnergyCubeBuilder(variantMutator.apply(blockStateModel));
+        }
+
+        @Override
+        public CustomUnbakedBlockStateModel toUnbaked() {
+            return this.blockStateModel;
+        }
+    }
 }

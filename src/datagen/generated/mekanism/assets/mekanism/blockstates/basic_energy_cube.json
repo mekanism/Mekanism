@@ -1,27 +1,45 @@
 {
   "variants": {
-    "facing=up": {
-      "model": "mekanism:block/energy_cube/basic",
-      "x": -90
-    },
     "facing=down": {
-      "model": "mekanism:block/energy_cube/basic",
-      "x": 90
-    },
-    "facing=north": {
-      "model": "mekanism:block/energy_cube/basic"
-    },
-    "facing=south": {
-      "model": "mekanism:block/energy_cube/basic",
-      "y": 180
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic",
+        "x": 90
+      }
     },
     "facing=east": {
-      "model": "mekanism:block/energy_cube/basic",
-      "y": 90
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic",
+        "y": 90
+      }
+    },
+    "facing=north": {
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic"
+      }
+    },
+    "facing=south": {
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic",
+        "y": 180
+      }
+    },
+    "facing=up": {
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic",
+        "x": 270
+      }
     },
     "facing=west": {
-      "model": "mekanism:block/energy_cube/basic",
-      "y": -90
+      "type": "mekanism:energy_cube_sided",
+      "tier_model": {
+        "model": "mekanism:block/energy_cube/basic",
+        "y": 270
+      }
     }
   }
 }

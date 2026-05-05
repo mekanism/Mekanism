@@ -82,6 +82,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.energycube.EnergyCubeBaseLoader;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -412,10 +413,15 @@ public class ClientRegistration {
     }
 
     @SubscribeEvent
-    public static void registerModelLoaders(RegisterBlockStateModels event) {
+    public static void registerModels(RegisterBlockStateModels event) {
         //TODO - 26.1 models
-        //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
+    }
+
+    @SubscribeEvent
+    public static void registerModelLoaders(ModelEvent.RegisterLoaders event) {
+        event.register(EnergyCubeBaseLoader.ID, EnergyCubeBaseLoader.INSTANCE);
+        //event.register(Mekanism.rl("data_based"), DataBasedModelLoader.INSTANCE);
         //event.register(Mekanism.rl("robit"), RobitModel.Loader.INSTANCE);
         //event.register(Mekanism.rl("transmitter"), TransmitterLoader.INSTANCE);
     }
