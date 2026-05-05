@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-05T17:20:34.570116	Model Definitions - mekanism
+// 26.1.2	2026-05-05T17:57:28.0966175	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -254,8 +254,8 @@ afdb9af79acfd8db2bda10b1a4a759be31fe7b74 assets/mekanism/items/ingot_steel.json
 0be13888a0da626428842d8b607cf11e8e1fb53d assets/mekanism/items/ingot_tin.json
 f1386418b86e6c522b5ad2b0049f4a17d737548c assets/mekanism/items/ingot_uranium.json
 fb05e343132e165a181e0b7b50f90a6ee42917d8 assets/mekanism/items/isotopic_centrifuge.json
-9c67bc896a529a21d17ed14115e2b2185ff51d50 assets/mekanism/items/jetpack.json
-2514a92e10e1de0731b2eed967ab5bad86ed28d6 assets/mekanism/items/jetpack_armored.json
+55a2c5458c05d9b8284f4a762ed1025383fec46d assets/mekanism/items/jetpack.json
+7e60623d6e8ca2b1db430b28c5b3bc04f976cb82 assets/mekanism/items/jetpack_armored.json
 db78981ca50246c0b0ed27e49130dd1321ec466f assets/mekanism/items/laser.json
 8b6fe7b028291ae3a6da43d3a26726ad506548cd assets/mekanism/items/laser_amplifier.json
 261e4b7bddef3b268b8c2c6b150c05dbccb08f79 assets/mekanism/items/laser_tractor_beam.json

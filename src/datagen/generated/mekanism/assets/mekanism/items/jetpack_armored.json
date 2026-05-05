@@ -1,6 +1,10 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/jetpack_armored"
+    "type": "minecraft:special",
+    "base": "mekanism:item/jetpack_armored",
+    "model": {
+      "type": "mekanism:jetpack",
+      "jetpack_type": "ARMORED"
+    }
   }
 }

@@ -13,6 +13,7 @@ import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderFreeRunners;
+import mekanism.client.render.item.gear.RenderJetpack;
 import mekanism.common.Mekanism;
 import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
@@ -152,6 +153,8 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         simpleISTER(itemModels, MekanismItems.FREE_RUNNERS, new RenderFreeRunners.Unbaked(false));
         simpleISTER(itemModels, MekanismItems.ARMORED_FREE_RUNNERS, new RenderFreeRunners.Unbaked(true));
+        simpleISTER(itemModels, MekanismItems.JETPACK, RenderJetpack.REGULAR);
+        simpleISTER(itemModels, MekanismItems.ARMORED_JETPACK, RenderJetpack.ARMORED);
 
         //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ADVANCED));
@@ -177,9 +180,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         }
 
         itemModels.generateElytra(MekanismItems.HDPE_REINFORCED_ELYTRA.asItem());
-
-        itemModels.declareCustomModelItem(MekanismItems.JETPACK.asItem());//todo renderer
-        itemModels.declareCustomModelItem(MekanismItems.ARMORED_JETPACK.asItem());//todo renderer
 
         {
             ItemModel.Unbaked modelToRegister = ItemModelUtils.select(

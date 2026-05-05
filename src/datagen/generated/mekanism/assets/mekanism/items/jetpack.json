@@ -1,6 +1,10 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/jetpack"
+    "type": "minecraft:special",
+    "base": "mekanism:item/jetpack",
+    "model": {
+      "type": "mekanism:jetpack",
+      "jetpack_type": "REGULAR"
+    }
   }
 }
