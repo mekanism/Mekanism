@@ -1,5 +1,7 @@
 package mekanism.client.render;
 
+import mekanism.client.render.armor.ICustomArmor;
+import mekanism.client.render.armor.ISpecialGear;
 import mekanism.common.block.BlockBounding;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.ParticleEngine;
@@ -56,24 +58,8 @@ public class RenderPropertiesProvider {
         };
     }
 
-    //TODO - 26.1 renderers
-    /*public record MekRenderProperties(BlockEntityWithoutLevelRenderer renderer) implements IClientItemExtensions {
-
-        @NotNull
-        @Override
-        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return renderer;
-        }
+    public record MekCustomArmorRenderProperties(ICustomArmor gearModel) implements ISpecialGear {
     }
-
-    public record MekCustomArmorRenderProperties(BlockEntityWithoutLevelRenderer renderer, ICustomArmor gearModel) implements ISpecialGear {
-
-        @NotNull
-        @Override
-        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return renderer;
-        }
-    }*/
 
     public static final IClientBlockExtensions PARTICLE_HANDLER = new IClientBlockExtensions() {
         @Override
