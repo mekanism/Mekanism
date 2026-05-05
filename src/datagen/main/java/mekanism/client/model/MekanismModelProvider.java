@@ -1,9 +1,11 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table;
+import java.util.Arrays;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
+import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -13,6 +15,7 @@ import mekanism.common.block.BlockPersonalBarrel;
 import mekanism.common.block.attribute.AttributeStateActive;
 import mekanism.common.content.blocktype.FactoryType;
 import mekanism.common.item.ItemConfigurator;
+import mekanism.common.lib.radiation.RadiationScale;
 import mekanism.common.registration.impl.BlockRegistryObject;
 import mekanism.common.registration.impl.ItemRegistryObject;
 import mekanism.common.registries.MekanismBlocks;
@@ -109,30 +112,34 @@ public class MekanismModelProvider extends BaseModelProvider {
               )
         );
 
-        Item configurator = MekanismItems.CONFIGURATOR.value();
-        ItemModel.Unbaked baseConfigurator = ItemModelUtils.plainModel(modLocation("item/configurator"));
-        itemModels.itemModelOutput.accept(
-              configurator,
-              ItemModelUtils.select(
-                    new ComponentContents<>(MekanismDataComponents.CONFIGURATOR_MODE.get()),
-                    baseConfigurator,
-                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.EMPTY, ItemModelUtils.plainModel(modLocation("item/configurator_empty"))),
-                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.ROTATE, ItemModelUtils.plainModel(modLocation("item/configurator_rotate"))),
-                    ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.WRENCH, ItemModelUtils.plainModel(modLocation("item/configurator_wrench")))
-              )
-        );
+        {
+            Item configurator = MekanismItems.CONFIGURATOR.value();
+            ItemModel.Unbaked baseConfigurator = ItemModelUtils.plainModel(modLocation("item/configurator"));
+            itemModels.itemModelOutput.accept(
+                  configurator,
+                  ItemModelUtils.select(
+                        new ComponentContents<>(MekanismDataComponents.CONFIGURATOR_MODE.get()),
+                        baseConfigurator,
+                        ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.EMPTY, ItemModelUtils.plainModel(modLocation("item/configurator_empty"))),
+                        ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.ROTATE, ItemModelUtils.plainModel(modLocation("item/configurator_rotate"))),
+                        ItemModelUtils.when(ItemConfigurator.ConfiguratorMode.WRENCH, ItemModelUtils.plainModel(modLocation("item/configurator_wrench")))
+                  )
+            );
+        }
 
-        Item craftingFormula = MekanismItems.CRAFTING_FORMULA.value();
-        ItemModel.Unbaked baseFormula = ItemModelUtils.plainModel(modLocation("item/crafting_formula"));
-        itemModels.itemModelOutput.accept(
-              craftingFormula,
-              ItemModelUtils.select(
-                    new CraftingFormulaStatus(),
-                    baseFormula,
-                    ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.INVALID, ItemModelUtils.plainModel(modLocation("item/crafting_formula_invalid"))),
-                    ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.ENCODED, ItemModelUtils.plainModel(modLocation("item/crafting_formula_encoded")))
-              )
-        );
+        {
+            Item craftingFormula = MekanismItems.CRAFTING_FORMULA.value();
+            ItemModel.Unbaked baseFormula = ItemModelUtils.plainModel(modLocation("item/crafting_formula"));
+            itemModels.itemModelOutput.accept(
+                  craftingFormula,
+                  ItemModelUtils.select(
+                        new CraftingFormulaStatus(),
+                        baseFormula,
+                        ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.INVALID, ItemModelUtils.plainModel(modLocation("item/crafting_formula_invalid"))),
+                        ItemModelUtils.when(CraftingFormulaStatus.CraftingCardStatus.ENCODED, ItemModelUtils.plainModel(modLocation("item/crafting_formula_encoded")))
+                  )
+            );
+        }
 
         itemModels.generateBow(MekanismItems.ELECTRIC_BOW.asItem());
 
@@ -146,13 +153,22 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismBlocks.ULTIMATE_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.ULTIMATE));
         simpleISTER(itemModels, MekanismBlocks.CREATIVE_FLUID_TANK.getItemHolder(), new RenderFluidTankItem.Unbaked(BaseTier.CREATIVE));
 
-        itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_0.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_1.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_2.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_3.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_4.asItem());
-        //todo itemModels.declareCustomModelItem(MekanismItems.GEIGER_COUNTER_5.asItem());
+        {
+            Item geigerCounter = MekanismItems.GEIGER_COUNTER.value();
+            Identifier geigerLoc = modLocation("item/geiger_counter");
+            ItemModel.Unbaked baseGeiger = ItemModelUtils.plainModel(geigerLoc);
+            itemModels.itemModelOutput.accept(
+                  geigerCounter,
+                  ItemModelUtils.select(
+                        ClientRadiationScale.INSTANCE,
+                        baseGeiger,
+                        Arrays.stream(RadiationScale.values())
+                              .map(scale -> ItemModelUtils.when(scale, ItemModelUtils.plainModel(geigerLoc.withSuffix("_" + scale.ordinal()))))
+                              .toList()
+                  )
+            );
+        }
+
         itemModels.declareCustomModelItem(MekanismItems.HDPE_REINFORCED_ELYTRA.asItem());
         //TODO? itemModels.declareCustomModelItem(MekanismItems.HDPE_BROKEN_ELYTRA.asItem());
         itemModels.declareCustomModelItem(MekanismItems.JETPACK.asItem());//todo renderer

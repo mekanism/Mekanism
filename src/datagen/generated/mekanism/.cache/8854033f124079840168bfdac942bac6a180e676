@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-04T16:24:14.2686836	Model Definitions - mekanism
+// 26.1.2	2026-05-05T10:35:41.9950832	Model Definitions - mekanism
 1ff85d6bd69ab443b51d4b12fe19dbacbd8478db assets/mekanism/blockstates/block_lead.json
 aaf437003870a07df582f91b8ee98354ac4d1aec assets/mekanism/blockstates/block_osmium.json
 46f7cbb75bfcb8237612ceba18a41a0fe215a940 assets/mekanism/blockstates/block_raw_lead.json
@@ -228,7 +228,7 @@ cd84a03945aacf47253305a881d9c31992308ebe assets/mekanism/items/free_runners.json
 796a21bf3326f2b4aba9348789e4263a4a82aa28 assets/mekanism/items/free_runners_armored.json
 e4ab1a3e40db6172772a73c498429973ee65d23e assets/mekanism/items/fuelwood_heater.json
 866e3ebe670875b16620df633d452bd8da970278 assets/mekanism/items/gauge_dropper.json
-1b3bac8f916ccb35420fb40a979fb0244c642d47 assets/mekanism/items/geiger_counter.json
+d3ba47624c628c806c31b493293d6f2c81572fb4 assets/mekanism/items/geiger_counter.json
 db32dde25504ba34c3c5d3346319a560d499fd42 assets/mekanism/items/hazmat_boots.json
 a1e69268e556cf9b83fe034a216374b698edf86f assets/mekanism/items/hazmat_gown.json
 ba455d164da9543dc28c37600465b92c2b91b22c assets/mekanism/items/hazmat_mask.json

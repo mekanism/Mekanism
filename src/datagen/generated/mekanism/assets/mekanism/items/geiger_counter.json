@@ -1,6 +1,54 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/geiger_counter"
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_0"
+        },
+        "when": "NONE"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_1"
+        },
+        "when": "LOW"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_2"
+        },
+        "when": "MEDIUM"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_3"
+        },
+        "when": "ELEVATED"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_4"
+        },
+        "when": "HIGH"
+      },
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/geiger_counter_5"
+        },
+        "when": "EXTREME"
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/geiger_counter"
+    },
+    "property": "mekanism:client_radiation"
   }
 }

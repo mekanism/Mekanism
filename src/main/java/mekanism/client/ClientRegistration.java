@@ -81,6 +81,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
 import mekanism.client.particle.JetpackFlameParticle;
@@ -205,17 +206,6 @@ public class ClientRegistration {
 
         //TODO - 26.1 item models
         /*event.enqueueWork(() -> {
-            //Set fluids to a translucent render layer
-            for (Holder<Fluid> fluid : MekanismFluids.FLUIDS.getFluidEntries()) {
-                ItemBlockRenderTypes.setRenderLayer(fluid.value(), RenderType.translucent());
-            }
-
-            ClientRegistrationUtil.setPropertyOverride(MekanismItems.GEIGER_COUNTER, Mekanism.rl("radiation"), (stack, world, entity, seed) -> {
-                if (entity instanceof Player) {
-                    return ClientRadiation.getClientScale().ordinal();
-                }
-                return 0;
-            });
             //Note: Our implementation allows for a null entity so don't worry about it and pass it
             ClientRegistrationUtil.setPropertyOverride(MekanismItems.HDPE_REINFORCED_ELYTRA, Mekanism.rl("broken"), (stack, world, entity, seed) -> {
                 boolean canFly;
@@ -239,6 +229,7 @@ public class ClientRegistration {
     @SubscribeEvent
     public static void itemProps(RegisterSelectItemModelPropertyEvent event) {
         event.register(Mekanism.rl("crafting_formula"), CraftingFormulaStatus.TYPE);
+        event.register(Mekanism.rl("client_radiation"), ClientRadiationScale.TYPE);
     }
 
     @SubscribeEvent

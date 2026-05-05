@@ -1,14 +1,16 @@
 package mekanism.common.lib.radiation;
 
+import com.mojang.serialization.Codec;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.text.EnumColor;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.StringRepresentable;
 
 /**
  * Created by Thiakil on 4/05/2025.
  */
-public enum RadiationScale {
+public enum RadiationScale implements StringRepresentable {
     NONE,
     LOW,
     MEDIUM,
@@ -55,6 +57,7 @@ public enum RadiationScale {
     private static final double LOG_BASELINE = Math.log10(RadiationManager.get().minRadiationMagnitude());
     private static final double LOG_MAX = Math.log10(100); // 100 Sv
     private static final double SCALE = LOG_MAX - LOG_BASELINE;
+    public static final Codec<RadiationScale> CODEC = StringRepresentable.fromEnum(RadiationScale::values);
 
     /**
      * Gets the severity of a dose (between 0 and 1) from a provided dosage in Sv.
@@ -74,5 +77,10 @@ public enum RadiationScale {
             case EXTREME -> MekanismSounds.GEIGER_FAST.get();
             default -> null;
         };
+    }
+
+    @Override
+    public String getSerializedName() {
+        return name();
     }
 }
