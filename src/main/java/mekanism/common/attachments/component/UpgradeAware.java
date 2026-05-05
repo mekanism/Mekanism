@@ -30,9 +30,9 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, @Nullable ItemStackTe
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
-          //TODO - 26.1: Did these being lenient codecs before actually do anything? Add tests
-          ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::optionalInputSlot),
-          ItemStackTemplate.CODEC.optionalFieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::optionalOutputSlot)
+          //TODO - 26.1: Do we care that this no longer logs a warning about it failing
+          ItemStackTemplate.CODEC.lenientOptionalFieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::optionalInputSlot),
+          ItemStackTemplate.CODEC.lenientOptionalFieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::optionalOutputSlot)
     ).apply(instance, UpgradeAware::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeAware> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.map(size -> new EnumMap<>(Upgrade.class), Upgrade.STREAM_CODEC, ByteBufCodecs.VAR_INT), UpgradeAware::upgrades,
