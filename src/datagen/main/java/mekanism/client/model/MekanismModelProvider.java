@@ -44,12 +44,14 @@ import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
+import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -176,7 +178,16 @@ public class MekanismModelProvider extends BaseModelProvider {
 
         itemModels.declareCustomModelItem(MekanismItems.JETPACK.asItem());//todo renderer
         itemModels.declareCustomModelItem(MekanismItems.ARMORED_JETPACK.asItem());//todo renderer
-        itemModels.declareCustomModelItem(MekanismItems.MEKA_TOOL.asItem());
+
+        {
+            ItemModel.Unbaked modelToRegister = ItemModelUtils.select(
+                  new DisplayContext(),
+                  ItemModelUtils.plainModel(modLocation("item/meka_tool_default")),
+                  ItemModelUtils.when(List.of(ItemDisplayContext.FIRST_PERSON_LEFT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND), ItemModelUtils.plainModel(modLocation("item/meka_tool_left")))
+            );
+            itemModels.itemModelOutput.accept(MekanismItems.MEKA_TOOL.asItem(), modelToRegister);
+        }
+
         //TODO? itemModels.declareCustomModelItem(MekanismItems.MEKA_TOOL_LEFT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ROBIT.asItem());//todo renderer?
 

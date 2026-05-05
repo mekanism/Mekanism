@@ -14,13 +14,14 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
 
     @Override
     protected void gather() {
-        SourceList atlas = atlas(AtlasIds.BLOCKS);
-        addFiles(atlas, Mekanism.rl("liquid/energy"));
-        addFiles(atlas, Mekanism.rl("liquid/heat"));
-        addFiles(atlas, Mekanism.rl("icon/redstone_control_pulse"));
+        SourceList blockAtlas = atlas(AtlasIds.BLOCKS);
+        SourceList itemAtlas = atlas(AtlasIds.ITEMS);
+        addFiles(blockAtlas, Mekanism.rl("liquid/energy"));
+        addFiles(blockAtlas, Mekanism.rl("liquid/heat"));
+        addFiles(blockAtlas, Mekanism.rl("icon/redstone_control_pulse"));
 
         //MekaSuit
-        addFiles(atlas,
+        addFiles(itemAtlas,
               Mekanism.rl("entity/armor/blank"),
               Mekanism.rl("entity/armor/mekasuit_player"),
               Mekanism.rl("entity/armor/mekasuit_armor_body"),
@@ -35,7 +36,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
         //TODO - 1.21: Add javadocs stating that chemical resources now need to be added via sources???
         // is this even accurate? See if fluids need it as well. Chemicals potentially should use their own directory as well
         // just to simplify things? Or maybe we add manually and then also add a specific directory to make it easier for others
-        addChemicalSprites(atlas);
+        addChemicalSprites(blockAtlas);
 
         SourceList robitAtlas = atlas(Mekanism.rl("entity/robit"));
         addDirectory(robitAtlas, "entity/robit", "");

@@ -1,6 +1,22 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/meka_tool"
+    "type": "minecraft:select",
+    "cases": [
+      {
+        "model": {
+          "type": "minecraft:model",
+          "model": "mekanism:item/meka_tool_left"
+        },
+        "when": [
+          "firstperson_lefthand",
+          "thirdperson_lefthand"
+        ]
+      }
+    ],
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "mekanism:item/meka_tool_default"
+    },
+    "property": "minecraft:display_context"
   }
 }

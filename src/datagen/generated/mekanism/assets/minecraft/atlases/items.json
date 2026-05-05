@@ -1,0 +1,40 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/blank"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_player"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_body"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_helmet"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_exoskeleton"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_gravitational_modulator"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_elytra"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekasuit_armor_modules"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "mekanism:entity/armor/mekatool"
+    }
+  ]
+}
