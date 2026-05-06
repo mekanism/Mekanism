@@ -12,6 +12,7 @@ import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
+import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
 import mekanism.client.render.item.gear.RenderFlameThrower;
@@ -398,6 +399,8 @@ public class MekanismModelProvider extends BaseModelProvider {
                     )
                     .with(BlockModelGenerators.ROTATION_FACING)
         );
+        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(existingModel(registryObject.asItem()), RenderEnergyCubeItem.Unbaked.INSTANCE);
+        blockModels.itemModelOutput.accept(registryObject.asItem(), unbaked);
     }
 
     private void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {

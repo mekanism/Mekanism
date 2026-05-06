@@ -2,6 +2,8 @@ package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
+import com.mojang.serialization.MapCodec;
+import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.api.tier.BaseTier;
@@ -12,6 +14,7 @@ import mekanism.client.render.tileentity.RenderEnergyCube;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.EnergyCubeTier;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
@@ -20,10 +23,18 @@ import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
+import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.model.data.ModelData;
+import org.joml.Matrix4f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -31,8 +42,18 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.CubeState> {
 
-    public static final RenderEnergyCubeItem RENDERER = new RenderEnergyCubeItem();
-    private final ModelEnergyCore core = new ModelEnergyCore(getEntityModels());
+    public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+    private final ModelEnergyCore core;
+    private final Lazy<Vector3fc[]> extents = Lazy.of(() -> {
+        BlockModelRenderState state = new BlockModelRenderState();
+        Minecraft.getInstance().getBlockModelResolver().update(state, MekanismBlocks.CREATIVE_ENERGY_CUBE.defaultState(), BLOCK_DISPLAY_CONTEXT);
+        List<BakedQuad> bakedQuads = state.setupModel(new Matrix4f(), false).stream().flatMap(part -> part.getQuads(null).stream()).toList();
+        return CuboidItemModelWrapper.computeExtents(bakedQuads);
+    });
+
+    public RenderEnergyCubeItem(EntityModelSet entityModels) {
+        core = new ModelEnergyCore(entityModels);
+    }
 
     @Override
     public void submit(@Nullable CubeState state, PoseStack poseStack, SubmitNodeCollector submitNodeCollector, int lightCoords, int overlayCoords, boolean hasFoil, int outlineColor) {
@@ -41,6 +62,7 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         }
         //TODO - 26.1 rendering
         //renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
+        state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
         if (state.energyRatio > 0) {
             float scaledTicks = 4 * state.ticks();
             poseStack.pushPose();
@@ -56,13 +78,16 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
-        //TODO - 26.1 getExtents
+        for (Vector3fc vector3fc : extents.get()) {
+            output.accept(vector3fc);
+        }
     }
 
     @Nullable
     @Override
     public CubeState extractArgument(ItemStack stack) {
-        EnergyCubeTier tier = ((ItemBlockEnergyCube) stack.getItem()).getTier();
+        ItemBlockEnergyCube itemBlock = (ItemBlockEnergyCube) stack.getItem();
+        EnergyCubeTier tier = itemBlock.getTier();
         CubeSideState[] sideStates = new CubeSideState[EnumUtils.SIDES.length];
         AttachedSideConfig fallback = tier == EnergyCubeTier.CREATIVE ? ItemBlockEnergyCube.ALL_OUTPUT : ItemBlockEnergyCube.SIDE_CONFIG;
         IPersistentConfigInfo sideConfig = AttachedSideConfig.getStoredConfigInfo(stack, fallback, TransmissionType.ENERGY);
@@ -77,8 +102,27 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         ModelData modelData = ModelData.of(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates);
         float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
         float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
-        return new CubeState(modelData, tier.getBaseTier(), energyRatio, ticks, stack.hasFoil());
+        BlockModelRenderState blockModel = new BlockModelRenderState();
+        Minecraft.getInstance().getBlockModelResolver().update(blockModel, itemBlock.getBlock().defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
+        return new CubeState(modelData, tier.getBaseTier(), energyRatio, ticks, stack.hasFoil(), blockModel);
     }
 
-    public record CubeState(ModelData blockData, BaseTier baseTier, float energyRatio, float ticks, boolean hasFoil) {}
+    public record CubeState(ModelData blockData, BaseTier baseTier, float energyRatio, float ticks, boolean hasFoil, BlockModelRenderState blockRenderState) {}
+
+    public static class Unbaked implements SpecialModelRenderer.Unbaked<CubeState> {
+
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
+
+        @Override
+        @Nullable
+        public SpecialModelRenderer<CubeState> bake(BakingContext context) {
+            return new RenderEnergyCubeItem(context.entityModelSet());
+        }
+
+        @Override
+        public MapCodec<? extends SpecialModelRenderer.Unbaked<CubeState>> type() {
+            return MAP_CODEC;
+        }
+    }
 }

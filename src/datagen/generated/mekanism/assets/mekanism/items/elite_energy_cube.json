@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:block/elite_energy_cube"
+    "type": "minecraft:special",
+    "base": "mekanism:item/elite_energy_cube",
+    "model": {
+      "type": "mekanism:energy_cube"
+    }
   }
 }
