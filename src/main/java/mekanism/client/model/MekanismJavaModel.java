@@ -66,7 +66,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
 
     protected static void collectParts(List<ModelPart> parts, PoseStack poseStack, RenderType renderType, @NotNull SubmitNodeCollector collector, int light, int overlayLight, int argb, @Nullable TextureAtlasSprite sprite, boolean hasFoil) {
         for (ModelPart part : parts) {
-            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, false, hasFoil);
+            collector.submitModelPart(part, poseStack, renderType, light, overlayLight, sprite, false, hasFoil, argb, null, 0);
         }
     }
 
