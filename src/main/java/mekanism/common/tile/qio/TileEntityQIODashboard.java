@@ -28,6 +28,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -81,11 +82,13 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 if (slot instanceof CraftingWindowOutputInventorySlot) {
                     slot.setEmpty();
                 } else {
-                    ItemStack stack = stacks.get(i).copy();
+                    ItemStack stack = stacks.get(i);
+                    ItemResource itemType = ItemResource.of(stack);
+                    int amount = stack.count();
                     if (slot instanceof BasicInventorySlot basicSlot) {
-                        basicSlot.setStackUnchecked(stack);
+                        basicSlot.setStackUnchecked(itemType, amount);
                     } else {
-                        slot.setStack(stack);
+                        slot.setStack(itemType, amount);
                     }
                 }
             }

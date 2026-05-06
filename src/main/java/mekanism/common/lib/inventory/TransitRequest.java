@@ -126,15 +126,15 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             ItemResource itemType = data.getItemType();
             int totalCount = data.getTotalCount();
             int toInsert = totalCount;
-            try (Transaction tx = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+            try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
                 for (int i = 0; i < slots; i++) {
                     // Do insert, this will handle validating the item is valid for the inventory
-                    toInsert -= inventory.insert(i, itemType, toInsert, tx);
+                    toInsert -= inventory.insert(i, itemType, toInsert, transaction);
                     if (toInsert == 0) {//If we inserted everything we wanted to break and create the response
                         break;
                     }
                 }
-                tx.commit();
+                transaction.commit();
             }
             //TODO - 26.1: Re-evaluate if we even need to be checking if toInsert is zero here?
             // Main case that would matter where it isn't caught by the second check is if total count is zero

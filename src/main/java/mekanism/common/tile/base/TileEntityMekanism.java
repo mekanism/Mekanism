@@ -151,6 +151,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1238,12 +1239,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         int size = stacks.size();
         if (size == slots.size()) {
             for (int i = 0; i < size; i++) {
-                ItemStack stack = stacks.get(i).copy();
+                ItemStack stack = stacks.get(i);
                 IInventorySlot slot = slots.get(i);
+                ItemResource itemType = ItemResource.of(stack);
+                int amount = stack.count();
                 if (slot instanceof BasicInventorySlot basicSlot) {
-                    basicSlot.setStackUnchecked(stack);
+                    basicSlot.setStackUnchecked(itemType, amount);
                 } else {
-                    slot.setStack(stack);
+                    slot.setStack(itemType, amount);
                 }
             }
         }

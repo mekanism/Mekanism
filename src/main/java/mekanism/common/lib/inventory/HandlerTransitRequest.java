@@ -28,10 +28,12 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
     }
 
     public void addItem(ItemResource type, int amount, int slot) {
-        if (itemMap.isEmpty()) {
-            itemMap = new LinkedHashMap<>();
+        if (!type.isEmpty() && amount > 0) {//Validate to make sure we aren't somehow adding an empty resource to the map
+            if (itemMap.isEmpty()) {
+                itemMap = new LinkedHashMap<>();
+            }
+            itemMap.computeIfAbsent(type, HandlerItemData::new).addSlot(slot, amount);
         }
-        itemMap.computeIfAbsent(type, HandlerItemData::new).addSlot(slot, amount);
     }
 
     public int getCount(ItemResource itemType) {
@@ -71,15 +73,15 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         public ItemStack use(int amount) {
             ResourceHandler<ItemResource> handler = getHandler();
             ItemResource itemType = getItemType();
-            if (handler != null && !slotMap.isEmpty() && !itemType.isEmpty()) {//TODO - 26.1: Can item type even be empty?
+            if (handler != null && !slotMap.isEmpty()) {
                 //TODO - 26.1: Evaluate callers, and see if we should be passing a transaction context from there that then we need to open as a sub transaction
-                try (Transaction tx = Transaction.openRoot()) {
+                try (Transaction transaction = Transaction.openRoot()) {
                     for (ObjectIterator<Int2IntMap.Entry> iterator = Int2IntMaps.fastIterator(slotMap); iterator.hasNext(); ) {
                         Int2IntMap.Entry entry = iterator.next();
                         int slot = entry.getIntKey();
                         int currentCount = entry.getIntValue();
                         int toUse = Math.min(amount, currentCount);
-                        int extracted = handler.extract(slot, itemType, toUse, tx);
+                        int extracted = handler.extract(slot, itemType, toUse, transaction);
                         if (extracted != toUse) { // be loud if an InvStack's prediction doesn't line up
                             //Double check if the type that is stored even matches
                             Mekanism.logger.warn("An inventory's returned content count does not line up with HandlerTransitRequest's prediction.");
@@ -106,7 +108,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
                             break;
                         }
                     }
-                    tx.commit();
+                    transaction.commit();
                 }
             }
             return getStack();

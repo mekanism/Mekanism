@@ -14,12 +14,12 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - V11: Rewrite/refactor usages of this to better handle tags for fluids and chemicals by allowing them to make use of the super OredictionificatorFilter class
-public class OredictionificatorItemFilter extends OredictionificatorFilter<Item, ItemStack, OredictionificatorItemFilter> {
+public class OredictionificatorItemFilter extends OredictionificatorFilter<Item, ItemResource, OredictionificatorItemFilter> {
 
     public static final MapCodec<OredictionificatorItemFilter> CODEC = RecordCodecBuilder.mapCodec(instance ->
           baseOredictionificatorCodec(instance, Registries.ITEM, BuiltInRegistries.ITEM)
@@ -52,17 +52,17 @@ public class OredictionificatorItemFilter extends OredictionificatorFilter<Item,
 
     @Override
     protected Holder<Item> getFallbackElement() {
-        return getEmptyStack().typeHolder();
+        return getEmptyType().typeHolder();
     }
 
     @Override
-    protected ItemStack getEmptyStack() {
-        return ItemStack.EMPTY;
+    protected ItemResource getEmptyType() {
+        return ItemResource.EMPTY;
     }
 
     @Override
-    protected ItemStack createResultStack(Item item) {
-        return new ItemStack(item);
+    protected ItemResource createResult(Item item) {
+        return ItemResource.of(item);
     }
 
     @Override

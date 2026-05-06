@@ -652,6 +652,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         int stored = recipeSlot.getCount();
         int inserted = InventoryUtils.insertItem(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
         if (inserted > 0) {
+            //TODO - 26.1: Use the transaction to validate that we can extract the amount we wanted to from the recipe slot
             recipeSlot.setStack(resource, stored - inserted);
         }
     }

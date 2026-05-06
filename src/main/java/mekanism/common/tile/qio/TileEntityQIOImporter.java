@@ -109,16 +109,16 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
             }
             int extractable;
             int amountInserted;
-            try (Transaction tx = Transaction.openRoot()) {
+            try (Transaction transaction = Transaction.openRoot()) {
                 //TODO - 26.1: Ignore caring about the index for extracting, and instead skip over things already in typesAdded
-                extractable = inventory.extract(i, type, maxCount - countAdded, tx);
+                extractable = inventory.extract(i, type, maxCount - countAdded, transaction);
                 if (extractable == 0) {//Nothing can be extracted, skip it
                     continue;
                 }
                 int inserted = freq.addItem(type, extractable);
                 if (extractable == inserted) {
                     //Everything from our initial extraction could be inserted, just commit the transaction as the changes made are the ones we want
-                    tx.commit();
+                    transaction.commit();
                     // and add it as a type that was successful
                     typesAdded.add(type);
                     countAdded += extractable;
@@ -130,13 +130,13 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                 //We were unable to add everything our initial extraction attempt got to the frequency
                 // This means we let it revert the inventory to the previous state, so need to extract how much we have added to the frequency
                 // from the inventory
-                try (Transaction tx = Transaction.openRoot()) {
-                    int extracted = inventory.extract(i, type, amountInserted, tx);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int extracted = inventory.extract(i, type, amountInserted, transaction);
                     if (amountInserted != extracted) {//TODO - 26.1: Maybe rework this error message if we even have any "simulation" once we move qio insertion to transactions
                         Mekanism.logger.error("QIO insertion error: item resource handler at {} in {} returned {} of {} during simulated extraction, but returned {} during execution. This is wrong!",
                               worldPosition.relative(getOppositeDirection()), level.dimension().identifier(), extractable, type, extracted);
                     }
-                    tx.commit();
+                    transaction.commit();
                     typesAdded.add(type);
                     //TODO - 26.1: extracted should always be <= amountInserted, so should we be using extracted instead of amountInserted? In case things don't line up?
                     countAdded += amountInserted;

@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.common.CommonWorldTickHandler;
@@ -32,7 +33,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
@@ -81,19 +81,21 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         }
         didProcess = false;
         if (canFunction() && !inputSlot.isEmpty()) {
-            ItemStack result = getResult(filterManager.getEnabledFilters(), inputSlot.getResource());
+            ItemResource inputType = inputSlot.getResource();
+            ItemResource result = getResult(filterManager.getEnabledFilters(), inputType);
             if (!result.isEmpty()) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    if (outputSlot.isEmpty()) {
-                        inputSlot.shrinkStack(1, transaction);
-                        outputSlot.setStack(ItemResource.of(result), result.count());
-                        didProcess = true;
-                    } else if (outputSlot.getResource().matches(result) && outputSlot.getCount() < outputSlot.getCurrentLimit()) {
-                        inputSlot.shrinkStack(1, transaction);
-                        outputSlot.growStack(1, transaction);
-                        didProcess = true;
+                int outputNeeded = outputSlot.getLimit(result) - outputSlot.getCount();
+                if (outputNeeded > 0) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int available = inputSlot.extract(inputType, outputNeeded, transaction, AutomationType.INTERNAL);
+                        if (available > 0) {
+                            int inserted = outputSlot.insert(result, available, transaction, AutomationType.INTERNAL);
+                            if (inserted == available) {
+                                transaction.commit();
+                                didProcess = true;
+                            }
+                        }
                     }
-                    transaction.commit();
                 }
             }
         }
@@ -152,12 +154,12 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
         return !getResult(enabledFilters, itemType).isEmpty();
     }
 
-    private static ItemStack getResult(List<OredictionificatorItemFilter> enabledFilters, ItemResource itemType) {
+    private static ItemResource getResult(List<OredictionificatorItemFilter> enabledFilters, ItemResource itemType) {
         if (!enabledFilters.isEmpty()) {
             for (Identifier filterableTag : getFilterableTags(itemType)) {
                 for (OredictionificatorItemFilter filter : enabledFilters) {
                     if (filter.filterMatches(filterableTag)) {
-                        ItemStack result = filter.getResult();
+                        ItemResource result = filter.getResult();
                         if (!result.isEmpty()) {
                             //If the result is empty, continue to try and find matches for other filters that are valid for the item
                             return result;
@@ -166,7 +168,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
                 }
             }
         }
-        return ItemStack.EMPTY;
+        return ItemResource.EMPTY;
     }
 
     @Override

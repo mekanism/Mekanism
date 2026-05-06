@@ -3,6 +3,7 @@ package mekanism.api.recipes.inputs;
 import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -17,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,11 +61,12 @@ public class InputHelper {
                     return;
                 }
                 //TODO - 26.1: Why do input tanks check the current stack isn't empty instead of the recipe input not being empty?
+                // I am guessing that they are theoretically the same "type" if we get to here so that is why
                 if (!recipeInput.isEmpty()) {
                     int amount = recipeInput.count() * operations;
-                    //TODO - 26.1: If it shrinks by a different amount, do we want to abort the transaction?
-                    // Should this actually be an automation type internal and extract call?
-                    logMismatchedStackSize(slot.shrinkStack(amount, transaction), amount);
+                    int extracted = slot.extract(ItemResource.of(recipeInput), amount, transaction, AutomationType.INTERNAL);
+                    //TODO - 26.1: We probably should abort if this fails to extract what we expect instead of just logging a warning
+                    logMismatchedStackSize(extracted, amount);
                 }
             }
 

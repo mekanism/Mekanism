@@ -352,11 +352,11 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 int amountToInsert = Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj));
                 int toUse;
                 if (transporter == null) {
-                    try (Transaction tx = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+                    try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
                         //Insert the item into the resource handler, allowing the handler to decide how it is split among slots
                         //TODO - 26.1: Validate that the type can't somehow be empty
-                        toUse = inventory.insert(type.asResource(), amountToInsert, tx);
-                        tx.commit();
+                        toUse = inventory.insert(type.asResource(), amountToInsert, transaction);
+                        transaction.commit();
                     }
                 } else {
                     ItemStack origInsert = type.createStack(amountToInsert);

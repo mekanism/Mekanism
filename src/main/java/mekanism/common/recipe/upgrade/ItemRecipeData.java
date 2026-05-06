@@ -64,18 +64,18 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
     }
 
     private static boolean applyToStack(IMekanismInventory outputHandler, List<IInventorySlot> dataSlots) {
-        try (Transaction tx = Transaction.openRoot()) {
+        try (Transaction transaction = Transaction.openRoot()) {
             for (IInventorySlot slot : dataSlots) {
                 if (!slot.isEmpty()) {
                     int amount = slot.getCount();
-                    int inserted = ResourceHandlerUtil.insertStacking(outputHandler, slot.getResource(), amount, tx);
+                    int inserted = ResourceHandlerUtil.insertStacking(outputHandler, slot.getResource(), amount, transaction);
                     if (inserted < amount) {
                         //If we have a remainder something failed so bail
                         return false;
                     }
                 }
             }
-            tx.commit();
+            transaction.commit();
             return true;
         }
     }

@@ -81,7 +81,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     @Nullable
     private ResourceHandler<ItemResource> getFallbackCapForSide(long pos, Direction handlerSide) {
-        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, k -> new EnumMap<>(Direction.class));
+        EnumMap<Direction, BlockCapabilityCache<ResourceHandler<ItemResource>, Direction>> sideCache = fallbackHandlerCache.computeIfAbsent(pos, _ -> new EnumMap<>(Direction.class));
         BlockCapabilityCache<ResourceHandler<ItemResource>, Direction> cache = sideCache.get(handlerSide);
         if (cache == null) {
             cache = Capabilities.ITEM.createCache((ServerLevel) getLevel(), BlockPos.of(pos), handlerSide, this::isValid);

@@ -106,11 +106,11 @@ public final class TransporterUtils {
             return false;
         }
         ItemResource itemType = ItemResource.of(itemStack);
-        try (Transaction tx = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
             // Simulate insert, this will handle validating the item is valid for the inventory
             //TODO - 26.1: Should we be taking the item stack's count into account, and only return true if it can all be inserted, or should we maybe just try inserting
             // a single thing of the item for the simulation
-            return inventory.insert(itemType, itemStack.count(), tx) > 0;
+            return inventory.insert(itemType, itemStack.count(), transaction) > 0;
         }
     }
 }

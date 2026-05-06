@@ -108,12 +108,6 @@ public class BinInventorySlot extends BasicInventorySlot {
         return super.extract(resource, amount, transaction, automationType);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(int, TransactionContext)}, as both {@link #growStack(int, TransactionContext)} and
-     * {@link #shrinkStack(int, TransactionContext)} are wrapped through this method.
-     */
     @Override
     public int setStackSize(int amount, TransactionContext transaction) {
         if (isCreative) {
@@ -143,7 +137,7 @@ public class BinInventorySlot extends BasicInventorySlot {
      *
      * @apiNote The returned stack can be safely modified.
      */
-    public ItemStack getBottomStack() {
+    public ItemStack getBottomStack() {//TODO - 26.1: Remove this and just use resources directly?
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }

@@ -33,6 +33,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -154,8 +155,8 @@ public class FilterButton extends MekanismButton {
             Component color = sorterFilter.color == null ? MekanismLang.NO_COLOR.translate() : sorterFilter.color.getName();
             drawScaledScrollingString(guiGraphics, color, 27, 12, TextAlignment.LEFT, titleTextColor(), textWidth - 8, 3, false, 0.7F);
         } else if (filter instanceof OredictionificatorItemFilter oreDictFilter) {
-            ItemStack result = oreDictFilter.getResult();
-            Component text = TextComponentUtil.build(result, " (", MekanismClient.getModId(result), ")");
+            ItemResource result = oreDictFilter.getResult();
+            Component text = TextComponentUtil.build(result, " (", MekanismClient.getModId(result.toStack()), ")");
             drawScaledScrollingString(guiGraphics, text, 19, 12, TextAlignment.LEFT, titleTextColor(), textWidth, 3, false, 0.7F);
         } else if (filter instanceof QIOItemStackFilter itemFilter) {
             if (itemFilter.fuzzyMode) {

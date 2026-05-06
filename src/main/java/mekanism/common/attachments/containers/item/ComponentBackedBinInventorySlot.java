@@ -81,12 +81,6 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         return super.extract(resource, amount, transaction, automationType);
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(AttachedItems, ItemStack, int, TransactionContext)}, as both {@link #growStack(int, TransactionContext)} and
-     * {@link #shrinkStack(int, TransactionContext)} are wrapped through this method.
-     */
     @Override
     protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, TransactionContext transaction) {
         if (isCreative) {
