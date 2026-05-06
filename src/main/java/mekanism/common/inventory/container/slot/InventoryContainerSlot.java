@@ -83,7 +83,7 @@ public class InventoryContainerSlot extends StackCopySlot implements ITransactio
     @NotNull
     @Override
     protected ItemStack getStackCopy() {
-        return slot.getResource().toStack(slot.getCount());
+        return slot.getResource().toStack(slot.amount());
     }
 
     @Override

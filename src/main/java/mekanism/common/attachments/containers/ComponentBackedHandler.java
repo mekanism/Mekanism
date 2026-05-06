@@ -66,7 +66,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
         return container;
     }
 
-    protected CONTAINER getContainer(int index) {
+    public CONTAINER getContainer(int index) {
         CONTAINER container = containers().get(index);
         //Lazily initialize the containers
         return container == null ? initializeContainer(index) : container;

@@ -79,7 +79,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     public TileEntityQuantumEntangloporter(BlockPos pos, BlockState state) {
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER, pos, state);
 
-        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
+        setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getContainers() : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
@@ -302,7 +302,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
     //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getBufferItem", docPlaceholder = "buffer slot")
     IInventorySlot getBufferItemSlot() throws ComputerException {
-        return getFrequency().getInventorySlots().getFirst();
+        return getFrequency().getContainers().getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",

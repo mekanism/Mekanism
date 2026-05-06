@@ -80,7 +80,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                         }
                     }
                     if (recipe != null) {
-                        return getColor(recipe.getOutput(input.toStack(inputSlot.getCount())).getChemicalColorRepresentation());
+                        return getColor(recipe.getOutput(input.toStack(inputSlot.amount())).getChemicalColorRepresentation());
                     }
                 }
                 return 0xFFFFFFFF;

@@ -255,7 +255,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
 
     /// Fills tank from slot, ensuring the stack's count is one, and does not move it to an output slot afterward
     default boolean fillTank() {
-        if (getCount() == 1) {
+        if (amount() == 1) {
             //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access? My guess is for this case
             // we don't need to but for others we will
             ItemAccess access = new InventorySlotItemAccess(this, AutomationType.INTERNAL);

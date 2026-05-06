@@ -27,7 +27,7 @@ public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotH
 
             @NotNull
             @Override
-            public List<IInventorySlot> getInventorySlots() {
+            public List<IInventorySlot> getContainers() {
                 //Note: This instance of check should always pass, but we have it in case we are passed a null holder
                 return h instanceof IInventorySlotHolder slotHolder ? slotHolder.getInventorySlots(side) : Collections.emptyList();
             }

@@ -311,8 +311,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
-            inputSlot.setStack(data.inputSlot.getResource(), data.inputSlot.getCount());
-            outputSlot.setStack(data.outputSlot.getResource(), data.outputSlot.getCount());
+            inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amount());
+            outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amount());
             editMode = data.editMode;
             fluidTank.setStack(data.stored);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {

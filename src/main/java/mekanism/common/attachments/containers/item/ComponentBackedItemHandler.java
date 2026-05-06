@@ -1,13 +1,11 @@
 package mekanism.common.attachments.containers.item;
 
-import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack, IInventorySlot, AttachedItems> implements IMekanismInventory {
@@ -19,17 +17,6 @@ public class ComponentBackedItemHandler extends ComponentBackedHandler<ItemStack
     @Override
     protected ContainerType<IInventorySlot, AttachedItems, ?> containerType() {
         return ContainerType.ITEM;
-    }
-
-    @Override
-    public List<IInventorySlot> getInventorySlots() {
-        return getContainers();
-    }
-
-    @Nullable
-    @Override
-    public IInventorySlot getInventorySlot(int slot) {
-        return getContainer(slot);
     }
 
     @Override

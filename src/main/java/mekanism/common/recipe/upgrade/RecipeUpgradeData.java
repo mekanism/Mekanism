@@ -108,7 +108,7 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 List<IInventorySlot> slots;
                 if (stack.getItem() instanceof ItemBlockPersonalStorage) {
                     var inv = PersonalStorageManager.getInventoryIfPresent(stack);
-                    slots = inv != null ? inv.getInventorySlots() : Collections.emptyList();
+                    slots = inv != null ? inv.getContainers() : Collections.emptyList();
                 } else {
                     slots = ContainerType.ITEM.getAttachmentContainersIfPresent(stack);
                 }

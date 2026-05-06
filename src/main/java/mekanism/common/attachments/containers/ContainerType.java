@@ -84,9 +84,9 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
           SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
           TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, (from, to) -> {
         if (to instanceof BasicInventorySlot basicInventorySlot) {
-            basicInventorySlot.setStackUnchecked(from.getResource(), from.getCount());
+            basicInventorySlot.setStackUnchecked(from.getResource(), from.amount());
         } else {
-            to.setStack(from.getResource(), from.getCount());
+            to.setContents(from.getResource(), from.amount());
         }
     });
     public static final ContainerType<IExtendedFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,

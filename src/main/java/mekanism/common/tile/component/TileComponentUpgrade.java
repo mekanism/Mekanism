@@ -79,7 +79,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                             upgradeTicks++;
                             return;
                         } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.getCount());
+                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.amount());
                             if (toAdd > 0) {
                                 try (Transaction transaction = Transaction.openRoot()) {
                                     int extracted = upgradeSlot.extract(itemType, toAdd, transaction, AutomationType.INTERNAL);
@@ -218,7 +218,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
         //Note: UpgradeAware will copy the stacks
-        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.getResource(), upgradeSlot.getCount(), upgradeOutputSlot.getResource(), upgradeOutputSlot.getCount()));
+        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.getResource(), upgradeSlot.amount(), upgradeOutputSlot.getResource(), upgradeOutputSlot.amount()));
     }
 
     @Override

@@ -41,7 +41,7 @@ public class InputHelper {
 
             @Override
             public ItemStack getInput() {
-                return slot.getResource().toStack(slot.getCount());
+                return slot.getResource().toStack(slot.amount());
             }
 
             @Override
@@ -79,7 +79,7 @@ public class InputHelper {
                     // where we may want to allow not having the input be required for recipe matching
                     if (!recipeInput.isEmpty()) {
                         //TODO: Simulate?
-                        int operations = slot.getCount() / (recipeInput.count() * usageMultiplier);
+                        int operations = slot.amount() / (recipeInput.count() * usageMultiplier);
                         if (operations > 0) {
                             tracker.updateOperations(operations);
                             return;

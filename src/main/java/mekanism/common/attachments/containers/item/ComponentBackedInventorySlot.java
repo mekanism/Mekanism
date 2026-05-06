@@ -71,12 +71,12 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    public int getCount() {
+    public int amount() {
         return getStack().count();
     }
 
     @Override
-    public final void setStack(ItemResource itemType, int storedAmount) {
+    public final void setContents(ItemResource itemType, int storedAmount) {
         //TODO - 26.1: Re-evaluate this
         setContents(getAttached(), itemType.toStack(storedAmount));
     }

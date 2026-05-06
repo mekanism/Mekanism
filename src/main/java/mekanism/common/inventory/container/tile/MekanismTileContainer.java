@@ -79,7 +79,7 @@ public class MekanismTileContainer<TILE extends TileEntityMekanism> extends Meka
         }
         if (tile.hasInventory()) {
             //Get all the inventory slots the tile has
-            List<IInventorySlot> inventorySlots = tile.getInventorySlots();
+            List<IInventorySlot> inventorySlots = tile.getContainers();
             for (IInventorySlot inventorySlot : inventorySlots) {
                 Slot containerSlot = inventorySlot.createContainerSlot();
                 if (containerSlot != null) {

@@ -82,7 +82,7 @@ public final class InventoryUtils {
     }
 
     private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper<BlockPos> dropper) {
-        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getResource().toStack(slot.getCount()));
+        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getResource().toStack(slot.amount()));
     }
 
     /**
@@ -207,7 +207,7 @@ public final class InventoryUtils {
                 ItemResource resource = slot.getResource();
                 if (!resource.isEmpty()) {
                     //Note: We are using EXTERNAL as that is what we actually end up using when performing the extraction in the end
-                    int extracted = slot.extract(resource, slot.getCount(), simulation, AutomationType.EXTERNAL);
+                    int extracted = slot.extract(resource, slot.amount(), simulation, AutomationType.EXTERNAL);
                     if (extracted > 0) {
                         request.addItem(resource, extracted, slots.indexOf(slot));
                     }

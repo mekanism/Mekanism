@@ -177,8 +177,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            drainSlot.setStack(data.drainSlot.getResource(), data.drainSlot.getCount());
-            fillSlot.setStack(data.fillSlot.getResource(), data.fillSlot.getCount());
+            drainSlot.setContents(data.drainSlot.getResource(), data.drainSlot.amount());
+            fillSlot.setContents(data.fillSlot.getResource(), data.fillSlot.amount());
             dumping = data.dumping;
             getChemicalTank().setStack(data.storedChemical);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {

@@ -106,7 +106,7 @@ public class QIODriveData {
                 ItemResource updatedItem = itemType.with(MekanismDataComponents.DRIVE_CONTENTS, DriveContents.create(data))
                       .with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data));
                 //TODO - 26.1: Would it be useful to have a method to transform the stored type rather than having to set and query what the stored amount is?
-                slot.setStack(updatedItem, slot.getCount());
+                slot.setContents(updatedItem, slot.amount());
             } else {
                 Mekanism.logger.error("Tried to save data map to an invalid item ({}). Something has gone very wrong!", itemType.getItem());
             }
@@ -122,7 +122,7 @@ public class QIODriveData {
             QIODriveSlot slot = holder.getDriveSlots().get(driveSlot);
             ItemResource itemType = slot.getResource();
             if (itemType.value() instanceof IQIODriveItem) {
-                slot.setStack(itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data)), slot.getCount());
+                slot.setContents(itemType.with(MekanismDataComponents.DRIVE_METADATA, new DriveMetadata(data)), slot.amount());
             } else {
                 Mekanism.logger.error("Tried to update QIO meta values on an invalid Item ({}). Something has gone very wrong!", itemType);
             }

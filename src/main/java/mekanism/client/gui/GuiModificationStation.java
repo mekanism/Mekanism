@@ -48,7 +48,7 @@ public class GuiModificationStation extends GuiMekanismTile<TileEntityModificati
         })).setTooltip(MekanismLang.REMOVE_ALL_MODULES_TOOLTIP);
         removeButton.active = selectedModule != null;
 
-        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.getResource().toStack(tile.containerSlot.getCount()), this::onModuleSelected));
+        addRenderableWidget(new GuiModuleScrollList(this, 28, 20, 74, () -> tile.containerSlot.getResource().toStack(tile.containerSlot.amount()), this::onModuleSelected));
     }
 
     private void onModuleSelected(@Nullable IModule<?> module) {

@@ -71,7 +71,7 @@ public class QIOCraftingTransferHelper {
                         return;
                     }
                 }
-                reverseLookup.computeIfAbsent(HashedItem.fromResource(storedType), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.getCount());
+                reverseLookup.computeIfAbsent(HashedItem.fromResource(storedType), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.amount());
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);

@@ -83,7 +83,7 @@ public class RenderBin extends MekanismTileEntityRenderer<TileEntityBin, BinRend
                 if (bin.getTier() == BinTier.CREATIVE) {
                     state.displayCount = MekanismLang.INFINITE.translateColored(EnumColor.WHITE);
                 } else {
-                    state.displayCount = TextComponentUtil.build(binSlot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, binSlot.getCount());
+                    state.displayCount = TextComponentUtil.build(binSlot.isLocked() ? EnumColor.AQUA : EnumColor.WHITE, binSlot.amount());
                 }
             } else {
                 //TODO - 26.1: Re-evaluate how we want to do this. This just makes it so that we don't actually submit any rendering,

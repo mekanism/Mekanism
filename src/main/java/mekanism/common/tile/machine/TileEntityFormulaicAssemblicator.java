@@ -295,7 +295,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             }
             return recipe;
         }
-        formulaSlot.setStack(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.getCount());
+        formulaSlot.setContents(formulaStack.with(MekanismDataComponents.FORMULA_HOLDER, attachment.asInvalid()), formulaSlot.amount());
         return RecipeFormula.EMPTY;
     }
 
@@ -425,7 +425,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     private boolean tryMoveToGrid(IInventorySlot recipeSlot, int i) {
         ItemResource resource = recipeSlot.getResource();
-        int stored = recipeSlot.getCount();
+        int stored = recipeSlot.amount();
         try (Transaction transaction = Transaction.openRoot()) {
             if (!resource.isEmpty()) {
                 //If the current input doesn't match, start by moving it to the input slots
@@ -514,7 +514,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             ItemResource resource = recipeSlot.getResource();
             if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = InventoryUtils.insertItem(inputSlots, resource, recipeSlot.getCount(), transaction, AutomationType.INTERNAL);
+                    int inserted = InventoryUtils.insertItem(inputSlots, resource, recipeSlot.amount(), transaction, AutomationType.INTERNAL);
                     if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                         //If we are able to fully extract from the recipe slot the amount that we inserted into the input slots
                         // then commit the change. We rely on the fact that our recipe slot should always be able to extract
@@ -589,7 +589,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         Object2IntMap<ItemResource> storedMap = new Object2IntLinkedOpenHashMap<>();
         for (IInventorySlot inputSlot : inputSlots) {
             if (!inputSlot.isEmpty()) {
-                storedMap.mergeInt(inputSlot.getResource(), inputSlot.getCount(), Integer::sum);
+                storedMap.mergeInt(inputSlot.getResource(), inputSlot.amount(), Integer::sum);
             }
         }
         // place items into respective controlled slots
@@ -671,8 +671,8 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private static void setSlotIfChanged(IInventorySlot slot, ItemResource itemType, int count) {
-        if (slot.getCount() != count || !slot.getResource().equals(itemType)) {
-            slot.setStack(itemType, count);
+        if (slot.amount() != count || !slot.getResource().equals(itemType)) {
+            slot.setContents(itemType, count);
         }
     }
 
@@ -706,7 +706,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (formulaAttachment.isEmpty()) {
             RecipeFormula formula = RecipeFormula.create(level, craftingGridSlots);
             if (formula.valid()) {
-                formulaSlot.setStack(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.getCount());
+                formulaSlot.setContents(currentResource.with(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.create(formula)), formulaSlot.amount());
             }
         }
     }

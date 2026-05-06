@@ -59,7 +59,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     public int extract(Player player, ItemResource itemType, int amount, TransactionContext transaction) {
         IInventorySlot slot = getInventorySlot();
         if (mayPickup(player) && itemType.equals(slot.getResource())) {
-            int amountPerRecipe = slot.getCount();
+            int amountPerRecipe = slot.amount();
             //Return how many full recipe extractions we would be able to do. We don't modify the
             // actual slot as we want it to maintain its contents
             //TODO - 26.1: Do we need to add a snapshot listener for the transaction being committed to increment amountCrafted?

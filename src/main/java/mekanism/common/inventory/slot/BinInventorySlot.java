@@ -36,7 +36,7 @@ public class BinInventorySlot extends BasicInventorySlot {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
             IMekanismInventory attachment = ContainerType.ITEM.createHandler(stack);
             if (attachment != null) {
-                List<IInventorySlot> slots = attachment.getInventorySlots();
+                List<IInventorySlot> slots = attachment.getContainers();
                 if (slots.size() == 1) {
                     IInventorySlot slot = slots.getFirst();
                     if (slot instanceof ComponentBackedBinInventorySlot binSlot) {

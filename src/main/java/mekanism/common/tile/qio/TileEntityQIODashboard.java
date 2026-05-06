@@ -88,7 +88,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                     if (slot instanceof BasicInventorySlot basicSlot) {
                         basicSlot.setStackUnchecked(itemType, amount);
                     } else {
-                        slot.setStack(itemType, amount);
+                        slot.setContents(itemType, amount);
                     }
                 }
             }
@@ -105,7 +105,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
             if (slot instanceof CraftingWindowOutputInventorySlot) {
                 stack = ItemStack.EMPTY;
             } else {
-                stack = slot.getResource().toStack(slot.getCount());
+                stack = slot.getResource().toStack(slot.amount());
             }
             stacks.add(stack);
             if (!stack.isEmpty()) {

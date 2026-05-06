@@ -120,12 +120,12 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     }
 
     @Override
-    public int getCount() {
+    public int amount() {
         return storedAmount;
     }
 
     @Override
-    public void setStack(ItemResource itemType, int storedAmount) {
+    public void setContents(ItemResource itemType, int storedAmount) {
         setStack(itemType, storedAmount, true);
     }
 
@@ -167,7 +167,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
             //"Fail quick" if the given stack is empty
             return 0;
         }
-        int currentStored = getCount();
+        int currentStored = amount();
         //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
         int needed = getLimit(resource) - currentStored;
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
@@ -193,7 +193,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
-        int currentStored = getCount();
+        int currentStored = amount();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, currentStored);
         //Note: We know toRemove is greater than zero so we can just update the snapshot and then set the stack

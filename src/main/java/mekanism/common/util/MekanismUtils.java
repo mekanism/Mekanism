@@ -543,7 +543,7 @@ public final class MekanismUtils {
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
             //Note: copyWithCount which is used by ItemResource#toStack returns EMPTY if the stack is empty, so we can skip checking
-            stacks.add(slot.getResource().toStack(resize ? 1 : slot.getCount()));
+            stacks.add(slot.getResource().toStack(resize ? 1 : slot.amount()));
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }
@@ -687,7 +687,7 @@ public final class MekanismUtils {
             if (slot.isEmpty()) {
                 totalLimit += slot.getLimit(ItemResource.EMPTY);
             } else {
-                totalCount += slot.getCount();
+                totalCount += slot.amount();
                 totalLimit += slot.getCurrentLimit();
             }
         }

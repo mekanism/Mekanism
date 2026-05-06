@@ -44,7 +44,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             //TODO: Improve the logic so that it maybe tries multiple different slot combinations
             IMekanismInventory outputHandler = new IMekanismInventory() {
                 @Override
-                public List<IInventorySlot> getInventorySlots() {
+                public List<IInventorySlot> getContainers() {
                     return stackSlots;
                 }
 
@@ -67,7 +67,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         try (Transaction transaction = Transaction.openRoot()) {
             for (IInventorySlot slot : dataSlots) {
                 if (!slot.isEmpty()) {
-                    int amount = slot.getCount();
+                    int amount = slot.amount();
                     int inserted = ResourceHandlerUtil.insertStacking(outputHandler, slot.getResource(), amount, transaction);
                     if (inserted < amount) {
                         //If we have a remainder something failed so bail

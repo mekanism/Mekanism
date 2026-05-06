@@ -343,7 +343,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
     @NotNull
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        return _ -> getMultiblock().getInventorySlots();
+        return _ -> getMultiblock().getContainers();
     }
 
     @Override

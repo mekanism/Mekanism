@@ -89,7 +89,7 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, @Nullable ItemStackTe
         if (template == null) {
             slot.setEmpty();
         } else {
-            slot.setStack(ItemResource.of(template), template.count());
+            slot.setContents(ItemResource.of(template), template.count());
         }
     }
 }

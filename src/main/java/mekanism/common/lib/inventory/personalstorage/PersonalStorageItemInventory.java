@@ -37,7 +37,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
                 basicInventorySlot.setStackUnchecked(slotData.resource(), slotData.amount());
             } else {
                 //shouldn't happen, but just in case
-                slot.setStack(slotData.resource(), slotData.amount());
+                slot.setContents(slotData.resource(), slotData.amount());
             }
         }
     }
@@ -55,7 +55,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         for (int i = 0; i < slots.size(); i++) {
             IInventorySlot slot = slots.get(i);
             if (!slot.isEmpty()) {
-                out.add(new SlotData(i, slot.getResource(), slot.getCount()));
+                out.add(new SlotData(i, slot.getResource(), slot.amount()));
             }
         }
         return out;

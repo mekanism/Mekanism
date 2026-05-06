@@ -155,7 +155,7 @@ public class InventoryFrequency extends Frequency implements IMekanismInventory,
 
     @NotNull
     @Override
-    public List<IInventorySlot> getInventorySlots() {
+    public List<IInventorySlot> getContainers() {
         return inventorySlots;
     }
 

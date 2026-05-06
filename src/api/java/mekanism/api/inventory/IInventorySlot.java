@@ -1,23 +1,19 @@
 package mekanism.api.inventory;
 
-import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.IResourceContainer;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: make this implement/supply ItemAccess/ResourceHandler? It currently has a pseudo ItemHandler impl, so might be better to move everything away from single-slot context?
 // Maybe extract a good portion of this to a super interface IResourceContainer?
 @NothingNullByDefault
-public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
+public interface IInventorySlot extends IResourceContainer<ItemResource> {
 
     /**
      * Returns the {@link ItemStack} in this {@link IInventorySlot}.
@@ -38,12 +34,9 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      *
      * @apiNote <strong>IMPORTANT:</strong> Do not modify this {@link ItemStack}.
      */
-    default ItemStack getStack() {
-        return getResource().toStack(getCount());
+    default ItemStack getStack() {//TODO - 26.1: Replace this with getResource and amount
+        return getResource().toStack(amount());
     }
-
-    //TODO - 26.1: Docs and replace getStack/etc with this and getAmount
-    ItemResource getResource();
 
     /**
      * Overrides the stack in this {@link IInventorySlot}.
@@ -55,56 +48,13 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      */
     @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStack(ItemResource, int)
     default void setStack(ItemStack stack) {
-        setStack(ItemResource.of(stack), stack.count());
+        setContents(ItemResource.of(stack), stack.count());
     }
 
     //TODO - 26.1: Docs, and transition calls to setStack(ItemStack) to this
-    void setStack(ItemResource itemType, int storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
-
-    //TODO - 26.1: Docs
-    int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
-
-    //TODO - 26.1: Docs
-    //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past it would return at most max stack size
-    int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType);
-
-    /**
-     * Retrieves the maximum stack size allowed to exist in this {@link IInventorySlot}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use
-     * for checking max stack size, if this {@link IInventorySlot} wants to respect the maximum stack size.
-     *
-     * @param stack The stack we want to know the limit for in case this {@link IInventorySlot} wants to obey the stack limit. If the empty stack is passed, then it
-     *              returns the max amount of any item this slot can store.
-     *
-     * @return The maximum stack size allowed in this {@link IInventorySlot}.
-     *
-     * @implNote The implementation of this CAN take into account the max size of this stack but is not required to.
-     */
-    int getLimit(ItemResource resource);//TODO - 26.1: Update docs
-
-    //TODO - 26.1: Re-evaluate name and add docs
-    //TODO - 26.1: Should bin slots override this to check lock stack? Probably
-    default int getCurrentLimit() {
-        return getLimit(getResource());
+    default void setStack(ItemResource itemType, int storedAmount) {//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
+        setContents(itemType, storedAmount);
     }
-
-    /**
-     * <p>
-     * This function re-implements the vanilla function {@link net.minecraft.world.Container#canPlaceItem(int, ItemStack)}. It should be used instead of simulated
-     * insertions in cases where the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a
-     * minecart can wait to deposit its items into a full inventory, or if the items in the minecart can never be placed into the inventory and should move on).
-     * </p>
-     * <ul>
-     * <li>isItemValid is false when insertion of the item is never valid.</li>
-     * <li>When isItemValid is true, no assumptions can be made and insertion must be simulated case-by-case.</li>
-     * <li>The actual items in the inventory, its fullness, or any other state are <strong>not</strong> considered by isItemValid.</li>
-     * </ul>
-     *
-     * @param stack Stack to test with for validity
-     *
-     * @return true if this {@link IInventorySlot} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this
-     * {@link IInventorySlot} can never insert the {@link ItemStack} in any situation.
-     */
-    boolean isValid(ItemResource itemType);//TODO - 26.1: Update docs and figure out handling of empty resource
 
     /**
      * Returns a slot for use in auto adding slots to a container.
@@ -116,30 +66,10 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
         return null;
     }
 
-    /**
-     * Convenience method for checking if this slot is empty.
-     *
-     * @return True if the slot is empty, false otherwise.
-     */
-    default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
-        return getResource().isEmpty();
+    @Override
+    default void setEmpty() {
+        setContents(ItemResource.EMPTY, 0);
     }
-
-    /**
-     * Convenience method for emptying this {@link IInventorySlot}.
-     */
-    default void setEmpty() {//TODO - 26.1: Re-evaluate usages
-        setStack(ItemResource.EMPTY, 0);
-    }
-
-    /**
-     * Convenience method for checking the size of the stack in this slot.
-     *
-     * @return The size of the stored stack, or zero is the stack is empty.
-     */
-    int getCount();
-    //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
-    // Also do we want to rename this to getAmount if we potentially make a generic super interface between inventory slots and other resource types?
 
     @Override
     default void serialize(ValueOutput output) {
@@ -148,7 +78,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
             output.store(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC, getStack());
             /*ValueOutput itemOutput = output.child(SerializationConstants.ITEM);
             itemOutput.store(SerializationConstants.TYPE, ItemResource.CODEC, getResource());
-            itemOutput.putInt(ItemInstance.FIELD_COUNT, getCount());*/
+            itemOutput.putInt(ItemInstance.FIELD_COUNT, amount());*/
         }
     }
 }

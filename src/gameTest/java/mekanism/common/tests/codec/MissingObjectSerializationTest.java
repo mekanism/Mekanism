@@ -298,14 +298,14 @@ public class MissingObjectSerializationTest {
                   frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
                   frequency.getChemicalTanks(null).getFirst().setStack(help.failureChemical());
                   frequency.getFluidTanks(null).getFirst().setStack(help.failureFluid());
-                  frequency.getInventorySlots().getFirst().setStack(help.failureItemType(), 1);
+                  frequency.getContainers().getFirst().setContents(help.failureItemType(), 1);
                   return frequency;
               }, frequency -> frequency.getName().equals("test") && frequency.getSecurity() == SecurityMode.PUBLIC &&
                               frequency.getEnergyContainers(null).getFirst().getEnergy() == 100 &&
                               frequency.getHeatCapacitors(null).getFirst().getHeat() == 1_000 &&
                               frequency.getChemicalTanks(null).getFirst().isEmpty() &&
                               frequency.getFluidTanks(null).getFirst().isEmpty() &&
-                              frequency.getInventorySlots().getFirst().isEmpty(),
+                              frequency.getContainers().getFirst().isEmpty(),
               MissingObjectTestHelper.REPLACE_TO_INVALID_ITEM
                     .andThen(MissingObjectTestHelper.REPLACE_TO_INVALID_FLUID)
                     .andThen(MissingObjectTestHelper.REPLACE_TO_INVALID_CHEMICAL)

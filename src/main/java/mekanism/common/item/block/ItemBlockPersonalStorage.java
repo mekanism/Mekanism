@@ -94,7 +94,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         if (itemInventory == null) {
             return Collections.emptyList();
         }
-        return itemInventory.getInventorySlots();
+        return itemInventory.getContainers();
     }
 
     @Override

@@ -14,7 +14,7 @@ public abstract class AbstractPersonalStorageItemInventory implements IMekanismI
     protected final List<IInventorySlot> slots = Util.make(new ArrayList<>(), lst -> PersonalStorageManager.createSlots(lst::add, ConstantPredicates.alwaysTrueBi(), this));
 
     @Override
-    public List<IInventorySlot> getInventorySlots() {
+    public List<IInventorySlot> getContainers() {
         return slots;
     }
 }

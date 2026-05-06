@@ -93,7 +93,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
             if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
                 ItemResource moduleResource = moduleSlot.getResource();
                 //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                ItemStack stack = containerSlot.getResource().toStack(containerSlot.getCount());
+                ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
                     // make sure the container supports this module and that we can still install more of this module
@@ -104,7 +104,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                         clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
                         if (operatingTicks == ticksRequired) {
                             operatingTicks = 0;
-                            int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.getCount());
+                            int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amount());
                             if (added > 0) {
                                 try (Transaction transaction = Transaction.openRoot()) {
                                     //Validate that the module is actually able to be extracted from the module slot (this should always be true)
@@ -133,7 +133,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-        ItemStack stack = containerSlot.getResource().toStack(containerSlot.getCount());
+        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
             int installed = container.installedCount(type);

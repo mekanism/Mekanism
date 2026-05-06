@@ -45,7 +45,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     public ItemStack apply(ItemStack stack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParameter(LootContextParams.BLOCK_ENTITY);
         if (blockEntity instanceof TileEntityPersonalStorage personalStorage && !personalStorage.isInventoryEmpty()) {
-            List<IInventorySlot> tileSlots = personalStorage.getInventorySlots();
+            List<IInventorySlot> tileSlots = personalStorage.getContainers();
             AbstractPersonalStorageItemInventory destInv;
             if (EffectiveSide.get().isClient()) {
                 destInv = new ClientSidePersonalStorageInventory();
@@ -55,7 +55,7 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
             for (int i = 0; i < tileSlots.size(); i++) {
                 IInventorySlot tileSlot = tileSlots.get(i);
                 if (!tileSlot.isEmpty()) {
-                    destInv.setStackInSlot(i, tileSlot.getResource(), tileSlot.getCount());
+                    destInv.setStackInSlot(i, tileSlot.getResource(), tileSlot.amount());
                 }
             }
         }

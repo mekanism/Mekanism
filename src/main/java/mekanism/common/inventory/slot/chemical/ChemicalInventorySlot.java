@@ -231,7 +231,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                         ChemicalStack output = foundRecipe.getOutput(itemInput);
                         if (!output.isEmpty()) {
                             try (Transaction transaction = Transaction.openRoot()) {
-                                int recipeNeeded itemInput.count();
+                                int recipeNeeded = itemInput.count();
                                 //Try to extract the amount we need from our slot
                                 if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded) {
                                     //If we succeeded, then try to insert the produced chemical into our tank,

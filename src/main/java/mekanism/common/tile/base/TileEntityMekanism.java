@@ -1142,7 +1142,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return MekanismUtils.redstoneLevelFromContents(getInventorySlots());
+                return MekanismUtils.redstoneLevelFromContents(getContainers());
             }
             //TODO: Do we want some other defaults as well?
         }
@@ -1218,7 +1218,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     @Override
-    public final List<IInventorySlot> getInventorySlots() {
+    public final List<IInventorySlot> getContainers() {
         //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
         // and maybe rename the one that does take a side as it is mostly used for ContainerType
         return getInventorySlots(null);
@@ -1246,7 +1246,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 if (slot instanceof BasicInventorySlot basicSlot) {
                     basicSlot.setStackUnchecked(itemType, amount);
                 } else {
-                    slot.setStack(itemType, amount);
+                    slot.setContents(itemType, amount);
                 }
             }
         }
@@ -1257,7 +1257,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         boolean hasNonEmpty = false;
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            stacks.add(slot.getResource().toStack(slot.getCount()));
+            stacks.add(slot.getResource().toStack(slot.amount()));
             if (!slot.isEmpty()) {
                 hasNonEmpty = true;
             }

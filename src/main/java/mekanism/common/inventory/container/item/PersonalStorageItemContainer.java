@@ -38,7 +38,7 @@ public class PersonalStorageItemContainer extends MekanismItemContainer {
     protected void addSlots() {
         super.addSlots();
         //Get all the inventory slots the tile has
-        List<IInventorySlot> inventorySlots = itemInventory.getInventorySlots();
+        List<IInventorySlot> inventorySlots = itemInventory.getContainers();
         for (IInventorySlot inventorySlot : inventorySlots) {
             Slot containerSlot = inventorySlot.createContainerSlot();
             if (containerSlot != null) {

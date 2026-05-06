@@ -40,7 +40,7 @@ public final class StackUtils {
             IInventorySlot toAddSlot = toAdd.get(i);
             if (!toAddSlot.isEmpty()) {
                 ItemResource toAddResource = toAddSlot.getResource();
-                int toAddAmount = toAddSlot.getCount();
+                int toAddAmount = toAddSlot.amount();
                 //TODO - 26.1: Validate all callers have this work with the given automation type
                 // Also how much do we care about merging identical slots? Should we use the InventoryUtils#insertItem helper
                 // to try inserting against all the slots of the other?
