@@ -1,16 +1,17 @@
 package mekanism.common.recipe.bin;
 
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismRecipeSerializersInternal;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingInput;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @NothingNullByDefault
 public class BinExtractRecipe extends BinRecipe {
@@ -71,9 +72,18 @@ public class BinExtractRecipe extends BinRecipe {
                 ComponentBackedBinInventorySlot slot = convertToSlot(binStack);
                 ItemStack bottomStack = slot.getBottomStack();
                 if (!bottomStack.isEmpty()) {
-                    //Only attempt to do anything if there are items to try and remove
-                    MekanismUtils.logMismatchedStackSize(slot.shrinkStack(bottomStack.count(), Action.EXECUTE), bottomStack.count());
-                    remaining.set(i, binStack);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        //TODO - 26.1: Validate this is not called from a transactional context
+                        // Because auto crafters exist it might be safer to just open this and pass Transaction#getCurrentOpenedTransaction to it
+                        //Only attempt to do anything if there are items to try and remove
+                        //TODO - 26.1: Should this be manual or internal?
+                        int extracted = slot.extract(ItemResource.of(bottomStack), bottomStack.count(), transaction, AutomationType.MANUAL);
+                        if (extracted == bottomStack.count()) {
+                            //If we extracted everything we expected to be able to, update the remaining, and commit the transaction
+                            remaining.set(i, binStack);
+                            transaction.commit();
+                        }
+                    }
                 }
                 break;
             }

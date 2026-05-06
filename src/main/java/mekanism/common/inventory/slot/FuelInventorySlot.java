@@ -3,17 +3,17 @@ package mekanism.common.inventory.slot;
 import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.ToIntFunction;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.util.MekanismUtils;
+import mekanism.api.inventory.IInventorySlot;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.component.UseRemainder;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -32,28 +32,43 @@ public class FuelInventorySlot extends BasicInventorySlot {
     }
 
     public int burn(FuelValues fuelValues) {
-        if (isEmpty()) {
-            return 0;
-        }
-        ItemResource currentType = getResource();
-        int burnTime = currentType.toStack().getBurnTime(null, fuelValues) / 2;
-        if (burnTime != 0) {
-            UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
-            //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
-            if (remainder != null) {
-                if (getCount() > 1) {
-                    //If we have a container but have more than a single stack of it somehow just exit
-                    //TODO - 26.1: Can UseRemainder#convertIntoRemainder be used to allow handling when there is more than a single item in the stack?
-                    return 0;
+        if (!isEmpty()) {
+            int burnTime = getResource().toStack().getBurnTime(null, fuelValues) / 2;
+            if (burnTime > 0) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    if (consumeAndReplace(this, transaction)) {
+                        transaction.commit();
+                        return burnTime;
+                    }
                 }
-                //If the item has a container, then replace it with the container
-                ItemStackTemplate container = remainder.convertInto();
-                setStack(ItemResource.of(container), container.count());
-            } else {
-                //Otherwise, shrink the size of the stack by one
-                MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
             }
         }
-        return burnTime;
+        return 0;
+    }
+
+    /// @param fuelSlot    Slot to consume an item of, and then attempt to insert any remainder into
+    /// @param transaction Transaction in charge of managing whether changes go through or are rolled back
+    ///
+    /// @return Whether consuming and replacing was successful, or if the transaction should be aborted and allowed to roll back.
+    public static boolean consumeAndReplace(IInventorySlot fuelSlot, Transaction transaction) {
+        if (fuelSlot.isEmpty()) {
+            return false;
+        }
+        ItemResource currentType = fuelSlot.getResource();
+        //Try to consume the current item
+        int extracted = fuelSlot.extract(currentType, 1, transaction, AutomationType.INTERNAL);
+        if (extracted != 1) {
+            return false;
+        }
+        UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
+        if (remainder == null) {
+            return true;
+        }
+        //If the item has a container, then try to insert the container, if there was more than one of the current type stored
+        // this will fail unless for some reason the item is being converted into itself and is effectively an infinite source
+        ItemStackTemplate container = remainder.convertInto();
+        int inserted = fuelSlot.insert(ItemResource.of(container), container.count(), transaction, AutomationType.INTERNAL);
+        //If we couldn't insert the entire use remainder, return that the transaction should bail
+        return inserted == container.count();
     }
 }

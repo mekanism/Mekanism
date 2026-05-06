@@ -11,13 +11,11 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
-import mekanism.common.util.MekanismUtils;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.item.ItemStackTemplate;
-import net.minecraft.world.item.component.UseRemainder;
+import mekanism.common.inventory.slot.FuelInventorySlot;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -61,7 +59,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     }
 
     /**
-     * Fills tank from slot, allowing for the item to also be converted to chemical if need be
+     * Fills tank from slot, allowing for the item to also be converted to fluid if need be
      */
     public void fillOrBurn() {
         if (!isEmpty()) {
@@ -72,21 +70,11 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 ItemResource currentType = getResource();
                 int fuel = fuelValue.applyAsInt(currentType);
                 if (fuel > 0 && fuel <= needed) {
-                    UseRemainder remainder = currentType.get(DataComponents.USE_REMAINDER);
-                    //TODO - 26.1: Should we also validate that the remainder isn't the existing stack?
-                    boolean hasContainer = remainder != null;
-                    if (hasContainer && getCount() > 1) {
-                        //If we have a container but have more than a single stack of it somehow just exit
-                        return;
-                    }
-                    fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
-                    if (hasContainer) {
-                        //If the item has a container, then replace it with the container
-                        ItemStackTemplate container = remainder.convertInto();
-                        setStack(ItemResource.of(container), container.count());
-                    } else {
-                        //Otherwise, shrink the size of the stack by one
-                        MekanismUtils.logMismatchedStackSize(shrinkStack(1, Action.EXECUTE), 1);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (FuelInventorySlot.consumeAndReplace(this, transaction)) {
+                            fluidTank.insert(fuelCreator.apply(fuel), Action.EXECUTE, AutomationType.INTERNAL);
+                            transaction.commit();
+                        }
                     }
                 }
             }
