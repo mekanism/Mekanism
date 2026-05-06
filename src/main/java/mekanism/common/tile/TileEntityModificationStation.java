@@ -35,6 +35,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityModificationStation extends TileEntityMekanism implements IBoundingBlock {
@@ -89,11 +91,13 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         if (canFunction()) {
             boolean operated = false;
             if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                Holder<ModuleData<?>> data = ((IModuleItem) moduleSlot.getResource().getItem()).getModuleData();
-                ItemStack stack = containerSlot.getStack();
+                ItemResource moduleResource = moduleSlot.getResource();
+                //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
+                ItemStack stack = containerSlot.getResource().toStack(containerSlot.getCount());
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
                     // make sure the container supports this module and that we can still install more of this module
+                    Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
                     if (container.canInstall(stack, data)) {
                         operated = true;
                         operatingTicks++;
@@ -102,8 +106,14 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                             operatingTicks = 0;
                             int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.getCount());
                             if (added > 0) {
-                                containerSlot.setStack(stack);
-                                MekanismUtils.logMismatchedStackSize(moduleSlot.shrinkStack(added, Action.EXECUTE), added);
+                                try (Transaction transaction = Transaction.openRoot()) {
+                                    //Validate that the module is actually able to be extracted from the module slot (this should always be true)
+                                    if (moduleSlot.extract(moduleResource, added, transaction, AutomationType.INTERNAL) == added) {
+                                        //Update the item type of the module container to the version that has the moduled added
+                                        containerSlot.setStack(stack);
+                                        transaction.commit();
+                                    }
+                                }
                             }
                         }
                     }
@@ -122,7 +132,8 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     }
 
     public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
-        ItemStack stack = containerSlot.getStack();
+        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
+        ItemStack stack = containerSlot.getResource().toStack(containerSlot.getCount());
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
             int installed = container.installedCount(type);
@@ -130,6 +141,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 int toRemove = removeAll ? installed : 1;
                 if (player.getInventory().add(new ItemStack(type.value().getItemHolder(), toRemove))) {
                     container.removeModule(player.registryAccess(), stack, type, toRemove);
+                    //Update the item type of the module container to the version that has the moduled added
                     containerSlot.setStack(stack);
                 }
             }
