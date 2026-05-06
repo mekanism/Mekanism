@@ -6,8 +6,8 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
-import mekanism.api.tier.BaseTier;
 import mekanism.client.model.ModelEnergyCore;
+import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
@@ -16,7 +16,6 @@ import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tier.EnergyCubeTier;
-import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
@@ -26,28 +25,32 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.model.BlockDisplayContext;
 import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
+import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
-import net.neoforged.neoforge.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
-import org.jspecify.annotations.Nullable;
 
 @NullMarked
 public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.CubeState> {
 
     public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
+    public static final Matrix4f IDENTITY = new Matrix4f();
     private final ModelEnergyCore core;
     private final Lazy<Vector3fc[]> extents = Lazy.of(() -> {
         BlockModelRenderState state = new BlockModelRenderState();
-        Minecraft.getInstance().getBlockModelResolver().update(state, MekanismBlocks.CREATIVE_ENERGY_CUBE.defaultState(), BLOCK_DISPLAY_CONTEXT);
-        List<BakedQuad> bakedQuads = state.setupModel(new Matrix4f(), false).stream().flatMap(part -> part.getQuads(null).stream()).toList();
+        mc().getBlockModelResolver().update(state, MekanismBlocks.CREATIVE_ENERGY_CUBE.defaultState(), BLOCK_DISPLAY_CONTEXT);
+        List<BakedQuad> bakedQuads = state.setupModel(IDENTITY, false).stream().flatMap(part -> part.getQuads(null).stream()).toList();
         return CuboidItemModelWrapper.computeExtents(bakedQuads);
     });
 
@@ -63,7 +66,7 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         //TODO - 26.1 rendering
         //renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
         state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
-        if (state.energyRatio > 0) {
+        if (state.coreState != null) {
             float scaledTicks = 4 * state.ticks();
             poseStack.pushPose();
             poseStack.translate(0.5, 0.5, 0.5);
@@ -71,7 +74,7 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
             poseStack.translate(0, Math.sin(Math.toRadians(3 * state.ticks())) / 7, 0);
             poseStack.mulPose(Axis.YP.rotationDegrees(scaledTicks));
             poseStack.mulPose(RenderEnergyCube.coreVec.rotationDegrees(36F + scaledTicks));
-            core.collect(ModelEnergyCore.getState(state.baseTier, state.energyRatio), poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords, false);
+            core.collect(state.coreState, poseStack, submitNodeCollector, LightCoordsUtil.FULL_BRIGHT, overlayCoords, false);
             poseStack.popPose();
         }
     }
@@ -99,15 +102,39 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
             }
             sideStates[side.ordinal()] = state;
         }
-        ModelData modelData = ModelData.of(TileEntityEnergyCube.SIDE_STATE_PROPERTY, sideStates);
-        float ticks = Minecraft.getInstance().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
+
+        BlockModelRenderState modelRenderState = new BlockModelRenderState();
+        BlockState blockState = itemBlock.getBlock().defaultBlockState();
+        BlockStateModel blockStateModel = models().getBlockStateModelSet().get(blockState);
+        if (blockStateModel instanceof EnergyCubeModel energyCubeModel) {
+            List<BlockStateModelPart> partList = modelRenderState.setupModel(IDENTITY, (energyCubeModel.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0);
+            energyCubeModel.collectParts(partList, sideStates);
+            modelRenderState.tintLayers().add(tier.getBaseTier().getPackedColor());
+        } else {
+            //weird, but ok, try to render something
+            mc().getBlockModelResolver().update(modelRenderState, blockState, BLOCK_DISPLAY_CONTEXT);
+        }
+
+        float ticks = mc().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();
         float energyRatio = (float) StorageUtils.getEnergyRatio(stack);
-        BlockModelRenderState blockModel = new BlockModelRenderState();
-        Minecraft.getInstance().getBlockModelResolver().update(blockModel, itemBlock.getBlock().defaultBlockState(), BLOCK_DISPLAY_CONTEXT);
-        return new CubeState(modelData, tier.getBaseTier(), energyRatio, ticks, stack.hasFoil(), blockModel);
+
+        return new CubeState(
+              energyRatio > 0 ? ModelEnergyCore.getState(tier.getBaseTier(), energyRatio) : null,
+              ticks,
+              stack.hasFoil(),
+              modelRenderState
+        );
     }
 
-    public record CubeState(ModelData blockData, BaseTier baseTier, float energyRatio, float ticks, boolean hasFoil, BlockModelRenderState blockRenderState) {}
+    private static ModelManager models() {
+        return mc().getModelManager();
+    }
+
+    private static Minecraft mc() {
+        return Minecraft.getInstance();
+    }
+
+    public record CubeState(@Nullable Integer coreState, float ticks, boolean hasFoil, BlockModelRenderState blockRenderState) {}
 
     public static class Unbaked implements SpecialModelRenderer.Unbaked<CubeState> {
 
