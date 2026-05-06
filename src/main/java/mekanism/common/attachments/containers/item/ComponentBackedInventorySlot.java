@@ -156,32 +156,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedContainer<ItemS
     }
 
     @Override
-    public int setStackSize(int amount, TransactionContext transaction) {
-        AttachedItems attachedItems = getAttached();
-        return setStackSize(attachedItems, getContents(attachedItems), amount, transaction);
-    }
-
-    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, TransactionContext transaction) {
-        TransferPreconditions.checkNonNegative(amount);
-        if (current.isEmpty()) {
-            return 0;
-        } else if (amount == 0) {
-            updateSnapshots(transaction);
-            setContents(attachedItems, ItemStack.EMPTY);
-            return 0;
-        }
-        //Limit the max stack size to the limit of the stored stack
-        amount = Math.min(amount, getLimit(ItemResource.of(current)));
-        if (current.count() == amount) {
-            //If our size is not changing, we don't need to bother changing anything or updating snapshots
-            return amount;
-        }
-        updateSnapshots(transaction);
-        setContents(attachedItems, current.copyWithCount(amount));
-        return amount;
-    }
-
-    @Override
     public void serialize(ValueOutput output) {
         //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
         // that method as special component backed inventory slots, that then access and put that other data as a different component?

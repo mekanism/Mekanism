@@ -79,17 +79,6 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         return super.extract(resource, amount, transaction, automationType);
     }
 
-    @Override
-    protected int setStackSize(AttachedItems attachedItems, ItemStack current, int amount, TransactionContext transaction) {
-        if (isCreative) {
-            try (Transaction simulation = Transaction.open(transaction)) {
-                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
-                return super.setStackSize(attachedItems, current, amount, simulation);
-            }
-        }
-        return super.setStackSize(attachedItems, current, amount, transaction);
-    }
-
     /**
      * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
      *

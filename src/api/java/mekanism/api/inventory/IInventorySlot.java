@@ -1,6 +1,5 @@
 package mekanism.api.inventory;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -12,7 +11,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,50 +114,6 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     @Nullable
     default Slot createContainerSlot() {
         return null;
-    }
-
-    /**
-     * Convenience method for modifying the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this slot, set the size of it to the given amount. Capping at the item's max stack size and the limit of this slot. If the amount is
-     * less than or equal to zero, then this instead sets the stack to the empty stack.
-     *
-     * @param amount The desired size to set the stack to.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual size the stack was set to.
-     */
-    int setStackSize(int amount, TransactionContext transaction);//TODO - 26.1: Update docs and state that it throws if amount is negative
-
-    /**
-     * Convenience method for shrinking the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
-     * to the empty stack. If this method is used to grow the stack the size gets capped at the item's max stack size and the limit of this slot.
-     *
-     * @param amount The desired amount to shrink the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack shrunk.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of interacting with inserting/extracting rather than offloading logic to outside of the slot
-    default int shrinkStack(int amount, Action action) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            int current = getCount();
-            if (current == 0) {
-                //"Fail quick" if our stack is empty, so we can't grow it
-                return 0;
-            }
-            int newSize = setStackSize(current - amount, transaction);
-            int amountShrunken = current - newSize;
-            if (action.execute()) {
-                transaction.commit();
-            }
-            return amountShrunken;
-        }
     }
 
     /**

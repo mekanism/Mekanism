@@ -109,17 +109,6 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public int setStackSize(int amount, TransactionContext transaction) {
-        if (isCreative) {
-            try (Transaction simulation = Transaction.open(transaction)) {
-                //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
-                return super.setStackSize(amount, simulation);
-            }
-        }
-        return super.setStackSize(amount, transaction);
-    }
-
-    @Override
     public int getCurrentLimit() {
         return getLimit(getBinItemType());
     }
