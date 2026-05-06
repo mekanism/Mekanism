@@ -31,8 +31,8 @@ import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -120,8 +120,8 @@ public interface RecipeUpgradeData<TYPE extends RecipeUpgradeData<TYPE>> {
                 if (slot == null) {
                     yield null;
                 }
-                ItemStackTemplate lockStack = slot.getLockStack();
-                yield lockStack == null ? null : new LockRecipeData(lockStack);
+                ItemResource lockType = slot.getLockType();
+                yield lockType.isEmpty() ? null : new LockRecipeData(lockType);
             }
             case SECURITY -> {
                 UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);

@@ -23,10 +23,6 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         this.handler = handler;
     }
 
-    public void addItem(ItemStack stack, int slot) {
-        addItem(ItemResource.of(stack), stack.count(), slot);
-    }
-
     public void addItem(ItemResource type, int amount, int slot) {
         if (!type.isEmpty() && amount > 0) {//Validate to make sure we aren't somehow adding an empty resource to the map
             if (itemMap.isEmpty()) {
@@ -65,6 +61,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         }
 
         public void addSlot(int id, int amount) {
+            //TODO - 26.1: Evaluate not bothering to keep track of the slot index, and just letting the handler figure out how it wants things extracted?
             slotMap.put(id, amount);
             totalCount += amount;
         }

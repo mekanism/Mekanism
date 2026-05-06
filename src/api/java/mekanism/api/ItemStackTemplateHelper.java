@@ -1,7 +1,6 @@
 package mekanism.api;
 
 import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
 import net.minecraft.core.component.DataComponentPatch;
@@ -17,15 +16,7 @@ import org.jetbrains.annotations.Nullable;
 //TODO - 26.1: Docs
 public class ItemStackTemplateHelper {
 
-    public static final MapCodec<ItemStackTemplate> NO_COUNT_MAPCODEC = RecordCodecBuilder.mapCodec(
-          i -> i.group(
-                      Item.CODEC.fieldOf("id").forGetter(ItemStackTemplate::item),
-                      DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStackTemplate::components)
-                )
-                .apply(i, ItemStackTemplate::new));
-    public static final Codec<ItemStackTemplate> NO_COUNT_CODEC = NO_COUNT_MAPCODEC.codec();
-
-    //TODO - 26.1 These should probably be moved to ItemStackTemplate + NO_COUNT_CODEC ?
+    //TODO - 26.1 These should probably be moved to ItemStackTemplate + NO_COUNT_CODEC ? Or more likely ItemResource
     public static final Codec<ItemStack> NO_COUNT_ITEMSTACK = RecordCodecBuilder.create(
           i -> i.group(
                       Item.CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),

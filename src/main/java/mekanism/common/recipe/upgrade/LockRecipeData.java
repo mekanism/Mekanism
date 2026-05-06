@@ -1,26 +1,25 @@
 package mekanism.common.recipe.upgrade;
 
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
 
-    private final ItemStackTemplate lock;
+    private final ItemResource lockType;
 
-    LockRecipeData(ItemStackTemplate lockStack) {
-        this.lock = lockStack;
+    LockRecipeData(ItemResource lockType) {
+        this.lockType = lockType;
     }
 
     @Nullable
     @Override
     public LockRecipeData merge(LockRecipeData other) {
-        return ItemStackTemplateHelper.isSameItemSameComponents(lock, other.lock) ? this : null;
+        return lockType.equals(other.lockType) ? this : null;
     }
 
     @Override
@@ -29,7 +28,7 @@ public class LockRecipeData implements RecipeUpgradeData<LockRecipeData> {
         if (slot == null) {
             return false;
         }
-        slot.setLockStack(this.lock);
+        slot.setLockType(this.lockType);
         return true;
     }
 }

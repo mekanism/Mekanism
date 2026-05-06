@@ -237,7 +237,8 @@ public final class SerializationConstants {
     public static final String LAST_PROCESSED = "last_processed";
     public static final String LATCHED = "latched";
     public static final String LEVEL = "level";
-    public static final String LOCK_STACK = "lock_stack";
+    /// @since 10.8.0
+    public static final String LOCK_TYPE = "lock_type";
     public static final String LOGIC_TYPE = "logic_type";
     public static final String MAGNITUDE = "magnitude";
     public static final String MAIN = "main";

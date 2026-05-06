@@ -88,6 +88,8 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
 
     protected BasicInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator,
           @Nullable IContentsListener listener, int x, int y) {
+        //TODO - 26.1: Re-evaluate this as we are moving more things to using insert/extract rather than direct size conversions,
+        // which means that we might need to ensure certain things about automation type internal is true
         this((itemType, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(itemType),
               (itemType, _) -> canInsert.test(itemType), validator, listener, x, y);
     }

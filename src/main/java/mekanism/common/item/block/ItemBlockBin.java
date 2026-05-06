@@ -15,9 +15,9 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppableAttachmentContents {
@@ -46,9 +46,9 @@ public class ItemBlockBin extends ItemBlockTooltip<BlockBin> implements IDroppab
                     tooltipAdder.accept(MekanismLang.ITEM_AMOUNT.translateColored(EnumColor.PURPLE, EnumColor.GRAY, TextUtils.format(slot.getCount())));
                 }
             }
-            ItemStackTemplate lockStack = slot.getLockStack();
-            if (lockStack != null) {
-                tooltipAdder.accept(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, lockStack));
+            ItemResource lockType = slot.getLockType();
+            if (!lockType.isEmpty()) {
+                tooltipAdder.accept(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, lockType));
             }
             if (tier == BinTier.CREATIVE) {
                 tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));

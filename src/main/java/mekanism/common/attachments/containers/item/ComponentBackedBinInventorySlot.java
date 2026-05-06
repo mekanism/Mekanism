@@ -2,7 +2,6 @@
 package mekanism.common.attachments.containers.item;
 
 import mekanism.api.AutomationType;
-import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -20,7 +19,6 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlot {
@@ -42,8 +40,8 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     @Override
     public int insertItem(AttachedItems attachedItems, ItemStack current, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         if (current.isEmpty()) {
-            ItemStackTemplate lockStack = getLockStack();
-            if (lockStack != null && !resource.matches(lockStack)) {
+            ItemResource lockType = getLockType();
+            if (!lockType.isEmpty() && !resource.equals(lockType)) {
                 // When locked, we need to make sure the correct item type is being inserted
                 return 0;
             } else if (isCreative && automationType != AutomationType.EXTERNAL) {
@@ -93,14 +91,19 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     /**
-     * @see BinInventorySlot#getBottomStack()
+     * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
+     *
+     * @return The "bottom" stack for the bin
+     *
+     * @apiNote The returned stack can be safely modified.
      */
     public ItemStack getBottomStack() {
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemResource current = getResource();
-        return current.toStack(Math.min(getCount(), current.getMaxStackSize()));
+        ItemStack stack = getStack();
+        ItemResource current = ItemResource.of(stack);
+        return current.toStack(Math.min(stack.count(), current.getMaxStackSize()));
     }
 
     /**
@@ -108,31 +111,31 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
      *
      * @see BinInventorySlot#setLockStack(ItemStackTemplate)
      */
-    public void setLockStack(@Nullable ItemStackTemplate stack) {
-        if (stack == null) {
+    public void setLockType(ItemResource lockType) {
+        if (lockType.isEmpty()) {
             attachedTo.remove(MekanismDataComponents.LOCK);
         } else {
-            attachedTo.set(MekanismDataComponents.LOCK, LockData.create(stack));
+            attachedTo.set(MekanismDataComponents.LOCK, LockData.create(lockType));
         }
     }
 
-    public @Nullable ItemStackTemplate getLockStack() {
+    public ItemResource getLockType() {
         return attachedTo.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
     }
 
     @Override
     public void serialize(ValueOutput output) {
         super.serialize(output);
-        ItemStackTemplate lockStack = getLockStack();
-        if (lockStack != null) {
-            output.store(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_CODEC, lockStack);
+        ItemResource lockType = getLockType();
+        if (!lockType.isEmpty()) {
+            output.store(SerializationConstants.LOCK_TYPE, ItemResource.CODEC, lockType);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 26.1: Does this properly handle the behavior of when things are empty
-        setLockStack(input.read(SerializationConstants.LOCK_STACK, ItemStackTemplateHelper.NO_COUNT_CODEC).orElse(null));
+        setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY));
         super.deserialize(input);
     }
 }

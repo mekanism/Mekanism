@@ -113,7 +113,7 @@ public class LookingAtUtils {
                 blockData.addToTooltip(TooltipContext.EMPTY, info::addText, TooltipFlag.NORMAL, /*unused*/DataComponentMap.EMPTY);
             }
             if (tile instanceof TileEntityBin bin && bin.getBinSlot().isLocked()) {
-                info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockStack()));
+                info.addText(MekanismLang.LOCKED.translateColored(EnumColor.AQUA, EnumColor.GRAY, bin.getBinSlot().getLockType()));
             }
             if (tile instanceof TileEntityQIORedstoneAdapter adapter) {
                 ItemStack itemType = adapter.getItemType();

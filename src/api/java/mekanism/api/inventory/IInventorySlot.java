@@ -17,6 +17,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: make this implement/supply ItemAccess/ResourceHandler? It currently has a pseudo ItemHandler impl, so might be better to move everything away from single-slot context?
+// Maybe extract a good portion of this to a super interface IResourceContainer?
 @NothingNullByDefault
 public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
 
@@ -131,34 +132,6 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     int setStackSize(int amount, TransactionContext transaction);//TODO - 26.1: Update docs and state that it throws if amount is negative
 
     /**
-     * Convenience method for growing the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this slot, increase its size by the given amount. Capping at the item's max stack size and the limit of this slot. If the stack
-     * shrinks to an amount of less than or equal to zero, then this instead sets the stack to the empty stack.
-     *
-     * @param amount The desired amount to grow the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack grew.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    default int growStack(int amount, TransactionContext transaction) {//TODO - 26.1: Update docs
-        int current = getCount();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getCurrentLimit() - current);
-            //TODO - 26.1: Should we cap shrinking, if we even allow shrinking to go via grow stack
-        }
-        int newSize = setStackSize(current + amount, transaction);
-        return newSize - current;
-    }
-
-    /**
      * Convenience method for shrinking the size of the stored stack.
      * <p>
      * If there is a stack stored in this slot, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
@@ -172,19 +145,21 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of transactional impl
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this in favor of interacting with inserting/extracting rather than offloading logic to outside of the slot
     default int shrinkStack(int amount, Action action) {
         try (Transaction transaction = Transaction.openRoot()) {
-            int amountShrunken = shrinkStack(amount, transaction);
+            int current = getCount();
+            if (current == 0) {
+                //"Fail quick" if our stack is empty, so we can't grow it
+                return 0;
+            }
+            int newSize = setStackSize(current - amount, transaction);
+            int amountShrunken = current - newSize;
             if (action.execute()) {
                 transaction.commit();
             }
             return amountShrunken;
         }
-    }
-
-    default int shrinkStack(int amount, TransactionContext transaction) {//TODO - 26.1: Docs and decide if we want to be sending this via growStack?
-        return -growStack(-amount, transaction);
     }
 
     /**
@@ -199,7 +174,7 @@ public interface IInventorySlot extends ValueIOSerializable, IContentsListener {
     /**
      * Convenience method for emptying this {@link IInventorySlot}.
      */
-    default void setEmpty() {
+    default void setEmpty() {//TODO - 26.1: Re-evaluate usages
         setStack(ItemResource.EMPTY, 0);
     }
 

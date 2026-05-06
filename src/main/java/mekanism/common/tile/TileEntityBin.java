@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -99,14 +98,16 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 // we short circuit looking it up from the world though, and just query the provider we add to the tile directly
                 ResourceHandler<ItemResource> capability = ITEM_HANDLER_PROVIDER.getCapability(this, Direction.DOWN);
                 HandlerTransitRequest request = new HandlerTransitRequest(capability);
-                request.addItem(binSlot.getBottomStack(), 0);
+                //Note: Instead of getting the bin item type, we just get the stored resource as we only do things if it isn't empty anyway
+                ItemResource storedType = binSlot.getResource();
+                //Limit how much we allow sending at once to a single stack of the stored item
+                request.addItem(storedType, Math.min(binSlot.getCount(), storedType.getMaxStackSize()), 0);
                 if (targetInventory == null) {
                     targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
                 }
                 TransitResponse response = request.eject(this, targetInventory.getCapability(), 0, LogisticalTransporterBase::getColor);
-                if (!response.isEmpty() && tier != BinTier.CREATIVE) {
-                    int sendingAmount = response.getSendingAmount();
-                    MekanismUtils.logMismatchedStackSize(binSlot.shrinkStack(sendingAmount, Action.EXECUTE), sendingAmount);
+                if (!response.isEmpty()) {
+                    response.useAll();
                 }
                 delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
             }
@@ -192,7 +193,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     protected void collectImplicitComponents(@NotNull DataComponentMap.Builder builder) {
         //Note: In theory doing this before super doesn't matter, but we want to make sure that the lock is set before
         // setting the data on the item just for good measure
-        builder.set(MekanismDataComponents.LOCK, LockData.create(binSlot.getLockStack()));
+        builder.set(MekanismDataComponents.LOCK, LockData.create(binSlot.getLockType()));
         super.collectImplicitComponents(builder);
     }
 
@@ -215,8 +216,8 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     }
 
     @ComputerMethod(methodDescription = "Get the type of item the Bin is locked to (or Air if not locked)")
-    ItemStack getLock() {
-        return binSlot.getLockStack();
+    ItemStack getLock() {//TODO - 26.1: Do we want this to just directly return the ItemResource?
+        return binSlot.getLockType().toStack();
     }
 
     @ComputerMethod(methodDescription = "Lock the Bin to the currently stored item type. The Bin must not be creative, empty, or already locked")

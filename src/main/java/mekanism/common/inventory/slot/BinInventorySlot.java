@@ -131,21 +131,6 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     /**
-     * Gets the "bottom" stack for the bin, this is the stack that can be extracted/interacted with directly.
-     *
-     * @return The "bottom" stack for the bin
-     *
-     * @apiNote The returned stack can be safely modified.
-     */
-    public ItemStack getBottomStack() {//TODO - 26.1: Remove this and just use resources directly?
-        if (isEmpty()) {
-            return ItemStack.EMPTY;
-        }
-        ItemResource currentType = getResource();
-        return currentType.toStack(Math.min(getCount(), currentType.getMaxStackSize()));
-    }
-
-    /**
      * Modifies the lock state of the slot.
      *
      * @param lock if the slot should be locked
@@ -190,28 +175,20 @@ public class BinInventorySlot extends BasicInventorySlot {
         return lockType;
     }
 
-    public ItemStack getLockStack() {
-        //TODO - 26.1: Re-evaluate callers and see if any can be converted to just using the ItemResource
-        return lockType.toStack();
-    }
-
     @Override
     public void serialize(ValueOutput output) {
         //Note: While we are able to store this extra data for saving and stuff, when converting to an item we need to have
         // the tile copy the lock stack as a component
         super.serialize(output);
         if (isLocked()) {
-            //TODO - 26.1: Is this the correct codec for us to be using? I think so as we don't care about the size, but maybe not?
-            output.store(SerializationConstants.LOCK_STACK, ItemResource.CODEC, lockType);
-            //nbt.put(SerializationConstants.LOCK_STACK, lockStack.save(provider));
+            output.store(SerializationConstants.LOCK_TYPE, ItemResource.CODEC, lockType);
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
         //TODO - 26.1: Does this properly handle the behavior of when things are empty
-        this.lockType = input.read(SerializationConstants.LOCK_STACK, ItemResource.CODEC).orElse(ItemResource.EMPTY);
-        //NBTUtils.setItemStackOrEmpty(provider, nbt, SerializationConstants.LOCK_STACK, s -> this.lockStack = s);
+        this.lockType = input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY);
         super.deserialize(input);
     }
 }

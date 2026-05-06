@@ -130,7 +130,7 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that lock data that contain invalid items fall back to no lock data.")
     public static void testLockData(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidItemSerializationCycle(LockData.CODEC, help -> LockData.create(help.failureItem()), LockData.EMPTY::equals);
+        helper.succeedIfInvalidItemSerializationCycle(LockData.CODEC, help -> LockData.create(help.failureItemType()), LockData.EMPTY::equals);
     }
 
     @GameTest
@@ -140,7 +140,7 @@ public class MissingObjectSerializationTest {
     public static void testLockDataOnItem(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
             ItemStack binItem = new ItemStack(MekanismBlocks.BASIC_BIN);
-            binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItem()));
+            binItem.set(MekanismDataComponents.LOCK, LockData.create(help.failureItemType()));
             return binItem;
         }, binItem -> binItem.is(MekanismBlocks.BASIC_BIN.getItemHolder()) && LockData.EMPTY.equals(binItem.get(MekanismDataComponents.LOCK)) &&
                       binItem.getComponentsPatch().getPatch(MekanismDataComponents.LOCK.get()) == null);
