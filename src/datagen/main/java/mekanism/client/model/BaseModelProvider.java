@@ -74,9 +74,9 @@ public abstract class BaseModelProvider extends ModelProvider {
         return targetModelPath;
     }
 
-    protected static void simpleISTER(ItemModelGenerators itemModels, Holder<Item> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
+    protected void simpleISTER(ItemModelGenerators itemModels, Holder<Item> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
         Item item = itemRegistryObject.value();
-        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(ModelLocationUtils.getModelLocation(item), unbakedRender);
+        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(existingModel(item), unbakedRender);
         itemModels.itemModelOutput.accept(item, unbaked);
     }
 
