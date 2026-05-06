@@ -12,14 +12,12 @@ import mekanism.api.fluid.IExtendedFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -146,21 +144,17 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Nullable
-    public static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemStack stack) {
+    public static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemResource itemType) {
+        //TODO - 26.1: Figure out how to do fluid caps
         //If we have more than one item in the input, check if we can fill a single item of it
         // The fluid handler for buckets returns false about being able to accept fluids if they are stacked
         // though we have special handling to only move one item at a time anyway
         // Though we first have to check if it has a capability exposed at all while stacked
-        if (stack.count() > 1 && Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack)) == null) {
+        /*if (stack.count() > 1 && Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack)) == null) {
             return null;
         }
         ItemStack stackToCheck = stack.count() > 1 ? stack.copyWithCount(1) : stack;
-        return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stackToCheck));
-    }
-
-    @Nullable
-    public static IFluidHandlerItem tryGetFluidHandlerUnstacked(ItemResource itemType) {
-        //TODO - 26.1: Figure out how to do fluid caps
+        return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stackToCheck));*/
         return Capabilities.FLUID_LEGACY.getCapability(itemType);
     }
 

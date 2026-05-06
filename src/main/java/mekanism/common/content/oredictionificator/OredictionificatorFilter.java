@@ -40,8 +40,8 @@ public abstract class OredictionificatorFilter<TYPE, RESOURCE extends Registered
               ;
     }
 
-    protected static <TYPE, STACK, FILTER extends OredictionificatorFilter<TYPE, STACK, FILTER>> StreamCodec<RegistryFriendlyByteBuf, FILTER>
-    baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
+    protected static <TYPE, RESOURCE extends RegisteredResource<TYPE>, FILTER extends OredictionificatorFilter<TYPE, RESOURCE, FILTER>>
+    StreamCodec<RegistryFriendlyByteBuf, FILTER> baseOredictionificatorStreamCodec(Supplier<FILTER> constructor, ResourceKey<? extends Registry<TYPE>> registry) {
         return StreamCodec.composite(
               baseStreamCodec(constructor), Function.identity(),
               //Realistically the filter location shouldn't be null except when the filter is first being created

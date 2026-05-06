@@ -37,7 +37,9 @@ public interface IMultiTypeCapability<HANDLER, ITEM_HANDLER extends HANDLER> {
     }
 
     @Nullable
-    default ITEM_HANDLER getCapability(ItemResource itemType) {//TODO - 26.1: Re-evaluate callers and usage of this as it really doesn't make much sense
+    default ITEM_HANDLER getCapability(ItemResource itemType) {
+        //TODO - 26.1: Re-evaluate callers and usage of this as it really doesn't make much sense
+        // and especially for fluid interaction we should be trying a few things, whether it works stacked and then oneByOne
         return getCapability(ItemAccess.forStack(itemType.toStack()));
     }
 

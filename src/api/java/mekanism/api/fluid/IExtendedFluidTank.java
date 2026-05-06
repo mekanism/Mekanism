@@ -9,6 +9,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
@@ -19,6 +20,11 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
 
     default FluidResource getResource() {//TODO - 26.1: Re-evaluate and add docs
         return FluidResource.of(getFluid());
+    }
+
+    //TODO - 26.1: Replace isFluidValid with this
+    default boolean isValid(FluidResource resource) {
+        return isFluidValid(resource.toStack(FluidType.BUCKET_VOLUME));
     }
 
     /**

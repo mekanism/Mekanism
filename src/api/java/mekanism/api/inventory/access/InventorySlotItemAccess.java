@@ -1,13 +1,14 @@
-package mekanism.api.inventory;
+package mekanism.api.inventory.access;
 
 import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
-//TODO - 26.1: Docs and reference HandlerItemAccess
+//TODO - 26.1: Docs and reference HandlerItemAccess (and the strict helper)
 @NothingNullByDefault
 public class InventorySlotItemAccess implements ItemAccess {
 
