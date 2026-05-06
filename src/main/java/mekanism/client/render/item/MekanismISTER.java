@@ -1,10 +1,7 @@
 package mekanism.client.render.item;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.blockentity.BlockEntityRenderDispatcher;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -16,19 +13,6 @@ import org.jspecify.annotations.NullMarked;
 public abstract class MekanismISTER<MODEL_DATA> implements SpecialModelRenderer<MODEL_DATA> {
 
     protected MekanismISTER() {
-    }
-
-    //todo - 26.1: remove this, should come from BakeContext
-    public static EntityModelSet getEntityModels() {
-        //Just have this method as a helper for what we pass as entity models rather than bothering to
-        // use an AT to access it directly
-        return Minecraft.getInstance().getEntityModels();
-    }
-
-    protected BlockEntityRenderDispatcher getBlockEntityRenderDispatcher() {
-        //Just have this method as a helper for what we pass as the block entity render dispatcher
-        // rather than bothering to use an AT to access it directly
-        return Minecraft.getInstance().getBlockEntityRenderDispatcher();
     }
 
     /**
