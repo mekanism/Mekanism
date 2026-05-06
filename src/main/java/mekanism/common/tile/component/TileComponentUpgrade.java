@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
@@ -22,13 +21,13 @@ import mekanism.common.item.interfaces.IUpgradeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.UpgradeUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -70,7 +69,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
 
     public void tickServer() {
         if (canCheckUpgrades) {
-            if (!upgradeSlot.isEmpty() && upgradeSlot.getResource().getItem() instanceof IUpgradeItem upgradeItem) {
+            ItemResource itemType = upgradeSlot.getResource();
+            if (!itemType.isEmpty() && itemType.getItem() instanceof IUpgradeItem upgradeItem) {
                 Upgrade type = upgradeItem.getUpgradeType();
                 if (supports(type)) {
                     int upgrades = getUpgrades(type);
@@ -79,9 +79,17 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                             upgradeTicks++;
                             return;
                         } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                            int added = addUpgrades(type, upgrades, upgradeSlot.getCount());
-                            if (added > 0) {
-                                MekanismUtils.logMismatchedStackSize(upgradeSlot.shrinkStack(added, Action.EXECUTE), added);
+                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.getCount());
+                            if (toAdd > 0) {
+                                try (Transaction transaction = Transaction.openRoot()) {
+                                    int extracted = upgradeSlot.extract(itemType, toAdd, transaction, AutomationType.INTERNAL);
+                                    if (extracted > 0) {//Note: This will always be <= toAdd
+                                        //If we added any upgrades (even if it was less than the amount we expected to be able to add)
+                                        // increment how many upgrades added, and commit the transaction to actually consume them from the slot
+                                        setUpgrades(type, upgrades + extracted);
+                                        transaction.commit();
+                                    }
+                                }
                             }
                         }
                     }
@@ -120,24 +128,30 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
      * @apiNote Call from the server
      */
     public int addUpgrades(Upgrade upgrade, int maxAvailable) {
-        return addUpgrades(upgrade, getUpgrades(upgrade), maxAvailable);
+        int installed = getUpgrades(upgrade);
+        int toAdd = getUpgradesToAdd(upgrade, installed, maxAvailable);
+        if (toAdd > 0) {
+            setUpgrades(upgrade, installed + toAdd);
+            //Note: We don't need to check if we can add upgrades if we get added to by interacting with the block
+            // as if we couldn't add from the slot then we already caught it, otherwise it was likely a different type
+            return toAdd;
+        }
+        return 0;
     }
 
-    private int addUpgrades(Upgrade upgrade, int installed, int maxAvailable) {
+    private void setUpgrades(Upgrade upgrade, int upgrades) {
+        this.upgrades.put(upgrade, upgrades);
+        tile.recalculateUpgrades(upgrade);
+        if (upgrade == Upgrade.MUFFLING) {
+            //Send an update packet to the client to update the number of muffling upgrades installed
+            tile.sendUpdatePacket();
+        }
+        tile.markForSave();
+    }
+
+    private int getUpgradesToAdd(Upgrade upgrade, int installed, int maxAvailable) {
         if (installed < upgrade.getMax()) {
-            int toAdd = Math.min(upgrade.getMax() - installed, maxAvailable);
-            if (toAdd > 0) {
-                this.upgrades.put(upgrade, installed + toAdd);
-                tile.recalculateUpgrades(upgrade);
-                if (upgrade == Upgrade.MUFFLING) {
-                    //Send an update packet to the client to update the number of muffling upgrades installed
-                    tile.sendUpdatePacket();
-                }
-                tile.markForSave();
-                //Note: We don't need to check if we can add upgrades if we get added to by interacting with the block
-                // as if we couldn't add from the slot then we already caught it, otherwise it was likely a different type
-                return toAdd;
-            }
+            return Math.min(upgrade.getMax() - installed, maxAvailable);
         }
         return 0;
     }

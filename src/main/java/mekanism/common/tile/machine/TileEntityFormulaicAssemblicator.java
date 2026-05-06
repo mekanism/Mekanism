@@ -2,14 +2,14 @@ package mekanism.common.tile.machine;
 
 import it.unimi.dsi.fastutil.ints.IntArraySet;
 import it.unimi.dsi.fastutil.ints.IntSet;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -406,53 +406,85 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         if (!canTryToMove) {
             return false;
         }
-        boolean ret = true;
+        boolean canOperate = true;
         for (int i = 0; i < craftingGridSlots.size(); i++) {
             IInventorySlot recipeSlot = craftingGridSlots.get(i);
-            if (formula.isIngredientInPos(level, recipeSlot.getResource(), i)) {
-                continue;
-            }
-            if (recipeSlot.isEmpty()) {
-                Set<ItemResource> checkedTypes = null;
-                for (int j = inputSlots.size() - 1; j >= 0; j--) {
-                    //The stack stored in the stock inventory
-                    IInventorySlot stockSlot = inputSlots.get(j);
-                    if (!stockSlot.isEmpty()) {
-                        ItemResource stockType = stockSlot.getResource();
-                        //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
-                        if (checkedTypes == null || checkedTypes.add(stockType)) {
-                            if (formula.isIngredientInPos(level, stockType, i)) {
-                                recipeSlot.setStack(stockType, 1);
-                                MekanismUtils.logMismatchedStackSize(stockSlot.shrinkStack(1, Action.EXECUTE), 1);
-                                break;
-                            } else if (checkedTypes == null) {
-                                checkedTypes = new HashSet<>();
-                                //Note: If the types set was not null, then we will have added it above when checking if we already checked the type
-                                checkedTypes.add(stockType);
-                            }
-                        }
-                    }
-                }
-                if (recipeSlot.isEmpty()) {
-                    //We didn't find a stack to replace it with, that means we won't be able to operate on our recipe
-                    ret = false;
-                }
-            } else {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    tryMoveToInput(recipeSlot, transaction);
-                    transaction.commit();
-                }
-                if (!recipeSlot.isEmpty()) {
-                    ret = false;
+            if (!formula.isIngredientInPos(level, recipeSlot.getResource(), i)) {
+                if (!tryMoveToGrid(recipeSlot, i)) {
+                    canOperate = false;
                 }
             }
         }
-        if (!ret) {
+        if (!canOperate) {
             //If we failed to move items, then we know none of the currently stored items are valid for the recipe,
             // so we can skip trying to move them until something changes
             canTryToMove = false;
         }
-        return ret;
+        return canOperate;
+    }
+
+    private boolean tryMoveToGrid(IInventorySlot recipeSlot, int i) {
+        ItemResource resource = recipeSlot.getResource();
+        int stored = recipeSlot.getCount();
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (!resource.isEmpty()) {
+                //If the current input doesn't match, start by moving it to the input slots
+                int extracted = recipeSlot.extract(resource, stored, transaction, AutomationType.INTERNAL);
+                if (extracted < stored) {
+                    //Cannot extract from the slot, mark that we failed to handle at least one of the slots, and continue onto the next one
+                    // Theoretically this if statement should never be true as it always returns true for if extracting is allowed
+                    return false;
+                }
+                int inserted = InventoryUtils.insertItem(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
+                if (inserted < stored) {
+                    //Failed to insert the removed contents into the input slots, so mark that we failed to handle at least one of the slots,
+                    // and continue onto the next one
+                    return false;
+                }
+            }
+            //Commit being able to move the item out of the crafting grid so that even if we are unable to find a replacement stack,
+            // then the UI is able to display the expected type instead of it being covered by the invalid one
+            transaction.commit();
+        }
+        //Note: If we haven't returned and thus rolled back our transaction due to failure, that means the recipe slot should be empty here
+        Object2BooleanMap<ItemResource> checkedTypes = new Object2BooleanOpenHashMap<>();
+        for (IInventorySlot stockSlot : inputSlots) {
+            //The stack stored in the stock inventory
+            if (!stockSlot.isEmpty()) {
+                ItemResource stockType = stockSlot.getResource();
+                //If we already checked this stack type for being valid in the recipe for this position, we can skip checking it again
+                boolean isValidIngredient;
+                if (checkedTypes.containsKey(stockType)) {
+                    isValidIngredient = checkedTypes.getBoolean(stockType);
+                } else {
+                    isValidIngredient = formula.isIngredientInPos(level, stockType, i);
+                    //Mark whether that type of item is valid for the ingredient
+                    checkedTypes.put(stockType, isValidIngredient);
+                }
+                if (isValidIngredient) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int extracted = stockSlot.extract(stockType, 1, transaction, AutomationType.INTERNAL);
+                        if (extracted == 0) {
+                            //Continue to next slot if for some reason we were unable to extract the contents from it
+                            // (theoretically this should not be possible with the predicates we define on the stock slots)
+                            continue;
+                        } else if (recipeSlot.insert(stockType, 1, transaction, AutomationType.INTERNAL) == 1) {
+                            //If we were able to extract from the stock slot and insert into the recipe slot, commit our transaction
+                            // and return true for being able to operate
+                            transaction.commit();
+                            return true;
+                        }
+                        //Otherwise we continue to try and see if any of our other types work
+                        //Note: We also mark the type as false, as we aren't actually able to insert it into the slot
+                        // so then even if it would be valid for the recipe, it isn't actually valid
+                        // (Due to the predicates for our slots, I don't think this should ever be the case)
+                        checkedTypes.put(stockType, false);
+                    }
+                }
+            }
+        }
+        //We didn't find a stack to replace it with, that means we won't be able to operate on our recipe
+        return false;
     }
 
     public void craftAll() {
@@ -474,14 +506,23 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     private void moveItemsToInput(boolean forcePush) {
-        try (Transaction transaction = Transaction.openRoot()) {
-            for (int i = 0; i < craftingGridSlots.size(); i++) {
-                IInventorySlot recipeSlot = craftingGridSlots.get(i);
-                if (!recipeSlot.isEmpty() && (forcePush || (!formula.isEmpty() && !formula.isIngredientInPos(getLevel(), recipeSlot.getResource(), i)))) {
-                    tryMoveToInput(recipeSlot, transaction);
+        for (int i = 0; i < craftingGridSlots.size(); i++) {
+            IInventorySlot recipeSlot = craftingGridSlots.get(i);
+            if (recipeSlot.isEmpty()) {
+                continue;
+            }
+            ItemResource resource = recipeSlot.getResource();
+            if (forcePush || !formula.isEmpty() && !formula.isIngredientInPos(getLevel(), resource, i)) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int inserted = InventoryUtils.insertItem(inputSlots, resource, recipeSlot.getCount(), transaction, AutomationType.INTERNAL);
+                    if (inserted > 0 && recipeSlot.extract(resource, inserted, transaction, AutomationType.INTERNAL) == inserted) {
+                        //If we are able to fully extract from the recipe slot the amount that we inserted into the input slots
+                        // then commit the change. We rely on the fact that our recipe slot should always be able to extract
+                        // so the limiting factor of this should be what can be inserted into the input slots
+                        transaction.commit();
+                    }
                 }
             }
-            transaction.commit();
         }
     }
 
@@ -644,16 +685,6 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             ItemResource itemType = ItemResource.of(formula.getInputStack(i));
             stockControlMap[j] = itemType;
             stockControlMap[j + 1] = itemType;
-        }
-    }
-
-    private void tryMoveToInput(IInventorySlot recipeSlot, TransactionContext transaction) {
-        ItemResource resource = recipeSlot.getResource();
-        int stored = recipeSlot.getCount();
-        int inserted = InventoryUtils.insertItem(inputSlots, resource, stored, transaction, AutomationType.INTERNAL);
-        if (inserted > 0) {
-            //TODO - 26.1: Use the transaction to validate that we can extract the amount we wanted to from the recipe slot
-            recipeSlot.setStack(resource, stored - inserted);
         }
     }
 
