@@ -22,6 +22,7 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,8 +34,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      */
     public static ChemicalStack getPotentialConversion(@Nullable Level world, ItemResource itemType) {
         ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findTypeBasedRecipe(world, itemType);
-        //TODO - 26.1: Either change getOutput to take an ItemResource or figure out the size of the stack we should be passing
-        return foundRecipe == null ? ChemicalStack.EMPTY : foundRecipe.getOutput(itemType.toStack());
+        return foundRecipe == null ? ChemicalStack.EMPTY : foundRecipe.getOutput(itemType);
     }
 
     private static Predicate<ItemResource> getFillOrConvertExtractPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
@@ -229,12 +229,21 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
                     if (!itemInput.isEmpty()) {
                         ChemicalStack output = foundRecipe.getOutput(itemInput);
-                        //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                        if (!output.isEmpty() && chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
-                            //If we can accept it all, then add it and decrease our input
-                            MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
-                            int amountUsed = itemInput.count();
-                            MekanismUtils.logMismatchedStackSize(shrinkStack(amountUsed, Action.EXECUTE), amountUsed);
+                        if (!output.isEmpty()) {
+                            try (Transaction transaction = Transaction.openRoot()) {
+                                int recipeNeeded itemInput.count();
+                                //Try to extract the amount we need from our slot
+                                if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded) {
+                                    //If we succeeded, then try to insert the produced chemical into our tank,
+                                    //TODO - 26.1: Transactions for chemical tank interactions
+                                    //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                                    if (chemicalTank.insert(output, Action.SIMULATE, AutomationType.MANUAL).isEmpty()) {
+                                        MekanismUtils.logMismatchedStackSize(chemicalTank.insert(output, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
+                                        // if we succeeded, commit the changes
+                                        transaction.commit();
+                                    }
+                                }
+                            }
                         }
                     }
                 }

@@ -5,6 +5,9 @@ import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ItemStackIngredient;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentHolder;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.SingleRecipeInput;
 import net.minecraft.world.level.Level;
@@ -54,7 +57,7 @@ public abstract class ItemStackToChemicalRecipe extends MekanismRecipe<SingleRec
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract ChemicalStack getOutput(ItemStack input);
+    public abstract <INPUT extends TypedInstance<Item> & DataComponentHolder> ChemicalStack getOutput(INPUT input);
 
     /**
      * For JEI, gets the output representations to display.

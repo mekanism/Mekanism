@@ -91,18 +91,18 @@ public class ItemSlotsBuilder {
     private static final BiPredicate<ItemResource, AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT = (itemType, automationType) ->
           //Allow extraction if something went horribly wrong, and we are not an energy container item or no longer have any energy left to give,
           // or we are no longer a valid conversion, this might happen after a reload for example
-          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(itemType) && EnergyInventorySlot.getPotentialConversion(null, itemType) == 0L;
+          automationType == AutomationType.MANUAL || !EnergyInventorySlot.fillInsertCheck(itemType) && EnergyInventorySlot.getPotentialConversion(null, itemType) == null;
     private static final BiPredicate<ItemResource, AutomationType> FILL_CONVERT_ENERGY_SLOT_CAN_INSERT = (itemType, _) -> {
         if (EnergyInventorySlot.fillInsertCheck(itemType)) {
             return true;
         }
         //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
         // Unlike with the chemical conversions, we don't check if the type is "valid" as we only have one "type" of energy.
-        return EnergyInventorySlot.getPotentialConversion(null, itemType) > 0L;
+        return EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
     };
     //Note: we mark all energy handler items as valid and have a more restrictive insert check so that we allow full containers when they are done being filled
     // We also allow energy conversion of items that can be converted
-    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> EnergyCompatUtils.hasStrictEnergyHandler(itemType) || EnergyInventorySlot.getPotentialConversion(null, itemType) > 0L;
+    private static final Predicate<ItemResource> FILL_CONVERT_ENERGY_SLOT_VALIDATOR = itemType -> EnergyCompatUtils.hasStrictEnergyHandler(itemType) || EnergyInventorySlot.getPotentialConversion(null, itemType) != null;
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> FILL_CONVERT_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, FILL_CONVERT_ENERGY_SLOT_CAN_EXTRACT, FILL_CONVERT_ENERGY_SLOT_CAN_INSERT, FILL_CONVERT_ENERGY_SLOT_VALIDATOR);
 

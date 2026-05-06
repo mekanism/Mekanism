@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.slot;
 
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.ObjIntConsumer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.inventory.container.sync.ISyncableData;
@@ -25,7 +26,7 @@ public class VirtualCraftingOutputSlot extends VirtualInventoryContainerSlot imp
     private boolean canCraft;
     private int amountCrafted;
 
-    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter,
+    public VirtualCraftingOutputSlot(BasicInventorySlot slot, @Nullable SlotOverlay slotOverlay, ObjIntConsumer<ItemResource> uncheckedSetter,
           @NotNull QIOCraftingWindow craftingWindow) {
         super(slot, craftingWindow.getWindowData(), slotOverlay, uncheckedSetter);
         this.craftingWindow = craftingWindow;

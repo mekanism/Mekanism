@@ -1,12 +1,13 @@
 package mekanism.common.inventory.container.slot;
 
-import java.util.function.Consumer;
 import java.util.function.IntSupplier;
+import java.util.function.ObjIntConsumer;
 import mekanism.common.inventory.container.IGUIWindow;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -22,7 +23,7 @@ public class VirtualInventoryContainerSlot extends InventoryContainerSlot implem
     @Nullable
     private IGUIWindow window;
 
-    public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay, Consumer<ItemStack> uncheckedSetter) {
+    public VirtualInventoryContainerSlot(BasicInventorySlot slot, SelectedWindowData windowData, @Nullable SlotOverlay slotOverlay, ObjIntConsumer<ItemResource> uncheckedSetter) {
         super(slot, 0, 0, ContainerSlotType.IGNORED, slotOverlay, null, uncheckedSetter);
         this.windowData = windowData;
     }
