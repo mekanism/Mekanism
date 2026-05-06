@@ -52,7 +52,8 @@ public abstract class BaseLanguageProvider extends LanguageProvider {
         altProviders = new ConvertibleLanguageProvider[]{
               new UpsideDownLanguageProvider(output, modid),
               new NonAmericanLanguageProvider(output, modid, "en_au"),
-              new NonAmericanLanguageProvider(output, modid, "en_gb")
+              new NonAmericanLanguageProvider(output, modid, "en_gb"),
+              new NonAmericanLanguageProvider(output, modid, "en_ca")
         };
     }
 
