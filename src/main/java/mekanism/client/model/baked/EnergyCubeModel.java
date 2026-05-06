@@ -3,7 +3,6 @@ package mekanism.client.model.baked;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -25,7 +24,6 @@ import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.block.dispatch.Variant;
@@ -46,6 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
+import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class EnergyCubeModel implements DynamicBlockStateModel {
@@ -73,7 +72,10 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
         ModelData modelData = level.getModelData(pos);
-        CubeSideState[] sideStates = modelData.get(TileEntityEnergyCube.SIDE_STATE_PROPERTY);
+        collectParts(parts, modelData.get(TileEntityEnergyCube.SIDE_STATE_PROPERTY));
+    }
+
+    public void collectParts(List<BlockStateModelPart> parts, CubeSideState @Nullable [] sideStates) {
         if (sideStates == null || sideStates.length != EnumUtils.SIDES.length) {
             //If there is no side data then treat everything as inactive
             sideStates = INACTIVE;
@@ -81,7 +83,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         //Note: We intentionally ignore the state and use null here to minimize cache size as it doesn't actually matter
         // or get used for energy cube models
         //TODO - 26.1: Replace this quads key with a more reasonable key that just handles the side data
-        QuadsKey<CubeSideState[]> key = new QuadsKey<>(null, null, random, null, Collections.emptyList());
+        QuadsKey<CubeSideState[]> key = new QuadsKey<>(null, null, null, null, Collections.emptyList());
         key.data(sideStates, Arrays.hashCode(sideStates), DATA_EQUALITY_CHECK);
         parts.addAll(cache.getUnchecked(key));
     }
@@ -94,7 +96,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
             for (int i = 0; i < EnumUtils.SIDES.length; i++) {
                 RelativeSide dir = EnumUtils.SIDES[i];
                 CubeSideState sideState = data[i];
-                if (sideState != null && sideState != CubeSideState.INACTIVE) {
+                if (sideState != null) {
                     parts.add(dynamicParts.get(dir).get(sideState));
                 }
             }
@@ -121,13 +123,12 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
     public record Unbaked(Variant tierModel) implements CustomUnbakedBlockStateModel {
 
         public static final Identifier ID = Mekanism.rl("energy_cube_sided");
-        private static final Codec<Map<RelativeSide, Variant>> SUB_PART_CODEC = Codec.unboundedMap(RelativeSide.CODEC, Variant.MAP_CODEC.codec());
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(in -> in.group(
               Variant.MAP_CODEC.fieldOf("tier_model").forGetter(Unbaked::tierModel)
         ).apply(in, Unbaked::new));
 
         @Override
-        public BlockStateModel bake(ModelBaker baker) {
+        public EnergyCubeModel bake(ModelBaker baker) {
             Map<RelativeSide, Map<CubeSideState, BlockStateModelPart>> dynamicParts = new EnumMap<>(RelativeSide.class);
             ResolvedModel model = baker.getModel(tierModel.modelLocation());
 
@@ -139,6 +140,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
                 dynamicParts.put(side, sideMap);
                 addSideState(baker, side, sideMap, model, tierModelState, CubeSideState.ACTIVE_LIT);
                 addSideState(baker, side, sideMap, model, tierModelState, CubeSideState.ACTIVE_UNLIT);
+                addSideState(baker, side, sideMap, model, tierModelState, CubeSideState.INACTIVE);
             }
 
             return new EnergyCubeModel(frame, dynamicParts);
