@@ -133,4 +133,18 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         CONTAINER container = getContainer(index);
         return container != null && container.isValid(resource);
     }
+
+    /**
+     * Sided inventory helper for isEmpty
+     *
+     * @return true if completely empty on the default side
+     */
+    default boolean isEmpty() {//TODO - 26.1: Update docs
+        for (CONTAINER container : getContainers()) {
+            if (!container.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

@@ -24,6 +24,6 @@ public class QuantumEntangloporterInventorySlotHolder extends QuantumEntanglopor
     @NotNull
     @Override
     public List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return entangloporter.hasFrequency() && entangloporter.hasInventory() ? entangloporter.getFreq().getContainers() : Collections.emptyList();
+        return entangloporter.hasFrequency() && entangloporter.hasInventory() ? entangloporter.getFreq().getInventorySlots() : Collections.emptyList();
     }
 }

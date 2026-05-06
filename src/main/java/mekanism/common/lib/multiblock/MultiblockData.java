@@ -17,15 +17,11 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -53,7 +49,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler {
+public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
     public Set<BlockPos> locations = new ObjectOpenHashSet<>();
     /**
@@ -216,18 +212,18 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
             }
         }
 
-        if (shouldCap(CacheSubstance.FLUID)) {
-            for (IExtendedFluidTank tank : getFluidTanks(null)) {
+        if (shouldCache(CacheSubstance.FLUID)) {
+            for (IExtendedFluidTank tank : getFluidTanks()) {
                 tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (shouldCap(CacheSubstance.CHEMICAL)) {
+        if (shouldCache(CacheSubstance.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks(null)) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }
-        if (shouldCap(CacheSubstance.ENERGY)) {
-            for (IEnergyContainer container : getEnergyContainers(null)) {
+        if (shouldCache(CacheSubstance.ENERGY)) {
+            for (IEnergyContainer container : getEnergyContainers()) {
                 container.setEnergy(Math.min(container.getEnergy(), container.getMaxEnergy()));
             }
         }
@@ -246,7 +242,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
         return worldSupplier.get();
     }
 
-    protected boolean shouldCap(CacheSubstance<?, ?> type) {
+    protected boolean shouldCache(CacheSubstance<?> type) {
         return true;
     }
 
@@ -369,7 +365,7 @@ public class MultiblockData implements IMekanismInventory, IMekanismFluidHandler
 
     @NotNull
     @Override
-    public List<IInventorySlot> getContainers() {
+    public List<IInventorySlot> getInventorySlots() {
         return isFormed() || isRemote() ? inventorySlots : Collections.emptyList();
     }
 

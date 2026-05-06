@@ -120,13 +120,16 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         if (!isRemote()) {
             UUID owner = input.get(MekanismDataComponents.OWNER);
             if (owner != null) {
-                AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(
-                      input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner);
+                AbstractPersonalStorageItemInventory storageItemInventory = PersonalStorageManager.getInventoryForUnchecked(input.get(MekanismDataComponents.PERSONAL_STORAGE_ID), owner);
                 if (storageItemInventory != null) {
+                    //TODO - 26.1: Re-evaluate how we interact with our tile's slots
                     List<IInventorySlot> inventorySlots = storageItemInventory.getContainers();
-                    for (int i = 0; i < inventorySlots.size(); i++) {
-                        IInventorySlot slot = inventorySlots.get(i);
-                        setStackInSlot(i, slot.getResource(), slot.amount());
+                    List<IInventorySlot> tileSlots = getInventorySlots();
+                    if (inventorySlots.size() == tileSlots.size()) {//TODO - 26.1: If they don't match how should we handle it?
+                        for (int i = 0, size = inventorySlots.size(); i < size; i++) {
+                            IInventorySlot slot = inventorySlots.get(i);
+                            tileSlots.get(i).setStack(slot.getResource(), slot.amount());
+                        }
                     }
                 }
             }

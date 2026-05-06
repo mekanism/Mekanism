@@ -33,7 +33,7 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
         return containerType().getOrEmpty(attachedTo);
     }
 
-    protected TYPE getContents(int index) {
+    public TYPE getContents(int index) {
         return getAttached().getOrDefault(index);
     }
 

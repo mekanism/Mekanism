@@ -7,7 +7,7 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.proxy.ProxyItemHandler;
+import mekanism.common.capabilities.proxy.ProxyResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -19,7 +19,7 @@ import org.jetbrains.annotations.Nullable;
 public class ItemHandlerManager extends CapabilityHandlerManager<IInventorySlotHolder, IInventorySlot, ResourceHandler<ItemResource>> {
 
     public ItemHandlerManager(@Nullable IInventorySlotHolder holder, @NotNull IContentsListener changeListener) {
-        super(holder, Capabilities.ITEM.block(), IInventorySlotHolder::getInventorySlots, (side, h) -> new ProxyItemHandler(new IMekanismInventory() {
+        super(holder, Capabilities.ITEM.block(), IInventorySlotHolder::getInventorySlots, (side, h) -> new ProxyResourceHandler<>(new IMekanismInventory() {
             @Override
             public void onContentsChanged() {
                 changeListener.onContentsChanged();

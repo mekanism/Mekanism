@@ -54,7 +54,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks(side) : Collections.emptyList();
+        return _ -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks() : Collections.emptyList();
     }
 
     @Override

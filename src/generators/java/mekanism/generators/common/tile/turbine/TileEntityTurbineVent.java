@@ -29,7 +29,7 @@ public class TileEntityTurbineVent extends TileEntityTurbineCasing {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return _ -> getMultiblock().getFluidTanks();
     }
 
     @Override

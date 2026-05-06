@@ -113,11 +113,11 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     } else {
                         robit.setOwnerUUID(ownerUUID);
                     }
-                    List<IInventorySlot> robitSlots = robit.getContainers();
+                    List<IInventorySlot> robitSlots = robit.getInventorySlots();
                     ComponentBackedItemHandler stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
                     if (stackInventory != null) {
-                        for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
-                            ItemStack stackInSlot = stackInventory.getStackInSlot(slot);
+                        for (int slot = 0, size = robitSlots.size(); slot < stackInventory.size() && slot < size; slot++) {
+                            ItemStack stackInSlot = stackInventory.getContents(slot);
                             if (stackInSlot.isEmpty()) {
                                 continue;
                             }

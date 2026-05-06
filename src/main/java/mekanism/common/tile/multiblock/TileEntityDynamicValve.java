@@ -21,7 +21,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return _ -> getMultiblock().getFluidTanks();
     }
 
     @NotNull

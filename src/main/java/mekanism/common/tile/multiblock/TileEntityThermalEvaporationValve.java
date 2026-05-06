@@ -22,13 +22,13 @@ public class TileEntityThermalEvaporationValve extends TileEntityThermalEvaporat
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return _ -> getMultiblock().getFluidTanks();
     }
 
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override

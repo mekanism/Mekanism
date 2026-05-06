@@ -72,7 +72,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     @Override
-    protected boolean shouldCap(CacheSubstance<?, ?> type) {
+    protected boolean shouldCache(CacheSubstance<?> type) {
         return type != CacheSubstance.ENERGY;
     }
 

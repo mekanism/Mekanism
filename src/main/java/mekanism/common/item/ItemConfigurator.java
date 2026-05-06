@@ -13,7 +13,6 @@ import mekanism.api.MekanismItemAbilities;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.radial.IRadialDataHelper;
 import mekanism.api.radial.RadialData;
 import mekanism.api.radial.mode.IRadialMode;
@@ -164,7 +163,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                     return config.onRightClick(player);
                 }
             } else if (mode == ConfiguratorMode.EMPTY) { //Empty
-                if (tile instanceof IMekanismInventory inv && inv.hasInventory()) {
+                if (tile instanceof TileEntityMekanism inv && inv.hasInventory()) {
                     if (!IBlockSecurityUtils.INSTANCE.canAccessOrDisplayError(player, world, pos, tile)) {
                         return InteractionResult.FAIL;
                     }
@@ -179,7 +178,7 @@ public class ItemConfigurator extends Item implements IRadialModeItem<Configurat
                         return InteractionResult.FAIL;
                     }
                     //TODO: Switch this to items being handled by TileEntityMekanism, energy handled here (via lambdas?)
-                    for (IInventorySlot inventorySlot : inv.getContainers()) {
+                    for (IInventorySlot inventorySlot : inv.getInventorySlots()) {
                         if (!inventorySlot.isEmpty()) {
                             InventoryUtils.dropStack(world, pos, side, inventorySlot.getResource().toStack(inventorySlot.amount()), Block::popResourceFromFace);
                             inventorySlot.setEmpty();

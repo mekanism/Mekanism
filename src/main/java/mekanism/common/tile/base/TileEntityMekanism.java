@@ -27,7 +27,6 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.security.IBlockSecurityUtils;
@@ -120,13 +119,12 @@ import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
-import net.minecraft.core.HolderLookup.Provider;
-import net.minecraft.util.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.SoundInstance;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.core.component.DataComponentType;
@@ -137,6 +135,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.util.Util;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.Nameable;
 import net.minecraft.world.entity.player.Player;
@@ -157,7 +156,7 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, IMekanismInventory, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
+      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
       IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
 
     /**
@@ -443,8 +442,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return supportsComputers;
     }
 
-    @Override
-    public final boolean hasInventory() {
+    /**
+     * Used to check if this tile actually has an inventory.
+     *
+     * @return True if we are actually an inventory.
+     *
+     * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
+     */
+    public final boolean hasInventory() {//TODO - 26.1: Should we throw this check in an interface?
         return itemHandlerManager != null && itemHandlerManager.canHandle();
     }
 
@@ -1142,7 +1147,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return MekanismUtils.redstoneLevelFromContents(getContainers());
+                return MekanismUtils.redstoneLevelFromContents(getInventorySlots());
             }
             //TODO: Do we want some other defaults as well?
         }
@@ -1217,8 +1222,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @NotNull
-    @Override
-    public final List<IInventorySlot> getContainers() {
+    public final List<IInventorySlot> getInventorySlots() {
         //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
         // and maybe rename the one that does take a side as it is mostly used for ContainerType
         return getInventorySlots(null);

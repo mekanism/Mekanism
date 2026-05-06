@@ -7,6 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import mekanism.api.AutomationType;
+import mekanism.api.container.IResourceContainer;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
@@ -226,7 +227,7 @@ public final class InventoryUtils {
      * @param transaction    The transaction that this operation is part of.
      * @param automationType The method that this slot is being interacted from.
      *
-     * @return Remainder
+     * @return Amount inserted
      *
      * @see net.neoforged.neoforge.transfer.ResourceHandlerUtil#insertStacking(ResourceHandler, Resource, int, TransactionContext)
      */
@@ -249,7 +250,7 @@ public final class InventoryUtils {
      * @param checkAll       {@code true} to check all slots regardless of empty state. When this is {@code true}, {@code ignoreEmpty} is ignored.
      * @param automationType The method that this slot is being interacted from.
      *
-     * @return Remainder
+     * @return Amount inserted
      *
      * @see mekanism.common.inventory.container.MekanismContainer#insertItem(List, ItemResource, int, TransactionContext, boolean, boolean, SelectedWindowData)
      */
@@ -272,6 +273,16 @@ public final class InventoryUtils {
             }
         }
         return amount - toInsert;
+    }
+
+    //TODO - 26.1: Docs and maybe move this to a more generic resource util class?
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> boolean areContainersEmpty(List<CONTAINER> containers) {
+        for (CONTAINER container : containers) {
+            if (!container.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     @FunctionalInterface

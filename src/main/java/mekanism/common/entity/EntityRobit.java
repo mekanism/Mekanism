@@ -22,7 +22,6 @@ import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ItemStackToItemStackRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -132,7 +131,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: When Galacticraft gets ported make it so the robit can "breath" without a mask
-public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInventory, IMekanismStrictEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
+public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStrictEnergyHandler, ItemRecipeLookupHandler<ItemStackToItemStackRecipe> {
 
     public static AttributeSupplier.Builder getDefaultAttributes() {
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
@@ -435,10 +434,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         if (energyHandlerItem != null && energyHandlerItem.getEnergyContainerCount() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        List<IInventorySlot> robitSlots = getContainers();
         ComponentBackedItemHandler stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
-        for (int slot = 0; slot < stackInventory.size() && slot < robitSlots.size(); slot++) {
-            IInventorySlot inventorySlot = robitSlots.get(slot);
+        for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
+            IInventorySlot inventorySlot = inventorySlots.get(slot);
             if (!inventorySlot.isEmpty()) {
                 stackInventory.setStackInSlot(slot, inventorySlot.getResource(), inventorySlot.amount());
             }
@@ -484,7 +482,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         output.putBoolean(SerializationConstants.FOLLOW, getFollowing());
         output.putBoolean(SerializationConstants.PICKUP_DROPS, getDropPickup());
         output.storeNullable(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC, homeLocation);
-        ContainerType.ITEM.saveTo(output, getContainers());
+        ContainerType.ITEM.saveTo(output, inventorySlots);
         ContainerType.ENERGY.saveTo(output, getEnergyContainers(null));
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
         output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
@@ -498,7 +496,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         setFollowing(input.getBooleanOr(SerializationConstants.FOLLOW, getFollowing()));
         setDropPickup(input.getBooleanOr(SerializationConstants.PICKUP_DROPS, getDropPickup()));
         homeLocation = input.read(SerializationConstants.HOME_LOCATION, GlobalPos.CODEC).orElse(null);
-        ContainerType.ITEM.readFrom(input, getContainers());
+        ContainerType.ITEM.readFrom(input, inventorySlots);
         ContainerType.ENERGY.readFrom(input, getEnergyContainers(null));
         progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         setSkin(input.read(SerializationConstants.SKIN, SKIN_KEY_CODEC).orElse(MekanismRobitSkins.BASE), null);
@@ -599,9 +597,8 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     }
 
     @NotNull
-    @Override
-    public List<IInventorySlot> getContainers() {
-        return hasInventory() ? inventorySlots : Collections.emptyList();
+    public List<IInventorySlot> getInventorySlots() {
+        return inventorySlots;
     }
 
     @NotNull
@@ -617,9 +614,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @NotNull
     public List<IInventorySlot> getContainerInventorySlots(@NotNull MenuType<?> containerType) {
-        if (!hasInventory()) {
-            return Collections.emptyList();
-        } else if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.get()) {
+        if (containerType == MekanismContainerTypes.INVENTORY_ROBIT.get()) {
             return inventoryContainerSlots;
         } else if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
             return mainContainerSlots;

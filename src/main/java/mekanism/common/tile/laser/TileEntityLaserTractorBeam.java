@@ -66,7 +66,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         if (!drops.isEmpty()) {
             BlockPos dropPos = null;
             Direction opposite = null;
-            List<IInventorySlot> inventorySlots = getContainers();
+            List<IInventorySlot> inventorySlots = getInventorySlots();
             try (Transaction transaction = Transaction.openRoot()) {
                 for (ItemStack drop : drops) {
                     if (drop.isEmpty()) {//Not sure if this can ever be the case, but handle it just in case
@@ -97,7 +97,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         try (Transaction transaction = Transaction.openRoot()) {
             ItemStack stack = entity.getItem();
             //Try inserting it first where it can stack and then into empty slots
-            int inserted = InventoryUtils.insertItem(getContainers(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
+            int inserted = InventoryUtils.insertItem(getInventorySlots(), ItemResource.of(stack), stack.count(), transaction, AutomationType.INTERNAL);
             if (inserted == stack.count()) {
                 //If we have finished grabbing it all then remove the entity
                 entity.discard();
@@ -116,17 +116,17 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
     int getSlotCount() {
         //TODO - 26.1: This used to just call getSlots, which effectively now would be size, but that seems like an unclear name
         // and we likely will move away from directly implementing IMekanismInventory. Evaluate if this handling will be fine, or if we need to change things
-        return getContainers().size();
+        return getInventorySlots().size();
     }
 
     //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
     //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "amplifier slot")
     IInventorySlot getSlot(int slot) throws ComputerException {
-        int slots = getSlotCount();
-        if (slot < 0 || slot >= slots) {
-            throw new ComputerException("Slot: '%d' is out of bounds, as this laser amplifier only has '%d' slots (zero indexed).", slot, slots);
+        List<IInventorySlot> slots = getInventorySlots();
+        if (slot < 0 || slot >= slots.size()) {
+            throw new ComputerException("Slot: '%d' is out of bounds, as this laser amplifier only has '%d' slots (zero indexed).", slot, slots.size());
         }
-        return getContainer(slot);
+        return slots.get(slot);
     }
     //End methods IComputerTile
 }

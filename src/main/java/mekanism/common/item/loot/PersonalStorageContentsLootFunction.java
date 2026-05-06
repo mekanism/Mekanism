@@ -11,6 +11,7 @@ import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItem
 import mekanism.common.lib.inventory.personalstorage.ClientSidePersonalStorageInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.tile.TileEntityPersonalStorage;
+import mekanism.common.util.InventoryUtils;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -44,18 +45,21 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
     @Override
     public ItemStack apply(ItemStack stack, LootContext lootContext) {
         BlockEntity blockEntity = lootContext.getParameter(LootContextParams.BLOCK_ENTITY);
-        if (blockEntity instanceof TileEntityPersonalStorage personalStorage && !personalStorage.isInventoryEmpty()) {
-            List<IInventorySlot> tileSlots = personalStorage.getContainers();
-            AbstractPersonalStorageItemInventory destInv;
-            if (EffectiveSide.get().isClient()) {
-                destInv = new ClientSidePersonalStorageInventory();
-            } else {
-                destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available?!");
-            }
-            for (int i = 0; i < tileSlots.size(); i++) {
-                IInventorySlot tileSlot = tileSlots.get(i);
-                if (!tileSlot.isEmpty()) {
-                    destInv.setStackInSlot(i, tileSlot.getResource(), tileSlot.amount());
+        if (blockEntity instanceof TileEntityPersonalStorage personalStorage) {
+            List<IInventorySlot> tileSlots = personalStorage.getInventorySlots();
+            //Validate that at least one slot has something stored
+            if (!InventoryUtils.areContainersEmpty(tileSlots)) {
+                AbstractPersonalStorageItemInventory destInv;
+                if (EffectiveSide.get().isClient()) {
+                    destInv = new ClientSidePersonalStorageInventory();
+                } else {
+                    destInv = Objects.requireNonNull(PersonalStorageManager.getInventoryFor(stack), "Inventory not available?!");
+                }
+                for (int i = 0, size = tileSlots.size(); i < size; i++) {
+                    IInventorySlot tileSlot = tileSlots.get(i);
+                    if (!tileSlot.isEmpty()) {
+                        destInv.setStackInSlot(i, tileSlot.getResource(), tileSlot.amount());
+                    }
                 }
             }
         }

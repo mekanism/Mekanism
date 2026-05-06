@@ -39,7 +39,7 @@ public class TileEntityBoilerCasing extends TileEntityMultiblock<BoilerMultibloc
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override

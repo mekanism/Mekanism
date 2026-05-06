@@ -71,13 +71,13 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMode() == FissionPortMode.INPUT ? getMultiblock().getFluidTanks(side) : Collections.emptyList();
+        return _ -> getMode() == FissionPortMode.INPUT ? getMultiblock().getFluidTanks() : Collections.emptyList();
     }
 
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override

@@ -35,7 +35,7 @@ public class TileEntityInductionPort extends TileEntityInductionCasing {
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
         //Don't allow inserting if we are on output mode, or extracting if we are on input mode
-        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(), side -> getMultiblock().getEnergyContainers(side));
+        return ProxiedEnergyContainerHolder.create(side -> !getActive(), side -> getActive(), _ -> getMultiblock().getEnergyContainers());
     }
 
     @Override

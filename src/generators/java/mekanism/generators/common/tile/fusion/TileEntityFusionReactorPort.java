@@ -52,19 +52,19 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     @NotNull
     @Override
     protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return side -> getMultiblock().getFluidTanks(side);
+        return _ -> getMultiblock().getFluidTanks();
     }
 
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        return side -> getMultiblock().getEnergyContainers(side);
+        return _ -> getMultiblock().getEnergyContainers();
     }
 
     @NotNull
     @Override
     protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return side -> getMultiblock().getHeatCapacitors(side);
+        return _ -> getMultiblock().getHeatCapacitors();
     }
 
     @Override

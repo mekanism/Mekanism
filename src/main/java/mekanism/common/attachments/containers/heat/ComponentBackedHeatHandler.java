@@ -39,7 +39,7 @@ public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapac
     }
 
     @Override
-    protected HeatCapacitorData getContents(int index) {
+    public HeatCapacitorData getContents(int index) {
         AttachedHeat attached = getAttached();
         if (index < 0 || index >= attached.size()) {
             if (index > 0 && index < size()) {

@@ -32,7 +32,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     @NotNull
     @Override
     protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        return side -> getMultiblock().getEnergyContainers(side);
+        return _ -> getMultiblock().getEnergyContainers();
     }
 
     @Override

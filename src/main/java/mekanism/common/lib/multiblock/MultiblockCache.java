@@ -7,16 +7,11 @@ import java.util.List;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
-import mekanism.api.heat.IMekanismHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -34,8 +29,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MultiblockCache<T extends MultiblockData> implements IMekanismInventory, IMekanismFluidHandler, IMekanismStrictEnergyHandler, IMekanismHeatHandler,
-      IMekanismChemicalHandler {
+public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
     private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
@@ -44,10 +38,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
 
     public void apply(T data) {
-        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
-            List<? extends ValueIOSerializable> containers = type.getContainerList(data);
+        for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
+            List<? extends ValueIOSerializable> containers = type.containerList(data);
             if (containers != null) {
-                List<? extends ValueIOSerializable> cacheContainers = type.getContainerList(this);
+                List<? extends ValueIOSerializable> cacheContainers = type.containerList(this);
                 for (int i = 0; i < cacheContainers.size(); i++) {
                     if (i < containers.size()) {
                         type.copy(cacheContainers.get(i), containers.get(i));
@@ -58,10 +52,10 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void sync(T data) {
-        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
-            List<? extends ValueIOSerializable> containersToCopy = type.getContainerList(data);
+        for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
+            List<? extends ValueIOSerializable> containersToCopy = type.containerList(data);
             if (containersToCopy != null) {
-                List<? extends ValueIOSerializable> cacheContainers = type.getContainerList(this);
+                List<? extends ValueIOSerializable> cacheContainers = type.containerList(this);
                 if (cacheContainers.isEmpty()) {
                     type.prefab(this, containersToCopy.size());
                 }
@@ -73,34 +67,34 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
     }
 
     public void load(@NotNull ValueInput input) {
-        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.readFrom(input, this);
         }
     }
 
     public void save(@NotNull ValueOutput output) {
-        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.saveTo(output, this);
         }
     }
 
     public void merge(MultiblockCache<T> mergeCache, RejectContents rejectContents) {
         // prefab enough containers for each substance type to support the merge cache
-        for (CacheSubstance<?, ValueIOSerializable> type : CacheSubstance.VALUES) {
+        for (CacheSubstance<ValueIOSerializable> type : CacheSubstance.VALUES) {
             type.preHandleMerge(this, mergeCache);
         }
 
         try (Transaction transaction = Transaction.openRoot()) {
             // Items
-            StackUtils.merge(getContainers(), mergeCache.getContainers(), rejectContents.rejectedItems, transaction);
+            StackUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
             // Fluid
-            StorageUtils.mergeFluidTanks(getFluidTanks(null), mergeCache.getFluidTanks(null), rejectContents.rejectedFluids);
+            StorageUtils.mergeFluidTanks(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids);
             // Chemical
             StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
             // Energy
-            StorageUtils.mergeEnergyContainers(getEnergyContainers(null), mergeCache.getEnergyContainers(null));
+            StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers());
             // Heat
-            StorageUtils.mergeHeatCapacitors(getHeatCapacitors(null), mergeCache.getHeatCapacitors(null));
+            StorageUtils.mergeHeatCapacitors(getHeatCapacitors(), mergeCache.getHeatCapacitors());
             transaction.commit();
         }
     }
@@ -111,7 +105,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
     @NotNull
     @Override
-    public List<IInventorySlot> getContainers() {
+    public List<IInventorySlot> getInventorySlots() {
         return inventorySlots;
     }
 
@@ -146,17 +140,17 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
     }
 
-    public abstract static class CacheSubstance<HANDLER, ELEMENT extends ValueIOSerializable> {
+    public abstract static class CacheSubstance<ELEMENT extends ValueIOSerializable> {
 
-        public static final CacheSubstance<IMekanismInventory, IInventorySlot> ITEMS = new CacheSubstance<>(ContainerType.ITEM) {
+        public static final CacheSubstance<IInventorySlot> ITEMS = new CacheSubstance<>(ContainerType.ITEM) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.inventorySlots.add(BasicInventorySlot.at(cache, 0, 0));
             }
 
             @Override
-            protected List<IInventorySlot> containerList(IMekanismInventory inventory) {
-                return inventory.getContainers();
+            protected List<IInventorySlot> containerList(IMultiblockContents inventory) {
+                return inventory.getInventorySlots();
             }
 
             @Override
@@ -165,15 +159,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismFluidHandler, IExtendedFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
+        public static final CacheSubstance<IExtendedFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IExtendedFluidTank> containerList(IMekanismFluidHandler fluidHandler) {
-                return fluidHandler.getFluidTanks(null);
+            protected List<IExtendedFluidTank> containerList(IMultiblockContents fluidHandler) {
+                return fluidHandler.getFluidTanks();
             }
 
             @Override
@@ -182,14 +176,14 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismChemicalHandler, IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
+        public static final CacheSubstance<IChemicalTank> CHEMICAL = new CacheSubstance<>(ContainerType.CHEMICAL) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.chemicalTanks.add(BasicChemicalTank.createAllValid(Long.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IChemicalTank> containerList(IMekanismChemicalHandler tracker) {
+            protected List<IChemicalTank> containerList(IMultiblockContents tracker) {
                 return tracker.getChemicalTanks(null);
             }
 
@@ -199,15 +193,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismStrictEnergyHandler, IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
+        public static final CacheSubstance<IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.energyContainers.add(BasicEnergyContainer.create(Long.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IEnergyContainer> containerList(IMekanismStrictEnergyHandler handler) {
-                return handler.getEnergyContainers(null);
+            protected List<IEnergyContainer> containerList(IMultiblockContents handler) {
+                return handler.getEnergyContainers();
             }
 
             @Override
@@ -216,15 +210,15 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             }
         };
 
-        public static final CacheSubstance<IMekanismHeatHandler, IHeatCapacitor> HEAT = new CacheSubstance<>(ContainerType.HEAT) {
+        public static final CacheSubstance<IHeatCapacitor> HEAT = new CacheSubstance<>(ContainerType.HEAT) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.heatCapacitors.add(BasicHeatCapacitor.create(HeatAPI.DEFAULT_HEAT_CAPACITY, null, cache));
             }
 
             @Override
-            protected List<IHeatCapacitor> containerList(IMekanismHeatHandler handler) {
-                return handler.getHeatCapacitors(null);
+            protected List<IHeatCapacitor> containerList(IMultiblockContents handler) {
+                return handler.getHeatCapacitors();
             }
 
             @Override
@@ -237,7 +231,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         };
 
         @SuppressWarnings("unchecked")
-        public static final CacheSubstance<?, ValueIOSerializable>[] VALUES = new CacheSubstance[]{
+        public static final CacheSubstance<ValueIOSerializable>[] VALUES = new CacheSubstance[]{
               CHEMICAL,
               ITEMS,
               FLUID,
@@ -253,16 +247,12 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
 
         protected abstract void defaultPrefab(MultiblockCache<?> cache);
 
-        protected abstract List<ELEMENT> containerList(HANDLER handler);
+        protected abstract List<ELEMENT> containerList(IMultiblockContents handler);
 
         private void prefab(MultiblockCache<?> cache, int count) {
             for (int i = 0; i < count; i++) {
                 defaultPrefab(cache);
             }
-        }
-
-        public List<ELEMENT> getContainerList(Object holder) {
-            return containerList((HANDLER) holder);
         }
 
         public abstract void sync(ELEMENT cache, ELEMENT data);
@@ -272,7 +262,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
         }
 
         public void preHandleMerge(MultiblockCache<?> cache, MultiblockCache<?> merge) {
-            int diff = getContainerList(merge).size() - getContainerList(cache).size();
+            int diff = containerList(merge).size() - containerList(cache).size();
             if (diff > 0) {
                 prefab(cache, diff);
             }
@@ -286,17 +276,17 @@ public class MultiblockCache<T extends MultiblockData> implements IMekanismInven
             int stored = input.getIntOr(getStoredTagKey(), 0);
             if (stored > 0) {
                 prefab(cache, stored);
-                containerType.readFrom(input, getContainerList(cache));
+                containerType.readFrom(input, containerList(cache));
             }
         }
 
         public void saveTo(ValueOutput output, MultiblockCache<?> holder) {
-            List<ELEMENT> containers = getContainerList(holder);
+            List<ELEMENT> containers = containerList(holder);
             if (!containers.isEmpty()) {
                 //Note: We can skip putting stored at zero if containers is empty (in addition to skipping actually writing the containers)
                 // because getInt will default to 0 for keys that aren't present
                 output.putInt(getStoredTagKey(), containers.size());
-                containerType.saveTo(output, getContainerList(holder));
+                containerType.saveTo(output, containerList(holder));
             }
         }
     }

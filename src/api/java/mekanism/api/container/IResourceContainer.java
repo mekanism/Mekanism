@@ -58,7 +58,10 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
      * @return true if this {@link IResourceContainer} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this
      * {@link IResourceContainer} can never insert the {@link ItemStack} in any situation.
      */
-    boolean isValid(RESOURCE itemType);//TODO - 26.1: Update docs and figure out handling of empty resource
+    boolean isValid(RESOURCE itemType);
+    //TODO - 26.1: Update docs and figure out handling of empty resource
+    // Also Neo changed it to be if it is ever valid instead of valid for insertion, I believe we already behaved as such
+    // but we should validate that we obey that properly
 
     /**
      * Convenience method for checking if this slot is empty.
