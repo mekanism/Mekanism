@@ -3,7 +3,7 @@ package mekanism.common.util;
 import java.util.Collection;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.attachments.containers.ContainerType;
@@ -41,7 +41,7 @@ public final class FluidUtils {
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
         IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(toFill);
         if (attachment != null) {
-            for (IExtendedFluidTank fluidTank : attachment.getFluidTanks(null)) {
+            for (IFluidTank fluidTank : attachment.getFluidTanks(null)) {
                 fluidTank.setStack(new FluidStack(fluid, fluidTank.getCapacity()));
             }
         }
@@ -70,11 +70,11 @@ public final class FluidUtils {
         return 0xFFFFFFFF;
     }
 
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IExtendedFluidTank tank) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank) {
         emit(targets, tank, tank.getCapacity());
     }
 
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IExtendedFluidTank tank, int maxOutput) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank, int maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
             tank.extract(emit(targets, FluidStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -92,7 +92,7 @@ public final class FluidUtils {
         return emit(targets, stack, null, Integer.MAX_VALUE);
     }
 
-    private static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack, IExtendedFluidTank tank,
+    private static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack, IFluidTank tank,
           int maxOutput) {
         if (stack.isEmpty() && tank == null) {
             //Something went wrong in calling this method
@@ -135,7 +135,7 @@ public final class FluidUtils {
         return legacyHandler.fill(stack.copy(), FluidAction.SIMULATE) > 0;
     }
 
-    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IExtendedFluidTank fluidTank) {
+    public static boolean handleTankInteraction(Player player, InteractionHand hand, ItemStack itemStack, IFluidTank fluidTank) {
         if (Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(itemStack)) == null) {
             //If the stack doesn't have a capability just exit. There may be cases like our fluid tank where it will have a capability
             // if the stack size is one, but not when the stack size is greater

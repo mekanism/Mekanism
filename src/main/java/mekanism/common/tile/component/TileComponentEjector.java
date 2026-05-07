@@ -19,7 +19,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
@@ -195,7 +195,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                                 }
                             }
                             case FluidSlotInfo fluidSlotInfo when type == TransmissionType.FLUID -> {
-                                for (IExtendedFluidTank tank : fluidSlotInfo.getTanks()) {
+                                for (IFluidTank tank : fluidSlotInfo.getTanks()) {
                                     if (!tank.isEmpty()) {
                                         addData(outputData, tank, outputSides);
                                     }
@@ -229,7 +229,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     }
                     case FLUID -> {
                         List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                        FluidUtils.emit(caches, (IExtendedFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
+                        FluidUtils.emit(caches, (IFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
                     }
                     case ENERGY -> {
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();

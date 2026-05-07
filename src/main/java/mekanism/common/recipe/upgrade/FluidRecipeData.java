@@ -6,7 +6,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.ExtendedFluidHandlerUtils;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
@@ -16,16 +16,16 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
 
-    private final List<IExtendedFluidTank> fluidTanks;
+    private final List<IFluidTank> fluidTanks;
 
-    FluidRecipeData(List<IExtendedFluidTank> fluidTanks) {
+    FluidRecipeData(List<IFluidTank> fluidTanks) {
         this.fluidTanks = fluidTanks;
     }
 
     @Nullable
     @Override
     public FluidRecipeData merge(FluidRecipeData other) {
-        List<IExtendedFluidTank> allTanks = new ArrayList<>(fluidTanks);
+        List<IFluidTank> allTanks = new ArrayList<>(fluidTanks);
         allTanks.addAll(other.fluidTanks);
         return new FluidRecipeData(allTanks);
     }
@@ -42,7 +42,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
             //Something went wrong, fail
             return false;
         }
-        for (IExtendedFluidTank fluidTank : this.fluidTanks) {
+        for (IFluidTank fluidTank : this.fluidTanks) {
             if (!fluidTank.isEmpty() && !insertManualIntoOutputContainer(outputHandler, fluidTank.getFluid()).isEmpty()) {
                 //If we have a remainder something failed so bail
                 return false;

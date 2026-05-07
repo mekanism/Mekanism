@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Supplier;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 
@@ -27,15 +27,15 @@ public interface IProxiedSlotInfo extends ISlotInfo {
 
     class FluidProxy extends FluidSlotInfo implements IProxiedSlotInfo {
 
-        private final Supplier<List<IExtendedFluidTank>> tankSupplier;
+        private final Supplier<List<IFluidTank>> tankSupplier;
 
-        public FluidProxy(boolean canInput, boolean canOutput, Supplier<List<IExtendedFluidTank>> tankSupplier) {
+        public FluidProxy(boolean canInput, boolean canOutput, Supplier<List<IFluidTank>> tankSupplier) {
             super(canInput, canOutput);
             this.tankSupplier = tankSupplier;
         }
 
         @Override
-        public List<IExtendedFluidTank> getTanks() {
+        public List<IFluidTank> getTanks() {
             return tankSupplier.get();
         }
     }

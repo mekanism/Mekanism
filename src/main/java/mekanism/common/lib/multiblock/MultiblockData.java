@@ -18,7 +18,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -85,7 +85,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
     private final Supplier<Level> worldSupplier;
 
     protected final List<IInventorySlot> inventorySlots = new ArrayList<>();
-    protected final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
+    protected final List<IFluidTank> fluidTanks = new ArrayList<>();
     protected final List<IChemicalTank> chemicalTanks = new ArrayList<>();
     protected final List<IEnergyContainer> energyContainers = new ArrayList<>();
     protected final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
@@ -213,7 +213,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
         }
 
         if (shouldCache(CacheSubstance.FLUID)) {
-            for (IExtendedFluidTank tank : getFluidTanks()) {
+            for (IFluidTank tank : getFluidTanks()) {
                 tank.setStackSize(Math.min(tank.amount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
@@ -371,7 +371,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
     }
 

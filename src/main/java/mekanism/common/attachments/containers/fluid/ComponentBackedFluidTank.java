@@ -7,7 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource, FluidStack, AttachedFluids> implements IExtendedFluidTank {
+public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource, FluidStack, AttachedFluids> implements IFluidTank {
 
     private final IntSupplier capacity;
     private final IntSupplier rate;

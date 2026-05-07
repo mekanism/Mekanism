@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI.HeatTransfer;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
@@ -307,7 +307,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",
                                                                                      "getBufferFluidFilledPercentage"}, docPlaceholder = "fluid buffer")
-    IExtendedFluidTank getBufferFluidTank() throws ComputerException {
+    IFluidTank getBufferFluidTank() throws ComputerException {
         return getFrequency().getFluidTanks(null).getFirst();
     }
 

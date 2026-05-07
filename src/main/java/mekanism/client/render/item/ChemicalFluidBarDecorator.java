@@ -4,7 +4,7 @@ import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.client.gui.GuiUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.util.FluidUtils;
@@ -53,7 +53,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         }
 
         if (showFluid) {
-            List<IExtendedFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+            List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
             int tank = getDisplayTank(tanks.size());
             if (tank != -1) {
                 renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
@@ -68,7 +68,7 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
         renderBar(guiGraphics, stackXPos, yPos, tank.getStored(), tank.getCapacity(), tank.getStack().getChemicalColorRepresentation());
     }
 
-    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IExtendedFluidTank tank) {
+    protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IFluidTank tank) {
         FluidStack fluid = tank.getFluid();
         renderBar(guiGraphics, stackXPos, yPos, fluid.amount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid));
     }

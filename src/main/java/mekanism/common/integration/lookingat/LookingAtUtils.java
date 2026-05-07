@@ -9,7 +9,7 @@ import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -155,7 +155,7 @@ public class LookingAtUtils {
 
     private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler, FluidStack fallback) {
         if (fluidHandler instanceof IMekanismFluidHandler mekFluidHandler) {
-            for (IExtendedFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
+            for (IFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
                 if (fluidTank instanceof FluidTankWrapper wrapper) {
                     MergedTank mergedTank = wrapper.getMergedTank();
                     CurrentType currentType = mergedTank.getCurrentType();

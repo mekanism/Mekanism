@@ -13,10 +13,10 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
-public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {//TODO - 26.1: Rename this to IFluidTank?
+public interface IFluidTank extends IResourceContainer<FluidResource> {//TODO - 26.1: Rename this to IFluidTank?
 
     /**
-     * Overrides the stack in this {@link IExtendedFluidTank}.
+     * Overrides the stack in this {@link IFluidTank}.
      *
      * @param stack {@link FluidStack} to set this tanks' contents to (may be empty).
      *
@@ -28,12 +28,12 @@ public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {/
     }
 
     /**
-     * Overrides the stack in this {@link IExtendedFluidTank}.
+     * Overrides the stack in this {@link IFluidTank}.
      *
      * @param stack {@link FluidStack} to set this tank's contents to (may be empty).
      *
      * @apiNote Unsafe version of {@link #setStack(FluidStack)}. This method is exposed for implementation and code deduplication reasons only and should
-     * <strong>NOT</strong> be directly called outside your own {@link IExtendedFluidTank} where you already know the given {@link FluidStack} is valid, or on the
+     * <strong>NOT</strong> be directly called outside your own {@link IFluidTank} where you already know the given {@link FluidStack} is valid, or on the
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
@@ -41,7 +41,7 @@ public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {/
 
     /**
      * <p>
-     * Inserts a {@link FluidStack} into this {@link IExtendedFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this
+     * Inserts a {@link FluidStack} into this {@link IFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this
      * function!
      * </p>
      * Note: This behaviour is subtly <strong>different</strong> from {@link IFluidHandler#fill(FluidStack, FluidAction)}
@@ -89,7 +89,7 @@ public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {/
     }
 
     /**
-     * Extracts a {@link FluidStack} from this {@link IExtendedFluidTank}.
+     * Extracts a {@link FluidStack} from this {@link IFluidTank}.
      * <p>
      * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
      * </p>
@@ -216,7 +216,7 @@ public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {/
     }
 
     /**
-     * Gets the amount of fluid needed by this {@link IExtendedFluidTank} to reach a filled state.
+     * Gets the amount of fluid needed by this {@link IFluidTank} to reach a filled state.
      *
      * @return Amount of fluid needed
      */

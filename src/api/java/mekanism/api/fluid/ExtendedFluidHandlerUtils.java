@@ -68,13 +68,13 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.5.13
      */
-    public static FluidStack insert(FluidStack stack, @Nullable Direction side, Function<@Nullable Direction, List<IExtendedFluidTank>> fluidTankSupplier,
+    public static FluidStack insert(FluidStack stack, @Nullable Direction side, Function<@Nullable Direction, List<IFluidTank>> fluidTankSupplier,
           Action action, AutomationType automationType) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        List<IFluidTank> fluidTanks = fluidTankSupplier.apply(side);
         return insert(stack, action, automationType, fluidTanks.size(), fluidTanks);
     }
 
@@ -83,7 +83,7 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack insert(FluidStack stack, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack insert(FluidStack stack, Action action, AutomationType automationType, int size, List<IFluidTank> fluidTanks) {
         if (stack.isEmpty()) {
             //Short circuit if nothing is actually being inserted
             return FluidStack.EMPTY;
@@ -95,8 +95,8 @@ public class ExtendedFluidHandlerUtils {
         }
         FluidStack toInsert = stack;
         //Start by trying to insert into the tanks that have the same type
-        List<IExtendedFluidTank> emptyTanks = new ArrayList<>();
-        for (IExtendedFluidTank tank : fluidTanks) {
+        List<IFluidTank> emptyTanks = new ArrayList<>();
+        for (IFluidTank tank : fluidTanks) {
             if (tank.isEmpty()) {
                 emptyTanks.add(tank);
             } else if (tank.isFluidEqual(stack)) {
@@ -109,7 +109,7 @@ public class ExtendedFluidHandlerUtils {
                 toInsert = remainder;
             }
         }
-        for (IExtendedFluidTank tank : emptyTanks) {
+        for (IFluidTank tank : emptyTanks) {
             FluidStack remainder = tank.insert(toInsert, action, automationType);
             if (remainder.isEmpty()) {
                 //If we have no remaining fluid, return that we fit it all
@@ -168,12 +168,12 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.5.13
      */
-    public static FluidStack extract(int amount, @Nullable Direction side, Function<@Nullable Direction, List<IExtendedFluidTank>> fluidTankSupplier,
+    public static FluidStack extract(int amount, @Nullable Direction side, Function<@Nullable Direction, List<IFluidTank>> fluidTankSupplier,
           Action action, AutomationType automationType) {
         if (amount == 0) {
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        List<IFluidTank> fluidTanks = fluidTankSupplier.apply(side);
         return extract(amount, action, automationType, fluidTanks.size(), fluidTanks);
     }
 
@@ -182,7 +182,7 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack extract(int amount, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack extract(int amount, Action action, AutomationType automationType, int size, List<IFluidTank> fluidTanks) {
         if (amount == 0 || size == 0) {
             return FluidStack.EMPTY;
         } else if (size == 1) {
@@ -191,7 +191,7 @@ public class ExtendedFluidHandlerUtils {
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = amount;
-        for (IExtendedFluidTank fluidTank : fluidTanks) {
+        for (IFluidTank fluidTank : fluidTanks) {
             if (extracted.isEmpty() || fluidTank.isFluidEqual(extracted)) {
                 //If there is fluid in the tank that matches the type we have started draining, or we haven't found a type yet
                 FluidStack drained = fluidTank.extract(toDrain, action, automationType);
@@ -265,12 +265,12 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.5.13
      */
-    public static FluidStack extract(FluidStack stack, @Nullable Direction side, Function<@Nullable Direction, List<IExtendedFluidTank>> fluidTankSupplier,
+    public static FluidStack extract(FluidStack stack, @Nullable Direction side, Function<@Nullable Direction, List<IFluidTank>> fluidTankSupplier,
           Action action, AutomationType automationType) {
         if (stack.isEmpty()) {
             return FluidStack.EMPTY;
         }
-        List<IExtendedFluidTank> fluidTanks = fluidTankSupplier.apply(side);
+        List<IFluidTank> fluidTanks = fluidTankSupplier.apply(side);
         return extract(stack, action, automationType, fluidTanks.size(), fluidTanks);
     }
 
@@ -279,12 +279,12 @@ public class ExtendedFluidHandlerUtils {
      *
      * @since 10.6.0
      */
-    public static FluidStack extract(FluidStack stack, Action action, AutomationType automationType, int size, List<IExtendedFluidTank> fluidTanks) {
+    public static FluidStack extract(FluidStack stack, Action action, AutomationType automationType, int size, List<IFluidTank> fluidTanks) {
         if (stack.isEmpty() || size == 0) {
             return FluidStack.EMPTY;
         } else if (size == 1) {
             //noinspection SequencedCollectionMethodCanBeUsed: we know size
-            IExtendedFluidTank tank = fluidTanks.get(0);
+            IFluidTank tank = fluidTanks.get(0);
             if (tank.isEmpty() || !tank.isFluidEqual(stack)) {
                 return FluidStack.EMPTY;
             }
@@ -292,7 +292,7 @@ public class ExtendedFluidHandlerUtils {
         }
         FluidStack extracted = FluidStack.EMPTY;
         int toDrain = stack.amount();
-        for (IExtendedFluidTank fluidTank : fluidTanks) {
+        for (IFluidTank fluidTank : fluidTanks) {
             if (fluidTank.isFluidEqual(stack)) {
                 //If there is fluid in the tank that matches the type we are trying to drain, try to drain from it
                 FluidStack drained = fluidTank.extract(toDrain, action, automationType);

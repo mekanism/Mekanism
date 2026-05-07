@@ -11,7 +11,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidResource, IExtendedFluidTank>, ISidedFluidHandler {
+public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidResource, IFluidTank>, ISidedFluidHandler {
 
     /**
      * Used to check if an instance of {@link IMekanismFluidHandler} actually has the ability to handle fluid.
@@ -42,24 +42,24 @@ public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidRes
      * @implNote When side is null (an internal request), this method <em>MUST</em> return all tanks in the handler. Additionally, if {@link #canHandleFluid()} is false,
      * this <em>MUST</em> return an empty list.
      */
-    List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side);
+    List<IFluidTank> getFluidTanks(@Nullable Direction side);
 
     @Override//TODO - 26.1: Make this not be defaulted
-    default List<IExtendedFluidTank> getContainers() {
+    default List<IFluidTank> getContainers() {
         return getFluidTanks(null);
     }
 
     /**
-     * Returns the {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.
+     * Returns the {@link IFluidTank} that has the given index from the list of tanks on the given side.
      *
      * @param tank The index of the tank to retrieve.
      * @param side The side we are interacting with the handler from (null for internal).
      *
-     * @return The {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.
+     * @return The {@link IFluidTank} that has the given index from the list of tanks on the given side.
      */
     @Nullable
-    default IExtendedFluidTank getFluidTank(int tank, @Nullable Direction side) {
-        List<IExtendedFluidTank> tanks = getFluidTanks(side);
+    default IFluidTank getFluidTank(int tank, @Nullable Direction side) {
+        List<IFluidTank> tanks = getFluidTanks(side);
         return tank >= 0 && tank < tanks.size() ? tanks.get(tank) : null;
     }
 
@@ -70,13 +70,13 @@ public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidRes
 
     @Override
     default FluidStack getFluidInTank(int tank, @Nullable Direction side) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         return fluidTank == null ? FluidStack.EMPTY : fluidTank.getFluid();
     }
 
     @Override
     default void setFluidInTank(int tank, FluidStack stack, @Nullable Direction side) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         if (fluidTank != null) {
             fluidTank.setStack(stack);
         }
@@ -84,13 +84,13 @@ public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidRes
 
     @Override
     default int getTankCapacity(int tank, @Nullable Direction side) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         return fluidTank == null ? 0 : fluidTank.getCapacity();
     }
 
     @Override
     default boolean isFluidValid(int tank, FluidStack stack, @Nullable Direction side) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         return fluidTank != null && fluidTank.isValid(FluidResource.of(stack));
     }
 
@@ -100,7 +100,7 @@ public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidRes
      */
     @Override
     default FluidStack insertFluid(int tank, FluidStack stack, @Nullable Direction side, Action action) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         return fluidTank == null ? stack : fluidTank.insert(stack, action, AutomationType.handler(side));
     }
 
@@ -110,7 +110,7 @@ public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidRes
      */
     @Override
     default FluidStack extractFluid(int tank, int amount, @Nullable Direction side, Action action) {
-        IExtendedFluidTank fluidTank = getFluidTank(tank, side);
+        IFluidTank fluidTank = getFluidTank(tank, side);
         return fluidTank == null ? FluidStack.EMPTY : fluidTank.extract(amount, action, AutomationType.handler(side));
     }
 

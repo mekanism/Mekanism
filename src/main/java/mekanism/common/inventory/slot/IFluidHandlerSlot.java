@@ -6,7 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InOutSlotItemAccess;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
@@ -22,7 +22,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public interface IFluidHandlerSlot extends IInventorySlot {
 
-    IExtendedFluidTank getFluidTank();
+    IFluidTank getFluidTank();
 
     boolean isDraining();
 
@@ -39,7 +39,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             } else if (editMode == ContainerEditMode.EMPTY) {
                 fillTank(outputSlot);
             } else if (editMode == ContainerEditMode.BOTH) {
-                IExtendedFluidTank fluidTank = getFluidTank();
+                IFluidTank fluidTank = getFluidTank();
                 //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access?
                 ItemAccess access = new InventorySlotItemAccess(this, AutomationType.INTERNAL);
                 ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
@@ -120,7 +120,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         ItemAccess access = new InOutSlotItemAccess(this, outputSlot);
         ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
         if (itemHandler != null) {
-            IExtendedFluidTank fluidTank = getFluidTank();
+            IFluidTank fluidTank = getFluidTank();
             FluidStack fluidInTank = fluidTank.getFluid();
             if (!fluidInTank.isEmpty()) {
                 //If we have a fluid attempt to drain it into our item
@@ -174,7 +174,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     ///
     /// @return True if we can drain the fluid from the item and the item after being drained can (and was) moved to the output slot, false otherwise
     private boolean drainItemAndMove(IInventorySlot outputSlot, FluidResource fluidToTransfer, int amountToTransfer) {
-        IExtendedFluidTank fluidTank = getFluidTank();
+        IFluidTank fluidTank = getFluidTank();
         FluidStack simulatedRemainder = fluidTank.insert(fluidToTransfer.toStack(amountToTransfer), Action.SIMULATE, AutomationType.INTERNAL);
         int remainder = simulatedRemainder.amount();
         if (remainder == amountToTransfer) {
@@ -262,7 +262,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             //Try filling from the tank's item
             ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
             if (itemHandler != null) {
-                IExtendedFluidTank fluidTank = getFluidTank();
+                IFluidTank fluidTank = getFluidTank();
                 //Start by gathering all the fluids in the item that are valid for the tank
                 Object2IntMap<FluidResource> knownFluids = gatherKnownFluids(itemHandler);
                 if (!knownFluids.isEmpty()) {
@@ -280,7 +280,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     /// Gathers the total count of each fluid type stored in the handler that is valid for our tank. This does not make any determinations about whether the fluid can be
     /// extracted from the handler.
     private Object2IntMap<FluidResource> gatherKnownFluids(ResourceHandler<FluidResource> handler) {
-        IExtendedFluidTank fluidTank = getFluidTank();
+        IFluidTank fluidTank = getFluidTank();
         Object2IntMap<FluidResource> knownFluids = new Object2IntOpenHashMap<>();
         for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
             FluidResource fluidType = handler.getResource(tank);
@@ -301,7 +301,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     /// @param amount         The amount of fluid to attempt to transfer
     ///
     /// @return True if we managed to transfer any contents, false otherwise
-    private boolean fillHandlerFromOther(IExtendedFluidTank handlerToFill, ResourceHandler<FluidResource> handlerToDrain, FluidResource fluidType, int amount) {
+    private boolean fillHandlerFromOther(IFluidTank handlerToFill, ResourceHandler<FluidResource> handlerToDrain, FluidResource fluidType, int amount) {
         //Check how much of this fluid type we are actually able to drain from the handler we are draining
         int extracted;
         try (Transaction simulation = Transaction.openRoot()) {

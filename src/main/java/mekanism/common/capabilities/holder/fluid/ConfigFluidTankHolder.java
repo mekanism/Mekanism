@@ -2,7 +2,7 @@ package mekanism.common.capabilities.holder.fluid;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.holder.ConfigHolder;
 import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
@@ -11,13 +11,13 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ConfigFluidTankHolder extends ConfigHolder<IExtendedFluidTank> implements IFluidTankHolder {
+public class ConfigFluidTankHolder extends ConfigHolder<IFluidTank> implements IFluidTankHolder {
 
     public ConfigFluidTankHolder(ISideConfiguration sideConfiguration) {
         super(sideConfiguration);
     }
 
-    void addTank(@NotNull IExtendedFluidTank tank) {
+    void addTank(@NotNull IFluidTank tank) {
         slots.add(tank);
     }
 
@@ -28,7 +28,7 @@ public class ConfigFluidTankHolder extends ConfigHolder<IExtendedFluidTank> impl
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getTanks(@Nullable Direction direction) {
+    public List<IFluidTank> getTanks(@Nullable Direction direction) {
         return getSlots(direction, slotInfo -> slotInfo instanceof FluidSlotInfo info ? info.getTanks() : Collections.emptyList());
     }
 }

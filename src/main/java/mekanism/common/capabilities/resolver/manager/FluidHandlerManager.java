@@ -1,6 +1,6 @@
 package mekanism.common.capabilities.resolver.manager;
 
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.ISidedFluidHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
@@ -12,7 +12,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Helper class to make reading instead of having as messy generics
  */
-public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IExtendedFluidTank, IFluidHandler> {
+public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IFluidTank, IFluidHandler> {
 
     public FluidHandlerManager(@Nullable IFluidTankHolder holder, @NotNull ISidedFluidHandler baseHandler) {
         super(holder, baseHandler, Capabilities.FLUID_LEGACY.block(), ProxyFluidHandler::new, IFluidTankHolder::getTanks);

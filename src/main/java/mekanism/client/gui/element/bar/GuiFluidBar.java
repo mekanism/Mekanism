@@ -1,7 +1,7 @@
 package mekanism.client.gui.element.bar;
 
 import java.util.List;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.math.MathUtils;
 import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
@@ -41,7 +41,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
         return MekanismRenderer.getFluidTexture(stack, FluidTextureType.STILL);
     }
 
-    public static TankInfoProvider<FluidStack> getProvider(IExtendedFluidTank tank, List<IExtendedFluidTank> tanks) {
+    public static TankInfoProvider<FluidStack> getProvider(IFluidTank tank, List<IFluidTank> tanks) {
         return new TankInfoProvider<>() {
             @NotNull
             @Override

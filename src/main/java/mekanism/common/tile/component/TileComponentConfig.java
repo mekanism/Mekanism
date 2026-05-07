@@ -14,7 +14,7 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.component.AttachedSideConfig;
@@ -373,7 +373,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
     public static BaseSlotInfo createInfo(TransmissionType type, boolean input, boolean output, List<?> containers) {
         return switch (type) {
             case ITEM -> new InventorySlotInfo(input, output, (List<IInventorySlot>) containers);
-            case FLUID -> new FluidSlotInfo(input, output, (List<IExtendedFluidTank>) containers);
+            case FLUID -> new FluidSlotInfo(input, output, (List<IFluidTank>) containers);
             case CHEMICAL -> new ChemicalSlotInfo(input, output, (List<IChemicalTank>) containers);
             case ENERGY -> new EnergySlotInfo(input, output, (List<IEnergyContainer>) containers);
             case HEAT -> new HeatSlotInfo(input, output, (List<IHeatCapacitor>) containers);

@@ -12,7 +12,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.VariableCapacityEnergyContainer;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
@@ -63,7 +63,7 @@ public class TurbineMultiblockData extends MultiblockData {
                                                                                         "getSteamFilledPercentage"}, docPlaceholder = "steam tank")
     public IChemicalTank chemicalTank;
     @ContainerSync
-    public IExtendedFluidTank ventTank;
+    public IFluidTank ventTank;
     @ContainerSync
     public IEnergyContainer energyContainer;
     @ContainerSync

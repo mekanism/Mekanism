@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -51,8 +51,8 @@ public class SyncMapper extends BaseAnnotationScanner {
         // used unchecked setters is that if a recipe got removed so there is a substance in a tank that was valid but no
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid
-        specialProperties.add(new SpecialPropertyHandler<>(IExtendedFluidTank.class,
-              SpecialPropertyData.create(FluidStack.class, IExtendedFluidTank::getFluid, IExtendedFluidTank::setStackUnchecked)
+        specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
+              SpecialPropertyData.create(FluidStack.class, IFluidTank::getFluid, IFluidTank::setStackUnchecked)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
               SpecialPropertyData.create(ChemicalStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)

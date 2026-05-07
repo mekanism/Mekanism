@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IMekanismHeatHandler;
@@ -18,7 +18,7 @@ public interface IMultiblockContents extends IMekanismFluidHandler, IMekanismStr
     List<IInventorySlot> getInventorySlots();
 
     @NotNull
-    default List<IExtendedFluidTank> getFluidTanks() {
+    default List<IFluidTank> getFluidTanks() {
         return getFluidTanks(null);
     }
 

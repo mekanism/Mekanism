@@ -12,7 +12,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -173,13 +173,13 @@ public class StorageUtils {
      */
     @NotNull
     public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {
-        List<IExtendedFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
         return switch (containers.size()) {
             case 0 -> FluidStack.EMPTY;
             case 1 -> containers.getFirst().getFluid().copy();
             default -> {
                 FluidStack fluid = FluidStack.EMPTY;
-                for (IExtendedFluidTank tank : containers) {
+                for (IFluidTank tank : containers) {
                     if (tank.isEmpty()) {
                         continue;
                     }
@@ -206,7 +206,7 @@ public class StorageUtils {
      * @return the first found fluid FOR DISPLAY. Do NOT modify.
      */
     public static FluidStack getFirstFluidFromAttachment(ItemStack stack) {
-        List<IExtendedFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
+        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
         int size = containers.size();
         return switch (size) {
             case 0 -> FluidStack.EMPTY;
@@ -401,12 +401,12 @@ public class StorageUtils {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
-    public static void mergeFluidTanks(List<IExtendedFluidTank> tanks, List<IExtendedFluidTank> toAdd, List<FluidStack> rejects) {
+    public static void mergeFluidTanks(List<IFluidTank> tanks, List<IFluidTank> toAdd, List<FluidStack> rejects) {
         validateSizeMatches(tanks, toAdd, "tank");
         for (int i = 0; i < toAdd.size(); i++) {
-            IExtendedFluidTank mergeTank = toAdd.get(i);
+            IFluidTank mergeTank = toAdd.get(i);
             if (!mergeTank.isEmpty()) {
-                IExtendedFluidTank tank = tanks.get(i);
+                IFluidTank tank = tanks.get(i);
                 FluidStack mergeStack = mergeTank.getFluid();
                 if (tank.isEmpty()) {
                     int capacity = tank.getCapacity();

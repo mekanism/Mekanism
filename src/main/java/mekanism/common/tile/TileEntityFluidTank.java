@@ -7,7 +7,7 @@ import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
@@ -76,7 +76,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public FluidTankFluidTank fluidTank;
 
     @Nullable
-    private IExtendedFluidTank belowTank;
+    private IFluidTank belowTank;
     private boolean resolvedBelowTank;
 
     private ContainerEditMode editMode = ContainerEditMode.BOTH;
@@ -185,7 +185,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
                     belowTank = null;
                 }));
             }
-            IExtendedFluidTank below = getBelowTank();
+            IFluidTank below = getBelowTank();
             if (below == null) {
                 FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
             } else {
@@ -202,7 +202,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }
 
     @Nullable
-    private IExtendedFluidTank getBelowTank() {
+    private IFluidTank getBelowTank() {
         if (!resolvedBelowTank) {
             resolvedBelowTank = true;
             ResourceHandler<FluidResource> belowHandler = fluidHandlerBelow.getFirst().getCapability();

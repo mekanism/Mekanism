@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
@@ -122,7 +122,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 return InteractionResult.PASS;
             }
             if (entity instanceof Cow || entity instanceof Goat) {
-                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                IFluidTank fluidTank = getExtendedFluidTank(stack);
                 //Get the fluid tank for the stack
                 if (fluidTank == null) {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and skip
@@ -169,7 +169,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 if (!world.mayInteract(player, pos)) {
                     return InteractionResult.FAIL;
                 }
-                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                IFluidTank fluidTank = getExtendedFluidTank(stack);
                 if (fluidTank == null) {
                     //If something went wrong, and we don't have a fluid tank fail
                     return InteractionResult.FAIL;
@@ -238,7 +238,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
     //Used after simulation to insert the stack rather than just using the insert method to properly handle cases
     // where the stack for a single bucket may be above the tank's configured rate limit
-    private void uncheckedGrow(IExtendedFluidTank fluidTank, FluidStack fluidStack) {
+    private void uncheckedGrow(IFluidTank fluidTank, FluidStack fluidStack) {
         if (getTier() != FluidTankTier.CREATIVE) {
             //No-OP creative handling as that is how insert would be handled for items
             if (fluidTank.isEmpty()) {
@@ -250,11 +250,11 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         }
     }
 
-    private static boolean validFluid(@NotNull IExtendedFluidTank fluidTank, @NotNull FluidStack fluidStack) {
+    private static boolean validFluid(@NotNull IFluidTank fluidTank, @NotNull FluidStack fluidStack) {
         return !fluidStack.isEmpty() && fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL).isEmpty();
     }
 
-    private static IExtendedFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
+    private static IFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
             return fluidHandler.getFluidTank(0, null);
@@ -302,7 +302,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
                 //Note: We don't use DispenseFluidContainer as we have more specific logic for determining if we want it to
                 // act as a bucket that is emptying its contents or one that is picking up contents
-                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                IFluidTank fluidTank = getExtendedFluidTank(stack);
                 //Get the fluid tank for the stack
                 if (fluidTank == null) {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and just eject it
@@ -382,7 +382,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             @NotNull
             @Override
             protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IFluidTank fluidTank) {
                 FluidStack fluidStack = fluidTank.getFluid();
                 BlockState endState = getState(fluidStack);
                 if (endState != null && fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.MANUAL).amount() >= FluidType.BUCKET_VOLUME) {
@@ -412,7 +412,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
               @NotNull InteractionHand hand, @NotNull ItemStack stack) {
             if (stack.count() == 1 && stack.getItem() instanceof ItemBlockFluidTank tank && tank.getMode(stack)) {
                 //If the fluid tank is in bucket mode allow for it to act as a bucket
-                IExtendedFluidTank fluidTank = getExtendedFluidTank(stack);
+                IFluidTank fluidTank = getExtendedFluidTank(stack);
                 //Get the fluid tank for the stack
                 if (fluidTank == null) {
                     //If there isn't one then there is something wrong with the stack, treat it as a normal stack and skip
@@ -426,7 +426,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
 
         @NotNull
         protected abstract InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank);
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IFluidTank fluidTank);
     }
 
     public static class BasicDrainCauldronInteraction extends BasicCauldronInteraction {
@@ -435,7 +435,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
             @NotNull
             @Override
             protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
+                  @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IFluidTank fluidTank) {
                 if (state.getValue(LayeredCauldronBlock.LEVEL) == 3) {
                     //When emptying a water cauldron make sure it is full and just ignore handling of partial transfers
                     // as while we can handle them, they come with the added complication of deciding what value to give bottles
@@ -455,7 +455,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         @NotNull
         @Override
         protected InteractionResult interact(@NotNull BlockState state, @NotNull Level level, @NotNull BlockPos pos, @NotNull Player player,
-              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IExtendedFluidTank fluidTank) {
+              @NotNull InteractionHand hand, @NotNull ItemStack stack, @NotNull IFluidTank fluidTank) {
             FluidStack fluidStack = new FluidStack(type, FluidType.BUCKET_VOLUME);
             FluidStack remainder = fluidTank.insert(fluidStack, Action.SIMULATE, AutomationType.MANUAL);
             if (remainder.isEmpty()) {

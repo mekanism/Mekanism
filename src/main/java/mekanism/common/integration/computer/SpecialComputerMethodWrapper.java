@@ -2,7 +2,7 @@ package mekanism.common.integration.computer;
 
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod.WrappingComputerMethodHelp;
@@ -47,25 +47,25 @@ public class SpecialComputerMethodWrapper {
 
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
-        public static FluidStack getStack(IExtendedFluidTank tank) {
+        public static FluidStack getStack(IFluidTank tank) {
             return tank.getFluid();
         }
 
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
-        public static int getCapacity(IExtendedFluidTank tank) {
+        public static int getCapacity(IFluidTank tank) {
             return tank.getCapacity();
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
-        public static int getNeeded(IExtendedFluidTank tank) {
+        public static int getNeeded(IFluidTank tank) {
             return tank.getNeeded();
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
-        public static double getFilledPercentage(IExtendedFluidTank tank) {
+        public static double getFilledPercentage(IFluidTank tank) {
             return tank.amount() / (double) tank.getCapacity();
         }
     }

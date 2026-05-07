@@ -8,7 +8,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
@@ -87,7 +87,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
 
     private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemAccess itemAccess, Level level, BlockPos pos) {
         if (tankType == TankType.FLUID_TANK) {
-            IExtendedFluidTank fluidTank = handler.getFluidTank(tankId, null);
+            IFluidTank fluidTank = handler.getFluidTank(tankId, null);
             if (fluidTank != null) {
                 handleFluidTank(player, itemAccess, fluidTank);
             }
@@ -129,7 +129,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         }
     }
 
-    private void handleFluidTank(ServerPlayer player, ItemAccess itemAccess, IExtendedFluidTank fluidTank) {
+    private void handleFluidTank(ServerPlayer player, ItemAccess itemAccess, IFluidTank fluidTank) {
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             fluidTank.setEmpty();
@@ -138,7 +138,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         }
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
-            IExtendedFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
+            IFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
             if (itemFluidTank != null) {
                 if (action == DropperAction.FILL_DROPPER) {
                     //Insert fluid into dropper
@@ -171,7 +171,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         }
     }
 
-    private static void transferBetweenTanks(IExtendedFluidTank drainTank, IExtendedFluidTank fillTank, Player player) {
+    private static void transferBetweenTanks(IFluidTank drainTank, IFluidTank fillTank, Player player) {
         if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
             FluidStack fluidInDrainTank = drainTank.getFluid();
             FluidStack simulatedRemainder = fillTank.insert(fluidInDrainTank, Action.SIMULATE, AutomationType.MANUAL);

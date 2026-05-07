@@ -16,7 +16,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
@@ -416,7 +416,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         switch (coolantTank.getCurrentType()) {
             case EMPTY -> lastBoilRate = 0;
             case FLUID -> {
-                IExtendedFluidTank fluidCoolantTank = coolantTank.getFluidTank();
+                IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
                 double caseCoolantHeat = heat * waterConductivity;
                 lastBoilRate = clampCoolantHeated(HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy(),
                       fluidCoolantTank.amount());
@@ -651,7 +651,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             IChemicalTank chemicalCoolantTank = coolantTank.getChemicalTank();
             return chemicalCoolantTank.getStored() / (double) chemicalCoolantTank.getCapacity();
         }
-        IExtendedFluidTank fluidCoolantTank = coolantTank.getFluidTank();
+        IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
         return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCapacity();
     }
 

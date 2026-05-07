@@ -8,7 +8,7 @@ import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
 
     private final List<IInventorySlot> inventorySlots = new ArrayList<>();
-    private final List<IExtendedFluidTank> fluidTanks = new ArrayList<>();
+    private final List<IFluidTank> fluidTanks = new ArrayList<>();
     private final List<IChemicalTank> chemicalTanks = new ArrayList<>();
     private final List<IEnergyContainer> energyContainers = new ArrayList<>();
     private final List<IHeatCapacitor> heatCapacitors = new ArrayList<>();
@@ -111,7 +111,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
@@ -159,19 +159,19 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             }
         };
 
-        public static final CacheSubstance<IExtendedFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
+        public static final CacheSubstance<IFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
                 cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache));
             }
 
             @Override
-            protected List<IExtendedFluidTank> containerList(IMultiblockContents fluidHandler) {
+            protected List<IFluidTank> containerList(IMultiblockContents fluidHandler) {
                 return fluidHandler.getFluidTanks();
             }
 
             @Override
-            public void sync(IExtendedFluidTank cache, IExtendedFluidTank data) {
+            public void sync(IFluidTank cache, IFluidTank data) {
                 cache.setContents(data.getResource(), data.amount());
             }
         };

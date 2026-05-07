@@ -11,7 +11,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.security.IItemSecurityUtils;
@@ -255,7 +255,7 @@ public class ItemSlotsBuilder {
         //Copy of FluidInventorySlot#getFillPredicate
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
         if (fluidHandlerItem != null) {
-            IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
+            IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
             for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                 FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                 if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
@@ -297,7 +297,7 @@ public class ItemSlotsBuilder {
             //Copy of FluidInventorySlot#getInputPredicate
             IFluidHandlerItem fluidHandlerItem = FluidInventorySlot.tryGetFluidHandlerUnstacked(itemType);
             if (fluidHandlerItem != null) {
-                IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
+                IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                 boolean hasEmpty = false;
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
@@ -334,7 +334,7 @@ public class ItemSlotsBuilder {
                 boolean mode = attachedTo.getOrDefault(MekanismDataComponents.ROTARY_MODE, false);
                 //Mode == true if fluid to chemical
                 boolean allEmpty = true;
-                IExtendedFluidTank fluidTank = null;
+                IFluidTank fluidTank = null;
                 for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
                     FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
                     if (!fluidInTank.isEmpty()) {
@@ -363,7 +363,7 @@ public class ItemSlotsBuilder {
             if (itemHandler != null) {
                 int tanks = itemHandler.size();
                 if (tanks > 0) {
-                    IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
+                    IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                     for (int tank = 0; tank < tanks; tank++) {
                         if (fluidTank.isValid(itemHandler.getResource(tank))) {
                             //False if the items contents are still valid

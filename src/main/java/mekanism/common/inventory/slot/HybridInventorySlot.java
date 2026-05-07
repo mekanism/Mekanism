@@ -7,7 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -79,7 +79,7 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     }
 
     @Override
-    public IExtendedFluidTank getFluidTank() {
+    public IFluidTank getFluidTank() {
         return mergedTank.getFluidTank();
     }
 

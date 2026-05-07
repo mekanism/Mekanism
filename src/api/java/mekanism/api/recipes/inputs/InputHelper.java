@@ -9,7 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -127,7 +127,7 @@ public class InputHelper {
      * @param tank           Tank to wrap.
      * @param notEnoughError The error to apply if the input does not have enough stored for the recipe to be able to perform any operations.
      */
-    public static IInputHandler<Fluid, @NotNull FluidStack> getInputHandler(IExtendedFluidTank tank, RecipeError notEnoughError) {
+    public static IInputHandler<Fluid, @NotNull FluidStack> getInputHandler(IFluidTank tank, RecipeError notEnoughError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
         return new IInputHandler<>() {

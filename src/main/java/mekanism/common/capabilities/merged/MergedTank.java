@@ -5,7 +5,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -15,16 +15,16 @@ import org.jetbrains.annotations.NotNull;
 @NothingNullByDefault
 public class MergedTank {
 
-    public static MergedTank create(IExtendedFluidTank fluidTank, IChemicalTank gasTank) {
+    public static MergedTank create(IFluidTank fluidTank, IChemicalTank gasTank) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(gasTank, "Gas tank cannot be null");
         return new MergedTank(fluidTank, gasTank);
     }
 
-    private final IExtendedFluidTank fluidTank;
+    private final IFluidTank fluidTank;
     private final IChemicalTank chemicalTank;
 
-    private MergedTank(IExtendedFluidTank fluidTank, IChemicalTank chemicalTank) {
+    private MergedTank(IFluidTank fluidTank, IChemicalTank chemicalTank) {
         this.fluidTank = new FluidTankWrapper(this, fluidTank, chemicalTank);
         this.chemicalTank = new ChemicalTankWrapper(this, chemicalTank, this.fluidTank::isEmpty);
     }
@@ -36,7 +36,7 @@ public class MergedTank {
         return chemicalTank.isEmpty() ? CurrentType.EMPTY : CurrentType.CHEMICAL;
     }
 
-    public final IExtendedFluidTank getFluidTank() {
+    public final IFluidTank getFluidTank() {
         return fluidTank;
     }
 

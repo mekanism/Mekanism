@@ -5,7 +5,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
@@ -27,7 +27,7 @@ public class FluidTankSpec extends GenericTankSpec<FluidResource> {
         this.capacity = capacity;
     }
 
-    public <TANK extends IExtendedFluidTank> TANK createTank(TankFromSpecCreator<TANK> tankCreator, ItemStack stack) {
+    public <TANK extends IFluidTank> TANK createTank(TankFromSpecCreator<TANK> tankCreator, ItemStack stack) {
         return tankCreator.create(rate, capacity, canExtract, (fluidType, automationType) -> canInsert.test(fluidType, automationType, stack), isValid, null);
     }
 
@@ -58,7 +58,7 @@ public class FluidTankSpec extends GenericTankSpec<FluidResource> {
     }
 
     @FunctionalInterface
-    public interface TankFromSpecCreator<TANK extends IExtendedFluidTank> {
+    public interface TankFromSpecCreator<TANK extends IFluidTank> {
 
         TANK create(IntSupplier rate, IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
               Predicate<FluidResource> isValid, @Nullable IContentsListener listener);

@@ -4,7 +4,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.world.level.storage.ValueInput;
@@ -17,13 +17,13 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * Like {@link ChemicalTankWrapper}
  */
 @NothingNullByDefault
-public class FluidTankWrapper implements IExtendedFluidTank {
+public class FluidTankWrapper implements IFluidTank {
 
     private final IChemicalTank chemicalTank;
-    private final IExtendedFluidTank internal;
+    private final IFluidTank internal;
     private final MergedTank mergedTank;
 
-    public FluidTankWrapper(MergedTank mergedTank, IExtendedFluidTank internal, IChemicalTank chemicalTank) {
+    public FluidTankWrapper(MergedTank mergedTank, IFluidTank internal, IChemicalTank chemicalTank) {
         //TODO: Do we want to short circuit it so that if we are not empty it allows for inserting before checking the insertCheck
         this.mergedTank = mergedTank;
         this.internal = internal;

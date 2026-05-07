@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.resource.BasicResourceContainer;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -14,7 +14,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class BasicFluidTank extends BasicResourceContainer<FluidResource> implements IExtendedFluidTank {
+public class BasicFluidTank extends BasicResourceContainer<FluidResource> implements IFluidTank {
 
     public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {

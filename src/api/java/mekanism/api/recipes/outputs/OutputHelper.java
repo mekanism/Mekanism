@@ -7,7 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
@@ -60,7 +60,7 @@ public class OutputHelper {
      * @param tank                Tank to wrap.
      * @param notEnoughSpaceError The error to apply if the output causes the recipe to not be able to perform any operations.
      */
-    public static IOutputHandler<@NotNull FluidStackTemplate> getOutputHandler(IExtendedFluidTank tank, RecipeError notEnoughSpaceError) {
+    public static IOutputHandler<@NotNull FluidStackTemplate> getOutputHandler(IFluidTank tank, RecipeError notEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(notEnoughSpaceError, "Not enough space error cannot be null.");
         return new IOutputHandler<>() {
@@ -181,7 +181,7 @@ public class OutputHelper {
      *
      * @since 10.6.3
      */
-    public static IOutputHandler<@NotNull FluidOptionalItemOutput> getOutputHandler(IExtendedFluidTank tank, RecipeError tankNotEnoughSpaceError,
+    public static IOutputHandler<@NotNull FluidOptionalItemOutput> getOutputHandler(IFluidTank tank, RecipeError tankNotEnoughSpaceError,
           IInventorySlot slot, RecipeError slotNotEnoughSpaceError) {
         Objects.requireNonNull(tank, "Tank cannot be null.");
         Objects.requireNonNull(slot, "Slot cannot be null.");
@@ -253,7 +253,7 @@ public class OutputHelper {
         tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
-    private static void handleOutput(IExtendedFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
+    private static void handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
         if (operations == 0 || toOutput == null) {
             //This should not happen
             return;
@@ -303,7 +303,7 @@ public class OutputHelper {
         }
     }
 
-    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IExtendedFluidTank tank, @Nullable FluidStackTemplate toOutput) {
+    private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IFluidTank tank, @Nullable FluidStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (toOutput != null) {
             //Copy the stack and make it be max size

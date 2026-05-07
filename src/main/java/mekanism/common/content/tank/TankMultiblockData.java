@@ -7,7 +7,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
@@ -150,7 +150,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         };
     }
 
-    public IExtendedFluidTank getFluidTank() {
+    public IFluidTank getFluidTank() {
         return mergedTank.getFluidTank();
     }
 

@@ -3,7 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
@@ -87,7 +87,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
         }
     }
 
-    private List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    private List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidHandlerManager.getContainers(side);
     }
 

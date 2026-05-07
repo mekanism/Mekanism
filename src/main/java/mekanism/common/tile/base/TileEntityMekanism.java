@@ -22,7 +22,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
@@ -950,8 +950,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
-            List<IExtendedFluidTank> fluidTanks = getFluidTanks(null);
-            for (IExtendedFluidTank fluidTank : fluidTanks) {
+            List<IFluidTank> fluidTanks = getFluidTanks(null);
+            for (IFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank, isClient));
             }
         }
@@ -1342,11 +1342,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     @Override
-    public final List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public final List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    public void applyFluidTanks(DataComponentGetter input, List<IExtendedFluidTank> tanks, AttachedFluids attachedFluids) {
+    public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedFluids attachedFluids) {
         List<FluidStack> stacks = attachedFluids.containers();
         int size = stacks.size();
         if (size == tanks.size()) {
@@ -1357,10 +1357,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nullable
-    public AttachedFluids collectFluidTanks(DataComponentMap.Builder builder, List<IExtendedFluidTank> tanks) {
+    public AttachedFluids collectFluidTanks(DataComponentMap.Builder builder, List<IFluidTank> tanks) {
         boolean hasNonEmpty = false;
         List<FluidStack> stacks = new ArrayList<>(tanks.size());
-        for (IExtendedFluidTank tank : tanks) {
+        for (IFluidTank tank : tanks) {
             stacks.add(tank.getFluid().copy());
             if (!tank.isEmpty()) {
                 hasNonEmpty = true;

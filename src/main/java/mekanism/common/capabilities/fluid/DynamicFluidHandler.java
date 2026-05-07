@@ -6,7 +6,7 @@ import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.DynamicHandler;
 import net.minecraft.core.Direction;
@@ -14,15 +14,15 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class DynamicFluidHandler extends DynamicHandler<IExtendedFluidTank> implements IMekanismFluidHandler {
+public class DynamicFluidHandler extends DynamicHandler<IFluidTank> implements IMekanismFluidHandler {
 
-    public DynamicFluidHandler(Function<Direction, List<IExtendedFluidTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
+    public DynamicFluidHandler(Function<Direction, List<IFluidTank>> tankSupplier, Predicate<@Nullable Direction> canExtract,
           Predicate<@Nullable Direction> canInsert, @Nullable IContentsListener listener) {
         super(tankSupplier, canExtract, canInsert, listener);
     }
 
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return containerSupplier.apply(side);
     }
 

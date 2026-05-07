@@ -27,7 +27,7 @@ import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -223,7 +223,7 @@ public final class MekanismUtils {
         return 0;
     }
 
-    public static float getScale(float prevScale, IExtendedFluidTank tank) {
+    public static float getScale(float prevScale, IFluidTank tank) {
         return getScale(prevScale, tank.amount(), tank.getCapacity(), tank.isEmpty());
     }
 

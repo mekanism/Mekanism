@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
@@ -32,7 +32,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
 
-    private final List<IExtendedFluidTank> fluidTanks;
+    private final List<IFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
     @NotNull
     public FluidStack lastFluid = FluidStack.EMPTY;
@@ -234,7 +234,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 

@@ -8,7 +8,7 @@ import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
@@ -45,7 +45,7 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
     public final PipeTier tier;
     @NotNull
     public FluidStack saveShare = FluidStack.EMPTY;
-    private final List<IExtendedFluidTank> tanks;
+    private final List<IFluidTank> tanks;
     public final BasicFluidTank buffer;
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
@@ -239,7 +239,7 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         if (hasTransmitterNetwork()) {
             return getTransmitterNetwork().getFluidTanks(side);
         }

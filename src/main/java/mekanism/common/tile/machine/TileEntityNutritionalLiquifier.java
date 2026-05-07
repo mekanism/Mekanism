@@ -4,7 +4,7 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.recipes.ItemStackToFluidOptionalItemRecipe.FluidOptionalItemOutput;
 import mekanism.api.recipes.basic.BasicItemStackToFluidOptionalItemRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
@@ -76,7 +76,7 @@ public class TileEntityNutritionalLiquifier extends TileEntityProgressMachine<Ba
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getOutput", "getOutputCapacity", "getOutputNeeded",
                                                                                      "getOutputFilledPercentage"}, docPlaceholder = "output tank")
-    public IExtendedFluidTank fluidTank;
+    public IFluidTank fluidTank;
 
     private final IOutputHandler<@NotNull FluidOptionalItemOutput> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> inputHandler;

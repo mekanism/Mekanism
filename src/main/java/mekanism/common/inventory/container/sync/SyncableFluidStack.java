@@ -2,7 +2,7 @@ package mekanism.common.inventory.container.sync;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.network.to_client.container.property.FluidStackPropertyData;
 import mekanism.common.network.to_client.container.property.IntPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
@@ -15,11 +15,11 @@ import org.jetbrains.annotations.NotNull;
  */
 public class SyncableFluidStack implements ISyncableData {
 
-    public static SyncableFluidStack create(@NotNull IExtendedFluidTank handler) {
+    public static SyncableFluidStack create(@NotNull IFluidTank handler) {
         return create(handler, false);
     }
 
-    public static SyncableFluidStack create(IExtendedFluidTank handler, boolean isClient) {
+    public static SyncableFluidStack create(IFluidTank handler, boolean isClient) {
         //Note: While strictly speaking the server should never end up having the setter called, because we have side
         // information readily available here we use the checked setter on the server side just to be safe. The reason
         // that we need to use unchecked setters on the client is that if a recipe got removed so there is a substance

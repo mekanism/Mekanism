@@ -27,7 +27,7 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
@@ -126,7 +126,7 @@ public class InventoryFrequency extends Frequency implements IMekanismFluidHandl
 
     private List<IInventorySlot> inventorySlots;
     private List<IChemicalTank> chemicalTanks;
-    private List<IExtendedFluidTank> fluidTanks;
+    private List<IFluidTank> fluidTanks;
     private List<IEnergyContainer> energyContainers;
     private List<IHeatCapacitor> heatCapacitors;
 
@@ -165,7 +165,7 @@ public class InventoryFrequency extends Frequency implements IMekanismFluidHandl
 
     @NotNull
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidTanks;
     }
 
@@ -313,9 +313,9 @@ public class InventoryFrequency extends Frequency implements IMekanismFluidHandl
     private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements Runnable, Consumer<ResourceHandler<FluidResource>> {
 
         private final FluidStack toSend;
-        private final IExtendedFluidTank storedFluid;
+        private final IFluidTank storedFluid;
 
-        public SendingFluidHandlerTarget(@NotNull FluidStack toSend, int expectedSize, IExtendedFluidTank storedFluid) {
+        public SendingFluidHandlerTarget(@NotNull FluidStack toSend, int expectedSize, IFluidTank storedFluid) {
             super(expectedSize);
             this.toSend = toSend;
             this.storedFluid = storedFluid;

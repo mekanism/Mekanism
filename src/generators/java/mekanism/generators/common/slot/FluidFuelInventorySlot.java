@@ -8,7 +8,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
@@ -26,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
-    public static FluidFuelInventorySlot forFuel(IExtendedFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue,
+    public static FluidFuelInventorySlot forFuel(IFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue,
           IntFunction<@NotNull FluidStack> fuelCreator, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelCreator, "Fuel fluid stack creator cannot be null");
@@ -52,7 +52,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     private final IntFunction<@NotNull FluidStack> fuelCreator;
     private final ToIntFunction<ItemResource> fuelValue;
 
-    private FluidFuelInventorySlot(IExtendedFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue, IntFunction<@NotNull FluidStack> fuelCreator,
+    private FluidFuelInventorySlot(IFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue, IntFunction<@NotNull FluidStack> fuelCreator,
           Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelCreator = fuelCreator;

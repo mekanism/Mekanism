@@ -5,7 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.ExtendedFluidHandlerUtils;
-import mekanism.api.fluid.IExtendedFluidTank;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.ComponentBackedHandler;
 import mekanism.common.attachments.containers.ContainerType;
@@ -16,25 +16,25 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidStack, IExtendedFluidTank, AttachedFluids> implements IMekanismFluidHandler, IFluidHandlerItem {
+public class ComponentBackedFluidHandler extends ComponentBackedHandler<FluidStack, IFluidTank, AttachedFluids> implements IMekanismFluidHandler, IFluidHandlerItem {
 
     public ComponentBackedFluidHandler(ItemStack attachedTo, int totalTanks) {
         super(attachedTo, totalTanks);
     }
 
     @Override
-    protected ContainerType<IExtendedFluidTank, AttachedFluids, ?> containerType() {
+    protected ContainerType<IFluidTank, AttachedFluids, ?> containerType() {
         return ContainerType.FLUID;
     }
 
     @Override
-    public List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return getContainers();
     }
 
     @Nullable
     @Override
-    public IExtendedFluidTank getFluidTank(int tank, @Nullable Direction side) {
+    public IFluidTank getFluidTank(int tank, @Nullable Direction side) {
         return getContainer(tank);
     }
 
