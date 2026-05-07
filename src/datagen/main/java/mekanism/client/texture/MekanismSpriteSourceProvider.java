@@ -2,6 +2,7 @@ package mekanism.client.texture;
 
 import java.util.concurrent.CompletableFuture;
 import mekanism.common.Mekanism;
+import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.data.AtlasIds;
 import net.minecraft.data.PackOutput;
@@ -16,8 +17,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
     protected void gather() {
         SourceList blockAtlas = atlas(AtlasIds.BLOCKS);
         SourceList itemAtlas = atlas(AtlasIds.ITEMS);
-        addFiles(blockAtlas, Mekanism.rl("liquid/energy"));
-        addFiles(blockAtlas, Mekanism.rl("liquid/heat"));
+
         addFiles(blockAtlas, Mekanism.rl("icon/redstone_control_pulse"));
 
         //MekaSuit
@@ -33,10 +33,10 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
               Mekanism.rl("entity/armor/mekatool")
         );
 
-        //TODO - 1.21: Add javadocs stating that chemical resources now need to be added via sources???
-        // is this even accurate? See if fluids need it as well. Chemicals potentially should use their own directory as well
-        // just to simplify things? Or maybe we add manually and then also add a specific directory to make it easier for others
-        addChemicalSprites(blockAtlas);
+        //TODO - 26.1: Add javadocs stating that chemical resources now need to be added to the block atlas
+        // OR, they can be added to the following folders to be auto-added
+        blockAtlas.addSource(new DirectoryLister("mek_liquid", "mek_liquid/"));
+        blockAtlas.addSource(new DirectoryLister("mek_chemical", "mek_chemical/"));
 
         SourceList robitAtlas = atlas(Mekanism.rl("entity/robit"));
         addDirectory(robitAtlas, "entity/robit", "");

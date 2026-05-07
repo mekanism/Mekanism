@@ -38,7 +38,7 @@ public class MekanismFluids {
     public static final FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> LITHIUM = FLUIDS.registerLiquidChemical(ChemicalConstants.LITHIUM);
 
     public static final FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> STEAM = FLUIDS.register("steam", properties -> properties.temperature(373).density(0),
-          renderProperties -> renderProperties.texture(Mekanism.rl("liquid/steam"), Mekanism.rl("liquid/steam_flow")));
+          renderProperties -> renderProperties.texture(Mekanism.rl("mek_liquid/steam"), Mekanism.rl("mek_liquid/steam_flow")));
     public static final FluidRegistryObject<MekanismFluidType, Source, Flowing, LiquidBlock, BucketItem> HEAVY_WATER = FLUIDS.register("heavy_water",
           renderProperties -> renderProperties.texture(Identifier.withDefaultNamespace("block/water_still"),
                 Identifier.withDefaultNamespace("block/water_flow")).tint(0xFF0D1455));

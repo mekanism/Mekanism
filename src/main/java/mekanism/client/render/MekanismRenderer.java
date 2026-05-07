@@ -289,8 +289,8 @@ public class MekanismRenderer {
         }
 
         WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));
-        energyIcon = map.getSprite(Mekanism.rl("liquid/energy"));
-        heatIcon = map.getSprite(Mekanism.rl("liquid/heat"));
+        energyIcon = map.getSprite(Mekanism.rl("mek_liquid/energy"));
+        heatIcon = map.getSprite(Mekanism.rl("mek_liquid/heat"));
         teleporterPortal = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/teleporter_portal")));
 
         //Note: These are called in post rather than pre to make sure the icons have properly been stitched/attached

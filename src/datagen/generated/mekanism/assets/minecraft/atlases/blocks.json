@@ -2,47 +2,17 @@
   "sources": [
     {
       "type": "minecraft:single",
-      "resource": "mekanism:liquid/energy"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/heat"
-    },
-    {
-      "type": "minecraft:single",
       "resource": "mekanism:icon/redstone_control_pulse"
     },
     {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/base"
+      "type": "minecraft:directory",
+      "prefix": "mek_liquid/",
+      "source": "mek_liquid"
     },
     {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/bio"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:infuse_type/fungi"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/liquid"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:liquid/steam"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:pigment/base"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:slurry/clean"
-    },
-    {
-      "type": "minecraft:single",
-      "resource": "mekanism:slurry/dirty"
+      "type": "minecraft:directory",
+      "prefix": "mek_chemical/",
+      "source": "mek_chemical"
     }
   ]
 }

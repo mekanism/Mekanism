@@ -63,7 +63,7 @@ public class ChemicalBuilder {
      * @return A builder for creating a {@link Chemical}.
      */
     public static ChemicalBuilder builder() {
-        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "liquid/liquid"));
+        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mek_liquid/liquid"));
     }
 
     /**
@@ -72,7 +72,7 @@ public class ChemicalBuilder {
      * @return A builder for creating a {@link Chemical}.
      */
     public static ChemicalBuilder cleanSlurry() {
-        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/clean"));
+        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mek_chemical/slurry/clean"));
     }
 
     /**
@@ -81,7 +81,7 @@ public class ChemicalBuilder {
      * @return A builder for creating a {@link Chemical}.
      */
     public static ChemicalBuilder dirtySlurry() {
-        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "slurry/dirty"));
+        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mek_chemical/slurry/dirty"));
     }
 
     /**
@@ -90,7 +90,7 @@ public class ChemicalBuilder {
      * @return A builder for creating an {@link Chemical}.
      */
     public static ChemicalBuilder infuseType() {
-        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "infuse_type/base"));
+        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mek_chemical/infuse_type/base"));
     }
 
     /**
@@ -99,6 +99,6 @@ public class ChemicalBuilder {
      * @return A builder for creating a {@link Chemical}.
      */
     public static ChemicalBuilder pigment() {
-        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "pigment/base"));
+        return builder(Identifier.fromNamespaceAndPath(MekanismAPI.MEKANISM_MODID, "mek_chemical/pigment/base"));
     }
 }

@@ -24,8 +24,8 @@ public class MekanismChemicals {
     public static final ChemicalDeferredRegister CHEMICALS = new ChemicalDeferredRegister(Mekanism.MODID);
 
     public static final DeferredChemical<Chemical> EMPTY = CHEMICALS.register(MekanismAPI.EMPTY_CHEMICAL_KEY.identifier().getPath(), () -> new Chemical(ChemicalBuilder.builder()));
-    public static final DeferredChemical<Chemical> BIO = CHEMICALS.register("bio", Mekanism.rl("infuse_type/bio"), 0x5A4630);
-    public static final DeferredChemical<Chemical> FUNGI = CHEMICALS.register("fungi", Mekanism.rl("infuse_type/fungi"), 0x74656A);
+    public static final DeferredChemical<Chemical> BIO = CHEMICALS.register("bio", Mekanism.rl("mek_chemical/infuse_type/bio"), 0x5A4630);
+    public static final DeferredChemical<Chemical> FUNGI = CHEMICALS.register("fungi", Mekanism.rl("mek_chemical/infuse_type/fungi"), 0x74656A);
     public static final DeferredChemical<Chemical> TIN = CHEMICALS.registerInfuse("tin", 0xCCCCD9);
     public static final DeferredChemical<Chemical> GOLD = CHEMICALS.registerInfuse("gold", 0xF2CD67);
     public static final DeferredChemical<Chemical> REFINED_OBSIDIAN = CHEMICALS.registerInfuse("refined_obsidian", 0x7C00ED);
@@ -35,8 +35,8 @@ public class MekanismChemicals {
 
     public static final DeferredChemical<Chemical> HYDROGEN = CHEMICALS.register(ChemicalConstants.HYDROGEN);
     public static final DeferredChemical<Chemical> OXYGEN = CHEMICALS.register(ChemicalConstants.OXYGEN);
-    public static final DeferredChemical<Chemical> STEAM = CHEMICALS.register("steam", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam"))));
-    public static final DeferredChemical<Chemical> WATER_VAPOR = CHEMICALS.register("water_vapor", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("liquid/steam"))));
+    public static final DeferredChemical<Chemical> STEAM = CHEMICALS.register("steam", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("mek_liquid/steam"))));
+    public static final DeferredChemical<Chemical> WATER_VAPOR = CHEMICALS.register("water_vapor", () -> new Chemical(ChemicalBuilder.builder(Mekanism.rl("mek_liquid/steam"))));
     public static final DeferredChemical<Chemical> CHLORINE = CHEMICALS.register(ChemicalConstants.CHLORINE);
     public static final DeferredChemical<Chemical> SULFUR_DIOXIDE = CHEMICALS.register(ChemicalConstants.SULFUR_DIOXIDE);
     public static final DeferredChemical<Chemical> SULFUR_TRIOXIDE = CHEMICALS.register(ChemicalConstants.SULFUR_TRIOXIDE);

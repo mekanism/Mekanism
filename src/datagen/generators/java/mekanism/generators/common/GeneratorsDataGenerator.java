@@ -8,7 +8,6 @@ import mekanism.common.recipe.MekRecipeRunner;
 import mekanism.generators.client.GeneratorsLangProvider;
 import mekanism.generators.client.GeneratorsModelProvider;
 import mekanism.generators.client.GeneratorsSoundProvider;
-import mekanism.generators.client.GeneratorsSpriteSourceProvider;
 import mekanism.generators.client.integration.emi.GeneratorsEmiDefaults;
 import mekanism.generators.client.recipe_viewer.alias.GeneratorsAliasMapping;
 import mekanism.generators.common.loot.GeneratorsLootProvider;
@@ -39,7 +38,6 @@ public class GeneratorsDataGenerator {
         //Client side data generators
         gen.addProvider(true, new GeneratorsLangProvider(output));
         gen.addProvider(true, new GeneratorsSoundProvider(output));
-        gen.addProvider(true, new GeneratorsSpriteSourceProvider(output, lookupProvider));
         gen.addProvider(true, new GeneratorsModelProvider(output, clientResources));
         //Server side data generators
         gen.addProvider(true, new GeneratorsTagProvider(output, lookupProvider));
