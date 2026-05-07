@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.fluid;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
@@ -62,21 +61,6 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     @Override
     public void onContentsChanged() {
         internal.onContentsChanged();
-    }
-
-    @Override
-    public int setStackSize(int amount, Action action) {
-        return internal.setStackSize(amount, action);
-    }
-
-    @Override
-    public int growStack(int amount, Action action) {
-        return internal.growStack(amount, action);
-    }
-
-    @Override
-    public int shrinkStack(int amount, Action action) {
-        return internal.shrinkStack(amount, action);
     }
 
     @Override

@@ -42,7 +42,8 @@ import net.minecraft.tags.FluidTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,8 +97,8 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
         //Divide the burn time by 20 as that is the ratio of how much a bucket of lava would burn for
         //TODO: Eventually we may want to grab the 20 dynamically in case some mod is changing the burn time of a lava bucket
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, itemType -> level == null ? 0 : itemType.toStack().getBurnTime(null, level.fuelValues()) / 20, size -> new FluidStack(Fluids.LAVA, size),
-              listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(lavaTank, itemType -> level == null ? 0 : itemType.toStack().getBurnTime(null, level.fuelValues()) / 20,
+              FluidResource.of(Fluids.LAVA), listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP, RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);
         return builder.build();
     }
@@ -117,14 +118,17 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         fuelSlot.fillOrBurn();
         long prev = getEnergyContainer().getEnergy();
         heatCapacitor.handleHeat(getBoost());
-        if (canFunction() && getEnergyContainer().getNeeded() > 0L) {
+        FluidResource lavaResource = lavaTank.getResource();
+        if (canFunction() && !lavaResource.isEmpty() && getEnergyContainer().getNeeded() > 0L) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
-            if (lavaTank.extract(fluidRate, Action.SIMULATE, AutomationType.INTERNAL).amount() == fluidRate) {
-                setActive(true);
-                lavaTank.extract(fluidRate, Action.EXECUTE, AutomationType.INTERNAL);
-                heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get());
-            } else {
-                setActive(false);
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
+                    setActive(true);
+                    transaction.commit();
+                    heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get());
+                } else {
+                    setActive(false);
+                }
             }
         } else {
             setActive(false);
@@ -216,7 +220,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(lavaTank.amount(), lavaTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(lavaTank);
     }
 
     @Override

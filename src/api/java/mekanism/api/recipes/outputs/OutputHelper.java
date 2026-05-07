@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.IResourceContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
@@ -15,11 +16,11 @@ import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeO
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -258,20 +259,15 @@ public class OutputHelper {
             //This should not happen
             return;
         }
-        fluidTank.insert(toOutput.withAmount(toOutput.amount() * operations).create(), Action.EXECUTE, AutomationType.INTERNAL);
+        fluidTank.insert(FluidResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
     }
 
+    //TODO - 26.1: Do we want to validate that the amount we expected to insert was able to be inserted before we commit? Probably
     private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
         if (operations == 0 || toOutput == null) {
             return;
         }
-        int outputCount = toOutput.count();
-        if (operations > 1) {
-            //If we are doing more than one operation we need to make a copy of our stack and change the amount
-            // that we are using the fill the tank with
-            outputCount *= operations;
-        }
-        inventorySlot.insert(ItemResource.of(toOutput), outputCount, transaction, AutomationType.INTERNAL);
+        inventorySlot.insert(ItemResource.of(toOutput), toOutput.count() * operations, transaction, AutomationType.INTERNAL);
     }
 
     /**
@@ -306,36 +302,30 @@ public class OutputHelper {
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IFluidTank tank, @Nullable FluidStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (toOutput != null) {
-            //Copy the stack and make it be max size
-            FluidStack maxOutput = toOutput.apply(Integer.MAX_VALUE, DataComponentPatch.EMPTY);
-            //Then simulate filling the fluid tank, so we can see how much actually can fit
-            FluidStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-            int amountUsed = maxOutput.amount() - remainder.amount();
-            //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = amountUsed / toOutput.amount();
-            tracker.updateOperations(operations);
-            if (operations == 0) {
-                if (amountUsed == 0 && tank.getNeeded() > 0) {
-                    tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
-                } else {
-                    tracker.addError(notEnoughSpace);
-                }
-            }
+            calculateOperationsCanSupport(tracker, notEnoughSpace, tank, FluidResource.of(toOutput), toOutput.amount(), Integer.MAX_VALUE);
         }
     }
 
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IInventorySlot slot, @Nullable ItemStackTemplate toOutput) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (toOutput != null) {
+            calculateOperationsCanSupport(tracker, notEnoughSpace, slot, ItemResource.of(toOutput), toOutput.count(), toOutput.getMaxStackSize());
+        }
+    }
+
+    private static <RESOURCE extends Resource> void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IResourceContainer<RESOURCE> container,
+          RESOURCE toOutput, int outputSize, int maxStackSize) {
+        //If our output is empty, we have nothing to add, so we treat it as being able to fit all
+        if (!toOutput.isEmpty()) {
             //TODO - 26.1: Should a parent transaction be passed in/have the operation tracker keep track of that?
             try (Transaction simulation = Transaction.openRoot()) {
                 //Try inserting an amount corresponding to the maximum size of the output
-                int amountUsed = slot.insert(ItemResource.of(toOutput), toOutput.getMaxStackSize(), simulation, AutomationType.INTERNAL);
+                int amountUsed = container.insert(toOutput, maxStackSize, simulation, AutomationType.INTERNAL);
                 //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-                int operations = amountUsed / toOutput.count();
+                int operations = amountUsed / outputSize;
                 tracker.updateOperations(operations);
                 if (operations == 0) {
-                    if (amountUsed == 0 && slot.getCurrentLimit() - slot.amount() > 0) {
+                    if (amountUsed == 0 && container.getCurrentLimit() - container.amount() > 0) {
                         tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
                     } else {
                         tracker.addError(notEnoughSpace);

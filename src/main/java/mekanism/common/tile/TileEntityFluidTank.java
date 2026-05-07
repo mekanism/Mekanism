@@ -241,7 +241,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fluidTank);
     }
 
     @Override

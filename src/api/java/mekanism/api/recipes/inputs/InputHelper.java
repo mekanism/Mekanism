@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -159,7 +160,9 @@ public class InputHelper {
                 FluidStack inputFluid = getInput();
                 if (!inputFluid.isEmpty()) {
                     int amount = recipeInput.amount() * operations;
-                    logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
+                    int extracted = tank.extract(FluidResource.of(recipeInput), amount, transaction, AutomationType.INTERNAL);
+                    //TODO - 26.1: We probably should abort if this fails to extract what we expect instead of just logging a warning
+                    logMismatchedStackSize(extracted, amount);
                 }
             }
 

@@ -379,7 +379,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fluidTank);
     }
 
     @Override

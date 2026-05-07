@@ -371,7 +371,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fluidTank);
     }
 
     @Override

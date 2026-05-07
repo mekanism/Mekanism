@@ -3,7 +3,6 @@ package mekanism.common.attachments.containers.fluid;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -94,56 +93,9 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
         return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : rate.getAsInt();
     }
 
-    @Override
-    public final int setStackSize(int amount, Action action) {
-        AttachedFluids attachedFluids = getAttached();
-        return setStackSize(attachedFluids, getContents(attachedFluids), amount, action);
-    }
-
-    protected int setStackSize(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action) {
-        if (stored.isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setContents(attachedFluids, FluidStack.EMPTY);
-            }
-            return 0;
-        }
-        int maxStackSize = getCapacity();
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (stored.amount() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setContents(attachedFluids, stored.copyWithAmount(amount));
-        return amount;
-    }
-
-    @Override
-    public int growStack(int amount, Action action) {
-        AttachedFluids attachedFluids = getAttached();
-        FluidStack stored = getContents(attachedFluids);
-        int current = stored.amount();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            //If we are increasing the stack's size, use the insert rate
-            amount = Math.min(Math.min(amount, getNeeded(stored)), getInsertionRate(null));
-        } else if (amount < 0) {
-            //If we are decreasing the stack's size, use the extract rate
-            amount = Math.max(amount, -getExtractionRate(null));
-        }
-        int newSize = setStackSize(attachedFluids, stored,current + amount, action);
-        return newSize - current;
-    }
-
     protected int getNeeded(FluidStack stored) {
         //Skip the stack lookup for getNeeded
-        return Math.max(0, getCapacity() - stored.amount());
+        return Math.max(0, getLimit(FluidResource.of(stored)) - stored.amount());
     }
 
     @Override

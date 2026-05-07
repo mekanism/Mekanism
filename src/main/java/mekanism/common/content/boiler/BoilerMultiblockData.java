@@ -268,7 +268,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(waterTank.amount(), waterTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(waterTank);
     }
 
     private double getHeatAvailable() {

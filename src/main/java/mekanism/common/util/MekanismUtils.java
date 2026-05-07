@@ -26,6 +26,7 @@ import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -661,6 +662,11 @@ public final class MekanismUtils {
             return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;
+    }
+
+    //TODO - 26.1: Docs
+    public static int redstoneLevelFromContents(IResourceContainer<?> container) {
+        return redstoneLevelFromContents(container.amount(), container.getCurrentLimit());
     }
 
     /**

@@ -72,7 +72,7 @@ public final class FluidUtils {
     }
 
     public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank) {
-        emit(targets, tank, tank.getCapacity());
+        emit(targets, tank, tank.getCurrentLimit());
     }
 
     public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank, int maxOutput) {
