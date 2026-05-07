@@ -1,13 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "minecraft:item/bogged_spawn_egg"
-  },
-  "transform": {
-    "scale": [
-      0.5,
-      0.5,
-      0.5
-    ]
+    "layer0": "mekanismadditions:item/baby_bogged_spawn_egg"
   }
 }

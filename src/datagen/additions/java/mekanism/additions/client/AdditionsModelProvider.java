@@ -22,7 +22,6 @@ import net.minecraft.client.data.models.ItemModelOutput;
 import net.minecraft.client.data.models.MultiVariant;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.ItemModelUtils;
-import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.SelectItemModel;
@@ -34,7 +33,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import org.jspecify.annotations.NullMarked;
 
@@ -72,14 +70,12 @@ public class AdditionsModelProvider extends BaseModelProvider {
             itemModels.itemModelOutput.accept(balloon, modelToRegister);
         }
 
-        //for now just copy the big spawn eggs, with a scale transform. TODO - 26.1 - check this works/looks ok
-        ModelTemplate babySpawnEgg = ModelTemplates.FLAT_ITEM.extend().rootTransforms(builder -> builder.scale(0.5F)).build();
-        itemModels.generateFlatItem(AdditionsItems.BABY_BOGGED_SPAWN_EGG.value(), Items.BOGGED_SPAWN_EGG, babySpawnEgg);
-        itemModels.generateFlatItem(AdditionsItems.BABY_CREEPER_SPAWN_EGG.value(), Items.CREEPER_SPAWN_EGG, babySpawnEgg);
-        itemModels.generateFlatItem(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.value(), Items.ENDERMAN_SPAWN_EGG, babySpawnEgg);
-        itemModels.generateFlatItem(AdditionsItems.BABY_SKELETON_SPAWN_EGG.value(), Items.SKELETON_SPAWN_EGG, babySpawnEgg);
-        itemModels.generateFlatItem(AdditionsItems.BABY_STRAY_SPAWN_EGG.value(), Items.STRAY_SPAWN_EGG, babySpawnEgg);
-        itemModels.generateFlatItem(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG.value(), Items.WITHER_SKELETON_SPAWN_EGG, babySpawnEgg);
+        itemModels.generateFlatItem(AdditionsItems.BABY_BOGGED_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AdditionsItems.BABY_CREEPER_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AdditionsItems.BABY_ENDERMAN_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AdditionsItems.BABY_SKELETON_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AdditionsItems.BABY_STRAY_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
+        itemModels.generateFlatItem(AdditionsItems.BABY_WITHER_SKELETON_SPAWN_EGG.value(), ModelTemplates.FLAT_ITEM);
 
         Item walkieTalkie = AdditionsItems.WALKIE_TALKIE.value();
         ItemModel.Unbaked baseWalkie = ItemModelUtils.plainModel(itemModels.createFlatItemModel(walkieTalkie, ModelTemplates.FLAT_ITEM));
