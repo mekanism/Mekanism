@@ -132,6 +132,7 @@ public class ModelScubaMask extends MekanismJavaModel.NoState {
     }
 
     public void collect(@NotNull PoseStack matrix, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+        setupAnim();
         collectParts(parts, matrix, RENDER_TYPE, collector, light, overlayLight, 0xFFFFFFFF, null, hasFoil);
         collectParts(litParts, matrix, RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0xFFFFFFFF, null, hasFoil);
         collectParts(glass, matrix, GLASS_RENDER_TYPE, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x4CFFFFFF, null, hasFoil);

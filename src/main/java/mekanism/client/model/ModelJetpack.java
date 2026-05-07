@@ -121,6 +121,7 @@ public class ModelJetpack extends MekanismJavaModel.NoState {
 
     @Override
     public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector collector, int light, int overlayLight, boolean hasFoil) {
+        setupAnim();
         collectParts(parts, poseStack, frameRenderType, collector, light, overlayLight, -1, null, hasFoil);
         collectParts(litParts, poseStack, frameRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, -1, null, hasFoil);
         collectParts(wingParts, poseStack, wingRenderType, collector, LightCoordsUtil.FULL_BRIGHT, overlayLight, 0x33FFFFFF, null, hasFoil);

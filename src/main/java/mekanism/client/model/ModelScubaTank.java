@@ -67,6 +67,7 @@ public class ModelScubaTank extends MekanismJavaModel.NoState {
 
     @Override
     public void collect(@NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        setupAnim();
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 

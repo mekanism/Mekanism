@@ -27,6 +27,7 @@ public class ModelEnergyCore extends MekanismJavaModel<Integer> {
 
     @Override
     public void collect(Integer color, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector submitNodeCollector, int light, int overlayLight, boolean hasEffect) {
+        setupAnim(color);
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, color, null, hasEffect);
     }
 
