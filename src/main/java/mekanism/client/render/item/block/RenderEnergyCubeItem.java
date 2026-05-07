@@ -6,6 +6,7 @@ import com.mojang.serialization.MapCodec;
 import java.util.List;
 import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
+import mekanism.client.ModelUtil;
 import mekanism.client.model.ModelEnergyCore;
 import mekanism.client.model.baked.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
@@ -27,8 +28,6 @@ import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.block.model.BlockDisplayContext;
-import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
 import net.minecraft.client.resources.model.ModelManager;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
@@ -37,22 +36,14 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
 import org.jetbrains.annotations.Nullable;
-import org.joml.Matrix4f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
 public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.CubeState> {
-
-    public static final BlockDisplayContext BLOCK_DISPLAY_CONTEXT = BlockDisplayContext.create();
-    public static final Matrix4f IDENTITY = new Matrix4f();
+    
     private final ModelEnergyCore core;
-    private final Lazy<Vector3fc[]> extents = Lazy.of(() -> {
-        BlockModelRenderState state = new BlockModelRenderState();
-        mc().getBlockModelResolver().update(state, MekanismBlocks.CREATIVE_ENERGY_CUBE.defaultState(), BLOCK_DISPLAY_CONTEXT);
-        List<BakedQuad> bakedQuads = state.setupModel(IDENTITY, false).stream().flatMap(part -> part.getQuads(null).stream()).toList();
-        return CuboidItemModelWrapper.computeExtents(bakedQuads);
-    });
+    private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_ENERGY_CUBE));
 
     public RenderEnergyCubeItem(EntityModelSet entityModels) {
         core = new ModelEnergyCore(entityModels);
@@ -105,12 +96,12 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         BlockState blockState = itemBlock.getBlock().defaultBlockState();
         BlockStateModel blockStateModel = models().getBlockStateModelSet().get(blockState);
         if (blockStateModel instanceof EnergyCubeModel energyCubeModel) {
-            List<BlockStateModelPart> partList = modelRenderState.setupModel(IDENTITY, (energyCubeModel.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0);
+            List<BlockStateModelPart> partList = modelRenderState.setupModel(ModelUtil.IDENTITY, (energyCubeModel.materialFlags() & BakedQuad.FLAG_TRANSLUCENT) != 0);
             energyCubeModel.collectParts(partList, sideStates);
             modelRenderState.tintLayers().add(tier.getBaseTier().getPackedColor());
         } else {
             //weird, but ok, try to render something
-            mc().getBlockModelResolver().update(modelRenderState, blockState, BLOCK_DISPLAY_CONTEXT);
+            mc().getBlockModelResolver().update(modelRenderState, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
         }
 
         float ticks = mc().levelRenderer.getTicks() + MekanismRenderer.getPartialTick();

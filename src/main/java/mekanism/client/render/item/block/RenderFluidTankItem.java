@@ -1,33 +1,27 @@
 package mekanism.client.render.item.block;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.OctahedralGroup;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.api.tier.BaseTier;
+import mekanism.client.ModelUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.RenderResizableCuboid;
 import mekanism.client.render.RenderResizableCuboid.TexturePicker;
 import mekanism.client.render.tileentity.RenderFluidTank;
-import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
+import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.BlockModelRenderState;
-import net.minecraft.client.renderer.block.dispatch.BlockModelRotation;
-import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
-import net.minecraft.client.renderer.item.CuboidItemModelWrapper;
-import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.special.SpecialModelRenderer;
-import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ResolvedModel;
-import net.minecraft.client.resources.model.SimpleModelWrapper;
+import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.joml.Matrix4f;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -35,14 +29,9 @@ import org.jspecify.annotations.Nullable;
 @NullMarked
 public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTankItem.TankRenderState> {
 
-    private final BlockStateModelPart fluidTankmodel;
-    private final int tierTint;
-    private final Vector3fc[] extents;
+    private final Lazy<Vector3fc[]> extents = Lazy.of(() -> ModelUtil.computeExtents(MekanismBlocks.CREATIVE_FLUID_TANK));
 
-    public RenderFluidTankItem(BlockStateModelPart fluidTankmodel, int tierTint) {
-        this.fluidTankmodel = fluidTankmodel;
-        this.tierTint = tierTint;
-        extents = CuboidItemModelWrapper.computeExtents(fluidTankmodel.getQuads(null));
+    public RenderFluidTankItem() {
     }
 
     @Override
@@ -61,7 +50,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
 
     @Override
     public void getExtents(Consumer<Vector3fc> output) {
-        for (Vector3fc extent : extents) {
+        for (Vector3fc extent : extents.get()) {
             output.accept(extent);
         }
     }
@@ -86,9 +75,10 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
             }
         }
         //todo - 26.1: do this with the block model from model manager (copy Energy cube item)
+        BlockState blockState = ((BlockItem) stack.getItem()).getBlock().defaultBlockState();
         BlockModelRenderState blockModel = new BlockModelRenderState();
-        blockModel.setupModel(new Matrix4f(), true).add(fluidTankmodel);
-        blockModel.tintLayers().add(tierTint);
+        mc().getBlockModelResolver().update(blockModel, blockState, ModelUtil.BLOCK_DISPLAY_NO_CONTEXT);
+        //blockModel.tintLayers().add(tierTint);
         return new TankRenderState(fluidScale, fluidLight, fluidColor, fluidModel, fluidTexture, blockModel);
     }
 
@@ -96,31 +86,19 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
                                   BlockModelRenderState blockModelRenderState) {
     }
 
+    private static Minecraft mc() {
+        return Minecraft.getInstance();
+    }
+
     public static class Unbaked implements SpecialModelRenderer.Unbaked<TankRenderState> {
 
-        public static final MapCodec<Unbaked> MAP_CODEC = BaseTier.CODEC.fieldOf("tank_tier").xmap(Unbaked::new, Unbaked::getTier);
-
-        private final BaseTier tier;
-
-        public Unbaked(BaseTier tier) {
-            this.tier = tier;
-        }
-
-        public BaseTier getTier() {
-            return tier;
-        }
+        public static final Unbaked INSTANCE = new Unbaked();
+        public static final MapCodec<Unbaked> MAP_CODEC = MapCodec.unit(INSTANCE);
 
         @Override
         @Nullable
         public RenderFluidTankItem bake(BakingContext context) {
-            if (!(context instanceof ItemModel.BakingContext itemBaking)) {
-                Mekanism.logger.error("RenderFluidTankItem called with non-item baking context: {}", context);
-                return null;
-            }
-            ModelBaker modelBaker = itemBaking.blockModelBaker();
-            ResolvedModel model = modelBaker.getModel(Mekanism.rl("block/fluid_tank"));
-            BlockStateModelPart fluidTank = SimpleModelWrapper.bake(modelBaker, model, BlockModelRotation.get(OctahedralGroup.IDENTITY));
-            return new RenderFluidTankItem(fluidTank, tier.getPackedColor());
+            return new RenderFluidTankItem();
         }
 
         @Override

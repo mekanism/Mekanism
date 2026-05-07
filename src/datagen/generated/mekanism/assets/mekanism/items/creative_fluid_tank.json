@@ -3,8 +3,7 @@
     "type": "minecraft:special",
     "base": "mekanism:item/creative_fluid_tank",
     "model": {
-      "type": "mekanism:fluid_tank",
-      "tank_tier": "creative"
+      "type": "mekanism:fluid_tank"
     }
   }
 }

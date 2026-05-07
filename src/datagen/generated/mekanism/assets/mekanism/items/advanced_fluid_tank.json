@@ -3,8 +3,7 @@
     "type": "minecraft:special",
     "base": "mekanism:item/advanced_fluid_tank",
     "model": {
-      "type": "mekanism:fluid_tank",
-      "tank_tier": "advanced"
+      "type": "mekanism:fluid_tank"
     }
   }
 }
