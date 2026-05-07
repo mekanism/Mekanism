@@ -65,8 +65,9 @@ import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -255,8 +256,10 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     }
 
     private static IFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
-        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {//TODO - 26.1: FIX THIS
+        //TODO - 26.1: Evaluate item access
+        ResourceHandler<FluidResource> fluidHandlerItem = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+            //TODO - 26.1: Ideally just act on the fluid handler directly as this relies on the implementation details about the implementation we return for item caps
             return fluidHandler.getContainer(0);
         }
         return null;

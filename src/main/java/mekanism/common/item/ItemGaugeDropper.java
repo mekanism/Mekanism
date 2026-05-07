@@ -3,7 +3,8 @@ package mekanism.common.item;
 import java.util.function.Consumer;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
-import mekanism.api.fluid.IExtendedFluidHandler;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
@@ -24,8 +25,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemGaugeDropper extends Item {
@@ -67,23 +69,25 @@ public class ItemGaugeDropper extends Item {
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level world, Player player, @NotNull InteractionHand hand) {
-        ItemStack stack = player.getItemInHand(hand);
         if (player.isShiftKeyDown()) {
-            if (!world.isClientSide()) {
-                IFluidHandlerItem fluidHandler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
-                if (fluidHandler instanceof IExtendedFluidHandler fluidHandlerItem) {
-                    for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                        fluidHandlerItem.setFluidInTank(tank, FluidStack.EMPTY);
-                    }
-                }
-                IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
-                if (handler != null) {
-                    for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                        handler.setChemicalInTank(tank, ChemicalStack.EMPTY);
-                    }
+            if (world.isClientSide()) {
+                return InteractionResult.SUCCESS_SERVER;
+            }
+            ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+            if (fluidHandler instanceof IMekanismFluidHandler fluidHandlerItem) {//TODO - 26.1: Test if this works
+                for (IFluidTank container : fluidHandlerItem.getContainers()) {
+                    container.setEmpty();
                 }
             }
-            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);
+            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            if (handler != null) {
+                for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
+                    handler.setChemicalInTank(tank, ChemicalStack.EMPTY);
+                }
+            }
+            //TODO - 26.1: Is this the correct way to transform the output?
+            return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(itemAccess.getResource().toStack(itemAccess.getAmount()));
         }
         return InteractionResult.PASS;
     }

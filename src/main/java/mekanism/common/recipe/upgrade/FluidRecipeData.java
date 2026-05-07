@@ -2,15 +2,14 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.fluid.ExtendedFluidHandlerUtils;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -35,25 +34,26 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         if (fluidTanks.isEmpty()) {
             return true;
         }
-        //TODO: Improve the logic used so that it tries to batch similar types of fluids together first
-        // and maybe make it try multiple slot combinations??
         IMekanismFluidHandler outputHandler = ContainerType.FLUID.createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;
         }
-        for (IFluidTank fluidTank : this.fluidTanks) {
-            if (!fluidTank.isEmpty() && !insertManualIntoOutputContainer(outputHandler, fluidTank.getFluid()).isEmpty()) {
-                //If we have a remainder something failed so bail
-                return false;
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (IFluidTank fluidTank : this.fluidTanks) {
+                if (!fluidTank.isEmpty()) {
+                    FluidResource fluidType = fluidTank.getResource();
+                    int toInsert = fluidTank.amount();
+                    //Insert into the output using manual as the automation type
+                    toInsert -= outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL);
+                    if (toInsert > 0) {
+                        //If we have a remainder something failed so bail
+                        return false;
+                    }
+                }
             }
+            transaction.commit();
+            return true;
         }
-        return true;
-    }
-
-    private FluidStack insertManualIntoOutputContainer(IMekanismFluidHandler outputHandler, FluidStack fluid) {
-        //Insert into the output using manual as the automation type
-        List<IFluidTank> fluidTanks = outputHandler.getContainers();
-        return ExtendedFluidHandlerUtils.insert(fluid, Action.EXECUTE, AutomationType.MANUAL, fluidTanks.size(), fluidTanks);
     }
 }
