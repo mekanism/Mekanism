@@ -15,6 +15,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.food.FoodConstants;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemUseAnimation;
@@ -23,10 +24,10 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemCanteen extends Item implements ICustomCreativeTabContents {
@@ -66,14 +67,29 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
     @Override
     public ItemStack finishUsingItem(@NotNull ItemStack stack, @NotNull Level world, @NotNull LivingEntity entityLiving) {
         if (!world.isClientSide() && entityLiving instanceof Player player) {
-            int needed = Math.min(20 - player.getFoodData().getFoodLevel(), getFluid(stack).amount() / MekanismConfig.general.nutritionalPasteMBPerFood.get());
-            if (needed > 0) {
-                player.getFoodData().eat(needed, MekanismConfig.general.nutritionalPasteSaturation.get());
-                IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
-                if (handler != null) {
-                    handler.drain(needed * MekanismConfig.general.nutritionalPasteMBPerFood.get(), FluidAction.EXECUTE);
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
+            if (fluidHandler != null) {
+                FluidResource paste = MekanismFluids.NUTRITIONAL_PASTE.asResource();
+                int missingFood = FoodConstants.MAX_FOOD - player.getFoodData().getFoodLevel();
+                int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
+                int foodToFill;
+                try (Transaction simulation = Transaction.openRoot()) {
+                    //TODO - 26.1: Is there a worry of this multiplication overflowing?
+                    foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
                 }
-                entityLiving.gameEvent(GameEvent.DRINK);
+                if (foodToFill > 0) {
+                    int pasteToUse = foodToFill * pastePerFood;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int extracted = fluidHandler.extract(paste, pasteToUse, transaction);
+                        if (extracted == pasteToUse) {
+                            //Note: This if statement should always be true given we already simulated that we could extract at least this much,
+                            // but we validate it just in case before actually committing any changes
+                            player.getFoodData().eat(foodToFill, MekanismConfig.general.nutritionalPasteSaturation.get());
+                            entityLiving.gameEvent(GameEvent.DRINK);
+                            transaction.commit();
+                        }
+                    }
+                }
             }
         }
         return stack;
@@ -90,24 +106,25 @@ public class ItemCanteen extends Item implements ICustomCreativeTabContents {
         return ItemUseAnimation.DRINK;
     }
 
-    private FluidStack getFluid(ItemStack stack) {
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
-        if (fluidHandlerItem != null) {
-            return StorageUtils.getContainedFluid(fluidHandlerItem, MekanismFluids.NUTRITIONAL_PASTE.asStack(1));
-        }
-        return FluidStack.EMPTY;
-    }
-
     @NotNull
     @Override
     public InteractionResult use(@NotNull Level worldIn, Player player, @NotNull InteractionHand hand) {
-        ItemStack item = player.getItemInHand(hand);
         if (!MekanismUtils.isPlayingMode(player)) {
             return InteractionResult.PASS;
         }
-        if (player.canEat(false) && getFluid(item).amount() >= 50) {
-            player.startUsingItem(hand);
-            return InteractionResult.CONSUME;
+        if (player.canEat(false)) {
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forPlayerInteraction(player, hand));
+            if (fluidHandler != null) {
+                try (Transaction simulation = Transaction.openRoot()) {
+                    int pastePerFood = MekanismConfig.general.nutritionalPasteMBPerFood.get();
+                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), pastePerFood, simulation);
+                    if (extracted == pastePerFood) {
+                        //Only allow to start drinking if we have at least enough paste to provide a single point of food
+                        player.startUsingItem(hand);
+                        return InteractionResult.CONSUME;
+                    }
+                }
+            }
         }
         return InteractionResult.FAIL;
     }

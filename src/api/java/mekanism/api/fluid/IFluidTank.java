@@ -61,6 +61,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every
      * run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isValid(FluidResource.of(stack))) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
@@ -109,6 +110,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to
      * be made every run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default FluidStack extract(int amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1) {
             return FluidStack.EMPTY;
@@ -135,6 +137,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * @implNote It is recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every run. If the internal
      * stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default int setStackSize(int amount, Action action) {
         if (isEmpty()) {
             return 0;
@@ -170,6 +173,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default int growStack(int amount, Action action) {
         int current = amount();
         if (current == 0) {
@@ -197,6 +201,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default int shrinkStack(int amount, Action action) {
         return -growStack(-amount, action);
     }

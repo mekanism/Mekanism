@@ -13,6 +13,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
 public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FLOWING extends Fluid, BLOCK extends LiquidBlock, BUCKET extends BucketItem>
@@ -47,6 +48,10 @@ public class FluidRegistryObject<TYPE extends FluidType, STILL extends Fluid, FL
 
     public ItemRegistryObject<BUCKET> getBucket() {
         return bucket;
+    }
+
+    public FluidResource asResource() {
+        return FluidResource.of(this);
     }
 
     public FluidStack asStack(int amount) {

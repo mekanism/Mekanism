@@ -29,7 +29,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -160,16 +159,6 @@ public class StorageUtils {
         return ChemicalStack.EMPTY;
     }
 
-    public static FluidStack getContainedFluid(@NotNull IFluidHandlerItem fluidHandlerItem, FluidStack type) {
-        for (int i = 0, tanks = fluidHandlerItem.getTanks(); i < tanks; i++) {
-            FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(i);
-            if (FluidStack.isSameFluidSameComponents(fluidInTank, type)) {
-                return fluidInTank;
-            }
-        }
-        return FluidStack.EMPTY;
-    }
-
     /**
      * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have a fluid handler provided as a capability
      * from our item, but it may have stored data in its container from when it was a block
@@ -179,7 +168,10 @@ public class StorageUtils {
         List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
         return switch (containers.size()) {
             case 0 -> FluidStack.EMPTY;
-            case 1 -> containers.getFirst().getFluid().copy();
+            case 1 -> {
+                IFluidTank tank = containers.getFirst();
+                yield tank.getResource().toStack(tank.amount());
+            }
             default -> {
                 FluidStack fluid = FluidStack.EMPTY;
                 for (IFluidTank tank : containers) {
@@ -187,7 +179,7 @@ public class StorageUtils {
                         continue;
                     }
                     if (fluid.isEmpty()) {
-                        fluid = tank.getFluid().copy();
+                        fluid = tank.getResource().toStack(tank.amount());
                     } else if (tank.isFluidEqual(fluid)) {
                         if (fluid.amount() < Integer.MAX_VALUE - tank.amount()) {
                             fluid.grow(tank.amount());
@@ -210,15 +202,16 @@ public class StorageUtils {
      */
     public static FluidStack getFirstFluidFromAttachment(ItemStack stack) {
         List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-        int size = containers.size();
-        return switch (size) {
+        return switch (containers.size()) {
             case 0 -> FluidStack.EMPTY;
-            case 1 -> containers.getFirst().getFluid();
+            case 1 -> {
+                IFluidTank tank = containers.getFirst();
+                yield tank.getResource().toStack(tank.amount());
+            }
             default -> {
-                for (int i = 0; i < size; i++) {
-                    FluidStack fluid = containers.get(i).getFluid();
-                    if (!fluid.isEmpty()) {
-                        yield fluid;
+                for (IFluidTank tank : containers) {
+                    if (!tank.isEmpty()) {
+                        yield tank.getResource().toStack(tank.amount());
                     }
                 }
                 yield FluidStack.EMPTY;
@@ -370,10 +363,13 @@ public class StorageUtils {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).amount(), handler.getChemicalTankCapacity(chemTack)));
             }
         }
-        IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
-        if (fluidHandlerItem != null) {
-            for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                bestRatio = Math.max(bestRatio, getRatio(fluidHandlerItem.getFluidInTank(tank).amount(), fluidHandlerItem.getTankCapacity(tank)));
+        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+        if (fluidHandler != null) {
+            for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
+                FluidResource currentType = fluidHandler.getResource(tank);
+                long stored = fluidHandler.getAmountAsLong(tank);
+                long capacity = fluidHandler.getCapacityAsLong(tank, currentType);
+                bestRatio = Math.max(bestRatio, getRatio(stored, capacity));
             }
         }
         return 1 - bestRatio;
@@ -410,26 +406,27 @@ public class StorageUtils {
             IFluidTank mergeTank = toAdd.get(i);
             if (!mergeTank.isEmpty()) {
                 IFluidTank tank = tanks.get(i);
-                FluidStack mergeStack = mergeTank.getFluid();
+                FluidResource mergeType = mergeTank.getResource();
+                int mergeAmount = mergeTank.amount();
                 if (tank.isEmpty()) {
-                    int capacity = tank.getCapacity();
-                    if (mergeStack.amount() <= capacity) {
-                        tank.setStack(mergeStack);
+                    int capacity = tank.getLimit(mergeType);
+                    if (mergeAmount <= capacity) {
+                        tank.setContents(mergeType, mergeAmount);
                     } else {
-                        tank.setStack(mergeStack.copyWithAmount(capacity));
-                        int remaining = mergeStack.amount() - capacity;
+                        tank.setContents(mergeType, capacity);
+                        int remaining = mergeAmount - capacity;
                         if (remaining > 0) {
-                            rejects.add(mergeStack.copyWithAmount(remaining));
+                            rejects.add(mergeType.toStack(remaining));
                         }
                     }
-                } else if (tank.isFluidEqual(mergeStack)) {
-                    int amount = tank.growStack(mergeStack.amount(), Action.EXECUTE);
-                    int remaining = mergeStack.amount() - amount;
+                } else if (mergeType.equals(tank.getResource())) {
+                    int amount = tank.growStack(mergeAmount, Action.EXECUTE);
+                    int remaining = mergeAmount - amount;
                     if (remaining > 0) {
-                        rejects.add(mergeStack.copyWithAmount(remaining));
+                        rejects.add(mergeType.toStack(remaining));
                     }
                 } else {
-                    rejects.add(mergeStack);
+                    rejects.add(mergeType.toStack(mergeAmount));
                 }
             }
         }

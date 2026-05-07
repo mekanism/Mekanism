@@ -18,7 +18,11 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -74,17 +78,20 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(modeSupplier, "Mode supplier cannot be null");
         return new FluidInventorySlot(fluidTank, ConstantPredicates.alwaysFalse(), itemType -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
-            if (fluidHandlerItem != null) {
+            ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemType);
+            if (fluidHandler != null) {
                 boolean mode = modeSupplier.getAsBoolean();
                 //Mode == true if fluid to gas
                 boolean allEmpty = true;
-                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                    FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
+                for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
+                    FluidResource fluidInTank = fluidHandler.getResource(tank);
                     if (!fluidInTank.isEmpty()) {
-                        if (fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
-                            //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
-                            return mode;
+                        //TODO - 26.1: Are call sites ever in a transactional context?
+                        try (Transaction simulation = Transaction.openRoot()) {
+                            if (fluidTank.insert(fluidInTank, fluidHandler.getAmountAsInt(tank), simulation, AutomationType.INTERNAL) > 0) {
+                                //True if we are the input tank and the items contents are valid and can fill the tank with any of our contents
+                                return mode;
+                            }
                         }
                         allEmpty = false;
                     }
@@ -105,21 +112,30 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     public static Predicate<ItemResource> getFillPredicate(IFluidTank fluidTank) {
-        return itemType -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
-            if (fluidHandlerItem != null) {
-                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                    FluidStack fluidInTank = fluidHandlerItem.getFluidInTank(tank);
-                    if (!fluidInTank.isEmpty() && fluidTank.insert(fluidInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidInTank.amount()) {
-                        //True if we can fill the tank with any of our contents
-                        // Note: We need to recheck the fact the fluid is not empty and that it is valid,
-                        // in case the item has multiple tanks and only some of the fluids are valid
-                        return true;
+        //TODO - 26.1: Re-evaluate this method, and if we want to inline to canFill anywhere
+        //TODO - 26.1: Figure out item access
+        return itemType -> canFill(fluidTank, ItemAccess.forStack(itemType.toStack()));
+    }
+
+    public static boolean canFill(IFluidTank fluidTank, ItemAccess itemAccess) {
+        ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
+        if (fluidHandler != null) {
+            for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
+                FluidResource storedType = fluidHandler.getResource(tank);
+                if (!storedType.isEmpty()) {
+                    //TODO - 26.1: Are call sites ever in a transactional context?
+                    try (Transaction simulation = Transaction.openRoot()) {
+                        if (fluidTank.insert(storedType, fluidHandler.getAmountAsInt(tank), simulation, AutomationType.INTERNAL) > 0) {
+                            //True if we can fill the tank with any of our contents
+                            // Note: We need to recheck the fact the fluid is not empty and that it is valid,
+                            // in case the item has multiple tanks and only some of the fluids are valid
+                            return true;
+                        }
                     }
                 }
             }
-            return false;
-        };
+        }
+        return false;
     }
 
     /**
