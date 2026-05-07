@@ -35,8 +35,8 @@ public class FluidTankWrapper implements IFluidTank {
     }
 
     @Override
-    public void setStackUnchecked(FluidStack stack) {
-        internal.setStackUnchecked(stack);
+    public void setContentsUnchecked(FluidResource type, int storedAmount) {
+        internal.setContentsUnchecked(type, storedAmount);
     }
 
     @Override

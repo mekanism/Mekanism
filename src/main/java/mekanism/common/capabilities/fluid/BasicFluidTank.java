@@ -9,7 +9,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.capabilities.resource.BasicResourceContainer;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,10 +89,5 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
     protected BasicFluidTank(int capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
           Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         super(FluidResource.EMPTY, capacity, canExtract, canInsert, validator, listener);
-    }
-
-    @Override
-    public void setStackUnchecked(FluidStack stack) {
-        setContentsUnchecked(FluidResource.of(stack), stack.amount());
     }
 }

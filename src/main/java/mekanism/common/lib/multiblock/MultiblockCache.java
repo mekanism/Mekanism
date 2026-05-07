@@ -111,7 +111,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     @NotNull
     @Override
-    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 

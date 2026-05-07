@@ -39,7 +39,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
                 // then return that we have no tanks
                 return Collections.emptyList();
             }
-            return pipe.getFluidTanks(direction);
+            return pipe.getFluidTanks();
         }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null)));
     }
 

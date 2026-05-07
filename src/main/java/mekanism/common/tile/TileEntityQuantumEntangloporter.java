@@ -80,7 +80,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         super(MekanismBlocks.QUANTUM_ENTANGLOPORTER, pos, state);
 
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
-        setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks(null) : Collections.emptyList());
+        setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks() : Collections.emptyList());
         setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
 
@@ -308,7 +308,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getBufferFluid", "getBufferFluidCapacity", "getBufferFluidNeeded",
                                                                                      "getBufferFluidFilledPercentage"}, docPlaceholder = "fluid buffer")
     IFluidTank getBufferFluidTank() throws ComputerException {
-        return getFrequency().getFluidTanks(null).getFirst();
+        return getFrequency().getFluidTanks().getFirst();
     }
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferChemical", "getBufferChemicalCapacity", "getBufferChemicalNeeded",

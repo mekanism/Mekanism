@@ -13,19 +13,6 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidResource, IFluidTank>, ISidedFluidHandler {
 
-    /**
-     * Used to check if an instance of {@link IMekanismFluidHandler} actually has the ability to handle fluid.
-     *
-     * @return True if we are actually capable of handling fluid.
-     *
-     * @apiNote If for some reason you are comparing to {@link IMekanismFluidHandler} without having gotten the object via the fluid handler capability, then you must
-     * call this method to make sure that it really can handle fluid. As most mekanism tiles have this class in their hierarchy.
-     * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
-     */
-    default boolean canHandleFluid() {
-        return true;
-    }
-
     @Override
     default FluidResource getEmptyResource() {
         return FluidResource.EMPTY;

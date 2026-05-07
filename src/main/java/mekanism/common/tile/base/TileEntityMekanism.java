@@ -23,7 +23,6 @@ import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
@@ -156,8 +155,8 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismFluidHandler,
-      IMekanismStrictEnergyHandler, ITileHeatHandler, IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
+      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismStrictEnergyHandler, ITileHeatHandler,
+      IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -458,8 +457,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return chemicalHandlerManager != null && chemicalHandlerManager.canHandle();
     }
 
-    @Override
-    public final boolean canHandleFluid() {
+    public final boolean canHandleFluid() {//TODO - 26.1: Should we throw this check in an interface?
         return fluidHandlerManager != null && fluidHandlerManager.canHandle();
     }
 
@@ -1341,7 +1339,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @NotNull
-    @Override
+    public final List<IFluidTank> getFluidTanks() {
+        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
+        // and maybe rename the one that does take a side as it is mostly used for ContainerType
+        return getFluidTanks(null);
+    }
+
+    @NotNull
     public final List<IFluidTank> getFluidTanks(@Nullable Direction side) {
         return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
     }

@@ -1,6 +1,7 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
+import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -38,6 +39,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public record PacketDropperUse(DropperAction action, TankType tankType, int tankId) implements IMekanismPacket {
 
@@ -67,7 +69,11 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                     if (tile instanceof TileEntityMultiblock<?> multiblock) {
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
-                            handleTankType(structure, player, itemAccess, player.level(), structure.getBounds().getCenter());
+                            if (tankType == TankType.FLUID_TANK) {
+                                handleFluidTank(player, itemAccess, structure.getFluidTanks());
+                            } else if (tankType == TankType.CHEMICAL_TANK) {
+                                handleChemicalTank(player, itemAccess, structure.getChemicalTanks(null), tile.getLevel(), structure.getBounds().getCenter());
+                            }
                         }
                     } else {
                         if (action == DropperAction.DUMP_TANK && !player.isCreative()) {
@@ -78,28 +84,27 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                                 return;
                             }
                         }
-                        handleTankType(tile, player, itemAccess, tile.getLevel(), tile.getBlockPos());
+                        if (tankType == TankType.FLUID_TANK) {
+                            handleFluidTank(player, itemAccess, tile.getFluidTanks());
+                        } else if (tankType == TankType.CHEMICAL_TANK) {
+                            handleChemicalTank(player, itemAccess, tile.getChemicalTanks(null), tile.getLevel(), tile.getBlockPos());
+                        }
                     }
                 }
             }
         }
     }
 
-    private <HANDLER extends IMekanismFluidHandler & IMekanismChemicalHandler> void handleTankType(HANDLER handler, ServerPlayer player, ItemAccess itemAccess, Level level, BlockPos pos) {
-        if (tankType == TankType.FLUID_TANK) {
-            IFluidTank fluidTank = handler.getFluidTank(tankId, null);
-            if (fluidTank != null) {
-                handleFluidTank(player, itemAccess, fluidTank);
-            }
-        } else if (tankType == TankType.CHEMICAL_TANK) {
-            IChemicalTank chemicalTank = handler.getChemicalTank(tankId, null);
-            if (chemicalTank != null) {
-                handleChemicalTank(player, itemAccess, chemicalTank, level, pos);
-            }
-        }
+    @Nullable
+    private <TANK> TANK getTank(List<TANK> tanks) {
+        return tankId >= 0 && tankId < tanks.size() ? tanks.get(tankId) : null;
     }
 
-    private void handleChemicalTank(ServerPlayer player, ItemAccess itemAccess, IChemicalTank tank, Level level, BlockPos pos) {
+    private void handleChemicalTank(ServerPlayer player, ItemAccess itemAccess, List<IChemicalTank> tanks, Level level, BlockPos pos) {
+        IChemicalTank tank = getTank(tanks);
+        if (tank == null) {
+            return;
+        }
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             if (!tank.isEmpty()) {
@@ -129,7 +134,11 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         }
     }
 
-    private void handleFluidTank(ServerPlayer player, ItemAccess itemAccess, IFluidTank fluidTank) {
+    private void handleFluidTank(ServerPlayer player, ItemAccess itemAccess, List<IFluidTank> fluidTanks) {
+        IFluidTank fluidTank = getTank(fluidTanks);
+        if (fluidTank == null) {
+            return;
+        }
         if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             fluidTank.setEmpty();
@@ -137,7 +146,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             return;
         }
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
-        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {
+        if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {//TODO - 26.1: FIX THIS
             IFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
             if (itemFluidTank != null) {
                 if (action == DropperAction.FILL_DROPPER) {

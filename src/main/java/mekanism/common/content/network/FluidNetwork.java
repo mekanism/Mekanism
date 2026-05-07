@@ -7,8 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
@@ -30,7 +30,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler {
+public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IContentsListener {
 
     private final List<IFluidTank> fluidTanks;
     public final VariableCapacityFluidTank fluidTank;
@@ -233,8 +233,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
     }
 
     @NotNull
-    @Override
-    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 

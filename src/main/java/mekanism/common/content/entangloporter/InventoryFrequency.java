@@ -28,7 +28,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
@@ -74,7 +73,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements IMekanismFluidHandler, IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
+public class InventoryFrequency extends Frequency implements IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
 
     @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -164,8 +163,7 @@ public class InventoryFrequency extends Frequency implements IMekanismFluidHandl
     }
 
     @NotNull
-    @Override
-    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return fluidTanks;
     }
 

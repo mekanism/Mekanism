@@ -67,7 +67,7 @@ public class GuiFissionReactor extends GuiMekanismTile<TileEntityFissionReactorC
                   GeneratorsLang.FISSION_DAMAGE.translate(tile.getDamageColor(), tile.getDamageString())
             );
         }).spacing(1).recipeViewerCategories(GeneratorsRVRecipeType.FISSION));
-        addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().coolantTank, tile::getMultiblock, GaugeType.STANDARD, this, 6, 13)
+        addRenderableWidget(new GuiMergedTankGauge(() -> tile.getMultiblock().coolantTank, tile::getMultiblock, GaugeType.STANDARD, this, 6, 13)
               .setLabel(GeneratorsLang.FISSION_COOLANT_TANK.translateColored(EnumColor.AQUA)));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().fuelTank, () -> tile.getMultiblock().getChemicalTanks((Direction) null), GaugeType.STANDARD, this, 25, 13)
               .setLabel(GeneratorsLang.FISSION_FUEL_TANK.translateColored(EnumColor.DARK_GREEN)));

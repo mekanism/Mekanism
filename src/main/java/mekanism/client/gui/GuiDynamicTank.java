@@ -59,7 +59,7 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         }).spacing(1));
         addRenderableWidget(new GuiDownArrow(this, 150, 39));
         addRenderableWidget(new GuiContainerEditModeTab<>(this, tile));
-        addRenderableWidget(new GuiMergedTankGauge<>(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
+        addRenderableWidget(new GuiMergedTankGauge(() -> tile.getMultiblock().mergedTank, tile::getMultiblock, GaugeType.MEDIUM, this, 7, 16, 34, 56));
     }
 
     private void addStored(List<Component> ret, IChemicalTank tank) {

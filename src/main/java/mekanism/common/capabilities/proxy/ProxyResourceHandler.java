@@ -42,6 +42,7 @@ public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandle
 
     @Override
     public boolean isValid(int index, RESOURCE resource) {
+        //TODO - 26.1: Because of changes to what isValid means, I think we need to forward the check regardless of if it is read only
         return !readOnly || inventory.isValid(index, resource);
     }
 

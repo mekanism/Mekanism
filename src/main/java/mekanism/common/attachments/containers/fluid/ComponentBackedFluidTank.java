@@ -58,8 +58,8 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     }
 
     @Override
-    public void setStackUnchecked(FluidStack stack) {
-        setContents(getAttached(), stack);
+    public void setContentsUnchecked(FluidResource type, int storedAmount) {
+        setContents(getAttached(), type, storedAmount);
     }
 
     @Override

@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
@@ -34,12 +34,13 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IMekanismFluidHandler,
+public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidResource>, FluidNetwork, FluidStack, MechanicalPipe> implements IContentsListener,
       IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
 
     public final PipeTier tier;
@@ -238,10 +239,9 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
     }
 
     @NotNull
-    @Override
-    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getFluidTanks(side);
+            return getTransmitterNetwork().getFluidTanks();
         }
         return tanks;
     }

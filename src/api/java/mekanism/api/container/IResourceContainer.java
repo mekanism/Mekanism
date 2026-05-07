@@ -16,7 +16,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
     int amount();
 
-    void setContents(RESOURCE itemType, int storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
+    void setContents(RESOURCE type, int storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
     int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType);
 
@@ -58,7 +58,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
      * @return true if this {@link IResourceContainer} can accept the {@link ItemStack}, not considering the current state of the inventory. false if this
      * {@link IResourceContainer} can never insert the {@link ItemStack} in any situation.
      */
-    boolean isValid(RESOURCE itemType);
+    boolean isValid(RESOURCE type);
     //TODO - 26.1: Update docs and figure out handling of empty resource
     // Also Neo changed it to be if it is ever valid instead of valid for insertion, I believe we already behaved as such
     // but we should validate that we obey that properly

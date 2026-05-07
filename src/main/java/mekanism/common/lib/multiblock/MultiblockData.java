@@ -371,7 +371,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
     @NotNull
     @Override
-    public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
+    public List<IFluidTank> getFluidTanks() {
         return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
     }
 

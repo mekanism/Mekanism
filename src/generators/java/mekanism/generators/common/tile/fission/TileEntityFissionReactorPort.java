@@ -120,7 +120,7 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return InteractionResult.SUCCESS;
     }
 
-    @NotNull
+    /*@NotNull
     @Override
     public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
         return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
@@ -130,8 +130,9 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
     @Override
     public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
         return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }
+    }*/
 
+    //TODO - 26.1: Hook valve transferring back up
     private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
         if (action.execute() && remainder.amount() < stack.amount()) {
             getMultiblock().triggerValveTransfer(this);

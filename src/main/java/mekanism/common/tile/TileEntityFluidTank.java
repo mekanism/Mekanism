@@ -18,7 +18,6 @@ import mekanism.common.capabilities.holder.fluid.FluidTankHelper;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.proxy.ProxyFluidHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerFluidTankWrapper;
@@ -206,10 +205,12 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (!resolvedBelowTank) {
             resolvedBelowTank = true;
             ResourceHandler<FluidResource> belowHandler = fluidHandlerBelow.getFirst().getCapability();
-            if (belowHandler instanceof ProxyFluidHandler fluidHandler && fluidHandler.getInternalHandler() instanceof TileEntityFluidTank tank) {
+            //TODO - 26.1: Re-evaluate how we want to be implementing this as the fluid handler's internal handler no longer is an instead of this class
+            // due to it being an anonymous class
+            /*if (belowHandler instanceof ProxyResourceHandler<FluidResource> fluidHandler && fluidHandler.getInternalHandler() instanceof TileEntityFluidTank tank) {
                 //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
                 belowTank = tank.fluidTank;
-            }
+            }*/
         }
         return belowTank;
     }
@@ -248,7 +249,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return type == ContainerType.FLUID;
     }
 
-    @NotNull
+    /*@NotNull
     @Override
     public FluidStack insertFluid(int tank, @NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
         return insertExcess(stack, side, action, super.insertFluid(tank, stack, side, action));
@@ -258,8 +259,9 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     public FluidStack insertFluid(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
         return insertExcess(stack, side, action, super.insertFluid(stack, side, action));
-    }
+    }*/
 
+    //TODO - 26.1: Hook valve transferring back up
     private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action, @NotNull FluidStack remainder) {
         if (side == Direction.UP && action.execute() && remainder.amount() < stack.amount() && !isRemote()) {
             if (valve == 0) {

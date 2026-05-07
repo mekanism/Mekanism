@@ -7,7 +7,6 @@ import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +38,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
         return super.persists(type);
     }
 
-    @NotNull
+    /*@NotNull
     @Override
     public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
         return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
@@ -49,8 +48,9 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @Override
     public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
         return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }
+    }*/
 
+    //TODO - 26.1: Hook valve transferring back up
     private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
         if (action.execute() && remainder.amount() < stack.amount()) {
             getMultiblock().triggerValveTransfer(this);

@@ -8,9 +8,9 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
+import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -49,7 +49,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
@@ -142,10 +141,10 @@ public class LookingAtUtils {
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
                         fallback = pipe.getTransmitter().getTransmitterNetwork().lastFluid;
                     }
-                    displayFluid(info, IFluidHandler.of(fluidCapability), fallback);
+                    displayFluid(info, fluidCapability, fallback);
                 } else if (structure != null && structure.isFormed()) {
                     //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
-                    displayFluid(info, structure, FluidStack.EMPTY);
+                    displayFluid(info, structure.getFluidTanks(), FluidStack.EMPTY);
                 }
             }
             //Chemicals
@@ -153,24 +152,31 @@ public class LookingAtUtils {
         }
     }
 
-    private static void displayFluid(LookingAtHelper info, IFluidHandler fluidHandler, FluidStack fallback) {
-        if (fluidHandler instanceof IMekanismFluidHandler mekFluidHandler) {
-            for (IFluidTank fluidTank : mekFluidHandler.getFluidTanks(null)) {
-                if (fluidTank instanceof FluidTankWrapper wrapper) {
-                    MergedTank mergedTank = wrapper.getMergedTank();
-                    CurrentType currentType = mergedTank.getCurrentType();
-                    if (currentType != CurrentType.EMPTY && currentType != CurrentType.FLUID) {
-                        //Skip if the tank is on a chemical
-                        continue;
-                    }
-                }
-                addFluidInfo(info, fluidTank.getFluid(), fluidTank.getCapacity(), fallback);
-            }
+    private static void displayFluid(LookingAtHelper info, ResourceHandler<FluidResource> fluidHandler, FluidStack fallback) {
+        if (fluidHandler instanceof IMekanismResourceHandler<FluidResource, ?> mekFluidHandler) {
+            //TODO - 26.1: Re-evaluate this. I don't think it currently works, but if we make it so that proxy resource handler implements IMekanismResourceHandler
+            // then maybe it has a chance?
+            displayFluid(info, (List<IFluidTank>) mekFluidHandler.getContainers(), fallback);
         } else {
             //Fallback handling if it is not our fluid handler (probably never gets used)
-            for (int tank = 0; tank < fluidHandler.getTanks(); tank++) {
-                addFluidInfo(info, fluidHandler.getFluidInTank(tank), fluidHandler.getTankCapacity(tank), fallback);
+            for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
+                FluidResource resource = fluidHandler.getResource(tank);
+                addFluidInfo(info, resource.toStack(fluidHandler.getAmountAsInt(tank)), fluidHandler.getCapacityAsInt(tank, resource), fallback);
             }
+        }
+    }
+
+    private static void displayFluid(LookingAtHelper info, List<IFluidTank> fluidTanks, FluidStack fallback) {
+        for (IFluidTank fluidTank : fluidTanks) {
+            if (fluidTank instanceof FluidTankWrapper wrapper) {
+                MergedTank mergedTank = wrapper.getMergedTank();
+                CurrentType currentType = mergedTank.getCurrentType();
+                if (currentType != CurrentType.EMPTY && currentType != CurrentType.FLUID) {
+                    //Skip if the tank is on a chemical
+                    continue;
+                }
+            }
+            addFluidInfo(info, fluidTank.getFluid(), fluidTank.getCapacity(), fallback);
         }
     }
 
@@ -189,7 +195,7 @@ public class LookingAtUtils {
             info.addEnergyElement(new EnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container)));
         }
     }
-    
+
     private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
         IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {

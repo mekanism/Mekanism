@@ -13,7 +13,7 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
-public interface IFluidTank extends IResourceContainer<FluidResource> {//TODO - 26.1: Rename this to IFluidTank?
+public interface IFluidTank extends IResourceContainer<FluidResource> {
 
     /**
      * Overrides the stack in this {@link IFluidTank}.
@@ -37,7 +37,11 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {//TODO - 
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStackUnchecked(FluidStack stack);
+    default void setStackUnchecked(FluidStack stack) {
+        setContentsUnchecked(FluidResource.of(stack), stack.amount());
+    }
+
+    void setContentsUnchecked(FluidResource type, int storedAmount);
 
     /**
      * <p>
