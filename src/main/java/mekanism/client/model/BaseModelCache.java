@@ -1,10 +1,15 @@
 package mekanism.client.model;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import java.util.Collections;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.event.ModelEvent;
+import net.neoforged.neoforge.client.model.standalone.SimpleUnbakedStandaloneModel;
 import net.neoforged.neoforge.client.model.standalone.StandaloneModelKey;
 
 public class BaseModelCache {
@@ -90,17 +95,22 @@ public class BaseModelCache {
         return model;
     }*/
 
-    public static class MekanismModelData {
+    public static class MekanismModelData implements ModelDebugName {
 
         //protected IUnbakedGeometry<?> model;
 
         protected final Identifier rl;
-        protected final StandaloneModelKey<?> mrl;
+        //protected final StandaloneModelKey<T> mrl;
         //private final Map<IGeometryBakingContext, BakedModel> bakedMap = new Object2ObjectOpenHashMap<>();
 
         protected MekanismModelData(Identifier rl) {
             this.rl = rl;
-            this.mrl = null;//ModelResourceLocation.standalone(rl);
+            //this.mrl = new StandaloneModelKey<>(this);//ModelResourceLocation.standalone(rl);
+        }
+
+        @Override
+        public String debugName() {
+            return rl.toString();
         }
 
         protected void reload(ModelEvent.BakingCompleted evt) {
@@ -152,15 +162,19 @@ public class BaseModelCache {
 
     public static class JSONModelData extends MekanismModelData {
 
-        /*private BakedModel bakedModel;*/
+        private List<BlockStateModelPart> bakedModel;
+        private final StandaloneModelKey<BlockStateModelPart> key;
 
         private JSONModelData(Identifier rl) {
             super(rl);
+            key = new StandaloneModelKey<>(this);
         }
 
         @Override
         protected void reload(ModelEvent.BakingCompleted evt) {
             super.reload(evt);
+            BlockStateModelPart modelPart = evt.getBakingResult().standaloneModels().get(key);
+            bakedModel = modelPart == null ? Collections.emptyList() : List.of(modelPart);
             /*bakedModel = BaseModelCache.getBakedModel(evt, mrl);
             ModelBaker baker = evt.getModelBakery().new ModelBakerImpl(
                   (modelLoc, material) -> material.sprite(),
@@ -173,20 +187,11 @@ public class BaseModelCache {
 
         @Override
         protected void setup(ModelEvent.RegisterStandalone event) {
-            //event.register(mrl);
+            event.register(key, SimpleUnbakedStandaloneModel.simpleModelWrapper(rl));
         }
 
-        /*public List<BakedQuad> getQuads(RandomSource random) {
-            //TODO: Decide if this should just redirect to the other get quads method (some impls might be different depending on if it gets data and render type vs not)
-            return getBakedModel().getQuads(null, null, random);
-        }
-
-        public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction side, RandomSource rand, ModelData data, @Nullable RenderType renderType) {
-            return getBakedModel().getQuads(state, side, rand, data, renderType);
-        }
-
-        public BakedModel getBakedModel() {
+        public List<BlockStateModelPart> getBakedModel() {
             return bakedModel;
-        }*/
+        }
     }
 }
