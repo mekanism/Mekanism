@@ -8,30 +8,23 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IExtendedFluidTank;
-import mekanism.common.attachments.containers.ComponentBackedContainer;
+import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStack, AttachedFluids> implements IExtendedFluidTank {
+public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource, FluidStack, AttachedFluids> implements IExtendedFluidTank {
 
-    private final BiPredicate<FluidResource, AutomationType> canExtract;
-    private final BiPredicate<FluidResource, AutomationType> canInsert;
-    private final Predicate<FluidResource> validator;
     private final IntSupplier capacity;
     private final IntSupplier rate;
 
     public ComponentBackedFluidTank(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, IntSupplier capacity) {
-        super(attachedTo, tankIndex);
-        this.canExtract = canExtract;
-        this.canInsert = canInsert;
-        this.validator = validator;
+        super(attachedTo, tankIndex, capacity.getAsInt(), canExtract, canInsert, validator);
         this.capacity = capacity;
         this.rate = rate;
     }
@@ -70,72 +63,35 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     @Override
-    public int getCapacity() {
+    protected FluidResource asResource(FluidStack stack) {
+        return FluidResource.of(stack);
+    }
+
+    @Override
+    protected int getAmount(FluidStack stack) {
+        return stack.amount();
+    }
+
+    @Override
+    protected void setContents(AttachedFluids attachedFluids, FluidResource type, int storedAmount) {
+        setContents(attachedFluids, type.toStack(storedAmount));
+    }
+
+    @Override
+    public int getLimit(FluidResource resource) {
         return capacity.getAsInt();
     }
 
-    protected int getInsertRate(@Nullable AutomationType automationType) {
+    @Override
+    protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
-    }
-
-    protected int getExtractRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
+        return automationType == null || automationType == AutomationType.MANUAL ? super.getInsertionRate(automationType) : rate.getAsInt();
     }
 
     @Override
-    public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        //TODO - 1.21: Items do the is valid and canInsert check after checking the needed amount. Should we do the same for fluids
-        // or should items have the order flipped? In general calculating the needed amount is likely cheaper which is likely why items do it first
-        if (stack.isEmpty() || !isFluidValid(stack) || !canInsert.test(FluidResource.of(stack), automationType)) {
-            //"Fail quick" if the given stack is empty, or we can never insert the fluid or currently are unable to insert it
-            return stack;
-        }
-        AttachedFluids attachedFluids = getAttached();
-        FluidStack stored = getContents(attachedFluids);
-        int needed = Math.min(getInsertRate(automationType), getNeeded(stored));
-        if (needed <= 0) {
-            //Fail if we are a full tank or our rate is zero
-            return stack;
-        } else if (stored.isEmpty() || FluidStack.isSameFluidSameComponents(stored, stack)) {
-            int toAdd = Math.min(stack.amount(), needed);
-            if (action.execute()) {
-                //Note: We let setStack handle updating the backing holding stack
-                // We use stored.getAmount + toAdd so that if we are empty we end up at toAdd
-                // but if we aren't then we grow by the given amount
-                setContents(attachedFluids, stack.copyWithAmount(stored.amount() + toAdd));
-            }
-            return stack.copyWithAmount(stack.amount() - toAdd);
-        }
-        //If we didn't accept this fluid, then just return the given stack
-        return stack;
-    }
-
-    @Override
-    public final FluidStack extract(int amount, Action action, AutomationType automationType) {
-        if (amount < 1) {
-            //"Fail quick" if the amount being requested is less than one
-            return FluidStack.EMPTY;
-        }
-        AttachedFluids attachedFluids = getAttached();
-        return extract(attachedFluids, getContents(attachedFluids), amount, action, automationType);
-    }
-
-    protected FluidStack extract(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action, AutomationType automationType) {
-        if (amount < 1 || stored.isEmpty() || !canExtract.test(FluidResource.of(stored), automationType)) {
-            //"Fail quick" if we don't can never extract from this tank, have a fluid stored, or the amount being requested is less than one
-            return FluidStack.EMPTY;
-        }
-        //Note: While we technically could just return the stack itself if we are removing all that we have, it would require a lot more checks
-        // We also are limiting it by the rate this tank has
-        int size = Math.min(Math.min(getExtractRate(automationType), stored.amount()), amount);
-        FluidStack ret = stored.copyWithAmount(size);
-        if (!ret.isEmpty() && action.execute()) {
-            //Note: We let setStack handle updating the backing holding stack
-            setContents(attachedFluids, stored.copyWithAmount(stored.amount() - ret.amount()));
-        }
-        return ret;
+    protected int getExtractionRate(@Nullable AutomationType automationType) {
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : rate.getAsInt();
     }
 
     @Override
@@ -176,10 +132,10 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk integer overflow
             //If we are increasing the stack's size, use the insert rate
-            amount = Math.min(Math.min(amount, getNeeded(stored)), getInsertRate(null));
+            amount = Math.min(Math.min(amount, getNeeded(stored)), getInsertionRate(null));
         } else if (amount < 0) {
             //If we are decreasing the stack's size, use the extract rate
-            amount = Math.max(amount, -getExtractRate(null));
+            amount = Math.max(amount, -getExtractionRate(null));
         }
         int newSize = setStackSize(attachedFluids, stored,current + amount, action);
         return newSize - current;
@@ -191,27 +147,10 @@ public class ComponentBackedFluidTank extends ComponentBackedContainer<FluidStac
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
-        return validator.test(FluidResource.of(stack));
-    }
-
-    @Override
     public void serialize(ValueOutput output) {
         FluidStack stored = getFluid();
         if (!stored.isEmpty()) {
             output.store(SerializationConstants.STORED, FluidStack.CODEC, stored);
         }
-    }
-
-    @Override
-    @Deprecated
-    public FluidStack drain(FluidStack stack, FluidAction action) {
-        //Override to only look up the stack once
-        AttachedFluids attachedFluids = getAttached();
-        FluidStack stored = getContents(attachedFluids);
-        if (!stored.isEmpty() && FluidStack.isSameFluidSameComponents(stored, stack)) {
-            return extract(attachedFluids, stored, stack.amount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
-        }
-        return FluidStack.EMPTY;
     }
 }

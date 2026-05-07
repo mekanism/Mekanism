@@ -308,7 +308,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
     }
 
     @Override

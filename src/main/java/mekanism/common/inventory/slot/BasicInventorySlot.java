@@ -12,6 +12,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
+import mekanism.common.capabilities.resource.BasicResourceContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -19,17 +20,14 @@ import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
-import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
-import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
-public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements IInventorySlot {//TODO - 26.1: Docs on how this is similar to ItemStackResourceHandler
+public class BasicInventorySlot extends BasicResourceContainer<ItemResource> implements IInventorySlot {//TODO - 26.1: Docs on how this is similar to ItemStackResourceHandler
 
     public static BasicInventorySlot at(@Nullable IContentsListener listener, int x, int y) {
         return at(ConstantPredicates.alwaysTrue(), listener, x, y);
@@ -68,12 +66,6 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
 
     //TODO - 26.1: Figure out what automation type this should have
     private final ItemAccess itemAccess = new InventorySlotItemAccess(this, AutomationType.MANUAL);
-    private final BiPredicate<ItemResource, AutomationType> canExtract;
-    private final BiPredicate<ItemResource, AutomationType> canInsert;
-    private final Predicate<ItemResource> validator;
-    private final int limit;
-    @Nullable
-    private final IContentsListener listener;
     private final int x;
     private final int y;
     protected boolean obeyStackLimit = true;
@@ -82,9 +74,6 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     private SlotOverlay slotOverlay;
     @Nullable
     private Consumer<ISupportsWarning<?>> warningAdder;
-
-    private ItemResource currentType = ItemResource.EMPTY;
-    private int storedAmount = 0;
 
     protected BasicInventorySlot(Predicate<ItemResource> canExtract, Predicate<ItemResource> canInsert, Predicate<ItemResource> validator,
           @Nullable IContentsListener listener, int x, int y) {
@@ -101,11 +90,7 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
 
     protected BasicInventorySlot(int limit, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
           Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
-        this.limit = limit;
-        this.canExtract = canExtract;
-        this.canInsert = canInsert;
-        this.validator = validator;
-        this.listener = listener;
+        super(ItemResource.EMPTY, limit, canExtract, canInsert, validator, listener);
         this.x = x;
         this.y = y;
     }
@@ -114,131 +99,21 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
         return x;
     }
 
-    @Override
-    public ItemResource getResource() {
-        return this.currentType;
-    }
-
-    @Override
-    public int amount() {
-        return storedAmount;
-    }
-
-    @Override
-    public void setContents(ItemResource itemType, int storedAmount) {
-        setStack(itemType, storedAmount, true);
-    }
-
     @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStackUnchecked(ItemResource, int)
     public void setStackUnchecked(ItemStack stack) {
-        setStackUnchecked(ItemResource.of(stack), stack.count());
-    }
-
-    public void setStackUnchecked(ItemResource itemType, int storedAmount) {
-        setStack(itemType, storedAmount, false);
-    }
-
-    private void setStack(ItemResource itemType, int storedAmount, boolean validateStack) {
-        TransferPreconditions.checkNonNegative(storedAmount);
-        if (itemType.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
-            if (isEmpty()) {
-                //If we are already empty just exit, to not fire onContentsChanged
-                return;
-            }
-            this.currentType = ItemResource.EMPTY;
-            this.storedAmount = 0;
-        } else if (!validateStack || isValid(itemType)) {
-            this.currentType = itemType;
-            this.storedAmount = storedAmount;
-        } else {
-            //Throws a RuntimeException as IItemHandlerModifiable specifies is allowed when something unexpected happens
-            // As setStack is more meant to be used as an internal method
-            //TODO - 26.1: Evaluate if we still want to be throwing an exception
-            throw new RuntimeException("Invalid stack for slot: " + itemType.value() + " " + itemType.getComponentsPatch());
-        }
-        //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
-        onContentsChanged();
-    }
-
-    @Override
-    public int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (amount == 0) {
-            //"Fail quick" if the given stack is empty
-            return 0;
-        }
-        int currentStored = amount();
-        //Validate that we aren't at max stack size before we try to see if we can insert the item, as on average this will be a cheaper check
-        int needed = getLimit(resource) - currentStored;
-        if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
-            //Fail if we are a full slot, or we can never insert the item or currently are unable to insert it
-            return 0;
-        } else if (!isEmpty() && !this.currentType.equals(resource)) {
-            //Fail if the type being inserted doesn't match our current stored type
-            //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
-            return 0;
-        }
-        int toAdd = Math.min(amount, needed);
-        //Note: We know toAdd is greater than zero so we can just update the snapshot and then set the stack
-        updateSnapshots(transaction);
-        // Note: We just set it as unchecked as we have already validated it
-        setStackUnchecked(resource, currentStored + toAdd);
-        return toAdd;
-    }
-
-    @Override
-    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
-            //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
-            return 0;
-        }
-        int currentStored = amount();
-        //If we are trying to extract more than we have, just change it so that we are extracting it all
-        int toRemove = Math.min(amount, currentStored);
-        //Note: We know toRemove is greater than zero so we can just update the snapshot and then set the stack
-        updateSnapshots(transaction);
-        //Shrink the stack by the amount removed
-        setStackUnchecked(resource, currentStored - toRemove);
-        //TODO - 26.1: Shrink and make shrink transactional?
-        return toRemove;
+        setContentsUnchecked(ItemResource.of(stack), stack.count());
     }
 
     @Override
     public int getLimit(ItemResource resource) {
+        int limit = super.getLimit(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
-    }
-
-    @Override
-    public boolean isValid(ItemResource itemType) {
-        return validator.test(itemType);
-    }
-
-    /**
-     * Ignores current contents
-     */
-    public boolean isCurrentValidForExtraction(AutomationType automationType) {
-        return canExtract.test(this.currentType, automationType);
-    }
-
-    /**
-     * Ignores current contents
-     */
-    public boolean isValidForInsertion(ItemResource itemType, AutomationType automationType) {
-        return isValid(itemType) && canInsert.test(itemType, automationType);
-    }
-
-    @Override
-    public void onContentsChanged() {
-        if (listener != null) {
-            listener.onContentsChanged();
-        }
     }
 
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {
-        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder, this::setStackUnchecked);
+        return new InventoryContainerSlot(this, x, y, slotType, slotOverlay, warningAdder, this::setContentsUnchecked);
     }
 
     public void setSlotType(ContainerSlotType slotType) {
@@ -276,24 +151,5 @@ public class BasicInventorySlot extends SnapshotJournal<ItemStack> implements II
     //TODO - 26.1: review this
     public ItemAccess itemAccess() {
         return itemAccess;
-    }
-
-    @Override
-    protected ItemStack createSnapshot() {
-        return this.currentType.toStack(this.storedAmount);
-    }
-
-    @Override
-    protected void revertToSnapshot(ItemStack snapshot) {
-        setStackUnchecked(ItemResource.of(snapshot), snapshot.count());
-    }
-
-    @Override
-    protected void onRootCommit(ItemStack originalState) {
-        //TODO - 26.1: Should we have the snapshot journal be of a ResourceStack instead?
-        if (this.storedAmount != originalState.count() || !this.currentType.matches(originalState)) {
-            //Fire content change listeners during root commit if the final state is different from the original one
-            onContentsChanged();
-        }
     }
 }

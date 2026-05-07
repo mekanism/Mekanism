@@ -214,7 +214,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
         if (shouldCache(CacheSubstance.FLUID)) {
             for (IExtendedFluidTank tank : getFluidTanks()) {
-                tank.setStackSize(Math.min(tank.getFluidAmount(), tank.getCapacity()), Action.EXECUTE);
+                tank.setStackSize(Math.min(tank.amount(), tank.getCapacity()), Action.EXECUTE);
             }
         }
         if (shouldCache(CacheSubstance.CHEMICAL)) {

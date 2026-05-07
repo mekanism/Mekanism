@@ -58,15 +58,15 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
             public Component getTooltip() {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
-                } else if (tank.getFluidAmount() == Integer.MAX_VALUE) {
-                    return MekanismLang.GENERIC_STORED.translate(tank.getFluid(), MekanismLang.INFINITE);
+                } else if (tank.amount() == Integer.MAX_VALUE) {
+                    return MekanismLang.GENERIC_STORED.translate(tank.getResource(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getFluid(), TextUtils.format(tank.getFluidAmount()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amount()));
             }
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(tank.getFluidAmount(), tank.getCapacity());
+                return MathUtils.divideToLevel(tank.amount(), tank.getCapacity());
             }
         };
     }

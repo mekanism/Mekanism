@@ -111,7 +111,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(bioFuelTank.getFluidAmount(), bioFuelTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(bioFuelTank.amount(), bioFuelTank.getCapacity());
     }
 
     @Override

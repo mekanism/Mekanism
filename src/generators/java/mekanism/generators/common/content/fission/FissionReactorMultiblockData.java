@@ -419,7 +419,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 IExtendedFluidTank fluidCoolantTank = coolantTank.getFluidTank();
                 double caseCoolantHeat = heat * waterConductivity;
                 lastBoilRate = clampCoolantHeated(HeatUtils.getSteamEnergyEfficiency() * caseCoolantHeat / HeatUtils.getWaterThermalEnthalpy(),
-                      fluidCoolantTank.getFluidAmount());
+                      fluidCoolantTank.amount());
                 if (lastBoilRate > 0) {
                     MekanismUtils.logMismatchedStackSize(fluidCoolantTank.shrinkStack((int) lastBoilRate, Action.EXECUTE), lastBoilRate);
                     // extra steam is dumped
@@ -652,7 +652,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             return chemicalCoolantTank.getStored() / (double) chemicalCoolantTank.getCapacity();
         }
         IExtendedFluidTank fluidCoolantTank = coolantTank.getFluidTank();
-        return fluidCoolantTank.getFluidAmount() / (double) fluidCoolantTank.getCapacity();
+        return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCapacity();
     }
 
     @ComputerMethod

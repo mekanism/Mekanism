@@ -315,7 +315,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getFluidAmount(), inputTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(inputTank.amount(), inputTank.getCapacity());
     }
 
     @Override

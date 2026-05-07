@@ -74,10 +74,10 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         IExtendedFluidTank tank = getTank();
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
-        } else if (tank.getFluidAmount() == Integer.MAX_VALUE) {
+        } else if (tank.amount() == Integer.MAX_VALUE) {
             return height - 2;
         }
-        float scale = tank.getFluidAmount() / (float) tank.getCapacity();
+        float scale = tank.amount() / (float) tank.getCapacity();
         return Math.max(1, Math.round(scale * (height - 2)));
     }
 
@@ -105,7 +105,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IExtendedFluidTank> 
         if (tank == null || tank.isEmpty()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        int amount = tank.getFluidAmount();
+        int amount = tank.amount();
         FluidStack fluidStack = tank.getFluid();
         if (amount == Integer.MAX_VALUE) {
             return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));

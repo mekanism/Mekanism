@@ -84,7 +84,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
           SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
           TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, (from, to) -> {
         if (to instanceof BasicInventorySlot basicInventorySlot) {
-            basicInventorySlot.setStackUnchecked(from.getResource(), from.amount());
+            basicInventorySlot.setContentsUnchecked(from.getResource(), from.amount());
         } else {
             to.setContents(from.getResource(), from.amount());
         }

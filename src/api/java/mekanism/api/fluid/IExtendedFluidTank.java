@@ -2,30 +2,18 @@ package mekanism.api.fluid;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.IResourceContainer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault
-public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, IContentsListener {
-
-    default FluidResource getResource() {//TODO - 26.1: Re-evaluate and add docs
-        return FluidResource.of(getFluid());
-    }
-
-    //TODO - 26.1: Replace isFluidValid with this
-    default boolean isValid(FluidResource resource) {
-        return isFluidValid(resource.toStack(FluidType.BUCKET_VOLUME));
-    }
+public interface IExtendedFluidTank extends IResourceContainer<FluidResource> {//TODO - 26.1: Rename this to IFluidTank?
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.
@@ -35,7 +23,9 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(FluidStack stack);
+    default void setStack(FluidStack stack) {
+        setContents(FluidResource.of(stack), stack.amount());
+    }
 
     /**
      * Overrides the stack in this {@link IExtendedFluidTank}.
@@ -68,7 +58,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
      * run
      */
     default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isFluidValid(stack)) {
+        if (stack.isEmpty() || !isValid(FluidResource.of(stack))) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
@@ -78,7 +68,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
             return stack;
         }
         boolean sameType = false;
-        if (isEmpty() || (sameType = FluidStack.isSameFluidSameComponents(stack, getFluid()))) {
+        if (isEmpty() || (sameType = getResource().matches(stack))) {
             int toAdd = Math.min(stack.amount(), needed);
             if (action.execute()) {
                 //If we want to actually insert the fluid, then update the current fluid
@@ -119,7 +109,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         if (isEmpty() || amount < 1) {
             return FluidStack.EMPTY;
         }
-        FluidStack ret = getFluid().copyWithAmount(Math.min(getFluidAmount(), amount));
+        FluidStack ret = getResource().toStack(Math.min(amount(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.amount(), action);
@@ -154,11 +144,11 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (getFluidAmount() == amount || action.simulate()) {
+        if (amount() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(getFluid().copyWithAmount(amount));
+        setStack(getResource().toStack(amount));
         return amount;
     }
 
@@ -177,7 +167,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
     default int growStack(int amount, Action action) {
-        int current = getFluidAmount();
+        int current = amount();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
             return 0;
@@ -207,22 +197,9 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         return -growStack(-amount, action);
     }
 
-    /**
-     * Convenience method for checking if this tank is empty.
-     *
-     * @return True if the tank is empty, false otherwise.
-     *
-     * @implNote If your implementation of {@link #getFluid()} returns a copy, this should be overridden to directly check against the internal stack.
-     */
-    default boolean isEmpty() {
-        return getFluid().isEmpty();
-    }
-
-    /**
-     * Convenience method for emptying this {@link IExtendedFluidTank}.
-     */
+    @Override
     default void setEmpty() {
-        setStack(FluidStack.EMPTY);
+        setContents(FluidResource.EMPTY, 0);
     }
 
     /**
@@ -235,7 +212,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
      * @implNote If your implementation of {@link #getFluid()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isFluidEqual(FluidStack other) {
-        return FluidStack.isSameFluidSameComponents(getFluid(), other);
+        return getResource().matches(other);
     }
 
     /**
@@ -244,12 +221,7 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
      * @return Amount of fluid needed
      */
     default int getNeeded() {
-        return Math.max(0, getCapacity() - getFluidAmount());
-    }
-
-    @Override
-    default int getFluidAmount() {
-        return getFluid().amount();
+        return Math.max(0, getCapacity() - amount());
     }
 
     @Override
@@ -264,39 +236,13 @@ public interface IExtendedFluidTank extends IFluidTank, ValueIOSerializable, ICo
         setStackUnchecked(input.read(SerializationConstants.STORED, FluidStack.CODEC).orElse(FluidStack.EMPTY));
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Wrapped to properly use our method declarations
-     */
-    @Override
-    @Deprecated
-    default int fill(FluidStack stack, FluidAction action) {
-        return stack.amount() - insert(stack, Action.fromFluidAction(action), AutomationType.EXTERNAL).amount();
+    @Deprecated(forRemoval = true)//TODO - 26.1: From IFluidTank
+    default FluidStack getFluid() {
+        return getResource().toStack(amount());
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * Wrapped to properly use our method declarations
-     */
-    @Override
-    @Deprecated
-    default FluidStack drain(FluidStack stack, FluidAction action) {
-        if (!isEmpty() && isFluidEqual(stack)) {
-            return extract(stack.amount(), Action.fromFluidAction(action), AutomationType.EXTERNAL);
-        }
-        return FluidStack.EMPTY;
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Wrapped to properly use our method declarations
-     */
-    @Override
-    @Deprecated
-    default FluidStack drain(int amount, FluidAction action) {
-        return extract(amount, Action.fromFluidAction(action), AutomationType.EXTERNAL);
+    @Deprecated(forRemoval = true)//TODO - 26.1: From IFluidTank
+    default int getCapacity() {
+        return getLimit(FluidResource.EMPTY);
     }
 }

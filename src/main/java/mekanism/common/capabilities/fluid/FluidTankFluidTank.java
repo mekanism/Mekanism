@@ -11,6 +11,9 @@ import mekanism.common.tier.FluidTankTier;
 import mekanism.common.tile.TileEntityFluidTank;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -33,15 +36,47 @@ public class FluidTankFluidTank extends BasicFluidTank {
     }
 
     @Override
-    protected int getInsertRate(@Nullable AutomationType automationType) {
+    protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertionRate(automationType);
     }
 
     @Override
-    protected int getExtractRate(@Nullable AutomationType automationType) {
+    protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractionRate(automationType);
+    }
+
+    @Override
+    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        int inserted;
+        if (isCreative) {
+            if (isEmpty() && automationType != AutomationType.EXTERNAL) {//TODO - 26.1: Test that this behaves correctly
+                //If a player manually inserts into a creative tank (or internally, via a FluidInventorySlot), that is empty we need to allow setting the type,
+                // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
+                int limit = getLimit(resource);
+                //Try to insert the entire limit so that then it just updates to being a full stack
+                inserted = super.insert(resource, limit, transaction, automationType);
+                //If we did manage to insert anything then return that we inserted the entire amount that we were passed
+                return inserted == 0 ? 0 : amount;
+            }
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                inserted = super.insert(resource, amount, simulation, automationType);
+            }
+        } else {
+            inserted = super.insert(resource, amount, transaction, automationType);
+        }
+        //Ensure we have the same type of fluid stored as we failed to insert, in which case we want to try to insert to the one above
+        if (inserted < amount && getResource().equals(resource)) {
+            //If we have any leftover check if we can send it to the tank that is above
+            TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
+            if (tileAbove != null) {
+                //Note: We do external so that it is not limited by the internal rate limits
+                inserted += tileAbove.fluidTank.insert(resource, amount - inserted, transaction, AutomationType.EXTERNAL);
+            }
+        }
+        return inserted;
     }
 
     @Override
@@ -59,7 +94,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
             remainder = super.insert(stack, action.combine(!isCreative), automationType);
         }
         //Ensure we have the same type of fluid stored as we failed to insert, in which case we want to try to insert to the one above
-        if (!remainder.isEmpty() && FluidStack.isSameFluidSameComponents(stored, remainder)) {
+        if (!remainder.isEmpty() && getResource().matches(remainder)) {
             //If we have any leftover check if we can send it to the tank that is above
             TileEntityFluidTank tileAbove = WorldUtils.getTileEntity(TileEntityFluidTank.class, this.tile.getLevel(), this.tile.getBlockPos().above());
             if (tileAbove != null) {
@@ -81,7 +116,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
                 if (tileAbove != null) {
                     int leftOverToInsert = amount - grownAmount;
                     //Note: We do external so that it is not limited by the internal rate limits
-                    FluidStack remainder = tileAbove.fluidTank.insert(stored.copyWithAmount(leftOverToInsert), action, AutomationType.EXTERNAL);
+                    FluidStack remainder = tileAbove.fluidTank.insert(getResource().toStack(leftOverToInsert), action, AutomationType.EXTERNAL);
                     grownAmount += leftOverToInsert - remainder.amount();
                 }
             }
@@ -92,6 +127,17 @@ public class FluidTankFluidTank extends BasicFluidTank {
     @Override
     public FluidStack extract(int amount, Action action, AutomationType automationType) {
         return super.extract(amount, action.combine(!isCreative), automationType);
+    }
+
+    @Override
+    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 
     /**

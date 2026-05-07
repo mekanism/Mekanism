@@ -216,7 +216,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(lavaTank.getFluidAmount(), lavaTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(lavaTank.amount(), lavaTank.getCapacity());
     }
 
     @Override

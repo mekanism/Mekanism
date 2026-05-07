@@ -66,7 +66,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IExtendedFluidTank tank) {
-            return tank.getFluidAmount() / (double) tank.getCapacity();
+            return tank.amount() / (double) tank.getCapacity();
         }
     }
 

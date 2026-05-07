@@ -172,7 +172,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
             @Override
             public void sync(IExtendedFluidTank cache, IExtendedFluidTank data) {
-                cache.setStack(data.getFluid());
+                cache.setContents(data.getResource(), data.amount());
             }
         };
 

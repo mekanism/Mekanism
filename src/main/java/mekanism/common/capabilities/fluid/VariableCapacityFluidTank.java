@@ -61,7 +61,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
     }
 
     @Override
-    public int getCapacity() {
+    public int getLimit(FluidResource resource) {
         return capacity.getAsInt();
     }
 
@@ -79,14 +79,14 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
         //Our capacity should never actually be zero, and given we fake it being zero
         // until we finish building the network, we need to override this method to bypass the upper limit check
         // when our upper limit is zero
-        if (maxStackSize > 0 && amount > maxStackSize) {
+        if (maxStackSize > 0 && amount > maxStackSize) {//TODO - 26.1: This is the part of the method that is different
             amount = maxStackSize;
         }
-        if (getFluidAmount() == amount || action.simulate()) {
+        if (amount() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        stored.setAmount(amount);
+        setContentsUnchecked(getResource(), amount);
         onContentsChanged();
         return amount;
     }

@@ -722,7 +722,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         // recipes to change. If this is the case, then we want to properly not crash,
                         // but we would rather not add any extra overhead about revalidating the item
                         // each time as it can get somewhat expensive.
-                        inputSlot.setStackUnchecked(item, sizeForSlot);
+                        inputSlot.setContentsUnchecked(item, sizeForSlot);
                     }
                 } else {
                     //Slot is not currently empty
@@ -733,7 +733,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                     } else if (inputSlot.amount() != sizeForSlot) {
                         //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
                         //TODO - 26.1: Is resource the same as item?
-                        inputSlot.setStackUnchecked(inputSlot.getResource(), sizeForSlot);
+                        inputSlot.setContentsUnchecked(inputSlot.getResource(), sizeForSlot);
                     }
                 }
             }

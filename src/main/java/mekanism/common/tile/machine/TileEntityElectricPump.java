@@ -67,7 +67,6 @@ import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
@@ -372,7 +371,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
     }
 
     @Override

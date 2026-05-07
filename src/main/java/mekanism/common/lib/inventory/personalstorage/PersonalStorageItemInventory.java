@@ -34,7 +34,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         for (SlotData slotData : loadedData) {
             IInventorySlot slot = slots.get(slotData.slot);
             if (slot instanceof BasicInventorySlot basicInventorySlot) {
-                basicInventorySlot.setStackUnchecked(slotData.resource(), slotData.amount());
+                basicInventorySlot.setContentsUnchecked(slotData.resource(), slotData.amount());
             } else {
                 //shouldn't happen, but just in case
                 slot.setContents(slotData.resource(), slotData.amount());

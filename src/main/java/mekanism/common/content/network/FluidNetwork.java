@@ -55,7 +55,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
     @Override
     protected void forceScaleUpdate() {
         if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
-            currentScale = Math.min(1, (float) fluidTank.getFluidAmount() / fluidTank.getCapacity());
+            currentScale = Math.min(1, (float) fluidTank.amount() / fluidTank.getCapacity());
         } else {
             currentScale = 0;
         }
@@ -79,7 +79,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
                 if (fluidTank.isEmpty()) {
                     fluidTank.setStack(net.getBuffer());
                 } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
-                    int amount = net.fluidTank.getFluidAmount();
+                    int amount = net.fluidTank.amount();
                     MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
                 } else {
                     Mekanism.logger.error("Incompatible fluid networks merged.");
@@ -117,7 +117,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
     public void clampBuffer() {
         if (!fluidTank.isEmpty()) {
             int capacity = getCapacityAsInt();
-            if (fluidTank.getFluidAmount() > capacity) {
+            if (fluidTank.amount() > capacity) {
                 MekanismUtils.logMismatchedStackSize(fluidTank.setStackSize(capacity, Action.EXECUTE), capacity);
             }
         }
@@ -184,7 +184,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
 
     @Override
     protected float computeContentScale() {
-        float scale = fluidTank.getFluidAmount() / (float) fluidTank.getCapacity();
+        float scale = fluidTank.amount() / (float) fluidTank.getCapacity();
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);
@@ -213,7 +213,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
         if (fluidTank.isEmpty()) {
             return MekanismLang.NONE.translate();
         }
-        return MekanismLang.NETWORK_MB_STORED.translate(fluidTank.getFluid(), fluidTank.getFluidAmount());
+        return MekanismLang.NETWORK_MB_STORED.translate(fluidTank.getResource(), fluidTank.amount());
     }
 
     @Override

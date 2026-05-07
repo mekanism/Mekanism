@@ -15,7 +15,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -38,8 +37,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public int insertItem(AttachedItems attachedItems, ItemStack current, ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        if (current.isEmpty()) {
+    public int insert(AttachedItems attachedItems, ItemResource currentType, int currentAmount, ItemResource resource, int amount, TransactionContext transaction,
+          AutomationType automationType) {
+        if (currentType.isEmpty()) {
             ItemResource lockType = getLockType();
             if (!lockType.isEmpty() && !resource.equals(lockType)) {
                 // When locked, we need to make sure the correct item type is being inserted
@@ -49,7 +49,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
                 int limit = getLimit(resource);
                 //Try to insert the entire limit so that then it just updates to being a full stack
-                int inserted = super.insertItem(attachedItems, current, resource, limit, transaction, automationType);
+                int inserted = super.insert(attachedItems, currentType, currentAmount, resource, limit, transaction, automationType);
                 //If we did manage to insert anything then return that we inserted the entire amount that we were passed
                 return inserted == 0 ? 0 : amount;
             }
@@ -57,19 +57,14 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.insertItem(attachedItems, current, resource, amount, simulation, automationType);
+                return super.insert(attachedItems, currentType, currentAmount, resource, amount, simulation, automationType);
             }
         }
-        return super.insertItem(attachedItems, current, resource, amount, transaction, automationType);
+        return super.insert(attachedItems, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 
     @Override
     public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (amount == 0) {
-            //"Fail quick" if nothing is being extracted
-            return 0;
-        }
         if (isCreative) {
             try (Transaction simulation = Transaction.open(transaction)) {
                 //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes

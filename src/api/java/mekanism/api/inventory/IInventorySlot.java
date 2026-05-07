@@ -46,14 +46,9 @@ public interface IInventorySlot extends IResourceContainer<ItemResource> {
      * @throws RuntimeException if this slot is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStack(ItemResource, int)
+    @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setContents(ItemResource, int)
     default void setStack(ItemStack stack) {
         setContents(ItemResource.of(stack), stack.count());
-    }
-
-    //TODO - 26.1: Docs, and transition calls to setStack(ItemStack) to this
-    default void setStack(ItemResource itemType, int storedAmount) {//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
-        setContents(itemType, storedAmount);
     }
 
     /**

@@ -125,7 +125,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                             int stackSize = stackInSlot.count();
                             IInventorySlot robitSlot = robitSlots.get(slot);
                             if (robitSlot instanceof BasicInventorySlot basicInventorySlot) {
-                                basicInventorySlot.setStackUnchecked(itemType, stackSize);
+                                basicInventorySlot.setContentsUnchecked(itemType, stackSize);
                             } else {
                                 robitSlot.setContents(itemType, stackSize);
                             }

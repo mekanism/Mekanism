@@ -10,7 +10,8 @@ import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Like {@link ChemicalTankWrapper}
@@ -34,13 +35,13 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
-    public void setStack(FluidStack stack) {
-        internal.setStack(stack);
+    public void setStackUnchecked(FluidStack stack) {
+        internal.setStackUnchecked(stack);
     }
 
     @Override
-    public void setStackUnchecked(FluidStack stack) {
-        internal.setStackUnchecked(stack);
+    public void setContents(FluidResource itemType, int storedAmount) {
+        internal.setContents(itemType, storedAmount);
     }
 
     private boolean canInsert() {
@@ -48,14 +49,14 @@ public class FluidTankWrapper implements IExtendedFluidTank {
     }
 
     @Override
-    public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
+    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         //Only allow inserting if we pass the check
-        return canInsert() ? internal.insert(stack, action, automationType) : stack;
+        return canInsert() ? internal.insert(resource, amount, transaction, automationType) : 0;
     }
 
     @Override
-    public FluidStack extract(int amount, Action action, AutomationType automationType) {
-        return internal.extract(amount, action, automationType);
+    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        return internal.extract(resource, amount, transaction, automationType);
     }
 
     @Override
@@ -108,24 +109,23 @@ public class FluidTankWrapper implements IExtendedFluidTank {
         internal.deserialize(input);
     }
 
-    @NotNull
     @Override
-    public FluidStack getFluid() {
-        return internal.getFluid();
+    public FluidResource getResource() {
+        return internal.getResource();
     }
 
     @Override
-    public int getFluidAmount() {
-        return internal.getFluidAmount();
+    public int amount() {
+        return internal.amount();
     }
 
     @Override
-    public int getCapacity() {
-        return internal.getCapacity();
+    public int getLimit(FluidResource resource) {
+        return internal.getLimit(resource);
     }
 
     @Override
-    public boolean isFluidValid(FluidStack stack) {
-        return internal.isFluidValid(stack);
+    public boolean isValid(FluidResource fluidType) {
+        return internal.isValid(fluidType);
     }
 }

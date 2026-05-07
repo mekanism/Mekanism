@@ -186,8 +186,8 @@ public class StorageUtils {
                     if (fluid.isEmpty()) {
                         fluid = tank.getFluid().copy();
                     } else if (tank.isFluidEqual(fluid)) {
-                        if (fluid.amount() < Integer.MAX_VALUE - tank.getFluidAmount()) {
-                            fluid.grow(tank.getFluidAmount());
+                        if (fluid.amount() < Integer.MAX_VALUE - tank.amount()) {
+                            fluid.grow(tank.amount());
                         } else {
                             fluid.setAmount(Integer.MAX_VALUE);
                         }

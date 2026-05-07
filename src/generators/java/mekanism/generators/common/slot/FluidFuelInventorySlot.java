@@ -13,7 +13,8 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -32,10 +33,10 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
         Predicate<ItemResource> fillPredicate = getFillPredicate(fluidTank);
         return new FluidFuelInventorySlot(fluidTank, fuelValue, fuelCreator, itemType -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
-            if (fluidHandlerItem != null) {
-                for (int tank = 0, tanks = fluidHandlerItem.getTanks(); tank < tanks; tank++) {
-                    if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
+            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
+            if (itemHandler != null) {
+                for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
+                    if (fluidTank.isValid(itemHandler.getResource(tank))) {
                         //False if the items contents are still valid
                         return false;
                     }

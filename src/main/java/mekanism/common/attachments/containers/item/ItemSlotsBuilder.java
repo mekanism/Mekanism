@@ -43,6 +43,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class ItemSlotsBuilder {
@@ -357,13 +359,13 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidFuelSlot(int tankIndex, Predicate<ItemResource> hasFuelValue) {
         //Copy of FluidFuelInventorySlot's forFuel insert and extract predicates
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (itemType, _) -> {
-            IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemType);
-            if (fluidHandlerItem != null) {
-                int tanks = fluidHandlerItem.getTanks();
+            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
+            if (itemHandler != null) {
+                int tanks = itemHandler.size();
                 if (tanks > 0) {
                     IExtendedFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                     for (int tank = 0; tank < tanks; tank++) {
-                        if (fluidTank.isFluidValid(fluidHandlerItem.getFluidInTank(tank))) {
+                        if (fluidTank.isValid(itemHandler.getResource(tank))) {
                             //False if the items contents are still valid
                             return false;
                         }

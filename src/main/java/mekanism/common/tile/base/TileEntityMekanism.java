@@ -1248,7 +1248,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
                 ItemResource itemType = ItemResource.of(stack);
                 int amount = stack.count();
                 if (slot instanceof BasicInventorySlot basicSlot) {
-                    basicSlot.setStackUnchecked(itemType, amount);
+                    basicSlot.setContentsUnchecked(itemType, amount);
                 } else {
                     slot.setContents(itemType, amount);
                 }

@@ -3,14 +3,15 @@ package mekanism.api.fluid;
 import java.util.List;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.IMekanismResourceHandler;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsListener {
+public interface IMekanismFluidHandler extends IMekanismResourceHandler<FluidResource, IExtendedFluidTank>, ISidedFluidHandler {
 
     /**
      * Used to check if an instance of {@link IMekanismFluidHandler} actually has the ability to handle fluid.
@@ -25,6 +26,11 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsList
         return true;
     }
 
+    @Override
+    default FluidResource getEmptyResource() {
+        return FluidResource.EMPTY;
+    }
+
     /**
      * Returns the list of IExtendedFluidTanks that this fluid handler exposes on the given side.
      *
@@ -37,6 +43,11 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsList
      * this <em>MUST</em> return an empty list.
      */
     List<IExtendedFluidTank> getFluidTanks(@Nullable Direction side);
+
+    @Override//TODO - 26.1: Make this not be defaulted
+    default List<IExtendedFluidTank> getContainers() {
+        return getFluidTanks(null);
+    }
 
     /**
      * Returns the {@link IExtendedFluidTank} that has the given index from the list of tanks on the given side.
@@ -80,7 +91,7 @@ public interface IMekanismFluidHandler extends ISidedFluidHandler, IContentsList
     @Override
     default boolean isFluidValid(int tank, FluidStack stack, @Nullable Direction side) {
         IExtendedFluidTank fluidTank = getFluidTank(tank, side);
-        return fluidTank != null && fluidTank.isFluidValid(stack);
+        return fluidTank != null && fluidTank.isValid(FluidResource.of(stack));
     }
 
     /**

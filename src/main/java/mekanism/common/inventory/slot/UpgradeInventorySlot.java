@@ -43,6 +43,6 @@ public class UpgradeInventorySlot extends BasicInventorySlot {
     @NotNull
     @Override
     public VirtualInventoryContainerSlot createContainerSlot() {
-        return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay(), this::setStackUnchecked);
+        return new VirtualInventoryContainerSlot(this, new SelectedWindowData(WindowType.UPGRADE), getSlotOverlay(), this::setContentsUnchecked);
     }
 }

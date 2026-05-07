@@ -263,7 +263,7 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
     @Override
     public int getRedstoneLevel() {
         if (mode) {
-            return MekanismUtils.redstoneLevelFromContents(fluidTank.getFluidAmount(), fluidTank.getCapacity());
+            return MekanismUtils.redstoneLevelFromContents(fluidTank.amount(), fluidTank.getCapacity());
         }
         return MekanismUtils.redstoneLevelFromContents(gasTank.getStored(), gasTank.getCapacity());
     }

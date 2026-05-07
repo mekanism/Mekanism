@@ -9,6 +9,9 @@ import mekanism.common.item.block.machine.ItemBlockFluidTank;
 import mekanism.common.tier.FluidTankTier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank {
@@ -28,13 +31,26 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     }
 
     @Override
-    public FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        return super.insert(stack, action.combine(!isCreative), automationType);
+    public int insert(AttachedFluids attachedFluids, FluidResource currentType, int currentAmount, FluidResource resource, int amount, TransactionContext transaction,
+          AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(attachedFluids, currentType, currentAmount, resource, amount, simulation, automationType);
+            }
+        }
+        return super.insert(attachedFluids, currentType, currentAmount, resource, amount, transaction, automationType);
     }
 
     @Override
-    public FluidStack extract(AttachedFluids attachedFluids, FluidStack stored, int amount, Action action, AutomationType automationType) {
-        return super.extract(attachedFluids, stored, amount, action.combine(!isCreative), automationType);
+    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 
     /**

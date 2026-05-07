@@ -182,7 +182,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
 
-            int amountToBoil = Math.min(lastMaxBoil, waterTank.getFluidAmount());
+            int amountToBoil = Math.min(lastMaxBoil, waterTank.amount());
             amountToBoil = Math.min(amountToBoil, Ints.saturatedCast(steamTank.getNeeded()));
             if (!waterTank.isEmpty()) {
                 waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
@@ -268,7 +268,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(waterTank.getFluidAmount(), waterTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(waterTank.amount(), waterTank.getCapacity());
     }
 
     private double getHeatAvailable() {

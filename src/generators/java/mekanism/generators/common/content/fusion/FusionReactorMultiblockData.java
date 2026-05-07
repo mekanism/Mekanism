@@ -336,7 +336,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
             int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-            waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.getFluidAmount(), Ints.saturatedCast(steamTank.getNeeded())));
+            waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.amount(), Ints.saturatedCast(steamTank.getNeeded())));
             if (waterToVaporize > 0) {
                 MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
                 steamTank.insert(MekanismChemicals.STEAM.asStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
@@ -407,7 +407,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (getLevel() != null && !isRemote()) {
                 if (!waterTank.isEmpty()) {
-                    waterTank.setStackSize(Math.min(waterTank.getFluidAmount(), waterTank.getCapacity()), Action.EXECUTE);
+                    waterTank.setStackSize(Math.min(waterTank.amount(), waterTank.getCapacity()), Action.EXECUTE);
                 }
                 if (!steamTank.isEmpty()) {
                     steamTank.setStackSize(Math.min(steamTank.getStored(), steamTank.getCapacity()), Action.EXECUTE);
