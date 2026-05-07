@@ -63,8 +63,6 @@ public class RenderEnergyCubeItem extends MekanismISTER<RenderEnergyCubeItem.Cub
         if (state == null) {
             return;
         }
-        //TODO - 26.1 rendering
-        //renderBlockItem(stack, displayContext, matrix, renderer, light, overlayLight, modelData);
         state.blockRenderState.submit(poseStack, submitNodeCollector, lightCoords, overlayCoords, outlineColor);
         if (state.coreState != null) {
             float scaledTicks = 4 * state.ticks();
