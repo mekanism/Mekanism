@@ -95,23 +95,6 @@ public class AdditionsModelProvider extends BaseModelProvider {
               )
         );
 
-        //todo - verify these are just the same block models
-        /*colouredBlock(blockModels, AdditionsBlocks.GLOW_PANELS, "item/glow_panel");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_BLOCKS, "block/plastic/block");
-        colouredBlock(blockModels, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, "block/plastic/slick");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_GLOW_BLOCKS, "block/plastic/glow");
-        colouredBlock(blockModels, AdditionsBlocks.REINFORCED_PLASTIC_BLOCKS, "block/plastic/reinforced");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_ROADS, "block/plastic/glow");
-        colouredBlock(blockModels, AdditionsBlocks.TRANSPARENT_PLASTIC_BLOCKS, "block/plastic/transparent");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_STAIRS, "block/plastic/stairs");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_SLABS, "block/plastic/slab");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_FENCES, "block/plastic/fence_inventory");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_FENCE_GATES, "block/plastic/fence_gate");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_GLOW_STAIRS, "block/plastic/glow_stairs");
-        colouredBlock(blockModels, AdditionsBlocks.PLASTIC_GLOW_SLABS, "block/plastic/glow_slab");
-        colouredBlock(blockModels, AdditionsBlocks.TRANSPARENT_PLASTIC_STAIRS, "block/plastic/transparent_stairs");
-        colouredBlock(blockModels, AdditionsBlocks.TRANSPARENT_PLASTIC_SLABS, "block/plastic/transparent_slab");*/
-
         glowPanels(blockModels);
         coloredBlocks(blockModels, AdditionsBlocks.PLASTIC_BLOCKS, "block");
         coloredBlocks(blockModels, AdditionsBlocks.SLICK_PLASTIC_BLOCKS, "slick");
