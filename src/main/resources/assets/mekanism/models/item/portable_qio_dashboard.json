@@ -3,8 +3,8 @@
     "neoforge_data": {
         "layers": {
             "1": {
-                "block_light": 15,
-                "sky_light": 15
+                "light_emission": 15,
+                "TODO: this no longer seems to be a thing?": 0
             }
         }
     },

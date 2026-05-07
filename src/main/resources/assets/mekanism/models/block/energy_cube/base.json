@@ -1110,7 +1110,8 @@
             "texture": "#3",
             "cullface": "down"
           }
-        }
+        },
+        "light_emission": 15
       }
     ],
     "top": [
@@ -1179,7 +1180,8 @@
             "texture": "#3",
             "cullface": "up"
           }
-        }
+        },
+        "light_emission": 15
       }
     ],
     "front": [
@@ -1246,7 +1248,8 @@
             "texture": "#3",
             "cullface": "north"
           }
-        }
+        },
+        "light_emission": 15
       }
     ],
     "back": [
@@ -1313,7 +1316,8 @@
             "texture": "#3",
             "cullface": "south"
           }
-        }
+        },
+        "light_emission": 15
       }
     ],
     "right": [
@@ -1382,7 +1386,8 @@
             "texture": "#3",
             "cullface": "west"
           }
-        }
+        },
+        "light_emission": 15
       }
     ],
     "left": [
@@ -1451,7 +1456,8 @@
             "texture": "#3",
             "cullface": "east"
           }
-        }
+        },
+        "light_emission": 15
       }
     ]
   }

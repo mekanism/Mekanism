@@ -28,10 +28,7 @@
 			"faces": {
 				"west": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "portLeft",
@@ -52,10 +49,7 @@
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "east"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "tank3",
@@ -177,10 +171,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 8, 8], "texture": "#2", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "base",
@@ -258,10 +249,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "tube7",

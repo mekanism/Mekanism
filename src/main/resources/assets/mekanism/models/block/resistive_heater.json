@@ -35,10 +35,7 @@
 			"faces": {
 				"west": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_right_led",
@@ -47,10 +44,7 @@
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "east"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "bar1",

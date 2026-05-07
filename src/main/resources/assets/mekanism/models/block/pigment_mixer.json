@@ -69,10 +69,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "mixer_shaft_support",

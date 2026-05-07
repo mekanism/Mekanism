@@ -26,10 +26,7 @@
 			"faces": {
 				"up": {"uv": [1, 1, 13, 13], "rotation": 180, "texture": "#2", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"display": {

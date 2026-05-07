@@ -31,10 +31,7 @@
 			"faces": {
 				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "drive_status_led_2",
@@ -43,10 +40,7 @@
 			"faces": {
 				"south": {"uv": [1, 1, 2, 2], "texture": "#6", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "drive_frequency_led_right",
@@ -55,10 +49,7 @@
 			"faces": {
 				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "drive_frequency_led_left",
@@ -67,10 +58,7 @@
 			"faces": {
 				"south": {"uv": [13, 1, 14, 2], "texture": "#6", "cullface": "south", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "drive_front",

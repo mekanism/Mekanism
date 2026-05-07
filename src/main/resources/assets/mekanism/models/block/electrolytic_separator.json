@@ -36,10 +36,7 @@
 			"faces": {
 				"west": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "tank3",
@@ -82,10 +79,7 @@
 			"faces": {
 				"south": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "portToggle4b",
@@ -228,10 +222,7 @@
 			"faces": {
 				"north": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	]
 }

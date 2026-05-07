@@ -31,10 +31,7 @@
 			"faces": {
 				"north": {"uv": [1, 1, 15, 15], "texture": "#led", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"display": {

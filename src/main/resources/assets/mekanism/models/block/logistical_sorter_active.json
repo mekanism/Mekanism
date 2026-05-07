@@ -207,10 +207,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 5, 5], "texture": "#4", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "pipe",
@@ -291,10 +288,7 @@
 				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "bulb_led2",
@@ -308,10 +302,7 @@
 				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "bulb_led3",
@@ -325,10 +316,7 @@
 				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "bulb_led4",
@@ -342,10 +330,7 @@
 				"up": {"uv": [0, 0, 1, 1], "texture": "#leds"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#leds"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		}
 	]
 }

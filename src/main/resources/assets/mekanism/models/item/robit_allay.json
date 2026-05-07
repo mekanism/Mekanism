@@ -36,10 +36,7 @@
 			"faces": {
 				"south": {"uv": [6.5, 12, 7.5, 12.5], "rotation": 270, "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "eyeRight",
@@ -48,10 +45,7 @@
 			"faces": {
 				"south": {"uv": [6.5, 12, 7.5, 12.5], "rotation": 270, "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "base",
@@ -76,10 +70,7 @@
 				"up": {"uv": [0, 0, 2.7, 1.8], "texture": "#robit"},
 				"down": {"uv": [12, 8, 13.5, 9], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		},
 		{
 			"name": "headNew",
@@ -93,10 +84,7 @@
 				"up": {"uv": [2.5, 0, 5, 2.5], "texture": "#robit"},
 				"down": {"uv": [5, 0, 7.5, 2.5], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		},
 		{
 			"name": "rightWing",
@@ -107,10 +95,7 @@
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit"},
 				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		},
 		{
 			"name": "leftWing",
@@ -121,10 +106,7 @@
 				"east": {"uv": [16, 13.5, 12, 16], "texture": "#robit"},
 				"west": {"uv": [12, 13.5, 16, 16], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		},
 		{
 			"name": "rightArm",
@@ -139,10 +121,7 @@
 				"up": {"uv": [9, 13, 10, 13.5], "texture": "#robit"},
 				"down": {"uv": [9, 13.5, 10, 14], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		},
 		{
 			"name": "leftArm",
@@ -181,10 +160,7 @@
 				"up": {"uv": [13.5, 12.5, 14, 13], "texture": "#robit"},
 				"down": {"uv": [12.5, 8, 13.5, 9], "texture": "#robit"}
 			},
-			"neoforge_data": {
-				"block_light": 3,
-				"sky_light": 3
-			}
+			"light_emission": 3
 		}
 	]
 }

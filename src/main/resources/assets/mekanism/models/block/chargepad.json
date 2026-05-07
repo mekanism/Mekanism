@@ -79,10 +79,7 @@
 			"faces": {
 				"up": {"uv": [2, 14, 14, 2], "texture": "#chargepad_led"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "stand_led",
@@ -92,10 +89,7 @@
 				"east": {"uv": [5, 8, 6, 12], "texture": "#elements"},
 				"west": {"uv": [5, 8, 6, 12], "texture": "#elements", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_led",
@@ -104,10 +98,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#ports_led", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"display": {

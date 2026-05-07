@@ -236,10 +236,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "fuel_rod_led2",
@@ -251,10 +248,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "fuel_rod_led3",
@@ -266,10 +260,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "fuel_rod_led4",
@@ -281,10 +272,7 @@
 						"south": {"uv": [0, 0, 2, 2], "texture": "#8"},
 						"west": {"uv": [0, 0, 2, 2], "texture": "#8"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port",
@@ -305,10 +293,7 @@
 					"faces": {
 						"south": {"uv": [8, 8, 16, 16], "texture": "#6", "cullface": "south"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				}
 			]
 		},

@@ -32,10 +32,7 @@
 				"up": {"uv": [0, 0, 16, 16], "texture": "#led", "cullface": "up"},
 				"down": {"uv": [0, 0, 16, 16], "texture": "#led", "cullface": "down"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"display": {

@@ -160,10 +160,7 @@
 				"west": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3"},
 				"down": {"uv": [0, 0, 2, 2], "rotation": 180, "texture": "#3"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "keyboard",
@@ -283,10 +280,7 @@
 				"west": {"uv": [0, 0, 2, 2], "texture": "#3"},
 				"down": {"uv": [0, 0, 2, 2], "texture": "#3"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "modifier_probe_left",
@@ -311,10 +305,7 @@
 				"west": {"uv": [0, 0, 2, 2], "texture": "#3"},
 				"down": {"uv": [0, 0, 2, 2], "texture": "#3"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "modifier_probe_base",
@@ -382,10 +373,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"display": {

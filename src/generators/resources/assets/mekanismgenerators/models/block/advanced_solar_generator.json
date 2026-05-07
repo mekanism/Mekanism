@@ -182,10 +182,7 @@
 			"faces": {
 				"north": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_down",
@@ -202,10 +199,7 @@
 			"faces": {
 				"down": {"uv": [8, 8, 16, 16], "texture": "#2", "cullface": "down"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "solar_panel_east",

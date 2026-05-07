@@ -32,10 +32,7 @@
 				"up": {"uv": [10, 0, 16, 1], "texture": "#1", "tintindex": 1},
 				"down": {"uv": [10, 0, 16, 1], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_top_led_2",
@@ -49,10 +46,7 @@
 				"up": {"uv": [10, 0, 16, 1], "rotation": 180, "texture": "#1", "tintindex": 1},
 				"down": {"uv": [10, 0, 16, 1], "rotation": 180, "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_top_led_3",
@@ -64,10 +58,7 @@
 				"up": {"uv": [10, 1, 11, 5], "texture": "#1", "tintindex": 1},
 				"down": {"uv": [15, 1, 16, 5], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_top_led_4",
@@ -79,10 +70,7 @@
 				"up": {"uv": [10, 1, 11, 5], "rotation": 180, "texture": "#1", "tintindex": 1},
 				"down": {"uv": [15, 1, 16, 5], "rotation": 180, "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_bottom_led_1",
@@ -94,10 +82,7 @@
 				"up": {"uv": [10, 1, 11, 5], "rotation": 180, "texture": "#1", "tintindex": 1},
 				"down": {"uv": [15, 1, 16, 5], "rotation": 180, "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_bottom_led_2",
@@ -109,10 +94,7 @@
 				"up": {"uv": [10, 1, 11, 5], "texture": "#1", "tintindex": 1},
 				"down": {"uv": [15, 1, 16, 5], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_bottom_led_3",
@@ -126,10 +108,7 @@
 				"up": {"uv": [10, 0, 16, 1], "rotation": 180, "texture": "#1", "tintindex": 1},
 				"down": {"uv": [10, 0, 16, 1], "rotation": 180, "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "ring_bottom_led_4",
@@ -143,10 +122,7 @@
 				"up": {"uv": [10, 0, 16, 1], "texture": "#1", "tintindex": 1},
 				"down": {"uv": [10, 0, 16, 1], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "post_1",
@@ -202,10 +178,7 @@
 				"south": {"uv": [14, 1, 12, 2], "texture": "#1", "tintindex": 1},
 				"west": {"uv": [14, 1, 12, 2], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "top_post_led_2",
@@ -214,10 +187,7 @@
 			"faces": {
 				"up": {"uv": [12, 2, 14, 4], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "core_led",
@@ -229,10 +199,7 @@
 				"south": {"uv": [11, 1, 12, 2], "texture": "#1", "tintindex": 1},
 				"west": {"uv": [11, 1, 12, 2], "texture": "#1", "tintindex": 1}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "disc_mid",

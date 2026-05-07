@@ -401,10 +401,7 @@
 					"faces": {
 						"north": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "north"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port_small_east_led",
@@ -413,10 +410,7 @@
 					"faces": {
 						"east": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "east"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port_small_east",
@@ -451,10 +445,7 @@
 					"faces": {
 						"south": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "south"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port_small_west_led",
@@ -463,10 +454,7 @@
 					"faces": {
 						"west": {"uv": [8, 0, 16, 8], "texture": "#4", "cullface": "west"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port_small_west",
@@ -501,10 +489,7 @@
 					"faces": {
 						"up": {"uv": [8, 0, 16, 8], "rotation": 270, "texture": "#4", "cullface": "up"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				},
 				{
 					"name": "port_small_down",
@@ -526,10 +511,7 @@
 					"faces": {
 						"down": {"uv": [8, 0, 16, 8], "rotation": 90, "texture": "#4", "cullface": "down"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				}
 			]
 		},
@@ -556,10 +538,7 @@
 						"up": {"uv": [15, 15, 16, 16], "texture": "#0"},
 						"down": {"uv": [15, 15, 16, 16], "texture": "#0"}
 					},
-					"neoforge_data": {
-						"block_light": 15,
-						"sky_light": 15
-					}
+					"light_emission": 15
 				}
 			]
 		}

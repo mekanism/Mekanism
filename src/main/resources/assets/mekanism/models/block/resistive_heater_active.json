@@ -28,10 +28,7 @@
 			"faces": {
 				"west": {"uv": [8, 8, 16, 16], "texture": "#7", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_right",
@@ -48,10 +45,7 @@
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#7", "cullface": "east"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "bar1",
@@ -143,10 +137,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_2",
@@ -157,10 +148,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_3",
@@ -171,10 +159,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_4",
@@ -184,10 +169,7 @@
 				"north": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_5",
@@ -197,10 +179,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_6",
@@ -211,10 +190,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_7",
@@ -225,10 +201,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "fin_led_8",
@@ -239,10 +212,7 @@
 				"south": {"uv": [0, 1, 10, 10], "texture": "#6"},
 				"up": {"uv": [0, 0, 10, 1], "texture": "#6"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"groups": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10,

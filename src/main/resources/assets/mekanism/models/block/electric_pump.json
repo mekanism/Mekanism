@@ -98,10 +98,7 @@
 			"faces": {
 				"up": {"uv": [8, 0, 16, 8], "texture": "#3", "cullface": "up"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "pumpRingTop",
@@ -149,10 +146,7 @@
 			"faces": {
 				"north": {"uv": [8, 8, 16, 16], "texture": "#3", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		}
 	]
 }

@@ -207,10 +207,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 5, 5], "texture": "#3", "cullface": "north"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "pipe",

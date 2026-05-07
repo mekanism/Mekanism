@@ -98,10 +98,7 @@
 				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led", "cullface": "up"},
 				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led"}
 			},
-			"neoforge_data": {
-					"block_light": 15,
-					"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "port_bottom_led",
@@ -111,10 +108,7 @@
 				"up": {"uv": [5, 5, 0, 0], "texture": "#ports_led"},
 				"down": {"uv": [5, 0, 0, 5], "texture": "#ports_led", "cullface": "down"}
 			},
-			"neoforge_data": {
-					"block_light": 15,
-					"sky_light": 15
-			}
+			"light_emission": 15
 		}
 	]
 }

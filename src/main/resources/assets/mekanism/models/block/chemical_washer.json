@@ -271,10 +271,7 @@
 			"faces": {
 				"up": {"uv": [0, 0, 5, 5], "texture": "#5", "cullface": "up"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_west",
@@ -293,10 +290,7 @@
 			"faces": {
 				"west": {"uv": [0, 0, 8, 8], "texture": "#6", "cullface": "west"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "port_east",
@@ -315,10 +309,7 @@
 			"faces": {
 				"east": {"uv": [0, 0, 8, 8], "texture": "#6", "cullface": "east"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		}
 	],
 	"groups": [0, 1, 2,

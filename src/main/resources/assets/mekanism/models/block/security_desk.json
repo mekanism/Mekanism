@@ -67,10 +67,7 @@
 			"faces": {
 				"north": {"uv": [0, 0, 12, 8], "texture": "#4"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "button_led",
@@ -85,10 +82,7 @@
 				"west": {"uv": [0, 0, 1, 1], "texture": "#5"},
 				"down": {"uv": [0, 0, 1, 1], "texture": "#5"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "monitor_back",

@@ -712,10 +712,7 @@
 			"faces": {
 				"west": {"uv": [8, 8, 16, 16], "texture": "#4"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "port2a_led",
@@ -724,10 +721,7 @@
 			"faces": {
 				"east": {"uv": [8, 8, 16, 16], "texture": "#4"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "port1_led",
@@ -736,10 +730,7 @@
 			"faces": {
 				"down": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "down"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "port_back_led",
@@ -748,10 +739,7 @@
 			"faces": {
 				"south": {"uv": [0, 0, 8, 8], "texture": "#4"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		},
 		{
 			"name": "port_top_led",
@@ -760,10 +748,7 @@
 			"faces": {
 				"up": {"uv": [0, 0, 8, 8], "texture": "#4"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+			"light_emission": 15
 		}
 	],
 	"display": {

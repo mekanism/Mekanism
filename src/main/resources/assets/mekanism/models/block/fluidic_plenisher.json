@@ -41,10 +41,7 @@
 			"faces": {
 				"south": {"uv": [8, 8, 16, 16], "texture": "#4", "cullface": "south"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "energy_connector",
@@ -90,10 +87,7 @@
 			"faces": {
 				"up": {"uv": [0, 0, 5, 5], "texture": "#2", "cullface": "up"}
 			},
-			"neoforge_data": {
-				"block_light": 15,
-				"sky_light": 15
-			}
+      "light_emission": 15
 		},
 		{
 			"name": "bottom",
