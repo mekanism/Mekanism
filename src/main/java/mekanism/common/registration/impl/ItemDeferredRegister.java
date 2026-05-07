@@ -112,9 +112,7 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
         return (ItemRegistryObject<ITEM>) super.register(name, func);
     }
 
-    public ItemRegistryObject<SpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider,
-          int primaryColor, int secondaryColor) {
-        //TODO - 26.1 primaryColor, secondaryColor?
+    public ItemRegistryObject<SpawnEggItem> registerSpawnEgg(MekanismDeferredHolder<EntityType<?>, ? extends EntityType<? extends Mob>> entityTypeProvider) {
         return registerItem(entityTypeProvider.getName() + "_spawn_egg", props -> new SpawnEggItem(props.spawnEgg(entityTypeProvider.get())));
     }
 
