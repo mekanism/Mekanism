@@ -41,8 +41,9 @@ public final class FluidUtils {
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
         IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(toFill);
         if (attachment != null) {
-            for (IFluidTank fluidTank : attachment.getFluidTanks(null)) {
-                fluidTank.setStack(new FluidStack(fluid, fluidTank.getCapacity()));
+            FluidResource fluidType = FluidResource.of(fluid);
+            for (IFluidTank fluidTank : attachment.getContainers()) {
+                fluidTank.setContents(fluidType, fluidTank.getLimit(fluidType));
             }
         }
         //The item is now filled return it for convenience

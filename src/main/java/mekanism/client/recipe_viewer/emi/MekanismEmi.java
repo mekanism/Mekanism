@@ -84,8 +84,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @EmiEntrypoint
 public class MekanismEmi implements EmiPlugin {
@@ -128,23 +129,21 @@ public class MekanismEmi implements EmiPlugin {
     }
 
     private static void addFluidComponent(Set<Object> representation, ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
-            handler = Capabilities.FLUID_LEGACY.getCapability(stack);
+            handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
         }
         if (handler != null) {
-            int tanks = handler.getTanks();
+            int tanks = handler.size();
             if (tanks == 1) {
-                FluidStack fluidStack = handler.getFluidInTank(0);
+                FluidResource fluidStack = handler.getResource(0);
                 if (!fluidStack.isEmpty()) {
-                    //Equals and hashcode ignore the count, so we can just add the fluid stack
                     representation.add(fluidStack);
                 }
             } else if (tanks > 1) {
-                List<FluidStack> fluids = new ArrayList<>(tanks);
+                List<FluidResource> fluids = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
-                    //Equals and hashcode ignore the count, so we can just add the fluid stack
-                    fluids.add(handler.getFluidInTank(tank));
+                    fluids.add(handler.getResource(tank));
                 }
                 representation.add(fluids);
             }

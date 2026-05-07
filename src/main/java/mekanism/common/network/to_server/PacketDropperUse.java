@@ -147,7 +147,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         }
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(itemAccess);
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {//TODO - 26.1: FIX THIS
-            IFluidTank itemFluidTank = fluidHandler.getFluidTank(0, null);
+            IFluidTank itemFluidTank = fluidHandler.getContainer(0);
             if (itemFluidTank != null) {
                 if (action == DropperAction.FILL_DROPPER) {
                     //Insert fluid into dropper

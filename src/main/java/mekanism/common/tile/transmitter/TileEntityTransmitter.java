@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Predicate;
 import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigurable;
 import mekanism.api.text.EnumColor;
@@ -421,25 +420,21 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void redstoneChanged(boolean powered) {
     }
 
-    protected Predicate<@Nullable Direction> getExtractPredicate() {
-        return side -> {
-            if (side == null) {
-                //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
-                return true;
-            }
-            //If we have a side only allow extracting if our connection allows it
-            return getTransmitter().getConnectionType(side).canSendTo();
-        };
+    protected boolean canExtract(@Nullable Direction side) {
+        if (side == null) {
+            //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
+            return true;
+        }
+        //If we have a side only allow extracting if our connection allows it
+        return getTransmitter().getConnectionType(side).canSendTo();
     }
 
-    protected Predicate<@Nullable Direction> getInsertPredicate() {
-        return side -> {
-            if (side == null) {
-                //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
-                return true;
-            }
-            //If we have a side only allow inserting if our connection allows it
-            return getTransmitter().getConnectionType(side).canAccept();
-        };
+    protected boolean canInsert(@Nullable Direction side) {
+        if (side == null) {
+            //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
+            return true;
+        }
+        //If we have a side only allow inserting if our connection allows it
+        return getTransmitter().getConnectionType(side).canAccept();
     }
 }

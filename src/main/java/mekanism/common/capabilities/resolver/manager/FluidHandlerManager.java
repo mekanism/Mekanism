@@ -8,7 +8,6 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.proxy.ProxyResourceHandler;
-import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
@@ -19,16 +18,13 @@ import org.jetbrains.annotations.Nullable;
  */
 public class FluidHandlerManager extends CapabilityHandlerManager<IFluidTankHolder, IFluidTank, ResourceHandler<FluidResource>> {
 
-    public FluidHandlerManager(@Nullable IFluidTankHolder holder, @NotNull IContentsListener changeListener) {
+    public FluidHandlerManager(@Nullable IFluidTankHolder holder, @Nullable IContentsListener changeListener) {
         super(holder, Capabilities.FLUID.block(), IFluidTankHolder::getTanks, (side, h) -> new ProxyResourceHandler<>(new IMekanismFluidHandler() {
             @Override
             public void onContentsChanged() {
-                changeListener.onContentsChanged();
-            }
-
-            @Override
-            public List<IFluidTank> getFluidTanks(@Nullable Direction side) {
-                return getContainers();
+                if (changeListener != null) {
+                    changeListener.onContentsChanged();
+                }
             }
 
             @NotNull

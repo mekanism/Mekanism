@@ -2,7 +2,6 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
@@ -38,8 +37,6 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     public TileEntityPressurizedTube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        Predicate<@Nullable Direction> canExtract = getExtractPredicate();
-        Predicate<@Nullable Direction> canInsert = getInsertPredicate();
         addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(direction -> {
             PressurizedTube tube = getTransmitter();
             if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
@@ -48,7 +45,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
                 return Collections.emptyList();
             }
             return tube.getChemicalTanks(direction);
-        }, new DynamicChemicalHandler(this::getChemicalTanks, canExtract, canInsert, null)));
+        }, new DynamicChemicalHandler(this::getChemicalTanks, this::canExtract, this::canInsert, null)));
     }
 
     @Override

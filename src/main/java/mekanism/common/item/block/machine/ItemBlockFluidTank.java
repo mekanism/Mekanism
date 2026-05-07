@@ -257,7 +257,7 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     private static IFluidTank getExtendedFluidTank(@NotNull ItemStack stack) {
         IFluidHandlerItem fluidHandlerItem = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (fluidHandlerItem instanceof IMekanismFluidHandler fluidHandler) {//TODO - 26.1: FIX THIS
-            return fluidHandler.getFluidTank(0, null);
+            return fluidHandler.getContainer(0);
         }
         return null;
     }

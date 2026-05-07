@@ -10,9 +10,9 @@ import mekanism.common.capabilities.Capabilities;
 import mezz.jei.api.ingredients.subtypes.ISubtypeInterpreter;
 import mezz.jei.api.ingredients.subtypes.UidContext;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack> {
@@ -44,14 +44,14 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
             }
         }
 
-        IFluidHandler fluidHandler = getFluidHandler(stack);
+        ResourceHandler<FluidResource> fluidHandler = getFluidHandler(stack);
         if (fluidHandler != null) {
-            for (int tank = 0, tanks = fluidHandler.getTanks(); tank < tanks; tank++) {
-                FluidStack fluidStack = fluidHandler.getFluidInTank(tank);
+            for (int tank = 0, tanks = fluidHandler.size(); tank < tanks; tank++) {
+                FluidResource fluidType = fluidHandler.getResource(tank);
                 //Store the type of the fluid. We skip empty fluids if there is only a single tank
-                if (!fluidStack.isEmpty() || tanks > 1) {
-                    //TODO: Should this be using the fluidstack's subtype interpretation? (So that it takes fluid components into account?
-                    subTypeData = tryAddData(subTypeData, fluidStack.getFluid());
+                if (!fluidType.isEmpty() || tanks > 1) {
+                    //TODO - 26.1: Should this be using the fluidstack's subtype interpretation? (So that it takes fluid components into account?
+                    subTypeData = tryAddData(subTypeData, fluidType.getFluid());
                 }
             }
         }
@@ -83,10 +83,10 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
     }
 
     @Nullable
-    private static IFluidHandler getFluidHandler(ItemStack stack) {
-        IFluidHandler handler = ContainerType.FLUID.createHandlerIfData(stack);
+    private static ResourceHandler<FluidResource> getFluidHandler(ItemStack stack) {
+        ResourceHandler<FluidResource> handler = ContainerType.FLUID.createHandlerIfData(stack);
         if (handler == null) {
-            return Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
         }
         return handler;
     }

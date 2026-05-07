@@ -40,7 +40,7 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
                 return Collections.emptyList();
             }
             return cable.getEnergyContainers(direction);
-        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, getExtractPredicate(), getInsertPredicate(), null)));
+        }, new DynamicStrictEnergyHandler(this::getEnergyContainers, this::canExtract, this::canInsert, null)));
     }
 
     @Override

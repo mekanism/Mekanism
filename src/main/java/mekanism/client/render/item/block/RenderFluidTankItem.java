@@ -3,6 +3,7 @@ package mekanism.client.render.item.block;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.serialization.MapCodec;
 import java.util.function.Consumer;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.ModelUtil;
 import mekanism.client.render.MekanismRenderer;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.joml.Vector3fc;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
@@ -65,13 +67,17 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
         Model3D fluidModel = null;
         TexturePicker fluidTexture = null;
         if (attachment != null) {
-            FluidStack fluid = attachment.getFluidInTank(0);
-            if (!fluid.isEmpty()) {
-                fluidScale = (float) fluid.amount() / attachment.getTankCapacity(0);
-                fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
-                fluidLight = fluid.getFluidType().getLightLevel(fluid);
-                fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
-                fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
+            IFluidTank container = attachment.getContainer(0);
+            if (container != null) {
+                FluidResource fluidType = container.getResource();
+                if (!fluidType.isEmpty()) {
+                    FluidStack fluid = fluidType.toStack(container.amount());
+                    fluidScale = (float) container.amount() / container.getLimit(fluidType);
+                    fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
+                    fluidLight = fluidType.getFluidType().getLightLevel(fluid);
+                    fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);
+                    fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, MekanismRenderer.FluidTextureType.STILL));
+                }
             }
         }
         //todo - 26.1: do this with the block model from model manager (copy Energy cube item)

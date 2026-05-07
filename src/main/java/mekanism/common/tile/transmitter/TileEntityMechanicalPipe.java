@@ -8,7 +8,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.fluid.DynamicFluidHandler;
+import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
 import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
@@ -28,19 +28,30 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityMechanicalPipe extends TileEntityTransmitter implements IComputerTile {
 
-    private final FluidHandlerManager fluidHandlerManager;
-
     public TileEntityMechanicalPipe(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(fluidHandlerManager = new FluidHandlerManager(direction -> {
-            MechanicalPipe pipe = getTransmitter();
-            if (direction != null && (pipe.getConnectionTypeRaw(direction) == ConnectionType.NONE) || pipe.isRedstoneActivated()) {
-                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
-                // then return that we have no tanks
-                return Collections.emptyList();
+        addCapabilityResolver(new FluidHandlerManager(new IFluidTankHolder() {
+            @Override
+            public @NotNull List<IFluidTank> getTanks(@Nullable Direction direction) {
+                MechanicalPipe pipe = TileEntityMechanicalPipe.this.getTransmitter();
+                if (direction != null && (pipe.getConnectionTypeRaw(direction) == ConnectionType.NONE) || pipe.isRedstoneActivated()) {
+                    //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                    // then return that we have no tanks
+                    return Collections.emptyList();
+                }
+                return pipe.getFluidTanks();
             }
-            return pipe.getFluidTanks();
-        }, new DynamicFluidHandler(this::getFluidTanks, getExtractPredicate(), getInsertPredicate(), null)));
+
+            @Override
+            public boolean canInsert(@Nullable Direction direction) {
+                return TileEntityMechanicalPipe.this.canInsert(direction);
+            }
+
+            @Override
+            public boolean canExtract(@Nullable Direction direction) {
+                return TileEntityMechanicalPipe.this.canExtract(direction);
+            }
+        }, null));
     }
 
     @Override
@@ -85,10 +96,6 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
             output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, network.lastFluid);
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
-    }
-
-    private List<IFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidHandlerManager.getContainers(side);
     }
 
     @Override

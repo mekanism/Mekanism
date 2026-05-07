@@ -13,57 +13,57 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ProxyResourceHandler<RESOURCE extends Resource> extends ProxyHandler implements ResourceHandler<RESOURCE> {
 
-    private final IMekanismResourceHandler<RESOURCE, ?> inventory;
+    private final IMekanismResourceHandler<RESOURCE, ?> handler;
 
-    public ProxyResourceHandler(IMekanismResourceHandler<RESOURCE, ?> inventory, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyResourceHandler(IMekanismResourceHandler<RESOURCE, ?> handler, @Nullable Direction side, @Nullable IHolder holder) {
         super(side, holder);
-        this.inventory = inventory;
+        this.handler = handler;
     }
 
     @Override
     public int size() {
-        return inventory.size();
+        return handler.size();
     }
 
     @Override
     public RESOURCE getResource(int index) {
-        return inventory.getResource(index);
+        return handler.getResource(index);
     }
 
     @Override
     public long getAmountAsLong(int index) {
-        return inventory.getAmountAsLong(index);
+        return handler.getAmountAsLong(index);
     }
 
     @Override
     public long getCapacityAsLong(int index, RESOURCE resource) {
-        return inventory.getCapacityAsLong(index, resource);
+        return handler.getCapacityAsLong(index, resource);
     }
 
     @Override
     public boolean isValid(int index, RESOURCE resource) {
         //TODO - 26.1: Because of changes to what isValid means, I think we need to forward the check regardless of if it is read only
-        return !readOnly || inventory.isValid(index, resource);
+        return !readOnly || handler.isValid(index, resource);
     }
 
     @Override
     public int insert(int index, RESOURCE resource, int amount, TransactionContext transaction) {
-        return readOnlyInsert() ? 0 : inventory.insert(index, resource, amount, transaction, AutomationType.handler(side));
+        return readOnlyInsert() ? 0 : handler.insert(index, resource, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
     public int insert(RESOURCE resource, int amount, TransactionContext transaction) {
-        return readOnlyInsert() ? 0 : inventory.insert(resource, amount, transaction, AutomationType.handler(side));
+        return readOnlyInsert() ? 0 : handler.insert(resource, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
     public int extract(int index, RESOURCE resource, int amount, TransactionContext transaction) {
-        return readOnlyExtract() ? 0 : inventory.extract(index, resource, amount, transaction, AutomationType.handler(side));
+        return readOnlyExtract() ? 0 : handler.extract(index, resource, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
     public int extract(RESOURCE resource, int amount, TransactionContext transaction) {
-        return readOnlyExtract() ? 0 : inventory.extract(resource, amount, transaction, AutomationType.handler(side));
+        return readOnlyExtract() ? 0 : handler.extract(resource, amount, transaction, AutomationType.handler(side));
     }
 
     //TODO - 26.1: Re-evaluate this

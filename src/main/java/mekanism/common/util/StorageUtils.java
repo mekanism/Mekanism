@@ -30,7 +30,9 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -98,14 +100,15 @@ public class StorageUtils {
 
     public static void addStoredFluid(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, ILangEntry emptyLangEntry,
           BiFunction<FluidStack, ILangEntry, Component> storedFunction) {
-        IFluidHandlerItem handler = Capabilities.FLUID_LEGACY.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
         if (handler == null) {
             //Fall back to trying to look up the stored fluid by the container type if the stack doesn't expose it
             handler = ContainerType.FLUID.createHandlerIfData(stack);
         }
         if (handler != null) {
-            for (int tank = 0, tanks = handler.getTanks(); tank < tanks; tank++) {
-                tooltipAdder.accept(storedFunction.apply(handler.getFluidInTank(tank), emptyLangEntry));
+            for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+                //TODO - 26.1: Custom function for storedFunction rather than converting this back into a stack?
+                tooltipAdder.accept(storedFunction.apply(handler.getResource(tank).toStack(handler.getAmountAsInt(tank)), emptyLangEntry));
             }
         } else {
             tooltipAdder.accept(emptyLangEntry.translate());
