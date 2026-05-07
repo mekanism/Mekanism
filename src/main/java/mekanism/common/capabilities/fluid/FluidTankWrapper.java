@@ -17,7 +17,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * Like {@link ChemicalTankWrapper}
  */
 @NothingNullByDefault
-public class FluidTankWrapper implements IFluidTank {
+public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate this class
 
     private final IChemicalTank chemicalTank;
     private final IFluidTank internal;
@@ -127,5 +127,15 @@ public class FluidTankWrapper implements IFluidTank {
     @Override
     public boolean isValid(FluidResource fluidType) {
         return internal.isValid(fluidType);
+    }
+
+    @Override
+    public boolean isCurrentValidForExtraction(AutomationType automationType) {
+        return internal.isCurrentValidForExtraction(automationType);
+    }
+
+    @Override
+    public boolean isValidForInsertion(FluidResource type, AutomationType automationType) {
+        return internal.isValidForInsertion(type, automationType);
     }
 }

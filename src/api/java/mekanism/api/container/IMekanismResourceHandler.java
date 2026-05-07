@@ -73,6 +73,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     default int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         int inserted = 0;
+        //TODO - 26.1: Evaluate ExtendedFluidHandlerUtils and if we want to make this insert into containers of the same resource type first
         for (CONTAINER container : getContainers()) {
             inserted += container.insert(resource, amount - inserted, transaction, automationType);
             if (inserted == amount) {

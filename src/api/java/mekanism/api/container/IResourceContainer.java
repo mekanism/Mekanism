@@ -42,6 +42,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     }
 
     /**
+     * Gets the amount of fluid needed by this {@link IResourceContainer} to reach a filled state.
+     *
+     * @return Amount of fluid needed
+     */
+    default int getNeeded() {
+        //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
+        return Math.max(0, getCurrentLimit() - amount());
+    }
+
+    /**
      * <p>
      * This function re-implements the vanilla function {@link net.minecraft.world.Container#canPlaceItem(int, ItemStack)}. It should be used instead of simulated
      * insertions in cases where the contents and state of the inventory are irrelevant, mainly for the purpose of automation and logic (for instance, testing if a
@@ -62,6 +72,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     //TODO - 26.1: Update docs and figure out handling of empty resource
     // Also Neo changed it to be if it is ever valid instead of valid for insertion, I believe we already behaved as such
     // but we should validate that we obey that properly
+
+    /**
+     * Ignores current contents
+     */
+    boolean isCurrentValidForExtraction(AutomationType automationType);//TODO - 26.1: Update docs
+
+    /**
+     * Ignores current contents
+     */
+    boolean isValidForInsertion(RESOURCE type, AutomationType automationType);//TODO - 26.1: Update docs
 
     /**
      * Convenience method for checking if this slot is empty.

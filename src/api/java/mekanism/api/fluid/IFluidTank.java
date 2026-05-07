@@ -219,15 +219,6 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
         return getResource().matches(other);
     }
 
-    /**
-     * Gets the amount of fluid needed by this {@link IFluidTank} to reach a filled state.
-     *
-     * @return Amount of fluid needed
-     */
-    default int getNeeded() {
-        return Math.max(0, getCapacity() - amount());
-    }
-
     @Override
     default void serialize(ValueOutput output) {
         if (!isEmpty()) {

@@ -78,16 +78,12 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         return validator.test(type);
     }
 
-    /**
-     * Ignores current contents
-     */
+    @Override
     public boolean isCurrentValidForExtraction(AutomationType automationType) {
         return canExtract.test(getResource(), automationType);
     }
 
-    /**
-     * Ignores current contents
-     */
+    @Override
     public boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {
         return isValid(type) && canInsert.test(type, automationType);
     }

@@ -61,10 +61,17 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         return validator.test(resource);
     }
 
-    /**
-     * Ignores current contents
-     */
-    private boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {
+    @Override
+    public final boolean isCurrentValidForExtraction(AutomationType automationType) {
+        return isValidForExtraction(getResource(), automationType);
+    }
+
+    private boolean isValidForExtraction(RESOURCE type, AutomationType automationType) {
+        return canExtract.test(type, automationType);
+    }
+
+    @Override
+    public boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {
         return isValid(type) && canInsert.test(type, automationType);
     }
 
@@ -126,7 +133,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         TYPE current = getContents(attached);
         RESOURCE currentType = asResource(current);
         int currentStored = getAmount(current);
-        if (currentType.isEmpty() || !resource.equals(currentType) || !canExtract.test(currentType, automationType)) {
+        if (currentType.isEmpty() || !resource.equals(currentType) || !isValidForExtraction(currentType, automationType)) {
             //"Fail quick" if we are empty, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
