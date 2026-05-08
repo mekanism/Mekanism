@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.testframework.annotation.ForEachTest;
 import net.neoforged.testframework.annotation.TestHolder;
 import net.neoforged.testframework.gametest.EmptyTemplate;
@@ -297,7 +298,7 @@ public class MissingObjectSerializationTest {
                   frequency.getEnergyContainers(null).getFirst().setEnergy(100);
                   frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
                   frequency.getChemicalTanks(null).getFirst().setStack(help.failureChemical());
-                  frequency.getFluidTanks().getFirst().setStack(help.failureFluid());
+                  frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME);
                   frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1);
                   return frequency;
               }, frequency -> frequency.getName().equals("test") && frequency.getSecurity() == SecurityMode.PUBLIC &&

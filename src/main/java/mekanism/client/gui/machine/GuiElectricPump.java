@@ -19,7 +19,7 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, MekanismTileContainer<TileEntityElectricPump>> {
@@ -37,16 +37,15 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
         addRenderableWidget(new GuiInnerScreen(this, 54, 23, 80, 42, () -> {
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
-            FluidStack fluidStack = tile.fluidTank.getFluid();
-            if (fluidStack.isEmpty()) {
-                FluidStack fallBack = tile.getActiveType();
+            if (tile.fluidTank.isEmpty()) {
+                FluidResource fallBack = tile.getActiveType();
                 if (fallBack.isEmpty()) {
                     list.add(MekanismLang.NO_FLUID.translate());
                 } else {
                     list.add(fallBack.getHoverName());
                 }
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(fluidStack.amount())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.getResource(), TextUtils.format(tile.fluidTank.amount())));
             }
             return list;
         }));

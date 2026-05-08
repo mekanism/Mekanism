@@ -413,8 +413,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (getLevel() != null && !isRemote()) {
-                if (!waterTank.isEmpty()) {
-                    waterTank.setStackSize(Math.min(waterTank.amount(), waterTank.getCapacity()), Action.EXECUTE);
+                FluidResource water = waterTank.getResource();
+                if (!water.isEmpty()) {
+                    int capacity = waterTank.getLimit(water);
+                    if (capacity < waterTank.amount()) {
+                        waterTank.setContentsUnchecked(water, capacity);
+                    }
                 }
                 if (!steamTank.isEmpty()) {
                     steamTank.setStackSize(Math.min(steamTank.getStored(), steamTank.getCapacity()), Action.EXECUTE);

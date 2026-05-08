@@ -38,6 +38,7 @@ public class InputHelper {
     public static IInputHandler<Item, @NotNull ItemStack> getInputHandler(IInventorySlot slot, RecipeError notEnoughError) {
         Objects.requireNonNull(slot, "Slot cannot be null.");
         Objects.requireNonNull(notEnoughError, "Not enough input error cannot be null.");
+        //TODO - 26.1: Make a ResourceInputHandler class to simplify the implementations across resource types
         return new IInputHandler<>() {
 
             @Override
@@ -136,7 +137,7 @@ public class InputHelper {
             @NotNull
             @Override
             public FluidStack getInput() {
-                return tank.getFluid();
+                return tank.getResource().toStack(tank.amount());
             }
 
             @NotNull

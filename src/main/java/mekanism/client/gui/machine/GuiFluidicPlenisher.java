@@ -20,7 +20,6 @@ import mekanism.common.util.text.TextUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenisher, MekanismTileContainer<TileEntityFluidicPlenisher>> {
@@ -39,11 +38,10 @@ public class GuiFluidicPlenisher extends GuiMekanismTile<TileEntityFluidicPlenis
             List<Component> list = new ArrayList<>();
             list.add(EnergyDisplay.of(tile.getEnergyContainer()).getTextComponent());
             list.add(MekanismLang.FINISHED.translate(YesNo.of(tile.finishedCalc)));
-            FluidStack fluid = tile.fluidTank.getFluid();
-            if (fluid.isEmpty()) {
+            if (tile.fluidTank.isEmpty()) {
                 list.add(MekanismLang.NO_FLUID.translate());
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(fluid, TextUtils.format(fluid.amount())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.getResource(), TextUtils.format(tile.fluidTank.amount())));
             }
             return list;
         }));

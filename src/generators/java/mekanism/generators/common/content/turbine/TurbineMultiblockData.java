@@ -164,7 +164,7 @@ public class TurbineMultiblockData extends MultiblockData {
             clientFlow = 0;
         }
         if (!fluidOutputTargets.isEmpty() && !ventTank.isEmpty()) {
-            //Note: We know that the tank has whatever amount it has stored, we can the simulated extraction
+            //Note: We know that the tank has whatever amount it has stored, we can just perform the simulated extraction
             ventTank.extract(FluidUtils.emit(fluidOutputTargets, ventTank.getFluid()), Action.EXECUTE, AutomationType.INTERNAL);
         }
         CableUtils.emit(energyOutputTargets, energyContainer);

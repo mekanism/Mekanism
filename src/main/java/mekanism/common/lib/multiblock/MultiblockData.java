@@ -46,6 +46,7 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -214,7 +215,13 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
         if (shouldCache(CacheSubstance.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
-                tank.setStackSize(Math.min(tank.amount(), tank.getCapacity()), Action.EXECUTE);
+                FluidResource fluidType = tank.getResource();
+                if (!fluidType.isEmpty()) {
+                    int capacity = tank.getLimit(fluidType);
+                    if (capacity < tank.amount()) {
+                        tank.setContentsUnchecked(fluidType, capacity);
+                    }
+                }
             }
         }
         if (shouldCache(CacheSubstance.CHEMICAL)) {

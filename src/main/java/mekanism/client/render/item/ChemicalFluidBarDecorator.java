@@ -15,7 +15,7 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 public class ChemicalFluidBarDecorator implements IItemDecorator {
 
@@ -69,8 +69,9 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IFluidTank tank) {
-        FluidStack fluid = tank.getFluid();
-        renderBar(guiGraphics, stackXPos, yPos, fluid.amount(), tank.getCapacity(), FluidUtils.getRGBDurabilityForDisplay(fluid));
+        FluidResource fluidType = tank.getResource();
+        int amount = tank.amount();
+        renderBar(guiGraphics, stackXPos, yPos, amount, tank.getLimit(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType.toStack(amount)));
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {

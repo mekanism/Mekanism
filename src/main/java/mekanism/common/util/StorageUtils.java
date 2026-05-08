@@ -400,38 +400,6 @@ public class StorageUtils {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
-    public static void mergeFluidTanks(List<IFluidTank> tanks, List<IFluidTank> toAdd, List<FluidStack> rejects) {
-        validateSizeMatches(tanks, toAdd, "tank");
-        for (int i = 0; i < toAdd.size(); i++) {
-            IFluidTank mergeTank = toAdd.get(i);
-            if (!mergeTank.isEmpty()) {
-                IFluidTank tank = tanks.get(i);
-                FluidResource mergeType = mergeTank.getResource();
-                int mergeAmount = mergeTank.amount();
-                if (tank.isEmpty()) {
-                    int capacity = tank.getLimit(mergeType);
-                    if (mergeAmount <= capacity) {
-                        tank.setContents(mergeType, mergeAmount);
-                    } else {
-                        tank.setContents(mergeType, capacity);
-                        int remaining = mergeAmount - capacity;
-                        if (remaining > 0) {
-                            rejects.add(mergeType.toStack(remaining));
-                        }
-                    }
-                } else if (mergeType.equals(tank.getResource())) {
-                    int amount = tank.growStack(mergeAmount, Action.EXECUTE);
-                    int remaining = mergeAmount - amount;
-                    if (remaining > 0) {
-                        rejects.add(mergeType.toStack(remaining));
-                    }
-                } else {
-                    rejects.add(mergeType.toStack(mergeAmount));
-                }
-            }
-        }
-    }
-
     public static void mergeTanks(List<IChemicalTank> tanks, List<IChemicalTank> toAdd, List<ChemicalStack> rejects) {
         validateSizeMatches(tanks, toAdd, "tank");
         for (int i = 0; i < toAdd.size(); i++) {

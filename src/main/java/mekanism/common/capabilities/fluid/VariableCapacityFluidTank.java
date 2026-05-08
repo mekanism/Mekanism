@@ -75,7 +75,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        int maxStackSize = getCurrentLimit();
         //Our capacity should never actually be zero, and given we fake it being zero
         // until we finish building the network, we need to override this method to bypass the upper limit check
         // when our upper limit is zero

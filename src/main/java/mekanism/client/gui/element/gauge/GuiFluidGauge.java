@@ -18,6 +18,7 @@ import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
@@ -72,12 +73,16 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
             return height - 2;
         }
         IFluidTank tank = getTank();
-        if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
+        if (tank == null || tank.isEmpty()) {
+            return 0;
+        }
+        int capacity = tank.getCurrentLimit();
+        if (capacity == 0) {
             return 0;
         } else if (tank.amount() == Integer.MAX_VALUE) {
             return height - 2;
         }
-        float scale = tank.amount() / (float) tank.getCapacity();
+        float scale = tank.amount() / (float) capacity;
         return Math.max(1, Math.round(scale * (height - 2)));
     }
 
@@ -88,7 +93,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
             return MekanismRenderer.getFluidTexture(dummyType, FluidTextureType.STILL);
         }
         IFluidTank tank = getTank();
-        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getFluidTexture(tank.getFluid(), FluidTextureType.STILL);
+        return tank == null || tank.isEmpty() ? null : MekanismRenderer.getFluidTexture(tank.getResource(), FluidTextureType.STILL);
     }
 
     @Override
@@ -106,11 +111,11 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
         int amount = tank.amount();
-        FluidStack fluidStack = tank.getFluid();
+        FluidResource fluidType = tank.getResource();
         if (amount == Integer.MAX_VALUE) {
-            return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidStack, MekanismLang.INFINITE));
+            return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidType, MekanismLang.INFINITE));
         }
-        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidStack, TextUtils.format(amount)));
+        return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidType, TextUtils.format(amount)));
     }
 
     @Override

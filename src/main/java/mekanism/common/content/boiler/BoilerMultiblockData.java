@@ -49,6 +49,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -181,20 +183,26 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         if (getTotalTemperature() >= HeatUtils.BASE_BOIL_TEMP && !waterTank.isEmpty()) {
             double heatAvailable = getHeatAvailable();
             lastMaxBoil = Mth.floor(HeatUtils.getSteamEnergyEfficiency() * heatAvailable / HeatUtils.getWaterThermalEnthalpy());
-
-            int amountToBoil = Math.min(lastMaxBoil, waterTank.amount());
-            amountToBoil = Math.min(amountToBoil, Ints.saturatedCast(steamTank.getNeeded()));
-            if (!waterTank.isEmpty()) {
-                waterTank.shrinkStack(amountToBoil, Action.EXECUTE);
-            }
-            if (steamTank.isEmpty()) {
-                steamTank.setStack(MekanismChemicals.STEAM.asStack(amountToBoil));
+            FluidResource water = waterTank.getResource();
+            if (water.isEmpty()) {
+                lastBoilRate = 0;
             } else {
-                steamTank.growStack(amountToBoil, Action.EXECUTE);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int amountToBoil = Math.min(lastMaxBoil, Ints.saturatedCast(steamTank.getNeeded()));
+                    int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
+                    if (boiled > 0) {
+                        //TODO - 26.1: Change the steam tank to validate that it can actually insert the amount
+                        if (steamTank.isEmpty()) {
+                            steamTank.setStack(MekanismChemicals.STEAM.asStack(boiled));
+                        } else {
+                            steamTank.growStack(boiled, Action.EXECUTE);
+                        }
+                        heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
+                        transaction.commit();
+                    }
+                    lastBoilRate = boiled;
+                }
             }
-
-            heatCapacitor.handleHeat(-amountToBoil * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
-            lastBoilRate = amountToBoil;
         } else {
             lastBoilRate = 0;
             lastMaxBoil = 0;

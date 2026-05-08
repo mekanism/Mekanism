@@ -95,7 +95,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             return null;
         }
         return switch (currentType) {
-            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().getFluid(), MekanismRenderer.FluidTextureType.STILL);
+            case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().getResource(), MekanismRenderer.FluidTextureType.STILL);
             case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().getStack());
             default -> throw new IllegalStateException("Unknown current type.");
         };

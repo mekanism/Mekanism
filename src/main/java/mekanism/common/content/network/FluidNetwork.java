@@ -54,10 +54,15 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
 
     @Override
     protected void forceScaleUpdate() {
-        if (!fluidTank.isEmpty() && fluidTank.getCapacity() > 0) {
-            currentScale = Math.min(1, (float) fluidTank.amount() / fluidTank.getCapacity());
-        } else {
+        if (fluidTank.isEmpty()) {
             currentScale = 0;
+        } else {
+            int capacity = fluidTank.getCurrentLimit();
+            if (capacity > 0) {
+                currentScale = Math.min(1, (float) fluidTank.amount() / capacity);
+            } else {
+                currentScale = 0;
+            }
         }
     }
 
@@ -78,7 +83,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
             if (!net.fluidTank.isEmpty()) {
                 if (fluidTank.isEmpty()) {
                     fluidTank.setStack(net.getBuffer());
-                } else if (fluidTank.isFluidEqual(net.fluidTank.getFluid())) {
+                } else if (fluidTank.getResource().equals(net.fluidTank.getResource())) {
                     int amount = net.fluidTank.amount();
                     MekanismUtils.logMismatchedStackSize(fluidTank.growStack(amount, Action.EXECUTE), amount);
                 } else {
@@ -97,7 +102,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
     @NotNull
     @Override
     public FluidStack getBuffer() {
-        return fluidTank.getFluid().copy();
+        return fluidTank.getResource().toStack(fluidTank.amount());
     }
 
     @Override
@@ -184,7 +189,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
 
     @Override
     protected float computeContentScale() {
-        float scale = fluidTank.amount() / (float) fluidTank.getCapacity();
+        float scale = fluidTank.amount() / (float) fluidTank.getCurrentLimit();
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount > 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

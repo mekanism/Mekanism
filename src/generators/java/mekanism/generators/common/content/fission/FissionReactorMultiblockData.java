@@ -634,7 +634,8 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             return coolantTank.getChemicalTank().getCapacity();
         }
-        return coolantTank.getFluidTank().getCapacity();
+        //TODO - 26.1: Should this be current limit or absolute limit
+        return coolantTank.getFluidTank().getCurrentLimit();
     }
 
     @ComputerMethod
@@ -652,7 +653,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             return chemicalCoolantTank.getStored() / (double) chemicalCoolantTank.getCapacity();
         }
         IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
-        return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCapacity();
+        return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCurrentLimit();
     }
 
     @ComputerMethod

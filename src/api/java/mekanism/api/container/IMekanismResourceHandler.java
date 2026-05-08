@@ -1,5 +1,6 @@
 package mekanism.api.container;
 
+import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -32,7 +33,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
      * Returns the {@link IResourceContainer} that has the given index from the list of slots on the given side.
      *
      * @param index The index of the container to retrieve.
-     * @param side The side we are interacting with the handler from (null for internal).
+     * @param side  The side we are interacting with the handler from (null for internal).
      *
      * @return The {@link IResourceContainer} that has the given index from the list of slots on the given side.
      *
@@ -72,12 +73,30 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
 
     default int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
+        //TODO - 26.1: Add comments and document how this inserts into non empty matching containers first?
+        // Also re-evaluate if that is actually the behavior we want vs making call sites use something like ResourceHandlerUtil#insertStacking
+        List<CONTAINER> containers = getContainers();
+        if (containers.isEmpty()) {
+            return 0;
+        } else if (containers.size() == 1) {
+            return containers.getFirst().insert(resource, amount, transaction, automationType);
+        }
         int inserted = 0;
-        //TODO - 26.1: Evaluate ExtendedFluidHandlerUtils and if we want to make this insert into containers of the same resource type first
-        for (CONTAINER container : getContainers()) {
+        List<CONTAINER> emptyContainers = new ArrayList<>(containers.size());
+        for (CONTAINER container : containers) {
+            if (container.isEmpty()) {
+                emptyContainers.add(container);
+            } else {
+                inserted += container.insert(resource, amount - inserted, transaction, automationType);
+                if (inserted == amount) {
+                    return inserted;
+                }
+            }
+        }
+        for (CONTAINER container : emptyContainers) {
             inserted += container.insert(resource, amount - inserted, transaction, automationType);
             if (inserted == amount) {
-                break;
+                return inserted;
             }
         }
         return inserted;
@@ -87,7 +106,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     default int insert(int index, RESOURCE resource, int amount, TransactionContext transaction) {
         //TODO - 26.1: Evaluate calls to this and extract for all resource handlers and see what can be moved over to indexless interactions
         //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
-        return insert(resource, amount, transaction, AutomationType.INTERNAL);
+        return insert(index, resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override

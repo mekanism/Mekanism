@@ -27,6 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -52,10 +53,11 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
     public void extractRenderState(TileEntityBioGenerator generator, BioGeneratorRenderState state, float partialTick, Vec3 cameraPosition,
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
-        FluidStack fluid = generator.bioFuelTank.getFluid();
-        float fluidScale = fluid.amount() / (float) generator.bioFuelTank.getCapacity();
+        FluidResource fluidType = generator.bioFuelTank.getResource();
+        FluidStack fluid = fluidType.toStack(generator.bioFuelTank.amount());
+        float fluidScale = generator.bioFuelTank.amount() / (float) generator.bioFuelTank.getLimit(fluidType);
         state.model = getModel(fluid, generator.getDirection(), fluidScale);
-        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, FluidTextureType.STILL));
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);
     }
 

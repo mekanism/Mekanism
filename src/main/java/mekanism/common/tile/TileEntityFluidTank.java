@@ -316,7 +316,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amount());
             outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amount());
             editMode = data.editMode;
-            fluidTank.setStack(data.stored);
+            fluidTank.setContents(FluidResource.of(data.stored), data.stored.amount());
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {

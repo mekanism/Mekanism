@@ -53,7 +53,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.BucketPickup;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -69,6 +68,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,7 +91,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
      * The type of fluid this pump is pumping
      */
     @NotNull
-    private FluidStack activeType = FluidStack.EMPTY;
+    private FluidResource activeType = FluidResource.EMPTY;
     public int ticksRequired = BASE_TICKS_REQUIRED;
     /**
      * How many ticks this machine has been operating for.
@@ -161,7 +161,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 operatingTicks++;
                 if (operatingTicks >= ticksRequired) {
                     operatingTicks = 0;
-                    if (suck((ServerLevel)  level)) {
+                    if (suck((ServerLevel) level)) {
                         if (clientEnergyUsed == 0L) {
                             //If it didn't already have an active type (hasn't used energy this tick), then extract energy
                             clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
@@ -183,7 +183,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     public int estimateIncrementAmount() {
-        return fluidTank.getFluid().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
+        return fluidTank.getResource().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
     }
 
     private boolean suck(ServerLevel level) {
@@ -219,59 +219,89 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     private boolean suck(ServerLevel level, BlockPos pos, boolean hasFilter, boolean addRecurring) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
         Optional<BlockState> state = WorldUtils.getBlockState(level, pos);
-        if (state.isPresent()) {
-            BlockState blockState = state.get();
-            FluidState fluidState = blockState.getFluidState();
-            if (!fluidState.isEmpty() && fluidState.isSource()) {
-                //Just in case someone does weird things and has a fluid state that is empty and a source
-                // only allow collecting from non-empty sources
-                Block block = blockState.getBlock();
-                if (block instanceof BucketPickup bucketPickup) {
-                    Fluid sourceFluid = fluidState.getType();
-                    FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
-                    if (validFluid(fluidStack)) {
-                        //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
-                        if (shouldPump(level, sourceFluid)) {
-                            //Note we only attempt taking if it is not water, or we want to pump water sources
-                            // otherwise we assume the type from the fluid state is correct
-                            ItemStack pickedUpStack = bucketPickup.pickupBlock(null, level, pos, blockState);
-                            if (pickedUpStack.isEmpty()) {
-                                //Couldn't actually pick it up, exit
-                                return false;
-                            } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
-                                //This isn't the best validation check given it may not return a bucket, but it is good enough for now
-                                sourceFluid = bucket.content;
-                                //Update the fluid stack in case something somehow changed about the type
-                                // making sure that we replace to heavy water if we got heavy water
-                                fluidStack = getOutput(sourceFluid, hasFilter);
-                                if (!validFluid(fluidStack)) {
-                                    Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
-                                          fluidState.getType(), pos, level, sourceFluid);
-                                    return false;
-                                }
-                            }
-                        }
-                        suck(fluidStack, pos, addRecurring);
-                        return true;
-                    }
+        if (state.isEmpty()) {
+            return false;
+        }
+        BlockState blockState = state.get();
+        FluidState fluidState = blockState.getFluidState();
+        //Just in case someone does weird things and has a fluid state that is empty and a source only allow collecting from non-empty sources
+        if (fluidState.isEmpty() || !fluidState.isSource() || !(blockState.getBlock() instanceof BucketPickup bucketPickup)) {
+            return false;
+        }
+        Fluid sourceFluid = fluidState.getType();
+        try (Transaction transaction = Transaction.openRoot()) {
+            FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
+            if (!activeType.isEmpty() && !activeType.matches(fluidStack)) {
+                return false;
+            }
+            FluidResource fluidType = FluidResource.of(fluidStack);
+            int amountProduced = fluidStack.amount();
+            int inserted = fluidTank.insert(fluidType, amountProduced, transaction, AutomationType.INTERNAL);
+            if (inserted < amountProduced) {
+                //If we can't insert everything that we would pump up, just return that we couldn't suck
+                return false;
+            } else if (isInfiniteSource(level, sourceFluid)) {
+                //If it is an infinite source, we can just go ahead and commit and mark it as having been sucked
+                transaction.commit();
+                suck(fluidType, pos, addRecurring);
+                return true;
+            }
+            //If it can be picked up by a bucket, and we actually want to pick it up, do so to update the fluid type we are doing
+            //Note we only attempt taking if it is not water, or we want to pump water sources
+            // otherwise we assume the type from the fluid state is correct
+            ItemStack pickedUpStack = bucketPickup.pickupBlock(null, level, pos, blockState);
+            if (pickedUpStack.isEmpty()) {
+                //Couldn't actually pick it up, exit
+                return false;
+            } else if (pickedUpStack.getItem() instanceof BucketItem bucket) {
+                //This isn't the best validation check given it may not return a bucket, but it is good enough for now
+                if (sourceFluid == bucket.content) {
+                    //Same type as expected, commit the insertion and mark things as having happened
+                    transaction.commit();
+                    suck(fluidType, pos, addRecurring);
+                    return true;
                 }
-                //Otherwise, we do not know how to drain from the block, or it is not valid, and we shouldn't take it so don't handle it
+                sourceFluid = bucket.content;
+            } else {
+                //Don't know how to handle, return that we couldn't suck
+                return false;
             }
         }
-        return false;
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Update the fluid stack in case something somehow changed about the type making sure that we replace to heavy water if we got heavy water
+            FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
+            //Note: We don't validate the active type matching, as if the tank is empty we would rather try inserting it
+            // rather than voiding the picked up fluid
+            FluidResource fluidType = FluidResource.of(fluidStack);
+            int amountProduced = fluidStack.amount();
+            int inserted = fluidTank.insert(fluidType, amountProduced, transaction, AutomationType.INTERNAL);
+            if (inserted > 0) {
+                transaction.commit();
+                suck(fluidType, pos, addRecurring);
+                if (inserted < amountProduced) {
+                    //If we can't insert everything that we would pump up, log a warning
+                    Mekanism.logger.warn("Fluid removed without successfully picking the full thing up. Fluid {} at {} in {} was valid, but after picking up was {}. "
+                                         + "Accepted {} out of attempted {}.", fluidState.getType(), pos, level, sourceFluid, inserted, amountProduced);
+                }
+                return true;
+            }
+            Mekanism.logger.warn("Fluid removed without successfully picking up. Fluid {} at {} in {} was valid, but after picking up was {}.",
+                  fluidState.getType(), pos, level, sourceFluid);
+            return false;
+        }
     }
 
-    private boolean shouldPump(ServerLevel level, Fluid sourceFluid) {
+    private boolean isInfiniteSource(ServerLevel level, Fluid sourceFluid) {
         if (!MekanismConfig.general.pumpInfiniteFluidSources.get()) {
             if (sourceFluid == Fluids.WATER) {
                 //If we don't pump infinite sources, only pump it if water conversion is turned off
-                return !level.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
+                return level.getGameRules().get(GameRules.WATER_SOURCE_CONVERSION);
             } else if (sourceFluid == Fluids.LAVA) {
                 //If we don't pump infinite sources, only pump it if lava conversion is turned off
-                return !level.getGameRules().get(GameRules.LAVA_SOURCE_CONVERSION);
+                return level.getGameRules().get(GameRules.LAVA_SOURCE_CONVERSION);
             }
         }
-        return true;
+        return false;
     }
 
     private FluidStack getOutput(Fluid sourceFluid, boolean hasFilter) {
@@ -281,32 +311,16 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return new FluidStack(sourceFluid, FluidType.BUCKET_VOLUME);
     }
 
-    private void suck(@NotNull FluidStack fluidStack, BlockPos pos, boolean addRecurring) {
-        //Size doesn't matter, but we do want to take the NBT into account
-        activeType = fluidStack.copyWithAmount(1);
+    private void suck(FluidResource fluidType, BlockPos pos, boolean addRecurring) {
+        activeType = fluidType;
         if (addRecurring) {
-            pos = pos.immutable();
-            recurringNodes.add(pos);
+            recurringNodes.add(pos.immutable());
         }
-        int amountOffered = fluidStack.amount();
-        if (fluidTank.insert(fluidStack, Action.EXECUTE, AutomationType.INTERNAL).amount() != amountOffered) {
-            level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
-        }
-    }
-
-    private boolean validFluid(@NotNull FluidStack fluidStack) {
-        if (!fluidStack.isEmpty() && (activeType.isEmpty() || FluidStack.isSameFluidSameComponents(activeType, fluidStack))) {
-            if (fluidTank.isEmpty()) {
-                return true;
-            } else if (fluidTank.isFluidEqual(fluidStack)) {
-                return fluidStack.amount() <= fluidTank.getNeeded();
-            }
-        }
-        return false;
+        level.gameEvent(null, GameEvent.FLUID_PICKUP, pos);
     }
 
     public void reset() {
-        activeType = FluidStack.EMPTY;
+        activeType = FluidResource.EMPTY;
         recurringNodes.clear();
     }
 
@@ -315,7 +329,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         super.saveAdditional(output);
         output.putInt(SerializationConstants.PROGRESS, operatingTicks);
         if (!activeType.isEmpty()) {
-            output.store(SerializationConstants.FLUID, FluidStack.CODEC, activeType);
+            output.store(SerializationConstants.FLUID, FluidResource.CODEC, activeType);
         }
         if (!recurringNodes.isEmpty()) {
             TypedOutputList<BlockPos> recurringNodesOutput = output.list(SerializationConstants.RECURRING_NODES, BlockPos.CODEC);
@@ -329,7 +343,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
         operatingTicks = input.getIntOr(SerializationConstants.PROGRESS, operatingTicks);
-        activeType = input.read(SerializationConstants.FLUID, FluidStack.CODEC).orElse(FluidStack.EMPTY);
+        activeType = input.read(SerializationConstants.FLUID, FluidResource.CODEC).orElse(FluidResource.EMPTY);
         //TODO - 26.1: Do we want to support loading the old format for this and the plenisher where it was all smashed in a single int array?
         for (BlockPos pos : input.listOrEmpty(SerializationConstants.RECURRING_NODES, BlockPos.CODEC)) {
             recurringNodes.add(pos);
@@ -394,7 +408,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     }
 
     @NotNull
-    public FluidStack getActiveType() {
+    public FluidResource getActiveType() {
         return this.activeType;
     }
 
@@ -402,7 +416,8 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
-        container.track(SyncableFluidStack.create(this::getActiveType, value -> activeType = value));
+        //TODO - 26.1: SyncableFluidResource?
+        container.track(SyncableFluidStack.create(() -> getActiveType().toStack(FluidType.BUCKET_VOLUME), value -> activeType = FluidResource.of(value)));
     }
 
     //Methods relating to IComputerTile

@@ -17,13 +17,13 @@ import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.inventory.slot.BasicInventorySlot;
-import mekanism.common.util.StackUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -86,9 +86,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
         try (Transaction transaction = Transaction.openRoot()) {
             // Items
-            StackUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
+            ResourceUtils.merge(getInventorySlots(), mergeCache.getInventorySlots(), rejectContents.rejectedItems, transaction);
             // Fluid
-            StorageUtils.mergeFluidTanks(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids);
+            ResourceUtils.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
             // Chemical
             StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
             // Energy
@@ -136,7 +136,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
     public static class RejectContents {
 
         public final Object2IntMap<ItemResource> rejectedItems = new Object2IntOpenHashMap<>();
-        public final List<FluidStack> rejectedFluids = new ArrayList<>();
+        public final Object2IntMap<FluidResource> rejectedFluids = new Object2IntOpenHashMap<>();
         public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
     }
 

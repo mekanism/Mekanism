@@ -39,6 +39,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault
@@ -64,7 +65,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ItemResource failureItemType() {
-        return ItemResource.of(failureItem());
+        return ItemResource.of(ITEM_TO_REPLACE);
     }
 
     public ItemStack failureItem() {
@@ -73,6 +74,10 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public ItemStack failureItem(int count) {
         return new ItemStack(ITEM_TO_REPLACE, count);
+    }
+
+    public FluidResource failureFluidType() {
+        return FluidResource.of(FLUID_TO_REPLACE);
     }
 
     public FluidStack failureFluid() {

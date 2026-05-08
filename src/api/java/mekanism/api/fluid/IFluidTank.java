@@ -24,7 +24,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default void setStack(FluidStack stack) {
+    default void setStack(FluidStack stack) {//TODO - 26.1: Re-evaluate callers
         setContents(FluidResource.of(stack), stack.amount());
     }
 
@@ -38,7 +38,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    default void setStackUnchecked(FluidStack stack) {
+    default void setStackUnchecked(FluidStack stack) {//TODO - 26.1: Re-evaluate callers
         setContentsUnchecked(FluidResource.of(stack), stack.amount());
     }
 
@@ -141,7 +141,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(getResource().toStack(amount));
+        setContentsUnchecked(getResource(), amount);
         return amount;
     }
 
@@ -225,10 +225,5 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
     @Deprecated(forRemoval = true)//TODO - 26.1: From IFluidTank
     default FluidStack getFluid() {
         return getResource().toStack(amount());
-    }
-
-    @Deprecated(forRemoval = true)//TODO - 26.1: From IFluidTank
-    default int getCapacity() {
-        return getLimit(FluidResource.EMPTY);
     }
 }

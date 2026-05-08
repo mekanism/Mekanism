@@ -66,7 +66,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(tank.amount(), tank.getCapacity());
+                return MathUtils.divideToLevel(tank.amount(), tank.getCurrentLimit());
             }
         };
     }

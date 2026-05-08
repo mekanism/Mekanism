@@ -54,7 +54,8 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static int getCapacity(IFluidTank tank) {
-            return tank.getCapacity();
+            //TODO - 26.1: Should this return maximum capacity (as in getLimit(FluidResource.EMPTY)?)
+            return tank.getCurrentLimit();
         }
 
         @WrappingComputerMethodIndex(2)
