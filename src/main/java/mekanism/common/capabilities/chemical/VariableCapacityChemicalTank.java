@@ -100,7 +100,7 @@ public class VariableCapacityChemicalTank extends BasicChemicalTank {
         if (maxStackSize > 0 && amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (getStored() == amount || action.simulate()) {
+        if (amountAsLong() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }

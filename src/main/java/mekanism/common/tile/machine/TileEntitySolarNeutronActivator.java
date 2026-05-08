@@ -213,7 +213,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(inputTank);
     }
 
     @Override

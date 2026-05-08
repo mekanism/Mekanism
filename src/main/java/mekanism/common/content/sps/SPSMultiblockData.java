@@ -173,7 +173,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(inputTank);
     }
 
     private long process(long operations) {

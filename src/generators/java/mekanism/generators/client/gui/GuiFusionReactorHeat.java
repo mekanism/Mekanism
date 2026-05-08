@@ -83,7 +83,7 @@ public class GuiFusionReactorHeat extends GuiFusionReactorInfo {
         addRenderableWidget(new GuiProgress(() -> tile.getMultiblock().getCaseTemp() > 0, ProgressType.SMALL_RIGHT, this, 88, 61));
         addRenderableWidget(new GuiProgress(() -> {
             FusionReactorMultiblockData multiblock = tile.getMultiblock();
-            return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.getStored() < multiblock.steamTank.getCapacity();
+            return multiblock.getCaseTemp() > 0 && !multiblock.waterTank.isEmpty() && multiblock.steamTank.amountAsLong() < multiblock.steamTank.getCapacity();
         }, ProgressType.SMALL_RIGHT, this, 88, 91));
         addRenderableWidget(new GuiFluidGauge(() -> tile.getMultiblock().waterTank, tile::getFluidTanks, GaugeType.SMALL, this, 120, 84));
         addRenderableWidget(new GuiChemicalGauge(() -> tile.getMultiblock().steamTank, tile::getChemicalTanks, GaugeType.SMALL, this, 156, 84));

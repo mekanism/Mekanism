@@ -4,12 +4,9 @@ import java.util.function.BooleanSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -126,21 +123,6 @@ public class ChemicalTankWrapper implements IChemicalTank {
     @Override
     public long getNeededAsLong() {
         return internal.getNeededAsLong();
-    }
-
-    @Override
-    public Holder<Chemical> getType() {
-        return internal.getType();
-    }
-
-    @Override
-    public boolean isTypeEqual(ChemicalStack other) {
-        return internal.isTypeEqual(other);
-    }
-
-    @Override
-    public boolean isTypeEqual(Holder<Chemical> holder) {
-        return internal.isTypeEqual(holder);
     }
 
     @Override

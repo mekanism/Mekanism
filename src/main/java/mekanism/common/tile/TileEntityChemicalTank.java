@@ -71,6 +71,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @SyntheticComputerMethod(getter = "getDumpingMode", getterDescription = "Get the current Dumping configuration")
     public GasMode dumping = GasMode.IDLE;
 
+    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
+                                                                                        "getFilledPercentage"}, docPlaceholder = "tank")
     private IChemicalTank chemicalTank;
     private ChemicalTankTier tier;
 
@@ -124,7 +126,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 chemicalTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
             } else {//dumping == GasMode.DUMPING_EXCESS
                 long target = MathUtils.clampToLong(chemicalTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
-                long stored = chemicalTank.getStored();
+                long stored = chemicalTank.amountAsLong();
                 if (target < stored) {
                     //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
                     chemicalTank.shrinkStack(Math.min(stored - target, tier.getOutput()), Action.EXECUTE);
@@ -149,19 +151,12 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public int getRedstoneLevel() {
-        IChemicalTank currentTank = getCurrentTank();
-        return MekanismUtils.redstoneLevelFromContents(currentTank.getStored(), currentTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
     }
 
     @Override
     protected boolean makesComparatorDirty(ContainerType<?, ?, ?> type) {
         return type == ContainerType.CHEMICAL;
-    }
-
-    @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
-                                                                                        "getFilledPercentage"}, docPlaceholder = "tank")
-    IChemicalTank getCurrentTank() {
-        return chemicalTank;
     }
 
     public ChemicalTankTier getTier() {

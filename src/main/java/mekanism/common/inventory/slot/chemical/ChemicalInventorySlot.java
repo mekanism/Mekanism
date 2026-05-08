@@ -124,7 +124,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     return false;
                 }
                 //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-                return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).amount() < chemicalTank.getStored();
+                return handler.insertChemical(chemicalTank.getStack(), Action.SIMULATE).amount() < chemicalTank.amountAsLong();
             }
             return false;
         };

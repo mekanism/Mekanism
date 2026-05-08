@@ -2,8 +2,6 @@ package mekanism.common.integration.lookingat;
 
 import java.util.List;
 import java.util.Map.Entry;
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -36,7 +34,6 @@ import mekanism.common.tile.transmitter.TileEntityMechanicalPipe;
 import mekanism.common.tile.transmitter.TileEntityPressurizedTube;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
@@ -197,10 +194,10 @@ public class LookingAtUtils {
     private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
-            Holder<Chemical> fallback = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
+            ChemicalResource fallback = ChemicalResource.EMPTY;
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
-                if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+                if (!network.lastChemical.isEmpty()) {
                     fallback = network.lastChemical;
                 }
             }
@@ -217,12 +214,12 @@ public class LookingAtUtils {
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
             for (IChemicalTank tank : structure.getChemicalTanks()) {
-                addChemicalTankInfo(info, tank, MekanismAPI.EMPTY_CHEMICAL_HOLDER);
+                addChemicalTankInfo(info, tank, ChemicalResource.EMPTY);
             }
         }
     }
 
-    private static void addChemicalTankInfo(LookingAtHelper info, IChemicalTank chemicalTank, Holder<Chemical> fallback) {
+    private static void addChemicalTankInfo(LookingAtHelper info, IChemicalTank chemicalTank, ChemicalResource fallback) {
         if (chemicalTank instanceof ChemicalTankWrapper tankWrapper) {
             MergedTank tank = tankWrapper.getMergedTank();
             //If we are also support fluid, only show if we are the correct type
@@ -235,10 +232,10 @@ public class LookingAtUtils {
         addChemicalInfo(info, resource.toStack(chemicalTank.amountAsLong()), chemicalTank.getLimitAsLong(resource), fallback);
     }
 
-    private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, Holder<Chemical> fallback) {
+    private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, ChemicalResource fallback) {
         if (!chemicalInTank.isEmpty()) {
             info.addText(MekanismLang.CHEMICAL.translate(chemicalInTank));
-        } else if (!fallback.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.CHEMICAL.translate(fallback));
         }
         info.addChemicalElement(new ChemicalElement(chemicalInTank, capacity));

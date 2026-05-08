@@ -25,10 +25,8 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.EnumColor;
@@ -224,12 +222,8 @@ public final class MekanismUtils {
         return 0;
     }
 
-    public static float getScale(float prevScale, IFluidTank tank) {
-        return getScale(prevScale, tank.amount(), tank.getCurrentLimit(), tank.isEmpty());
-    }
-
-    public static float getScale(float prevScale, IChemicalTank tank) {
-        return getScale(prevScale, tank.getStored(), tank.getCapacity(), tank.isEmpty());
+    public static float getScale(float prevScale, IResourceContainer<?> container) {
+        return getScale(prevScale, container.amountAsLong(), container.getCurrentLimitAsLong(), container.isEmpty());
     }
 
     public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
@@ -666,7 +660,7 @@ public final class MekanismUtils {
 
     //TODO - 26.1: Docs
     public static int redstoneLevelFromContents(IResourceContainer<?> container) {
-        return redstoneLevelFromContents(container.amount(), container.getCurrentLimit());
+        return redstoneLevelFromContents(container.amountAsLong(), container.getCurrentLimitAsLong());
     }
 
     /**

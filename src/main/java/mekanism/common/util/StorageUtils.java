@@ -4,8 +4,8 @@ import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
-import mekanism.api.Action;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -173,23 +173,28 @@ public class StorageUtils {
                 yield tank.getResource().toStack(tank.amount());
             }
             default -> {
-                FluidStack fluid = FluidStack.EMPTY;
+                FluidResource fluidType = FluidResource.EMPTY;
+                int storedAmount = 0;
                 for (IFluidTank tank : containers) {
                     if (tank.isEmpty()) {
                         continue;
                     }
-                    if (fluid.isEmpty()) {
-                        fluid = tank.getResource().toStack(tank.amount());
-                    } else if (tank.isFluidEqual(fluid)) {
-                        if (fluid.amount() < Integer.MAX_VALUE - tank.amount()) {
-                            fluid.grow(tank.amount());
+                    FluidResource tankType = tank.getResource();
+                    int tankAmount = tank.amount();
+                    if (fluidType.isEmpty()) {
+                        fluidType = tankType;
+                        storedAmount = tankAmount;
+                    } else if (tankType.equals(fluidType)) {
+                        if (storedAmount < Integer.MAX_VALUE - tankAmount) {
+                            storedAmount += tankAmount;
                         } else {
-                            fluid.setAmount(Integer.MAX_VALUE);
+                            storedAmount = Integer.MAX_VALUE;
+                            break;
                         }
                     }
                     //Note: If we have multiple tanks that have different types stored we only return the first type
                 }
-                yield fluid;
+                yield fluidType.toStack(storedAmount);
             }
         };
     }
@@ -228,25 +233,33 @@ public class StorageUtils {
         List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
         return switch (containers.size()) {
             case 0 -> ChemicalStack.EMPTY;
-            case 1 -> containers.getFirst().getStack().copy();
+            case 1 -> {
+                IChemicalTank tank = containers.getFirst();
+                yield tank.getResource().toStack(tank.amountAsLong());
+            }
             default -> {
-                ChemicalStack chemicalStack = ChemicalStack.EMPTY;
+                ChemicalResource chemicalType = ChemicalResource.EMPTY;
+                long storedAmount = 0;
                 for (IChemicalTank tank : containers) {
                     if (tank.isEmpty()) {
                         continue;
                     }
-                    if (chemicalStack.isEmpty()) {
-                        chemicalStack = tank.getStack().copy();
-                    } else if (tank.isTypeEqual(chemicalStack)) {
-                        if (chemicalStack.amount() < Long.MAX_VALUE - tank.getStored()) {
-                            chemicalStack.grow(tank.getStored());
+                    ChemicalResource tankType = tank.getResource();
+                    long tankAmount = tank.amountAsLong();
+                    if (chemicalType.isEmpty()) {
+                        chemicalType = tankType;
+                        storedAmount = tankAmount;
+                    } else if (tankType.equals(chemicalType)) {
+                        if (storedAmount < Long.MAX_VALUE - tankAmount) {
+                            storedAmount += tankAmount;
                         } else {
-                            chemicalStack.setAmount(Long.MAX_VALUE);
+                            storedAmount = Long.MAX_VALUE;
+                            break;
                         }
                     }
                     //Note: If we have multiple tanks that have different types stored we only return the first type
                 }
-                yield chemicalStack;
+                yield chemicalType.toStack(storedAmount);
             }
         };
     }
@@ -263,12 +276,14 @@ public class StorageUtils {
         int size = containers.size();
         return switch (size) {
             case 0 -> ChemicalStack.EMPTY;
-            case 1 -> containers.getFirst().getStack();
+            case 1 -> {
+                IChemicalTank tank = containers.getFirst();
+                yield tank.getResource().toStack(tank.amountAsLong());
+            }
             default -> {
-                for (int i = 0; i < size; i++) {
-                    ChemicalStack chemicalStack = containers.get(i).getStack();
-                    if (!chemicalStack.isEmpty()) {
-                        yield chemicalStack;
+                for (IChemicalTank tank : containers) {
+                    if (!tank.isEmpty()) {
+                        yield tank.getResource().toStack(tank.amountAsLong());
                     }
                 }
                 yield ChemicalStack.EMPTY;
@@ -398,37 +413,6 @@ public class StorageUtils {
 
     public static double getRatio(long amount, long capacity) {
         return capacity == 0 ? 1 : amount / (double) capacity;
-    }
-
-    public static void mergeTanks(List<IChemicalTank> tanks, List<IChemicalTank> toAdd, List<ChemicalStack> rejects) {
-        validateSizeMatches(tanks, toAdd, "tank");
-        for (int i = 0; i < toAdd.size(); i++) {
-            IChemicalTank mergeTank = toAdd.get(i);
-            if (!mergeTank.isEmpty()) {
-                IChemicalTank tank = tanks.get(i);
-                ChemicalStack mergeStack = mergeTank.getStack();
-                if (tank.isEmpty()) {
-                    long capacity = tank.getCapacity();
-                    if (mergeStack.amount() <= capacity) {
-                        tank.setStack(mergeStack);
-                    } else {
-                        tank.setStack(mergeStack.copyWithAmount(capacity));
-                        long remaining = mergeStack.amount() - capacity;
-                        if (remaining > 0) {
-                            rejects.add(mergeStack.copyWithAmount(remaining));
-                        }
-                    }
-                } else if (tank.isTypeEqual(mergeStack)) {
-                    long amount = tank.growStack(mergeStack.amount(), Action.EXECUTE);
-                    long remaining = mergeStack.amount() - amount;
-                    if (remaining > 0) {
-                        rejects.add(mergeStack.copyWithAmount(remaining));
-                    }
-                } else {
-                    rejects.add(mergeStack);
-                }
-            }
-        }
     }
 
     public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd) {

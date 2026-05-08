@@ -1,7 +1,6 @@
 package mekanism.client.render.transmitter;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.transmitter.TransmitterRenderState.TubeRenderState;
@@ -38,7 +37,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
         state.currentScale = Math.max(0.2F, network.currentScale);
         state.chemicalTexture = MekanismRenderer.getChemicalTexture(network.lastChemical);
         //TODO - 26.1: Do we need to make this ARGB as technically alpha is currently empty
-        state.chemicalTint = MekanismRenderer.getTint(network.lastChemical);
+        state.chemicalTint = MekanismRenderer.getTint(network.lastChemical.typeHolder());
     }
 
     @Override
@@ -64,7 +63,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
             PressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                return !network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.currentScale > 0;
+                return !network.lastChemical.isEmpty() && !network.getChemicalTank().isEmpty() && network.currentScale > 0;
             }
         }
         return false;

@@ -213,7 +213,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(inputTank);
     }
 
     @Override

@@ -12,7 +12,7 @@ public interface ITileRadioactive {
             if (tanks.size() == 1) {
                 IChemicalTank tank = tanks.getFirst();
                 if (!tank.isEmpty() && tank.getStack().isRadioactive()) {
-                    return tank.getStored() / (float) tank.getCapacity();
+                    return tank.amountAsLong() / (float) tank.getCapacity();
                 }
                 return 0F;
             }
@@ -21,7 +21,7 @@ public interface ITileRadioactive {
                 if (!tank.isEmpty() && tank.getStack().isRadioactive()) {
                     //TODO: Eventually we may want to debate doing this based on the radioactivity
                     // but for now this will work well
-                    summedScale += tank.getStored() / (float) tank.getCapacity();
+                    summedScale += tank.amountAsLong() / (float) tank.getCapacity();
                 }
             }
             return summedScale / tanks.size();

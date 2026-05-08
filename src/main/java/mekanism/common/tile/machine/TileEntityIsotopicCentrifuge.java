@@ -194,7 +194,7 @@ public class TileEntityIsotopicCentrifuge extends TileEntityRecipeMachine<Chemic
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank.getStored(), inputTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(inputTank);
     }
 
     @Override

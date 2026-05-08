@@ -68,15 +68,15 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
             public Component getTooltip() {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
-                } else if (tank.getStored() == Long.MAX_VALUE) {
+                } else if (tank.amountAsLong() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(tank.getStored()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(tank.amountAsLong()));
             }
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(tank.getStored(), tank.getCapacity());
+                return MathUtils.divideToLevel(tank.amountAsLong(), tank.getCapacity());
             }
         };
     }

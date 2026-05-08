@@ -435,7 +435,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
                 CooledCoolant coolantType = getCooledCoolant(chemicalCoolantTank.getStack());
                 if (coolantType != null) {
                     double caseCoolantHeat = heat * coolantType.conductivity();
-                    lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.thermalEnthalpy(), chemicalCoolantTank.getStored());
+                    lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantType.thermalEnthalpy(), chemicalCoolantTank.amountAsLong());
                     if (lastBoilRate > 0) {
                         MekanismUtils.logMismatchedStackSize(chemicalCoolantTank.shrinkStack(lastBoilRate, Action.EXECUTE), lastBoilRate);
                         heatedCoolantTank.insert(coolantType.heat(lastBoilRate), Action.EXECUTE, AutomationType.INTERNAL);
@@ -456,7 +456,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     private void burnFuel(Level world) {
         double lastPartialWaste = partialWaste;
         double lastBurnRemaining = burnRemaining;
-        double storedFuel = fuelTank.getStored() + burnRemaining;
+        double storedFuel = fuelTank.amountAsLong() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
         fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
@@ -579,7 +579,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fuelTank);
     }
 
     public void setRateLimit(double rate) {
@@ -650,7 +650,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     double getCoolantFilledPercentage() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             IChemicalTank chemicalCoolantTank = coolantTank.getChemicalTank();
-            return chemicalCoolantTank.getStored() / (double) chemicalCoolantTank.getCapacity();
+            return chemicalCoolantTank.amountAsLong() / (double) chemicalCoolantTank.getCapacity();
         }
         IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
         return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCurrentLimit();

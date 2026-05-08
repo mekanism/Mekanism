@@ -401,7 +401,7 @@ public class Mekanism {
 
     private void onChemicalTransferred(ChemicalTransferEvent event) {
         UUID networkID = event.network.getUUID();
-        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.getRegisteredName(), networkID);
+        PacketUtils.log("Sending type '{}' update message for chemical network with id {}", event.transferType.typeHolder().getRegisteredName(), networkID);
         PacketUtils.sendToAllTracking(event.network, new PacketNetworkScale(event.network), new PacketChemicalNetworkContents(networkID, event.transferType));
     }
 

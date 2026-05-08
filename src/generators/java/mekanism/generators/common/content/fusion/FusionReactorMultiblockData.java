@@ -309,7 +309,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     private void injectFuel() {
         long amountNeeded = fuelTank.getNeededAsLong();
-        long amountAvailable = 2 * Math.min(deuteriumTank.getStored(), tritiumTank.getStored());
+        long amountAvailable = 2 * Math.min(deuteriumTank.amountAsLong(), tritiumTank.amountAsLong());
         long amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
         long injectingAmount = amountToInject / 2;
@@ -319,7 +319,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private long burnFuel() {
-        long fuelBurned = MathUtils.clampToLong(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.getStored()));
+        long fuelBurned = MathUtils.clampToLong(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.amountAsLong()));
         MekanismUtils.logMismatchedStackSize(fuelTank.shrinkStack(fuelBurned, Action.EXECUTE), fuelBurned);
         setPlasmaTemp(getPlasmaTemp() + (MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity));
         return fuelBurned;
@@ -420,7 +420,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     }
                 }
                 if (!steamTank.isEmpty()) {
-                    steamTank.setStackSize(Math.min(steamTank.getStored(), steamTank.getCapacity()), Action.EXECUTE);
+                    steamTank.setStackSize(Math.min(steamTank.amountAsLong(), steamTank.getCapacity()), Action.EXECUTE);
                 }
             }
             markDirty();
@@ -453,7 +453,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fuelTank.getStored(), fuelTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(fuelTank);
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")

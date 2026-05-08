@@ -243,7 +243,7 @@ public class InputHelper {
                 // where we may want to allow not having the input be required for recipe matching
                 if (!recipeInput.isEmpty()) {
                     //TODO: Simulate the drain?
-                    int operations = Ints.saturatedCast(tank.getStored() / (recipeInput.amount() * usageMultiplier));
+                    int operations = Ints.saturatedCast(tank.amountAsLong() / (recipeInput.amount() * usageMultiplier));
                     if (operations > 0) {
                         tracker.updateOperations(operations);
                         return;

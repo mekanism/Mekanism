@@ -93,7 +93,7 @@ public class TileEntityFusionReactorLogicAdapter extends TileEntityFusionReactor
                     if (multiblock.fuelTank.isEmpty()) {
                         int injectionPortion = multiblock.getInjectionRate() / 2;
                         //No fuel and no injection rate set, or no fuel and not enough of at least one component
-                        yield injectionPortion == 0 || multiblock.deuteriumTank.getStored() < injectionPortion || multiblock.tritiumTank.getStored() < injectionPortion;
+                        yield injectionPortion == 0 || multiblock.deuteriumTank.amountAsLong() < injectionPortion || multiblock.tritiumTank.amountAsLong() < injectionPortion;
                     }
                     yield false;
                 }

@@ -71,7 +71,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
         if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
             return 0;
         }
-        double scale = tank.getStored() / (double) tank.getCapacity();
+        double scale = tank.amountAsLong() / (double) tank.getCapacity();
         return Ints.saturatedCast(Math.max(1, Math.round(scale * (height - 2))));
     }
 

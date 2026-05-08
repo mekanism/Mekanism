@@ -1,14 +1,12 @@
 package mekanism.common.lib.transmitter;
 
-import mekanism.api.MekanismAPI;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.content.network.transmitter.Transmitter;
-import net.minecraft.core.Holder;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -29,30 +27,30 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
     public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> {
 
-        private Holder<Chemical> buffer;
+        private ChemicalResource buffer;
 
         public CompatibleChemicalTransmitterValidator(PressurizedTube transmitter) {
-            buffer = transmitter.getBufferWithFallback().typeHolder();
+            buffer = ChemicalResource.of(transmitter.getBufferWithFallback());
         }
 
-        private boolean compareBuffers(Holder<Chemical> otherBuffer) {
-            if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+        private boolean compareBuffers(ChemicalResource otherBuffer) {
+            if (buffer.isEmpty()) {
                 buffer = otherBuffer;
                 return true;
             }
-            return otherBuffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || buffer == otherBuffer;
+            return otherBuffer.isEmpty() || buffer.equals(otherBuffer);
         }
 
         @Override
         public boolean isNetworkCompatible(ChemicalNetwork network) {
             if (super.isNetworkCompatible(network)) {
-                Holder<Chemical> otherBuffer;
+                ChemicalResource otherBuffer;
                 if (network.getTransmitterValidator() instanceof CompatibleChemicalTransmitterValidator validator) {
                     //Null check it, but use instanceof to double-check it is actually the expected type
                     otherBuffer = validator.buffer;
                 } else {
-                    otherBuffer = network.getBuffer().typeHolder();
-                    if (otherBuffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && network.getPrevTransferAmount() > 0) {
+                    otherBuffer = ChemicalResource.of(network.getBuffer());
+                    if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
                         otherBuffer = network.lastChemical;
                     }
                 }
@@ -63,7 +61,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().typeHolder());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(ChemicalResource.of(tube.getBufferWithFallback()));
         }
     }
 

@@ -9,7 +9,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -184,19 +184,19 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     @Override
     public boolean isValidTransmitter(TileEntityTransmitter transmitter, Direction side) {
         if (super.isValidTransmitter(transmitter, side) && transmitter.getTransmitter() instanceof PressurizedTube other) {
-            Holder<Chemical> buffer = getBufferOrFallback(this);
+            ChemicalResource buffer = getBufferOrFallback(this);
             if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 return true;
             }
-            Holder<Chemical> otherBuffer = getBufferOrFallback(other);
-            return otherBuffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) || buffer.is(otherBuffer);
+            ChemicalResource otherBuffer = getBufferOrFallback(other);
+            return otherBuffer.isEmpty() || buffer.equals(otherBuffer);
         }
         return false;
     }
 
-    private static Holder<Chemical> getBufferOrFallback(PressurizedTube tube) {
-        Holder<Chemical> buffer = tube.getBufferWithFallback().typeHolder();
-        if (buffer.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && tube.hasTransmitterNetwork() && tube.getTransmitterNetwork().getPrevTransferAmount() > 0) {
+    private static ChemicalResource getBufferOrFallback(PressurizedTube tube) {
+        ChemicalResource buffer = ChemicalResource.of(tube.getBufferWithFallback());
+        if (buffer.isEmpty() && tube.hasTransmitterNetwork() && tube.getTransmitterNetwork().getPrevTransferAmount() > 0) {
             return tube.getTransmitterNetwork().lastChemical;
         }
         return buffer;
@@ -286,7 +286,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
-        network.setLastChemical(input.read(SerializationConstants.CHEMICAL, Chemical.CODEC).orElse(MekanismAPI.EMPTY_CHEMICAL_HOLDER));
+        network.setLastChemical(input.read(SerializationConstants.CHEMICAL, ChemicalResource.CODEC).orElse(ChemicalResource.EMPTY));
     }
 
     public IChemicalTank getChemicalTank() {

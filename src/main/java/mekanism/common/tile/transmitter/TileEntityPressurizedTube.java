@@ -2,9 +2,8 @@ package mekanism.common.tile.transmitter;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
@@ -100,8 +99,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
-                output.store(SerializationConstants.CHEMICAL, Chemical.CODEC, network.lastChemical);
+            if (!network.lastChemical.isEmpty()) {
+                output.store(SerializationConstants.CHEMICAL, ChemicalResource.CODEC, network.lastChemical);
             }
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
@@ -116,7 +115,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         if (isRemote()) {
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                if (!network.lastChemical.is(MekanismAPI.EMPTY_CHEMICAL_KEY) && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
+                if (!network.lastChemical.isEmpty() && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
                     //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                     // going through it, but it shouldn't matter too much
                     return network.currentScale;
@@ -125,7 +124,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         } else {
             IChemicalTank gasTank = tube.getChemicalTank();
             if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
-                return gasTank.getStored() / (float) gasTank.getCapacity();
+                return gasTank.amountAsLong() / (float) gasTank.getCapacity();
             }
         }
         return 0;

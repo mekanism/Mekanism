@@ -318,6 +318,7 @@ public class OutputHelper {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
             //TODO - 26.1: Should a parent transaction be passed in/have the operation tracker keep track of that?
+            //TODO - 26.1: Evaluate whether we think Transaction.openRoot() or Transaction.open(null) is cleaner
             try (Transaction simulation = Transaction.openRoot()) {
                 //Try inserting an amount corresponding to the maximum size of the output
                 int amountUsed = container.insert(toOutput, maxStackSize, simulation, AutomationType.INTERNAL);

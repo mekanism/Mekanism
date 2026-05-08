@@ -123,7 +123,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     public double getChemicalScale() {
-        return chemicalTank.getStored() / (double) chemicalTank.getCapacity();
+        return chemicalTank.amountAsLong() / (double) chemicalTank.getCapacity();
     }
 
     @Override
@@ -159,7 +159,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(chemicalTank.getStored(), chemicalTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
     }
 
     @Override

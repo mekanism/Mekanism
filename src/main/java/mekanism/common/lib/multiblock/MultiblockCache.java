@@ -1,11 +1,11 @@
 package mekanism.common.lib.multiblock;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -90,7 +90,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Fluid
             ResourceUtils.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
             // Chemical
-            StorageUtils.mergeTanks(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals);
+            ResourceUtils.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
             // Energy
             StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers());
             // Heat
@@ -135,9 +135,9 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     public static class RejectContents {
 
-        public final Object2IntMap<ItemResource> rejectedItems = new Object2IntOpenHashMap<>();
-        public final Object2IntMap<FluidResource> rejectedFluids = new Object2IntOpenHashMap<>();
-        public final List<ChemicalStack> rejectedChemicals = new ArrayList<>();
+        public final Object2LongMap<ItemResource> rejectedItems = new Object2LongOpenHashMap<>();
+        public final Object2LongMap<FluidResource> rejectedFluids = new Object2LongOpenHashMap<>();
+        public final Object2LongMap<ChemicalResource> rejectedChemicals = new Object2LongOpenHashMap<>();
     }
 
     public abstract static class CacheSubstance<ELEMENT extends ValueIOSerializable> {

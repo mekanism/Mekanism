@@ -114,7 +114,7 @@ public class MekanismRenderer {
         return fluidStateModelSet.get(fluid.defaultFluidState());
     }
 
-    public static TextureAtlasSprite getChemicalTexture(@NotNull ChemicalStack stack) {
+    public static TextureAtlasSprite getChemicalTexture(@NotNull TypedInstance<Chemical> stack) {
         return getChemicalTexture(stack.typeHolder());
     }
 

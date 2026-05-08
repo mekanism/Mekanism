@@ -112,7 +112,7 @@ public class TileEntityFissionReactorLogicAdapter extends TileEntityFissionReact
                 }
                 case CRITICAL_WASTE_LEVEL -> {
                     long target = MathUtils.clampToLong(multiblock.wasteTank.getCapacity() * MekanismGeneratorsConfig.generators.fissionExcessWasteRatio.get());
-                    if (multiblock.wasteTank.getStored() >= target) {
+                    if (multiblock.wasteTank.amountAsLong() >= target) {
                         return RedstoneStatus.OUTPUTTING;
                     }
                 }

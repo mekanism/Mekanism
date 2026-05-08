@@ -55,8 +55,13 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     long getLimitAsLong(RESOURCE resource);
 
     //TODO - 26.1: Re-evaluate name and add docs
+    @NonExtendable
     default int getCurrentLimit() {
-        return getLimit(getResource());
+        return Ints.saturatedCast(getCurrentLimitAsLong());
+    }
+
+    default long getCurrentLimitAsLong() {
+        return getLimitAsLong(getResource());
     }
 
     /**

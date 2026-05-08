@@ -144,8 +144,8 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     private long getStoredAmount() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> getFluidTank().amount();
-            case CHEMICAL -> getChemicalTank().getStored();
+            case FLUID -> getFluidTank().amountAsLong();
+            case CHEMICAL -> getChemicalTank().amountAsLong();
             default -> 0;
         };
     }

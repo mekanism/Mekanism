@@ -137,7 +137,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
         lastSteamInput = steamInputJournal.newSteamInput;
         steamInputJournal.newSteamInput = 0;
-        long stored = chemicalTank.getStored();
+        long stored = chemicalTank.amountAsLong();
         double flowRate = 0;
 
         long energyNeeded = energyContainer.getNeeded();
@@ -172,7 +172,7 @@ public class TurbineMultiblockData extends MultiblockData {
         CableUtils.emit(energyOutputTargets, energyContainer);
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
-            long amount = chemicalTank.getStored();
+            long amount = chemicalTank.amountAsLong();
             if (dumpMode == GasMode.DUMPING) {
                 chemicalTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
             } else {//DUMPING_EXCESS
@@ -262,7 +262,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(chemicalTank.getStored(), chemicalTank.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
     }
 
     @ComputerMethod

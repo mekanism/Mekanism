@@ -109,8 +109,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public int getCurrentLimit() {
-        return getLimit(getBinItemType());
+    public long getCurrentLimitAsLong() {
+        return getLimitAsLong(getBinItemType());
     }
 
     @Nullable

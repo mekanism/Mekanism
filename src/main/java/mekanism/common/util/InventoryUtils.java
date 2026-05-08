@@ -146,7 +146,9 @@ public final class InventoryUtils {
      * @param stack   Item Stack to drop, may be passed directly to the dropper.
      * @param dropper Called to drop the item.
      */
-    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, int amount, ItemDropper<POS> dropper) {
+    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemResource itemType, long amount, ItemDropper<POS> dropper) {
+        //TODO - 26.1: Do we really want to be letting it drop long amount of stacks?
+        // This never *really* would happen because of how our multiblock's inventories are currently setup... but this feels wrong
         int max = itemType.getMaxStackSize();
         if (amount > max) {
             //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
@@ -157,11 +159,11 @@ public final class InventoryUtils {
             }
             if (amount > 0) {
                 //If we have anything left to drop afterward, do so
-                dropper.drop(level, pos, side, itemType.toStack(amount));
+                dropper.drop(level, pos, side, itemType.toStack(Ints.saturatedCast(amount)));
             }
         } else {
             //If we have a valid stack, we can just directly drop that instead without requiring any copies
-            dropper.drop(level, pos, side, itemType.toStack(amount));
+            dropper.drop(level, pos, side, itemType.toStack(Ints.saturatedCast(amount)));
         }
     }
 

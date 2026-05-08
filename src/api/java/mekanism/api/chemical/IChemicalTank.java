@@ -6,7 +6,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.container.IResourceContainer;
-import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -77,6 +76,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made
      * every run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
         if (stack.isEmpty() || !isChemicalValid(stack)) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
@@ -125,11 +125,12 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have
      * to be made every run
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default ChemicalStack extract(long amount, Action action, AutomationType automationType) {
         if (isEmpty() || amount < 1) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = getStack().copyWithAmount(Math.min(getStored(), amount));
+        ChemicalStack ret = getStack().copyWithAmount(Math.min(amountAsLong(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.amount(), action);
@@ -163,6 +164,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * @return true if this {@link IChemicalTank} can accept the {@link ChemicalStack}, not considering the current state of the tank. false if this {@link IChemicalTank}
      * can never insert the {@link ChemicalStack} in any situation.
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default boolean isChemicalValid(ChemicalStack stack) {
         return isValid(ChemicalResource.of(stack));
     }
@@ -181,6 +183,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * @implNote It is recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made every run. If the internal
      * stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default long setStackSize(long amount, Action action) {
         if (isEmpty()) {
             return 0;
@@ -194,7 +197,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
-        if (getStored() == amount || action.simulate()) {
+        if (amountAsLong() == amount || action.simulate()) {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
@@ -216,8 +219,9 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default long growStack(long amount, Action action) {
-        long current = getStored();
+        long current = amountAsLong();
         if (current == 0) {
             //"Fail quick" if our stack is empty, so we can't grow it
             return 0;
@@ -243,48 +247,14 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default long shrinkStack(long amount, Action action) {
         return -growStack(-amount, action);
     }
 
-    /**
-     * Convenience method for checking if this tank is empty.
-     *
-     * @return True if the tank is empty, false otherwise.
-     *
-     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
-     */
-    default boolean isEmpty() {
-        return getStack().isEmpty();
-    }
-
-    /**
-     * Convenience method for emptying this {@link IChemicalTank}.
-     */
+    @Override
     default void setEmpty() {
-        setStack(ChemicalStack.EMPTY);
-    }
-
-    /**
-     * Convenience method for checking the amount of chemical in this tank.
-     *
-     * @return The size of the stored stack, or zero is the stack is empty.
-     *
-     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
-     */
-    default long getStored() {//TODO - 26.1: Replace with amountAsLong
-        return getStack().amount();
-    }
-
-    /**
-     * Convenience method for getting the holder of the {@link Chemical} stored in this tank.
-     *
-     * @return Backing chemical's holder.
-     *
-     * @since 10.7.11
-     */
-    default Holder<Chemical> getType() {
-        return getStack().typeHolder();
+        setContents(ChemicalResource.EMPTY, 0);
     }
 
     /**
@@ -298,20 +268,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      */
     default boolean isTypeEqual(ChemicalStack other) {
         return ChemicalStack.isSameChemical(getStack(), other);
-    }
-
-    /**
-     * Convenience method for checking if the type {@link Chemical} stored in this tank is equal to the given holder.
-     *
-     * @param holder Holder to check for the type matching.
-     *
-     * @return True if the tank's contents are equal, false otherwise.
-     *
-     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
-     * @since 10.7.11
-     */
-    default boolean isTypeEqual(Holder<Chemical> holder) {
-        return getStack().is(holder);
     }
 
     /**

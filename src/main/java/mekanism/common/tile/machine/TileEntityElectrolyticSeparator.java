@@ -258,7 +258,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
                 tank.shrinkStack(dumpRate, Action.EXECUTE);
             } else if (mode == GasMode.DUMPING_EXCESS) {
                 long target = getDumpingExcessTarget(tank);
-                long stored = tank.getStored();
+                long stored = tank.amountAsLong();
                 if (target < stored) {
                     //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
                     tank.shrinkStack(Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get()), Action.EXECUTE);
@@ -273,7 +273,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     private boolean atDumpingExcessTarget(IChemicalTank tank) {
         //Check >= so that if we are past and our eject rate is just low then we don't continue making it, so we never get to the eject rate
-        return tank.getStored() >= getDumpingExcessTarget(tank);
+        return tank.amountAsLong() >= getDumpingExcessTarget(tank);
     }
 
     @Override
