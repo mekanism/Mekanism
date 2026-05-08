@@ -3,7 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import java.util.HashMap;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
@@ -26,14 +26,14 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidStackLinkedSet;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank, FluidTankRenderState> {
 
-    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedCenterFluids = new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
-    private static final Map<FluidStack, Int2ObjectMap<Model3D>> cachedValveFluids = new Object2ObjectOpenCustomHashMap<>(FluidStackLinkedSet.TYPE_AND_COMPONENTS);
+    private static final Map<FluidResource, Int2ObjectMap<Model3D>> cachedCenterFluids = new HashMap<>();
+    private static final Map<FluidResource, Int2ObjectMap<Model3D>> cachedValveFluids = new HashMap<>();
 
     private static final int stages = 1_400;
 
@@ -92,7 +92,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     private Model3D getValveModel(FluidStack fluid, float fluidScale) {
-        Int2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
+        Int2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(FluidResource.of(fluid), _ -> new Int2ObjectOpenHashMap<>());
         int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
         Model3D model = modelMap.get(stage);
         if (model == null) {
@@ -107,7 +107,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     public static Model3D getFluidModel(FluidStack fluid, float fluidScale) {
-        Int2ObjectMap<Model3D> modelMap = cachedCenterFluids.computeIfAbsent(fluid, f -> new Int2ObjectOpenHashMap<>());
+        Int2ObjectMap<Model3D> modelMap = cachedCenterFluids.computeIfAbsent(FluidResource.of(fluid), _ -> new Int2ObjectOpenHashMap<>());
         int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
         Model3D model = modelMap.get(stage);
         if (model == null) {
