@@ -8,7 +8,7 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "ae2:certus_quartz_dust"
+    "ingredient": "ae2:certus_quartz_dust"
   },
   "output": {
     "count": 2,

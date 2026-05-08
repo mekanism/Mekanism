@@ -8,10 +8,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "ae2:quartz_pillar_slab"
+    "ingredient": "ae2:quartz_pillar_slab"
   },
   "output": {
-    "count": 1,
     "id": "ae2:chiseled_quartz_slab"
   }
 }

@@ -8,10 +8,9 @@
   "type": "mekanism:enriching",
   "input": {
     "count": 1,
-    "item": "ae2:quartz_wall"
+    "ingredient": "ae2:quartz_wall"
   },
   "output": {
-    "count": 1,
     "id": "ae2:quartz_pillar_wall"
   }
 }

@@ -8,10 +8,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:sands"
+    "ingredient": "#c:sands"
   },
   "output": {
-    "count": 1,
     "id": "ae2:silicon"
   }
 }

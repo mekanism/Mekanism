@@ -8,10 +8,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "tag": "c:gems/certus_quartz"
+    "ingredient": "#c:gems/certus_quartz"
   },
   "output": {
-    "count": 1,
     "id": "ae2:certus_quartz_dust"
   }
 }

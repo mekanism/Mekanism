@@ -8,10 +8,9 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "item": "ae2:sky_stone_small_brick"
+    "ingredient": "ae2:sky_stone_small_brick"
   },
   "output": {
-    "count": 1,
     "id": "ae2:sky_stone_brick"
   }
 }

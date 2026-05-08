@@ -575,8 +575,7 @@ dependencies {
     compileOnly("io.github.xfacthd.framedblocks:FramedBlocks-26.1:${framedblocks_version}")
 
     //Dependencies for data generators for mod compat reference
-    //TODO - 26.1 change back to datagenMainImplementation
-    datagenMainCompileOnly("org.appliedenergistics:appliedenergistics2:${ae2_version}")
+    datagenMainImplementation("org.appliedenergistics:appliedenergistics2:${ae2_version}")
 
     datagenMainRuntimeOnly("com.github.glitchfiend:GlitchCore-neoforge:${glitchcore_version}")//Biomes o plenty
     datagenMainRuntimeOnly("com.github.glitchfiend:TerraBlender-neoforge:${terrablender_version}")//Biomes o plenty and Biomes we've gone
