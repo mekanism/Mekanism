@@ -1,6 +1,6 @@
 {
 	"credit": "Model by CyanideX",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"1": "mekanismgenerators:block/model/fuel_assembly/fuel_rod_assembly_rods_top",
 		"4": "mekanismgenerators:block/model/fuel_assembly/fuel_rod_assembly_side",

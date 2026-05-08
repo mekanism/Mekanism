@@ -1,6 +1,6 @@
 {
   "render_type": "minecraft:cutout",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"2": "mekanism:block/models/ports",
 		"3": "mekanism:block/models/ports_led",

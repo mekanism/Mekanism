@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"1": "mekanism:block/models/industrial_alarm",
 		"particle": "mekanism:block/steel_casing"

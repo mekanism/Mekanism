@@ -1,6 +1,6 @@
 {
 	"credit": "Model by CyanideX",
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"1": "mekanism:block/models/electric_pump",
 		"2": "mekanism:block/models/ports",

@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"textures": {
 		"0": "mekanism:block/models/ports",
 		"2": "mekanism:block/models/modification_station",

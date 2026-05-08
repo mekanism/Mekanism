@@ -1,5 +1,5 @@
 {
-	"parent": "block/cube_all",
+	"parent": "block/block",
 	"credit": "Model by CyanideX",
 	"textures": {
 		"0": "mekanism:block/qio_drive_array/back",
