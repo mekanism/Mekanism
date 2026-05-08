@@ -57,7 +57,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
         poseStack.translate(-0.5, -1, -0.5);
 
         if (state.latchedAdjustment != null) {
-            poseStack.translate(state.latchedAdjustment);//fixme: this isnt working
+            poseStack.translate(state.latchedAdjustment);
         }
 
         nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
