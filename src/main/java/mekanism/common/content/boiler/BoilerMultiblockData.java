@@ -13,7 +13,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
@@ -49,6 +48,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +64,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     private static final double CASING_INVERSE_INSULATION_COEFFICIENT = 100_000;
     private static final double CASING_INVERSE_CONDUCTION_COEFFICIENT = 1;
 
-    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> chemicalOutputTargets = new ArrayList<>();
+    private final List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, BoilerValveMode>> chemicalOutputTargets = new ArrayList<>();
     private final List<IChemicalTank> inputTanks;
     private final List<IChemicalTank> outputSteamTanks;
     private final List<IChemicalTank> outputCoolantTanks;

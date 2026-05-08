@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
@@ -32,14 +32,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing {
 
-    private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
-          Capabilities.CHEMICAL_LEGACY.block(),
+          Capabilities.CHEMICAL.block(),
           Capabilities.FLUID.block()
     );
     private final Predicate<FissionPortMode> MODE_MATCHES = mode -> mode == getMode();
@@ -88,10 +89,10 @@ public class TileEntityFissionReactorPort extends TileEntityFissionReactorCasing
         return super.persists(type);
     }
 
-    public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<IChemicalHandler, FissionPortMode>> outputTargets, Direction side) {
-        BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = capabilityCaches.get(side);
+    public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, FissionPortMode>> outputTargets, Direction side) {
+        BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));

@@ -544,7 +544,7 @@ public class MekanismTileEntityTypes {
 
     private static TileEntityTypeRegistryObject<TileEntityPressurizedTube> registerTube(DeferredHolder<Block, ?> block) {
         BlockEntityTypeBuilder<TileEntityPressurizedTube> builder = transmitterBuilder(block, TileEntityPressurizedTube::new)
-              .with(Capabilities.CHEMICAL_LEGACY.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER);
+              .with(Capabilities.CHEMICAL.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER);
         if (Mekanism.hooks.computerCompatEnabled()) {
             ComputerCapabilityHelper.addComputerCapabilities(builder, ConstantPredicates.ALWAYS_TRUE);
         }

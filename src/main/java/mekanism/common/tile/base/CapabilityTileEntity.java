@@ -3,7 +3,7 @@ package mekanism.common.tile.base;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.BiFunction;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class CapabilityTileEntity extends TileEntityUpdateable {
 
     //Note: The below providers assume that the capability if supported has been added by either addCapabilityResolver or addCapabilityResolvers
-    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IChemicalHandler> CHEMICAL_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.CHEMICAL_LEGACY.block());
+    public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ResourceHandler<ChemicalResource>> CHEMICAL_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.CHEMICAL.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, IHeatHandler> HEAT_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.HEAT);
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ResourceHandler<ItemResource>> ITEM_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.ITEM.block());
     public static final ICapabilityProvider<CapabilityTileEntity, @Nullable Direction, ResourceHandler<FluidResource>> FLUID_HANDLER_PROVIDER = basicCapabilityProvider(Capabilities.FLUID.block());

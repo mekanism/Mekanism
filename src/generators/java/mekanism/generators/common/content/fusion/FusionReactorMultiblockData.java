@@ -7,6 +7,7 @@ import java.util.Set;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -57,6 +58,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -79,7 +81,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private static final double plasmaCaseConductivity = 0.2;
 
     private final List<EnergyOutputTarget> energyOutputTargets = new ArrayList<>();
-    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> chemicalOutputTargets = new ArrayList<>();
     private final Set<ITileHeatHandler> heatHandlers = new ObjectOpenHashSet<>();
 
     @ContainerSync
@@ -274,7 +276,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valve.location);
             if (tile != null) {
                 tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
-                tile.addGasTargetCapability(chemicalOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
             }
         }
     }

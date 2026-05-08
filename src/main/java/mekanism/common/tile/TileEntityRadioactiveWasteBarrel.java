@@ -8,7 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -50,7 +51,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     private boolean resolvedBelowTank;
 
     private int processTicks;
-    private List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> chemicalHandlerBelow = Collections.emptyList();
+    private List<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> chemicalHandlerBelow = Collections.emptyList();
 
     public TileEntityRadioactiveWasteBarrel(BlockPos pos, BlockState state) {
         super(MekanismBlocks.RADIOACTIVE_WASTE_BARREL, pos, state);
@@ -80,7 +81,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             if (getActive()) {
                 if (chemicalHandlerBelow.isEmpty()) {
                     //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
-                    chemicalHandlerBelow = List.of(Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                    chemicalHandlerBelow = List.of(Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
                         //Reset the tank that we know is below this
                         resolvedBelowTank = false;
                         belowTank = null;
@@ -107,7 +108,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     private IChemicalTank getBelowTank() {
         if (!resolvedBelowTank) {
             resolvedBelowTank = true;
-            IChemicalHandler belowHandler = chemicalHandlerBelow.getFirst().getCapability();
+            ResourceHandler<ChemicalResource> belowHandler = chemicalHandlerBelow.getFirst().getCapability();
             //TODO - 26.1: Re-evaluate how we want to be implementing this as the fluid handler's internal handler no longer is an instead of this class
             // due to it being an anonymous class
             /*if (belowHandler instanceof ProxyChemicalHandler chemicalHandler && chemicalHandler.getInternalHandler() instanceof TileEntityRadioactiveWasteBarrel barrel) {

@@ -1,7 +1,6 @@
 package mekanism.common.lib.transmitter;
 
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
@@ -25,7 +24,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         return true;
     }
 
-    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> {
+    public static class CompatibleChemicalTransmitterValidator extends CompatibleTransmitterValidator<ResourceHandler<ChemicalResource>, ChemicalNetwork, PressurizedTube> {
 
         private ChemicalResource buffer;
 

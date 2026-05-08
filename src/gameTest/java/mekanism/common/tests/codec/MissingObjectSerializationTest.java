@@ -306,14 +306,14 @@ public class MissingObjectSerializationTest {
                   InventoryFrequency frequency = new InventoryFrequency("test", null, SecurityMode.PUBLIC);
                   frequency.getEnergyContainers(null).getFirst().setEnergy(100);
                   frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
-                  frequency.getChemicalTanks(null).getFirst().setStack(help.failureChemical());
+                  frequency.getChemicalTanks().getFirst().setStack(help.failureChemical());
                   frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME);
                   frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1);
                   return frequency;
               }, frequency -> frequency.getName().equals("test") && frequency.getSecurity() == SecurityMode.PUBLIC &&
                               frequency.getEnergyContainers(null).getFirst().getEnergy() == 100 &&
                               frequency.getHeatCapacitors(null).getFirst().getHeat() == 1_000 &&
-                              frequency.getChemicalTanks(null).getFirst().isEmpty() &&
+                              frequency.getChemicalTanks().getFirst().isEmpty() &&
                               frequency.getFluidTanks().getFirst().isEmpty() &&
                               frequency.getInventorySlots().getFirst().isEmpty(),
               MissingObjectTestHelper.REPLACE_TO_INVALID_ITEM

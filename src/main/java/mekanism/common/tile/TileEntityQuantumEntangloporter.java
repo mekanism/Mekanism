@@ -81,7 +81,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks() : Collections.emptyList());
-        setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks(null) : Collections.emptyList());
+        setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks() : Collections.emptyList());
         setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
@@ -209,7 +209,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (cache == null) {
             IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
                 case FLUID -> Capabilities.FLUID;
-                case CHEMICAL -> Capabilities.CHEMICAL_LEGACY;
+                case CHEMICAL -> Capabilities.CHEMICAL;
                 default -> null;
             };
             if (capability != null) {
@@ -314,7 +314,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getBufferChemical", "getBufferChemicalCapacity", "getBufferChemicalNeeded",
                                                                                         "getBufferChemicalFilledPercentage"}, docPlaceholder = "chemical buffer")
     IChemicalTank getBufferChemicalTank() throws ComputerException {
-        return getFrequency().getChemicalTanks(null).getFirst();
+        return getFrequency().getChemicalTanks().getFirst();
     }
 
     @ComputerMethod(methodDescription = "Requires a frequency to be selected")

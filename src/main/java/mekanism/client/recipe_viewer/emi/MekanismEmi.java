@@ -20,8 +20,8 @@ import java.util.Set;
 import java.util.function.BiFunction;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ModuleData;
 import mekanism.api.recipes.MekanismRecipe;
@@ -106,21 +106,21 @@ public class MekanismEmi implements EmiPlugin {
     });
 
     private static void addChemicalComponent(Set<Object> representation, ItemStack stack) {
-        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            handler = stack.getCapability(Capabilities.CHEMICAL_LEGACY.item());
+            handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         }
         if (handler != null) {
-            int tanks = handler.getChemicalTanks();
+            int tanks = handler.size();
             if (tanks == 1) {
-                ChemicalStack chemicalStack = handler.getChemicalInTank(0);
-                if (!chemicalStack.isEmpty()) {
-                    representation.add(chemicalStack.getChemical());
+                ChemicalResource chemicalType = handler.getResource(0);
+                if (!chemicalType.isEmpty()) {
+                    representation.add(chemicalType);
                 }
             } else if (tanks > 1) {
-                List<Chemical> chemicals = new ArrayList<>(tanks);
+                List<ChemicalResource> chemicals = new ArrayList<>(tanks);
                 for (int tank = 0; tank < tanks; tank++) {
-                    chemicals.add(handler.getChemicalInTank(tank).getChemical());
+                    chemicals.add(handler.getResource(tank));
                 }
                 representation.add(chemicals);
             }
@@ -209,7 +209,7 @@ public class MekanismEmi implements EmiPlugin {
         for (Holder<Item> item : items) {
             //Handle items
             ItemAccess itemAccess = ItemAccess.forStack(new ItemStack(item));//TODO - 26.1: Re-evaluate if this is the most reasonable way to check this
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL_LEGACY.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
                 registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }
         }

@@ -10,6 +10,7 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -62,6 +63,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -78,7 +80,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     private static final double EXPLOSION_CHANCE = 1D / 512_000;
 
-    private final List<AdvancedCapabilityOutputTarget<IChemicalHandler, FissionPortMode>> chemicalOutputTargets = new ArrayList<>();
+    private final List<AdvancedCapabilityOutputTarget<ResourceHandler<ChemicalResource>, FissionPortMode>> chemicalOutputTargets = new ArrayList<>();
     public final Set<FormedAssembly> assemblies = new LinkedHashSet<>();
     private final List<IChemicalTank> inputTanks;
     private final List<IChemicalTank> outputWasteTanks;

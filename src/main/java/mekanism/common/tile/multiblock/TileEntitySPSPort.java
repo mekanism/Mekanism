@@ -6,7 +6,7 @@ import java.util.Map;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
@@ -27,12 +27,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntitySPSPort extends TileEntitySPSCasing {
 
-    private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
+    private final Map<Direction, BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> chemicalCapabilityCaches = new EnumMap<>(Direction.class);
     private MachineEnergyContainer<TileEntitySPSPort> energyContainer;
 
     public TileEntitySPSPort(BlockPos pos, BlockState state) {
@@ -74,10 +75,10 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         return super.persists(type);
     }
 
-    public void addChemicalTargetCapability(List<CapabilityOutputTarget<IChemicalHandler>> outputTargets, Direction side) {
-        BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
+    public void addChemicalTargetCapability(List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> outputTargets, Direction side) {
+        BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             chemicalCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));

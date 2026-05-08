@@ -38,7 +38,7 @@ public class FluidNetwork extends DynamicBufferedNetwork<ResourceHandler<FluidRe
     public FluidStack lastFluid = FluidStack.EMPTY;
     private int prevTransferAmount;
 
-    //TODO: Make fluid storage support storing as longs?
+    //TODO - 26.1: Make fluid storage support storing as longs?
     private int intCapacity;
 
     public FluidNetwork(UUID networkID) {

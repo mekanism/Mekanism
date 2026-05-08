@@ -9,8 +9,8 @@ import java.util.Optional;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
@@ -48,6 +48,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
@@ -62,7 +63,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     public IChemicalTank outputTank;
 
     public final SyncableCoilData coilData = new SyncableCoilData();
-    private final List<CapabilityOutputTarget<IChemicalHandler>> chemicalOutputTargets = new ArrayList<>();
+    private final List<CapabilityOutputTarget<ResourceHandler<ChemicalResource>>> chemicalOutputTargets = new ArrayList<>();
 
     @ContainerSync
     public double progress;

@@ -137,7 +137,7 @@ public class MekanismJEI implements IModPlugin {
         for (Holder<Item> item : items) {
             //Handle items
             ItemAccess itemAccess = ItemAccess.forStack(new ItemStack(item));//TODO - 26.1: Re-evaluate if this is the most reasonable way to check this
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL_LEGACY.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
                 registry.registerSubtypeInterpreter(item.value(), MEKANISM_DATA_INTERPRETER);
             }
         }

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import mekanism.api.Action;
+import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
@@ -26,13 +27,14 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * A DynamicNetwork extension created specifically for the transfer of Chemicals.
  */
-public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, ChemicalNetwork, ChemicalStack, PressurizedTube> implements IChemicalTracker {
+public class ChemicalNetwork extends DynamicBufferedNetwork<ResourceHandler<ChemicalResource>, ChemicalNetwork, ChemicalStack, PressurizedTube> implements IContentsListener {
 
     public final IChemicalTank chemicalTank;
     private final List<IChemicalTank> chemicalTanks;
@@ -163,10 +165,10 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     }
 
     private long tickEmit(@NotNull ChemicalStack stack) {
-        Collection<Map<Direction, IChemicalHandler>> acceptorValues = acceptorCache.getAcceptorValues();
+        Collection<Map<Direction, ResourceHandler<ChemicalResource>>> acceptorValues = acceptorCache.getAcceptorValues();
         ChemicalHandlerTarget target = null;
-        for (Map<Direction, IChemicalHandler> acceptors : acceptorValues) {
-            for (IChemicalHandler handler : acceptors.values()) {
+        for (Map<Direction, ResourceHandler<ChemicalResource>> acceptors : acceptorValues) {
+            for (ResourceHandler<ChemicalResource> handler : acceptors.values()) {
                 if (ChemicalUtil.canInsert(handler, stack)) {
                     if (target == null) {
                         //Lazily initialize the target, which allows us to also skip attempting to start emitting
@@ -274,8 +276,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
     }
 
     @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
     }
 

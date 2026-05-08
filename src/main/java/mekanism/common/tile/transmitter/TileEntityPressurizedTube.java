@@ -45,7 +45,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
                     // then return that we have no tanks
                     return Collections.emptyList();
                 }
-                return tube.getChemicalTanks(direction);
+                return tube.getChemicalTanks();
             }
 
             @Override
@@ -144,7 +144,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.CHEMICAL_LEGACY.block(), side);
+            invalidateCapability(Capabilities.CHEMICAL.block(), side);
         } else if (old == ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -159,7 +159,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilityAll(Capabilities.CHEMICAL_LEGACY.block());
+            invalidateCapabilityAll(Capabilities.CHEMICAL.block());
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

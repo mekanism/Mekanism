@@ -95,7 +95,7 @@ public class Capabilities {
     public static final Identifier SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
     public static void registerProxyableCapabilities(RegisterCapabilitiesEvent event) {
-        event.setProxyable(CHEMICAL_LEGACY.block());
+        event.setProxyable(CHEMICAL.block());
         event.setProxyable(STRICT_ENERGY.block());
     }
 
@@ -124,7 +124,7 @@ public class Capabilities {
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
         TileEntityBoundingBlock.proxyCapability(event, FLUID.block());
-        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL_LEGACY.block());
+        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
         TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }
 }

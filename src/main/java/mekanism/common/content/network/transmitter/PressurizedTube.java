@@ -1,21 +1,22 @@
 package mekanism.common.content.network.transmitter;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator;
 import mekanism.common.lib.transmitter.CompatibleTransmitterValidator.CompatibleChemicalTransmitterValidator;
@@ -34,10 +35,13 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, ChemicalNetwork, ChemicalStack, PressurizedTube> implements IChemicalTracker,
+public class PressurizedTube extends BufferedTransmitter<ResourceHandler<ChemicalResource>, ChemicalNetwork, ChemicalStack, PressurizedTube> implements IContentsListener,
       IUpgradeableTransmitter<PressurizedTubeUpgradeData> {
 
     public final TubeTier tier;
@@ -54,14 +58,14 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     @Override
-    protected AbstractAcceptorCache<IChemicalHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL_LEGACY.block());
+    protected AbstractAcceptorCache<ResourceHandler<ChemicalResource>, ?> createAcceptorCache() {
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL.block());
     }
 
     @Override
     @SuppressWarnings("unchecked")
-    public AcceptorCache<IChemicalHandler> getAcceptorCache() {
-        return (AcceptorCache<IChemicalHandler>) super.getAcceptorCache();
+    public AcceptorCache<ResourceHandler<ChemicalResource>> getAcceptorCache() {
+        return (AcceptorCache<ResourceHandler<ChemicalResource>>) super.getAcceptorCache();
     }
 
     @Override
@@ -74,12 +78,12 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         if (!hasPullSide || getAvailablePull() <= 0) {
             return;
         }
-        AcceptorCache<IChemicalHandler> acceptorCache = getAcceptorCache();
+        AcceptorCache<ResourceHandler<ChemicalResource>> acceptorCache = getAcceptorCache();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
                 continue;
             }
-            IChemicalHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
+            ResourceHandler<ChemicalResource> connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
                 //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
                 // and our buffer changed and is no longer empty
@@ -96,29 +100,36 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
      *
      * @return {@code true} if we successfully pulled a chemical, {@code false} if we were unable to pull a chemical.
      */
-    private boolean pullFromAcceptor(IChemicalHandler connectedAcceptor, ChemicalStack bufferWithFallback, boolean bufferIsEmpty) {
+    private boolean pullFromAcceptor(ResourceHandler<ChemicalResource> connectedAcceptor, ChemicalStack bufferWithFallback, boolean bufferIsEmpty) {
         if (connectedAcceptor == null) {
             return false;
         }
-        long availablePull = getAvailablePull();
-        ChemicalStack received;
-        if (bufferIsEmpty) {
-            //If we don't have a chemical stored try pulling as much as we are able to
-            received = connectedAcceptor.extractChemical(availablePull, Action.SIMULATE);
-        } else {
-            //Otherwise, try draining the same type of chemical we have stored requesting up to as much as we are able to pull
-            // We do this to better support multiple tanks in case the chemical we have stored we could pull out of a block's
-            // second tank but just asking to drain a specific amount
-            received = connectedAcceptor.extractChemical(bufferWithFallback.copyWithAmount(availablePull), Action.SIMULATE);
-        }
-        if (!received.isEmpty() && takeChemical(received, Action.SIMULATE).isEmpty()) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            ChemicalResource receivedType;
+            if (bufferIsEmpty) {
+                //If we don't have a chemical stored try pulling as much as we are able to
+                receivedType = ResourceHandlerUtil.findExtractableResource(connectedAcceptor, ConstantPredicates.alwaysTrue(), transaction);
+            } else {
+                //Otherwise, try draining the same type of chemical we have stored requesting up to as much as we are able to pull
+                // We do this to better support multiple tanks in case the chemical we have stored we could pull out of a block's
+                // second tank but just asking to drain a specific amount
+                receivedType = ChemicalResource.of(bufferWithFallback);
+            }
+            if (receivedType == null || receivedType.isEmpty()) {
+                return false;
+            }
+            //TODO - 26.1: Make available pull use ints natively
+            int extracted = connectedAcceptor.extract(receivedType, Ints.saturatedCast(getAvailablePull()), transaction);
+            int inserted = getChemicalTank().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
+            if (inserted < extracted) {
+                return false;
+            }
             //If we received some chemical and are able to insert it all, then actually extract it and insert it into our thing.
             // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
             // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-            takeChemical(connectedAcceptor.extractChemical(received, Action.EXECUTE), Action.EXECUTE);
+            transaction.commit();
             return true;
         }
-        return false;
     }
 
     private long getAvailablePull() {
@@ -143,7 +154,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     public void parseUpgradeData(@NotNull PressurizedTubeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        takeChemical(data.contents, Action.EXECUTE);
+        getChemicalTank().insert(data.contents, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     @Override
@@ -177,7 +188,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
     }
 
     @Override
-    public CompatibleTransmitterValidator<IChemicalHandler, ChemicalNetwork, PressurizedTube> getNewOrphanValidator() {
+    public CompatibleTransmitterValidator<ResourceHandler<ChemicalResource>, ChemicalNetwork, PressurizedTube> getNewOrphanValidator() {
         return new CompatibleChemicalTransmitterValidator(this);
     }
 
@@ -258,21 +269,10 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
         }
     }
 
-    private ChemicalStack takeChemical(ChemicalStack stack, Action action) {
-        IChemicalTank tank;
-        if (hasTransmitterNetwork()) {
-            tank = getTransmitterNetwork().chemicalTank;
-        } else {
-            tank = buffer;
-        }
-        return tank.insert(stack, action, AutomationType.INTERNAL);
-    }
-
     @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getChemicalTanks(side);
+            return getTransmitterNetwork().getChemicalTanks();
         }
         return chemicalTanks;
     }

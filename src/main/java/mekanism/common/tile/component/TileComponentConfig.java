@@ -83,7 +83,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         switch (transmissionType) {
             case ENERGY -> tile.invalidateCapabilities(EnergyCompatUtils.getLoadedEnergyCapabilities(), direction);
             case FLUID -> tile.invalidateCapability(Capabilities.FLUID.block(), direction);
-            case CHEMICAL -> tile.invalidateCapability(Capabilities.CHEMICAL_LEGACY.block(), direction);
+            case CHEMICAL -> tile.invalidateCapability(Capabilities.CHEMICAL.block(), direction);
             case ITEM -> tile.invalidateCapability(Capabilities.ITEM.block(), direction);
             case HEAT -> tile.invalidateCapability(Capabilities.HEAT, direction);
         }
@@ -107,7 +107,7 @@ public class TileComponentConfig implements ITileComponent, ISpecificContainerTr
         TransmissionType type = null;
         if (Capabilities.ITEM.is(capability)) {
             type = TransmissionType.ITEM;
-        } else if (Capabilities.CHEMICAL_LEGACY.is(capability)) {
+        } else if (Capabilities.CHEMICAL.is(capability)) {
             type = TransmissionType.CHEMICAL;
         } else if (capability == Capabilities.HEAT) {
             type = TransmissionType.HEAT;

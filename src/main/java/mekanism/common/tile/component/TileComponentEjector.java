@@ -16,7 +16,7 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -224,7 +224,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 switch (type) {
                     case CHEMICAL -> {
                         IChemicalTank tank = (IChemicalTank) entry.getKey();
-                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL_LEGACY);
+                        List<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
                         ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
                     case FLUID -> {

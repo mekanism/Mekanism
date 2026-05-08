@@ -2,8 +2,7 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
@@ -33,13 +32,13 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
         }
         List<Object> subTypeData = null;
 
-        IChemicalHandler chemicalHandler = getChemicalHandler(stack);
+        ResourceHandler<ChemicalResource> chemicalHandler = getChemicalHandler(stack);
         if (chemicalHandler != null) {
-            for (int tank = 0, tanks = chemicalHandler.getChemicalTanks(); tank < tanks; tank++) {
-                ChemicalStack chemicalStack = chemicalHandler.getChemicalInTank(tank);
+            for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {
+                ChemicalResource chemicalType = chemicalHandler.getResource(tank);
                 //Store the type of the chemical. We skip empty chemicals if there is only a single tank
-                if (!chemicalStack.isEmpty() || tanks > 1) {
-                    subTypeData = tryAddData(subTypeData, chemicalStack.getChemical());
+                if (!chemicalType.isEmpty() || tanks > 1) {
+                    subTypeData = tryAddData(subTypeData, chemicalType);
                 }
             }
         }
@@ -74,10 +73,10 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
     }
 
     @Nullable
-    private static IChemicalHandler getChemicalHandler(ItemStack stack) {
-        IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
+    private static ResourceHandler<ChemicalResource> getChemicalHandler(ItemStack stack) {
+        ResourceHandler<ChemicalResource> handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            return Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         }
         return handler;
     }

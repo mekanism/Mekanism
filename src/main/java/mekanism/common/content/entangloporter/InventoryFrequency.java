@@ -21,8 +21,8 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -32,7 +32,6 @@ import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.chemical.IChemicalTracker;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
@@ -75,7 +74,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements IMekanismStrictEnergyHandler, ITileHeatHandler, IChemicalTracker {
+public class InventoryFrequency extends Frequency implements IMekanismStrictEnergyHandler, ITileHeatHandler {
 
     @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -159,8 +158,7 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
     }
 
     @NotNull
-    @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
     }
 
@@ -356,7 +354,7 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
         }
     }
 
-    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements TargetExecution, Consumer<IChemicalHandler> {
+    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements TargetExecution, Consumer<ResourceHandler<ChemicalResource>> {
 
         private final ChemicalStack toSend;
         private final IChemicalTank storedChemical;
@@ -373,7 +371,7 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
         }
 
         @Override
-        public void accept(IChemicalHandler handler) {
+        public void accept(ResourceHandler<ChemicalResource> handler) {
             if (ChemicalUtil.canInsert(handler, toSend)) {
                 addHandler(handler);
             }

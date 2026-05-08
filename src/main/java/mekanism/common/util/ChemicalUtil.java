@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.function.Predicate;
 import mekanism.api.Action;
@@ -26,7 +27,9 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -108,11 +111,11 @@ public class ChemicalUtil {
         return false;
     }
 
-    public static void emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, IChemicalTank tank) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, IChemicalTank tank) {
         emit(targets, tank, tank.getCapacity());
     }
 
-    public static void emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, IChemicalTank tank, long maxOutput) {
+    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, IChemicalTank tank, long maxOutput) {
         if (!tank.isEmpty() && maxOutput > 0) {
             tank.extract(emit(targets, ChemicalStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
         }
@@ -126,11 +129,11 @@ public class ChemicalUtil {
      *
      * @return the amount of chemical emitted
      */
-    public static long emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, @NotNull ChemicalStack stack) {
+    public static long emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, @NotNull ChemicalStack stack) {
         return emit(targets, stack, null, Long.MAX_VALUE);
     }
 
-    private static long emit(Collection<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> targets, @NotNull ChemicalStack stack,
+    private static long emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, @NotNull ChemicalStack stack,
           @UnknownNullability IChemicalTank tank, long maxOutput) {
         if (stack.isEmpty() && tank == null) {
             //Something went wrong in calling this method
@@ -139,9 +142,9 @@ public class ChemicalUtil {
             return 0;
         }
         ChemicalHandlerTarget target = null;
-        for (BlockCapabilityCache<IChemicalHandler, Direction> capability : targets) {
+        for (BlockCapabilityCache<ResourceHandler<ChemicalResource>, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            IChemicalHandler handler = capability.getCapability();
+            ResourceHandler<ChemicalResource> handler = capability.getCapability();
             if (handler != null) {
                 //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
                 // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
@@ -163,8 +166,10 @@ public class ChemicalUtil {
         return EmitUtils.sendToAcceptors(target, stack.amount(), stack.copy());
     }
 
-    public static boolean canInsert(IChemicalHandler handler, @NotNull ChemicalStack stack) {
-        return handler.insertChemical(stack, Action.SIMULATE).amount() < stack.amount();
+    public static boolean canInsert(ResourceHandler<ChemicalResource> handler, @NotNull ChemicalStack stack) {
+        try (Transaction simulation = Transaction.openRoot()) {
+            return handler.insert(ChemicalResource.of(stack), Ints.saturatedCast(stack.amount()), simulation) > 0;
+        }
     }
 
     public static long hydrogenEnergyDensity() {
