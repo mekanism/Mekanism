@@ -83,7 +83,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -109,7 +108,7 @@ public class MekanismEmi implements EmiPlugin {
     private static void addChemicalComponent(Set<Object> representation, ItemStack stack) {
         IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            handler = stack.getCapability(Capabilities.CHEMICAL.item());
+            handler = stack.getCapability(Capabilities.CHEMICAL_LEGACY.item());
         }
         if (handler != null) {
             int tanks = handler.getChemicalTanks();
@@ -210,7 +209,7 @@ public class MekanismEmi implements EmiPlugin {
         for (Holder<Item> item : items) {
             //Handle items
             ItemAccess itemAccess = ItemAccess.forStack(new ItemStack(item));//TODO - 26.1: Re-evaluate if this is the most reasonable way to check this
-            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
+            if (Capabilities.STRICT_ENERGY.hasCapability(itemAccess) || Capabilities.CHEMICAL_LEGACY.hasCapability(itemAccess) || Capabilities.FLUID.hasCapability(itemAccess)) {
                 registry.setDefaultComparison(item.value(), MEKANISM_COMPARISON);
             }
         }

@@ -19,7 +19,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
@@ -156,7 +155,7 @@ import org.jetbrains.annotations.Nullable;
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
       ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismStrictEnergyHandler, ITileHeatHandler,
-      IMekanismChemicalHandler, IComputerTile, ITileRadioactive, Nameable {
+      IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -452,7 +451,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return itemHandlerManager != null && itemHandlerManager.canHandle();
     }
 
-    @Override
     public boolean canHandleChemicals() {
         return chemicalHandlerManager != null && chemicalHandlerManager.canHandle();
     }
@@ -719,7 +717,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         if (!isRemote() && RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation()) {
             //If we are on a server and radiation is enabled dump all gas tanks with radioactive materials
             // Note: we handle clearing radioactive contents later in drop calculation due to when things are written to NBT
-            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(null), false);
+            IRadiationManager.INSTANCE.dumpRadiation(getWorldNN(), worldPosition, getChemicalTanks(), false);
         }
     }
 
@@ -942,13 +940,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         boolean isClient = isRemote();
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
-            List<IChemicalTank> chemicalTanks = getChemicalTanks(null);
+            List<IChemicalTank> chemicalTanks = getChemicalTanks();
             for (IChemicalTank chemicalTank : chemicalTanks) {
                 container.track(SyncableChemicalStack.create(chemicalTank, isClient));
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
-            List<IFluidTank> fluidTanks = getFluidTanks(null);
+            List<IFluidTank> fluidTanks = getFluidTanks();
             for (IFluidTank fluidTank : fluidTanks) {
                 container.track(SyncableFluidStack.create(fluidTank, isClient));
             }
@@ -1278,7 +1276,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      */
     private boolean updateRadiationScale() {
         if (shouldDumpRadiation()) {
-            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks(null));
+            float scale = ITileRadioactive.calculateRadiationScale(getChemicalTanks());
             if (Math.abs(scale - radiationScale) > 0.05F) {
                 radiationScale = scale;
                 return true;
@@ -1298,7 +1296,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @NotNull
-    @Override
+    public final List<IChemicalTank> getChemicalTanks() {
+        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
+        // and maybe rename the one that does take a side as it is mostly used for ContainerType
+        return getChemicalTanks(null);
+    }
+
+    @NotNull
     public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
         return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
     }
@@ -1365,7 +1369,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         boolean hasNonEmpty = false;
         List<FluidStack> stacks = new ArrayList<>(tanks.size());
         for (IFluidTank tank : tanks) {
-            stacks.add(tank.getFluid().copy());
+            stacks.add(tank.getResource().toStack(tank.amount()));
             if (!tank.isEmpty()) {
                 hasNonEmpty = true;
             }

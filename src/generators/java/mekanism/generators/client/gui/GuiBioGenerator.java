@@ -40,7 +40,7 @@ public class GuiBioGenerator extends GuiMekanismTile<TileEntityBioGenerator, Mek
               GeneratorsLang.PRODUCING_AMOUNT.translate(tile.getActive() ? EnergyDisplay.of(MekanismGeneratorsConfig.generators.bioGeneration.get()) : EnergyDisplay.ZERO)
         )));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
-        addRenderableWidget(new GuiFluidBar(this, GuiFluidBar.getProvider(tile.bioFuelTank, tile.getFluidTanks(null)), 7, 15, 4, 52, false));
+        addRenderableWidget(new GuiFluidBar(this, GuiFluidBar.getProvider(tile.bioFuelTank, tile.getFluidTanks()), 7, 15, 4, 52, false));
     }
 
     @Override

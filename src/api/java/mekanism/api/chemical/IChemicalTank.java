@@ -2,19 +2,18 @@ package mekanism.api.chemical;
 
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.container.IResourceContainer;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
-public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
+public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
 
     /**
      * Returns the {@link ChemicalStack} in this tank.
@@ -30,10 +29,8 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      *
      * @return {@link ChemicalStack} in this tank. EMPTY instance of the {@link ChemicalStack} if the tank is empty.
      */
-    ChemicalStack getStack();
-
-    default ChemicalResource getResource() {//TODO - 26.1: Re-evaluate and add docs
-        return ChemicalResource.of(getStack());
+    default ChemicalStack getStack() {//TODO - 26.1: Remove this?
+        return getResource().toStack(amountAsLong());
     }
 
     /**
@@ -44,7 +41,9 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * @throws RuntimeException if this tank is called in a way that it was not expecting.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStack(ChemicalStack stack);
+    default void setStack(ChemicalStack stack) {
+        setContents(ChemicalResource.of(stack), stack.amount());
+    }
 
     /**
      * Overrides the stack in this {@link IChemicalTank}.
@@ -56,7 +55,9 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * client side for purposes of receiving sync data and rendering.
      * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
      */
-    void setStackUnchecked(ChemicalStack stack);
+    default void setStackUnchecked(ChemicalStack stack) {
+        setContentsUnchecked(ChemicalResource.of(stack), stack.amount());
+    }
 
     /**
      * <p>
@@ -77,11 +78,11 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * every run
      */
     default ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isValid(stack)) {
+        if (stack.isEmpty() || !isChemicalValid(stack)) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        long needed = getNeeded();
+        long needed = getNeededAsLong();
         if (needed <= 0) {
             //Fail if we are a full tank
             return stack;
@@ -141,7 +142,10 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      *
      * @return The maximum stack size allowed in this {@link IChemicalTank}.
      */
-    long getCapacity();
+    @Deprecated(forRemoval = true)//TODO - 26.1: Replace with limits
+    default long getCapacity() {
+        return getLimitAsLong(ChemicalResource.EMPTY);
+    }
 
     /**
      * <p>
@@ -159,7 +163,9 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      * @return true if this {@link IChemicalTank} can accept the {@link ChemicalStack}, not considering the current state of the tank. false if this {@link IChemicalTank}
      * can never insert the {@link ChemicalStack} in any situation.
      */
-    boolean isValid(ChemicalStack stack);
+    default boolean isChemicalValid(ChemicalStack stack) {
+        return isValid(ChemicalResource.of(stack));
+    }
 
     /**
      * Convenience method for modifying the size of the stored stack.
@@ -217,7 +223,7 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
             return 0;
         } else if (amount > 0) {
             //Cap adding amount at how much we need, so that we don't risk long overflow
-            amount = Math.min(amount, getNeeded());
+            amount = Math.min(amount, getNeededAsLong());
         }
         long newSize = setStackSize(current + amount, action);
         return newSize - current;
@@ -266,17 +272,8 @@ public interface IChemicalTank extends ValueIOSerializable, IContentsListener {
      *
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
-    default long getStored() {
+    default long getStored() {//TODO - 26.1: Replace with amountAsLong
         return getStack().amount();
-    }
-
-    /**
-     * Gets the amount of chemical needed by this {@link IChemicalTank} to reach a filled state.
-     *
-     * @return Amount of chemical needed
-     */
-    default long getNeeded() {
-        return Math.max(0, getCapacity() - getStored());
     }
 
     /**

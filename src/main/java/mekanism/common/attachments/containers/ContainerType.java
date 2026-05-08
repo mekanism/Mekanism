@@ -95,7 +95,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
           (from, to) -> to.setContentsUnchecked(from.getResource(), from.amount()));
 
     public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
-          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedChemicals.EMPTY,
+          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL_LEGACY, AttachedChemicals.EMPTY,
           TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals,
           (from, to) -> to.setStackUnchecked(from.getStack().copy()));
 

@@ -1,20 +1,20 @@
-package mekanism.common.capabilities.resource;
+package mekanism.api.container;
 
+import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IResourceContainer;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
-import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 26.1: Docs, and maybe make it a little more protected like BasicChemicalTank?
 @NothingNullByDefault
-public abstract class BasicResourceContainer<RESOURCE extends Resource> extends SnapshotJournal<ResourceStack<RESOURCE>> implements IResourceContainer<RESOURCE> {
+public abstract class BasicResourceContainer<RESOURCE extends Resource> extends SnapshotJournal<LargeResourceStack<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
@@ -22,12 +22,13 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Nullable
     private final IContentsListener listener;
     private final RESOURCE emptyResource;
-    private final int limit;
+    private final long limit;
 
     private RESOURCE currentType;
-    private int storedAmount = 0;
+    private long storedAmount = 0;
 
-    protected BasicResourceContainer(RESOURCE emptyResource, int limit, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
+    //TODO - 26.1: Make it so that fluid tanks and inventory slots can support long limits
+    protected BasicResourceContainer(RESOURCE emptyResource, long limit, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
           Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
         this.emptyResource = emptyResource;
         this.canExtract = canExtract;
@@ -44,23 +45,23 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public int amount() {
+    public long amountAsLong() {
         return storedAmount;
     }
 
     @Override
-    protected ResourceStack<RESOURCE> createSnapshot() {
-        return new ResourceStack<>(getResource(), amount());
+    protected LargeResourceStack<RESOURCE> createSnapshot() {
+        return new LargeResourceStack<>(getResource(), amountAsLong());
     }
 
     @Override
-    protected void revertToSnapshot(ResourceStack<RESOURCE> snapshot) {
+    protected void revertToSnapshot(LargeResourceStack<RESOURCE> snapshot) {
         setContentsUnchecked(snapshot.resource(), snapshot.amount());
     }
 
     @Override
-    protected void onRootCommit(ResourceStack<RESOURCE> originalState) {
-        if (amount() != originalState.amount() || !originalState.resource().equals(getResource())) {
+    protected void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
+        if (amountAsLong() != originalState.amount() || !originalState.resource().equals(getResource())) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();
         }
@@ -89,16 +90,19 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public void setContents(RESOURCE type, int storedAmount) {
+    public void setContents(RESOURCE type, long storedAmount) {
         setContents(type, storedAmount, true);
     }
 
-    public void setContentsUnchecked(RESOURCE type, int storedAmount) {
+    @Override
+    public void setContentsUnchecked(RESOURCE type, long storedAmount) {
         setContents(type, storedAmount, false);
     }
 
-    private void setContents(RESOURCE type, int storedAmount, boolean validateType) {
-        TransferPreconditions.checkNonNegative(storedAmount);
+    private void setContents(RESOURCE type, long storedAmount, boolean validateType) {
+        if (storedAmount < 0) {
+            throw new IllegalArgumentException("Expected value to be non-negative: " + storedAmount);
+        }
         if (type.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
             if (isEmpty()) {
                 //If we are already empty just exit, to not fire onContentsChanged
@@ -120,7 +124,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public int getLimit(RESOURCE resource) {
+    public long getLimitAsLong(RESOURCE resource) {
         return limit;
     }
 
@@ -161,9 +165,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             //"Fail quick" if the given stack is empty
             return 0;
         }
-        int currentStored = amount();
+        long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        int needed = getLimit(resource) - currentStored;
+        long needed = getLimitAsLong(resource) - currentStored;
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
@@ -172,7 +176,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             //TODO - 26.1: Re-evaluate if this should be above the isValidForInsertion check
             return 0;
         }
-        int toAdd = Math.min(amount, needed);
+        int toAdd = Math.min(amount, Ints.saturatedCast(needed));
         //Limit how much we can add at once to the insertion rate the container sets
         toAdd = Math.min(toAdd, getInsertionRate(automationType));
         if (toAdd > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
@@ -190,9 +194,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
-        int currentStored = amount();
+        long currentStored = amountAsLong();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
-        int toRemove = Math.min(amount, currentStored);
+        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?

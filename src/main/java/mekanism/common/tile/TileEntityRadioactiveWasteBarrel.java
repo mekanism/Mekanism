@@ -16,7 +16,6 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -81,7 +80,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
             if (getActive()) {
                 if (chemicalHandlerBelow.isEmpty()) {
                     //Note: We just pass true for this always being valid, and allow GC to handle figuring out when it no longer is valid
-                    chemicalHandlerBelow = List.of(Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
+                    chemicalHandlerBelow = List.of(Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.below(), Direction.UP, ConstantPredicates.ALWAYS_TRUE, () -> {
                         //Reset the tank that we know is below this
                         resolvedBelowTank = false;
                         belowTank = null;
@@ -93,7 +92,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 } else {
                     //If the block below this barrel, is also a barrel. Only emit as much as it might be able to accept.
                     // This prevents it then trying to go up the chain back to this barrel and any ones above it
-                    ChemicalUtil.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeeded(), chemicalTank.getCapacity()));
+                    ChemicalUtil.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeededAsLong(), chemicalTank.getCapacity()));
                 }
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
@@ -109,10 +108,12 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         if (!resolvedBelowTank) {
             resolvedBelowTank = true;
             IChemicalHandler belowHandler = chemicalHandlerBelow.getFirst().getCapability();
-            if (belowHandler instanceof ProxyChemicalHandler chemicalHandler && chemicalHandler.getInternalHandler() instanceof TileEntityRadioactiveWasteBarrel barrel) {
+            //TODO - 26.1: Re-evaluate how we want to be implementing this as the fluid handler's internal handler no longer is an instead of this class
+            // due to it being an anonymous class
+            /*if (belowHandler instanceof ProxyChemicalHandler chemicalHandler && chemicalHandler.getInternalHandler() instanceof TileEntityRadioactiveWasteBarrel barrel) {
                 //Note: We don't need to bother with weak references as these are vertical so will always be in the same chunk
                 belowTank = barrel.chemicalTank;
-            }
+            }*/
         }
         return belowTank;
     }

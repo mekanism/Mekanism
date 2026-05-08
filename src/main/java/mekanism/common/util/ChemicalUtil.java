@@ -7,6 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
@@ -72,9 +73,9 @@ public class ChemicalUtil {
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Chemical> provider) {
         IMekanismChemicalHandler attachment = ContainerType.CHEMICAL.createHandler(toFill);
         if (attachment != null) {
-            for (IChemicalTank tank : attachment.getChemicalTanks(null)) {
-                long amount = tank.getCapacity();
-                tank.setStack(new ChemicalStack(provider, amount));
+            ChemicalResource chemicalType = ChemicalResource.of(provider);
+            for (IChemicalTank tank : attachment.getContainers()) {
+                tank.setContents(chemicalType, tank.getLimit(chemicalType));
             }
         }
         //The item is now filled return it for convenience
@@ -95,7 +96,7 @@ public class ChemicalUtil {
     }
 
     public static boolean hasChemical(ItemStack stack, Predicate<ChemicalStack> validityCheck) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (handler != null) {
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                 ChemicalStack chemicalStack = handler.getChemicalInTank(tank);

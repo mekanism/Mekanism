@@ -12,7 +12,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
-import mekanism.common.capabilities.resource.BasicResourceContainer;
+import mekanism.api.container.BasicResourceContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -105,8 +105,8 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     }
 
     @Override
-    public int getLimit(ItemResource resource) {
-        int limit = super.getLimit(resource);
+    public long getLimitAsLong(ItemResource resource) {
+        long limit = super.getLimitAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 

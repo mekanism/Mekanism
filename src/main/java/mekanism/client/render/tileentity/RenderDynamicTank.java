@@ -52,7 +52,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         state.valves.clear();
         state.valveTexture = null;
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
-            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().getFluid());
+            state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().getResource());
             for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
                 state.valves.add(ValveRenderData.get(fluidRenderData, valve));
             }

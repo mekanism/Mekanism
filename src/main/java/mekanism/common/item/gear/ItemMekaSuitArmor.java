@@ -379,7 +379,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void useJetpackFuel(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (gasHandlerItem != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
                 gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);

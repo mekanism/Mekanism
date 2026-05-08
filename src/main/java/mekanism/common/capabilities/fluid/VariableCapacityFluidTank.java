@@ -61,7 +61,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
     }
 
     @Override
-    public int getLimit(FluidResource resource) {
+    public long getLimitAsLong(FluidResource resource) {
         return capacity.getAsInt();
     }
 

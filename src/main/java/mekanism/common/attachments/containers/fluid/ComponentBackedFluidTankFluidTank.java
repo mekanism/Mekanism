@@ -29,15 +29,14 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     }
 
     @Override
-    public int insert(AttachedFluids attachedFluids, FluidResource currentType, int currentAmount, FluidResource resource, int amount, TransactionContext transaction,
-          AutomationType automationType) {
+    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
-            //Return the result without actually changing the contents (accepting without providing any changes
+            //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
-                return super.insert(attachedFluids, currentType, currentAmount, resource, amount, simulation, automationType);
+                return super.insert(resource, amount, simulation, automationType);
             }
         }
-        return super.insert(attachedFluids, currentType, currentAmount, resource, amount, transaction, automationType);
+        return super.insert(resource, amount, transaction, automationType);
     }
 
     @Override

@@ -32,7 +32,7 @@ public class GuiPaintingMachine extends GuiConfigurableTile<TileEntityPaintingMa
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15))
               .warning(WarningType.NOT_ENOUGH_ENERGY, tile.getWarningCheck(RecipeError.NOT_ENOUGH_ENERGY));
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getActive));
-        addRenderableWidget(new GuiChemicalGauge(() -> tile.pigmentTank, () -> tile.getChemicalTanks(null), GaugeType.STANDARD, this, 25, 13))
+        addRenderableWidget(new GuiChemicalGauge(() -> tile.pigmentTank, tile::getChemicalTanks, GaugeType.STANDARD, this, 25, 13))
               .warning(WarningType.NO_MATCHING_RECIPE, tile.getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT));
         addRenderableWidget(new GuiProgress(tile::getScaledProgress, ProgressType.LARGE_RIGHT, this, 64, 39).recipeViewerCategory(tile).colored(new PigmentColorDetails()))
               .warning(WarningType.INPUT_DOESNT_PRODUCE_OUTPUT, tile.getWarningCheck(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT));

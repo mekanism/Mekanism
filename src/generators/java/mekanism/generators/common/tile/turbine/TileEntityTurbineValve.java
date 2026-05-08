@@ -26,7 +26,7 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
     @NotNull
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        return side -> getMultiblock().getChemicalTanks(side);
+        return _ -> getMultiblock().getChemicalTanks();
     }
 
     @NotNull

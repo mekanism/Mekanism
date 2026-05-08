@@ -374,7 +374,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalDrainInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getDrainInsertPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         if (handler != null) {
             //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
             AttachedChemicals containers = ContainerType.CHEMICAL.getOrEmpty(attachedTo);
@@ -397,7 +397,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalFillExtract(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillExtractPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         if (handler != null) {
             IChemicalTank chemicalTank = null;
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
@@ -406,7 +406,7 @@ public class ItemSlotsBuilder {
                     if (chemicalTank == null) {
                         chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                     }
-                    if (chemicalTank.isValid(storedChemical)) {
+                    if (chemicalTank.isChemicalValid(storedChemical)) {
                         //False if the item isn't empty and the contents are still valid
                         return false;
                     }
@@ -420,7 +420,7 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalFillInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#fillInsertCheck
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         if (handler != null) {
             IChemicalTank chemicalTank = null;
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
@@ -442,14 +442,14 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalFillOrConvertExtract(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertExtractPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         IChemicalTank chemicalTank = null;
         if (handler != null) {
             int tanks = handler.getChemicalTanks();
             if (tanks > 0) {
                 chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
                 for (int tank = 0; tank < tanks; tank++) {
-                    if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
+                    if (chemicalTank.isChemicalValid(handler.getChemicalInTank(tank))) {
                         //False if the items contents are still valid
                         return false;
                     }
@@ -466,14 +466,14 @@ public class ItemSlotsBuilder {
             //If we haven't resolved the tank yet, we need to do it now
             chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
         }
-        return !chemicalTank.isValid(conversion);
+        return !chemicalTank.isChemicalValid(conversion);
     }
 
     private boolean canChemicalFillOrConvertInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertInsertPredicate
         IChemicalTank chemicalTank = null;
         {//Fill insert check logic, we want to avoid resolving the tank as long as possible
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
@@ -504,7 +504,7 @@ public class ItemSlotsBuilder {
         }
         //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
         // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
-        return chemicalTank.getNeeded() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isValid(conversion);
+        return chemicalTank.getNeededAsLong() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isChemicalValid(conversion);
     }
 
     public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {

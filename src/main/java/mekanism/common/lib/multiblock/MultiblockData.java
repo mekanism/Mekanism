@@ -225,7 +225,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
             }
         }
         if (shouldCache(CacheSubstance.CHEMICAL)) {
-            for (IChemicalTank tank : getChemicalTanks(null)) {
+            for (IChemicalTank tank : getChemicalTanks()) {
                 tank.setStackSize(Math.min(tank.getStored(), tank.getCapacity()), Action.EXECUTE);
             }
         }
@@ -384,7 +384,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
     @NotNull
     @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         return isFormed() || isRemote() ? chemicalTanks : Collections.emptyList();
     }
 

@@ -38,7 +38,7 @@ public class GuiHeatGenerator extends GuiMekanismTile<TileEntityHeatGenerator, M
         addRenderableWidget(new GuiEnergyTab(this, () -> List.of(
               GeneratorsLang.PRODUCING_AMOUNT.translate(EnergyDisplay.of(tile.getProductionRate()))
         )));
-        addRenderableWidget(new GuiFluidGauge(() -> tile.lavaTank, () -> tile.getFluidTanks(null), GaugeType.WIDE, this, 55, 18));
+        addRenderableWidget(new GuiFluidGauge(() -> tile.lavaTank, tile::getFluidTanks, GaugeType.WIDE, this, 55, 18));
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 164, 15));
         addRenderableWidget(new GuiHeatTab(this, () -> {
             Component temp = MekanismUtils.getTemperatureDisplay(tile.getTotalTemperature(), TemperatureUnit.KELVIN, true);

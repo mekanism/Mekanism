@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers.item;
 
+import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -61,18 +62,19 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     }
 
     @Override
-    protected int getAmount(ItemStack stack) {
+    protected long getAmountAsLong(ItemStack stack) {
         return stack.count();
     }
 
     @Override
-    protected void setContents(AttachedItems attachedItems, ItemResource type, int storedAmount) {
-        setContents(attachedItems, type.toStack(storedAmount));
+    protected void setContents(AttachedItems attachedItems, ItemResource type, long storedAmount) {
+        //TODO - 26.1: Change it to using a LargeResourceStack for the contents so that it can support long amounts
+        setContents(attachedItems, type.toStack(Ints.saturatedCast(storedAmount)));
     }
 
     @Override
-    public int getLimit(ItemResource resource) {
-        int limit = super.getLimit(resource);
+    public long getLimitAsLong(ItemResource resource) {
+        long limit = super.getLimitAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 

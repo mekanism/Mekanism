@@ -55,7 +55,7 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
 
     @Override
     protected AbstractAcceptorCache<IChemicalHandler, ?> createAcceptorCache() {
-        return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL.block());
+        return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL_LEGACY.block());
     }
 
     @Override
@@ -123,9 +123,9 @@ public class PressurizedTube extends BufferedTransmitter<IChemicalHandler, Chemi
 
     private long getAvailablePull() {
         if (hasTransmitterNetwork()) {
-            return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().chemicalTank.getNeeded());
+            return Math.min(tier.getTubePullAmount(), getTransmitterNetwork().chemicalTank.getNeededAsLong());
         }
-        return Math.min(tier.getTubePullAmount(), buffer.getNeeded());
+        return Math.min(tier.getTubePullAmount(), buffer.getNeededAsLong());
     }
 
     @Nullable

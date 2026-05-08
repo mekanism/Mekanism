@@ -104,8 +104,7 @@ public class VariableCapacityChemicalTank extends BasicChemicalTank {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        stored.setAmount(amount);
-        onContentsChanged();
+        setContentsUnchecked(getResource(), amount);
         return amount;
     }
 }

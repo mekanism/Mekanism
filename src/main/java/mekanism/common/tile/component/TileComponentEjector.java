@@ -224,7 +224,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                 switch (type) {
                     case CHEMICAL -> {
                         IChemicalTank tank = (IChemicalTank) entry.getKey();
-                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
+                        List<BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL_LEGACY);
                         ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
                     }
                     case FLUID -> {

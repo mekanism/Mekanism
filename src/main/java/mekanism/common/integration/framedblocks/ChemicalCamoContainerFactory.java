@@ -55,7 +55,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     @Override
     @Nullable
     public ChemicalCamoContainer applyCamo(Level level, BlockPos pos, Player player, ItemAccess itemAccess) {
-        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL.item());
+        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL_LEGACY.item());
         if (handler == null || handler.getChemicalTanks() <= 0) {
             return null;
         }
@@ -89,7 +89,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
             return false;
         }
 
-        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL.item());
+        IChemicalHandler handler = itemAccess.getCapability(Capabilities.CHEMICAL_LEGACY.item());
         if (handler == null || handler.getChemicalTanks() <= 0) {
             return false;
         }
@@ -162,7 +162,7 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
 
     @Override
     public void registerTriggerItems(TriggerRegistrar registrar) {
-        Predicate<ItemStack> predicate = stack -> ItemAccess.forStack(stack).getCapability(Capabilities.CHEMICAL.item()) != null;
+        Predicate<ItemStack> predicate = stack -> ItemAccess.forStack(stack).getCapability(Capabilities.CHEMICAL_LEGACY.item()) != null;
         registrar.registerApplicationPredicate(predicate);
         registrar.registerRemovalPredicate(predicate);
     }

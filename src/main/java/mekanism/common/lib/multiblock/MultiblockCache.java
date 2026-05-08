@@ -90,7 +90,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Fluid
             ResourceUtils.merge(getFluidTanks(), mergeCache.getFluidTanks(), rejectContents.rejectedFluids, transaction);
             // Chemical
-            StorageUtils.mergeTanks(getChemicalTanks(null), mergeCache.getChemicalTanks(null), rejectContents.rejectedChemicals);
+            StorageUtils.mergeTanks(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals);
             // Energy
             StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers());
             // Heat
@@ -117,7 +117,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     @NotNull
     @Override
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
+    public List<IChemicalTank> getChemicalTanks() {
         return chemicalTanks;
     }
 
@@ -184,7 +184,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
             @Override
             protected List<IChemicalTank> containerList(IMultiblockContents tracker) {
-                return tracker.getChemicalTanks(null);
+                return tracker.getChemicalTanks();
             }
 
             @Override

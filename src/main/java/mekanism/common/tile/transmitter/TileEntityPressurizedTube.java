@@ -12,7 +12,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.chemical.DynamicChemicalHandler;
+import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
 import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.content.network.transmitter.PressurizedTube;
@@ -37,15 +37,28 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
 
     public TileEntityPressurizedTube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(direction -> {
-            PressurizedTube tube = getTransmitter();
-            if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
-                //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
-                // then return that we have no tanks
-                return Collections.emptyList();
+        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(new IChemicalTankHolder() {
+            @Override
+            public @NotNull List<IChemicalTank> getTanks(@Nullable Direction direction) {
+                PressurizedTube tube = TileEntityPressurizedTube.this.getTransmitter();
+                if (direction != null && (tube.getConnectionTypeRaw(direction) == ConnectionType.NONE) || tube.isRedstoneActivated()) {
+                    //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,
+                    // then return that we have no tanks
+                    return Collections.emptyList();
+                }
+                return tube.getChemicalTanks(direction);
             }
-            return tube.getChemicalTanks(direction);
-        }, new DynamicChemicalHandler(this::getChemicalTanks, this::canExtract, this::canInsert, null)));
+
+            @Override
+            public boolean canInsert(@Nullable Direction direction) {
+                return TileEntityPressurizedTube.this.canInsert(direction);
+            }
+
+            @Override
+            public boolean canExtract(@Nullable Direction direction) {
+                return TileEntityPressurizedTube.this.canExtract(direction);
+            }
+        }, null));
     }
 
     @Override
@@ -132,7 +145,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super.sideChanged(side, old, type);
         if (type == ConnectionType.NONE) {
             //We no longer have a capability, invalidate it, which will also notify the level
-            invalidateCapability(Capabilities.CHEMICAL.block(), side);
+            invalidateCapability(Capabilities.CHEMICAL_LEGACY.block(), side);
         } else if (old == ConnectionType.NONE) {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null
@@ -147,7 +160,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
             //The transmitter now is powered by redstone and previously was not
             //Note: While at first glance the below invalidation may seem over aggressive, it is not actually that aggressive as
             // if a cap has not been initialized yet on a side then invalidating it will just NO-OP
-            invalidateCapabilityAll(Capabilities.CHEMICAL.block());
+            invalidateCapabilityAll(Capabilities.CHEMICAL_LEGACY.block());
         } else {
             //Notify any listeners to our position that we now do have a capability
             //Note: We don't invalidate our impls because we know they are already invalid, so we can short circuit setting them to null from null

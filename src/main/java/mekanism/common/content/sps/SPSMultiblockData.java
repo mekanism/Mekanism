@@ -105,7 +105,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (couldOperate && receivedEnergy > 0L) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-            long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
+            long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsLong() - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);
@@ -254,7 +254,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private boolean canOperate() {
-        return !inputTank.isEmpty() && outputTank.getNeeded() > 0;
+        return !inputTank.isEmpty() && outputTank.getNeededAsLong() > 0;
     }
 
     private static int getCoilLevel(long energy) {

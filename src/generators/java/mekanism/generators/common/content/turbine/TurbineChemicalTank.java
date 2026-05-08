@@ -1,13 +1,12 @@
 package mekanism.generators.common.content.turbine;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.registries.MekanismChemicals;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -22,11 +21,12 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
     }
 
     @Override
-    public ChemicalStack insert(@NotNull ChemicalStack stack, Action action, AutomationType automationType) {
-        ChemicalStack returned = super.insert(stack, action, automationType);
-        if (action == Action.EXECUTE && multiblock.isFormed()) {
-            multiblock.newSteamInput += stack.amount() - returned.amount();
+    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        int inserted = super.insert(resource, amount, transaction, automationType);
+        if (multiblock.isFormed()) {
+            //TODO - 26.1: Test this
+            multiblock.steamInputJournal.addSteam(inserted, transaction);
         }
-        return returned;
+        return inserted;
     }
 }

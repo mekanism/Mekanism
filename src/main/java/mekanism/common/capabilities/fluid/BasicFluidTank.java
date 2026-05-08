@@ -8,7 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
-import mekanism.common.capabilities.resource.BasicResourceContainer;
+import mekanism.api.container.BasicResourceContainer;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 

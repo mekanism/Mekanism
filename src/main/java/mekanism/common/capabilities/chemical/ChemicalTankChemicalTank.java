@@ -1,16 +1,19 @@
 package mekanism.common.capabilities.chemical;
 
+import com.google.common.primitives.Ints;
 import java.util.Objects;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.tier.ChemicalTankTier;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -22,55 +25,56 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     }
 
     private final boolean isCreative;
-    private final LongSupplier rate;
+    private final IntSupplier rate;
 
     private ChemicalTankChemicalTank(ChemicalTankTier tier, @Nullable IContentsListener listener) {
         super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
-        rate = tier::getOutput;
+        //TODO - 26.1: Make getOutput return an int
+        rate = () -> Ints.saturatedCast(tier.getOutput());
     }
 
     @Override
-    protected long getInsertRate(@Nullable AutomationType automationType) {
+    protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getInsertRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertionRate(automationType);
     }
 
     @Override
-    protected long getExtractRate(@Nullable AutomationType automationType) {
+    protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
-        return automationType == AutomationType.INTERNAL ? rate.getAsLong() : super.getExtractRate(automationType);
+        return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractionRate(automationType);
     }
 
     @Override
-    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        if (isCreative && isEmpty() && action.execute() && automationType != AutomationType.EXTERNAL) {
-            //If a player manually inserts into a creative tank (or internally, via a GasInventorySlot), that is empty we need to allow setting the type,
-            // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
-            ChemicalStack simulatedRemainder = super.insert(stack, Action.SIMULATE, automationType);
-            if (simulatedRemainder.isEmpty()) {
-                //If we are able to insert it then set perform the action of setting it to full
-                setStackUnchecked(stack.copyWithAmount(getCapacity()));
+    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            if (isEmpty() && automationType != AutomationType.EXTERNAL) {//TODO - 26.1: Test that this behaves correctly
+                //If a player manually inserts into a creative tank (or internally, via a ChemicalInventorySlot), that is empty we need to allow setting the type,
+                // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
+                int limit = getLimit(resource);
+                //Try to insert the entire limit so that then it just updates to being a full stack
+                int inserted = super.insert(resource, limit, transaction, automationType);
+                //If we did manage to insert anything then return that we inserted the entire amount that we were passed
+                return inserted == 0 ? 0 : amount;
             }
-            return simulatedRemainder;
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(resource, amount, simulation, automationType);
+            }
         }
-        return super.insert(stack, action.combine(!isCreative), automationType);
+        return super.insert(resource, amount, transaction, automationType);
     }
 
     @Override
-    public ChemicalStack extract(long amount, Action action, AutomationType automationType) {
-        return super.extract(amount, action.combine(!isCreative), automationType);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(long, Action)}, as both {@link #growStack(long, Action)} and {@link #shrinkStack(long, Action)} are wrapped through
-     * this method.
-     */
-    @Override
-    public long setStackSize(long amount, Action action) {
-        return super.setStackSize(amount, action.combine(!isCreative));
+    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 }

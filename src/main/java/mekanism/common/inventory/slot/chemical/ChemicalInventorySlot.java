@@ -39,10 +39,10 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     private static Predicate<ItemResource> getFillOrConvertExtractPredicate(IChemicalTank chemicalTank, Supplier<Level> levelSupplier) {
         return itemType -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                    if (chemicalTank.isValid(handler.getChemicalInTank(tank))) {
+                    if (chemicalTank.isChemicalValid(handler.getChemicalInTank(tank))) {
                         //False if the items contents are still valid
                         return false;
                     }
@@ -52,7 +52,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
             // This might happen after a reload for example
             ChemicalStack conversion = getPotentialConversion(levelSupplier.get(), itemType);
-            return conversion.isEmpty() || !chemicalTank.isValid(conversion);
+            return conversion.isEmpty() || !chemicalTank.isChemicalValid(conversion);
         };
     }
 
@@ -72,17 +72,17 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             }
             //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
             // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
-            return chemicalTank.getNeeded() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isValid(conversion);
+            return chemicalTank.getNeededAsLong() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isChemicalValid(conversion);
         };
     }
 
     public static Predicate<ItemResource> getFillExtractPredicate(IChemicalTank chemicalTank) {
         return itemType -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     ChemicalStack storedChemical = handler.getChemicalInTank(tank);
-                    if (!storedChemical.isEmpty() && chemicalTank.isValid(storedChemical)) {
+                    if (!storedChemical.isEmpty() && chemicalTank.isChemicalValid(storedChemical)) {
                         //False if the item isn't empty and the contents are still valid
                         return false;
                     }
@@ -95,7 +95,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillInsertCheck(IChemicalTank chemicalTank, ItemResource itemType) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         if (handler != null) {
             for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                 ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
@@ -111,7 +111,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
 
     public static Predicate<ItemResource> getDrainInsertPredicate(IChemicalTank chemicalTank) {
         return itemType -> {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemType);
+            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
             if (handler != null) {
                 if (chemicalTank.isEmpty()) {
                     //If the chemical tank is empty, accept the chemical item as long as it is not full
@@ -219,7 +219,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      * Fills tank from slot, allowing for the item to also be converted to chemical if need be
      */
     public void fillTankOrConvert() {
-        if (!isEmpty() && chemicalTank.getNeeded() > 0) {
+        if (!isEmpty() && chemicalTank.getNeededAsLong() > 0) {
             //Fill the tank from the item
             if (!fillChemicalTankFromItem(this, chemicalTank, getCapability())) {
                 //If filling from item failed, try doing it by conversion
@@ -259,7 +259,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static void fillChemicalTank(IInventorySlot slot, IChemicalTank chemicalTank, @Nullable IChemicalHandler handler) {
-        if (!slot.isEmpty() && chemicalTank.getNeeded() > 0) {
+        if (!slot.isEmpty() && chemicalTank.getNeededAsLong() > 0) {
             //Try filling from the tank's item
             fillChemicalTankFromItem(slot, chemicalTank, handler);
         }
@@ -278,7 +278,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                 toExtract = handler.extractChemical(chemicalTank.getCapacity(), Action.SIMULATE);
             } else {
                 ChemicalStack stack = chemicalTank.getStack();
-                long amount = chemicalTank.getNeeded();
+                long amount = chemicalTank.getNeededAsLong();
                 toExtract = handler.extractChemical(stack.copyWithAmount(amount), Action.SIMULATE);
             }
             if (!toExtract.isEmpty()) {

@@ -467,7 +467,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         long newWaste = Mth.lfloor(partialWaste);
         if (newWaste > 0) {
             partialWaste %= 1;
-            long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeeded());
+            long leftoverWaste = Math.max(0, newWaste - wasteTank.getNeededAsLong());
             ChemicalStack wasteToAdd = MekanismChemicals.NUCLEAR_WASTE.asStack(newWaste);
             wasteTank.insert(wasteToAdd, Action.EXECUTE, AutomationType.INTERNAL);
             if (leftoverWaste > 0 && RadiationManager.isGlobalRadiationEnabled()) {
@@ -641,7 +641,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ComputerMethod
     long getCoolantNeeded() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            return coolantTank.getChemicalTank().getNeeded();
+            return coolantTank.getChemicalTank().getNeededAsLong();
         }
         return coolantTank.getFluidTank().getNeeded();
     }

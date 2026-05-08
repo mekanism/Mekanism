@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.fusion;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -205,7 +204,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private boolean hasHohlraum() {
         if (!reactorSlot.isEmpty()) {
             if (GeneratorsItems.HOHLRAUM.is(reactorSlot.getResource())) {
-                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
+                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(reactorSlot.itemAccess());
                 if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                     //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
                     return gasHandlerItem.getChemicalInTank(0).amount() == gasHandlerItem.getChemicalTankCapacity(0);
@@ -299,7 +298,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void vaporiseHohlraum() {
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(reactorSlot.itemAccess());
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
             lastPlasmaTemperature = getPlasmaTemp();
@@ -309,7 +308,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void injectFuel() {
-        long amountNeeded = fuelTank.getNeeded();
+        long amountNeeded = fuelTank.getNeededAsLong();
         long amountAvailable = 2 * Math.min(deuteriumTank.getStored(), tritiumTank.getStored());
         long amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
@@ -341,7 +340,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             FluidResource water = waterTank.getResource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, Ints.saturatedCast(steamTank.getNeeded())), transaction, AutomationType.INTERNAL);
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeeded()), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
                         steamTank.insert(MekanismChemicals.STEAM.asStack(vaporized), Action.EXECUTE, AutomationType.INTERNAL);
                         caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();

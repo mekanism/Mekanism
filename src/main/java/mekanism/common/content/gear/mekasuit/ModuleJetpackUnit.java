@@ -46,7 +46,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            IChemicalHandler chemicalHandler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
@@ -71,7 +71,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void onRemoved(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean last) {
         //Vent the excess hydrogen from the jetpack
-        IChemicalHandler chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        IChemicalHandler chemicalHandler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (chemicalHandler != null) {
             for (int tank = 0, tanks = chemicalHandler.getChemicalTanks(); tank < tanks; tank++) {
                 ChemicalStack stored = chemicalHandler.getChemicalInTank(tank);

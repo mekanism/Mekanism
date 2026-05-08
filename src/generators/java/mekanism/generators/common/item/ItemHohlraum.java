@@ -30,7 +30,7 @@ public class ItemHohlraum extends Item implements ICustomCreativeTabContents {
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
             //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
             ChemicalStack storedGas = gasHandlerItem.getChemicalInTank(0);

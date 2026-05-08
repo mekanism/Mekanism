@@ -55,7 +55,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
                   MachineEnergyContainer<TileEntityElectricPump> energyContainer = tile.getEnergyContainer();
                   return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
               });
-        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, () -> tile.getFluidTanks(null), GaugeType.STANDARD, this, 6, 13))
+        addRenderableWidget(new GuiFluidGauge(() -> tile.fluidTank, tile::getFluidTanks, GaugeType.STANDARD, this, 6, 13))
               .warning(WarningType.NO_SPACE_IN_OUTPUT, () -> tile.fluidTank.getNeeded() < tile.estimateIncrementAmount());
         //TODO: Eventually we may want to consider showing a warning if the block under the pump is of the wrong type or there wasn't a valid spot to suck
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::usedEnergy));

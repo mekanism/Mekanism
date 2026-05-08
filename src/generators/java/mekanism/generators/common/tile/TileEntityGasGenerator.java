@@ -7,7 +7,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
@@ -155,21 +154,21 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
 
         @Override
-        public void setStack(@NotNull ChemicalStack stack) {
+        public void setContents(@NotNull ChemicalResource type, long amount) {
             Holder<Chemical> oldChemical = getType();
-            super.setStack(stack);
-            recheckOutput(stack, oldChemical);
+            super.setContents(type, amount);
+            recheckOutput(type, oldChemical);
         }
 
         @Override
-        public void setStackUnchecked(@NotNull ChemicalStack stack) {
+        public void setContentsUnchecked(@NotNull ChemicalResource type, long amount) {
             Holder<Chemical> oldChemical = getType();
-            super.setStackUnchecked(stack);
-            recheckOutput(stack, oldChemical);
+            super.setContentsUnchecked(type, amount);
+            recheckOutput(type, oldChemical);
         }
 
-        private void recheckOutput(@NotNull ChemicalStack stack, Holder<Chemical> oldChemical) {
-            if (!isTypeEqual(oldChemical) && !stack.isEmpty()) {
+        private void recheckOutput(@NotNull ChemicalResource type, Holder<Chemical> oldChemical) {
+            if (!type.is(oldChemical) && !type.isEmpty()) {
                 cachedFuel = isEmpty() ? null : getStack().getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             }
         }

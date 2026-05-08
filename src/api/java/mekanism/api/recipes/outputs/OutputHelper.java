@@ -290,7 +290,7 @@ public class OutputHelper {
             int operations = Ints.saturatedCast(amountUsed / toOutput.amount());
             tracker.updateOperations(operations);
             if (operations == 0) {
-                if (amountUsed == 0 && tank.getNeeded() > 0) {
+                if (amountUsed == 0 && tank.getNeededAsLong() > 0) {
                     tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
                 } else {
                     tracker.addError(notEnoughSpace);

@@ -3,12 +3,8 @@ package mekanism.common.network.to_server;
 import io.netty.buffer.ByteBuf;
 import java.util.List;
 import java.util.function.IntFunction;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
@@ -23,7 +19,6 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -31,7 +26,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -76,9 +70,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
                             if (tankType == TankType.FLUID_TANK) {
-                                handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), structure.getFluidTanks());
+                                handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             } else if (tankType == TankType.CHEMICAL_TANK) {
-                                handleChemicalTank(player, itemAccess, structure.getChemicalTanks(null), tile.getLevel(), structure.getBounds().getCenter());
+                                handleResourceTank(player, itemAccess, Capabilities.CHEMICAL.item(), structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             }
                         }
                     } else {
@@ -91,9 +85,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                             }
                         }
                         if (tankType == TankType.FLUID_TANK) {
-                            handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), tile.getFluidTanks());
+                            handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), tile.getFluidTanks(), tile.getLevel(), tile.getBlockPos());
                         } else if (tankType == TankType.CHEMICAL_TANK) {
-                            handleChemicalTank(player, itemAccess, tile.getChemicalTanks(null), tile.getLevel(), tile.getBlockPos());
+                            handleResourceTank(player, itemAccess, Capabilities.CHEMICAL.item(), tile.getChemicalTanks(), tile.getLevel(), tile.getBlockPos());
                         }
                     }
                 }
@@ -106,48 +100,18 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
         return tankId >= 0 && tankId < tanks.size() ? tanks.get(tankId) : null;
     }
 
-    private void handleChemicalTank(ServerPlayer player, ItemAccess itemAccess, List<IChemicalTank> tanks, Level level, BlockPos pos) {
-        IChemicalTank tank = getTank(tanks);
-        if (tank == null) {
-            return;
-        }
-        if (action == DropperAction.DUMP_TANK) {
-            //Dump the tank
-            if (!tank.isEmpty()) {
-                //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(level, pos, tank.getStack());
-                tank.setEmpty();
-                MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
-            }
-        } else {
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
-            if (handler instanceof IMekanismChemicalHandler chemicalHandler) {
-                IChemicalTank itemTank = chemicalHandler.getChemicalTank(0, null);
-                //It is a chemical tank
-                if (itemTank != null) {
-                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    if (action == DropperAction.FILL_DROPPER) {
-                        //Insert chemical into dropper
-                        transferBetweenTanks(tank, itemTank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.FILL);
-                    } else if (action == DropperAction.DRAIN_DROPPER) {
-                        //Extract chemical from dropper
-                        transferBetweenTanks(itemTank, tank, player);
-                        MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DRAIN);
-                    }
-                }
-            }
-        }
-    }
-
     private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
-          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability, List<TANK> tanks) {
+          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability, List<TANK> tanks, Level level, BlockPos pos) {
         TANK tank = getTank(tanks);
         if (tank == null) {
             return;
         } else if (action == DropperAction.DUMP_TANK) {
             //Dump the tank
             tank.setEmpty();
+            if (tank instanceof IChemicalTank chemicalTank) {
+                //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
+                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.getStack());
+            }
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
@@ -207,24 +171,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                     transaction.commit();
                     player.containerMenu.synchronizeCarriedToRemote();
                     MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, action);
-                }
-            }
-        }
-    }
-
-    private static void transferBetweenTanks(IChemicalTank drainTank, IChemicalTank fillTank, Player player) {
-        if (!drainTank.isEmpty() && fillTank.getNeeded() > 0) {
-            ChemicalStack chemicalInDrainTank = drainTank.getStack();
-            ChemicalStack simulatedRemainder = fillTank.insert(chemicalInDrainTank, Action.SIMULATE, AutomationType.MANUAL);
-            long remainder = simulatedRemainder.amount();
-            long amount = chemicalInDrainTank.amount();
-            if (remainder < amount) {
-                //We are able to fit at least some of the chemical from our drain tank into the fill tank
-                ChemicalStack extractedChemical = drainTank.extract(amount - remainder, Action.EXECUTE, AutomationType.MANUAL);
-                if (!extractedChemical.isEmpty()) {
-                    //If we were able to actually extract it from our tank, then insert it into the tank
-                    MekanismUtils.logMismatchedStackSize(fillTank.insert(extractedChemical, Action.EXECUTE, AutomationType.MANUAL).amount(), 0);
-                    player.containerMenu.synchronizeCarriedToRemote();
                 }
             }
         }

@@ -5,12 +5,14 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
@@ -37,18 +39,18 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public ChemicalStack getStack() {
-        return internal.getStack();
+    public ChemicalResource getResource() {
+        return internal.getResource();
     }
 
     @Override
-    public void setStack(ChemicalStack stack) {
-        internal.setStack(stack);
+    public void setContents(ChemicalResource type, long amount) {
+        internal.setContents(type, amount);
     }
 
     @Override
-    public void setStackUnchecked(ChemicalStack stack) {
-        internal.setStackUnchecked(stack);
+    public void setContentsUnchecked(ChemicalResource type, long amount) {
+        internal.setContentsUnchecked(type, amount);
     }
 
     private boolean canInsert() {
@@ -56,24 +58,34 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
+    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
         //Only allow inserting if we pass the check
-        return canInsert() ? internal.insert(stack, action, automationType) : stack;
+        return canInsert() ? internal.insert(resource, amount, transaction, automationType) : 0;
     }
 
     @Override
-    public ChemicalStack extract(long amount, Action action, AutomationType automationType) {
-        return internal.extract(amount, action, automationType);
+    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        return internal.extract(resource, amount, transaction, automationType);
     }
 
     @Override
-    public long getCapacity() {
-        return internal.getCapacity();
+    public long getLimitAsLong(ChemicalResource chemicalType) {
+        return internal.getLimitAsLong(chemicalType);
     }
 
     @Override
-    public boolean isValid(ChemicalStack stack) {
-        return internal.isValid(stack);
+    public boolean isValid(ChemicalResource chemicalType) {
+        return internal.isValid(chemicalType);
+    }
+
+    @Override
+    public boolean isCurrentValidForExtraction(AutomationType automationType) {
+        return internal.isCurrentValidForExtraction(automationType);
+    }
+
+    @Override
+    public boolean isValidForInsertion(ChemicalResource type, AutomationType automationType) {
+        return internal.isValidForInsertion(type, automationType);
     }
 
     @Override
@@ -107,13 +119,13 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public long getStored() {
-        return internal.getStored();
+    public long amountAsLong() {
+        return internal.amountAsLong();
     }
 
     @Override
-    public long getNeeded() {
-        return internal.getNeeded();
+    public long getNeededAsLong() {
+        return internal.getNeededAsLong();
     }
 
     @Override

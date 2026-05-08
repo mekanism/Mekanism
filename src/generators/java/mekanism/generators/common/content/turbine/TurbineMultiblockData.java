@@ -48,6 +48,8 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -92,7 +94,7 @@ public class TurbineMultiblockData extends MultiblockData {
     @ContainerSync
     @SyntheticComputerMethod(getter = "getLastSteamInputRate")
     public long lastSteamInput;
-    public long newSteamInput;
+    public final SteamInput steamInputJournal = new SteamInput();
 
     @ContainerSync
     @SyntheticComputerMethod(getter = "getFlowRate")
@@ -133,8 +135,8 @@ public class TurbineMultiblockData extends MultiblockData {
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
 
-        lastSteamInput = newSteamInput;
-        newSteamInput = 0;
+        lastSteamInput = steamInputJournal.newSteamInput;
+        steamInputJournal.newSteamInput = 0;
         long stored = chemicalTank.getStored();
         double flowRate = 0;
 
@@ -310,5 +312,25 @@ public class TurbineMultiblockData extends MultiblockData {
     //End computer related methods
 
     public record VentData(BlockPos location, Direction side) {
+    }
+
+    public static class SteamInput extends SnapshotJournal<Long> {
+
+        private long newSteamInput;
+
+        public void addSteam(long steamInput, TransactionContext transaction) {
+            updateSnapshots(transaction);
+            newSteamInput += steamInput;
+        }
+
+        @Override
+        protected Long createSnapshot() {
+            return newSteamInput;
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            newSteamInput = snapshot;
+        }
     }
 }

@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;
@@ -11,7 +12,6 @@ import mekanism.common.content.qio.QIODriveData.QIODriveKey;
 import mekanism.common.content.qio.QIOFrequency;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.ResourceStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -65,7 +65,7 @@ public class QIODriveSlot extends BasicInventorySlot {
     //TODO - 26.1: On extracting we need to make sure that the drive's metadata is updated so that it returns the correct resource(?)
 
     @Override
-    protected void onRootCommit(ResourceStack<ItemResource> originalState) {
+    protected void onRootCommit(LargeResourceStack<ItemResource> originalState) {
         super.onRootCommit(originalState);
         //TODO - 26.1: Should we do this before or after calling super (and setting the contents changed)
         ItemResource newDrive = getResource();

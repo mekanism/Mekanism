@@ -35,7 +35,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
 
     private final Map<Direction, BlockCapabilityCache<IChemicalHandler, @Nullable Direction>> capabilityCaches = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> portCapabilities = List.of(
-          Capabilities.CHEMICAL.block(),
+          Capabilities.CHEMICAL_LEGACY.block(),
           Capabilities.FLUID.block()
     );
     private final Predicate<BoilerValveMode> MODE_MATCHES = mode -> mode == getMode();
@@ -69,7 +69,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     public void addChemicalTargetCapability(List<AdvancedCapabilityOutputTarget<IChemicalHandler, BoilerValveMode>> outputTargets, Direction side) {
         BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = capabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             capabilityCaches.put(side, cache);
         }
         outputTargets.add(new AdvancedCapabilityOutputTarget<>(cache, MODE_MATCHES));

@@ -50,7 +50,7 @@ public class TileEntityTypeDeferredRegister extends MekanismDeferredRegister<Blo
               .withSimple(IBlockSecurityUtils.INSTANCE.ownerCapability(), hasSecurity)
               .withSimple(IBlockSecurityUtils.INSTANCE.securityCapability(), hasSecurity)
               //TODO: Eventually see if we can come up with a way to avoid attaching providers to BEs that can never have one of the following types
-              .with(Capabilities.CHEMICAL.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER)
+              .with(Capabilities.CHEMICAL_LEGACY.block(), CapabilityTileEntity.CHEMICAL_HANDLER_PROVIDER)
               .with(Capabilities.HEAT, CapabilityTileEntity.HEAT_HANDLER_PROVIDER)
               .with(Capabilities.ITEM.block(), CapabilityTileEntity.ITEM_HANDLER_PROVIDER)
               .with(Capabilities.FLUID.block(), CapabilityTileEntity.FLUID_HANDLER_PROVIDER);

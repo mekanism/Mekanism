@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers.fluid;
 
+import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
@@ -52,27 +53,23 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     }
 
     @Override
-    public void setContentsUnchecked(FluidResource type, int storedAmount) {
-        setContents(getAttached(), type, storedAmount);
-    }
-
-    @Override
     protected FluidResource asResource(FluidStack stack) {
         return FluidResource.of(stack);
     }
 
     @Override
-    protected int getAmount(FluidStack stack) {
+    protected long getAmountAsLong(FluidStack stack) {
         return stack.amount();
     }
 
     @Override
-    protected void setContents(AttachedFluids attachedFluids, FluidResource type, int storedAmount) {
-        setContents(attachedFluids, type.toStack(storedAmount));
+    protected void setContents(AttachedFluids attachedFluids, FluidResource type, long storedAmount) {
+        //TODO - 26.1: Change it to using a LargeResourceStack for the contents so that it can support long amounts
+        setContents(attachedFluids, type.toStack(Ints.saturatedCast(storedAmount)));
     }
 
     @Override
-    public int getLimit(FluidResource resource) {
+    public long getLimitAsLong(FluidResource resource) {
         return capacity.getAsInt();
     }
 
@@ -86,11 +83,6 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : rate.getAsInt();
-    }
-
-    protected int getNeeded(FluidStack stored) {
-        //Skip the stack lookup for getNeeded
-        return Math.max(0, getLimit(FluidResource.of(stored)) - stored.amount());
     }
 
     @Override

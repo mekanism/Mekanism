@@ -37,7 +37,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public int insert(AttachedItems attachedItems, ItemResource currentType, int currentAmount, ItemResource resource, int amount, TransactionContext transaction,
+    protected int insert(AttachedItems attachedItems, ItemResource currentType, long currentAmount, ItemResource resource, int amount, TransactionContext transaction,
           AutomationType automationType) {
         if (currentType.isEmpty()) {
             ItemResource lockType = getLockType();

@@ -188,7 +188,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 lastBoilRate = 0;
             } else {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int amountToBoil = Math.min(lastMaxBoil, Ints.saturatedCast(steamTank.getNeeded()));
+                    int amountToBoil = Math.min(lastMaxBoil, Ints.saturatedCast(steamTank.getNeededAsLong()));
                     int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
                     if (boiled > 0) {
                         //TODO - 26.1: Change the steam tank to validate that it can actually insert the amount

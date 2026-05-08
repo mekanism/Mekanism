@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers;
 
+import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -18,9 +19,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
-    private final int limit;
+    private final long limit;
 
-    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, int limit, BiPredicate<RESOURCE, AutomationType> canExtract,
+    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
           BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator) {
         super(attachedTo, slotIndex);
         this.canExtract = canExtract;
@@ -31,7 +32,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     protected abstract RESOURCE asResource(TYPE stack);
 
-    protected abstract int getAmount(TYPE stack);
+    protected abstract long getAmountAsLong(TYPE stack);
 
     @Override
     public RESOURCE getResource() {
@@ -39,20 +40,25 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public int amount() {
-        return getAmount(getContents(getAttached()));
+    public long amountAsLong() {
+        return getAmountAsLong(getContents(getAttached()));
     }
 
     @Override
-    public final void setContents(RESOURCE type, int storedAmount) {
+    public final void setContents(RESOURCE type, long storedAmount) {
         //TODO - 26.1: Re-evaluate this
         setContents(getAttached(), type, storedAmount);
     }
 
-    protected abstract void setContents(ATTACHED attached, RESOURCE type, int storedAmount);
+    @Override
+    public void setContentsUnchecked(RESOURCE type, long storedAmount) {
+        setContents(getAttached(), type, storedAmount);
+    }
+
+    protected abstract void setContents(ATTACHED attached, RESOURCE type, long storedAmount);
 
     @Override
-    public int getLimit(RESOURCE resource) {
+    public long getLimitAsLong(RESOURCE resource) {
         return limit;
     }
 
@@ -85,7 +91,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public final int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    public int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (amount == 0) {
             //"Fail quick" if the given stack is empty
@@ -93,23 +99,23 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         }
         ATTACHED attached = getAttached();
         TYPE current = getContents(attached);
-        return insert(attached, asResource(current), getAmount(current), resource, amount, transaction, automationType);
+        return insert(attached, asResource(current), getAmountAsLong(current), resource, amount, transaction, automationType);
     }
 
-    public int insert(ATTACHED attached, RESOURCE currentType, int currentAmount, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int insert(ATTACHED attached, RESOURCE currentType, long currentAmount, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
         if (amount == 0) {
             //"Fail quick" if the given resource is empty
             return 0;
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        int needed = getLimit(resource) - currentAmount;
+        long needed = getLimitAsLong(resource) - currentAmount;
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
         } else if (!currentType.isEmpty() && !currentType.equals(resource)) {
             return 0;
         }
-        int toAdd = Math.min(amount, needed);
+        int toAdd = Math.min(amount, Ints.saturatedCast(needed));
         //Limit how much we can add at once to the insertion rate the container sets
         toAdd = Math.min(toAdd, getInsertionRate(automationType));
         if (toAdd > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
@@ -132,13 +138,13 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         ATTACHED attached = getAttached();
         TYPE current = getContents(attached);
         RESOURCE currentType = asResource(current);
-        int currentStored = getAmount(current);
+        long currentStored = getAmountAsLong(current);
         if (currentType.isEmpty() || !resource.equals(currentType) || !isValidForExtraction(currentType, automationType)) {
             //"Fail quick" if we are empty, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
         //If we are trying to extract more than we have, just change it so that we are extracting it all
-        int toRemove = Math.min(amount, currentStored);
+        int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
         if (toRemove > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?

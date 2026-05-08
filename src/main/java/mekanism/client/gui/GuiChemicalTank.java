@@ -31,7 +31,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
         //Add the side holder before the slots, as it holds a couple of the slots
         addRenderableWidget(GuiSideHolder.armorHolder(this));
         super.addGuiElements();
-        addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(tile.getChemicalTank(), tile.getChemicalTanks(null)), 42, 16, 116, 10, true));
+        addRenderableWidget(new GuiChemicalBar(this, GuiChemicalBar.getProvider(tile.getChemicalTank(), tile.getChemicalTanks()), 42, 16, 116, 10, true));
         addRenderableWidget(new GuiInnerScreen(this, 42, 37, 118, 28, () -> {
             List<Component> ret = new ArrayList<>();
             IChemicalTank tank = tile.getChemicalTank();

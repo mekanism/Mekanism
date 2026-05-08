@@ -52,7 +52,7 @@ public class ItemScubaTank extends ItemChemicalArmor implements IItemHUDProvider
             ItemScubaTank scubaTank = (ItemScubaTank) stack.getItem();
             list.add(MekanismLang.SCUBA_TANK_MODE.translateColored(EnumColor.DARK_GRAY, OnOff.of(scubaTank.getMode(stack), true)));
             ChemicalStack stored = ChemicalStack.EMPTY;
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
             if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
                 stored = gasHandlerItem.getChemicalInTank(0);
             }

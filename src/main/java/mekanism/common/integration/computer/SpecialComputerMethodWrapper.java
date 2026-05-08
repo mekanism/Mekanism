@@ -33,7 +33,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
         public static long getNeeded(IChemicalTank tank) {
-            return tank.getNeeded();
+            return tank.getNeededAsLong();
         }
 
         @WrappingComputerMethodIndex(3)

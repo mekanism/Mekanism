@@ -205,7 +205,7 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public void setContents(ItemResource itemType, int storedAmount) {
+    public void setContents(ItemResource itemType, long storedAmount) {
         super.setContents(itemType, storedAmount);
         //Reset the cache of if we are currently draining or filling
         isDraining = false;

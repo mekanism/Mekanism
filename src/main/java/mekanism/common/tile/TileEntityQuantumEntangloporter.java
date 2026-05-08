@@ -209,7 +209,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         if (cache == null) {
             IMultiTypeCapability<HANDLER, ?> capability = (IMultiTypeCapability<HANDLER, ?>) switch (transmissionType) {
                 case FLUID -> Capabilities.FLUID;
-                case CHEMICAL -> Capabilities.CHEMICAL;
+                case CHEMICAL -> Capabilities.CHEMICAL_LEGACY;
                 default -> null;
             };
             if (capability != null) {

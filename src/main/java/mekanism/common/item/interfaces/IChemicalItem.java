@@ -16,11 +16,11 @@ public interface IChemicalItem {
 
     @NotNull
     default ChemicalStack useChemical(ItemStack stack, long amount) {
-        IChemicalHandler chemicalHandlerItem = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
+        IChemicalHandler chemicalHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
         if (chemicalHandlerItem != null) {
             if (chemicalHandlerItem instanceof IMekanismChemicalHandler chemicalHandler) {
                 //TODO: If we end up having more tanks than one in any IChemicalItem's just kill off this if branch
-                IChemicalTank chemicalTank = chemicalHandler.getChemicalTank(0, null);
+                IChemicalTank chemicalTank = chemicalHandler.getChemicalTank(0);
                 if (chemicalTank != null) {
                     //Should always reach here
                     return chemicalTank.extract(amount, Action.EXECUTE, AutomationType.MANUAL);

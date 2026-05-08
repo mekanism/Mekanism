@@ -80,7 +80,7 @@ public class ItemGaugeDropper extends Item {
                     container.setEmpty();
                 }
             }
-            IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemAccess);
             if (handler != null) {
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     handler.setChemicalInTank(tank, ChemicalStack.EMPTY);

@@ -62,7 +62,7 @@ public class StorageUtils {
     }
 
     public static void addStoredChemical(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
             handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
@@ -145,7 +145,7 @@ public class StorageUtils {
 
     @NotNull
     public static ChemicalStack getContainedChemical(ItemStack stack, Holder<Chemical> type) {
-        return getContainedChemical(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)), type);
+        return getContainedChemical(Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack)), type);
     }
 
     @NotNull
@@ -357,7 +357,7 @@ public class StorageUtils {
     private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
         ItemAccess itemAccess = ItemAccess.forStack(stack);
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapability(itemAccess);
+        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemAccess);
         if (handler != null) {
             for (int chemTack = 0, chemTanks = handler.getChemicalTanks(); chemTack < chemTanks; chemTack++) {
                 bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).amount(), handler.getChemicalTankCapacity(chemTack)));

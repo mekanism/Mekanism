@@ -77,7 +77,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
     private static IChemicalHandler getChemicalHandler(ItemStack stack) {
         IChemicalHandler handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         if (handler == null) {
-            return Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            return Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
         }
         return handler;
     }

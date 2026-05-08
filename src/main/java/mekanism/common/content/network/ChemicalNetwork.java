@@ -214,7 +214,7 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     @Override
     public Component getNeededInfo() {
-        return TextComponentUtil.build(chemicalTank.getNeeded());
+        return TextComponentUtil.build(chemicalTank.getNeededAsLong());
     }
 
     @Override

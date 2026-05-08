@@ -4,6 +4,7 @@ import mekanism.api.IAlloyInteraction;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
@@ -65,7 +66,10 @@ public class Capabilities {
           ItemCapability.create(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class, ItemAccess.class),
           EntityCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class));
 
-    public static final MultiTypeCapability<IChemicalHandler> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), IChemicalHandler.class);
+    public static final MultiTypeCapability<ResourceHandler<ChemicalResource>> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), ResourceHandler.asClass());
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
+    public static final MultiTypeCapability<IChemicalHandler> CHEMICAL_LEGACY = new MultiTypeCapability<>(Mekanism.rl("legacy_chemical"), IChemicalHandler.class);
+
 
     public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 
@@ -91,7 +95,7 @@ public class Capabilities {
     public static final Identifier SECURITY_OBJECT_NAME = Mekanism.rl("security_object");
 
     public static void registerProxyableCapabilities(RegisterCapabilitiesEvent event) {
-        event.setProxyable(CHEMICAL.block());
+        event.setProxyable(CHEMICAL_LEGACY.block());
         event.setProxyable(STRICT_ENERGY.block());
     }
 
@@ -120,7 +124,7 @@ public class Capabilities {
         }
         //Note: Common caps we may eventually want to proxy but currently have no use for doing so
         TileEntityBoundingBlock.proxyCapability(event, FLUID.block());
-        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL.block());
+        TileEntityBoundingBlock.proxyCapability(event, CHEMICAL_LEGACY.block());
         TileEntityBoundingBlock.proxyCapability(event, HEAT);
     }
 }

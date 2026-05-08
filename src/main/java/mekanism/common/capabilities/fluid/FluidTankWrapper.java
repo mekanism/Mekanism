@@ -34,12 +34,12 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public void setContentsUnchecked(FluidResource type, int storedAmount) {
+    public void setContentsUnchecked(FluidResource type, long storedAmount) {
         internal.setContentsUnchecked(type, storedAmount);
     }
 
     @Override
-    public void setContents(FluidResource itemType, int storedAmount) {
+    public void setContents(FluidResource itemType, long storedAmount) {
         internal.setContents(itemType, storedAmount);
     }
 
@@ -79,8 +79,8 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public int getNeeded() {
-        return internal.getNeeded();
+    public long getNeededAsLong() {
+        return internal.getNeededAsLong();
     }
 
     @Override
@@ -99,13 +99,13 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public int amount() {
-        return internal.amount();
+    public long amountAsLong() {
+        return internal.amountAsLong();
     }
 
     @Override
-    public int getLimit(FluidResource resource) {
-        return internal.getLimit(resource);
+    public long getLimitAsLong(FluidResource resource) {
+        return internal.getLimitAsLong(resource);
     }
 
     @Override

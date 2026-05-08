@@ -46,7 +46,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     @Override
     public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
         //Note: We can just use a proxied holder as the input/output restrictions are done in the tanks themselves
-        return side -> getMultiblock().getChemicalTanks(side);
+        return _ -> getMultiblock().getChemicalTanks();
     }
 
     @NotNull
@@ -78,7 +78,7 @@ public class TileEntityFusionReactorPort extends TileEntityFusionReactorBlock {
     public void addGasTargetCapability(List<CapabilityOutputTarget<IChemicalHandler>> outputTargets, Direction side) {
         BlockCapabilityCache<IChemicalHandler, @Nullable Direction> cache = chemicalCapabilityCaches.get(side);
         if (cache == null) {
-            cache = Capabilities.CHEMICAL.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
+            cache = Capabilities.CHEMICAL_LEGACY.createCache((ServerLevel) level, worldPosition.relative(side), side.getOpposite());
             chemicalCapabilityCaches.put(side, cache);
         }
         outputTargets.add(new CapabilityOutputTarget<>(cache, this::getActive));

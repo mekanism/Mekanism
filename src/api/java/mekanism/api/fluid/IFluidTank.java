@@ -42,8 +42,6 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
         setContentsUnchecked(FluidResource.of(stack), stack.amount());
     }
 
-    void setContentsUnchecked(FluidResource type, int storedAmount);
-
     /**
      * <p>
      * Inserts a {@link FluidStack} into this {@link IFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this

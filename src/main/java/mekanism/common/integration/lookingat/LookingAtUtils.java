@@ -4,10 +4,9 @@ import java.util.List;
 import java.util.Map.Entry;
 import mekanism.api.MekanismAPI;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
@@ -21,7 +20,6 @@ import mekanism.common.capabilities.fluid.FluidTankWrapper;
 import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.capabilities.merged.MergedTank.CurrentType;
-import mekanism.common.capabilities.proxy.ProxyChemicalHandler;
 import mekanism.common.content.network.ChemicalNetwork;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.lib.multiblock.IMultiblock;
@@ -197,7 +195,7 @@ public class LookingAtUtils {
     }
 
     private static void addInfo(Level level, BlockPos pos, BlockState state, @Nullable BlockEntity tile, @Nullable MultiblockData structure, LookingAtHelper info) {
-        IChemicalHandler handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapabilityIfLoaded(level, pos, state, tile, null);
         if (handler != null) {
             Holder<Chemical> fallback = MekanismAPI.EMPTY_CHEMICAL_HOLDER;
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
@@ -206,28 +204,19 @@ public class LookingAtUtils {
                     fallback = network.lastChemical;
                 }
             }
-            if (handler instanceof ProxyChemicalHandler) {
-                List<IChemicalTank> tanks = ((ProxyChemicalHandler) handler).getTanksIfMekanism();
-                if (!tanks.isEmpty()) {
-                    //If there are any tanks add them and then exit, otherwise continue on assuming it is not a mekanism handler that is wrapped
-                    for (IChemicalTank tank : tanks) {
-                        addChemicalTankInfo(info, tank, fallback);
-                    }
-                    return;
-                }
-            }
-            if (handler instanceof IMekanismChemicalHandler mekHandler) {
-                for (IChemicalTank tank : mekHandler.getChemicalTanks(null)) {
+            if (handler instanceof IMekanismResourceHandler<ChemicalResource, ?> mekHandler) {
+                for (IChemicalTank tank : (List<IChemicalTank>) mekHandler.getContainers()) {
                     addChemicalTankInfo(info, tank, fallback);
                 }
             } else {
-                for (int i = 0; i < handler.getChemicalTanks(); i++) {
-                    addChemicalInfo(info, handler.getChemicalInTank(i), handler.getChemicalTankCapacity(i), fallback);
+                for (int i = 0, size = handler.size(); i < size; i++) {
+                    ChemicalResource resource = handler.getResource(i);
+                    addChemicalInfo(info, resource.toStack(handler.getAmountAsLong(i)), handler.getCapacityAsLong(i, resource), fallback);
                 }
             }
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the chemicals in a multiblock when looking at things other than the ports
-            for (IChemicalTank tank : structure.getChemicalTanks(null)) {
+            for (IChemicalTank tank : structure.getChemicalTanks()) {
                 addChemicalTankInfo(info, tank, MekanismAPI.EMPTY_CHEMICAL_HOLDER);
             }
         }
@@ -242,7 +231,8 @@ public class LookingAtUtils {
                 return;
             }
         }
-        addChemicalInfo(info, chemicalTank.getStack(), chemicalTank.getCapacity(), fallback);
+        ChemicalResource resource = chemicalTank.getResource();
+        addChemicalInfo(info, resource.toStack(chemicalTank.amountAsLong()), chemicalTank.getLimitAsLong(resource), fallback);
     }
 
     private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, Holder<Chemical> fallback) {

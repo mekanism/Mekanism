@@ -1,15 +1,16 @@
 package mekanism.common.attachments.containers.chemical;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockChemicalTank;
 import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Special handling for the Chemical Tank block item.
@@ -33,23 +34,24 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     }
 
     @Override
-    public ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        return super.insert(stack, action.combine(!isCreative), automationType);
+    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes)
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(resource, amount, simulation, automationType);
+            }
+        }
+        return super.insert(resource, amount, transaction, automationType);
     }
 
     @Override
-    public ChemicalStack extract(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action, AutomationType automationType) {
-        return super.extract(attachedChemicals, stored, amount, action.combine(!isCreative), automationType);
-    }
-
-    /**
-     * {@inheritDoc}
-     *
-     * Note: We are only patching {@link #setStackSize(AttachedChemicals, ChemicalStack, long, Action)}, as both {@link #growStack(long, Action)} and
-     * {@link #shrinkStack(long, Action)} are wrapped through this method.
-     */
-    @Override
-    public long setStackSize(AttachedChemicals attachedChemicals, ChemicalStack stored, long amount, Action action) {
-        return super.setStackSize(attachedChemicals, stored, amount, action.combine(!isCreative));
+    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(resource, amount, simulation, automationType);
+            }
+        }
+        return super.extract(resource, amount, transaction, automationType);
     }
 }

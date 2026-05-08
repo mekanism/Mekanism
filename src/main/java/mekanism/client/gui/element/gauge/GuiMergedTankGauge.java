@@ -36,7 +36,7 @@ public class GuiMergedTankGauge extends GuiGauge<Void> implements IRecipeViewerI
         this.mergedTankSupplier = mergedTankSupplier;
         this.handlerSupplier = handlerSupplier;
         fluidGauge = addPositionOnlyChild(new GuiFluidGauge(() -> this.mergedTankSupplier.get().getFluidTank(), () -> this.handlerSupplier.get().getFluidTanks(), type, gui, x, y, width, height));
-        chemicalGauge = addPositionOnlyChild(new GuiChemicalGauge(() -> this.mergedTankSupplier.get().getChemicalTank(), () -> this.handlerSupplier.get().getChemicalTanks(null), type, gui, x, y, width, height));
+        chemicalGauge = addPositionOnlyChild(new GuiChemicalGauge(() -> this.mergedTankSupplier.get().getChemicalTank(), () -> this.handlerSupplier.get().getChemicalTanks(), type, gui, x, y, width, height));
     }
 
     public GuiMergedTankGauge setLabel(Component label) {
