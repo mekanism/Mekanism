@@ -36,7 +36,7 @@ final class ChemicalCamoClientHandler extends CamoContentClientHandler<ChemicalC
 
     @Override
     public Particle makeHitDestroyParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, ChemicalCamoContent camo, BlockPos pos) {
-        return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, camo.getChemicalHolder());
+        return new ChemicalSpriteParticle(level, x, y, z, sx, sy, sz, camo.getChemicalType());
     }
 
     @Override
@@ -46,17 +46,17 @@ final class ChemicalCamoClientHandler extends CamoContentClientHandler<ChemicalC
 
     @Override
     public void collectTintValues(ChemicalCamoContent camo, BlockAndTintGetter level, BlockPos pos, IntList tintList) {
-        tintList.add(camo.getChemicalHolder().value().getTint());
+        tintList.add(camo.getChemical().getTint());
     }
 
     @Override
     public void collectTintValues(ChemicalCamoContent camo, ItemStack stack, IntList tintList) {
-        tintList.add(camo.getChemicalHolder().value().getTint());
+        tintList.add(camo.getChemical().getTint());
     }
 
     @Override
     public int getParticleTintValue(ChemicalCamoContent camo) {
-        return camo.getChemicalHolder().value().getTint();
+        return camo.getChemical().getTint();
     }
 
     static void clearModelCache() {

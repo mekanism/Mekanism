@@ -1,6 +1,6 @@
 package mekanism.common.integration.framedblocks;
 
-import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.client.multiplayer.ClientLevel;
@@ -22,7 +22,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
     private final float vo;
     private final int brightness;
 
-    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, Holder<Chemical> chemical) {
+    ChemicalSpriteParticle(ClientLevel level, double x, double y, double z, double sx, double sy, double sz, ChemicalResource chemical) {
         super(level, x, y, z, sx, sy, sz, MekanismRenderer.getChemicalTexture(chemical));
         this.pos = BlockPos.containing(x, y, z);
         this.gravity = 1F;
@@ -31,7 +31,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.vo = random.nextFloat() * 3F;
         this.brightness = 0;
 
-        int tint = MekanismRenderer.getTint(chemical);
+        int tint = chemical.getChemical().getTint();
         this.rCol = 0.6F * ARGB.redFloat(tint);
         this.gCol = 0.6F * ARGB.greenFloat(tint);
         this.bCol = 0.6F * ARGB.blueFloat(tint);
