@@ -1,7 +1,8 @@
 {
   "gui_light": "side",
   "textures": {
-    "all": "mekanismadditions:entity/balloon"
+    "all": "mekanismadditions:entity/balloon",
+    "particle": "mekanismadditions:entity/balloon"
   },
   "elements": [
     {

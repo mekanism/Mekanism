@@ -1,6 +1,7 @@
 {
 	"textures": {
-		"1": "mekanism:block/models/seismic_vibrator_2"
+		"1": "mekanism:block/models/seismic_vibrator_2",
+		"particle": "mekanism:block/block_steel"
 	},
 	"elements": [
 		{

@@ -1,6 +1,7 @@
 {
 	"textures": {
-		"7": "mekanism:block/qio_drive_array/side"
+		"7": "mekanism:block/qio_drive_array/side",
+		"particle": "mekanism:block/qio_drive_array/side"
 	},
 	"elements": [
 		{

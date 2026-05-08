@@ -6,7 +6,8 @@
         "mekasuit_armor_body": "mekanism:entity/armor/mekasuit_armor_body",
         "leds": "mekanism:item/leds",
         "mekasuit_armor_exoskeleton": "mekanism:entity/armor/mekasuit_armor_exoskeleton",
-        "mekatool": "mekanism:entity/armor/mekatool"
+        "mekatool": "mekanism:entity/armor/mekatool",
+        "particle": "mekanism:block/block_steel"
     },
     "display": {
         "firstperson_lefthand": {
