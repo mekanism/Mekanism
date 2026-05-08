@@ -255,20 +255,22 @@ public class GuiRadialSelector extends Screen {
     private void drawTorus(GuiGraphicsExtractor guiGraphics, float startAngle, float sizeAngle, float inner, float outer, float red, float green, float blue, float alpha) {
         //RenderSystem.setShader(GameRenderer::getPositionColorShader);
         //Note: We still use the tesselator as that is what GuiGraphicsExtractor#innerBlit does, and we also need to be able to use a custom vertex mode
-        BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
-        Matrix4f matrix4f = null;//FIXME guiGraphics.pose().last().pose();
-        float draws = DRAWS * (sizeAngle / 360F);
-        for (int i = 0; i <= draws; i++) {
-            float degrees = startAngle + (i / DRAWS) * 360;
-            float angle = Mth.DEG_TO_RAD * degrees;
-            float cos = Mth.cos(angle);
-            float sin = Mth.sin(angle);
-            vertexBuffer.addVertex(matrix4f, outer * cos, outer * sin, 0)
-                  .setColor(red, green, blue, alpha);
-            vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
-                  .setColor(red, green, blue, alpha);
+        if (false) {
+            BufferBuilder vertexBuffer = Tesselator.getInstance().begin(Mode.TRIANGLE_STRIP, DefaultVertexFormat.POSITION_COLOR);
+            Matrix4f matrix4f = null;//FIXME guiGraphics.pose().last().pose();
+            float draws = DRAWS * (sizeAngle / 360F);
+            for (int i = 0; i <= draws; i++) {
+                float degrees = startAngle + (i / DRAWS) * 360;
+                float angle = Mth.DEG_TO_RAD * degrees;
+                float cos = Mth.cos(angle);
+                float sin = Mth.sin(angle);
+                vertexBuffer.addVertex(matrix4f, outer * cos, outer * sin, 0)
+                      .setColor(red, green, blue, alpha);
+                vertexBuffer.addVertex(matrix4f, inner * cos, inner * sin, 0)
+                      .setColor(red, green, blue, alpha);
+            }
+            //BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
         }
-        //BufferUploader.drawWithShader(vertexBuffer.buildOrThrow());
     }
 
     @Nullable
