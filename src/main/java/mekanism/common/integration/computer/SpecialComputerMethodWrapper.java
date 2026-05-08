@@ -48,7 +48,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static FluidStack getStack(IFluidTank tank) {
-            return tank.getFluid();
+            return tank.getResource().toStack(tank.amount());
         }
 
         @WrappingComputerMethodIndex(1)
@@ -66,7 +66,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IFluidTank tank) {
-            return tank.amount() / (double) tank.getCapacity();
+            return tank.amount() / (double) tank.getCurrentLimit();
         }
     }
 

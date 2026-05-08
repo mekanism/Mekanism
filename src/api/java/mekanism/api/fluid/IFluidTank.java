@@ -11,6 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @NothingNullByDefault
 public interface IFluidTank extends IResourceContainer<FluidResource> {
@@ -63,34 +64,17 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      */
     @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isValid(FluidResource.of(stack))) {
+        if (stack.isEmpty()) {
             //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
             return stack;
         }
-        int needed = getNeeded();
-        if (needed <= 0) {
-            //Fail if we are a full tank
-            return stack;
-        }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = getResource().matches(stack))) {
-            int toAdd = Math.min(stack.amount(), needed);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = insert(FluidResource.of(stack), stack.amount(), transaction, automationType);
             if (action.execute()) {
-                //If we want to actually insert the fluid, then update the current fluid
-                if (sameType) {
-                    //We can just grow our stack by the amount we want to increase it
-                    // Note: this also will mark that the contents changed
-                    growStack(toAdd, action);
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Note: this also will mark that the contents changed
-                    setStack(stack.copyWithAmount(toAdd));
-                }
+                transaction.commit();
             }
-            return stack.copyWithAmount(stack.amount() - toAdd);
+            return stack.copyWithAmount(stack.amount() - inserted);
         }
-        //If we didn't accept this fluid, then just return the given stack
-        return stack;
     }
 
     /**
@@ -115,12 +99,14 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
         if (isEmpty() || amount < 1) {
             return FluidStack.EMPTY;
         }
-        FluidStack ret = getResource().toStack(Math.min(amount(), amount));
-        if (!ret.isEmpty() && action.execute()) {
-            // Note: this also will mark that the contents changed
-            shrinkStack(ret.amount(), action);
+        try (Transaction transaction = Transaction.openRoot()) {
+            FluidResource resource = getResource();
+            int extracted = extract(resource, amount, transaction, automationType);
+            if (action.execute()) {
+                transaction.commit();
+            }
+            return resource.toStack(extracted);
         }
-        return ret;
     }
 
     /**
@@ -147,7 +133,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
             }
             return 0;
         }
-        int maxStackSize = getCapacity();
+        int maxStackSize = getCurrentLimit();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }

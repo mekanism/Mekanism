@@ -17,6 +17,7 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -712,14 +713,14 @@ public class WorldUtils {
         }
     }
 
-    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull FluidStack fluidStack, @Nullable SoundEvent soundEvent) {
+    public static void playFillSound(@Nullable Player player, LevelAccessor world, BlockPos pos, @NotNull TypedInstance<Fluid> fluidInstance, @Nullable SoundEvent soundEvent) {
         if (soundEvent == null) {
-            Fluid fluid = fluidStack.getFluid();
+            Fluid fluid = fluidInstance.typeHolder().value();
             Optional<SoundEvent> pickupSound = fluid.getPickupSound();
             //noinspection OptionalIsPresent - Capturing lambdas
             if (pickupSound.isPresent()) {
                 soundEvent = pickupSound.get();
-            } else {
+            } else {//TODO - 26.1: Should we query the fluid type before the fluid#getPickupSound?
                 soundEvent = fluid.getFluidType().getSound(player, world, pos, SoundActions.BUCKET_FILL);
             }
         }

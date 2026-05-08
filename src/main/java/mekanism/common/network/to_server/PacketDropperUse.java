@@ -9,7 +9,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
-import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
@@ -25,6 +24,7 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -157,7 +157,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                 //Insert fluid into dropper
                 transferBetween(tank.getResource(), tank.amount(), player, UseDropperAction.FILL,
                       tank, (target, type, amount, transaction) -> target.extract(type, amount, transaction, AutomationType.MANUAL),
-                      dropperHandler, this::insert
+                      dropperHandler, ResourceUtils::insertManual
                 );
             } else if (action == DropperAction.DRAIN_DROPPER) {
                 //Extract fluid from dropper
@@ -178,7 +178,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                         }
                     }
                     transferBetween(currentType, tankNeeded, player, UseDropperAction.DRAIN,
-                          dropperHandler, this::extract,
+                          dropperHandler, ResourceUtils::extractManual,
                           tank, (target, type, amount, transaction) -> target.insert(type, amount, transaction, AutomationType.MANUAL)
                     );
                 }
@@ -210,22 +210,6 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                 }
             }
         }
-    }
-
-    private <RESOURCE extends Resource> int extract(ResourceHandler<RESOURCE> handler, RESOURCE resource, int amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.extract(resource, amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.extract(resource, amount, transaction);
-    }
-
-    private <RESOURCE extends Resource> int insert(ResourceHandler<RESOURCE> handler, RESOURCE resource, int amount, TransactionContext transaction) {
-        if (handler instanceof IMekanismResourceHandler<RESOURCE, ?> mekHandler) {
-            //Ensure droppers use the manual automation type
-            return mekHandler.insert(resource, amount, transaction, AutomationType.MANUAL);
-        }
-        return handler.insert(resource, amount, transaction);
     }
 
     private static void transferBetweenTanks(IChemicalTank drainTank, IChemicalTank fillTank, Player player) {

@@ -48,7 +48,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
@@ -137,14 +136,14 @@ public class LookingAtUtils {
             if (displayFluidTanks && tile instanceof TileEntityUpdateable) {
                 ResourceHandler<FluidResource> fluidCapability = Capabilities.FLUID.getCapabilityIfLoaded(level, pos, state, tile, null);
                 if (fluidCapability != null) {
-                    FluidStack fallback = FluidStack.EMPTY;
+                    FluidResource fallback = FluidResource.EMPTY;
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
-                        fallback = pipe.getTransmitter().getTransmitterNetwork().lastFluid;
+                        fallback = FluidResource.of(pipe.getTransmitter().getTransmitterNetwork().lastFluid);
                     }
                     displayFluid(info, fluidCapability, fallback);
                 } else if (structure != null && structure.isFormed()) {
                     //Special handling to allow viewing the fluid in a multiblock when looking at things other than the ports
-                    displayFluid(info, structure.getFluidTanks(), FluidStack.EMPTY);
+                    displayFluid(info, structure.getFluidTanks(), FluidResource.EMPTY);
                 }
             }
             //Chemicals
@@ -152,7 +151,7 @@ public class LookingAtUtils {
         }
     }
 
-    private static void displayFluid(LookingAtHelper info, ResourceHandler<FluidResource> fluidHandler, FluidStack fallback) {
+    private static void displayFluid(LookingAtHelper info, ResourceHandler<FluidResource> fluidHandler, FluidResource fallback) {
         if (fluidHandler instanceof IMekanismResourceHandler<FluidResource, ?> mekFluidHandler) {
             //TODO - 26.1: Re-evaluate this. I don't think it currently works, but if we make it so that proxy resource handler implements IMekanismResourceHandler
             // then maybe it has a chance?
@@ -161,12 +160,12 @@ public class LookingAtUtils {
             //Fallback handling if it is not our fluid handler (probably never gets used)
             for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
                 FluidResource resource = fluidHandler.getResource(tank);
-                addFluidInfo(info, resource.toStack(fluidHandler.getAmountAsInt(tank)), fluidHandler.getCapacityAsInt(tank, resource), fallback);
+                addFluidInfo(info, resource, fluidHandler.getAmountAsInt(tank), fluidHandler.getCapacityAsInt(tank, resource), fallback);
             }
         }
     }
 
-    private static void displayFluid(LookingAtHelper info, List<IFluidTank> fluidTanks, FluidStack fallback) {
+    private static void displayFluid(LookingAtHelper info, List<IFluidTank> fluidTanks, FluidResource fallback) {
         for (IFluidTank fluidTank : fluidTanks) {
             if (fluidTank instanceof FluidTankWrapper wrapper) {
                 MergedTank mergedTank = wrapper.getMergedTank();
@@ -176,17 +175,18 @@ public class LookingAtUtils {
                     continue;
                 }
             }
-            addFluidInfo(info, fluidTank.getFluid(), fluidTank.getCapacity(), fallback);
+            FluidResource storedType = fluidTank.getResource();
+            addFluidInfo(info, storedType, fluidTank.amount(), fluidTank.getLimit(storedType), fallback);
         }
     }
 
-    private static void addFluidInfo(LookingAtHelper info, FluidStack fluidInTank, int capacity, FluidStack fallback) {
-        if (!fluidInTank.isEmpty()) {
-            info.addText(MekanismLang.LIQUID.translate(fluidInTank));
+    private static void addFluidInfo(LookingAtHelper info, FluidResource fluidType, int stored, int capacity, FluidResource fallback) {
+        if (!fluidType.isEmpty()) {
+            info.addText(MekanismLang.LIQUID.translate(fluidType));
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fallback));
         }
-        info.addFluidElement(new FluidElement(fluidInTank, capacity));
+        info.addFluidElement(new FluidElement(fluidType, stored, capacity));
     }
 
     private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {

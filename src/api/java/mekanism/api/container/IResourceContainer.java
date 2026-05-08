@@ -14,6 +14,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     RESOURCE getResource();
 
     //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
+    // It might be worth it, so that then fluids and chemicals can have storage of longs
     int amount();
 
     void setContents(RESOURCE type, int storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful

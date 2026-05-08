@@ -58,6 +58,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorMultiblockData extends MultiblockData {
@@ -336,12 +338,17 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
             int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
-            waterToVaporize = Math.min(waterToVaporize, Math.min(waterTank.amount(), Ints.saturatedCast(steamTank.getNeeded())));
-            if (waterToVaporize > 0) {
-                MekanismUtils.logMismatchedStackSize(waterTank.shrinkStack(waterToVaporize, Action.EXECUTE), waterToVaporize);
-                steamTank.insert(MekanismChemicals.STEAM.asStack(waterToVaporize), Action.EXECUTE, AutomationType.INTERNAL);
-                caseWaterHeat = waterToVaporize * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
-                heatCapacitor.handleHeat(-caseWaterHeat);
+            FluidResource water = waterTank.getResource();
+            if (!water.isEmpty()) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, Ints.saturatedCast(steamTank.getNeeded())), transaction, AutomationType.INTERNAL);
+                    if (vaporized > 0) {
+                        steamTank.insert(MekanismChemicals.STEAM.asStack(vaporized), Action.EXECUTE, AutomationType.INTERNAL);
+                        caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
+                        heatCapacitor.handleHeat(-caseWaterHeat);
+                        transaction.commit();
+                    }
+                }
             }
         }
 
