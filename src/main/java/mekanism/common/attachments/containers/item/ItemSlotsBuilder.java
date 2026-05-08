@@ -1,5 +1,6 @@
 package mekanism.common.attachments.containers.item;
 
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -7,21 +8,22 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.ContainsRecipe;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.oredictionificator.OredictionificatorItemFilter;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -135,7 +137,7 @@ public class ItemSlotsBuilder {
     private ItemSlotsBuilder() {
     }
 
-    public BaseContainerCreator<AttachedItems, ComponentBackedInventorySlot> build() {
+    public BaseContainerCreator<AttachedResources<ItemResource>, ComponentBackedInventorySlot> build() {
         return new BaseInventorySlotCreator(slotCreators);
     }
 
@@ -270,13 +272,13 @@ public class ItemSlotsBuilder {
             IFluidHandlerItem itemFluidHandler = FluidInventorySlot.tryGetFluidHandlerUnstacked(itemType);
             if (itemFluidHandler != null) {
                 //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-                AttachedFluids attachedFluids = attachedTo.getOrDefault(MekanismDataComponents.ATTACHED_FLUIDS, AttachedFluids.EMPTY);
-                FluidStack fluidInTank = attachedFluids.getOrDefault(tankIndex);
+                AttachedResources<FluidResource> attachedFluids = ContainerType.FLUID.getOrEmpty(attachedTo);
+                LargeResourceStack<FluidResource> fluidInTank = attachedFluids.getOrNull(tankIndex);
                 //True if the tanks contents are valid, and we can fill the item with any of the contents
-                if (fluidInTank.isEmpty()) {
+                if (fluidInTank == null || fluidInTank.isEmpty()) {
                     return FluidInventorySlot.isNonFullFluidContainer(itemFluidHandler);
                 }
-                return itemFluidHandler.fill(fluidInTank.copy(), FluidAction.SIMULATE) > 0;
+                return itemFluidHandler.fill(fluidInTank.resource().toStack(Ints.saturatedCast(fluidInTank.amount())), FluidAction.SIMULATE) > 0;
             }
             return false;
         }, ConstantPredicates.alwaysTrue()));
@@ -377,9 +379,9 @@ public class ItemSlotsBuilder {
         IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
         if (handler != null) {
             //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-            AttachedChemicals containers = ContainerType.CHEMICAL.getOrEmpty(attachedTo);
-            ChemicalStack chemicalInTank = containers.getOrDefault(tankIndex);
-            if (chemicalInTank.isEmpty()) {
+            AttachedResources<ChemicalResource> containers = ContainerType.CHEMICAL.getOrEmpty(attachedTo);
+            LargeResourceStack<ChemicalResource> chemicalInTank = containers.getOrNull(tankIndex);
+            if (chemicalInTank == null || chemicalInTank.isEmpty()) {
                 //If the chemical tank is empty, accept the chemical item as long as it is not full
                 for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
                     if (handler.getChemicalInTank(tank).amount() < handler.getChemicalTankCapacity(tank)) {
@@ -390,7 +392,7 @@ public class ItemSlotsBuilder {
                 return false;
             }
             //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-            return handler.insertChemical(chemicalInTank, Action.SIMULATE).amount() < chemicalInTank.amount();
+            return handler.insertChemical(chemicalInTank.resource().toStack(chemicalInTank.amount()), Action.SIMULATE).amount() < chemicalInTank.amount();
         }
         return false;
     }
@@ -555,15 +557,15 @@ public class ItemSlotsBuilder {
               (itemType, _) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
     }
 
-    private static class BaseInventorySlotCreator extends BaseContainerCreator<AttachedItems, ComponentBackedInventorySlot> {
+    private static class BaseInventorySlotCreator extends BaseContainerCreator<AttachedResources<ItemResource>, ComponentBackedInventorySlot> {
 
         public BaseInventorySlotCreator(List<IBasicContainerCreator<? extends ComponentBackedInventorySlot>> creators) {
             super(creators);
         }
 
         @Override
-        public AttachedItems initStorage(int containers) {
-            return AttachedItems.create(containers);
+        public AttachedResources<ItemResource> initStorage(int containers) {
+            return AttachedResources.create(containers, ItemResource.EMPTY);
         }
     }
 }

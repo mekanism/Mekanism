@@ -11,6 +11,7 @@ import java.util.function.UnaryOperator;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.FilterAware;
@@ -73,7 +74,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ItemStack failureItem(int count) {
-        return new ItemStack(ITEM_TO_REPLACE, count);
+        return failureItemType().toStack(count);
     }
 
     public FluidResource failureFluidType() {
@@ -85,7 +86,11 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public FluidStack failureFluid(int amount) {
-        return new FluidStack(FLUID_TO_REPLACE, amount);
+        return failureFluidType().toStack(amount);
+    }
+
+    public ChemicalResource failureChemicalType() {
+        return ChemicalResource.of(CHEMICAL_TO_REPLACE);
     }
 
     public ChemicalStack failureChemical() {
@@ -93,7 +98,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ChemicalStack failureChemical(long amount) {
-        return new ChemicalStack(CHEMICAL_TO_REPLACE, amount);
+        return failureChemicalType().toStack(amount);
     }
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {

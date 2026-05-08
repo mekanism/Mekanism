@@ -207,7 +207,7 @@ public class InputHelper {
 
         @Override
         public ChemicalStack getInput() {
-            return tank.getStack();
+            return tank.getResource().toStack(tank.amountAsLong());
         }
 
         @Override

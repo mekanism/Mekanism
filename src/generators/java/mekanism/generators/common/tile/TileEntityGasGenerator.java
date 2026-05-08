@@ -166,7 +166,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
         private void recheckOutput(@NotNull ChemicalResource type, ChemicalResource oldChemical) {
             if (!type.equals(oldChemical) && !type.isEmpty()) {
-                cachedFuel = isEmpty() ? null : getStack().getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
+                cachedFuel = isEmpty() ? null : this.getStack().getData(IMekanismDataMapTypes.INSTANCE.chemicalFuel());
             }
         }
     }

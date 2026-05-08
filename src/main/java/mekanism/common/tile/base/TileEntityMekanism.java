@@ -17,8 +17,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.IResourceContainer;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
@@ -33,13 +35,11 @@ import mekanism.api.text.TextComponentUtil;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FilterAware;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
 import mekanism.common.attachments.containers.heat.HeatCapacitorData;
-import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeGui;
 import mekanism.common.block.attribute.AttributeHasBounding;
@@ -86,7 +86,6 @@ import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
 import mekanism.common.lib.LastEnergyTracker;
@@ -147,8 +146,9 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -1234,35 +1234,37 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         setChanged();
     }
 
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
-        List<ItemStack> stacks = attachedItems.containers();
-        int size = stacks.size();
-        if (size == slots.size()) {
+    private <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void applyContainers(List<CONTAINER> containers,
+          AttachedResources<RESOURCE> attachedResources) {
+        List<LargeResourceStack<RESOURCE>> attachedContainers = attachedResources.containers();
+        int size = attachedContainers.size();
+        if (size == containers.size()) {
             for (int i = 0; i < size; i++) {
-                ItemStack stack = stacks.get(i);
-                IInventorySlot slot = slots.get(i);
-                ItemResource itemType = ItemResource.of(stack);
-                int amount = stack.count();
-                if (slot instanceof BasicInventorySlot basicSlot) {
-                    basicSlot.setContentsUnchecked(itemType, amount);
-                } else {
-                    slot.setContents(itemType, amount);
-                }
+                LargeResourceStack<RESOURCE> stack = attachedContainers.get(i);
+                containers.get(i).setContentsUnchecked(stack.resource(), stack.amount());
             }
         }
     }
 
-    @Nullable
-    public AttachedItems collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
+    private <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> AttachedResources<RESOURCE> collectContainers(List<CONTAINER> containers) {
         boolean hasNonEmpty = false;
-        List<ItemStack> stacks = new ArrayList<>(slots.size());
-        for (IInventorySlot slot : slots) {
-            stacks.add(slot.getResource().toStack(slot.amount()));
-            if (!slot.isEmpty()) {
+        List<LargeResourceStack<RESOURCE>> stacks = new ArrayList<>(containers.size());
+        for (CONTAINER container : containers) {
+            stacks.add(new LargeResourceStack<>(container.getResource(), container.amountAsLong()));
+            if (!container.isEmpty()) {
                 hasNonEmpty = true;
             }
         }
-        return hasNonEmpty ? new AttachedItems(stacks) : null;
+        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
+    }
+
+    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedResources<ItemResource> attachedItems) {
+        applyContainers(slots, attachedItems);
+    }
+
+    @Nullable
+    public AttachedResources<ItemResource> collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
+        return collectContainers(slots);
     }
     //End methods ITileContainer
 
@@ -1307,32 +1309,27 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
     }
 
-    public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedChemicals attachedChemicals) {
-        List<ChemicalStack> stacks = attachedChemicals.containers();
-        int size = stacks.size();
-        if (size == tanks.size()) {
-            for (int i = 0; i < size; i++) {
-                tanks.get(i).setStackUnchecked(stacks.get(i).copy());
-            }
-        }
+    public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedResources<ChemicalResource> attachedChemicals) {
+        applyContainers(tanks, attachedChemicals);
     }
 
     @Nullable
-    public AttachedChemicals collectChemicalTanks(DataComponentMap.Builder builder, List<IChemicalTank> tanks) {
+    public AttachedResources<ChemicalResource> collectChemicalTanks(DataComponentMap.Builder builder, List<IChemicalTank> tanks) {
         //Skip tiles that have no gas tanks and skip the creative chemical tank
         boolean hasNonEmpty = false;
-        List<ChemicalStack> stacks = new ArrayList<>(tanks.size());
+        List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(tanks.size());
         boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation();
         for (IChemicalTank tank : tanks) {
             if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
-                stacks.add(ChemicalStack.EMPTY);
+                //TODO - 26.1: Should this be a constant
+                stacks.add(new LargeResourceStack<>(ChemicalResource.EMPTY, 0));
             } else {
                 hasNonEmpty = true;
-                stacks.add(tank.getStack().copy());
+                stacks.add(new LargeResourceStack<>(tank.getResource(), tank.amountAsLong()));
             }
         }
-        return hasNonEmpty ? new AttachedChemicals(stacks) : null;
+        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
     }
     //End methods IMekanismChemicalHandler
 
@@ -1354,27 +1351,13 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedFluids attachedFluids) {
-        List<FluidStack> stacks = attachedFluids.containers();
-        int size = stacks.size();
-        if (size == tanks.size()) {
-            for (int i = 0; i < size; i++) {
-                tanks.get(i).setStackUnchecked(stacks.get(i).copy());
-            }
-        }
+    public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedResources<FluidResource> attachedFluids) {
+        applyContainers(tanks, attachedFluids);
     }
 
     @Nullable
-    public AttachedFluids collectFluidTanks(DataComponentMap.Builder builder, List<IFluidTank> tanks) {
-        boolean hasNonEmpty = false;
-        List<FluidStack> stacks = new ArrayList<>(tanks.size());
-        for (IFluidTank tank : tanks) {
-            stacks.add(tank.getResource().toStack(tank.amount()));
-            if (!tank.isEmpty()) {
-                hasNonEmpty = true;
-            }
-        }
-        return hasNonEmpty ? new AttachedFluids(stacks) : null;
+    public AttachedResources<FluidResource> collectFluidTanks(DataComponentMap.Builder builder, List<IFluidTank> tanks) {
+        return collectContainers(tanks);
     }
     //End methods IMekanismFluidHandler
 

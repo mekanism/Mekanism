@@ -9,13 +9,13 @@ import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.attachments.containers.IAttachedContainers;
+import mekanism.common.attachments.containers.IAttachedContainerStacks;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 
 @NothingNullByDefault
-public record AttachedEnergy(List<Long> containers) implements IAttachedContainers<Long, AttachedEnergy> {
+public record AttachedEnergy(List<Long> containers) implements IAttachedContainerStacks<Long, AttachedEnergy> {
 
     public static final AttachedEnergy EMPTY = new AttachedEnergy(Collections.emptyList());
 

@@ -3,7 +3,9 @@ package mekanism.common.registries;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -18,11 +20,9 @@ import mekanism.common.attachments.StabilizedChunks;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.attachments.component.AttachedSideConfig;
 import mekanism.common.attachments.component.UpgradeAware;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
-import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.attachments.qio.PortableDashboardContents;
@@ -54,6 +54,8 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -75,20 +77,20 @@ public class MekanismDataComponents {
                 .networkSynchronized(AttachedEnergy.STREAM_CODEC)
                 .cacheEncoding()
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedItems>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
-          builder -> builder.persistent(AttachedItems.CODEC)
-                .networkSynchronized(AttachedItems.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
+          builder -> builder.persistent(AttachedResources.codec(ItemResource.OPTIONAL_CODEC, ItemResource.EMPTY, SerializationConstants.ITEMS))
+                .networkSynchronized(AttachedResources.streamCodec(ItemResource.STREAM_CODEC))
                 .cacheEncoding()
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedFluids>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
-          builder -> builder.persistent(AttachedFluids.CODEC)
-                .networkSynchronized(AttachedFluids.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
+          builder -> builder.persistent(AttachedResources.codec(FluidResource.OPTIONAL_CODEC, FluidResource.EMPTY, SerializationConstants.FLUID_TANKS))
+                .networkSynchronized(AttachedResources.streamCodec(FluidResource.STREAM_CODEC))
                 .cacheEncoding()
     );
 
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedChemicals>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
-          builder -> builder.persistent(AttachedChemicals.CODEC)
-                .networkSynchronized(AttachedChemicals.STREAM_CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
+          builder -> builder.persistent(AttachedResources.codec(ChemicalResource.OPTIONAL_CODEC, ChemicalResource.EMPTY, SerializationConstants.CHEMICAL_TANKS))
+                .networkSynchronized(AttachedResources.streamCodec(ChemicalResource.STREAM_CODEC))
                 .cacheEncoding()
     );
 

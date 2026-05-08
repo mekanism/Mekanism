@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
@@ -26,7 +27,7 @@ public class ChemicalTanksBuilder {
     protected ChemicalTanksBuilder() {
     }
 
-    public BaseContainerCreator<AttachedChemicals, ComponentBackedChemicalTank> build() {
+    public BaseContainerCreator<AttachedResources<ChemicalResource>, ComponentBackedChemicalTank> build() {
         return new BaseChemicalTankBuilder(tankCreators);
     }
 
@@ -64,15 +65,15 @@ public class ChemicalTanksBuilder {
         return this;
     }
 
-    private static class BaseChemicalTankBuilder extends BaseContainerCreator<AttachedChemicals, ComponentBackedChemicalTank> {
+    private static class BaseChemicalTankBuilder extends BaseContainerCreator<AttachedResources<ChemicalResource>, ComponentBackedChemicalTank> {
 
         public BaseChemicalTankBuilder(List<IBasicContainerCreator<? extends ComponentBackedChemicalTank>> creators) {
             super(creators);
         }
 
         @Override
-        public AttachedChemicals initStorage(int containers) {
-            return AttachedChemicals.create(containers);
+        public AttachedResources<ChemicalResource> initStorage(int containers) {
+            return AttachedResources.create(containers, ChemicalResource.EMPTY);
         }
     }
 }

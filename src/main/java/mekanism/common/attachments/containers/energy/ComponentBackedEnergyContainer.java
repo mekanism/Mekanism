@@ -34,11 +34,6 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    protected Long copy(Long toCopy) {
-        return toCopy;
-    }
-
-    @Override
     protected boolean isEmpty(Long value) {
         return value <= 0L;
     }

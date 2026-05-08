@@ -30,12 +30,6 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
-    protected HeatCapacitorData copy(HeatCapacitorData toCopy) {
-        //HeatCapacitorData is already immutable, so we don't need to copy it
-        return toCopy;
-    }
-
-    @Override
     protected boolean isEmpty(HeatCapacitorData value) {
         return value.equals(defaultData);
     }

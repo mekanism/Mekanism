@@ -6,6 +6,7 @@ import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainsRecipe;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
@@ -26,7 +27,7 @@ public class FluidTanksBuilder {
     private FluidTanksBuilder() {
     }
 
-    public BaseContainerCreator<AttachedFluids, ComponentBackedFluidTank> build() {
+    public BaseContainerCreator<AttachedResources<FluidResource>, ComponentBackedFluidTank> build() {
         return new BaseFluidTankCreator(tankCreators);
     }
 
@@ -64,15 +65,15 @@ public class FluidTanksBuilder {
         return this;
     }
 
-    private static class BaseFluidTankCreator extends BaseContainerCreator<AttachedFluids, ComponentBackedFluidTank> {
+    private static class BaseFluidTankCreator extends BaseContainerCreator<AttachedResources<FluidResource>, ComponentBackedFluidTank> {
 
         public BaseFluidTankCreator(List<IBasicContainerCreator<? extends ComponentBackedFluidTank>> creators) {
             super(creators);
         }
 
         @Override
-        public AttachedFluids initStorage(int containers) {
-            return AttachedFluids.create(containers);
+        public AttachedResources<FluidResource> initStorage(int containers) {
+            return AttachedResources.create(containers, FluidResource.EMPTY);
         }
     }
 }

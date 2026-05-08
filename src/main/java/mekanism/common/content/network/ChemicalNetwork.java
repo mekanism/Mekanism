@@ -100,14 +100,14 @@ public class ChemicalNetwork extends DynamicBufferedNetwork<IChemicalHandler, Ch
 
     private void adoptBuffer(ChemicalNetwork net) {
         IChemicalTank other = net.getChemicalTank();
-        chemicalTank.setStack(other.getStack().copy());
+        chemicalTank.setStack(other.getResource().toStack(other.amountAsLong()));
         other.setEmpty();
     }
 
     @NotNull
     @Override
     public ChemicalStack getBuffer() {
-        return chemicalTank.getStack().copy();
+        return chemicalTank.getResource().toStack(chemicalTank.amountAsLong());
     }
 
     @Override

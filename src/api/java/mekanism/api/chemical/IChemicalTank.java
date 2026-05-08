@@ -28,7 +28,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      *
      * @return {@link ChemicalStack} in this tank. EMPTY instance of the {@link ChemicalStack} if the tank is empty.
      */
-    default ChemicalStack getStack() {//TODO - 26.1: Remove this?
+    default ChemicalStack getStack() {
         return getResource().toStack(amountAsLong());
     }
 
@@ -130,7 +130,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
         if (isEmpty() || amount < 1) {
             return ChemicalStack.EMPTY;
         }
-        ChemicalStack ret = getStack().copyWithAmount(Math.min(amountAsLong(), amount));
+        ChemicalStack ret = getResource().toStack(Math.min(amountAsLong(), amount));
         if (!ret.isEmpty() && action.execute()) {
             // Note: this also will mark that the contents changed
             shrinkStack(ret.amount(), action);
@@ -201,7 +201,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
             //If our size is not changing, or we are only simulating the change, don't do anything
             return amount;
         }
-        setStack(getStack().copyWithAmount(amount));
+        setContents(getResource(), amount);
         return amount;
     }
 
@@ -267,7 +267,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
      */
     default boolean isTypeEqual(ChemicalStack other) {
-        return ChemicalStack.isSameChemical(getStack(), other);
+        return getResource().matches(other);
     }
 
     /**

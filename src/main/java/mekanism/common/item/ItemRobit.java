@@ -3,6 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.robit.RobitSkin;
@@ -17,7 +18,6 @@ import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.SecurityObject;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.network.to_client.security.PacketSyncSecurity;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismEntityTypes;
@@ -117,17 +117,9 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     ComponentBackedItemHandler stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
                     if (stackInventory != null) {
                         for (int slot = 0, size = robitSlots.size(); slot < stackInventory.size() && slot < size; slot++) {
-                            ItemStack stackInSlot = stackInventory.getContents(slot);
-                            if (stackInSlot.isEmpty()) {
-                                continue;
-                            }
-                            ItemResource itemType = ItemResource.of(stackInSlot);
-                            int stackSize = stackInSlot.count();
-                            IInventorySlot robitSlot = robitSlots.get(slot);
-                            if (robitSlot instanceof BasicInventorySlot basicInventorySlot) {
-                                basicInventorySlot.setContentsUnchecked(itemType, stackSize);
-                            } else {
-                                robitSlot.setContents(itemType, stackSize);
+                            LargeResourceStack<ItemResource> stackInSlot = stackInventory.getContents(slot);
+                            if (!stackInSlot.isEmpty()) {//TODO - 26.1: Do we want to set this anyway?
+                                robitSlots.get(slot).setContentsUnchecked(stackInSlot.resource(), stackInSlot.amount());
                             }
                         }
                     }

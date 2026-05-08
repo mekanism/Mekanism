@@ -4,9 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.attachments.containers.item.AttachedItems;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
@@ -15,7 +16,6 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.registries.MekanismBlocks;
@@ -24,7 +24,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -73,8 +72,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
     }
 
     @Override
-    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedItems attachedItems) {
-        List<ItemStack> stacks = attachedItems.containers();
+    public void applyInventorySlots(DataComponentGetter input, List<IInventorySlot> slots, AttachedResources<ItemResource> attachedItems) {
+        List<LargeResourceStack<ItemResource>> stacks = attachedItems.containers();
         int size = stacks.size();
         if (size == slots.size()) {
             for (int i = 0; i < size; i++) {
@@ -82,14 +81,8 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 if (slot instanceof CraftingWindowOutputInventorySlot) {
                     slot.setEmpty();
                 } else {
-                    ItemStack stack = stacks.get(i);
-                    ItemResource itemType = ItemResource.of(stack);
-                    int amount = stack.count();
-                    if (slot instanceof BasicInventorySlot basicSlot) {
-                        basicSlot.setContentsUnchecked(itemType, amount);
-                    } else {
-                        slot.setContents(itemType, amount);
-                    }
+                    LargeResourceStack<ItemResource> stack = stacks.get(i);
+                    slot.setContentsUnchecked(stack.resource(), stack.amount());
                 }
             }
         }
@@ -97,22 +90,23 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
 
     @Nullable
     @Override
-    public AttachedItems collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
+    public AttachedResources<ItemResource> collectInventorySlots(DataComponentMap.Builder builder, List<IInventorySlot> slots) {
         boolean hasNonEmpty = false;
-        List<ItemStack> stacks = new ArrayList<>(slots.size());
+        List<LargeResourceStack<ItemResource>> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            ItemStack stack;
+            LargeResourceStack<ItemResource> stack;
             if (slot instanceof CraftingWindowOutputInventorySlot) {
-                stack = ItemStack.EMPTY;
+                //TODO - 26.1: Do we want to define this as a constant somewhere?
+                stack = new LargeResourceStack<>(ItemResource.EMPTY, 0);
             } else {
-                stack = slot.getResource().toStack(slot.amount());
+                stack = new LargeResourceStack<>(slot.getResource(), slot.amountAsLong());
             }
             stacks.add(stack);
             if (!stack.isEmpty()) {
                 hasNonEmpty = true;
             }
         }
-        return hasNonEmpty ? new AttachedItems(stacks) : null;
+        return hasNonEmpty ? new AttachedResources<ItemResource>(stacks) : null;
     }
 
     @Override

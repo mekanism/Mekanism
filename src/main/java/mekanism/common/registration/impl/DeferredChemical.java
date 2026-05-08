@@ -1,6 +1,7 @@
 package mekanism.common.registration.impl;
 
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
@@ -29,5 +30,9 @@ public class DeferredChemical<TYPE extends Chemical> extends MekanismDeferredHol
 
     public ChemicalStack asStack(long size) {
         return new ChemicalStack(this, size);
+    }
+
+    public ChemicalResource asResource() {
+        return ChemicalResource.of(this);
     }
 }

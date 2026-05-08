@@ -10,7 +10,6 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
@@ -33,12 +32,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         this.parent = null;
         for (SlotData slotData : loadedData) {
             IInventorySlot slot = slots.get(slotData.slot);
-            if (slot instanceof BasicInventorySlot basicInventorySlot) {
-                basicInventorySlot.setContentsUnchecked(slotData.resource(), slotData.amount());
-            } else {
-                //shouldn't happen, but just in case
-                slot.setContents(slotData.resource(), slotData.amount());
-            }
+            slot.setContentsUnchecked(slotData.resource(), slotData.amount());
         }
     }
 

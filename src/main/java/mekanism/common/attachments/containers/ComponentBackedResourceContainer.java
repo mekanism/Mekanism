@@ -1,20 +1,25 @@
 package mekanism.common.attachments.containers;
 
 import com.google.common.primitives.Ints;
+import com.mojang.serialization.Codec;
+import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IResourceContainer;
+import mekanism.api.container.LargeResourceStack;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
-public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource, TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>>
-      extends ComponentBackedContainer<TYPE, ATTACHED> implements IResourceContainer<RESOURCE> {
+public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
@@ -30,18 +35,27 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         this.limit = limit;
     }
 
-    protected abstract RESOURCE asResource(TYPE stack);
+    protected abstract RESOURCE getEmptyResource();
 
-    protected abstract long getAmountAsLong(TYPE stack);
+    protected abstract Codec<RESOURCE> getResourceCodec();
+
+    @Override
+    protected boolean isEmpty(LargeResourceStack<RESOURCE> stack) {
+        return stack.isEmpty();
+    }
+
+    protected LargeResourceStack<RESOURCE> getResourceStack() {
+        return getContents(getAttached());
+    }
 
     @Override
     public RESOURCE getResource() {
-        return asResource(getContents(getAttached()));
+        return getResourceStack().resource();
     }
 
     @Override
     public long amountAsLong() {
-        return getAmountAsLong(getContents(getAttached()));
+        return getResourceStack().amount();
     }
 
     @Override
@@ -55,7 +69,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         setContents(getAttached(), type, storedAmount);
     }
 
-    protected abstract void setContents(ATTACHED attached, RESOURCE type, long storedAmount);
+    protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, long storedAmount) {
+        setContents(attached, new LargeResourceStack<>(type, storedAmount));
+    }
 
     @Override
     public long getLimitAsLong(RESOURCE resource) {
@@ -97,12 +113,12 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             //"Fail quick" if the given stack is empty
             return 0;
         }
-        ATTACHED attached = getAttached();
-        TYPE current = getContents(attached);
-        return insert(attached, asResource(current), getAmountAsLong(current), resource, amount, transaction, automationType);
+        AttachedResources<RESOURCE> attached = getAttached();
+        LargeResourceStack<RESOURCE> current = getContents(attached);
+        return insert(attached, current.resource(), current.amount(), resource, amount, transaction, automationType);
     }
 
-    protected int insert(ATTACHED attached, RESOURCE currentType, long currentAmount, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    protected int insert(AttachedResources<RESOURCE> attached, RESOURCE currentType, long currentAmount, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
         if (amount == 0) {
             //"Fail quick" if the given resource is empty
             return 0;
@@ -135,14 +151,14 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             //"Fail quick" if nothing is actually being extracted
             return 0;
         }
-        ATTACHED attached = getAttached();
-        TYPE current = getContents(attached);
-        RESOURCE currentType = asResource(current);
-        long currentStored = getAmountAsLong(current);
+        AttachedResources<RESOURCE> attached = getAttached();
+        LargeResourceStack<RESOURCE> current = getContents(attached);
+        RESOURCE currentType = current.resource();
         if (currentType.isEmpty() || !resource.equals(currentType) || !isValidForExtraction(currentType, automationType)) {
             //"Fail quick" if we are empty, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }
+        long currentStored = current.amount();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
@@ -153,5 +169,30 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             setContents(attached, currentType, currentStored - toRemove);
         }
         return toRemove;
+    }
+
+    @Override
+    public void serialize(ValueOutput output) {
+        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
+        // that method as special component backed inventory slots, that then access and put that other data as a different component?
+        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
+        LargeResourceStack<RESOURCE> stored = getResourceStack();
+        if (!stored.isEmpty()) {
+            //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
+            // Items used to store to the key "item", but fluids and chemicals used "stored"
+            ValueOutput storedOutput = output.child(SerializationConstants.STORED);
+            storedOutput.store(SerializationConstants.TYPE, getResourceCodec(), stored.resource());
+            storedOutput.putLong(SerializationConstants.AMOUNT, stored.amount());
+        }
+    }
+
+    @Override
+    public void deserialize(ValueInput input) {
+        Optional<ValueInput> child = input.child(SerializationConstants.STORED);
+        if (child.isPresent()) {
+            ValueInput storedInput = child.get();
+            RESOURCE resource = storedInput.read(SerializationConstants.TYPE, getResourceCodec()).orElse(getEmptyResource());
+            setContentsUnchecked(resource, storedInput.getLongOr(SerializationConstants.AMOUNT, 0));
+        }
     }
 }

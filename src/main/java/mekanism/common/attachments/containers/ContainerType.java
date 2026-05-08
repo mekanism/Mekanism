@@ -13,29 +13,26 @@ import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.common.attachments.containers.chemical.AttachedChemicals;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalHandler;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
-import mekanism.common.attachments.containers.fluid.AttachedFluids;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidHandler;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
 import mekanism.common.attachments.containers.heat.ComponentBackedHeatHandler;
-import mekanism.common.attachments.containers.item.AttachedItems;
 import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
-import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
 import net.minecraft.core.Direction;
@@ -60,6 +57,8 @@ import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault//TODO - 26.1: move these to resource handlers?
@@ -80,24 +79,20 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
             EnergyCompatUtils.registerItemCapabilities(event, item, (ICapabilityProvider<ItemStack, ItemAccess, IStrictEnergyHandler>) getCapabilityProvider(exposeWhenStacked, requiredConfigs));
         }
     };
-    public static final ContainerType<IInventorySlot, AttachedItems, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
-          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedItems.EMPTY,
-          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory, (from, to) -> {
-        if (to instanceof BasicInventorySlot basicInventorySlot) {
-            basicInventorySlot.setContentsUnchecked(from.getResource(), from.amount());
-        } else {
-            to.setContents(from.getResource(), from.amount());
-        }
-    });
-    public static final ContainerType<IFluidTank, AttachedFluids, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
-          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedFluids.EMPTY,
-          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid,
-          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amount()));
+    public static final ContainerType<IInventorySlot, AttachedResources<ItemResource>, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
+          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedResources.empty(),
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory,
+          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
 
-    public static final ContainerType<IChemicalTank, AttachedChemicals, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
-          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL_LEGACY, AttachedChemicals.EMPTY,
+    public static final ContainerType<IFluidTank, AttachedResources<FluidResource>, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
+          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedResources.empty(),
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid,
+          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
+
+    public static final ContainerType<IChemicalTank, AttachedResources<ChemicalResource>, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
+          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedResources.empty(),
           TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals,
-          (from, to) -> to.setStackUnchecked(from.getStack().copy()));
+          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
 
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,

@@ -1,11 +1,14 @@
 
 package mekanism.common.attachments.containers.item;
 
+import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.LockData;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.inventory.slot.BinInventorySlot;
 import mekanism.common.item.block.ItemBlockBin;
@@ -37,7 +40,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    protected int insert(AttachedItems attachedItems, ItemResource currentType, long currentAmount, ItemResource resource, int amount, TransactionContext transaction,
+    protected int insert(AttachedResources<ItemResource> attachedItems, ItemResource currentType, long currentAmount, ItemResource resource, int amount, TransactionContext transaction,
           AutomationType automationType) {
         if (currentType.isEmpty()) {
             ItemResource lockType = getLockType();
@@ -85,9 +88,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        ItemStack stack = getStack();
-        ItemResource current = ItemResource.of(stack);
-        return current.toStack(Math.min(stack.count(), current.getMaxStackSize()));
+        LargeResourceStack<ItemResource> stack = getResourceStack();
+        ItemResource current = stack.resource();
+        return current.toStack(Math.min(Ints.saturatedCast(stack.amount()), current.getMaxStackSize()));
     }
 
     /**
@@ -118,7 +121,6 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     @Override
     public void deserialize(ValueInput input) {
-        //TODO - 26.1: Does this properly handle the behavior of when things are empty
         setLockType(input.read(SerializationConstants.LOCK_TYPE, ItemResource.CODEC).orElse(ItemResource.EMPTY));
         super.deserialize(input);
     }

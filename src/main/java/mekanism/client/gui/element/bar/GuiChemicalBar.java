@@ -69,9 +69,9 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
                 if (tank.isEmpty()) {
                     return MekanismLang.EMPTY.translate();
                 } else if (tank.amountAsLong() == Long.MAX_VALUE) {
-                    return MekanismLang.GENERIC_STORED.translate(tank.getStack(), MekanismLang.INFINITE);
+                    return MekanismLang.GENERIC_STORED.translate(tank.getResource(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getStack(), TextUtils.format(tank.amountAsLong()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amountAsLong()));
             }
 
             @Override

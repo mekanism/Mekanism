@@ -16,8 +16,6 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
         this.containerIndex = containerIndex;
     }
 
-    protected abstract TYPE copy(TYPE toCopy);
-
     protected abstract boolean isEmpty(TYPE value);
 
     protected abstract ContainerType<?, ATTACHED, ?> containerType();
@@ -42,7 +40,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
             }
         }
         if (shouldUpdate(attached, value)) {
-            attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, copy(value)));
+            attachedTo.set(containerType().getComponentType(), attached.with(containerIndex, value));
             //TODO - 26.1: Do we want to be calling onContentsChanged here or should we instead just be marking the snapshot as taken here above setting it
             // and then don't call onContentsChanged here
             onContentsChanged();

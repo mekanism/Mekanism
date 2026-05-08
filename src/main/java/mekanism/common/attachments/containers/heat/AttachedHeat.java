@@ -29,11 +29,6 @@ public record AttachedHeat(List<HeatCapacitorData> containers) implements IAttac
     }
 
     @Override
-    public HeatCapacitorData getEmptyStack() {
-        throw new UnsupportedOperationException("Attached heat has no concept of a default stack and callers should override methods instead to use the proper default data");
-    }
-
-    @Override
     public AttachedHeat create(List<HeatCapacitorData> containers) {
         return new AttachedHeat(containers);
     }
