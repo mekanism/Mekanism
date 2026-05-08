@@ -77,6 +77,7 @@ public class EnergyCubeBaseGeometry implements ExtendedUnbakedGeometry {
         Map<RelativeSide, UnbakedCuboidGeometry> ledsLit = new EnumMap<>(RelativeSide.class);
         for (Map.Entry<RelativeSide, UnbakedCuboidGeometry> entry : leds.entrySet()) {
             List<CuboidModelElement> litElements = entry.getValue().elements().stream()
+                  //todo - 26.1: bake the uv shift too - QuadTransformation.uvShift(-0.125F, 0); OR make it a tint?
                   .map(unlit -> new CuboidModelElement(unlit.from(), unlit.to(), unlit.faces(), unlit.rotation(), false, 15, unlit.faceData()))
                   .toList();
             ledsLit.put(entry.getKey(), new UnbakedCuboidGeometry(litElements));

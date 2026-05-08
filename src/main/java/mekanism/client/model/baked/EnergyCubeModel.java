@@ -1,21 +1,19 @@
 package mekanism.client.model.baked;
 
-import com.google.common.cache.CacheBuilder;
-import com.google.common.cache.CacheLoader;
-import com.google.common.cache.LoadingCache;
+import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiPredicate;
+import java.util.function.IntFunction;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.client.model.baked.ExtensionBakedModel.QuadsKey;
 import mekanism.client.model.energycube.EnergyCubeBaseGeometry.CubeSideModelState;
 import mekanism.client.render.lib.QuadTransformation;
 import mekanism.client.render.lib.QuadUtils;
@@ -50,16 +48,9 @@ import org.jetbrains.annotations.Nullable;
 public class EnergyCubeModel implements DynamicBlockStateModel {
 
     private static final CubeSideState[] INACTIVE = Util.make(new CubeSideState[EnumUtils.DIRECTIONS.length], sideStates -> Arrays.fill(sideStates, CubeSideState.INACTIVE));
-    //TODO - 26.1: fullbright should now be handled, but is the uvShift needed??? can we bake it into the json
-    private static final QuadTransformation LED_TRANSFORMS = QuadTransformation.list(QuadTransformation.fullbright, QuadTransformation.uvShift(-0.125F, 0));
-    private static final BiPredicate<CubeSideState[], CubeSideState[]> DATA_EQUALITY_CHECK = Arrays::equals;
 
-    private final LoadingCache<QuadsKey<CubeSideState[]>, List<BlockStateModelPart>> cache = CacheBuilder.newBuilder().build(new CacheLoader<>() {
-        @Override
-        public List<BlockStateModelPart> load(QuadsKey<CubeSideState[]> key) {
-            return collectParts(key);
-        }
-    });
+    private final Int2ObjectMap<List<BlockStateModelPart>> cache = new Int2ObjectAVLTreeMap<>();
+    private final IntFunction<List<BlockStateModelPart>> partGenerator = this::generateParts;
 
     private final BlockStateModelPart frame;
     private final Map<RelativeSide, Map<CubeSideState, BlockStateModelPart>> dynamicParts;
@@ -80,25 +71,19 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
             //If there is no side data then treat everything as inactive
             sideStates = INACTIVE;
         }
-        //Note: We intentionally ignore the state and use null here to minimize cache size as it doesn't actually matter
-        // or get used for energy cube models
-        //TODO - 26.1: Replace this quads key with a more reasonable key that just handles the side data
-        QuadsKey<CubeSideState[]> key = new QuadsKey<>(null, null, null, null, Collections.emptyList());
-        key.data(sideStates, Arrays.hashCode(sideStates), DATA_EQUALITY_CHECK);
-        parts.addAll(cache.getUnchecked(key));
+        int key = CacheKey.pack(sideStates);
+        parts.addAll(cache.computeIfAbsent(key, partGenerator));
     }
 
-    private List<BlockStateModelPart> collectParts(QuadsKey<CubeSideState[]> key) {
+    private List<BlockStateModelPart> generateParts(int key) {
         List<BlockStateModelPart> parts = new ArrayList<>();
         parts.add(frame);
-        CubeSideState[] data = key.getData();
-        if (data != null) {
-            for (int i = 0; i < EnumUtils.SIDES.length; i++) {
-                RelativeSide dir = EnumUtils.SIDES[i];
-                CubeSideState sideState = data[i];
-                if (sideState != null) {
-                    parts.add(dynamicParts.get(dir).get(sideState));
-                }
+        CubeSideState[] data = CacheKey.unpack(key);
+        for (int i = 0; i < EnumUtils.SIDES.length; i++) {
+            RelativeSide dir = EnumUtils.SIDES[i];
+            CubeSideState sideState = data[i];
+            if (sideState != null) {
+                parts.add(dynamicParts.get(dir).get(sideState));
             }
         }
         return parts;
@@ -116,10 +101,35 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         return frame.materialFlags();
     }
 
-    //TODO - 26.1: Figure this out https://github.com/AppliedEnergistics/Applied-Energistics-2/blob/26.1/src/client/java/appeng/client/render/model/DriveModel.java
-    //TODO - 26.1: Look into data genning the block state files for the energy cubes?
-    //Once you've done that, I'd highly recommend data-genning your blockstate files (if you don't already do that), because you can use that Unbaked record as-is to have it generate the correct blockstate file with your custom properties.
-    //i.e. using blockStateOutput.accept(createSimpleBlock(block, MultiVariant.of(new CustomBlockStateModelBuilder.Simple(new EnergyCube.Unbaked(... your props ...)))
+    private static class CacheKey {
+
+        private static final int BITS_PER_STATE = 4; //nb: only 2 used (values 0-2)
+        private static final int ORDINAL_MASK = 0xF;
+        private static final CubeSideState[] CUBE_SIDE_STATES = CubeSideState.values();
+
+        static int pack(CubeSideState[] states) {
+            Preconditions.checkArgument(states.length == 6, "Must have 6 sides");
+            int key = 0;
+            for (int i = 0; i < 6; i++) {
+                key |= (states[i].ordinal() & ORDINAL_MASK) << (BITS_PER_STATE * i);
+            }
+            return key;
+        }
+
+        static CubeSideState[] unpack(int key) {
+            if (key == 0) {
+                return INACTIVE;
+            }
+            CubeSideState[] states = new CubeSideState[6];
+            for (int i = 0; i < 6; i++) {
+                int ordinal = (key >> (BITS_PER_STATE * i)) & ORDINAL_MASK;
+                Preconditions.checkElementIndex(ordinal, CUBE_SIDE_STATES.length, "CubeSideState ordinal");
+                states[i] = CUBE_SIDE_STATES[ordinal];
+            }
+            return states;
+        }
+    }
+
     public record Unbaked(Variant tierModel) implements CustomUnbakedBlockStateModel {
 
         public static final Identifier ID = Mekanism.rl("energy_cube_sided");

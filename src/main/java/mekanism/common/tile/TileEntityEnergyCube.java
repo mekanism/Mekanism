@@ -205,8 +205,8 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
     }
 
     public enum CubeSideState {
+        INACTIVE,//NB: EnergyCubeModel relies on this being ordinal 0
         ACTIVE_LIT,
-        ACTIVE_UNLIT,
-        INACTIVE
+        ACTIVE_UNLIT
     }
 }
