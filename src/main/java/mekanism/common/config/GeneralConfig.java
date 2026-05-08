@@ -239,6 +239,7 @@ public class GeneralConfig extends BaseMekanismConfig {
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR.applyToBuilder(builder).push("oredictionificator");
+        //todo - 26.1: add blacklist too, e.g. for `c:nuggets/brass_like`
         validOredictionificatorFilters = CachedOredictionificatorConfigValue.define(this, MekanismConfigTranslations.GENERAL_OREDICTIONIFICATOR_VALID_ITEMS.applyToBuilder(builder),
               "validItemFilters", () -> Collections.singletonMap("c", List.of("ingots/", "ores/", "dusts/", "nuggets/", "storage_blocks/", "raw_materials/")));
         builder.pop();
