@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/fission_reactor_port"
+    "model": "mekanismgenerators:block/fission/port_input"
   }
 }

@@ -403,13 +403,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         blockModels.itemModelOutput.accept(registryObject.asItem(), unbaked);
     }
 
-    private void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {
-        blockModels.itemModelOutput.accept(
-              registryObject.asItem(),
-              ItemModelUtils.plainModel(modLocation(name))
-        );
-    }
-
     private void registerManualItemModels(ItemModelGenerators itemModels) {
         itemModels.declareCustomModelItem(MekanismItems.ADVANCED_CONTROL_CIRCUIT.asItem());
         itemModels.declareCustomModelItem(MekanismItems.ADVANCED_TIER_INSTALLER.asItem());

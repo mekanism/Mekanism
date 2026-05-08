@@ -26,6 +26,26 @@ public class GeneratorsModelProvider extends BaseModelProvider {
         registerGenerated(itemModels, GeneratorsItems.HOHLRAUM, GeneratorsItems.SOLAR_PANEL, GeneratorsItems.TURBINE_BLADE);
 
         registerManualStates();
+
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FISSION_REACTOR_CASING, "block/fission/casing");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.CONTROL_ROD_ASSEMBLY, "block/fission/control_rod_assembly");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FISSION_FUEL_ASSEMBLY, "block/fission/fuel_assembly");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FISSION_REACTOR_LOGIC_ADAPTER, "block/fission/logic_adapter");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FISSION_REACTOR_PORT, "block/fission/port_input");
+
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FUSION_REACTOR_CONTROLLER, "block/fusion/controller");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FUSION_REACTOR_FRAME, "block/fusion/frame");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.LASER_FOCUS_MATRIX, "block/fusion/laser_focus_matrix");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FUSION_REACTOR_LOGIC_ADAPTER, "block/fusion/logic_adapter");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.FUSION_REACTOR_PORT, "block/fusion/port");
+
+        plainBlockItemModel(blockModels, GeneratorsBlocks.TURBINE_CASING, "block/turbine/casing");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.TURBINE_ROTOR, "block/turbine/rotor");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.TURBINE_VALVE, "block/turbine/valve");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.TURBINE_VENT, "block/turbine/vent");
+
+        plainBlockItemModel(blockModels, GeneratorsBlocks.SOLAR_GENERATOR, "item/solar_generator");
+        plainBlockItemModel(blockModels, GeneratorsBlocks.WIND_GENERATOR, "item/wind_generator");//todo ister?
     }
 
     private void registerManualStates() {

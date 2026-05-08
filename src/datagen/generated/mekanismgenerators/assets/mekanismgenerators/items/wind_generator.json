@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/wind_generator"
+    "model": "mekanismgenerators:item/wind_generator"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/fission_reactor_logic_adapter"
+    "model": "mekanismgenerators:block/fission/logic_adapter"
   }
 }

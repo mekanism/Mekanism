@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/control_rod_assembly"
+    "model": "mekanismgenerators:block/fission/control_rod_assembly"
   }
 }

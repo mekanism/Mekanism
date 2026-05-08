@@ -186,6 +186,13 @@ public abstract class BaseModelProvider extends ModelProvider {
         manuallyGeneratedBlockStates.add(registryObject.getKey());
     }
 
+    protected void plainBlockItemModel(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String name) {
+        blockModels.itemModelOutput.accept(
+              registryObject.asItem(),
+              ItemModelUtils.plainModel(modLocation(name))
+        );
+    }
+
     @Override
     protected Stream<? extends Holder<Block>> getKnownBlocks() {
         return super.getKnownBlocks().filter(holder -> !manuallyGeneratedBlockStates.contains(holder.getKey()));

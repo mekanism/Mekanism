@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/fusion_reactor_frame"
+    "model": "mekanismgenerators:block/fusion/frame"
   }
 }

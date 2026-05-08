@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/fusion_reactor_port"
+    "model": "mekanismgenerators:block/fusion/port"
   }
 }

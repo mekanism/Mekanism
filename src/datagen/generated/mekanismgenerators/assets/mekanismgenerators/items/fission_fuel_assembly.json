@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanismgenerators:block/fission_fuel_assembly"
+    "model": "mekanismgenerators:block/fission/fuel_assembly"
   }
 }
