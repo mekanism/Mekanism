@@ -56,9 +56,10 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
         poseStack.pushPose();
         poseStack.translate(-0.5, -1, -0.5);
 
-        if (state.latchedAdjustment != null) {
-            poseStack.translate(state.latchedAdjustment);
-        }
+        //fixme: this offsets the Y wrongly, probably not needed
+        //if (state.latchedAdjustment != null) {
+        //    poseStack.translate(state.latchedAdjustment);
+        //}
 
         nodeCollector.submitBlockModel(poseStack, RENDER_TYPE, state.model, state.tint, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
         poseStack.popPose();
