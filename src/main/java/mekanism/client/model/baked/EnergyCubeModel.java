@@ -1,6 +1,5 @@
 package mekanism.client.model.baked;
 
-import com.google.common.base.Preconditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.Int2ObjectAVLTreeMap;
@@ -106,11 +105,12 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
         private static final int BITS_PER_STATE = 4; //nb: only 2 used (values 0-2)
         private static final int ORDINAL_MASK = 0xF;
         private static final CubeSideState[] CUBE_SIDE_STATES = CubeSideState.values();
+        private static final int NUM_STATES = CUBE_SIDE_STATES.length;
 
         static int pack(CubeSideState[] states) {
-            Preconditions.checkArgument(states.length == 6, "Must have 6 sides");
+            int size = states.length;
             int key = 0;
-            for (int i = 0; i < 6; i++) {
+            for (int i = 0; i < size; i++) {
                 key |= (states[i].ordinal() & ORDINAL_MASK) << (BITS_PER_STATE * i);
             }
             return key;
@@ -123,8 +123,7 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
             CubeSideState[] states = new CubeSideState[6];
             for (int i = 0; i < 6; i++) {
                 int ordinal = (key >> (BITS_PER_STATE * i)) & ORDINAL_MASK;
-                Preconditions.checkElementIndex(ordinal, CUBE_SIDE_STATES.length, "CubeSideState ordinal");
-                states[i] = CUBE_SIDE_STATES[ordinal];
+                states[i] = ordinal < NUM_STATES ? CUBE_SIDE_STATES[ordinal] : CubeSideState.INACTIVE;
             }
             return states;
         }
