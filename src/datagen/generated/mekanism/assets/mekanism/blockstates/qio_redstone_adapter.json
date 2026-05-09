@@ -1,53 +1,53 @@
 {
   "variants": {
-    "facing=up,active=false": {
-      "model": "mekanism:block/qio_redstone_adapter_offline"
-    },
-    "facing=down,active=false": {
+    "active=false,facing=down": {
       "model": "mekanism:block/qio_redstone_adapter_offline",
       "x": 180
     },
-    "facing=north,active=false": {
-      "model": "mekanism:block/qio_redstone_adapter_offline",
-      "x": -90,
-      "y": 180
-    },
-    "facing=south,active=false": {
-      "model": "mekanism:block/qio_redstone_adapter_offline",
-      "x": -90
-    },
-    "facing=east,active=false": {
+    "active=false,facing=east": {
       "model": "mekanism:block/qio_redstone_adapter_offline",
       "x": -90,
       "y": -90
     },
-    "facing=west,active=false": {
+    "active=false,facing=north": {
+      "model": "mekanism:block/qio_redstone_adapter_offline",
+      "x": -90,
+      "y": 180
+    },
+    "active=false,facing=south": {
+      "model": "mekanism:block/qio_redstone_adapter_offline",
+      "x": -90
+    },
+    "active=false,facing=up": {
+      "model": "mekanism:block/qio_redstone_adapter_offline"
+    },
+    "active=false,facing=west": {
       "model": "mekanism:block/qio_redstone_adapter_offline",
       "x": -90,
       "y": 90
     },
-    "facing=up,active=true": {
-      "model": "mekanism:block/qio_redstone_adapter"
-    },
-    "facing=down,active=true": {
+    "active=true,facing=down": {
       "model": "mekanism:block/qio_redstone_adapter",
       "x": 180
     },
-    "facing=north,active=true": {
-      "model": "mekanism:block/qio_redstone_adapter",
-      "x": -90,
-      "y": 180
-    },
-    "facing=south,active=true": {
-      "model": "mekanism:block/qio_redstone_adapter",
-      "x": -90
-    },
-    "facing=east,active=true": {
+    "active=true,facing=east": {
       "model": "mekanism:block/qio_redstone_adapter",
       "x": -90,
       "y": -90
     },
-    "facing=west,active=true": {
+    "active=true,facing=north": {
+      "model": "mekanism:block/qio_redstone_adapter",
+      "x": -90,
+      "y": 180
+    },
+    "active=true,facing=south": {
+      "model": "mekanism:block/qio_redstone_adapter",
+      "x": -90
+    },
+    "active=true,facing=up": {
+      "model": "mekanism:block/qio_redstone_adapter"
+    },
+    "active=true,facing=west": {
       "model": "mekanism:block/qio_redstone_adapter",
       "x": -90,
       "y": 90
