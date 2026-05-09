@@ -8,6 +8,7 @@ import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
+import mekanism.client.model.blockstate.TransmitterBlockStateModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -73,6 +74,7 @@ import net.neoforged.neoforge.client.model.block.CompositeBlockModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
+import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
@@ -383,6 +385,34 @@ public class MekanismModelProvider extends BaseModelProvider {
             //item model handled above
         }
 
+        transmitter(blockModels, MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/advanced", "block/transmitter/large/logistical_transporter/transporter_glass");
+        transmitter(blockModels, MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/basic", "block/transmitter/large/logistical_transporter/transporter_glass");
+        transmitter(blockModels, MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/elite", "block/transmitter/large/logistical_transporter/transporter_glass");
+        transmitter(blockModels, MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER, "block/transmitter/large/logistical_transporter/ultimate", "block/transmitter/large/logistical_transporter/transporter_glass");
+
+        transmitter(blockModels, MekanismBlocks.DIVERSION_TRANSPORTER, "block/transmitter/large/diversion_transporter");
+        transmitter(blockModels, MekanismBlocks.RESTRICTIVE_TRANSPORTER, "block/transmitter/large/restrictive_transporter");
+
+        transmitter(blockModels, MekanismBlocks.ADVANCED_MECHANICAL_PIPE, "block/transmitter/large/mechanical_pipe/advanced");
+        transmitter(blockModels, MekanismBlocks.BASIC_MECHANICAL_PIPE, "block/transmitter/large/mechanical_pipe/basic");
+        transmitter(blockModels, MekanismBlocks.ELITE_MECHANICAL_PIPE, "block/transmitter/large/mechanical_pipe/elite");
+        transmitter(blockModels, MekanismBlocks.ULTIMATE_MECHANICAL_PIPE, "block/transmitter/large/mechanical_pipe/ultimate");
+
+        transmitter(blockModels, MekanismBlocks.ADVANCED_PRESSURIZED_TUBE, "block/transmitter/small/pressurized_tube/advanced");
+        transmitter(blockModels, MekanismBlocks.BASIC_PRESSURIZED_TUBE, "block/transmitter/small/pressurized_tube/basic");
+        transmitter(blockModels, MekanismBlocks.ELITE_PRESSURIZED_TUBE, "block/transmitter/small/pressurized_tube/elite");
+        transmitter(blockModels, MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE, "block/transmitter/small/pressurized_tube/ultimate");
+
+        transmitter(blockModels, MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR, "block/transmitter/small/thermodynamic_conductor/advanced");
+        transmitter(blockModels, MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR, "block/transmitter/small/thermodynamic_conductor/basic");
+        transmitter(blockModels, MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR, "block/transmitter/small/thermodynamic_conductor/elite");
+        transmitter(blockModels, MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR, "block/transmitter/small/thermodynamic_conductor/ultimate");
+
+        transmitter(blockModels, MekanismBlocks.ADVANCED_UNIVERSAL_CABLE, "block/transmitter/small/universal_cable/advanced");
+        transmitter(blockModels, MekanismBlocks.BASIC_UNIVERSAL_CABLE, "block/transmitter/small/universal_cable/basic");
+        transmitter(blockModels, MekanismBlocks.ELITE_UNIVERSAL_CABLE, "block/transmitter/small/universal_cable/elite");
+        transmitter(blockModels, MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE, "block/transmitter/small/universal_cable/ultimate");
+
         plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_BIN, "block/bin/advanced");
         plainBlockItemModel(blockModels, MekanismBlocks.BASIC_BIN, "block/bin/basic");
         plainBlockItemModel(blockModels, MekanismBlocks.ELITE_BIN, "block/bin/elite");
@@ -436,6 +466,24 @@ public class MekanismModelProvider extends BaseModelProvider {
         );
         ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(existingModel(registryObject.asItem()), RenderEnergyCubeItem.Unbaked.INSTANCE);
         blockModels.itemModelOutput.accept(registryObject.asItem(), unbaked);
+    }
+
+    private void transmitter(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String base) {
+        transmitter(blockModels, registryObject, base, null);
+    }
+
+    private void transmitter(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, String base, @Nullable String glass) {
+        Block block = registryObject.value();
+        Variant baseModel = BlockModelGenerators.plainModel(validateModelExists(modLocation(base)));
+        Identifier glassModel = glass != null ? existingModel(glass) : null;
+        MultiVariant multiVariant = customVariant(new TransmitterBlockStateModel.Unbaked(baseModel, Optional.ofNullable(glassModel)));
+        blockModels.blockStateOutput.accept(
+              MultiVariantGenerator.dispatch(
+                    block,
+                    multiVariant
+              )
+        );
+        //todo item model
     }
 
     private void registerManualItemModels(ItemModelGenerators itemModels) {
@@ -536,14 +584,9 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.ADVANCED_INDUCTION_PROVIDER);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.INFUSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.INJECTING));
-        markManualBlockState(MekanismBlocks.ADVANCED_LOGISTICAL_TRANSPORTER);
-        markManualBlockState(MekanismBlocks.ADVANCED_MECHANICAL_PIPE);
-        markManualBlockState(MekanismBlocks.ADVANCED_PRESSURIZED_TUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.PURIFYING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.SAWING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ADVANCED, FactoryType.SMELTING));
-        markManualBlockState(MekanismBlocks.ADVANCED_THERMODYNAMIC_CONDUCTOR);
-        markManualBlockState(MekanismBlocks.ADVANCED_UNIVERSAL_CABLE);
         markManualBlockState(MekanismBlocks.ANTIPROTONIC_NUCLEOSYNTHESIZER);
         markManualBlockState(MekanismBlocks.BASIC_BIN);
         markManualBlockState(MekanismBlocks.BASIC_CHEMICAL_TANK);
@@ -556,14 +599,9 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.BASIC_INDUCTION_PROVIDER);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.INFUSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.INJECTING));
-        markManualBlockState(MekanismBlocks.BASIC_LOGISTICAL_TRANSPORTER);
-        markManualBlockState(MekanismBlocks.BASIC_MECHANICAL_PIPE);
-        markManualBlockState(MekanismBlocks.BASIC_PRESSURIZED_TUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.PURIFYING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SAWING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.BASIC, FactoryType.SMELTING));
-        markManualBlockState(MekanismBlocks.BASIC_THERMODYNAMIC_CONDUCTOR);
-        markManualBlockState(MekanismBlocks.BASIC_UNIVERSAL_CABLE);
         markManualBlockState(MekanismBlocks.BIO_FUEL_BLOCK);
         markManualBlockState(MekanismBlocks.BRONZE_BLOCK);
         markManualBlockState(MekanismBlocks.CHARCOAL_BLOCK);
@@ -589,7 +627,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.CREATIVE_FLUID_TANK);
         markManualBlockState(MekanismBlocks.CRUSHER);
         markManualBlockState(MekanismBlocks.DIGITAL_MINER);
-        markManualBlockState(MekanismBlocks.DIVERSION_TRANSPORTER);
         markManualBlockState(MekanismBlocks.DYNAMIC_TANK);
         markManualBlockState(MekanismBlocks.DYNAMIC_VALVE);
         markManualBlockState(MekanismBlocks.ELECTRIC_PUMP);
@@ -605,14 +642,9 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.ELITE_INDUCTION_PROVIDER);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.INFUSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.INJECTING));
-        markManualBlockState(MekanismBlocks.ELITE_LOGISTICAL_TRANSPORTER);
-        markManualBlockState(MekanismBlocks.ELITE_MECHANICAL_PIPE);
-        markManualBlockState(MekanismBlocks.ELITE_PRESSURIZED_TUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.PURIFYING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.SAWING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ELITE, FactoryType.SMELTING));
-        markManualBlockState(MekanismBlocks.ELITE_THERMODYNAMIC_CONDUCTOR);
-        markManualBlockState(MekanismBlocks.ELITE_UNIVERSAL_CABLE);
         markManualBlockState(MekanismBlocks.ENERGIZED_SMELTER);
         markManualBlockState(MekanismBlocks.ENRICHMENT_CHAMBER);
         markManualBlockState(MekanismBlocks.FLUIDIC_PLENISHER);
@@ -646,7 +678,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         markManualBlockState(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
         markManualBlockState(MekanismBlocks.RESISTIVE_HEATER);
-        markManualBlockState(MekanismBlocks.RESTRICTIVE_TRANSPORTER);
         markManualBlockState(MekanismBlocks.ROTARY_CONDENSENTRATOR);
         markManualBlockState(MekanismBlocks.SECURITY_DESK);
         markManualBlockState(MekanismBlocks.SEISMIC_VIBRATOR);
@@ -673,14 +704,9 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.ULTIMATE_INDUCTION_PROVIDER);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.INFUSING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.INJECTING));
-        markManualBlockState(MekanismBlocks.ULTIMATE_LOGISTICAL_TRANSPORTER);
-        markManualBlockState(MekanismBlocks.ULTIMATE_MECHANICAL_PIPE);
-        markManualBlockState(MekanismBlocks.ULTIMATE_PRESSURIZED_TUBE);
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.PURIFYING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.SAWING));
         markManualBlockState(MekanismBlocks.getFactory(FactoryTier.ULTIMATE, FactoryType.SMELTING));
-        markManualBlockState(MekanismBlocks.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
-        markManualBlockState(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
     }
 
     protected static MultiVariant customVariant(CustomUnbakedBlockStateModel blockStateModel) {

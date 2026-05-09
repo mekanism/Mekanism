@@ -1,6 +1,7 @@
 {
   "variants": {
     "": {
+      "type": "mekanism:special/transmitter",
       "model": "mekanism:block/transmitter/large/diversion_transporter"
     }
   }
