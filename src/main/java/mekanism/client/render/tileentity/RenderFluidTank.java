@@ -3,8 +3,6 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import java.util.HashMap;
-import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -26,14 +24,13 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.Direction;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidTank, FluidTankRenderState> {
 
-    private static final Map<FluidResource, Int2ObjectMap<Model3D>> cachedCenterFluids = new HashMap<>();
-    private static final Map<FluidResource, Int2ObjectMap<Model3D>> cachedValveFluids = new HashMap<>();
+    private static final Int2ObjectMap<Model3D> cachedCenterFluids = new Int2ObjectOpenHashMap<>();
+    private static final Int2ObjectMap<Model3D> cachedValveFluids = new Int2ObjectOpenHashMap<>();
 
     private static final int stages = 1_400;
 
@@ -92,24 +89,22 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     }
 
     private Model3D getValveModel(FluidStack fluid, float fluidScale) {
-        Int2ObjectMap<Model3D> modelMap = cachedValveFluids.computeIfAbsent(FluidResource.of(fluid), _ -> new Int2ObjectOpenHashMap<>());
         int stage = Math.min(stages - 1, (int) (fluidScale * (stages - 1)));
-        Model3D model = modelMap.get(stage);
+        Model3D model = cachedValveFluids.get(stage);
         if (model == null) {
             model = new Model3D()
                   .setSideRender(side -> side.getAxis().isHorizontal())
                   .xBounds(0.3225F, 0.6775F)
                   .yBounds(0.12375F + 0.7525F * (stage / (float) stages), 0.87625F)
                   .zBounds(0.3225F, 0.6775F);
-            modelMap.put(stage, model);
+            cachedValveFluids.put(stage, model);
         }
         return model;
     }
 
     public static Model3D getFluidModel(FluidStack fluid, float fluidScale) {
-        Int2ObjectMap<Model3D> modelMap = cachedCenterFluids.computeIfAbsent(FluidResource.of(fluid), _ -> new Int2ObjectOpenHashMap<>());
         int stage = ModelRenderer.getStage(fluid, stages, fluidScale);
-        Model3D model = modelMap.get(stage);
+        Model3D model = cachedCenterFluids.get(stage);
         if (model == null) {
             model = new Model3D()
                   .setSideRender(Direction.DOWN, false)
@@ -117,7 +112,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
                   .xBounds(0.135F, 0.865F)
                   .yBounds(0.12375F, 0.124F + 0.75225F * (stage / (float) stages))
                   .zBounds(0.135F, 0.865F);
-            modelMap.put(stage, model);
+            cachedCenterFluids.put(stage, model);
         }
         return model;
     }

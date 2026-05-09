@@ -5,10 +5,8 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.FluidTextureType;
@@ -34,7 +32,6 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -45,7 +42,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
     private static final float offset = 0.02F;
     //Note: this is basically used as an enum map (Direction), but null key is possible, which EnumMap doesn't support.
     // 6 is used for null side, and 7 is used for null side but flowing vertically
-    private static final Int2ObjectMap<Map<FluidResource, Int2ObjectMap<Model3D>>> cachedLiquids = new Int2ObjectArrayMap<>(8);
+    private static final Int2ObjectMap<Int2ObjectMap<Model3D>> cachedLiquids = new Int2ObjectArrayMap<>(8);
 
     public RenderMechanicalPipe(BlockEntityRendererProvider.Context context) {
         super(context);
@@ -177,8 +174,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         } else {
             sideOrdinal = side.ordinal();
         }
-        Int2ObjectMap<Model3D> modelMap = cachedLiquids.computeIfAbsent(sideOrdinal, _ -> new HashMap<>())
-              .computeIfAbsent(FluidResource.of(fluid), _ -> new Int2ObjectOpenHashMap<>());
+        Int2ObjectMap<Model3D> modelMap = cachedLiquids.computeIfAbsent(sideOrdinal, _ -> new Int2ObjectOpenHashMap<>());
         Model3D model = modelMap.get(stage);
         if (model == null) {
             model = new Model3D();
