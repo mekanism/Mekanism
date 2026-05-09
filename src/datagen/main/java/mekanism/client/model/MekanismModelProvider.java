@@ -426,9 +426,7 @@ public class MekanismModelProvider extends BaseModelProvider {
     private void energyCube(BlockModelGenerators blockModels, BlockRegistryObject<?, ?> registryObject, BaseTier tier) {
         Block block = registryObject.value();
         Identifier baseModel = validateModelExists(modLocation("block/energy_cube/" + tier.getLowerName()));
-        EnergyCubeModel.Unbaked blockStateModel = new EnergyCubeModel.Unbaked(BlockModelGenerators.plainModel(baseModel));
-        CustomBlockStateModelBuilder blockStateModelBuilder = new EnergyCubeBuilder(blockStateModel);
-        MultiVariant multiVariant = MultiVariant.of(blockStateModelBuilder);
+        MultiVariant multiVariant = customVariant(new EnergyCubeModel.Unbaked(BlockModelGenerators.plainModel(baseModel)));
         blockModels.blockStateOutput.accept(
               MultiVariantGenerator.dispatch(
                           block,
@@ -685,30 +683,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.ULTIMATE_UNIVERSAL_CABLE);
     }
 
-    public static final class EnergyCubeBuilder extends CustomBlockStateModelBuilder {
-
-        private final EnergyCubeModel.Unbaked blockStateModel;
-
-        public EnergyCubeBuilder(EnergyCubeModel.Unbaked blockStateModel) {
-            this.blockStateModel = blockStateModel;
-        }
-
-        @Override
-        public EnergyCubeBuilder with(VariantMutator variantMutator) {
-            return new EnergyCubeBuilder(new EnergyCubeModel.Unbaked(variantMutator.apply(this.blockStateModel.tierModel())));
-        }
-
-        @Override
-        public CustomBlockStateModelBuilder with(UnbakedMutator variantMutator) {
-            return new EnergyCubeBuilder(variantMutator.apply(blockStateModel));
-        }
-
-        @Override
-        public CustomUnbakedBlockStateModel toUnbaked() {
-            return this.blockStateModel;
-        }
-    }
-
     protected static MultiVariant customVariant(CustomUnbakedBlockStateModel blockStateModel) {
         return MultiVariant.of(new MekanismCustomStateModelBuilder(blockStateModel));
     }
@@ -738,6 +712,9 @@ public class MekanismModelProvider extends BaseModelProvider {
                           lit,
                           variantMutator.apply(new Variant(lit, state)).modelState()
                     );
+                }
+                case EnergyCubeModel.Unbaked energyCube -> {
+                    return new EnergyCubeModel.Unbaked(variantMutator.apply(energyCube.tierModel()));
                 }
                 default -> throw new IllegalStateException("Don't know how to handle " + toMutate);
             }
