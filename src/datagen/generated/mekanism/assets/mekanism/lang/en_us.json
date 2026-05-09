@@ -1144,8 +1144,6 @@
   "configuration.mekanism.general.energy_conversion": "Energy Conversion Rate",
   "configuration.mekanism.general.energy_conversion.blacklist.fluxnetworks": "Blacklist Flux Networks",
   "configuration.mekanism.general.energy_conversion.blacklist.fluxnetworks.tooltip": "Disables Flux Networks' higher throughput Forge Energy (FE/RF) power integration. Note: Blacklisting Forge Energy also disables this.",
-  "configuration.mekanism.general.energy_conversion.blacklist.grandpower": "Blacklist GrandPower",
-  "configuration.mekanism.general.energy_conversion.blacklist.grandpower.tooltip": "Disables Grand Power's higher throughput Forge Energy (FE/RF) power integration. Note: Blacklisting Forge Energy also disables this.",
   "configuration.mekanism.general.energy_conversion.blacklist.neoforge": "Blacklist Forge Energy",
   "configuration.mekanism.general.energy_conversion.blacklist.neoforge.tooltip": "Disables Forge Energy (FE/RF) power integration.",
   "configuration.mekanism.general.energy_conversion.button": "Edit Conversion Rates",

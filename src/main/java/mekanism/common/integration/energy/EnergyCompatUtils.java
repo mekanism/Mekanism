@@ -33,8 +33,6 @@ public class EnergyCompatUtils {
     private static final List<IEnergyCompat> energyCompats = List.of(
           //We always have our own energy capability as the first one we check
           new StrictEnergyCompat(),
-          //Note: We check the Grand Power capability above Forge's so that we allow it to use the higher throughput amount supported by Grand Power
-          //TODO - 26.1: do we need this? new GPEnergyCompat(),
           //Note: We check the Flux Networks capability above Forge's so that we allow it to use the higher throughput amount supported by Flux Networks
           //TODO - 26.1: do we need this? new FNEnergyCompat(),
           new ForgeEnergyCompat()

@@ -62,7 +62,6 @@ public final class MekanismHooks {
     public final IntegrationInfo fluxNetworks;
     public final IntegrationInfo framedBlocks;
     public final IntegrationInfo genderMod;
-    public final IntegrationInfo grandPower;
     public final IntegrationInfo jei;
     public final IntegrationInfo jeiTweaker;
     public final IntegrationInfo jsonThings;
@@ -79,7 +78,6 @@ public final class MekanismHooks {
         curios = new IntegrationInfo("curios", loadedCheck);
         darkModeEverywhere = new IntegrationInfo("darkmodeeverywhere", loadedCheck);
         fluxNetworks = new IntegrationInfo("fluxnetworks", loadedCheck);
-        grandPower = new IntegrationInfo("grandpower", loadedCheck);
         jei = new IntegrationInfo("jei", loadedCheck);
         emi = new IntegrationInfo("emi", loadedCheck);
         jeiTweaker = new IntegrationInfo(JEITWEAKER_MOD_ID, loadedCheck);
