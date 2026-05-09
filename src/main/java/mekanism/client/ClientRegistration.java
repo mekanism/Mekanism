@@ -81,7 +81,7 @@ import mekanism.client.model.ModelIndustrialAlarm;
 import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
-import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;

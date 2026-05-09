@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
-import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;

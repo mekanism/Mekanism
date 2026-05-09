@@ -1,4 +1,4 @@
-package mekanism.client.model.baked;
+package mekanism.client.model.blockstate;
 
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

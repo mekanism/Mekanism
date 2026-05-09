@@ -8,7 +8,7 @@ import java.util.function.Consumer;
 import mekanism.api.RelativeSide;
 import mekanism.client.ModelUtil;
 import mekanism.client.model.ModelEnergyCore;
-import mekanism.client.model.baked.EnergyCubeModel;
+import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.item.MekanismISTER;
 import mekanism.client.render.tileentity.RenderEnergyCube;
