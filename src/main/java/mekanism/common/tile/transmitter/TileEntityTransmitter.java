@@ -134,7 +134,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         getTransmitter().write(output);
     }
 
-    public void onNeighborBlockChange(Direction side) {
+    public void onNeighborBlockChange(@Nullable Direction side) {
         getTransmitter().onNeighborBlockChange(side);
     }
 

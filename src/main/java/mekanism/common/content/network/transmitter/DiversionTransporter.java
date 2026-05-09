@@ -41,7 +41,7 @@ public class DiversionTransporter extends LogisticalTransporterBase {
     }
 
     @Override
-    public void onNeighborBlockChange(Direction side) {
+    public void onNeighborBlockChange(@Nullable Direction side) {
         //Override onNeighborBlockChange to recheck all connections as our connections
         // might have changed due to the redstone mode changing
         boolean receivingPower = isGettingPowered();
@@ -78,7 +78,11 @@ public class DiversionTransporter extends LogisticalTransporterBase {
             //If we can't handle redstone, just refresh the side the connection changed on so that if a transmitter is removed
             // or is set to none then we stop trying to be connected to it
             //TODO - 1.20.2: See if we can come up with a better way to handle this as there are definitely better ways
-            refreshConnections(side);
+            if (side == null) {//TODO - 26.1: Re-evaluate
+                refreshConnections();
+            } else {
+                refreshConnections(side);
+            }
         }
     }
 
