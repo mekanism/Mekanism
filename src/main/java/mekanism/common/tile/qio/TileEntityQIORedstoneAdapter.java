@@ -1,6 +1,7 @@
 package mekanism.common.tile.qio;
 
 import java.util.Optional;
+import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
@@ -110,7 +111,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
             needsUpdate = true;
             //Update redstone on sides except the back
             //TODO - 26.1 check Orientation
-            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(Direction.UP, getDirection(), SideBias.LEFT));
+            Direction frontDirection = getDirection();
+            level.updateNeighborsAtExceptFromFacing(getBlockPos(), getBlockState().getBlock(), getOppositeDirection(), Orientation.of(RelativeSide.TOP.getDirection(frontDirection), frontDirection, SideBias.LEFT));
         }
         return needsUpdate;
     }
