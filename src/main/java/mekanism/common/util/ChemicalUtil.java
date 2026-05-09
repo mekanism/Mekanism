@@ -167,6 +167,7 @@ public class ChemicalUtil {
     }
 
     public static boolean canInsert(ResourceHandler<ChemicalResource> handler, @NotNull ChemicalStack stack) {
+        //TODO - 26.1: Check callers as they might be in a transaction context
         try (Transaction simulation = Transaction.openRoot()) {
             return handler.insert(ChemicalResource.of(stack), Ints.saturatedCast(stack.amount()), simulation) > 0;
         }

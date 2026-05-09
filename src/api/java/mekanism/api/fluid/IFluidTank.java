@@ -8,8 +8,6 @@ import mekanism.api.container.IResourceContainer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 
@@ -47,7 +45,6 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      * Inserts a {@link FluidStack} into this {@link IFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this
      * function!
      * </p>
-     * Note: This behaviour is subtly <strong>different</strong> from {@link IFluidHandler#fill(FluidStack, FluidAction)}
      *
      * @param stack          {@link FluidStack} to insert. This must not be modified by the tank.
      * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

@@ -2,8 +2,6 @@ package mekanism.api.chemical;
 
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
 public interface IChemicalHandler {
@@ -75,7 +73,6 @@ public interface IChemicalHandler {
      * <p>
      * Inserts a {@link ChemicalStack} into a given tank and return the remainder. The {@link ChemicalStack} <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param tank   Tank to insert to.
      * @param stack  {@link ChemicalStack} to insert. This must not be modified by the tank.
@@ -106,7 +103,6 @@ public interface IChemicalHandler {
      * Inserts a {@link ChemicalStack} into this handler, distribution is left <strong>entirely</strong> to this {@link IChemicalHandler}. The {@link ChemicalStack}
      * <em>should not</em> be modified in this function!
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param stack  {@link ChemicalStack} to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

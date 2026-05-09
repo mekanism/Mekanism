@@ -5,10 +5,9 @@ import java.util.Collection;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class FluidHandlerTarget extends Target<ResourceHandler<FluidResource>, @NotNull FluidStack> {
@@ -25,16 +24,17 @@ public class FluidHandlerTarget extends Target<ResourceHandler<FluidResource>, @
     }
 
     @Override
-    protected void acceptAmount(ResourceHandler<FluidResource> handler, SplitInfo splitInfo, @NotNull FluidStack resource, long amount) {
-        //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
-        IFluidHandler legacyHandler = IFluidHandler.of(handler);
-        splitInfo.send(legacyHandler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.EXECUTE));
+    protected void acceptAmount(ResourceHandler<FluidResource> handler, SplitInfo splitInfo, FluidStack resource, long amount) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            splitInfo.send(handler.insert(FluidResource.of(resource), Ints.saturatedCast(amount), transaction));
+            transaction.commit();
+        }
     }
 
     @Override
-    protected long simulate(ResourceHandler<FluidResource> handler, @NotNull FluidStack resource, long amount) {
-        //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
-        IFluidHandler legacyHandler = IFluidHandler.of(handler);
-        return legacyHandler.fill(resource.copyWithAmount(Ints.saturatedCast(amount)), FluidAction.SIMULATE);
+    protected long simulate(ResourceHandler<FluidResource> handler, FluidStack resource, long amount) {
+        try (Transaction simulation = Transaction.openRoot()) {
+            return handler.insert(FluidResource.of(resource), Ints.saturatedCast(amount), simulation);
+        }
     }
 }

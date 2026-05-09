@@ -3,8 +3,6 @@ package mekanism.api.energy;
 import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.LongTransferUtils;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 @NothingNullByDefault
 public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting transactions
@@ -57,7 +55,6 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting 
      * <p>
      * Inserts energy into a given container and return the remainder.
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param container Container to insert to.
      * @param amount    Energy to insert. This must not be modified by the container.
@@ -85,7 +82,6 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting 
      * <p>
      * Inserts energy into this handler, distribution is left <strong>entirely</strong> to this {@link IStrictEnergyHandler}.
      * </p>
-     * Note: This behaviour is subtly different from {@link IFluidHandler#fill(FluidStack, IFluidHandler.FluidAction)}
      *
      * @param amount Energy to insert. This must not be modified by the handler.
      * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}

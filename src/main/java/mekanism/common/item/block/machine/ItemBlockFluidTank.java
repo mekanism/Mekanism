@@ -192,6 +192,8 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
         if (!world.mayInteract(player, pos)) {
             return InteractionResult.FAIL;
         }
+        //TODO - 26.1: Evaluate FluidUtil#tryPickupFluid for this and for pumps
+
         //TODO - 26.1: Re-evaluate this item access (and more accurately the usages of stack)
         ItemAccess itemAccess = ItemAccess.forPlayerInteraction(player, hand);
         ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);

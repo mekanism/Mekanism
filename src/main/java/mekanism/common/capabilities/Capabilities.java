@@ -34,10 +34,7 @@ import net.neoforged.neoforge.capabilities.EntityCapability;
 import net.neoforged.neoforge.capabilities.ICapabilityProvider;
 import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -50,26 +47,14 @@ public class Capabilities {
 
     public static final ICapabilityProvider<?, ?, ?> SIMPLE_PROVIDER = (obj, context) -> obj;
 
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    private record FluidCapability(BlockCapability<IFluidHandler, @Nullable Direction> block,
-                                   ItemCapability<IFluidHandlerItem, ItemAccess> item,
-                                   EntityCapability<IFluidHandler, @Nullable Direction> entity) implements IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> {
-    }
-
     public static final MultiTypeCapability<EnergyHandler> ENERGY = new MultiTypeCapability<>(Energy.BLOCK, Energy.ITEM, Energy.ENTITY);
     public static final MultiTypeCapability<ResourceHandler<FluidResource>> FLUID = new MultiTypeCapability<>(Fluid.BLOCK, Fluid.ITEM, Fluid.ENTITY);
     //Note: We intentionally don't use the entity automation capability, as we want to be able to target player inventories and the like
     public static final MultiTypeCapability<ResourceHandler<ItemResource>> ITEM = new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);
-    @Deprecated(forRemoval = true)//TODO - 26.1: Replace this with the above fluid cap
-    public static final IMultiTypeCapability<IFluidHandler, IFluidHandlerItem> FLUID_LEGACY = new FluidCapability(
-          BlockCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class),
-          ItemCapability.create(Mekanism.rl("legacy_fluid"), IFluidHandlerItem.class, ItemAccess.class),
-          EntityCapability.createSided(Mekanism.rl("legacy_fluid"), IFluidHandler.class));
 
     public static final MultiTypeCapability<ResourceHandler<ChemicalResource>> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), ResourceHandler.asClass());
     @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     public static final MultiTypeCapability<IChemicalHandler> CHEMICAL_LEGACY = new MultiTypeCapability<>(Mekanism.rl("legacy_chemical"), IChemicalHandler.class);
-
 
     public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 

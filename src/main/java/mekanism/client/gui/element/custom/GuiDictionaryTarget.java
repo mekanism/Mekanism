@@ -9,8 +9,8 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils.TilingDirection;
 import mekanism.client.gui.IGuiWrapper;
@@ -23,6 +23,7 @@ import mekanism.client.render.MekanismRenderer.FluidTextureType;
 import mekanism.common.Mekanism;
 import mekanism.common.base.TagCache;
 import mekanism.common.block.interfaces.IHasTileEntity;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
@@ -42,7 +43,9 @@ import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandlerItem;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -174,23 +177,24 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                               .distinct()
                         ));
                     }
+                    ItemAccess itemAccess = ItemAccess.forStack(itemStack);
                     //Get tags of any contained fluids
-                    IFluidHandlerItem fluidHandler = null;//TODO - 26.1: Capabilities.FLUID.getCapability(stack);
+                    ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
                     if (fluidHandler != null) {
-                        tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.getTanks())
-                              .mapToObj(fluidHandler::getFluidInTank)
+                        tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.size())
+                              .mapToObj(fluidHandler::getResource)
                               .filter(fluidInTank -> !fluidInTank.isEmpty())
                               .flatMap(fs -> fs.typeHolder().tags())
                               .distinct()
                         ));
                     }
                     //Get tags of any contained chemicals
-                    IChemicalHandler chemicalHandler = null;//TODO - 26.1: Capabilities.CHEMICAL.getCapability(stack);
+                    ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(itemAccess);
                     if (chemicalHandler != null) {
-                        tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.getChemicalTanks())
-                              .mapToObj(chemicalHandler::getChemicalInTank)
+                        tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.size())
+                              .mapToObj(chemicalHandler::getResource)
                               .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                              .flatMap(ChemicalStack::tags)
+                              .flatMap(fs -> fs.typeHolder().tags())
                               .distinct()
                         ));
                     }

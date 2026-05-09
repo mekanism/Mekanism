@@ -1,16 +1,8 @@
 package mekanism.api;
 
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
-
 public enum Action {
-    EXECUTE(FluidAction.EXECUTE),
-    SIMULATE(FluidAction.SIMULATE);
-
-    private final FluidAction fluidAction;
-
-    Action(FluidAction fluidAction) {
-        this.fluidAction = fluidAction;
-    }
+    EXECUTE,
+    SIMULATE;
 
     /**
      * @return {@code true} if this action represents execution.
@@ -24,13 +16,6 @@ public enum Action {
      */
     public boolean simulate() {
         return this == SIMULATE;
-    }
-
-    /**
-     * Converts this action to the corresponding FluidAction.
-     */
-    public FluidAction toFluidAction() {
-        return fluidAction;
     }
 
     /**
@@ -53,19 +38,5 @@ public enum Action {
      */
     public static Action get(boolean execute) {
         return execute ? EXECUTE : SIMULATE;
-    }
-
-    /**
-     * Helper ot get an action from the corresponding FluidAction.
-     *
-     * @param action FluidAction.
-     *
-     * @return Action.
-     */
-    public static Action fromFluidAction(FluidAction action) {
-        if (action == FluidAction.EXECUTE) {
-            return EXECUTE;
-        } //else FluidAction.SIMULATE
-        return SIMULATE;
     }
 }

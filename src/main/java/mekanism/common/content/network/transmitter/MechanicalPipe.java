@@ -33,10 +33,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler.FluidAction;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -52,7 +52,7 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         super(tile, TransmissionType.FLUID);
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
-        //TODO: If we make fluids support longs then adjust this
+        //TODO - 26.1: If we make fluids support longs then adjust this
         buffer = BasicFluidTank.create(Ints.saturatedCast(getCapacity()), ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), this);
         tanks = Collections.singletonList(buffer);
     }
@@ -85,28 +85,42 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
             }
             ResourceHandler<FluidResource> connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
-                //TODO - 26.1: Remove this and replace it with proper handling of resource handlers
-                IFluidHandler legacyAcceptor = IFluidHandler.of(connectedAcceptor);
-                FluidStack received;
-                //Note: We recheck the buffer each time in case we ended up accepting fluid somewhere
+                //Note: We recheck the buffer each time in case we ended up accepting chemical somewhere
                 // and our buffer changed and is no longer empty
                 FluidStack bufferWithFallback = getBufferWithFallback();
-                if (bufferWithFallback.isEmpty()) {
-                    //If we don't have a fluid stored try pulling as much as we are able to
-                    received = legacyAcceptor.drain(getAvailablePull(), FluidAction.SIMULATE);
-                } else {
-                    //Otherwise, try draining the same type of fluid we have stored requesting up to as much as we are able to pull
-                    // We do this to better support multiple tanks in case the fluid we have stored we could pull out of a block's
-                    // second tank but just asking to drain a specific amount
-                    received = legacyAcceptor.drain(bufferWithFallback.copyWithAmount(getAvailablePull()), FluidAction.SIMULATE);
-                }
-                if (!received.isEmpty() && takeFluid(received, Action.SIMULATE).isEmpty()) {
-                    //If we received some fluid and are able to insert it all, then actually extract it and insert it into our thing.
-                    // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
-                    // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-                    takeFluid(legacyAcceptor.drain(received.copy(), FluidAction.EXECUTE), Action.EXECUTE);
-                }
+                pullFromAcceptor(connectedAcceptor, bufferWithFallback, bufferWithFallback.isEmpty());
             }
+        }
+    }
+
+    private boolean pullFromAcceptor(ResourceHandler<FluidResource> connectedAcceptor, FluidStack bufferWithFallback, boolean bufferIsEmpty) {
+        if (connectedAcceptor == null) {
+            return false;
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            FluidResource receivedType;
+            if (bufferIsEmpty) {
+                //If we don't have a chemical stored try pulling as much as we are able to
+                receivedType = ResourceHandlerUtil.findExtractableResource(connectedAcceptor, ConstantPredicates.alwaysTrue(), transaction);
+            } else {
+                //Otherwise, try draining the same type of chemical we have stored requesting up to as much as we are able to pull
+                // We do this to better support multiple tanks in case the chemical we have stored we could pull out of a block's
+                // second tank but just asking to drain a specific amount
+                receivedType = FluidResource.of(bufferWithFallback);
+            }
+            if (receivedType == null || receivedType.isEmpty()) {
+                return false;
+            }
+            int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
+            int inserted = getFluidTank().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
+            if (inserted < extracted) {
+                return false;
+            }
+            //If we received some chemical and are able to insert it all, then actually extract it and insert it into our thing.
+            // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+            // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+            transaction.commit();
+            return true;
         }
     }
 
@@ -132,7 +146,7 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
     public void parseUpgradeData(@NotNull MechanicalPipeUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        takeFluid(data.contents, Action.EXECUTE);
+        getFluidTank().insert(data.contents, Action.EXECUTE, AutomationType.INTERNAL);
     }
 
     @Override
@@ -251,21 +265,14 @@ public class MechanicalPipe extends BufferedTransmitter<ResourceHandler<FluidRes
         getTransmitterTile().setChanged();
     }
 
-    /**
-     * @return remainder
-     */
-    @NotNull
-    public FluidStack takeFluid(@NotNull FluidStack fluid, Action action) {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().fluidTank.insert(fluid, action, AutomationType.INTERNAL);
-        }
-        return buffer.insert(fluid, action, AutomationType.INTERNAL);
-    }
-
     @Override
     protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull ValueInput input) {
         super.handleContentsUpdateTag(network, input);
         network.setLastFluid(input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).orElse(FluidStack.EMPTY));
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
+    }
+
+    private IFluidTank getFluidTank() {
+        return hasTransmitterNetwork() ? getTransmitterNetwork().fluidTank : buffer;
     }
 }
