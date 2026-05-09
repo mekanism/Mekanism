@@ -116,6 +116,10 @@ public abstract class BaseModelProvider extends ModelProvider {
         return validateModelExists(defaultModelLoc(block));
     }
 
+    protected Identifier existingModel(String modLocation) {
+        return validateModelExists(modLocation(modLocation));
+    }
+
     protected static Identifier defaultModelLoc(Block block) {
         return ModelLocationUtils.getModelLocation(block);
     }

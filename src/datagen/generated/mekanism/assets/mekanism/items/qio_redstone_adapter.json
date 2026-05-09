@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/qio_redstone_adapter",
+    "model": "mekanism:block/qio_redstone_adapter_unlit",
     "tints": [
       {
         "type": "minecraft:constant",

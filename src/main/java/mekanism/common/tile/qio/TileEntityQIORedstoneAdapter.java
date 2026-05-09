@@ -28,10 +28,13 @@ import net.minecraft.world.level.redstone.Orientation.SideBias;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
+import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
+
+    public static final ModelProperty<Boolean> EMITTING = new ModelProperty<>();
 
     @Nullable
     private HashedItem itemType = null;
@@ -133,11 +136,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @NotNull
     @Override
     public ModelData getModelData() {
-        //TODO - 26.1 models
-        /*if (isEmitting) {
-            return ModelData.of(DataBasedModelLoader.EMITTING, null);
-        }*/
-        return super.getModelData();
+        return ModelData.of(EMITTING, this.isEmitting);
     }
 
     @Override

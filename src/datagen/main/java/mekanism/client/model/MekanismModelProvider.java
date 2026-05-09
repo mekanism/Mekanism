@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
+import mekanism.client.model.blockstate.QIORedstoneAdapter;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -49,11 +50,16 @@ import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.ModelTemplates;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.block.dispatch.SingleVariant;
+import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
+import net.minecraft.client.renderer.block.dispatch.WeightedVariants;
 import net.minecraft.client.renderer.item.ItemModel;
 import net.minecraft.client.renderer.item.properties.select.ComponentContents;
 import net.minecraft.client.renderer.item.properties.select.DisplayContext;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
@@ -63,6 +69,7 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.neoforged.neoforge.client.model.block.CompositeBlockModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.client.model.generators.blockstate.CustomBlockStateModelBuilder;
 import net.neoforged.neoforge.client.model.generators.blockstate.UnbakedMutator;
@@ -211,7 +218,12 @@ public class MekanismModelProvider extends BaseModelProvider {
         for (ItemLike holder : List.of(MekanismItems.PORTABLE_QIO_DASHBOARD, MekanismBlocks.QIO_DRIVE_ARRAY, MekanismBlocks.QIO_DASHBOARD,
               MekanismBlocks.QIO_IMPORTER, MekanismBlocks.QIO_EXPORTER, MekanismBlocks.QIO_REDSTONE_ADAPTER)) {
             Identifier modelLocation = switch (holder) {
-                case BlockRegistryObject<?, ?> block -> existingModel(block);
+                case BlockRegistryObject<?, ?> block -> {
+                    if (holder == MekanismBlocks.QIO_REDSTONE_ADAPTER) {
+                        yield existingModel("block/qio_redstone_adapter_unlit");
+                    }
+                    yield existingModel(block);
+                }
                 case ItemRegistryObject<?> item -> existingModel(item);
                 default -> throw new IllegalArgumentException("unknown type");
             };
@@ -345,6 +357,31 @@ public class MekanismModelProvider extends BaseModelProvider {
         energyCube(blockModels, MekanismBlocks.ULTIMATE_ENERGY_CUBE, BaseTier.ULTIMATE);
         energyCube(blockModels, MekanismBlocks.CREATIVE_ENERGY_CUBE, BaseTier.CREATIVE);
 
+        {
+            Block block = MekanismBlocks.QIO_REDSTONE_ADAPTER.value();
+            Identifier offlineModel = validateModelExists(modLocation("block/qio_redstone_adapter_offline"));
+            Identifier litModel = validateModelExists(modLocation("block/qio_redstone_adapter_lit"));
+            Identifier unlitModel = validateModelExists(modLocation("block/qio_redstone_adapter_unlit"));
+
+            MultiVariant offlineModelVariant = BlockModelGenerators.plainVariant(offlineModel);
+            MultiVariant onlineVariant = customVariant(new QIORedstoneAdapter.Unbaked(unlitModel, litModel, Variant.SimpleModelState.DEFAULT));
+            blockModels.blockStateOutput.accept(
+                  MultiVariantGenerator.dispatch(block)
+                        .with(
+                              PropertyDispatch.initial(AttributeStateActive.activeProperty)
+                                    .select(false, offlineModelVariant)
+                                    .select(true, onlineVariant)
+                        )
+                        .with(PropertyDispatch.modify(BlockStateProperties.FACING)
+                              .select(Direction.DOWN, BlockModelGenerators.X_ROT_180)
+                              .select(Direction.UP, BlockModelGenerators.NOP)
+                              .select(Direction.NORTH, BlockModelGenerators.X_ROT_270.then(BlockModelGenerators.Y_ROT_180))
+                              .select(Direction.SOUTH, BlockModelGenerators.X_ROT_270)
+                              .select(Direction.WEST, BlockModelGenerators.X_ROT_270.then(BlockModelGenerators.Y_ROT_90))
+                              .select(Direction.EAST, BlockModelGenerators.Y_ROT_270.then(BlockModelGenerators.X_ROT_270)))
+            );
+            //item model handled above
+        }
 
         plainBlockItemModel(blockModels, MekanismBlocks.ADVANCED_BIN, "block/bin/advanced");
         plainBlockItemModel(blockModels, MekanismBlocks.BASIC_BIN, "block/bin/basic");
@@ -608,7 +645,6 @@ public class MekanismModelProvider extends BaseModelProvider {
         markManualBlockState(MekanismBlocks.QIO_DRIVE_ARRAY);
         markManualBlockState(MekanismBlocks.QIO_EXPORTER);
         markManualBlockState(MekanismBlocks.QIO_IMPORTER);
-        markManualBlockState(MekanismBlocks.QIO_REDSTONE_ADAPTER);
         markManualBlockState(MekanismBlocks.QUANTUM_ENTANGLOPORTER);
         markManualBlockState(MekanismBlocks.RADIOACTIVE_WASTE_BARREL);
         markManualBlockState(MekanismBlocks.RESISTIVE_HEATER);
@@ -665,6 +701,67 @@ public class MekanismModelProvider extends BaseModelProvider {
         @Override
         public CustomBlockStateModelBuilder with(UnbakedMutator variantMutator) {
             return new EnergyCubeBuilder(variantMutator.apply(blockStateModel));
+        }
+
+        @Override
+        public CustomUnbakedBlockStateModel toUnbaked() {
+            return this.blockStateModel;
+        }
+    }
+
+    protected static MultiVariant customVariant(CustomUnbakedBlockStateModel blockStateModel) {
+        return MultiVariant.of(new MekanismCustomStateModelBuilder(blockStateModel));
+    }
+
+    public static final class MekanismCustomStateModelBuilder extends CustomBlockStateModelBuilder {
+
+        private final CustomUnbakedBlockStateModel blockStateModel;
+
+        public MekanismCustomStateModelBuilder(CustomUnbakedBlockStateModel blockStateModel) {
+            this.blockStateModel = blockStateModel;
+        }
+
+        @Override
+        public CustomBlockStateModelBuilder with(VariantMutator variantMutator) {
+            return new MekanismCustomStateModelBuilder(doMutate(blockStateModel, variantMutator));
+        }
+
+        private CustomUnbakedBlockStateModel doMutate(CustomUnbakedBlockStateModel toMutate, VariantMutator variantMutator) {
+            switch (toMutate) {
+                //nb: currently unused in Mek, but useful to have
+                case CompositeBlockModel.Unbaked composite -> {
+                    return new CompositeBlockModel.Unbaked(mutateChildren(composite.models(), variantMutator));
+                }
+                case QIORedstoneAdapter.Unbaked(Identifier unlit, Identifier lit, Variant.SimpleModelState state) -> {
+                    return new QIORedstoneAdapter.Unbaked(
+                          unlit,
+                          lit,
+                          variantMutator.apply(new Variant(lit, state)).modelState()
+                    );
+                }
+                default -> throw new IllegalStateException("Don't know how to handle " + toMutate);
+            }
+        }
+
+        private List<BlockStateModel.Unbaked> mutateChildren(List<BlockStateModel.Unbaked> models, VariantMutator variantMutator) {
+            return models
+                  .stream()
+                  .map(unbaked -> mutateChild(unbaked, variantMutator))
+                  .toList();
+        }
+
+        private BlockStateModel.Unbaked mutateChild(BlockStateModel.Unbaked unbaked, VariantMutator variantMutator) {
+            return switch (unbaked) {
+                case CustomUnbakedBlockStateModel custom -> doMutate(custom, variantMutator);
+                case SingleVariant.Unbaked single -> new SingleVariant.Unbaked(single.variant().with(variantMutator));
+                case WeightedVariants.Unbaked weighted -> new WeightedVariants.Unbaked(weighted.entries().map(e -> mutateChild(e, variantMutator)));
+                default -> throw new IllegalArgumentException("Unknown type: " + unbaked);
+            };
+        }
+
+        @Override
+        public CustomBlockStateModelBuilder with(UnbakedMutator variantMutator) {
+            return new MekanismCustomStateModelBuilder(variantMutator.apply(this.blockStateModel));
         }
 
         @Override
