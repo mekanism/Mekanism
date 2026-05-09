@@ -53,7 +53,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.TextureAtlasStitchedEvent;
 import net.neoforged.neoforge.client.fluid.FluidTintSource;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -71,7 +70,7 @@ public class MekanismRenderer {
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
     public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
     private static final Map<TextureAtlasSprite, RenderResizableCuboid.TexturePicker> SINGLE_TEXTURE_PICKERS = new IdentityHashMap<>();
-    private static final Map<FluidResource, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new HashMap<>();
+    private static final Map<Fluid, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new HashMap<>();
 
     /**
      * Get a fluid texture when a stack does not exist.
@@ -91,6 +90,11 @@ public class MekanismRenderer {
     }
 
     public static TextureAtlasSprite getFluidTexture(@NotNull TypedInstance<Fluid> fluid, @NotNull FluidTextureType type) {
+        return getFluidTexture(fluid.typeHolder().value(), type);
+    }
+
+    @NonNull
+    private static TextureAtlasSprite getFluidTexture(@NonNull Fluid fluid, @NonNull FluidTextureType type) {
         FluidModel fluidModel = getFluidModel(fluid);
         if (type == FluidTextureType.STILL) {
             return fluidModel.stillMaterial().sprite();
@@ -308,12 +312,8 @@ public class MekanismRenderer {
         GuiElementHolder.updateBackgroundColor();
     }
 
-    public static ValveTextureGetter getValveTexture(FluidStack fluid) {
-        return getValveTexture(FluidResource.of(fluid));
-    }
-
-    public static ValveTextureGetter getValveTexture(FluidResource fluidType) {
-        return VALVE_FLUID_TEX_CACHE.computeIfAbsent(fluidType, ValveTextureGetter::create);
+    public static ValveTextureGetter getValveTexture(TypedInstance<Fluid> fluidType) {
+        return VALVE_FLUID_TEX_CACHE.computeIfAbsent(fluidType.typeHolder().value(), ValveTextureGetter::create);
     }
 
     public static RenderResizableCuboid.TexturePicker getSinglePicker(TextureAtlasSprite sprite) {
@@ -439,7 +439,7 @@ public class MekanismRenderer {
             return null;
         }
 
-        public static ValveTextureGetter create(TypedInstance<Fluid> fluid) {
+        public static ValveTextureGetter create(Fluid fluid) {
             TextureAtlasSprite still = getFluidTexture(fluid, FluidTextureType.STILL);
             TextureAtlasSprite flowing = getFluidTexture(fluid, FluidTextureType.FLOWING);
             return new ValveTextureGetter(still, flowing);
