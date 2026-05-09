@@ -1,6 +1,5 @@
 {
   "parent": "block/block",
-  "loader": "mekanism:transmitter",
   "model": "mekanism:models/block/transmitter_small.obj.mek",
   "flip_v": true,
   "textures": {

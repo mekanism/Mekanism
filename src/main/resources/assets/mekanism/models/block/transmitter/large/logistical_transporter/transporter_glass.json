@@ -1,0 +1,18 @@
+{
+  "loader": "neoforge:obj",
+  "model": "mekanism:models/block/transmitter_large.obj.mek",
+  "mtl_override": "mekanism:models/block/transmitter_glass_large.mtl",
+  "flip_v": true,
+  "textures": {
+    "particle": "#side_glass",
+    "center_glass_down": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_up": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_north": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_south": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_east": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "center_glass_west": "mekanism:block/models/multipart/logistical_transporter_glass_colored",
+    "side_glass": "mekanism:block/models/multipart/logistical_transporter_vertical_glass_colored",
+    "center_glass_opaque": "mekanism:block/models/multipart/opaque/logistical_transporter_glass_colored",
+    "side_glass_opaque": "mekanism:block/models/multipart/opaque/logistical_transporter_vertical_glass_colored"
+  }
+}
