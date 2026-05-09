@@ -14,8 +14,6 @@ import java.util.function.IntFunction;
 import mekanism.api.RelativeSide;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.model.energycube.EnergyCubeBaseGeometry.CubeSideModelState;
-import mekanism.client.render.lib.QuadTransformation;
-import mekanism.client.render.lib.QuadUtils;
 import mekanism.common.Mekanism;
 import mekanism.common.tile.TileEntityEnergyCube;
 import mekanism.common.tile.TileEntityEnergyCube.CubeSideState;
@@ -28,12 +26,9 @@ import net.minecraft.client.resources.model.ModelBaker;
 import net.minecraft.client.resources.model.ResolvableModel;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
-import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.geometry.BakedQuad.MaterialFlags;
-import net.minecraft.client.resources.model.geometry.QuadCollection;
 import net.minecraft.client.resources.model.sprite.Material.Baked;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.Util;
@@ -157,22 +152,6 @@ public class EnergyCubeModel implements DynamicBlockStateModel {
 
         private static void addSideState(ModelBaker baker, RelativeSide side, Map<CubeSideState, BlockStateModelPart> sideMap, ResolvedModel model, ModelState tierModelState, CubeSideState sideState) {
             sideMap.put(sideState, SimpleModelWrapper.bake(baker, model, new CubeSideModelState(tierModelState, side, sideState)));
-        }
-
-        public BlockStateModelPart transform(ModelBaker baker, BlockStateModelPart variant, QuadTransformation transformation) {
-            //TODO - 26.1: Make this into more of a proper helper?
-            QuadCollection.Builder builder = new QuadCollection.Builder();
-            for (BakedQuad quad : QuadUtils.transformBakedQuads(variant.getQuads(null), transformation)) {
-                builder.addUnculledFace(quad);
-            }
-            for (Direction direction : EnumUtils.DIRECTIONS) {
-                for (BakedQuad quad : QuadUtils.transformBakedQuads(variant.getQuads(direction), transformation)) {
-                    builder.addCulledFace(direction, quad);
-                }
-            }
-            //TODO - 26.1: Do we need to somehow actually bake it so that it has a different name and such?
-            //TODO - 26.1: Figure out the render type to pass?
-            return new SimpleModelWrapper(builder.build(), variant.useAmbientOcclusion(), variant.particleMaterial());
         }
 
         @Override
