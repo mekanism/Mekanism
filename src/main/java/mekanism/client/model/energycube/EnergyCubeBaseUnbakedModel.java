@@ -1,7 +1,6 @@
 package mekanism.client.model.energycube;
 
 import net.minecraft.client.resources.model.geometry.UnbakedGeometry;
-import net.minecraft.util.context.ContextMap;
 import net.neoforged.neoforge.client.model.AbstractUnbakedModel;
 import net.neoforged.neoforge.client.model.StandardModelParameters;
 
@@ -21,13 +20,5 @@ public class EnergyCubeBaseUnbakedModel extends AbstractUnbakedModel {
     public UnbakedGeometry geometry() {
         // The geometry to used to construct the baked quads
         return this.geometry;
-    }
-
-    @Override
-    public void fillAdditionalProperties(ContextMap.Builder propertiesBuilder) {
-        super.fillAdditionalProperties(propertiesBuilder);
-        // Add additional properties below by calling withParameter(ContextKey<T>, T)
-        // They can then be accessed in the ContextMap provided in UnbakedGeometry#bake
-        //TODO add side data??
     }
 }
