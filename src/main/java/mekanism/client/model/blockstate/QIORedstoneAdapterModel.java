@@ -23,12 +23,12 @@ import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 
-public class QIORedstoneAdapter implements DynamicBlockStateModel {
+public class QIORedstoneAdapterModel implements DynamicBlockStateModel {
 
     private final BlockStateModelPart litPart;
     private final BlockStateModelPart unlitPart;
 
-    public QIORedstoneAdapter(BlockStateModelPart litPart, BlockStateModelPart unlitPart) {
+    public QIORedstoneAdapterModel(BlockStateModelPart litPart, BlockStateModelPart unlitPart) {
         this.litPart = litPart;
         this.unlitPart = unlitPart;
     }
@@ -72,7 +72,7 @@ public class QIORedstoneAdapter implements DynamicBlockStateModel {
         @Override
         public BlockStateModel bake(ModelBaker baker) {
             ModelState modelState = state.asModelState();
-            return new QIORedstoneAdapter(bakePart(baker, modelState, lit), bakePart(baker, modelState, unlit));
+            return new QIORedstoneAdapterModel(bakePart(baker, modelState, lit), bakePart(baker, modelState, unlit));
         }
 
         private static BlockStateModelPart bakePart(ModelBaker baker, ModelState modelState, Identifier identifier) {

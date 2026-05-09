@@ -82,7 +82,7 @@ import mekanism.client.model.ModelJetpack;
 import mekanism.client.model.ModelScubaMask;
 import mekanism.client.model.ModelScubaTank;
 import mekanism.client.model.blockstate.EnergyCubeModel;
-import mekanism.client.model.blockstate.QIORedstoneAdapter;
+import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.energycube.EnergyCubeBaseLoader;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
@@ -419,7 +419,7 @@ public class ClientRegistration {
     public static void registerModels(RegisterBlockStateModels event) {
         //TODO - 26.1 models
         event.registerModel(EnergyCubeModel.Unbaked.ID, EnergyCubeModel.Unbaked.MAP_CODEC);
-        event.registerModel(QIORedstoneAdapter.Unbaked.ID, QIORedstoneAdapter.Unbaked.MAP_CODEC);
+        event.registerModel(QIORedstoneAdapterModel.Unbaked.ID, QIORedstoneAdapterModel.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

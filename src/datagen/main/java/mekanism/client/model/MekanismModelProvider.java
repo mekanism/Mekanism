@@ -7,7 +7,7 @@ import java.util.Map;
 import java.util.Optional;
 import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
-import mekanism.client.model.blockstate.QIORedstoneAdapter;
+import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -364,7 +364,7 @@ public class MekanismModelProvider extends BaseModelProvider {
             Identifier unlitModel = validateModelExists(modLocation("block/qio_redstone_adapter_unlit"));
 
             MultiVariant offlineModelVariant = BlockModelGenerators.plainVariant(offlineModel);
-            MultiVariant onlineVariant = customVariant(new QIORedstoneAdapter.Unbaked(unlitModel, litModel, Variant.SimpleModelState.DEFAULT));
+            MultiVariant onlineVariant = customVariant(new QIORedstoneAdapterModel.Unbaked(unlitModel, litModel, Variant.SimpleModelState.DEFAULT));
             blockModels.blockStateOutput.accept(
                   MultiVariantGenerator.dispatch(block)
                         .with(
@@ -706,8 +706,8 @@ public class MekanismModelProvider extends BaseModelProvider {
                 case CompositeBlockModel.Unbaked composite -> {
                     return new CompositeBlockModel.Unbaked(mutateChildren(composite.models(), variantMutator));
                 }
-                case QIORedstoneAdapter.Unbaked(Identifier unlit, Identifier lit, Variant.SimpleModelState state) -> {
-                    return new QIORedstoneAdapter.Unbaked(
+                case QIORedstoneAdapterModel.Unbaked(Identifier unlit, Identifier lit, Variant.SimpleModelState state) -> {
+                    return new QIORedstoneAdapterModel.Unbaked(
                           unlit,
                           lit,
                           variantMutator.apply(new Variant(lit, state)).modelState()
