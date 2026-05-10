@@ -32,11 +32,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityPressurizedTube extends TileEntityTransmitter implements IComputerTile, ITileRadioactive {
 
-    private final ChemicalHandlerManager chemicalHandlerManager;
-
     public TileEntityPressurizedTube(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(chemicalHandlerManager = new ChemicalHandlerManager(new IChemicalTankHolder() {
+        addCapabilityResolver(new ChemicalHandlerManager(new IChemicalTankHolder() {
             @Override
             public @NotNull List<IChemicalTank> getTanks(@Nullable Direction direction) {
                 PressurizedTube tube = TileEntityPressurizedTube.this.getTransmitter();

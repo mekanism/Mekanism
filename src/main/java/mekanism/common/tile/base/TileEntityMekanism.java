@@ -11,7 +11,6 @@ import java.util.Set;
 import java.util.function.IntSupplier;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
-import mekanism.api.Action;
 import mekanism.api.IConfigCardAccess;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismItemAbilities;
@@ -22,7 +21,6 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
@@ -154,8 +152,7 @@ import org.jetbrains.annotations.Nullable;
 
 //TODO: We need to move the "supports" methods into the source interfaces so that we make sure they get checked before being used
 public abstract class TileEntityMekanism extends CapabilityTileEntity implements IFrequencyHandler, ITileDirectional, IConfigCardAccess, ITileActive, ITileSound,
-      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, IMekanismStrictEnergyHandler, ITileHeatHandler,
-      IComputerTile, ITileRadioactive, Nameable {
+      ITileRedstone, ISecurityTile, ITileUpgradable, ITierUpgradable, IComparatorSupport, ITrackableContainer, ITileHeatHandler, IComputerTile, ITileRadioactive, Nameable {
 
     /**
      * The players currently using this block.
@@ -243,7 +240,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     //Variables for handling IMekanismStrictEnergyHandler
     @Nullable
     protected final EnergyHandlerManager energyHandlerManager;
-    private final LastEnergyTracker lastEnergyTracker = new LastEnergyTracker();
     //End variables IMekanismStrictEnergyHandler
 
     //Variables for handling IMekanismHeatHandler
@@ -301,7 +297,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
-            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this));
+            capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this, () -> level == null ? 0 : level.getGameTime()));
         } else {
             energyHandlerManager = null;
         }
@@ -459,7 +455,6 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         return fluidHandlerManager != null && fluidHandlerManager.canHandle();
     }
 
-    @Override
     public final boolean canHandleEnergy() {
         return energyHandlerManager != null && energyHandlerManager.canHandle();
     }
@@ -670,7 +665,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         //Set that we received zero energy so if it is a different tick than we last had,
         // and we don't actually receive anything then we will properly update it to zero
-        tile.lastEnergyTracker.received(level.getGameTime(), 0L);
+        LastEnergyTracker lastEnergyTracker = tile.getLastEnergyTracker();
+        if (lastEnergyTracker != null) {
+            lastEnergyTracker.tickChanged();
+        }
         //Only update the comparator state if we support comparators and need to update comparators
         if (tile.supportsComparator() && tile.updateComparators && !state.isAir()) {
             int newRedstoneLevel = tile.getRedstoneLevel();
@@ -962,7 +960,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
             trackLastEnergy(container);
-            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            List<IEnergyContainer> energyContainers = getEnergyContainers();
             for (IEnergyContainer energyContainer : energyContainers) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
@@ -977,7 +975,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     protected void trackLastEnergy(MekanismContainer container) {
-        container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
+        if (lastEnergyTracker != null) {
+            //TODO - 26.1: Validate that this works and that we aren't for some reason just not exposing energy caps and creating the handler manager on the client
+            container.track(SyncableLong.create(lastEnergyTracker::getLastEnergyReceived, lastEnergyTracker::setLastEnergyReceived));
+        }
     }
 
     @Override
@@ -1194,14 +1196,14 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     @Override
     public void recalculateUpgrades(Upgrade upgrade) {
         if (upgrade == Upgrade.SPEED) {
-            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
+            for (IEnergyContainer energyContainer : getEnergyContainers()) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     machineEnergy.updateEnergyPerTick();
                     machineEnergy.updateMaxEnergy();
                 }
             }
         } else if (upgrade == Upgrade.ENERGY) {
-            for (IEnergyContainer energyContainer : getEnergyContainers(null)) {
+            for (IEnergyContainer energyContainer : getEnergyContainers()) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     machineEnergy.updateEnergyPerTick();
                     machineEnergy.updateMaxEnergy();
@@ -1368,32 +1370,25 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @NotNull
-    @Override
+    public final List<IEnergyContainer> getEnergyContainers() {
+        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
+        // and maybe rename the one that does take a side as it is mostly used for ContainerType
+        return getEnergyContainers(null);
+    }
+
+    @NotNull
     public final List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
     }
 
-    @Override
-    public long insertEnergy(int container, long amount, @Nullable Direction side, @NotNull Action action) {
-        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(container, amount, side, action));
-    }
-
-    @Override
-    public long insertEnergy(long amount, @Nullable Direction side, @NotNull Action action) {
-        //Note: Super bypasses calling insertEnergy(int container, ...) so we need to override it here as well
-        return trackLastEnergy(amount, action, IMekanismStrictEnergyHandler.super.insertEnergy(amount, side, action));
-    }
-
-    private long trackLastEnergy(long amount, @NotNull Action action, long remainder) {
-        if (action.execute()) {
-            //If for some reason we don't have a level fall back to zero
-            lastEnergyTracker.received(level == null ? 0 : level.getGameTime(), amount - remainder);
-        }
-        return remainder;
+    @Nullable
+    private LastEnergyTracker getLastEnergyTracker() {
+        return energyHandlerManager == null ? null : energyHandlerManager.getLastEnergyTracker();
     }
 
     public final long getInputRate() {
-        return lastEnergyTracker.getLastEnergyReceived();
+        LastEnergyTracker lastEnergyTracker = getLastEnergyTracker();
+        return lastEnergyTracker == null ? 0 : lastEnergyTracker.getLastEnergyReceived();
     }
 
     public void applyEnergyContainers(DataComponentGetter input, List<IEnergyContainer> containers, AttachedEnergy attachedEnergy) {
@@ -1670,7 +1665,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     private long getTotalEnergy(ToLongFunction<IEnergyContainer> getter) {
         long total = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+        List<IEnergyContainer> energyContainers = getEnergyContainers();
         for (IEnergyContainer energyContainer : energyContainers) {
             total = MathUtils.addClamped(total, getter.applyAsLong(energyContainer));
         }
@@ -1681,7 +1676,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     double getTotalEnergyFilledPercentage() {
         long stored = 0;
         long max = 0;
-        List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+        List<IEnergyContainer> energyContainers = getEnergyContainers();
         for (IEnergyContainer energyContainer : energyContainers) {
             stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
             max = MathUtils.addClamped(max, energyContainer.getMaxEnergy());

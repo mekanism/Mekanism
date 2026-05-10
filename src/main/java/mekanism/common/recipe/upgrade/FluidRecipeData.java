@@ -45,8 +45,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
                     FluidResource fluidType = fluidTank.getResource();
                     int toInsert = fluidTank.amount();
                     //Insert into the output using manual as the automation type
-                    toInsert -= outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL);
-                    if (toInsert > 0) {
+                    if (outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL) < toInsert) {
                         //If we have a remainder something failed so bail
                         return false;
                     }

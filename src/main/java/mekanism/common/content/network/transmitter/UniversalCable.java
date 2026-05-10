@@ -6,9 +6,9 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
@@ -30,7 +30,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IMekanismStrictEnergyHandler,
+public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, EnergyNetwork, Long, UniversalCable> implements IContentsListener,
       IUpgradeableTransmitter<UniversalCableUpgradeData> {
 
     public final CableTier tier;
@@ -91,10 +91,9 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     }
 
     @NotNull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+    public List<IEnergyContainer> getEnergyContainers() {
         if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().getEnergyContainers(side);
+            return getTransmitterNetwork().getEnergyContainers();
         }
         return energyContainers;
     }

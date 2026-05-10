@@ -7,6 +7,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -44,8 +45,9 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
     @Range(from = 0, to = Long.MAX_VALUE)
+    @Deprecated(forRemoval = true)//TODO - 26.1: Switch usages of this to the transactional form
     default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
-        if (amount <= 0) {
+        if (amount <= 0 || !isValidForInsertion(automationType)) {
             //"Fail quick" if the given amount is empty
             return amount;
         }
@@ -63,6 +65,14 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
         return amount - toAdd;
     }
 
+    //TODO - 26.1: Docs
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);
+
+    //TODO - 26.1: Docs
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);
+
     /**
      * Extracts energy from this {@link IEnergyContainer}.
      * <p>
@@ -78,8 +88,9 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
      */
     @Range(from = 0, to = Long.MAX_VALUE)
+    @Deprecated(forRemoval = true)//TODO - 26.1: Switch usages of this to the transactional form
     default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0) {
+        if (isEmpty() || amount <= 0 || !isValidForExtraction(automationType)) {
             return 0;
         }
         long ret = Math.min(getEnergy(), amount);
@@ -96,6 +107,16 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
     long getMaxEnergy();
+
+    /**
+     * Ignores current contents
+     */
+    boolean isValidForExtraction(AutomationType automationType);//TODO - 26.1: Update docs
+
+    /**
+     * Ignores current contents
+     */
+    boolean isValidForInsertion(AutomationType automationType);//TODO - 26.1: Update docs
 
     /**
      * Convenience method for checking if this container is empty.

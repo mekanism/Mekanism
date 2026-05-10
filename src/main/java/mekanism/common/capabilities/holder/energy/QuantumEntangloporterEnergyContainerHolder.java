@@ -30,7 +30,7 @@ public class QuantumEntangloporterEnergyContainerHolder extends QuantumEntanglop
     @Override
     public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
         if (entangloporter.hasFrequency()) {
-            return entangloporter.getFreq().getEnergyContainers(side);
+            return entangloporter.getFreq().getEnergyContainers();
         } else if (entangloporter.isRemote()) {
             return clientContainer.get();
         }

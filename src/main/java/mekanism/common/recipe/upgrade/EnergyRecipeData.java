@@ -2,14 +2,13 @@ package mekanism.common.recipe.upgrade;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
-import mekanism.api.math.LongTransferUtils;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -39,17 +38,19 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
             //Something went wrong, fail
             return false;
         }
-        for (IEnergyContainer energyContainer : this.energyContainers) {
-            if (!energyContainer.isEmpty() && insertManualIntoOutputContainer(outputHandler, energyContainer.getEnergy()) > 0) {
-                //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
-                break;
+        try (Transaction transaction = Transaction.openRoot()) {
+            for (IEnergyContainer energyContainer : this.energyContainers) {
+                if (!energyContainer.isEmpty()) {
+                    long toInsert = energyContainer.getEnergy();
+                    //Insert into the output using manual as the automation type
+                    if (outputHandler.insert(toInsert, transaction, AutomationType.MANUAL) < toInsert) {
+                        //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full
+                        break;
+                    }
+                }
             }
+            transaction.commit();
+            return true;
         }
-        return true;
-    }
-
-    private long insertManualIntoOutputContainer(IMekanismStrictEnergyHandler outputHandler, long energy) {
-        //Insert into the output using manual as the automation type
-        return LongTransferUtils.insert(energy, null, outputHandler::getEnergyContainers, Action.EXECUTE, AutomationType.MANUAL);
     }
 }

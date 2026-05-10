@@ -1,22 +1,23 @@
 package mekanism.common.capabilities.energy;
 
-import com.google.common.base.Preconditions;
 import java.util.Objects;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import net.minecraft.world.level.storage.ValueInput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
-public class BasicEnergyContainer implements IEnergyContainer {
+public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEnergyContainer {
 
     public static final Predicate<@NotNull AutomationType> internalOnly = automationType -> automationType == AutomationType.INTERNAL;
     public static final Predicate<@NotNull AutomationType> manualOnly = automationType -> automationType == AutomationType.MANUAL;
@@ -74,10 +75,12 @@ public class BasicEnergyContainer implements IEnergyContainer {
 
     @Override
     public void setEnergy(long energy) {
-        Preconditions.checkArgument(energy >= 0, "Energy cannot be negative");
+        MekanismPreconditions.checkNonNegative(energy);
+        //TODO - 26.1: Re-evaluate this clamping and maybe get rid of it or move it?
         energy = clampEnergy(energy);
         if (stored != energy) {
             stored = energy;
+            //TODO - 26.1: Delay this until the transactions are committed when setting from a transactional context (some things like setting from slots isn't transactional)
             onContentsChanged();
         }
     }
@@ -93,7 +96,7 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getInsertRate(@Nullable AutomationType automationType) {
+    protected long getInsertionRate(@Nullable AutomationType automationType) {
         return Long.MAX_VALUE;
     }
 
@@ -108,42 +111,53 @@ public class BasicEnergyContainer implements IEnergyContainer {
      * stack/stack size
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    protected long getExtractRate(@Nullable AutomationType automationType) {
+    protected long getExtractionRate(@Nullable AutomationType automationType) {
         return Long.MAX_VALUE;
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        if (amount <= 0L || !canInsert.test(automationType)) {
-            return amount;
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0 || !isValidForInsertion(automationType)) {
+            //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
+            return 0;
         }
-        long needed = Math.min(getInsertRate(automationType), getNeeded());
-        if (needed == 0L) {
-            //Fail if we are a full container or our rate is zero
-            return amount;
+        long currentStored = getEnergy();
+        //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
+        long needed = getMaxEnergy() - currentStored;
+        //Limit how much we can add at once to the insertion rate the container sets
+        needed = Math.min(needed, getInsertionRate(automationType));
+        if (needed <= 0) {
+            //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
+            return 0;
         }
         long toAdd = Math.min(amount, needed);
-        if (action.execute()) {
-            //If we want to actually insert the energy, then update the current energy
-            // Note: this also will mark that the contents changed
-            stored += toAdd;
-            onContentsChanged();
-        }
-        return amount - toAdd;
+        updateSnapshots(transaction);
+        // Note: We just set it as unchecked as we have already validated it
+        setEnergy(currentStored + toAdd);
+        return toAdd;
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0L || !canExtract.test(automationType)) {
-            return 0L;
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (isEmpty() || amount == 0 || !isValidForExtraction(automationType)) {
+            //"Fail quick" if we are empty, nothing is being extracted, or if we can never extract from this slot
+            return 0;
         }
-        long ret = Math.min(Math.min(getExtractRate(automationType), getEnergy()), amount);
-        if (ret > 0L && action.execute()) {
-            //Note: this also will mark that the contents changed
-            stored -= ret;
-            onContentsChanged();
+        long currentStored = getEnergy();
+        //If we are trying to extract more than we have, just change it so that we are extracting it all
+        long toRemove = Math.min(amount, currentStored);
+        //Limit how much we can remove at once to the extraction rate the container sets
+        toRemove = Math.min(toRemove, getExtractionRate(automationType));
+        if (toRemove > 0) {
+            updateSnapshots(transaction);
+            //Shrink the stack by the amount removed
+            setEnergy(currentStored - toRemove);
         }
-        return ret;
+        return toRemove;
     }
 
     @Override
@@ -152,7 +166,36 @@ public class BasicEnergyContainer implements IEnergyContainer {
     }
 
     @Override
+    public final boolean isValidForExtraction(AutomationType automationType) {
+        return canExtract.test(automationType);
+    }
+
+    @Override
+    public final boolean isValidForInsertion(AutomationType automationType) {
+        return canInsert.test(automationType);
+    }
+
+    @Override
     public void deserialize(ValueInput input) {
         input.getInt(SerializationConstants.STORED).ifPresent(this::setEnergy);
+    }
+
+    @Override
+    protected Long createSnapshot() {
+        return getEnergy();
+    }
+
+    @Override
+    protected void revertToSnapshot(Long snapshot) {
+        setEnergy(snapshot);
+    }
+
+    @Override
+    protected void onRootCommit(Long originalState) {
+        super.onRootCommit(originalState);
+        if (getEnergy() != originalState) {
+            //Fire content change listeners during root commit if the final state is different from the original one
+            onContentsChanged();
+        }
     }
 }

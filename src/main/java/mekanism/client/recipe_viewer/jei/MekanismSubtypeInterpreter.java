@@ -57,7 +57,7 @@ public class MekanismSubtypeInterpreter implements ISubtypeInterpreter<ItemStack
 
         IStrictEnergyHandler energyHandler = getEnergyHandler(stack);
         if (energyHandler != null) {
-            for (int container = 0, containers = energyHandler.getEnergyContainerCount(); container < containers; container++) {
+            for (int container = 0, containers = energyHandler.size(); container < containers; container++) {
                 //TODO: Should we just be storing the amount of stored energy??
                 long neededEnergy = energyHandler.getNeededEnergy(container);
                 if (neededEnergy == 0L) {

@@ -4,8 +4,8 @@ import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
-import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
@@ -22,13 +22,8 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Void unused, long amount, TransactionContext transaction) {
-        handler.acceptAmount(splitInfo, amount);
-    }
-
-    @Override
     protected long accept(HANDLER handler, Void unused, long amount, TransactionContext transaction) {
-        return handler.simulate(amount);
+        return handler.accept(amount, transaction);
     }
 
     public void save() {
@@ -40,46 +35,46 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     public long getStored() {
         long total = 0;
         for (HANDLER handler : handlers) {
-            total = MathUtils.addClamped(total, handler.getStored());
+            total = MathUtils.addClamped(total, handler.currentStored);
         }
         return total;
     }
 
     @NothingNullByDefault
-    public abstract static class SaveHandler {
+    public abstract static class SaveHandler extends SnapshotJournal<Long> {
 
         private final long maxEnergy;
-        private long neededEnergy;
+        protected long currentStored;
 
         protected SaveHandler(long maxEnergy) {
             this.maxEnergy = maxEnergy;
-            this.neededEnergy = this.maxEnergy;
         }
 
-        protected void acceptAmount(SplitInfo splitInfo, long amount) {
-            if (neededEnergy <= 0L) {
-                splitInfo.send(0L);
-            } else {
-                amount = Math.min(amount, neededEnergy);
-                neededEnergy -= amount;
-                splitInfo.send(amount);
+        protected Long accept(long amount, TransactionContext transaction) {
+            //TODO - 26.1: Check if amount can be zero? If so we can just skip
+            // Also see if there is a case an empty type can be passed to this (namely when amount is not zero)
+            long toAccept = Math.min(amount, maxEnergy - currentStored);
+            if (toAccept > 0) {
+                updateSnapshots(transaction);
+                currentStored += amount;
             }
+            return toAccept;
         }
 
-        protected long simulate(long energyToSend) {
-            if (neededEnergy <= 0L || energyToSend <= 0L) {
-                return 0L;
-            }
-            return Math.min(energyToSend, neededEnergy);
-        }
+        protected abstract void save();
 
-        protected final void save() {
-            save(maxEnergy - neededEnergy);
-        }
-
-        protected abstract void save(long currentStored);
-
+        //TODO - 26.1: Re-evaluate this
         protected abstract long getStored();
+
+        @Override
+        protected Long createSnapshot() {
+            return currentStored;
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            this.currentStored = snapshot;
+        }
     }
 
     @NothingNullByDefault
@@ -93,7 +88,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         }
 
         @Override
-        protected void save(long currentStored) {
+        protected void save() {
             delegate.setEnergy(currentStored);
         }
 

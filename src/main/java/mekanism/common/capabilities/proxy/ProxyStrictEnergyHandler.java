@@ -1,67 +1,68 @@
 package mekanism.common.capabilities.proxy;
 
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.energy.ISidedStrictEnergyHandler;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
 public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEnergyHandler {
 
-    private final ISidedStrictEnergyHandler energyHandler;
+    private final IMekanismStrictEnergyHandler handler;
 
-    public ProxyStrictEnergyHandler(ISidedStrictEnergyHandler energyHandler, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyStrictEnergyHandler(IMekanismStrictEnergyHandler handler, @Nullable Direction side, @Nullable IHolder holder) {
         super(side, holder);
-        this.energyHandler = energyHandler;
+        this.handler = handler;
     }
 
     @Override
-    public int getEnergyContainerCount() {
-        return energyHandler.getEnergyContainerCount(side);
+    public int size() {
+        return handler.size();
     }
 
     @Override
-    public long getEnergy(int container) {
-        return energyHandler.getEnergy(container, side);
+    public long getAmountAsLong(int index) {
+        return handler.getAmountAsLong(index);
     }
 
     @Override
-    public void setEnergy(int container, long energy) {
+    public void setEnergy(int container, long energy) {//TODO - 26.1: Re-evaluate this being exposed to strict energy handler instead of just the more internal one
         if (!readOnly) {
-            energyHandler.setEnergy(container, energy, side);
+            handler.setEnergy(container, energy);
         }
     }
 
     @Override
-    public long getMaxEnergy(int container) {
-        return energyHandler.getMaxEnergy(container, side);
+    public long getCapacityAsLong(int index) {
+        return handler.getCapacityAsLong(index);
     }
 
     @Override
     public long getNeededEnergy(int container) {
-        return energyHandler.getNeededEnergy(container, side);
+        return handler.getNeededEnergy(container);
     }
 
     @Override
-    public long insertEnergy(int container, long amount, Action action) {
-        return readOnlyInsert() ? amount : energyHandler.insertEnergy(container, amount, side, action);
+    public long insert(int index, long amount, TransactionContext transaction) {
+        return readOnlyInsert() ? amount : handler.insert(index, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
-    public long extractEnergy(int container, long amount, Action action) {
-        return readOnlyExtract() ? 0L : energyHandler.extractEnergy(container, amount, side, action);
+    public long insert(long amount, TransactionContext transaction) {
+        return readOnlyInsert() ? amount : handler.insert(amount, transaction, AutomationType.handler(side));
     }
 
     @Override
-    public long insertEnergy(long amount, Action action) {
-        return readOnlyInsert() ? amount : energyHandler.insertEnergy(amount, side, action);
+    public long extract(int index, long amount, TransactionContext transaction) {
+        return readOnlyExtract() ? 0L : handler.extract(index, amount, transaction, AutomationType.handler(side));
     }
 
     @Override
-    public long extractEnergy(long amount, Action action) {
-        return readOnlyExtract() ? 0L : energyHandler.extractEnergy(amount, side, action);
+    public long extract(long amount, TransactionContext transaction) {
+        return readOnlyExtract() ? 0L : handler.extract(amount, transaction, AutomationType.handler(side));
     }
 }

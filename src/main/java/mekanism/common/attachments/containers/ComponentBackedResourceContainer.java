@@ -125,6 +125,8 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         }
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         long needed = getLimitAsLong(resource) - currentAmount;
+        //Limit how much we can add at once to the insertion rate the container sets
+        needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
@@ -132,15 +134,11 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             return 0;
         }
         int toAdd = Math.min(amount, Ints.saturatedCast(needed));
-        //Limit how much we can add at once to the insertion rate the container sets
-        toAdd = Math.min(toAdd, getInsertionRate(automationType));
-        if (toAdd > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
-            updateSnapshots(transaction);
-            //Note: We let setStack handle updating the backing holding stack
-            // We use current.getCount + toAdd so that if we are empty we end up at toAdd
-            // but if we aren't then we grow by the given amount
-            setContents(attached, resource, currentAmount + toAdd);
-        }
+        updateSnapshots(transaction);
+        //Note: We let setStack handle updating the backing holding stack
+        // We use current.getCount + toAdd so that if we are empty we end up at toAdd
+        // but if we aren't then we grow by the given amount
+        setContents(attached, resource, currentAmount + toAdd);
         return toAdd;
     }
 
@@ -163,7 +161,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
-        if (toRemove > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
+        if (toRemove > 0) {
             updateSnapshots(transaction);
             //Shrink the stack by the amount removed
             setContents(attached, currentType, currentStored - toRemove);

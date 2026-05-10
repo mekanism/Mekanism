@@ -82,7 +82,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         setupConfig(TransmissionType.ITEM, InventoryProxy::new, () -> hasFrequency() ? getFreq().getInventorySlots() : Collections.emptyList());
         setupConfig(TransmissionType.FLUID, FluidProxy::new, () -> hasFrequency() ? getFreq().getFluidTanks() : Collections.emptyList());
         setupConfig(TransmissionType.CHEMICAL, ChemicalProxy::new, () -> hasFrequency() ? getFreq().getChemicalTanks() : Collections.emptyList());
-        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers(null) : Collections.emptyList());
+        setupConfig(TransmissionType.ENERGY, EnergyProxy::new, () -> hasFrequency() ? getFreq().getEnergyContainers() : Collections.emptyList());
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
@@ -252,10 +252,10 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         //Note: We have to manually sync the energy container as we don't sync it in super and don't even always have one
         trackLastEnergy(container);
         container.track(SyncableLong.create(() -> {
-            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            List<IEnergyContainer> energyContainers = getEnergyContainers();
             return energyContainers.isEmpty() ? 0L : energyContainers.getFirst().getEnergy();
         }, energy -> {
-            List<IEnergyContainer> energyContainers = getEnergyContainers(null);
+            List<IEnergyContainer> energyContainers = getEnergyContainers();
             if (!energyContainers.isEmpty()) {
                 energyContainers.getFirst().setEnergy(energy);
             }

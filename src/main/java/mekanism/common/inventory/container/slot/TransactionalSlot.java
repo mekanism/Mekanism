@@ -84,6 +84,7 @@ public class TransactionalSlot extends Slot implements ITransactionalSlot {
 
         @Override
         protected void onRootCommit(ItemStack originalState) {
+            super.onRootCommit(originalState);
             TransactionalSlot.this.setChanged();
         }
     }

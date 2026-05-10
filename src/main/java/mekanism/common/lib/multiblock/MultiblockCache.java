@@ -27,7 +27,6 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public class MultiblockCache<T extends MultiblockData> implements IMultiblockContents {
 
@@ -92,7 +91,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             // Chemical
             ResourceUtils.merge(getChemicalTanks(), mergeCache.getChemicalTanks(), rejectContents.rejectedChemicals, transaction);
             // Energy
-            StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers());
+            StorageUtils.mergeEnergyContainers(getEnergyContainers(), mergeCache.getEnergyContainers(), transaction);
             // Heat
             StorageUtils.mergeHeatCapacitors(getHeatCapacitors(), mergeCache.getHeatCapacitors());
             transaction.commit();
@@ -123,7 +122,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
     @NotNull
     @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+    public List<IEnergyContainer> getEnergyContainers() {
         return energyContainers;
     }
 

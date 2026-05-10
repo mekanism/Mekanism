@@ -390,7 +390,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
     @NotNull
     @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+    public List<IEnergyContainer> getEnergyContainers() {
         return isFormed() || isRemote() ? energyContainers : Collections.emptyList();
     }
 

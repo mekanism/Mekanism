@@ -103,22 +103,6 @@ public abstract class Target<HANDLER, RESOURCE> {
     }
 
     /**
-     * Gives the handler on the specified side the given amount.
-     *
-     * @param handler   Handler to give to.
-     * @param splitInfo Information about current overall split. The given split will be increased by the actual amount accepted, in case it is less than the offered
-     *                  amount.
-     * @param resource  Resource template where relevant (Stacks). Amount in stacks is to be ignored. Typed null where not relevant
-     * @param amount    Amount to give.
-     *
-     * @implNote Must call {@link SplitInfo#send(long)} with the amount actually accepted.
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove remaining overrides and make the accept methods for the classes that override this properly support transactions
-    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, RESOURCE resource, long amount, TransactionContext transaction) {
-        splitInfo.send(accept(handler, resource, amount, transaction));
-    }
-
-    /**
      * Simulate inserting into the handler.
      *
      * @param handler  The handler (should correspond with the side we are simulating).

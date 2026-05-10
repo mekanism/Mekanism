@@ -83,7 +83,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             long storedEnergy = energyContainer.getEnergy();
             if (storedEnergy == 0L) {
                 //If the energy container is empty, accept the energy item as long as it is not full
-                for (int container = 0; container < itemEnergyHandler.getEnergyContainerCount(); container++) {
+                for (int container = 0; container < itemEnergyHandler.size(); container++) {
                     if (itemEnergyHandler.getNeededEnergy(container) > 0L) {
                         //True if we have any space in this container
                         return true;

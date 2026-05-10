@@ -2,18 +2,15 @@ package mekanism.common.integration.energy.forgeenergy;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IEnergyConversion;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -34,17 +31,17 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
-        try (Transaction tx = Transaction.openRoot()) {
+        try (Transaction transaction = Transaction.openRoot()) {
             //sanity check nothing can be extracted
-            int extracted = feHandler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extracted, 0, "extracted energy (fe)");
-            assertValueEqual(feHandler.getCapacityAsInt(), FE_CAPACITY, "FE capacity");
+            int extracted = feHandler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, extracted, "extracted energy (fe)");
+            Assertions.assertEquals(FE_CAPACITY, feHandler.getCapacityAsInt(), "FE capacity");
 
             //insert more than the FE capacity, check it capped at FE max
-            int accepted = feHandler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, FE_CAPACITY, "Accepted FE");
-            assertValueEqual(feHandler.getAmountAsInt(), FE_CAPACITY, "stored energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY, "stored energy (joules)");
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(FE_CAPACITY, inserted, "Inserted FE");
+            Assertions.assertEquals(FE_CAPACITY, feHandler.getAmountAsInt(), "stored energy (fe)");
+            Assertions.assertEquals(JOULES_CAPACITY, joulesContainer.getEnergy(), "stored energy (joules)");
         }
     }
 
@@ -54,11 +51,11 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
 
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(1, tx);
-            assertValueEqual(accepted, 0, "accepted energy");
-            assertValueEqual(feHandler.getAmountAsInt(), 0, "stored energy");
-            assertValueEqual(joulesContainer.getEnergy(), 0L, "raw stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(1, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            Assertions.assertEquals(0, feHandler.getAmountAsInt(), "stored energy");
+            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "raw stored energy");
         }
     }
 
@@ -69,18 +66,16 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         joulesContainer.setEnergy(JOULES_CAPACITY);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
-        try (Transaction tx = Transaction.openRoot()) {
+        try (Transaction transaction = Transaction.openRoot()) {
             //try to insert to full container
-            int accepted = feHandler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, 0, "accepted energy when full");
-        }
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy when full");
 
-        try (Transaction tx = Transaction.openRoot()) {
             //extract beyond converted capacity
-            int extractedFE = feHandler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extractedFE, FE_CAPACITY, "extracted energy (fe)");
-            assertValueEqual(feHandler.getAmountAsInt(), 0, "stored energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 0L, "stored energy (joules)");
+            int extractedFE = feHandler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(FE_CAPACITY, extractedFE, "extracted energy (fe)");
+            Assertions.assertEquals(0, feHandler.getAmountAsInt(), "stored energy (fe)");
+            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "stored energy (joules)");
         }
     }
 
@@ -95,13 +90,13 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         //sanity check
         //Note: Needed energy should be 1 even though we can't accept it
 
-        assertValueEqual(feHandler.getAmountAsInt(), FE_CAPACITY - 1, "stored energy");
-        assertValueEqual(feHandler.getCapacityAsInt(), FE_CAPACITY, "max energy");
+        Assertions.assertEquals(FE_CAPACITY - 1, feHandler.getAmountAsInt(), "stored energy");
+        Assertions.assertEquals(FE_CAPACITY, feHandler.getCapacityAsInt(), "max energy");
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, 0, "accepted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), (long) JOULES_CAPACITY - 2, "joules contents");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy (fe)");
+            Assertions.assertEquals(JOULES_CAPACITY - 2, joulesContainer.getEnergy(), "joules contents");
         }
     }
 
@@ -109,17 +104,17 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     @DisplayName("Test wrapping J to FE inserting against a small nearly full container (with enough for just over the conversion rate)")
     void testJoulesAsFEFullContainerPartialStore() {
         //Note: There should be a partial store
-        IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
+        IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(997);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
         //sanity check.
-        assertValueEqual(feHandler.getAmountAsInt(), 398, "stored energy");
+        Assertions.assertEquals(398, feHandler.getAmountAsInt(), "stored energy");
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(1000, tx);
-            assertValueEqual(accepted, 0, "accepted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 997L, "stored joules after insert");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy (fe)");
+            Assertions.assertEquals(997L, joulesContainer.getEnergy(), "stored joules after insert");
         }
     }
 
@@ -131,10 +126,10 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         joulesContainer.setEnergy(2);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int extracted = feHandler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extracted, 0, "extracted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 2L, "stored energy (joules)");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int extracted = feHandler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, extracted, "extracted energy (fe)");
+            Assertions.assertEquals(2L, joulesContainer.getEnergy(), "stored energy (joules)");
         }
     }
 
@@ -142,17 +137,17 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     @DisplayName("Test wrapping J to FE inserting against a small nearly full container (with enough for two full and one partial unit 8J)")
     void testJoulesAsFEInsertPartialStore() {
         //Note: There should be a partial store
-        IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
+        IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         joulesContainer.setEnergy(992);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
         //sanity check.
-        assertValueEqual(feHandler.getAmountAsInt(), 396, "stored energy");
+        Assertions.assertEquals(396, feHandler.getAmountAsInt(), "stored energy");
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(1000, tx);
-            assertValueEqual(accepted, 2, "accepted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 997L, "stored joules after insert");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(2, inserted, "inserted energy (fe)");
+            Assertions.assertEquals(997L, joulesContainer.getEnergy(), "stored joules after insert");
         }
     }
 
@@ -160,16 +155,16 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     @DisplayName("Test wrapping J to FE inserting against a small empty container with an uneven insert")
     void testJoulesAsFEEmptyContainerPartialStore() {
         //Note: There should be a partial store
-        IEnergyContainer joulesContainer = BasicEnergyContainer.create(1000, null);
+        IEnergyContainer joulesContainer = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
         //sanity check.
-        assertValueEqual(feHandler.getAmountAsInt(), 0, "stored energy (fe)");
+        Assertions.assertEquals(0, feHandler.getAmountAsInt(), "stored energy (fe)");
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(3, tx);
-            assertValueEqual(joulesContainer.getEnergy(), 5L, "stored joules after insert");
-            assertValueEqual(accepted, 2, "accepted energy (fe)");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(3, transaction);
+            Assertions.assertEquals(5L, joulesContainer.getEnergy(), "stored joules after insert");
+            Assertions.assertEquals(2, inserted, "inserted energy (fe)");
         }
     }
 
@@ -181,10 +176,10 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         joulesContainer.setEnergy(8);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int extracted = feHandler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extracted, 2, "extracted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 3L, "stored energy (joules)");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int extracted = feHandler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(2, extracted, "extracted energy (fe)");
+            Assertions.assertEquals(3L, joulesContainer.getEnergy(), "stored energy (joules)");
         }
     }
 
@@ -196,10 +191,10 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         joulesContainer.setEnergy(0);
         EnergyHandler feHandler = createForgeWrappedStrictEnergyHandler(joulesContainer, CONVERSION_RATE);
 
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = feHandler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, 0, "accepted energy (fe)");
-            assertValueEqual(joulesContainer.getEnergy(), 0L, "stored energy (joules)");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy (fe)");
+            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "stored energy (joules)");
         }
     }
 
@@ -211,18 +206,15 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         EnergyHandler feContainer = new SimpleEnergyHandler(FE_CAPACITY, FE_CAPACITY, FE_CAPACITY, 0);
         IStrictEnergyHandler joulesHandler = new ForgeStrictEnergyHandler(feContainer, getConverter(CONVERSION_RATE));
 
-        long extractedJoules = joulesHandler.extractEnergy(FE_CAPACITY, Action.SIMULATE);
-        assertValueEqual(extractedJoules, 0L, "extracted energy (joules) from empty");
-        extractedJoules = joulesHandler.extractEnergy(FE_CAPACITY, Action.EXECUTE);
-        assertValueEqual(extractedJoules, 0L, "extracted energy (joules) from empty");
-        assertValueEqual(joulesHandler.getMaxEnergy(0), (long) JOULES_CAPACITY, "max energy (joules)");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long extractedJoules = joulesHandler.extract(FE_CAPACITY, transaction);
+            Assertions.assertEquals(0L, extractedJoules, "extracted energy (joules) from empty");
+            Assertions.assertEquals(JOULES_CAPACITY, joulesHandler.getCapacityAsLong(0), "max energy (joules)");
 
-        long joulesRemaining = joulesHandler.insertEnergy(JOULES_CAPACITY, Action.SIMULATE);
-        assertValueEqual(joulesRemaining, 0L, "remaining inserted energy (joules)");
-
-        joulesRemaining = joulesHandler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(joulesRemaining, 0L, "remaining inserted energy (joules)");
-        assertValueEqual(joulesHandler.getEnergy(0), (long) JOULES_CAPACITY, "stored energy");
+            long joulesInserted = joulesHandler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(JOULES_CAPACITY, joulesInserted, "remaining inserted energy (joules)");
+            Assertions.assertEquals(JOULES_CAPACITY, joulesHandler.getAmountAsLong(0), "stored energy");
+        }
     }
 
     @Test
@@ -231,15 +223,13 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         EnergyHandler feStorage = new SimpleEnergyHandler(JOULES_CAPACITY, JOULES_CAPACITY, JOULES_CAPACITY, JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(feStorage, getConverter(CONVERSION_RATE));
 
-        long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.SIMULATE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
-        remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
-        long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.SIMULATE);
-        assertValueEqual(extracted, (long) JOULES_CAPACITY, "extracted energy");
-        extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(extracted, (long) JOULES_CAPACITY, "extracted energy");
-        assertValueEqual(handler.getEnergy(0), (long) (CONVERSION_RATE * JOULES_CAPACITY) - JOULES_CAPACITY, "stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            long extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(JOULES_CAPACITY, extracted, "extracted energy");
+            Assertions.assertEquals((long) (CONVERSION_RATE * JOULES_CAPACITY) - JOULES_CAPACITY, handler.getAmountAsLong(0), "stored energy");
+        }
     }
 
     @Test
@@ -249,12 +239,10 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         EnergyHandler feStorage = new SimpleEnergyHandler(FE_CAPACITY, FE_CAPACITY, FE_CAPACITY, FE_CAPACITY - 1);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(feStorage, getConverter(CONVERSION_RATE));
 
-        long storedEnergy = JOULES_CAPACITY;
-        long simulatedRemainder = handler.insertEnergy(storedEnergy, Action.SIMULATE);
-        long executedRemainder = handler.insertEnergy(storedEnergy, Action.EXECUTE);
-        Assertions.assertEquals(simulatedRemainder, executedRemainder, "simulate and execute should be the same");
-
-        Assertions.assertEquals(storedEnergy, simulatedRemainder, "expected conversion fail due to floating point remainder");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "expected conversion fail due to floating point remainder");
+        }
     }
 
     //Validate behavior for when the conversion is the inverse of the default
@@ -267,14 +255,14 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         IEnergyContainer container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         container.setEnergy(0);
         EnergyHandler handler = createForgeWrappedStrictEnergyHandler(container, INVERSE_CONVERSION);
-        try (Transaction tx = Transaction.openRoot()) {
-            int extracted = handler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extracted, 0, "extracted energy");
-            assertValueEqual(handler.getCapacityAsInt(), (int) (CONVERSION_RATE * JOULES_CAPACITY), "max energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, extracted, "extracted energy");
+            Assertions.assertEquals((int) (CONVERSION_RATE * JOULES_CAPACITY), handler.getCapacityAsInt(), "max energy");
             //Actual capacity in FE is 2,500
-            int accepted = handler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, JOULES_CAPACITY, "accepted energy");
-            assertValueEqual(handler.getAmountAsInt(), JOULES_CAPACITY, "stored energy");
+            int inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(JOULES_CAPACITY, inserted, "inserted energy");
+            Assertions.assertEquals(JOULES_CAPACITY, handler.getAmountAsInt(), "stored energy");
         }
     }
 
@@ -284,12 +272,12 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         IEnergyContainer container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         container.setEnergy(JOULES_CAPACITY);
         EnergyHandler handler = createForgeWrappedStrictEnergyHandler(container, INVERSE_CONVERSION);
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = handler.insert(JOULES_CAPACITY, tx);
-            assertValueEqual(accepted, 0, "accepted energy");
-            int extracted = handler.extract(JOULES_CAPACITY, tx);
-            assertValueEqual(extracted, JOULES_CAPACITY, "extracted energy");
-            assertValueEqual(handler.getAmountAsInt(), (int) (CONVERSION_RATE * JOULES_CAPACITY) - JOULES_CAPACITY, "stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            int extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(JOULES_CAPACITY, extracted, "extracted energy");
+            Assertions.assertEquals((int) (CONVERSION_RATE * JOULES_CAPACITY) - JOULES_CAPACITY, handler.getAmountAsInt(), "stored energy");
         }
     }
 
@@ -299,49 +287,59 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     @DisplayName("Test wrapping FE to J (inverse conversion) against a small empty container")
     void testFEAsJoules3() {
         IStrictEnergyHandler handler = createStrictForgeEnergyHandler(0, JOULES_CAPACITY, INVERSE_CONVERSION);
-        long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(extracted, 0L, "extracted energy");
-        long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY - FE_CAPACITY, "remaining inserted energy");
-        assertValueEqual(handler.getEnergy(0), (long) FE_CAPACITY, "stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0L, extracted, "extracted energy");
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(FE_CAPACITY, inserted, "inserted energy");
+            Assertions.assertEquals(FE_CAPACITY, handler.getAmountAsLong(0), "stored energy");
+        }
     }
 
     @Test
     @DisplayName("Test wrapping FE to J (inverse conversion) against a small full container")
     void testFEAsJoules4() {
         IStrictEnergyHandler handler = createStrictForgeEnergyHandler(JOULES_CAPACITY, JOULES_CAPACITY, INVERSE_CONVERSION);
-        long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
-        long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(extracted, (long) FE_CAPACITY, "extracted energy");
-        assertValueEqual(handler.getEnergy(0), 0L, "stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            long extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(FE_CAPACITY, extracted, "extracted energy");
+            Assertions.assertEquals(0L, handler.getAmountAsLong(0), "stored energy");
+        }
     }
 
     @Test
     @DisplayName("Test wrapping FE to J (inverse conversion) inserting against a small nearly full container")
     void testFEAsJoules5() {
         IStrictEnergyHandler handler = createStrictForgeEnergyHandler(JOULES_CAPACITY - 2, JOULES_CAPACITY, INVERSE_CONVERSION);//There shouldn't be any room for it
-        long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
-        //Note: Needed energy should be 1 even though we can't accept it
-        assertValueEqual(handler.getEnergy(0), (long) FE_CAPACITY - 1, "stored energy");
-        assertValueEqual(handler.getMaxEnergy(0), (long) FE_CAPACITY, "max energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            //Note: Needed energy should be 1 even though we can't accept it
+            Assertions.assertEquals(FE_CAPACITY - 1, handler.getAmountAsLong(0), "stored energy");
+            Assertions.assertEquals(FE_CAPACITY, handler.getCapacityAsLong(0), "max energy");
+        }
     }
 
     @Test
     @DisplayName("Test wrapping FE to J (inverse conversion) extracting against a small nearly empty container")
     void testFEAsJoules6() {
         IStrictEnergyHandler handler = createStrictForgeEnergyHandler(2, JOULES_CAPACITY, INVERSE_CONVERSION);//There shouldn't be enough to get a single unit out
-        long extracted = handler.extractEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(extracted, 0L, "extracted energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long extracted = handler.extract(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0L, extracted, "extracted energy");
+        }
     }
 
     @Test
     @DisplayName("Test wrapping FE to J (inverse conversion) inserting against a sub one sized container")
     void testFEAsJoules7() {
         IStrictEnergyHandler handler = createStrictForgeEnergyHandler(0, 2, INVERSE_CONVERSION);//There shouldn't be any room for it
-        long remainder = handler.insertEnergy(JOULES_CAPACITY, Action.EXECUTE);
-        assertValueEqual(remainder, (long) JOULES_CAPACITY, "remaining inserted energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(JOULES_CAPACITY, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+        }
     }
 
     @Test
@@ -349,10 +347,12 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     void testFEAsJoules8() {
         EnergyHandler container = new SimpleEnergyHandler(JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(container, getConverter(INVERSE_CONVERSION));
-        long remainder = handler.insertEnergy(1, Action.EXECUTE);
-        assertValueEqual(remainder, 1L, "remaining inserted energy");
-        assertValueEqual(handler.getEnergy(0), 0L, "stored energy");
-        assertValueEqual(container.getAmountAsInt(), 0, "raw stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(1, transaction);
+            Assertions.assertEquals(0, inserted, "inserted energy");
+            Assertions.assertEquals(0L, handler.getAmountAsLong(0), "stored energy");
+            Assertions.assertEquals(0, container.getAmountAsInt(), "raw stored energy");
+        }
     }
 
     //Validate behavior for when the conversion is 1:1
@@ -364,16 +364,16 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     void testJoulesAsFE9() {
         IEnergyContainer container = BasicEnergyContainer.create(JOULES_CAPACITY, null);
         EnergyHandler handler = createForgeWrappedStrictEnergyHandler(container, 1D);
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = handler.insert(100, tx);
-            assertValueEqual(accepted, 100, "accepted energy");
-            assertValueEqual(handler.getAmountAsInt(), 100, "stored energy");
-            assertValueEqual(container.getEnergy(), 100L, "raw stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = handler.insert(100, transaction);
+            Assertions.assertEquals(100, inserted, "inserted energy");
+            Assertions.assertEquals(100, handler.getAmountAsInt(), "stored energy");
+            Assertions.assertEquals(100L, container.getEnergy(), "raw stored energy");
 
-            int extracted = handler.extract(100, tx);
-            assertValueEqual(extracted, 100, "extracted energy");
-            assertValueEqual(handler.getAmountAsInt(), 0, "stored energy");
-            assertValueEqual(container.getEnergy(), 0L, "raw stored energy");
+            int extracted = handler.extract(100, transaction);
+            Assertions.assertEquals(100, extracted, "extracted energy");
+            Assertions.assertEquals(0, handler.getAmountAsInt(), "stored energy");
+            Assertions.assertEquals(0L, container.getEnergy(), "raw stored energy");
         }
     }
 
@@ -383,17 +383,17 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         IEnergyContainer container = BasicEnergyContainer.create(4_000_000_000L, null);
         container.setEnergy(3_000_000_000L);
         EnergyHandler handler = createForgeWrappedStrictEnergyHandler(container, 1D);
-        assertValueEqual(handler.getAmountAsInt(), Integer.MAX_VALUE, "stored energy");
-        try (Transaction tx = Transaction.openRoot()) {
-            int accepted = handler.insert(100, tx);
-            assertValueEqual(accepted, 100, "accepted energy");
-            assertValueEqual(handler.getAmountAsInt(), Integer.MAX_VALUE, "stored energy");
-            assertValueEqual(container.getEnergy(), 3_000_000_100L, "raw stored energy");
+        Assertions.assertEquals(Integer.MAX_VALUE, handler.getAmountAsInt(), "stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            int inserted = handler.insert(100, transaction);
+            Assertions.assertEquals(100, inserted, "inserted energy");
+            Assertions.assertEquals(Integer.MAX_VALUE, handler.getAmountAsInt(), "stored energy");
+            Assertions.assertEquals(3_000_000_100L, container.getEnergy(), "raw stored energy");
 
-            int extracted = handler.extract(100, tx);
-            assertValueEqual(extracted, 100, "extracted energy");
-            assertValueEqual(handler.getAmountAsInt(), Integer.MAX_VALUE, "stored energy");
-            assertValueEqual(container.getEnergy(), 3_000_000_000L, "raw stored energy");
+            int extracted = handler.extract(100, transaction);
+            Assertions.assertEquals(100, extracted, "extracted energy");
+            Assertions.assertEquals(Integer.MAX_VALUE, handler.getAmountAsInt(), "stored energy");
+            Assertions.assertEquals(3_000_000_000L, container.getEnergy(), "raw stored energy");
         }
     }
 
@@ -404,15 +404,17 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     void testFEAsJoules11() {
         EnergyHandler container = new SimpleEnergyHandler(JOULES_CAPACITY);
         IStrictEnergyHandler handler = new ForgeStrictEnergyHandler(container, getConverter(1D));
-        long remainder = handler.insertEnergy(100, Action.EXECUTE);
-        assertValueEqual(remainder, 0L, "remaining inserted energy");
-        assertValueEqual(handler.getEnergy(0), 100L, "stored energy");
-        assertValueEqual(container.getAmountAsInt(), 100, "raw stored energy");
+        try (Transaction transaction = Transaction.openRoot()) {
+            long inserted = handler.insert(100, transaction);
+            Assertions.assertEquals(100, inserted, "inserted energy");
+            Assertions.assertEquals(100, handler.getAmountAsLong(0), "stored energy");
+            Assertions.assertEquals(100, container.getAmountAsInt(), "raw stored energy");
 
-        long extracted = handler.extractEnergy(100, Action.EXECUTE);
-        assertValueEqual(extracted, 100L, "extracted energy");
-        assertValueEqual(handler.getEnergy(0), 0L, "stored energy");
-        assertValueEqual(container.getAmountAsInt(), 0, "raw stored energy");
+            long extracted = handler.extract(100, transaction);
+            Assertions.assertEquals(100L, extracted, "extracted energy");
+            Assertions.assertEquals(0L, handler.getAmountAsLong(0), "stored energy");
+            Assertions.assertEquals(0, container.getAmountAsInt(), "raw stored energy");
+        }
     }
 
     private EnergyHandler createForgeWrappedStrictEnergyHandler(IEnergyContainer container, double conversionRate) {
@@ -420,7 +422,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         return new ForgeEnergyIntegration(new IMekanismStrictEnergyHandler() {
             @NonNull
             @Override
-            public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+            public List<IEnergyContainer> getContainers() {
                 return containers;
             }
 
@@ -448,9 +450,4 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
     private IStrictEnergyHandler createStrictForgeEnergyHandler(int energy, int capacityFE, double conversionRate) {
         return new ForgeStrictEnergyHandler(new SimpleEnergyHandler(capacityFE, capacityFE, capacityFE, energy), getConverter(conversionRate));
     }
-
-    private static void assertValueEqual(Object actual, Object expected, String valueName) {
-        Assertions.assertEquals(expected, actual, valueName);
-    }
-
 }

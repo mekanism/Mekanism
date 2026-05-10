@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.text.EnumColor;
@@ -124,7 +125,9 @@ public class LookingAtUtils {
             displayEnergy(info, energyCapability);
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
-            displayEnergy(info, structure);
+            for (IEnergyContainer container : structure.getEnergyContainers()) {
+                info.addEnergyElement(new EnergyElement(container.getEnergy(), container.getMaxEnergy()));
+            }
         }
         if (displayTanks) {
             //Fluid - only add it to our own tiles in which we disable the default display for
@@ -185,9 +188,9 @@ public class LookingAtUtils {
     }
 
     private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
-        int containers = energyHandler.getEnergyContainerCount();
+        int containers = energyHandler.size();
         for (int container = 0; container < containers; container++) {
-            info.addEnergyElement(new EnergyElement(energyHandler.getEnergy(container), energyHandler.getMaxEnergy(container)));
+            info.addEnergyElement(new EnergyElement(energyHandler.getAmountAsLong(container), energyHandler.getCapacityAsLong(container)));
         }
     }
 

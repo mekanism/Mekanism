@@ -71,6 +71,7 @@ public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedC
 
     @Override
     protected void onRootCommit(TYPE originalState) {
+        super.onRootCommit(originalState);
         //TODO - 26.1: Evaluate if shouldUpdate is a good metric for if we should be calling onContentsChanged here
         if (shouldUpdate(getAttached(), originalState)) {
             //Fire content change listeners during root commit if the final state is different from the original one

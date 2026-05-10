@@ -155,7 +155,7 @@ public class MekanismEmi implements EmiPlugin {
             energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(stack);
         }
         if (energyHandlerItem != null) {
-            int containers = energyHandlerItem.getEnergyContainerCount();
+            int containers = energyHandlerItem.size();
             if (containers == 1) {
                 long neededEnergy = energyHandlerItem.getNeededEnergy(0);
                 if (neededEnergy == 0L) {

@@ -3,7 +3,7 @@ package mekanism.common.attachments.containers.fluid;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
-import mekanism.common.attachments.ComponentBackedResourceHandler;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;

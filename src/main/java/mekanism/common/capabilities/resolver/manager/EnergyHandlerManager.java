@@ -5,15 +5,21 @@ import java.util.EnumMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.LongSupplier;
+import mekanism.api.AutomationType;
+import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.ISidedStrictEnergyHandler;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.capabilities.proxy.ProxyStrictEnergyHandler;
+import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver.ProxyCreator;
 import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.lib.LastEnergyTracker;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -21,18 +27,48 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
 
     private final Map<Direction, Map<BlockCapability<?, @Nullable Direction>, Object>> cachedCapabilities;
     private final Map<BlockCapability<?, @Nullable Direction>, Object> cachedReadOnlyCapabilities;
+    private final LastEnergyTracker lastEnergyTracker;
     private final Map<Direction, IStrictEnergyHandler> handlers;
-    private final ISidedStrictEnergyHandler baseHandler;
+    private final ProxyCreator<IStrictEnergyHandler> proxyCreator;
     private final boolean canHandle;
     @Nullable
     private IStrictEnergyHandler readOnlyHandler;
     @Nullable
     private final IEnergyContainerHolder holder;
 
-    public EnergyHandlerManager(@Nullable IEnergyContainerHolder holder, ISidedStrictEnergyHandler baseHandler) {
+    public EnergyHandlerManager(@Nullable IEnergyContainerHolder holder, @Nullable IContentsListener changeListener, LongSupplier gameTimeSupplier) {
         this.holder = holder;
         this.canHandle = this.holder != null;
-        this.baseHandler = baseHandler;
+        this.lastEnergyTracker = new LastEnergyTracker(gameTimeSupplier);
+        this.proxyCreator = (side, h) -> new ProxyStrictEnergyHandler(new IMekanismStrictEnergyHandler() {
+            @Override
+            public void onContentsChanged() {
+                if (changeListener != null) {
+                    changeListener.onContentsChanged();
+                }
+            }
+
+            @Override
+            public List<IEnergyContainer> getContainers() {
+                //Note: This instance of check should always pass, but we have it in case we are passed a null holder
+                return h instanceof IEnergyContainerHolder energyHolder ? energyHolder.getEnergyContainers(side) : Collections.emptyList();
+            }
+
+            @Override
+            public long insert(int index, long amount, TransactionContext transaction, AutomationType automationType) {
+                long inserted = IMekanismStrictEnergyHandler.super.insert(index, amount, transaction, automationType);
+                lastEnergyTracker.received(inserted, transaction);
+                return inserted;
+            }
+
+            @Override
+            public long insert(long amount, TransactionContext transaction, AutomationType automationType) {
+                //Note: Super bypasses calling insert(int container, ...) so we need to override it here as well
+                long inserted = IMekanismStrictEnergyHandler.super.insert(amount, transaction, automationType);
+                lastEnergyTracker.received(inserted, transaction);
+                return inserted;
+            }
+        }, side, h);
         if (this.canHandle) {
             handlers = new EnumMap<>(Direction.class);
             cachedCapabilities = new EnumMap<>(Direction.class);
@@ -42,6 +78,10 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
             cachedCapabilities = Collections.emptyMap();
             cachedReadOnlyCapabilities = Collections.emptyMap();
         }
+    }
+
+    public LastEnergyTracker getLastEnergyTracker() {
+        return lastEnergyTracker;
     }
 
     @Override
@@ -79,7 +119,7 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
             if (result == null) {
                 if (readOnlyHandler == null) {
                     //We haven't initiated the backing handler yet, so we need to calculate it
-                    readOnlyHandler = new ProxyStrictEnergyHandler(baseHandler, null, holder);
+                    readOnlyHandler = proxyCreator.create(null, holder);
                 }
                 result = EnergyCompatUtils.wrapStrictEnergyHandler(capability, readOnlyHandler);
                 cachedReadOnlyCapabilities.put(capability, result);
@@ -93,7 +133,7 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
             //If we haven't initiated the backing handler yet, calculate it
             IStrictEnergyHandler handler = handlers.get(side);
             if (handler == null) {
-                handler = new ProxyStrictEnergyHandler(baseHandler, side, holder);
+                handler = proxyCreator.create(side, holder);
                 handlers.put(side, handler);
             }
             result = EnergyCompatUtils.wrapStrictEnergyHandler(capability, handler);

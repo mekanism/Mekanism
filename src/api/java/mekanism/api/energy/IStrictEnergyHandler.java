@@ -1,27 +1,31 @@
 package mekanism.api.energy;
 
+import com.google.common.primitives.Ints;
 import mekanism.api.Action;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.math.LongTransferUtils;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.ApiStatus;
 
 @NothingNullByDefault
-public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting transactions
+public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for this class
 
-    /**
-     * Returns the number of energy storage units ("containers") available
-     *
-     * @return The number of containers available
-     */
-    int getEnergyContainerCount();
+    int size();
 
-    /**
-     * Returns the energy stored in a given container.
-     *
-     * @param container Container to query.
-     *
-     * @return Energy in a given container. 0 if the container has no energy stored.
-     */
-    long getEnergy(int container);
+    long getAmountAsLong(int index);
+
+    @ApiStatus.NonExtendable
+    default int getAmountAsInt(int index) {
+        return Ints.saturatedCast(getAmountAsLong(index));
+    }
+
+    //TODO - 26.1: Do we want to name this getLimit to be closer to the resource handlers?
+    long getCapacityAsLong(int index);
+
+    @ApiStatus.NonExtendable
+    default int getCapacityAsInt(int index) {
+        return Ints.saturatedCast(getCapacityAsLong(index));
+    }
 
     /**
      * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
@@ -34,49 +38,15 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting 
     void setEnergy(int container, long energy);
 
     /**
-     * Retrieves the maximum amount of energy that can be stored in a given container.
-     *
-     * @param container Container to query.
-     *
-     * @return The maximum energy that can be stored in the container.
-     */
-    long getMaxEnergy(int container);
-
-    /**
      * Retrieves the amount of energy that is needed to fill a given container.
      *
      * @param container Container to query.
      *
      * @return The energy needed to fill the container.
      */
-    long getNeededEnergy(int container);
-
-    /**
-     * <p>
-     * Inserts energy into a given container and return the remainder.
-     * </p>
-     *
-     * @param container Container to insert to.
-     * @param amount    Energy to insert. This must not be modified by the container.
-     * @param action    The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return The remaining energy that was not inserted (if the entire amount is accepted, then return 0).
-     */
-    long insertEnergy(int container, long amount, Action action);
-
-    /**
-     * Extracts energy from a specific container in this handler.
-     * <p>
-     * The returned value must be 0 if nothing is extracted, otherwise its must be less than or equal to {@code amount}.
-     * </p>
-     *
-     * @param container Container to extract from.
-     * @param amount    Amount of energy to extract (may be greater than the current stored amount or the container's capacity) This must not be modified by the handler.
-     * @param action    The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Energy extracted from the container, must be 0 if no energy can be extracted.
-     */
-    long extractEnergy(int container, long amount, Action action);
+    default long getNeededEnergy(int container) {
+        return Math.max(0L, getCapacityAsLong(container) - getAmountAsLong(container));
+    }
 
     /**
      * <p>
@@ -92,9 +62,9 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting 
      * inserting into any empty containers.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the insertion.
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default long insertEnergy(long amount, Action action) {
-        return LongTransferUtils.insert(amount, null, action, side -> getEnergyContainerCount(), (container, side) -> getEnergy(container),
-              (container, amt, side, act) -> insertEnergy(container, amt, act));
+        return amount;
     }
 
     /**
@@ -111,7 +81,37 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Switch this to supporting 
      * @implNote The default implementation of this method, extracts across all containers to try and reach the desired amount to extract.
      * @apiNote It is not guaranteed that the default implementation will be how this {@link IStrictEnergyHandler} ends up distributing the extraction.
      */
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     default long extractEnergy(long amount, Action action) {
-        return LongTransferUtils.extract(amount, null, action, side -> getEnergyContainerCount(), (container, amt, side, act) -> extractEnergy(container, amt, act));
+        return 0;
+    }
+
+    long insert(int index, long amount, TransactionContext transaction);
+
+    default long insert(long amount, TransactionContext transaction) {
+        MekanismPreconditions.checkNonNegative(amount);
+
+        long inserted = 0;
+        for (int index = 0, size = size(); index < size; index++) {
+            inserted += insert(index, amount - inserted, transaction);
+            if (inserted == amount) {
+                break;
+            }
+        }
+        return inserted;
+    }
+
+    long extract(int index, long amount, TransactionContext transaction);
+
+    default long extract(long amount, TransactionContext transaction) {
+        MekanismPreconditions.checkNonNegative(amount);
+        long extracted = 0;
+        for (int index = 0, size = size(); index < size; index++) {
+            extracted += extract(index, amount - extracted, transaction);
+            if (extracted == amount) {
+                break;
+            }
+        }
+        return extracted;
     }
 }

@@ -37,13 +37,13 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     @Override
-    protected long getInsertRate(@Nullable AutomationType automationType) {
+    protected long getInsertionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : getRate();
     }
 
     @Override
-    protected long getExtractRate(@Nullable AutomationType automationType) {
+    protected long getExtractionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : getRate();
     }

@@ -1,6 +1,5 @@
 package mekanism.common.attachments.containers.energy;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
@@ -8,6 +7,9 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockEnergyCube;
 import mekanism.common.tier.EnergyCubeTier;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyContainer {
@@ -27,12 +29,26 @@ public class ComponentBackedEnergyCubeContainer extends ComponentBackedEnergyCon
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        return super.insert(amount, action.combine(!isCreative), automationType);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes)
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.insert(amount, simulation, automationType);
+            }
+        }
+        return super.insert(amount, transaction, automationType);
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        return super.extract(amount, action.combine(!isCreative), automationType);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        if (isCreative) {
+            //Return the result without actually changing the contents (accepting without providing any changes
+            try (Transaction simulation = Transaction.open(transaction)) {
+                return super.extract(amount, simulation, automationType);
+            }
+        }
+        return super.extract(amount, transaction, automationType);
     }
 }

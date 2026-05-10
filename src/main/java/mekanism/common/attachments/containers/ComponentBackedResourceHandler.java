@@ -1,11 +1,9 @@
-package mekanism.common.attachments;
+package mekanism.common.attachments.containers;
 
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.container.LargeResourceStack;
-import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ComponentBackedHandler;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.resource.Resource;
 

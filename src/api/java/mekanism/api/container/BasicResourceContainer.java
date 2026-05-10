@@ -5,6 +5,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -61,6 +62,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     protected void onRootCommit(LargeResourceStack<RESOURCE> originalState) {
+        super.onRootCommit(originalState);
         if (amountAsLong() != originalState.amount() || !originalState.resource().equals(getResource())) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();
@@ -80,12 +82,12 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public boolean isCurrentValidForExtraction(AutomationType automationType) {
+    public final boolean isCurrentValidForExtraction(AutomationType automationType) {
         return canExtract.test(getResource(), automationType);
     }
 
     @Override
-    public boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {
+    public final boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {
         return isValid(type) && canInsert.test(type, automationType);
     }
 
@@ -100,9 +102,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     private void setContents(RESOURCE type, long storedAmount, boolean validateType) {
-        if (storedAmount < 0) {
-            throw new IllegalArgumentException("Expected value to be non-negative: " + storedAmount);
-        }
+        MekanismPreconditions.checkNonNegative(storedAmount);
         if (type.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
             if (isEmpty()) {
                 //If we are already empty just exit, to not fire onContentsChanged
@@ -141,6 +141,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
         // Main spot where they might not is for containers
+        //TODO - 26.1: Re-evaluate insertion and extraction rate, do we need to make them be tick based in case insertions/extractions are spread across multiple calls
+        // but all within the same transaction? Maybe we should have a snapshot that keeps track of how much of the limit is remaining for the given transactional state?
+        // Whatever we decide also mirror it for energy containers
         return Integer.MAX_VALUE;
     }
 
@@ -168,6 +171,8 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
         long needed = getLimitAsLong(resource) - currentStored;
+        //Limit how much we can add at once to the insertion rate the container sets
+        needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {
             //Fail if we are a full slot, or we can never insert the resource or currently are unable to insert it
             return 0;
@@ -177,13 +182,9 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
             return 0;
         }
         int toAdd = Math.min(amount, Ints.saturatedCast(needed));
-        //Limit how much we can add at once to the insertion rate the container sets
-        toAdd = Math.min(toAdd, getInsertionRate(automationType));
-        if (toAdd > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
-            updateSnapshots(transaction);
-            // Note: We just set it as unchecked as we have already validated it
-            setContentsUnchecked(resource, currentStored + toAdd);
-        }
+        updateSnapshots(transaction);
+        // Note: We just set it as unchecked as we have already validated it
+        setContentsUnchecked(resource, currentStored + toAdd);
         return toAdd;
     }
 
@@ -199,7 +200,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         int toRemove = Math.min(amount, Ints.saturatedCast(currentStored));
         //Limit how much we can remove at once to the extraction rate the container sets
         toRemove = Math.min(toRemove, getExtractionRate(automationType));
-        if (toRemove > 0) {//TODO - 26.1: Should we allow the insertion rate to be zero?
+        if (toRemove > 0) {
             updateSnapshots(transaction);
             //Shrink the stack by the amount removed
             setContentsUnchecked(resource, currentStored - toRemove);

@@ -4,8 +4,8 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Map;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
@@ -16,6 +16,10 @@ import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class MatrixEnergyContainer implements IEnergyContainer {
@@ -23,13 +27,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     private final Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
     private final Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
     private final Set<BlockPos> invalidPositions = new ObjectOpenHashSet<>();
+    private final QueuedEnergySnapshot queuedInput = new QueuedEnergySnapshot();
+    private final QueuedEnergySnapshot queuedOutput = new QueuedEnergySnapshot();
 
-    //TODO: Eventually we could look into extending FloatingLong to have a "BigInt" styled implementation that is used by the class
-    // at the very least for keeping track of the cached values and rates
-    private long queuedOutput = 0L;
-    private long queuedInput = 0L;
-    private long lastOutput = 0L;
     private long lastInput = 0L;
+    private long lastOutput = 0L;
 
     private long cachedTotal = 0L;
     private long transferCap = 0L;
@@ -80,8 +82,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //And reset everything
         cells.clear();
         providers.clear();
-        queuedOutput = 0L;
-        queuedInput = 0L;
+        queuedOutput.queued = 0L;
+        queuedInput.queued = 0L;
         lastOutput = 0L;
         lastInput = 0L;
         cachedTotal = 0L;
@@ -97,50 +99,57 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             }
             invalidPositions.clear();
         }
-        if (queuedInput < queuedOutput) {
-            //queuedInput is smaller - we are removing energy
-            removeEnergy(queuedOutput - queuedInput);
-        } else if (queuedInput > queuedOutput) {
-            //queuedInput is larger - we are adding energy
-            addEnergy(queuedInput - queuedOutput);
+        if (queuedInput.queued != queuedOutput.queued){
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (queuedInput.queued < queuedOutput.queued) {
+                    //queuedInput is smaller - we are removing energy
+                    removeEnergy(-getQueuedChange(), transaction);
+                } else {//if (queuedInput.queued > queuedOutput.queued)
+                    //queuedInput is larger - we are adding energy
+                    addEnergy(getQueuedChange(), transaction);
+                }
+                transaction.commit();
+            }
         }
-        lastInput = queuedInput;
-        lastOutput = queuedOutput;
-        queuedInput = 0L;
-        queuedOutput = 0L;
+        lastInput = queuedInput.queued;
+        lastOutput = queuedOutput.queued;
+        queuedInput.queued = 0L;
+        queuedOutput.queued = 0L;
     }
 
-    private void addEnergy(long energy) {
+    private void addEnergy(long energy, TransactionContext transaction) {
         cachedTotal += energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: inserting into the cell's energy container handles marking the cell for saving if it changes
-            long remainder = container.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
-            if (remainder < energy) {
+            long inserted = container.insert(energy, transaction, AutomationType.INTERNAL);
+            if (inserted > 0) {
                 //Our cell accepted at least some energy
-                if (remainder == 0L) {
-                    //Check less than equal rather than just equal in case something went wrong
-                    // and break if we don't have any energy left to add
+                energy -= inserted;
+                if (energy == 0L) {
+                    //Break if we don't have any energy left to add
                     break;
                 }
-                energy = remainder;
             }
         }
     }
 
-    private void removeEnergy(long energy) {
+    private void removeEnergy(long energy, TransactionContext transaction) {
         cachedTotal -= energy;
         for (IEnergyContainer container : cells.values()) {
             //Note: extracting from the cell's energy container handles marking the cell for saving if it changes
-            long extracted = container.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
+            long extracted = container.extract(energy, transaction, AutomationType.INTERNAL);
             if (extracted > 0L) {
                 energy -= extracted;
                 if (energy == 0L) {
-                    //Check less than equal rather than just equal in case something went wrong
-                    // and break if we don't need to remove any more energy
+                    //Break if we don't need to remove any more energy
                     break;
                 }
             }
         }
+    }
+
+    private long getQueuedChange() {
+        return queuedInput.queued - queuedOutput.queued;
     }
 
     /**
@@ -148,7 +157,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
      */
     @Override
     public long getEnergy() {
-        return cachedTotal + queuedInput - queuedOutput;
+        return cachedTotal + getQueuedChange();
     }
 
     @Override
@@ -159,26 +168,27 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public long insert(long amount, Action action, AutomationType automationType) {
-        if (amount <= 0L || !multiblock.isFormed()) {
-            return amount;
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (amount == 0L || !multiblock.isFormed()) {
+            return 0;
         }
         long toAdd = Math.min(Math.min(amount, getRemainingInput()), getNeeded());
-        if (toAdd == 0L) {
-            //Exit if we don't actually have anything to add, either due to how much we need
-            // or due to the remaining rate limit
-            return amount;
-        }
-        if (action.execute()) {
+        if (toAdd != 0L) {
+            queuedInput.updateSnapshots(transaction);
             //Increase how much we are inputting
-            queuedInput += toAdd;
+            queuedInput.queued += toAdd;
+
         }
-        return amount - toAdd;
+        return toAdd;
     }
 
     @Override
-    public long extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount <= 0L || !multiblock.isFormed()) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
+        MekanismPreconditions.checkNonNegative(amount);
+        if (isEmpty() || amount == 0L || !multiblock.isFormed()) {
             return 0L;
         }
         //We limit it overall by the amount we can extract plus how much energy we have
@@ -186,9 +196,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
         amount = Math.min(Math.min(amount, getRemainingOutput()), getEnergy());
-        if (amount > 0L && action.execute()) {
+        if (amount > 0L) {
             //Increase how much we are outputting by the amount we accepted
-            queuedOutput += amount;
+            queuedOutput.updateSnapshots(transaction);
+            //Increase how much we are inputting
+            queuedOutput.queued += amount;
         }
         return amount;
     }
@@ -196,6 +208,16 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     @Override
     public long getMaxEnergy() {
         return storageCap;
+    }
+
+    @Override
+    public boolean isValidForExtraction(AutomationType automationType) {
+        return true;
+    }
+
+    @Override
+    public boolean isValidForInsertion(AutomationType automationType) {
+        return true;
     }
 
     @Override
@@ -213,11 +235,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private long getRemainingInput() {
-        return transferCap - queuedInput;
+        return transferCap - queuedInput.queued;
     }
 
     private long getRemainingOutput() {
-        return transferCap - queuedOutput;
+        return transferCap - queuedOutput.queued;
     }
 
     public long getMaxTransfer() {
@@ -238,5 +260,20 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     public int getProviders() {
         return providers.size();
+    }
+
+    private static class QueuedEnergySnapshot extends SnapshotJournal<Long> {
+
+        private long queued = 0L;
+
+        @Override
+        protected Long createSnapshot() {
+            return queued;
+        }
+
+        @Override
+        protected void revertToSnapshot(Long snapshot) {
+            queued = snapshot;
+        }
     }
 }

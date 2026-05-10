@@ -11,6 +11,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 //TODO - 26.1: Docs and decide if we want the bound for RESOURCE to be RegisteredResource or just Resource
+//TODO - 26.1: Add annotations like @Range for what are valid inputs for things or return values
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 
     RESOURCE getResource();

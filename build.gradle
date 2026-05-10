@@ -805,7 +805,7 @@ if (System.getenv('CURSEFORGE_KEY') != null || project.hasProperty('curseforgeKe
                     //World gen
                     'biomes-o-plenty', 'oh-the-biomes-weve-gone',
                     //Misc
-                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge', 'flux-networks',
+                    'applied-energistics-2', 'ctm', 'curios', 'dark-mode-everywhere', 'farmers-delight', 'female-gender-neoforge',
                     'framedblocks', 'json-things', 'perviaminvenire', 'projecte', 'recipe-stages'
             )
         }

@@ -22,8 +22,8 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
         }
 
         @Override
-        protected void save(long currentStored) {
-            if (currentStored != 0L || transmitter.lastWrite != 0L) {
+        protected void save() {
+            if (currentStored != transmitter.lastWrite) {
                 transmitter.lastWrite = currentStored;
                 transmitter.getTransmitterTile().markForSave();
             }

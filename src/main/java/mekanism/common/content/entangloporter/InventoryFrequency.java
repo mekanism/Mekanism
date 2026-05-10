@@ -15,7 +15,6 @@ import java.util.TreeMap;
 import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -25,7 +24,6 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
@@ -71,7 +69,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class InventoryFrequency extends Frequency implements IMekanismStrictEnergyHandler, ITileHeatHandler {
+public class InventoryFrequency extends Frequency implements ITileHeatHandler {
 
     @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
@@ -165,8 +163,7 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
     }
 
     @NotNull
-    @Override
-    public List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
+    public List<IEnergyContainer> getEnergyContainers() {
         return energyContainers;
     }
 
@@ -262,7 +259,7 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), Action.SIMULATE, AutomationType.INTERNAL);
+        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), simulation, AutomationType.INTERNAL);
         if (toSend > 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
@@ -304,8 +301,12 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
         @Override
         public void extract(TransactionContext transaction) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction), Action.EXECUTE, AutomationType.INTERNAL);
-                subTransaction.commit();
+                long sent = EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction);
+                if (storedEnergy.extract(sent, transaction, AutomationType.INTERNAL) == sent) {
+                    //If we were able to extract everything we thought we would be able to and had tried to send
+                    // then commit all the changes
+                    subTransaction.commit();
+                }
             }
         }
 

@@ -1,9 +1,7 @@
 package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
-import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -21,12 +19,7 @@ public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
     }
 
     @Override
-    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo splitInfo, Void unused, long amount, TransactionContext transaction) {
-        splitInfo.send(amount - handler.insertEnergy(amount, Action.EXECUTE));
-    }
-
-    @Override
     protected long accept(IStrictEnergyHandler handler, Void unused, long amount, TransactionContext transaction) {
-        return amount - handler.insertEnergy(amount, Action.SIMULATE);
+        return handler.insert(amount, transaction);
     }
 }

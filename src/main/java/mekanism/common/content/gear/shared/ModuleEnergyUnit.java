@@ -41,7 +41,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         // and technically is no longer installed in the module container
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));//TODO - 26.1: check itemaccess
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
-            for (IEnergyContainer energyContainer : energyHandler.getEnergyContainers(null)) {
+            for (IEnergyContainer energyContainer : energyHandler.getContainers()) {
                 energyContainer.setEnergy(Math.min(energyContainer.getEnergy(), energyContainer.getMaxEnergy()));
             }
         }

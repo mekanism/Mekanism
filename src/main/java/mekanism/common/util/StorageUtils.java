@@ -32,6 +32,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,10 +52,10 @@ public class StorageUtils {
             energyHandlerItem = ContainerType.ENERGY.createHandlerIfData(stack);
         }
         if (energyHandlerItem != null) {
-            int energyContainerCount = energyHandlerItem.getEnergyContainerCount();
+            int energyContainerCount = energyHandlerItem.size();
             for (int container = 0; container < energyContainerCount; container++) {
                 tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY,
-                      EnergyDisplay.of(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container))));
+                      EnergyDisplay.of(energyHandlerItem.getAmountAsLong(container), energyHandlerItem.getCapacityAsLong(container))));
             }
         } else if (showMissingCap) {
             tooltipAdder.accept(langEntry.translateColored(EnumColor.BRIGHT_GREEN, EnumColor.GRAY, EnergyDisplay.ZERO));
@@ -310,7 +311,7 @@ public class StorageUtils {
     public static ItemStack getFilledEnergyVariant(ItemStack toFill) {
         IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
         if (attachment != null) {
-            for (IEnergyContainer energyContainer : attachment.getEnergyContainers(null)) {
+            for (IEnergyContainer energyContainer : attachment.getContainers()) {
                 energyContainer.setEnergy(energyContainer.getMaxEnergy());
             }
         }
@@ -326,7 +327,7 @@ public class StorageUtils {
         }
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
-            return energyHandler.getEnergyContainer(container, null);
+            return energyHandler.getContainer(container);
         }
         return null;
     }
@@ -403,9 +404,9 @@ public class StorageUtils {
         double bestRatio = 0;
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandlerItem != null) {
-            int containers = energyHandlerItem.getEnergyContainerCount();
+            int containers = energyHandlerItem.size();
             for (int container = 0; container < containers; container++) {
-                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getEnergy(container), energyHandlerItem.getMaxEnergy(container)));
+                bestRatio = Math.max(bestRatio, MathUtils.divideToLevel(energyHandlerItem.getAmountAsLong(container), energyHandlerItem.getCapacityAsLong(container)));
             }
         }
         return 1 - bestRatio;
@@ -415,8 +416,9 @@ public class StorageUtils {
         return capacity == 0 ? 1 : amount / (double) capacity;
     }
 
-    public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd) {
+    public static void mergeEnergyContainers(List<IEnergyContainer> containers, List<IEnergyContainer> toAdd, TransactionContext transaction) {
         validateSizeMatches(containers, toAdd, "energy container");
+        //TODO - 26.1: Make use of the transaction?
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);

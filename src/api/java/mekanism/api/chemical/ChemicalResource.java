@@ -3,6 +3,7 @@ package mekanism.api.chemical;
 import com.mojang.serialization.Codec;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.IHasTranslationKey;
@@ -136,10 +137,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
      * @throws IllegalArgumentException when amount is negative.
      */
     public ChemicalStack toStack(long amount) {
-        //TransferPreconditions.checkNonNegative(amount);
-        if (amount < 0) {
-            throw new IllegalArgumentException("Expected value to be non-negative: " + amount);
-        }
+        MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0) {
             return ChemicalStack.EMPTY;
         }
