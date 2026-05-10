@@ -15,6 +15,7 @@ import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
 import mekanism.common.util.WorldUtils;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class StackedWasteBarrel extends VariableCapacityChemicalTank {
@@ -45,7 +46,8 @@ public class StackedWasteBarrel extends VariableCapacityChemicalTank {
     }
 
     @Override
-    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted = super.insert(resource, amount, transaction, automationType);
         //Ensure we have the same type of gas stored as we failed to insert, in which case we want to try to insert to the one above
         if (inserted < amount && getResource().equals(resource)) {

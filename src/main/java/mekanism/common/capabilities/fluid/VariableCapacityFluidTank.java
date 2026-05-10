@@ -13,6 +13,7 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class VariableCapacityFluidTank extends BasicFluidTank {
@@ -62,6 +63,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(FluidResource resource) {
         return capacity.getAsLong();
     }

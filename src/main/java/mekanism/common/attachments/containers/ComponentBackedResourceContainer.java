@@ -16,6 +16,7 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
@@ -24,10 +25,11 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
+    @Range(from = 0, to = Long.MAX_VALUE)
     private final long limit;
 
-    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
-          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator) {
+    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, @Range(from = 0, to = Long.MAX_VALUE) long limit,
+          BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator) {
         super(attachedTo, slotIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -54,26 +56,28 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long amountAsLong() {
         return getResourceStack().amount();
     }
 
     @Override
-    public final void setContents(RESOURCE type, long storedAmount) {
+    public final void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         //TODO - 26.1: Re-evaluate this
         setContents(getAttached(), type, storedAmount);
     }
 
     @Override
-    public void setContentsUnchecked(RESOURCE type, long storedAmount) {
+    public void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         setContents(getAttached(), type, storedAmount);
     }
 
-    protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, long storedAmount) {
+    protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         setContents(attached, new LargeResourceStack<>(type, storedAmount));
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(RESOURCE resource) {
         return limit;
     }
@@ -107,7 +111,8 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (amount == 0) {
             //"Fail quick" if the given stack is empty
@@ -118,7 +123,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         return insert(attached, current.resource(), current.amount(), resource, amount, transaction, automationType);
     }
 
-    protected int insert(AttachedResources<RESOURCE> attached, RESOURCE currentType, long currentAmount, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int insert(AttachedResources<RESOURCE> attached, RESOURCE currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, RESOURCE resource,
+          @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (amount == 0) {
             //"Fail quick" if the given resource is empty
             return 0;
@@ -143,7 +150,8 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     @Override
-    public int extract(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (amount == 0) {
             //"Fail quick" if nothing is actually being extracted

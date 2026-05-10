@@ -106,17 +106,22 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      *
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
-    long getMaxEnergy();
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long getMaxEnergy();//TODO - 26.1: Document about the fact it can return zero as the max energy?
 
     /**
      * Ignores current contents
      */
-    boolean isValidForExtraction(AutomationType automationType);//TODO - 26.1: Update docs
+    default boolean isValidForExtraction(AutomationType automationType) {//TODO - 26.1: Update docs
+        return true;
+    }
 
     /**
      * Ignores current contents
      */
-    boolean isValidForInsertion(AutomationType automationType);//TODO - 26.1: Update docs
+    default boolean isValidForInsertion(AutomationType automationType) {//TODO - 26.1: Update docs
+        return true;
+    }
 
     /**
      * Convenience method for checking if this container is empty.

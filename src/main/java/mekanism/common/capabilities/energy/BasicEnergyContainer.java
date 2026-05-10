@@ -74,7 +74,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     @Override
-    public void setEnergy(long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
         MekanismPreconditions.checkNonNegative(energy);
         //TODO - 26.1: Re-evaluate this clamping and maybe get rid of it or move it?
         energy = clampEnergy(energy);
@@ -161,6 +161,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return maxEnergy;
     }

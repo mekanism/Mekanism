@@ -9,6 +9,7 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
+import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Docs and decide if we want the bound for RESOURCE to be RegisteredResource or just Resource
 //TODO - 26.1: Add annotations like @Range for what are valid inputs for things or return values
@@ -19,21 +20,25 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
     // It might be worth it, so that then fluids and chemicals can have storage of longs
     @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int amount() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
     }
 
+    @Range(from = 0, to = Long.MAX_VALUE)
     long amountAsLong();
 
-    void setContents(RESOURCE type, long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
+    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
     //TODO - 26.1: Re-evaluate this method
-    void setContentsUnchecked(RESOURCE type, long storedAmount);
+    void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
-    int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
     //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past for items extraction would be clamped at the max stack size
-    int extract(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType);
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
     /**
      * Retrieves the maximum stack size allowed to exist in this {@link IResourceContainer}. Unlike {@link IItemHandler#getSlotLimit(int)} this takes a stack that it can use
@@ -47,20 +52,24 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
      * @implNote The implementation of this CAN take into account the max size of this stack but is not required to.
      */
     @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int getLimit(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to getLimitAsLong
         //TODO - 26.1: Update docs
         //TODO - 26.1: Do we want limit and amount to both have asInt for the base method name?
         return Ints.saturatedCast(getLimitAsLong(resource));
     }
 
+    @Range(from = 0, to = Long.MAX_VALUE)
     long getLimitAsLong(RESOURCE resource);
 
     //TODO - 26.1: Re-evaluate name and add docs
     @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int getCurrentLimit() {
         return Ints.saturatedCast(getCurrentLimitAsLong());
     }
 
+    @Range(from = 0, to = Long.MAX_VALUE)
     default long getCurrentLimitAsLong() {
         return getLimitAsLong(getResource());
     }
@@ -71,6 +80,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
      * @return Amount of fluid needed
      */
     @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeeded() {
         //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
         //TODO - 26.1: Should this be a saturated cast of getNeededAsLong
@@ -79,6 +89,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     }
 
     //TODO - 26.1: Re-evaluate callers of this method that used to use IChemicalTank#getNeeded. Do they need to know it as a long? Most probably don't
+    @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededAsLong() {
         //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
         return Math.max(0, getLimitAsLong(getResource()) - amountAsLong());
@@ -109,12 +120,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /**
      * Ignores current contents
      */
-    boolean isCurrentValidForExtraction(AutomationType automationType);//TODO - 26.1: Update docs
+    default boolean isCurrentValidForExtraction(AutomationType automationType) {//TODO - 26.1: Update docs
+        return true;
+    }
 
     /**
      * Ignores current contents
      */
-    boolean isValidForInsertion(RESOURCE type, AutomationType automationType);//TODO - 26.1: Update docs
+    default boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {//TODO - 26.1: Update docs
+        return true;
+    }
 
     /**
      * Convenience method for checking if this slot is empty.

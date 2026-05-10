@@ -3,7 +3,6 @@ package mekanism.common.capabilities.chemical;
 import com.google.common.primitives.Ints;
 import java.util.Objects;
 import java.util.function.IntSupplier;
-import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -15,6 +14,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ChemicalTankChemicalTank extends BasicChemicalTank {
@@ -36,19 +36,22 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertionRate(automationType);
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractionRate(automationType);
     }
 
     @Override
-    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             if (isEmpty() && automationType != AutomationType.EXTERNAL) {//TODO - 26.1: Test that this behaves correctly
                 //If a player manually inserts into a creative tank (or internally, via a ChemicalInventorySlot), that is empty we need to allow setting the type,
@@ -68,7 +71,8 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
     }
 
     @Override
-    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

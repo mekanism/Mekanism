@@ -161,7 +161,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
-    public void setEnergy(long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
         //Throws a RuntimeException as specified is allowed when something unexpected happens
         // As setEnergy is more meant to be used as an internal method
         throw new RuntimeException("Unexpected call to setEnergy. The matrix energy container does not support directly setting the energy.");
@@ -206,18 +206,9 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return storageCap;
-    }
-
-    @Override
-    public boolean isValidForExtraction(AutomationType automationType) {
-        return true;
-    }
-
-    @Override
-    public boolean isValidForInsertion(AutomationType automationType) {
-        return true;
     }
 
     @Override

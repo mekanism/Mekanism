@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEnergyContainer {
@@ -28,6 +29,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
     }

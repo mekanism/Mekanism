@@ -9,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends AbstractList<CONTAINER>
@@ -66,13 +67,14 @@ public abstract class ComponentBackedHandler<TYPE, CONTAINER extends ValueIOSeri
         return container;
     }
 
-    public CONTAINER getContainer(int index) {
+    public CONTAINER getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         CONTAINER container = containers().get(index);
         //Lazily initialize the containers
         return container == null ? initializeContainer(index) : container;
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public int size() {
         return totalContainers;
     }

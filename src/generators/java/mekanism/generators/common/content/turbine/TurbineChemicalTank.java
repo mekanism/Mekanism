@@ -8,6 +8,7 @@ import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.registries.MekanismChemicals;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class TurbineChemicalTank extends VariableCapacityChemicalTank {
@@ -21,7 +22,8 @@ public class TurbineChemicalTank extends VariableCapacityChemicalTank {
     }
 
     @Override
-    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted = super.insert(resource, amount, transaction, automationType);
         if (multiblock.isFormed()) {
             //TODO - 26.1: Test this

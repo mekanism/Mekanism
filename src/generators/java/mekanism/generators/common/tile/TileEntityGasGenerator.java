@@ -32,6 +32,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 public class TileEntityGasGenerator extends TileEntityGenerator {
 
@@ -151,14 +152,14 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         }
 
         @Override
-        public void setContents(@NotNull ChemicalResource type, long amount) {
+        public void setContents(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
             ChemicalResource oldChemical = getResource();
             super.setContents(type, amount);
             recheckOutput(type, oldChemical);
         }
 
         @Override
-        public void setContentsUnchecked(@NotNull ChemicalResource type, long amount) {
+        public void setContentsUnchecked(@NotNull ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
             ChemicalResource oldChemical = getResource();
             super.setContentsUnchecked(type, amount);
             recheckOutput(type, oldChemical);

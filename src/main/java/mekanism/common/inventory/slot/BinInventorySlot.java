@@ -25,6 +25,7 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class BinInventorySlot extends BasicInventorySlot {
@@ -63,7 +64,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public int insert(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ItemResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (amount == 0) {
             //"Fail quick" if there is nothing to add
@@ -93,7 +95,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
-    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ItemResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (isEmpty() || amount == 0) {
             //"Fail quick" if we are empty, nothing is being extracted
@@ -109,6 +112,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getCurrentLimitAsLong() {
         return getLimitAsLong(getBinItemType());
     }

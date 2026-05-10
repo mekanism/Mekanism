@@ -9,6 +9,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
@@ -40,6 +41,7 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return maxEnergy.getAsLong();
     }

@@ -10,6 +10,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank {
@@ -29,7 +30,8 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     }
 
     @Override
-    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
@@ -40,7 +42,8 @@ public class ComponentBackedFluidTankFluidTank extends ComponentBackedFluidTank 
     }
 
     @Override
-    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

@@ -16,6 +16,7 @@ import mekanism.common.tile.prefab.TileEntityProgressMachine;
 import mekanism.common.util.MekanismUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends BasicEnergyContainer {
@@ -63,6 +64,7 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return Math.max(currentMaxEnergy, getEnergy());
     }

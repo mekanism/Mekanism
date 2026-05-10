@@ -9,10 +9,10 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.BasicResourceContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.access.InventorySlotItemAccess;
-import mekanism.api.container.BasicResourceContainer;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
@@ -24,6 +24,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 //TODO: Should we make some sort of "ITickableSlot" or something that lets us tick a bunch of slots at once instead of having to manually call the relevant methods
 @NothingNullByDefault
@@ -37,7 +38,8 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return at(validator, listener, x, y, Item.ABSOLUTE_MAX_STACK_SIZE);
     }
 
-    public static BasicInventorySlot at(Predicate<@NotNull ItemResource> validator, @Nullable IContentsListener listener, int x, int y, int limit) {
+    public static BasicInventorySlot at(Predicate<@NotNull ItemResource> validator, @Nullable IContentsListener listener, int x, int y,
+          @Range(from = 0, to = Long.MAX_VALUE) long limit) {
         Objects.requireNonNull(validator, "Item validity check cannot be null");
         if (limit < 1) {
             throw new IllegalArgumentException("Slots with a custom limit must allow at least one item");
@@ -88,8 +90,8 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         this(Item.ABSOLUTE_MAX_STACK_SIZE, canExtract, canInsert, validator, listener, x, y);
     }
 
-    protected BasicInventorySlot(int limit, BiPredicate<ItemResource, AutomationType> canExtract, BiPredicate<ItemResource, AutomationType> canInsert,
-          Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
+    protected BasicInventorySlot(@Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<ItemResource, AutomationType> canExtract,
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<ItemResource> validator, @Nullable IContentsListener listener, int x, int y) {
         super(ItemResource.EMPTY, limit, canExtract, canInsert, validator, listener);
         this.x = x;
         this.y = y;
@@ -105,6 +107,7 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(ItemResource resource) {
         long limit = super.getLimitAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;

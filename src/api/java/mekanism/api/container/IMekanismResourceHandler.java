@@ -10,6 +10,7 @@ import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Make it so that things like TileEntityMekanism don't directly implement IMekanismInventory and friends so that methods like getContainers are not confusing
 @NothingNullByDefault//TODO - 26.1: Docs and re-evaluate the package this is in
@@ -40,13 +41,14 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
      * @since 10.8.0
      */
     @Nullable
-    default CONTAINER getContainer(int index) {
+    default CONTAINER getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
         List<CONTAINER> containers = getContainers();
         return index >= 0 && index < containers.size() ? containers.get(index) : null;
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     default int size() {
         return getContainers().size();
     }
@@ -54,24 +56,28 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     RESOURCE getEmptyResource();
 
     @Override
-    default RESOURCE getResource(int index) {
+    default RESOURCE getResource(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         CONTAINER container = getContainer(index);
         return container == null ? getEmptyResource() : container.getResource();
     }
 
     @Override
-    default long getAmountAsLong(int index) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         CONTAINER container = getContainer(index);
         return container == null ? 0 : container.amount();
     }
 
-    default int insert(int index, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
+          TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         CONTAINER container = getContainer(index);
         return container == null ? 0 : container.insert(resource, amount, transaction, automationType);
     }
 
-    default int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         //TODO - 26.1: Add comments and document how this inserts into non empty matching containers first?
         // Also re-evaluate if that is actually the behavior we want vs making call sites use something like ResourceHandlerUtil#insertStacking
@@ -103,24 +109,29 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     }
 
     @Override
-    default int insert(int index, RESOURCE resource, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         //TODO - 26.1: Evaluate calls to this and extract for all resource handlers and see what can be moved over to indexless interactions
         //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
         return insert(index, resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override
-    default int insert(RESOURCE resource, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return insert(resource, amount, transaction, AutomationType.INTERNAL);
     }
 
-    default int extract(int index, RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
+          TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         CONTAINER container = getContainer(index);
         return container == null ? 0 : container.extract(resource, amount, transaction, automationType);
     }
 
-    default int extract(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         int extracted = 0;
         for (CONTAINER container : getContainers()) {
@@ -133,23 +144,26 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     }
 
     @Override
-    default int extract(int index, RESOURCE resource, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return extract(index, resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override
-    default int extract(RESOURCE resource, int amount, TransactionContext transaction) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
         return extract(resource, amount, transaction, AutomationType.INTERNAL);
     }
 
     @Override
-    default long getCapacityAsLong(int index, RESOURCE resource) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
         CONTAINER container = getContainer(index);
         return container == null ? 0 : container.getLimit(resource);
     }
 
     @Override
-    default boolean isValid(int index, RESOURCE resource) {
+    default boolean isValid(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
         CONTAINER container = getContainer(index);
         return container != null && container.isValid(resource);
     }

@@ -15,6 +15,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedInventorySlot extends ComponentBackedResourceContainer<ItemResource> implements IInventorySlot {
@@ -27,7 +28,8 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     }
 
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
-          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator, boolean obeyStackLimit, int limit) {
+          BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator, boolean obeyStackLimit,
+          @Range(from = 0, to = Long.MAX_VALUE) long limit) {
         super(attachedTo, slotIndex, limit, canExtract, canInsert, validator);
         this.obeyStackLimit = obeyStackLimit;
     }
@@ -48,6 +50,7 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(ItemResource resource) {
         long limit = super.getLimitAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;

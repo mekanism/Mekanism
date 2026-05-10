@@ -8,6 +8,7 @@ import mekanism.common.util.UnitDisplayUtils.EnergyUnit;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 import org.jetbrains.annotations.VisibleForTesting;
 
 //Note: When wrapping joules to a whole number based energy type we don't need to add any extra simulation steps
@@ -29,40 +30,46 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     public int size() {
         return 1;
     }
 
     @Override
-    public long getAmountAsLong(int container) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
         //TODO - 26.1: Should this be using the int versions of amount?
         return container == 0 ? converter.convertFrom(neoHandler.getAmountAsLong()) : 0L;
     }
 
     @Override
-    public void setEnergy(int container, long energy) {
+    public void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
         //Not implemented or directly needed
     }
 
     @Override
-    public long getCapacityAsLong(int container) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
         //TODO - 26.1: Should this be using the int versions of capacity?
         return container == 0 ? converter.convertFrom(neoHandler.getCapacityAsLong()) : 0L;
     }
 
     @Override
-    public long getNeededEnergy(int container) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
         //TODO - 26.1: Should this be using the int versions of capacity and amount?
         return container == 0 ? converter.convertFrom(Math.max(0, neoHandler.getCapacityAsLong() - neoHandler.getAmountAsLong())) : 0L;
     }
 
     @Override
-    public long insert(int index, long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return index == 0 ? insert(amount, transaction) : amount;
     }
 
     @Override
-    public long insert(long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0) {
             return amount;
@@ -107,12 +114,14 @@ public class ForgeStrictEnergyHandler implements IStrictEnergyHandler {
     }
 
     @Override
-    public long extract(int index, long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         return index == 0 ? extract(amount, transaction) : 0L;
     }
 
     @Override
-    public long extract(long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(amount);
         if (amount == 0) {
             return 0L;

@@ -21,6 +21,7 @@ import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyContainer> {
@@ -55,14 +56,17 @@ public class EnergyHandlerManager implements ICapabilityHandlerManager<IEnergyCo
             }
 
             @Override
-            public long insert(int index, long amount, TransactionContext transaction, AutomationType automationType) {
+            @Range(from = 0, to = Long.MAX_VALUE)
+            public long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction,
+                  AutomationType automationType) {
                 long inserted = IMekanismStrictEnergyHandler.super.insert(index, amount, transaction, automationType);
                 lastEnergyTracker.received(inserted, transaction);
                 return inserted;
             }
 
             @Override
-            public long insert(long amount, TransactionContext transaction, AutomationType automationType) {
+            @Range(from = 0, to = Long.MAX_VALUE)
+            public long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
                 //Note: Super bypasses calling insert(int container, ...) so we need to override it here as well
                 long inserted = IMekanismStrictEnergyHandler.super.insert(amount, transaction, automationType);
                 lastEnergyTracker.received(inserted, transaction);

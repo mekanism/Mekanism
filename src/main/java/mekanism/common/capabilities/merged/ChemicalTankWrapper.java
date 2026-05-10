@@ -10,6 +10,7 @@ import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 /**
  * Helper class for wrapping a chemical tank for use in a multi chemical type. Disallowing interacting with various tanks if other tanks have contents. For example only
@@ -41,12 +42,12 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public void setContents(ChemicalResource type, long amount) {
+    public void setContents(ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
         internal.setContents(type, amount);
     }
 
     @Override
-    public void setContentsUnchecked(ChemicalResource type, long amount) {
+    public void setContentsUnchecked(ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount) {
         internal.setContentsUnchecked(type, amount);
     }
 
@@ -55,17 +56,20 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
-    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         //Only allow inserting if we pass the check
         return canInsert() ? internal.insert(resource, amount, transaction, automationType) : 0;
     }
 
     @Override
-    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         return internal.extract(resource, amount, transaction, automationType);
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(ChemicalResource chemicalType) {
         return internal.getLimitAsLong(chemicalType);
     }
@@ -116,13 +120,9 @@ public class ChemicalTankWrapper implements IChemicalTank {
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long amountAsLong() {
         return internal.amountAsLong();
-    }
-
-    @Override
-    public long getNeededAsLong() {
-        return internal.getNeededAsLong();
     }
 
     @Override

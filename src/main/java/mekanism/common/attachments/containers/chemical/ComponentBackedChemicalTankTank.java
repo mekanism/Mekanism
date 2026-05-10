@@ -11,6 +11,7 @@ import mekanism.common.tier.ChemicalTankTier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 /**
  * Special handling for the Chemical Tank block item.
@@ -34,7 +35,8 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     }
 
     @Override
-    public int insert(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes)
             try (Transaction simulation = Transaction.open(transaction)) {
@@ -45,7 +47,8 @@ public class ComponentBackedChemicalTankTank extends ComponentBackedChemicalTank
     }
 
     @Override
-    public int extract(ChemicalResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ChemicalResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

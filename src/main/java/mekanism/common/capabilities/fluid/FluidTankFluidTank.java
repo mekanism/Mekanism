@@ -13,6 +13,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class FluidTankFluidTank extends BasicFluidTank {
@@ -27,6 +28,7 @@ public class FluidTankFluidTank extends BasicFluidTank {
     private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
+        //TODO - 26.1: Make storage support longs
         super(tile.tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
         this.tile = tile;
         rate = tile.tier::getOutput;
@@ -34,19 +36,22 @@ public class FluidTankFluidTank extends BasicFluidTank {
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getInsertionRate(automationType);
     }
 
     @Override
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Only limit the internal rate to change the speed at which this can be filled from an item
         return automationType == AutomationType.INTERNAL ? rate.getAsInt() : super.getExtractionRate(automationType);
     }
 
     @Override
-    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted;
         if (isCreative) {
             if (isEmpty() && automationType != AutomationType.EXTERNAL) {//TODO - 26.1: Test that this behaves correctly
@@ -78,7 +83,8 @@ public class FluidTankFluidTank extends BasicFluidTank {
     }
 
     @Override
-    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

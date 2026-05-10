@@ -11,6 +11,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 /**
  * Like {@link ChemicalTankWrapper}
@@ -34,12 +35,12 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public void setContentsUnchecked(FluidResource type, long storedAmount) {
+    public void setContentsUnchecked(FluidResource type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         internal.setContentsUnchecked(type, storedAmount);
     }
 
     @Override
-    public void setContents(FluidResource itemType, long storedAmount) {
+    public void setContents(FluidResource itemType, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         internal.setContents(itemType, storedAmount);
     }
 
@@ -48,13 +49,15 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public int insert(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         //Only allow inserting if we pass the check
         return canInsert() ? internal.insert(resource, amount, transaction, automationType) : 0;
     }
 
     @Override
-    public int extract(FluidResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         return internal.extract(resource, amount, transaction, automationType);
     }
 
@@ -79,11 +82,6 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
-    public long getNeededAsLong() {
-        return internal.getNeededAsLong();
-    }
-
-    @Override
     public void serialize(ValueOutput output) {
         internal.serialize(output);
     }
@@ -99,11 +97,13 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long amountAsLong() {
         return internal.amountAsLong();
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(FluidResource resource) {
         return internal.getLimitAsLong(resource);
     }

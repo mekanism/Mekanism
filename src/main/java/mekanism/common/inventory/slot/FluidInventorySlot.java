@@ -21,6 +21,7 @@ import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class FluidInventorySlot extends BasicInventorySlot implements IFluidHandlerSlot {
@@ -198,8 +199,17 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     }
 
     @Override
-    public void setContents(ItemResource itemType, long storedAmount) {
+    public void setContents(ItemResource itemType, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         super.setContents(itemType, storedAmount);
+        //Reset the cache of if we are currently draining or filling
+        isDraining = false;
+        isFilling = false;
+    }
+
+    @Override
+    public void setContentsUnchecked(ItemResource itemType, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
+        super.setContentsUnchecked(itemType, storedAmount);
+        //TODO - 26.1: Re-evaluate the purpose of this, it used to only have setContents and not also setContentsUnchecked
         //Reset the cache of if we are currently draining or filling
         isDraining = false;
         isFilling = false;

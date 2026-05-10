@@ -53,7 +53,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
-    public void setEnergy(long energy) {
+    public void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy) {
         setContents(getAttached(), energy);
     }
 
@@ -131,6 +131,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getMaxEnergy() {
         return maxEnergy.getAsLong();
     }

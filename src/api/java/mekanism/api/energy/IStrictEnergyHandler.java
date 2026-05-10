@@ -4,52 +4,61 @@ import com.google.common.primitives.Ints;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.ApiStatus.NonExtendable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for this class
 
+    @Range(from = 0, to = Integer.MAX_VALUE)
     int size();
 
-    long getAmountAsLong(int index);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index);
 
-    @ApiStatus.NonExtendable
-    default int getAmountAsInt(int index) {
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int getAmountAsInt(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return Ints.saturatedCast(getAmountAsLong(index));
     }
 
     //TODO - 26.1: Do we want to name this getLimit to be closer to the resource handlers?
-    long getCapacityAsLong(int index);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index);
 
-    @ApiStatus.NonExtendable
-    default int getCapacityAsInt(int index) {
+    @NonExtendable
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    default int getCapacityAsInt(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return Ints.saturatedCast(getCapacityAsLong(index));
     }
 
     /**
      * Overrides the energy stored in the given container. This method may throw an error if it is called unexpectedly.
      *
-     * @param container Container to modify
-     * @param energy    Energy to set the container to (may be 0).
+     * @param index  Container to modify
+     * @param energy Energy to set the container to (may be 0).
      *
      * @throws RuntimeException if the handler is called in a way that the handler was not expecting. Such as if it was not expecting this to be called at all.
      **/
-    void setEnergy(int container, long energy);
+    void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long energy);
 
     /**
      * Retrieves the amount of energy that is needed to fill a given container.
      *
-     * @param container Container to query.
+     * @param index Container to query.
      *
      * @return The energy needed to fill the container.
      */
-    default long getNeededEnergy(int container) {
-        return Math.max(0L, getCapacityAsLong(container) - getAmountAsLong(container));
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+        return Math.max(0L, getCapacityAsLong(index) - getAmountAsLong(index));
     }
 
-    long insert(int index, long amount, TransactionContext transaction);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction);
 
-    default long insert(long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(amount);
 
         long inserted = 0;
@@ -62,9 +71,11 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
         return inserted;
     }
 
-    long extract(int index, long amount, TransactionContext transaction);
+    @Range(from = 0, to = Long.MAX_VALUE)
+    long extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction);
 
-    default long extract(long amount, TransactionContext transaction) {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    default long extract(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction) {
         MekanismPreconditions.checkNonNegative(amount);
         long extracted = 0;
         for (int index = 0, size = size(); index < size; index++) {

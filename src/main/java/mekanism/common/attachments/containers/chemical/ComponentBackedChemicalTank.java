@@ -17,6 +17,7 @@ import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedChemicalTank extends ComponentBackedResourceContainer<ChemicalResource> implements IChemicalTank {
@@ -62,6 +63,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(ChemicalResource resource) {
         return capacity.getAsLong();
     }

@@ -15,6 +15,7 @@ import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource> implements IFluidTank {
@@ -46,6 +47,7 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(FluidResource resource) {
         return capacity.getAsInt();
     }

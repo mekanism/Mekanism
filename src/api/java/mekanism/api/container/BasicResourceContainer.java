@@ -12,6 +12,7 @@ import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Docs, and maybe make it a little more protected like BasicChemicalTank?
 @NothingNullByDefault
@@ -23,14 +24,16 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Nullable
     private final IContentsListener listener;
     private final RESOURCE emptyResource;
+    @Range(from = 0, to = Long.MAX_VALUE)
     private final long limit;
 
     private RESOURCE currentType;
-    private long storedAmount = 0;
+    @Range(from = 0, to = Long.MAX_VALUE)
+    private long storedAmount;
 
     //TODO - 26.1: Make it so that fluid tanks and inventory slots can support long limits
-    protected BasicResourceContainer(RESOURCE emptyResource, long limit, BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert,
-          Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
+    protected BasicResourceContainer(RESOURCE emptyResource, @Range(from = 0, to = Long.MAX_VALUE) long limit, BiPredicate<RESOURCE, AutomationType> canExtract,
+          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, @Nullable IContentsListener listener) {
         this.emptyResource = emptyResource;
         this.canExtract = canExtract;
         this.canInsert = canInsert;
@@ -46,6 +49,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long amountAsLong() {
         return storedAmount;
     }
@@ -92,16 +96,16 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public void setContents(RESOURCE type, long storedAmount) {
+    public void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         setContents(type, storedAmount, true);
     }
 
     @Override
-    public void setContentsUnchecked(RESOURCE type, long storedAmount) {
+    public void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
         setContents(type, storedAmount, false);
     }
 
-    private void setContents(RESOURCE type, long storedAmount, boolean validateType) {
+    private void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount, boolean validateType) {
         MekanismPreconditions.checkNonNegative(storedAmount);
         if (type.isEmpty() || storedAmount == 0) {//TODO - 26.1: Make sure that storedAmount can never have a negative passed,
             if (isEmpty()) {
@@ -124,6 +128,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
+    @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(RESOURCE resource) {
         return limit;
     }
@@ -138,6 +143,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
      * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack.
      */
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
         // Main spot where they might not is for containers
@@ -157,12 +163,14 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
      * @implNote By default, this returns {@link Integer#MAX_VALUE} to not actually limit the tank's rate. By default, this is also ignored for direct setting of the
      * stack.
      */
+    @Range(from = 0, to = Integer.MAX_VALUE)
     protected int getExtractionRate(@Nullable AutomationType automationType) {
         return Integer.MAX_VALUE;
     }
 
     @Override
-    public int insert(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (amount == 0) {
             //"Fail quick" if the given stack is empty
@@ -189,7 +197,8 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     }
 
     @Override
-    public int extract(RESOURCE resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot

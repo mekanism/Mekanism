@@ -21,6 +21,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlot {
@@ -40,7 +41,9 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    protected int insert(AttachedResources<ItemResource> attachedItems, ItemResource currentType, long currentAmount, ItemResource resource, int amount, TransactionContext transaction,
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    protected int insert(AttachedResources<ItemResource> attachedItems, ItemResource currentType, @Range(from = 0, to = Long.MAX_VALUE) long currentAmount, ItemResource resource,
+          @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction,
           AutomationType automationType) {
         if (currentType.isEmpty()) {
             ItemResource lockType = getLockType();
@@ -67,7 +70,8 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     }
 
     @Override
-    public int extract(ItemResource resource, int amount, TransactionContext transaction, AutomationType automationType) {
+    @Range(from = 0, to = Integer.MAX_VALUE)
+    public int extract(ItemResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         if (isCreative) {
             try (Transaction simulation = Transaction.open(transaction)) {
                 //Use a sub transaction that is not committed to effectively just simulate what will happen without making any changes
