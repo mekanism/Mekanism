@@ -18,7 +18,6 @@ import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
@@ -29,7 +28,6 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -135,42 +133,8 @@ public class ChemicalUtil {
 
     private static long emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, @NotNull ChemicalStack stack,
           @UnknownNullability IChemicalTank tank, long maxOutput) {
-        if (stack.isEmpty() && tank == null) {
-            //Something went wrong in calling this method
-            return 0;
-        } else if (targets.isEmpty()) {
-            return 0;
-        }
-        ChemicalHandlerTarget target = null;
-        for (BlockCapabilityCache<ResourceHandler<ChemicalResource>, Direction> capability : targets) {
-            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            ResourceHandler<ChemicalResource> handler = capability.getCapability();
-            if (handler != null) {
-                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
-                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
-                if (stack.isEmpty()) {
-                    stack = tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-                    if (stack.isEmpty()) {
-                        //If we failed to extract from it, just exit early
-                        return 0;
-                    }
-                }
-                if (canInsert(handler, stack)) {
-                    if (target == null) {
-                        target = new ChemicalHandlerTarget(targets.size());
-                    }
-                    target.addHandler(handler);
-                }
-            }
-        }
-        return EmitUtils.sendToAcceptors(target, stack.amount(), stack.copy());
-    }
-
-    public static boolean canInsert(ResourceHandler<ChemicalResource> handler, @NotNull ChemicalStack stack) {
-        //TODO - 26.1: Check callers as they might be in a transaction context
-        try (Transaction simulation = Transaction.openRoot()) {
-            return handler.insert(ChemicalResource.of(stack), Ints.saturatedCast(stack.amount()), simulation) > 0;
-        }
+        //TODO - 26.1: Re-evaluate this
+        return ResourceUtils.emit(targets, ChemicalResource.of(stack), Ints.saturatedCast(stack.amount()), tank, Ints.saturatedCast(maxOutput));
     }
 
     public static long hydrogenEnergyDensity() {

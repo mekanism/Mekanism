@@ -7,6 +7,7 @@ import net.jqwik.api.Label;
 import net.jqwik.api.Property;
 import net.jqwik.api.constraints.IntRange;
 import net.jqwik.api.constraints.Positive;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.junit.jupiter.api.Assertions;
 
 @Label("Property based testing of distribution via EmitUtils")
@@ -21,21 +22,27 @@ class DistributionPropertyTest {
     @Label("Test distribution")
     void testDistribution(@ForAll @IntRange(max = 100) int infinite, @ForAll @IntRange(max = 100) int some, @ForAll @IntRange(max = 100) int none,
           @ForAll @Positive int toSend) {
-        IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, some, none);
-        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE) <= toSend);
+        try (Transaction transaction = Transaction.openRoot()) {
+            IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, some, none);
+            Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE, transaction) <= toSend);
+        }
     }
 
     @Property(tries = TRIES)
     @Label("Test distribution no partial")
     void testDistributionNoPartial(@ForAll @IntRange(max = 100) int infinite, @ForAll @IntRange(max = 100) int none, @ForAll @Positive int toSend) {
-        IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, 0, none);
-        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE) <= toSend);
+        try (Transaction transaction = Transaction.openRoot()) {
+            IntegerTarget availableAcceptors = DistributionTest.getTargets(infinite, 0, none);
+            Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE, transaction) <= toSend);
+        }
     }
 
     @Property(tries = TRIES)
     @Label("Test distribution no infinite")
     void testDistributionNoInfinite(@ForAll @IntRange(max = 100) int some, @ForAll @IntRange(max = 100) int none, @ForAll @Positive int toSend) {
-        IntegerTarget availableAcceptors = DistributionTest.getTargets(0, some, none);
-        Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE) <= toSend);
+        try (Transaction transaction = Transaction.openRoot()) {
+            IntegerTarget availableAcceptors = DistributionTest.getTargets(0, some, none);
+            Assertions.assertTrue(EmitUtils.sendToAcceptors(availableAcceptors, toSend, VOID_RESOURCE, transaction) <= toSend);
+        }
     }
 }

@@ -23,6 +23,8 @@ import mekanism.common.util.text.EnergyDisplay;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,17 +98,17 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
     }
 
     @Override
-    protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter) {
-        super.updateSaveShares(triggerTransmitter);
+    protected void updateSaveShares(@Nullable UniversalCable triggerTransmitter, TransactionContext transaction) {
+        super.updateSaveShares(triggerTransmitter, transaction);
         if (!isEmpty()) {
             EnergyTransmitterSaveTarget saveTarget = new EnergyTransmitterSaveTarget(getTransmitters());
             long energy = energyContainer.getEnergy();
-            EmitUtils.sendToAcceptors(saveTarget, energy, ENERGY);
+            EmitUtils.sendToAcceptors(saveTarget, energy, ENERGY, transaction);
             saveTarget.save();
         }
     }
 
-    private long tickEmit(long energyToSend) {
+    private long tickEmit(long energyToSend, TransactionContext transaction) {
         Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = null;
         for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
@@ -120,7 +122,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
                 }
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, ENERGY);
+        return EmitUtils.sendToAcceptors(target, energyToSend, ENERGY, transaction);
     }
 
     @Override
@@ -138,8 +140,11 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         if (energyContainer.isEmpty()) {
             prevTransferAmount = 0L;
         } else {
-            prevTransferAmount = tickEmit(energyContainer.getEnergy());
-            energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
+            try (Transaction transaction = Transaction.openRoot()) {
+                prevTransferAmount = tickEmit(energyContainer.getEnergy(), transaction);
+                energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
+                transaction.commit();
+            }
         }
     }
 

@@ -14,7 +14,7 @@ import org.jetbrains.annotations.NotNull;
 public abstract class BufferedTransmitter<ACCEPTOR, NETWORK extends DynamicBufferedNetwork<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>, BUFFER,
       TRANSMITTER extends BufferedTransmitter<ACCEPTOR, NETWORK, BUFFER, TRANSMITTER>> extends Transmitter<ACCEPTOR, NETWORK, TRANSMITTER> {
 
-    public BufferedTransmitter(TileEntityTransmitter tile, TransmissionType... transmissionTypes) {
+    protected BufferedTransmitter(TileEntityTransmitter tile, TransmissionType... transmissionTypes) {
         super(tile, transmissionTypes);
     }
 

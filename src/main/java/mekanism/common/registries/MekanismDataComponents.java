@@ -4,6 +4,7 @@ import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.robit.RobitSkin;
@@ -78,18 +79,18 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
-          builder -> builder.persistent(AttachedResources.codec(ItemResource.OPTIONAL_CODEC, ItemResource.EMPTY, SerializationConstants.ITEMS))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.ITEM_RESOURCE_STACK_CODEC, ItemResource.EMPTY, SerializationConstants.ITEMS))
                 .networkSynchronized(AttachedResources.streamCodec(ItemResource.STREAM_CODEC))
                 .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
-          builder -> builder.persistent(AttachedResources.codec(FluidResource.OPTIONAL_CODEC, FluidResource.EMPTY, SerializationConstants.FLUID_TANKS))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.FLUID_RESOURCE_STACK_CODEC, FluidResource.EMPTY, SerializationConstants.FLUID_TANKS))
                 .networkSynchronized(AttachedResources.streamCodec(FluidResource.STREAM_CODEC))
                 .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
-          builder -> builder.persistent(AttachedResources.codec(ChemicalResource.OPTIONAL_CODEC, ChemicalResource.EMPTY, SerializationConstants.CHEMICAL_TANKS))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.CHEMICAL_RESOURCE_STACK_CODEC, ChemicalResource.EMPTY, SerializationConstants.CHEMICAL_TANKS))
                 .networkSynchronized(AttachedResources.streamCodec(ChemicalResource.STREAM_CODEC))
                 .cacheEncoding()
     );

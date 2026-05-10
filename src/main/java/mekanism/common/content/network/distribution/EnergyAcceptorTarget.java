@@ -5,6 +5,7 @@ import mekanism.api.Action;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
 
@@ -20,12 +21,12 @@ public class EnergyAcceptorTarget extends Target<IStrictEnergyHandler, Void> {
     }
 
     @Override
-    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo splitInfo, Void unused, long amount) {
-        splitInfo.send(amount - (handler.insertEnergy(amount, Action.EXECUTE)));
+    protected void acceptAmount(IStrictEnergyHandler handler, SplitInfo splitInfo, Void unused, long amount, TransactionContext transaction) {
+        splitInfo.send(amount - handler.insertEnergy(amount, Action.EXECUTE));
     }
 
     @Override
-    protected long simulate(IStrictEnergyHandler handler, Void unused, long amount) {
-        return amount - (handler.insertEnergy(amount, Action.SIMULATE));
+    protected long accept(IStrictEnergyHandler handler, Void unused, long amount, TransactionContext transaction) {
+        return amount - handler.insertEnergy(amount, Action.SIMULATE);
     }
 }

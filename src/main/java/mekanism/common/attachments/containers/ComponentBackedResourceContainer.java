@@ -2,7 +2,6 @@ package mekanism.common.attachments.containers;
 
 import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
-import java.util.Optional;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -21,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
+    private final LargeResourceStack<RESOURCE> emptyStack = new LargeResourceStack<>(getEmptyResource(), 0);
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
@@ -37,7 +37,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     protected abstract RESOURCE getEmptyResource();
 
-    protected abstract Codec<RESOURCE> getResourceCodec();
+    protected abstract Codec<LargeResourceStack<RESOURCE>> getResourceStackCodec();
 
     @Override
     protected boolean isEmpty(LargeResourceStack<RESOURCE> stack) {
@@ -180,19 +180,14 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         if (!stored.isEmpty()) {
             //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
             // Items used to store to the key "item", but fluids and chemicals used "stored"
-            ValueOutput storedOutput = output.child(SerializationConstants.STORED);
-            storedOutput.store(SerializationConstants.TYPE, getResourceCodec(), stored.resource());
-            storedOutput.putLong(SerializationConstants.AMOUNT, stored.amount());
+            output.store(SerializationConstants.STORED, getResourceStackCodec(), stored);
+            //TODO - 26.1: Should we remove the key if stored is empty like we do for transmitters?
         }
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        Optional<ValueInput> child = input.child(SerializationConstants.STORED);
-        if (child.isPresent()) {
-            ValueInput storedInput = child.get();
-            RESOURCE resource = storedInput.read(SerializationConstants.TYPE, getResourceCodec()).orElse(getEmptyResource());
-            setContentsUnchecked(resource, storedInput.getLongOr(SerializationConstants.AMOUNT, 0));
-        }
+        LargeResourceStack<RESOURCE> stack = input.read(SerializationConstants.STORED, getResourceStackCodec()).orElse(emptyStack);
+        setContentsUnchecked(stack.resource(), stack.amount());
     }
 }

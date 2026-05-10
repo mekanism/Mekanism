@@ -6,6 +6,7 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
 
@@ -21,12 +22,12 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @Override
-    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Void unused, long amount) {
+    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, Void unused, long amount, TransactionContext transaction) {
         handler.acceptAmount(splitInfo, amount);
     }
 
     @Override
-    protected long simulate(HANDLER handler, Void unused, long amount) {
+    protected long accept(HANDLER handler, Void unused, long amount, TransactionContext transaction) {
         return handler.simulate(amount);
     }
 

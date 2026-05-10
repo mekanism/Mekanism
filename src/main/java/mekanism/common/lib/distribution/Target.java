@@ -5,6 +5,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedList;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Keeps track of a target for emitting from various networks.
@@ -58,7 +60,7 @@ public abstract class Target<HANDLER, RESOURCE> {
      *
      * @param splitInfo Keeps track of the current amount sent and the default each one can get.
      */
-    public void sendRemainingSplit(RESOURCE resource, SplitInfo splitInfo) {
+    public void sendRemainingSplit(RESOURCE resource, SplitInfo splitInfo, TransactionContext transaction) {//TODO - 26.1: Evaluate transaction usage
         //If needed is not empty then we default it to the given calculated fair split amount of remaining energy
         if (!needed.isEmpty() && splitInfo.getRemainderAmount() != 0) {
             Iterator<HandlerType<HANDLER>> iterator = needed.iterator();
@@ -72,13 +74,13 @@ public abstract class Target<HANDLER, RESOURCE> {
                 //Accept the remaining amount
                 long amountNeeded = needInfo.amount();
                 if (amountNeeded <= remainderAmount) {
-                    acceptAmount(needInfo.handler(), splitInfo, resource, amountNeeded);
+                    splitInfo.send(accept(needInfo.handler(), resource, amountNeeded, transaction));
                     //If the amount we needed was the less than or the same as our remaining amount
                     // we can remove the value as it has now been sent
                     iterator.remove();
                 } else {
                     splitInfo.decrementTargets = false;
-                    acceptAmount(needInfo.handler(), splitInfo, resource, remainderAmount);
+                    splitInfo.send(accept(needInfo.handler(), resource, remainderAmount, transaction));
                     splitInfo.decrementTargets = true;
                 }
             }
@@ -94,7 +96,7 @@ public abstract class Target<HANDLER, RESOURCE> {
                         //We finished, exit
                         return;
                     }
-                    acceptAmount(recipient.handler(), splitInfo, resource, remaining);
+                    splitInfo.send(accept(recipient.handler(), resource, remaining, transaction));
                 }
             }
         }
@@ -111,7 +113,10 @@ public abstract class Target<HANDLER, RESOURCE> {
      *
      * @implNote Must call {@link SplitInfo#send(long)} with the amount actually accepted.
      */
-    protected abstract void acceptAmount(HANDLER handler, SplitInfo splitInfo, RESOURCE resource, long amount);
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove remaining overrides and make the accept methods for the classes that override this properly support transactions
+    protected void acceptAmount(HANDLER handler, SplitInfo splitInfo, RESOURCE resource, long amount, TransactionContext transaction) {
+        splitInfo.send(accept(handler, resource, amount, transaction));
+    }
 
     /**
      * Simulate inserting into the handler.
@@ -121,7 +126,7 @@ public abstract class Target<HANDLER, RESOURCE> {
      *
      * @return The amount it was actually willing to accept.
      */
-    protected abstract long simulate(HANDLER handler, RESOURCE resource, long amount);
+    protected abstract long accept(HANDLER handler, RESOURCE resource, long amount, TransactionContext transaction);//TODO - 26.1: Update docs
 
     /**
      * Calculates how much each handler can take of the resource. If the amount requested is less than the amount per handler/target in splitInfo it immediately sends the
@@ -130,27 +135,33 @@ public abstract class Target<HANDLER, RESOURCE> {
      * @param resource    The total amount getting sent.
      * @param splitInfo Information about current overall split.
      */
-    public void sendPossible(RESOURCE resource, SplitInfo splitInfo) {
+    public void sendPossible(RESOURCE resource, SplitInfo splitInfo, TransactionContext transaction) {//TODO - 26.1: Evaluate transaction usage
         if (splitInfo.getShareAmount() == 0) {
             //We are all remainder, just calculate how much each can accept
             for (HANDLER entry : handlers) {
-                long amountNeeded = simulate(entry, resource, splitInfo.getUnsent());
-                if (amountNeeded != 0) {
-                    needed.add(new HandlerType<>(entry, amountNeeded));
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    long amountNeeded = accept(entry, resource, splitInfo.getUnsent(), simulation);
+                    if (amountNeeded != 0) {
+                        needed.add(new HandlerType<>(entry, amountNeeded));
+                    }
                 }
             }
         } else {
             for (HANDLER entry : handlers) {
-                long amountNeeded = simulate(entry, resource, splitInfo.getUnsent());
-                if (amountNeeded <= splitInfo.getShareAmount()) {
-                    //Add the amount, in case something changed from simulation only mark actual sent amount
-                    // in split info
-                    if (amountNeeded != 0) {
-                        //Note: We can skip actually running it if it doesn't need anything
-                        acceptAmount(entry, splitInfo, resource, amountNeeded);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    long amountNeeded = accept(entry, resource, splitInfo.getUnsent(), subTransaction);
+                    if (amountNeeded <= splitInfo.getShareAmount()) {
+                        //Add the amount, in case something changed from simulation only mark actual sent amount in split info
+                        /*if (amountNeeded != 0) {
+                            //Note: We can skip actually running it if it doesn't need anything
+                            acceptAmount(entry, splitInfo, resource, amountNeeded, subTransaction);
+                        }*/
+                        //We need less than we were offered, just immediately commit the change
+                        splitInfo.send(amountNeeded);
+                        subTransaction.commit();
+                    } else {
+                        needed.add(new HandlerType<>(entry, amountNeeded));
                     }
-                } else {
-                    needed.add(new HandlerType<>(entry, amountNeeded));
                 }
             }
         }
@@ -161,7 +172,7 @@ public abstract class Target<HANDLER, RESOURCE> {
      *
      * @param splitInfo The new split to (re)check.
      */
-    public void shiftNeeded(RESOURCE resource, SplitInfo splitInfo) {
+    public void shiftNeeded(RESOURCE resource, SplitInfo splitInfo, TransactionContext transaction) {
         if (splitInfo.getShareAmount() == 0) {
             return;
         }
@@ -173,7 +184,8 @@ public abstract class Target<HANDLER, RESOURCE> {
             HandlerType<HANDLER> needInfo = iterator.next();
             long amountNeeded = needInfo.amount();
             if (amountNeeded <= splitInfo.getShareAmount()) {
-                acceptAmount(needInfo.handler(), splitInfo, resource, amountNeeded);
+                //TODO - 26.1: Evaluate transaction usage
+                splitInfo.send(accept(needInfo.handler(), resource, amountNeeded, transaction));
                 //Remove it as it has now been sent
                 iterator.remove();
                 //Continue checking things in case we happen to be

@@ -133,7 +133,7 @@ public class LookingAtUtils {
                 if (fluidCapability != null) {
                     FluidResource fallback = FluidResource.EMPTY;
                     if (tile instanceof TileEntityMechanicalPipe pipe && pipe.getTransmitter().hasTransmitterNetwork()) {
-                        fallback = FluidResource.of(pipe.getTransmitter().getTransmitterNetwork().lastFluid);
+                        fallback = pipe.getTransmitter().getTransmitterNetwork().getLastType();
                     }
                     displayFluid(info, fluidCapability, fallback);
                 } else if (structure != null && structure.isFormed()) {
@@ -197,8 +197,8 @@ public class LookingAtUtils {
             ChemicalResource fallback = ChemicalResource.EMPTY;
             if (tile instanceof TileEntityPressurizedTube tube && tube.getTransmitter().hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitter().getTransmitterNetwork();
-                if (!network.lastChemical.isEmpty()) {
-                    fallback = network.lastChemical;
+                if (!network.getLastType().isEmpty()) {
+                    fallback = network.getLastType();
                 }
             }
             if (handler instanceof IMekanismResourceHandler<ChemicalResource, ?> mekHandler) {

@@ -5,11 +5,13 @@ import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.AttachedResources;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
@@ -34,8 +36,8 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     }
 
     @Override
-    protected Codec<FluidResource> getResourceCodec() {
-        return FluidResource.CODEC;
+    protected Codec<LargeResourceStack<FluidResource>> getResourceStackCodec() {
+        return SerializerHelper.FLUID_RESOURCE_STACK_CODEC;
     }
 
     @Override

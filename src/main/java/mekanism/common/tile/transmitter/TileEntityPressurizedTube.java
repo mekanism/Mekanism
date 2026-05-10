@@ -4,8 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
@@ -45,7 +45,7 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
                     // then return that we have no tanks
                     return Collections.emptyList();
                 }
-                return tube.getChemicalTanks();
+                return tube.getContainers();
             }
 
             @Override
@@ -99,8 +99,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             ChemicalNetwork network = getTransmitter().getTransmitterNetwork();
-            if (!network.lastChemical.isEmpty()) {
-                output.store(SerializationConstants.CHEMICAL, ChemicalResource.CODEC, network.lastChemical);
+            if (!network.getLastType().isEmpty()) {
+                output.store(SerializationConstants.CHEMICAL, ChemicalResource.CODEC, network.getLastType());
             }
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
@@ -115,28 +115,20 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         if (isRemote()) {
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                if (!network.lastChemical.isEmpty() && !network.getChemicalTank().isEmpty() && network.lastChemical.value().isRadioactive()) {
+                if (!network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.getLastType().value().isRadioactive()) {
                     //Note: This may act as full when the network isn't actually full if there is radioactive stuff
                     // going through it, but it shouldn't matter too much
                     return network.currentScale;
                 }
             }
-        } else {
-            IChemicalTank gasTank = tube.getChemicalTank();
-            if (!gasTank.isEmpty() && gasTank.getStack().isRadioactive()) {
-                return gasTank.amountAsLong() / (float) gasTank.getCapacity();
-            }
+            return 0;
         }
-        return 0;
+        return tube.getRadiationScale();
     }
 
     @Override
     public int getRadiationParticleCount() {
         return MathUtils.clampToInt(3 * getRadiationScale());
-    }
-
-    private List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return chemicalHandlerManager.getContainers(side);
     }
 
     @Override
@@ -173,8 +165,8 @@ public class TileEntityPressurizedTube extends TileEntityTransmitter implements 
         return getTransmitter().getTier().getBaseTier().getLowerName() + "PressurizedTube";
     }
 
-    @ComputerMethod
-    ChemicalStack getBuffer() {
+    //@ComputerMethod//TODO - 26.1: Figure this out
+    LargeResourceStack<ChemicalResource> getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }
 

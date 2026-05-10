@@ -24,6 +24,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
@@ -61,8 +62,12 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         if (saveTarget.getHandlerCount() > 1) {
             //If we only have one handler we can skip charging as it will all just go back into the chest piece
             long stored = saveTarget.getStored();
-            EmitUtils.sendToAcceptors(saveTarget, stored, EnergyNetwork.ENERGY);
-            saveTarget.save();
+            //TODO - 26.1: Re-evaluate how we handle transactions for energy
+            try (Transaction transaction = Transaction.openRoot()) {
+                EmitUtils.sendToAcceptors(saveTarget, stored, EnergyNetwork.ENERGY, transaction);
+                saveTarget.save();
+                transaction.commit();
+            }
         }
     }
 

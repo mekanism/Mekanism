@@ -129,8 +129,6 @@ public final class SerializationConstants {
     public static final String BLADES = "blades";
     public static final String BLOCK = "block";
     public static final String BLOCK_ENTITY_TAG = "block_entity_tag";
-    //TODO - 26.1: Do we want to just remove this and only use chemical as there is no longer separate types?
-    public static final String BOXED_CHEMICAL = "boxed_chemical";
     public static final String BUILT_IN_TABLES = "built_in_tables";
     public static final String BURNING = "burning";
     public static final String BURN_TIME = "burn_time";

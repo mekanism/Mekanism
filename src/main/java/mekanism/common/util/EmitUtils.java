@@ -5,6 +5,8 @@ import mekanism.common.lib.distribution.IntegerSplitInfo;
 import mekanism.common.lib.distribution.LongSplitInfo;
 import mekanism.common.lib.distribution.SplitInfo;
 import mekanism.common.lib.distribution.Target;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class EmitUtils {
@@ -18,31 +20,33 @@ public class EmitUtils {
      * @param <TARGET>         The emitter target.
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param splitInfo        Information containing the split.
-     * @param resource           Any extra information such as gas stack or fluid stack.
+     * @param resource         Any extra information such as gas stack or fluid stack.
      *
      * @return The amount that actually got sent.
      */
-    private static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(
-          TARGET availableTargets, SplitInfo splitInfo, RESOURCE resource) {
+    private static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(TARGET availableTargets, SplitInfo splitInfo, RESOURCE resource,
+          @Nullable TransactionContext transaction) {
         if (availableTargets.getHandlerCount() == 0) {
             return splitInfo.getTotalSent();
         }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            //Simulate addition, sending when the requested amount is less than the amountPer
+            // splitInfo gets adjusted to account for how much is actually sent
+            availableTargets.sendPossible(resource, splitInfo, subTransaction);
 
-        //Simulate addition, sending when the requested amount is less than the amountPer
-        // splitInfo gets adjusted to account for how much is actually sent
-        availableTargets.sendPossible(resource, splitInfo);
+            //Only run this if we changed the amountPer from when we first/last ran things
+            while (splitInfo.amountPerChanged) {
+                splitInfo.amountPerChanged = false;
+                //splitInfo gets adjusted to account for how much is actually sent,
+                // and if amountPer got changed again, and we need to rerun this
+                availableTargets.shiftNeeded(resource, splitInfo, transaction);
+            }
 
-        //Only run this if we changed the amountPer from when we first/last ran things
-        while (splitInfo.amountPerChanged) {
-            splitInfo.amountPerChanged = false;
-            //splitInfo gets adjusted to account for how much is actually sent,
-            // and if amountPer got changed again, and we need to rerun this
-            availableTargets.shiftNeeded(resource, splitInfo);
+            //Evenly distribute the remaining amount we have to give between all targets and handlers
+            // splitInfo gets adjusted to account for how much is actually sent
+            availableTargets.sendRemainingSplit(resource, splitInfo, transaction);
+            subTransaction.commit();
         }
-
-        //Evenly distribute the remaining amount we have to give between all targets and handlers
-        // splitInfo gets adjusted to account for how much is actually sent
-        availableTargets.sendRemainingSplit(resource, splitInfo);
         return splitInfo.getTotalSent();
     }
 
@@ -56,11 +60,12 @@ public class EmitUtils {
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, RESOURCE toSend) {
+    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> int sendToAcceptors(@Nullable TARGET availableTargets, int amountToSplit, RESOURCE toSend,
+          @Nullable TransactionContext transaction) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
-        return Ints.saturatedCast(sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend));
+        return Ints.saturatedCast(sendToAcceptors(availableTargets, new IntegerSplitInfo(amountToSplit, availableTargets.getHandlerCount()), toSend, transaction));
     }
 
     /**
@@ -69,14 +74,15 @@ public class EmitUtils {
      * @param <TARGET>         The emitter target
      * @param availableTargets The targets to distribute toSend fairly among.
      * @param amountToSplit    The amount to split between all the targets
-     * @param resource           Any extra information such as gas stack or fluid stack.
+     * @param resource         Any extra information such as gas stack or fluid stack.
      *
      * @return The amount that actually got sent.
      */
-    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE resource) {
+    public static <HANDLER, RESOURCE, TARGET extends Target<HANDLER, RESOURCE>> long sendToAcceptors(@Nullable TARGET availableTargets, long amountToSplit, RESOURCE resource,
+          @Nullable TransactionContext transaction) {
         if (availableTargets == null || availableTargets.getHandlerCount() == 0) {
             return 0;
         }
-        return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), resource);
+        return sendToAcceptors(availableTargets, new LongSplitInfo(amountToSplit, availableTargets.getHandlerCount()), resource, transaction);
     }
 }

@@ -15,18 +15,17 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
-import net.minecraft.util.Util;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.core.HolderLookup.Provider;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.container.LargeResourceStack;
 import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.nbt.Tag;
 import net.minecraft.util.ExtraCodecs;
+import net.minecraft.util.Util;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.21: Update the wiki docs to fix the syntax
@@ -100,52 +99,12 @@ public class SerializerHelper {
           DataComponentPatch.CODEC.optionalFieldOf(ItemInstance.FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
     ).apply(instance, ItemStack::new)));
 
-    /**
-     * Custom codec to allow serializing an item stack without the upper bounds. Allows empty items
-     *
-     * @since 10.6.4
-     */
-    public static final Codec<ItemStack> OVERSIZED_ITEM_OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(OVERSIZED_ITEM_CODEC)
-          .xmap(optional -> optional.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
 
-    /**
-     * Custom codec to allow serializing an item stack without the upper bounds. Allows empty items, and falls back to empty on invalid stacks.
-     *
-     * @since 10.7.9
-     */
-    public static final Codec<ItemStack> LENIENT_OVERSIZED_ITEM_OPTIONAL_CODEC = OVERSIZED_ITEM_OPTIONAL_CODEC
-          .promotePartial(ON_STACK_LOAD_ERROR)
-          .orElse(ItemStack.EMPTY);
-
-    /**
-     * Helper similar to {@link ItemStack#save(Provider)} but with support for oversized stacks.
-     *
-     * @since 10.6.1
-     */
-    public static Tag saveOversized(HolderLookup.Provider registryAccess, ItemStack stack) {//TODO - 26.1: Re-evaluate I am guessing we can/should remove these save/parse methods
-        if (stack.isEmpty()) {
-            throw new IllegalStateException("Cannot encode empty ItemStack");
-        }
-        return OVERSIZED_ITEM_CODEC.encodeStart(registryAccess.createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
-    }
-
-    /**
-     * Helper similar to {@link ItemStack#parse(Provider, Tag)} but with support for oversized stacks.
-     *
-     * @since 10.6.1
-     */
-    public static Optional<ItemStack> parseOversized(HolderLookup.Provider pLookupProvider, Tag pTag) {
-        return OVERSIZED_ITEM_CODEC.parse(pLookupProvider.createSerializationContext(NbtOps.INSTANCE), pTag).resultOrPartial(ON_STACK_LOAD_ERROR);
-    }
-
-    /**
-     * Helper similar to {@link ItemStack#parseOptional(Provider, CompoundTag)} but with support for oversized stacks.
-     *
-     * @since 10.6.1
-     */
-    public static ItemStack parseOversizedOptional(HolderLookup.Provider pLookupProvider, CompoundTag tag) {
-        return tag.isEmpty() ? ItemStack.EMPTY : parseOversized(pLookupProvider, tag).orElse(ItemStack.EMPTY);
-    }
+    //TODO - 26.1: Docs and decide where we want to store these, and do we want to be resource.optional_codec?
+    // Modify tests that test the attached items to double check it handles empty stacks in general fine
+    public static final Codec<LargeResourceStack<ItemResource>> ITEM_RESOURCE_STACK_CODEC = LargeResourceStack.codec(ItemResource.CODEC);
+    public static final Codec<LargeResourceStack<FluidResource>> FLUID_RESOURCE_STACK_CODEC = LargeResourceStack.codec(FluidResource.CODEC);
+    public static final Codec<LargeResourceStack<ChemicalResource>> CHEMICAL_RESOURCE_STACK_CODEC = LargeResourceStack.codec(ChemicalResource.CODEC);
 
     /**
      * Generate a RecordCodecBuilder which is required only if the 'primary' is present. If this field is present, it will be returned regardless. Does not eat errors

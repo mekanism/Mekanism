@@ -1,5 +1,9 @@
 package mekanism.api.container;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import org.jspecify.annotations.NonNull;
 
@@ -15,5 +19,12 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
     @Override
     public String toString() {
         return amount + "x " + resource;
+    }
+
+    public static <RESOURCE extends @NonNull Resource> Codec<LargeResourceStack<RESOURCE>> codec(Codec<RESOURCE> resourceCodec) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+              resourceCodec.fieldOf(SerializationConstants.TYPE).forGetter(LargeResourceStack::resource),
+              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(LargeResourceStack::amount)
+        ).apply(instance, LargeResourceStack::new));
     }
 }

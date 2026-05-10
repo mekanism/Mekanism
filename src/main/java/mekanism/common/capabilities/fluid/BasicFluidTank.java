@@ -15,14 +15,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class BasicFluidTank extends BasicResourceContainer<FluidResource> implements IFluidTank {
 
-    public static BasicFluidTank create(int capacity, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(long capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(long capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -30,11 +30,11 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, @Nullable IContentsListener listener) {
+    public static BasicFluidTank create(long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, @Nullable IContentsListener listener) {
         return create(capacity, canExtract, canInsert, ConstantPredicates.alwaysTrue(), listener);
     }
 
-    public static BasicFluidTank input(int capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank input(long capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -42,7 +42,7 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
-    public static BasicFluidTank input(int capacity, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static BasicFluidTank input(long capacity, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
@@ -51,14 +51,14 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, ConstantPredicates.notExternal(), (stack, _) -> canInsert.test(stack), validator, listener);
     }
 
-    public static BasicFluidTank output(int capacity, @Nullable IContentsListener listener) {
+    public static BasicFluidTank output(long capacity, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
         }
         return new BasicFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), ConstantPredicates.alwaysTrue(), listener);
     }
 
-    public static BasicFluidTank create(int capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator,
+    public static BasicFluidTank create(long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator,
           @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -69,7 +69,7 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    public static BasicFluidTank create(int capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
+    public static BasicFluidTank create(long capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
           Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         if (capacity < 0) {
             throw new IllegalArgumentException("Capacity must be at least zero");
@@ -80,13 +80,14 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
         return new BasicFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    protected BasicFluidTank(int capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator,
+    protected BasicFluidTank(long capacity, Predicate<FluidResource> canExtract, Predicate<FluidResource> canInsert, Predicate<FluidResource> validator,
           @Nullable IContentsListener listener) {
         this(capacity, (stack, automationType) -> automationType == AutomationType.MANUAL || canExtract.test(stack),
               (stack, _) -> canInsert.test(stack), validator, listener);
     }
 
-    protected BasicFluidTank(int capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
+    //TODO - 26.1: Evaluate callers and make sure that our capacity configs support longs where relevant
+    protected BasicFluidTank(long capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
           Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         super(FluidResource.EMPTY, capacity, canExtract, canInsert, validator, listener);
     }

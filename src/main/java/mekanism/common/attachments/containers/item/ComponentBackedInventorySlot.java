@@ -4,7 +4,9 @@ import com.mojang.serialization.Codec;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
@@ -36,8 +38,8 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     }
 
     @Override
-    protected Codec<ItemResource> getResourceCodec() {
-        return ItemResource.CODEC;
+    protected Codec<LargeResourceStack<ItemResource>> getResourceStackCodec() {
+        return SerializerHelper.ITEM_RESOURCE_STACK_CODEC;
     }
 
     @Override

@@ -32,6 +32,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.core.Direction.AxisDirection;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -65,12 +66,14 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
         if (network == null) {//TODO - 26.1: Does this race condition still exist?
             return;//race conditions, yay
         }
-        FluidStack fluidStack = network.lastFluid;
-        if (fluidStack.isEmpty()) {
+        FluidResource fluidType = network.getLastType();
+        if (fluidType.isEmpty()) {
             return;//Shouldn't be the case but validate it
         }
+        //TODO - 26.1: Re-evaluate this
+        FluidStack fluidStack = fluidType.toStack(1);
         state.currentScale = network.currentScale;
-        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidStack, FluidTextureType.STILL));
+        state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
         state.fluidTint = MekanismRenderer.getColorARGB(fluidStack, state.currentScale);
 
         int stage = Math.max(3, ModelRenderer.getStage(fluidStack, stages, state.currentScale));
@@ -153,7 +156,7 @@ public class RenderMechanicalPipe extends RenderTransmitterBase<TileEntityMechan
             MechanicalPipe pipe = tile.getTransmitter();
             if (pipe.hasTransmitterNetwork()) {
                 FluidNetwork network = pipe.getTransmitterNetwork();
-                return !network.lastFluid.isEmpty() && !network.fluidTank.isEmpty() && network.currentScale > 0;
+                return !network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.currentScale > 0;
             }
         }
         return false;

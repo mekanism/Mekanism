@@ -6,7 +6,6 @@ import mekanism.common.content.network.FluidNetwork;
 import mekanism.common.content.network.transmitter.MechanicalPipe;
 import mekanism.common.content.network.transmitter.PressurizedTube;
 import mekanism.common.content.network.transmitter.Transmitter;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
@@ -29,7 +28,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
         private ChemicalResource buffer;
 
         public CompatibleChemicalTransmitterValidator(PressurizedTube transmitter) {
-            buffer = ChemicalResource.of(transmitter.getBufferWithFallback());
+            buffer = transmitter.getBufferWithFallback().resource();
         }
 
         private boolean compareBuffers(ChemicalResource otherBuffer) {
@@ -48,9 +47,9 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
                     //Null check it, but use instanceof to double-check it is actually the expected type
                     otherBuffer = validator.buffer;
                 } else {
-                    otherBuffer = ChemicalResource.of(network.getBuffer());
+                    otherBuffer = network.getBuffer().resource();
                     if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
-                        otherBuffer = network.lastChemical;
+                        otherBuffer = network.getLastType();
                     }
                 }
                 return compareBuffers(otherBuffer);
@@ -60,37 +59,37 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(ChemicalResource.of(tube.getBufferWithFallback()));
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof PressurizedTube tube && compareBuffers(tube.getBufferWithFallback().resource());
         }
     }
 
     public static class CompatibleFluidTransmitterValidator extends CompatibleTransmitterValidator<ResourceHandler<FluidResource>, FluidNetwork, MechanicalPipe> {
 
-        private FluidStack buffer;
+        private FluidResource buffer;
 
         public CompatibleFluidTransmitterValidator(MechanicalPipe transmitter) {
-            buffer = transmitter.getBufferWithFallback();
+            buffer = transmitter.getBufferWithFallback().resource();
         }
 
-        private boolean compareBuffers(FluidStack otherBuffer) {
+        private boolean compareBuffers(FluidResource otherBuffer) {
             if (buffer.isEmpty()) {
                 buffer = otherBuffer;
                 return true;
             }
-            return otherBuffer.isEmpty() || FluidStack.isSameFluidSameComponents(buffer, otherBuffer);
+            return otherBuffer.isEmpty() || buffer.equals(otherBuffer);
         }
 
         @Override
         public boolean isNetworkCompatible(FluidNetwork network) {
             if (super.isNetworkCompatible(network)) {
-                FluidStack otherBuffer;
+                FluidResource otherBuffer;
                 if (network.getTransmitterValidator() instanceof CompatibleFluidTransmitterValidator validator) {
                     //Null check it, but use instanceof to double-check it is actually the expected type
                     otherBuffer = validator.buffer;
                 } else {
-                    otherBuffer = network.getBuffer();
+                    otherBuffer = network.getBuffer().resource();
                     if (otherBuffer.isEmpty() && network.getPrevTransferAmount() > 0) {
-                        otherBuffer = network.lastFluid;
+                        otherBuffer = network.getLastType();
                     }
                 }
                 return compareBuffers(otherBuffer);
@@ -100,7 +99,7 @@ public class CompatibleTransmitterValidator<ACCEPTOR, NETWORK extends DynamicNet
 
         @Override
         public boolean isTransmitterCompatible(Transmitter<?, ?, ?> transmitter) {
-            return super.isTransmitterCompatible(transmitter) && transmitter instanceof MechanicalPipe pipe && compareBuffers(pipe.getBufferWithFallback());
+            return super.isTransmitterCompatible(transmitter) && transmitter instanceof MechanicalPipe pipe && compareBuffers(pipe.getBufferWithFallback().resource());
         }
     }
 }

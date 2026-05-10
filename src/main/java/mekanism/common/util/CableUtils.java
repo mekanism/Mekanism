@@ -8,6 +8,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 public final class CableUtils {
 
@@ -62,6 +63,11 @@ public final class CableUtils {
                 target.addHandler(handler);
             }
         }
-        return EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY);
+        //TODO - 26.1: Re-evaluate how we handle transactions for energy
+        try (Transaction transaction = Transaction.openRoot()) {
+            long sent = EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, transaction);
+            transaction.commit();
+            return sent;
+        }
     }
 }

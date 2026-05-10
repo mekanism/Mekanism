@@ -12,6 +12,8 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 import net.neoforged.bus.api.Event;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -90,7 +92,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         //Clamp the new buffer
         clampBuffer();
         //Update all shares
-        updateSaveShares(triggerTransmitter);
+        try (Transaction transaction = Transaction.openRoot()) {
+            updateSaveShares(triggerTransmitter, transaction);
+            transaction.commit();
+        }
     }
 
     @Override
@@ -152,7 +157,7 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         return getCapacity();
     }
 
-    protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter) {
+    protected void updateSaveShares(@Nullable TRANSMITTER triggerTransmitter, TransactionContext transaction) {
     }
 
     public final void validateSaveShares(@NotNull TRANSMITTER triggerTransmitter) {
@@ -163,7 +168,10 @@ public abstract class DynamicBufferedNetwork<ACCEPTOR, NETWORK extends DynamicBu
         }
         if (world != null && world.getGameTime() != lastSaveShareWriteTime) {
             lastSaveShareWriteTime = world.getGameTime();
-            updateSaveShares(triggerTransmitter);
+            try (Transaction transaction = Transaction.openRoot()) {
+                updateSaveShares(triggerTransmitter, transaction);
+                transaction.commit();
+            }
         }
     }
 

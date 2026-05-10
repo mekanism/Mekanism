@@ -1,13 +1,11 @@
 package mekanism.common.lib.distribution.handler;
 
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+
 public class PartialIntegerHandler extends IntegerHandler {
 
     @Override
-    public int perform(int amountOffered, boolean isSimulate) {
-        int amountToTake = amountOffered / 2;
-        if (!isSimulate) {
-            accept(amountToTake);
-        }
-        return amountToTake;
+    public int perform(int amountOffered, TransactionContext transaction) {
+        return accept(amountOffered / 2, transaction);
     }
 }

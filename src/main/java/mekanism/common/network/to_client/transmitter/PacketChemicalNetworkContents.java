@@ -35,7 +35,7 @@ public record PacketChemicalNetworkContents(UUID networkID, ChemicalResource che
         // so that they will have the proper information to then render
         DynamicNetwork<?, ?, ?> clientNetwork = TransmitterNetworkRegistry.getClientNetwork(networkID);
         if (clientNetwork instanceof ChemicalNetwork network) {
-            network.setLastChemical(chemical);
+            network.setLastType(chemical);
         }
     }
 }

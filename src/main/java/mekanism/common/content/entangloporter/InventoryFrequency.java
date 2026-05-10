@@ -21,9 +21,9 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -38,9 +38,8 @@ import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.network.EnergyNetwork;
-import mekanism.common.content.network.distribution.ChemicalHandlerTarget;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
-import mekanism.common.content.network.distribution.FluidHandlerTarget;
+import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.inventory.slot.EntangloporterInventorySlot;
 import mekanism.common.lib.frequency.Frequency;
@@ -49,10 +48,8 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.tile.TileEntityQuantumEntangloporter;
 import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.UUIDUtil;
@@ -68,7 +65,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -212,8 +209,8 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
             int expected = 6 * activeQEs.size();
             try (Transaction simulation = Transaction.openRoot()) {
                 addEnergyTransferHandler(typesToEject, transferHandlers, expected, simulation);
-                addFluidTransferHandler(typesToEject, transferHandlers, expected, simulation);
-                addChemicalTransferHandler(typesToEject, transferHandlers, expected, simulation);
+                addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.FLUID, storedFluid, simulation);
+                addResourceTransferHandler(typesToEject, transferHandlers, expected, TransmissionType.CHEMICAL, storedChemical, simulation);
             }
             if (!typesToEject.isEmpty()) {
                 //If we have at least one type to eject (we are not entirely empty)
@@ -273,24 +270,16 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
         }
     }
 
-    private void addFluidTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        FluidResource fluidType = storedFluid.getResource();
-        if (!fluidType.isEmpty()) {
-            int fluidToSend = storedFluid.extract(fluidType, storedFluid.amount(), simulation, AutomationType.INTERNAL);
+    private <RESOURCE extends Resource> void addResourceTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers,
+          int expected, TransmissionType transmissionType, IResourceContainer<RESOURCE> container, TransactionContext simulation) {
+        RESOURCE type = container.getResource();
+        if (!type.isEmpty()) {
+            int fluidToSend = container.extract(type, storedFluid.amount(), simulation, AutomationType.INTERNAL);
             if (fluidToSend > 0) {
-                SendingFluidHandlerTarget target = new SendingFluidHandlerTarget(fluidType, fluidToSend, expected, storedFluid);
-                typesToEject.put(TransmissionType.FLUID, target);
+                SendingResourceHandlerTarget<RESOURCE> target = new SendingResourceHandlerTarget<>(type, fluidToSend, expected, container);
+                typesToEject.put(transmissionType, target);
                 transferHandlers.add(target);
             }
-        }
-    }
-
-    private void addChemicalTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        ChemicalStack toSend = storedChemical.extract(storedChemical.getCapacity(), Action.SIMULATE, AutomationType.INTERNAL);
-        if (!toSend.isEmpty()) {
-            SendingChemicalHandlerTarget target = new SendingChemicalHandlerTarget(toSend, expected, storedChemical);
-            typesToEject.put(TransmissionType.CHEMICAL, target);
-            transferHandlers.add(target);
         }
     }
 
@@ -314,7 +303,10 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
 
         @Override
         public void extract(TransactionContext transaction) {
-            storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY), Action.EXECUTE, AutomationType.INTERNAL);
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                storedEnergy.extract(EmitUtils.sendToAcceptors(this, toSend, EnergyNetwork.ENERGY, subTransaction), Action.EXECUTE, AutomationType.INTERNAL);
+                subTransaction.commit();
+            }
         }
 
         @Override
@@ -323,57 +315,38 @@ public class InventoryFrequency extends Frequency implements IMekanismStrictEner
         }
     }
 
-    private static class SendingFluidHandlerTarget extends FluidHandlerTarget implements TargetExecution, Consumer<ResourceHandler<FluidResource>> {
+    private static class SendingResourceHandlerTarget<RESOURCE extends Resource> extends ResourceHandlerTarget<RESOURCE> implements TargetExecution, Consumer<ResourceHandler<RESOURCE>> {
 
-        private final FluidResource fluidType;
+        private final RESOURCE type;
         private final int toSend;
-        private final IFluidTank storedFluid;
+        private final IResourceContainer<RESOURCE> container;
 
-        public SendingFluidHandlerTarget(FluidResource fluidType, int toSend, int expectedSize, IFluidTank storedFluid) {
+        public SendingResourceHandlerTarget(RESOURCE type, int toSend, int expectedSize, IResourceContainer<RESOURCE> container) {
             super(expectedSize);
-            this.fluidType = fluidType;
+            this.type = type;
             this.toSend = toSend;
-            this.storedFluid = storedFluid;
+            this.container = container;
         }
 
         @Override
         public void extract(TransactionContext transaction) {
             try (Transaction subTransaction = Transaction.open(transaction)) {
-                //TODO - 26.1: Make emit utils transactional and validate we could actually extract everything we want to
-                int sent = EmitUtils.sendToAcceptors(this, toSend, fluidType.toStack(toSend));
-                storedFluid.extract(fluidType, sent, transaction, AutomationType.INTERNAL);
-                subTransaction.commit();
+                int sent = EmitUtils.sendToAcceptors(this, toSend, type, subTransaction);
+                if (container.extract(type, sent, transaction, AutomationType.INTERNAL) == sent) {
+                    //If we were able to extract everything we thought we would be able to and had tried to send
+                    // then commit all the changes
+                    subTransaction.commit();
+                }
             }
         }
 
         @Override
-        public void accept(ResourceHandler<FluidResource> handler) {
-            if (FluidUtils.canFill(handler, fluidType.toStack(toSend))) {
-                addHandler(handler);
-            }
-        }
-    }
-
-    private static class SendingChemicalHandlerTarget extends ChemicalHandlerTarget implements TargetExecution, Consumer<ResourceHandler<ChemicalResource>> {
-
-        private final ChemicalStack toSend;
-        private final IChemicalTank storedChemical;
-
-        public SendingChemicalHandlerTarget(ChemicalStack toSend, int expectedSize, IChemicalTank storedChemical) {
-            super(expectedSize);
-            this.toSend = toSend;
-            this.storedChemical = storedChemical;
-        }
-
-        @Override
-        public void extract(TransactionContext transaction) {
-            storedChemical.extract(EmitUtils.sendToAcceptors(this, toSend.amount(), toSend), Action.EXECUTE, AutomationType.INTERNAL);
-        }
-
-        @Override
-        public void accept(ResourceHandler<ChemicalResource> handler) {
-            if (ChemicalUtil.canInsert(handler, toSend)) {
-                addHandler(handler);
+        public void accept(ResourceHandler<RESOURCE> handler) {
+            //TODO - 26.1: Is this called from a transactional context?
+            try (Transaction simulation = Transaction.openRoot()) {
+                if (handler.insert(type, toSend, simulation) > 0) {
+                    addHandler(handler);
+                }
             }
         }
     }

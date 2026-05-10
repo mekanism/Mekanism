@@ -6,8 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import mekanism.api.MekanismAPI;
-import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.container.LargeResourceStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -27,13 +25,10 @@ public record AttachedResources<RESOURCE extends @NonNull Resource>(List<@NonNul
         return (AttachedResources<RESOURCE>) EMPTY;
     }
 
-    public static <RESOURCE extends @NonNull Resource> Codec<AttachedResources<RESOURCE>> codec(Codec<RESOURCE> resourceCodec, RESOURCE emptyResource, String containerListKey) {
+    public static <RESOURCE extends @NonNull Resource> Codec<AttachedResources<RESOURCE>> codec(Codec<LargeResourceStack<RESOURCE>> stackCodec, RESOURCE emptyResource,
+          String containerListKey) {
         //TODO - 26.1: See about simplifying/merging this codec
         LargeResourceStack<RESOURCE> emptyStack = new LargeResourceStack<>(emptyResource, 0);
-        Codec<LargeResourceStack<RESOURCE>> stackCodec = RecordCodecBuilder.create(instance -> instance.group(
-              resourceCodec.fieldOf(SerializationConstants.TYPE).forGetter(LargeResourceStack::resource),
-              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(LargeResourceStack::amount)
-        ).apply(instance, LargeResourceStack::new));
         Codec<LargeResourceStack<RESOURCE>> optionalStackCodec = ExtraCodecs.optionalEmptyMap(stackCodec)
               .xmap(optional -> optional.orElse(emptyStack), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
         Codec<LargeResourceStack<RESOURCE>> lenientOptionalStackCodec = optionalStackCodec

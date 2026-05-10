@@ -2,7 +2,7 @@ package mekanism.common.capabilities.fluid;
 
 import java.util.Objects;
 import java.util.function.BiPredicate;
-import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
@@ -17,33 +17,33 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class VariableCapacityFluidTank extends BasicFluidTank {
 
-    public static VariableCapacityFluidTank create(MultiblockData multiblock, IntSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityFluidTank create(MultiblockData multiblock, LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new VariableCapacityFluidTank(capacity, multiblock.formedBiPred(), multiblock.formedBiPred(), validator, listener);
     }
 
-    public static VariableCapacityFluidTank input(MultiblockData multiblock, IntSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityFluidTank input(MultiblockData multiblock, LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, multiblock.notExternalFormedBiPred(), multiblock.formedBiPred(), validator, listener);
     }
 
-    public static VariableCapacityFluidTank output(MultiblockData multiblock, IntSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityFluidTank output(MultiblockData multiblock, LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         return create(capacity, multiblock.formedBiPred(), multiblock.notExternalFormedBiPred(), validator, listener);
     }
 
-    public static VariableCapacityFluidTank input(IntSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityFluidTank input(LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new VariableCapacityFluidTank(capacity, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), validator, listener);
     }
 
-    public static VariableCapacityFluidTank output(IntSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
+    public static VariableCapacityFluidTank output(LongSupplier capacity, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(validator, "Fluid validity check cannot be null");
         return new VariableCapacityFluidTank(capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.internalOnly(), validator, listener);
     }
 
-    public static VariableCapacityFluidTank create(IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
+    public static VariableCapacityFluidTank create(LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         Objects.requireNonNull(capacity, "Capacity supplier cannot be null");
         Objects.requireNonNull(canExtract, "Extraction validity check cannot be null");
@@ -52,17 +52,18 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
         return new VariableCapacityFluidTank(capacity, canExtract, canInsert, validator, listener);
     }
 
-    private final IntSupplier capacity;
+    private final LongSupplier capacity;
 
-    protected VariableCapacityFluidTank(IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
+    //TODO - 26.1: Evaluate callers and make sure that our capacity configs support longs where relevant
+    protected VariableCapacityFluidTank(LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
-        super(capacity.getAsInt(), canExtract, canInsert, validator, listener);
+        super(capacity.getAsLong(), canExtract, canInsert, validator, listener);
         this.capacity = capacity;
     }
 
     @Override
     public long getLimitAsLong(FluidResource resource) {
-        return capacity.getAsInt();
+        return capacity.getAsLong();
     }
 
     @Override

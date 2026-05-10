@@ -35,9 +35,9 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
             return;//race conditions, yay
         }
         state.currentScale = Math.max(0.2F, network.currentScale);
-        state.chemicalTexture = MekanismRenderer.getChemicalTexture(network.lastChemical);
+        state.chemicalTexture = MekanismRenderer.getChemicalTexture(network.getLastType());
         //TODO - 26.1: Do we need to make this ARGB as technically alpha is currently empty
-        state.chemicalTint = MekanismRenderer.getTint(network.lastChemical.typeHolder());
+        state.chemicalTint = MekanismRenderer.getTint(network.getLastType().typeHolder());
     }
 
     @Override
@@ -63,7 +63,7 @@ public class RenderPressurizedTube extends RenderTransmitterBase<TileEntityPress
             PressurizedTube tube = tile.getTransmitter();
             if (tube.hasTransmitterNetwork()) {
                 ChemicalNetwork network = tube.getTransmitterNetwork();
-                return !network.lastChemical.isEmpty() && !network.getChemicalTank().isEmpty() && network.currentScale > 0;
+                return !network.getLastType().isEmpty() && !network.getContainer().isEmpty() && network.currentScale > 0;
             }
         }
         return false;

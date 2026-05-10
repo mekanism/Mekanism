@@ -3,6 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
@@ -22,7 +23,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +40,7 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
                     // then return that we have no tanks
                     return Collections.emptyList();
                 }
-                return pipe.getFluidTanks();
+                return pipe.getContainers();
             }
 
             @Override
@@ -93,7 +94,9 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
         super.writeUpdatedTag(output);
         if (getTransmitter().hasTransmitterNetwork()) {
             FluidNetwork network = getTransmitter().getTransmitterNetwork();
-            output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, network.lastFluid);
+            if (!network.getLastType().isEmpty()) {
+                output.store(SerializationConstants.FLUID, FluidResource.CODEC, network.getLastType());
+            }
             output.putFloat(SerializationConstants.SCALE, network.currentScale);
         }
     }
@@ -132,8 +135,8 @@ public class TileEntityMechanicalPipe extends TileEntityTransmitter implements I
         return getTransmitter().getTier().getBaseTier().getLowerName() + "MechanicalPipe";
     }
 
-    @ComputerMethod
-    FluidStack getBuffer() {
+    //@ComputerMethod//TODO - 26.1: Figure this out
+    LargeResourceStack<FluidResource> getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }
 

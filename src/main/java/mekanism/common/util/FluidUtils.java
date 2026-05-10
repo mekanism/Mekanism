@@ -8,7 +8,6 @@ import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.content.network.distribution.FluidHandlerTarget;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
@@ -94,46 +93,8 @@ public final class FluidUtils {
 
     private static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack, IFluidTank tank,
           int maxOutput) {
-        if (stack.isEmpty() && tank == null) {
-            //Something went wrong in calling this method
-            return 0;
-        } else if (targets.isEmpty()) {
-            return 0;
-        }
-        FluidStack toSend = stack.copy();
-        FluidHandlerTarget target = null;
-        for (BlockCapabilityCache<ResourceHandler<FluidResource>, Direction> capability : targets) {
-            //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
-            ResourceHandler<FluidResource> handler = capability.getCapability();
-            if (handler != null) {
-                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
-                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
-                if (stack.isEmpty()) {
-                    stack = tank.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-                    if (stack.isEmpty()) {
-                        //If we failed to extract from it, just exit early
-                        return 0;
-                    }
-                    //Note: We need to copy and use toSend instead of just passing stack to canFill, as the docs for IFluidHandler don't specify
-                    // whether it is safe to modify the passed in stack
-                    toSend = stack.copy();
-                }
-                if (canFill(handler, toSend)) {
-                    if (target == null) {
-                        target = new FluidHandlerTarget(targets.size());
-                    }
-                    target.addHandler(handler);
-                }
-            }
-        }
-        return EmitUtils.sendToAcceptors(target, stack.amount(), toSend);
-    }
-
-    public static boolean canFill(ResourceHandler<FluidResource> handler, @NotNull FluidStack stack) {
-        //TODO - 26.1: Check callers as they might be in a transaction context
-        try (Transaction simulation = Transaction.openRoot()) {
-            return handler.insert(FluidResource.of(stack), stack.amount(), simulation) > 0;
-        }
+        //TODO - 26.1: Re-evaluate this
+        return ResourceUtils.emit(targets, FluidResource.of(stack), stack.amount(), tank, maxOutput);
     }
 
     //TODO - 26.1: Do we want to just replace this with FluidUtil#interactWithFluidHandler?
