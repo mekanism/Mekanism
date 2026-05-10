@@ -114,12 +114,22 @@ public class ItemSlotsBuilder {
         }
         //Inversion of the insert check
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
-        return itemEnergyHandler == null || itemEnergyHandler.insertEnergy(Long.MAX_VALUE, Action.SIMULATE) == Long.MAX_VALUE;
+        if (itemEnergyHandler == null) {
+            return true;
+        }
+        try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
+            return itemEnergyHandler.insert(Long.MAX_VALUE, simulation) == 0;
+        }
     };
     private static final BiPredicate<ItemResource, AutomationType> DRAIN_ENERGY_SLOT_CAN_INSERT = (itemType, _) -> {
         IStrictEnergyHandler itemEnergyHandler = EnergyCompatUtils.getStrictEnergyHandler(itemType);
         //if we can accept any energy that is currently stored in the container, then we allow inserting the item
-        return itemEnergyHandler != null && itemEnergyHandler.insertEnergy(Long.MAX_VALUE, Action.SIMULATE) < Long.MAX_VALUE;
+        if (itemEnergyHandler == null) {
+            return false;
+        }
+        try (Transaction simulation = Transaction.openRoot()) {//TODO - 26.1: Is there a concern we are already in a transactional context?
+            return itemEnergyHandler.insert(Long.MAX_VALUE, simulation) > 0;
+        }
     };
     private static final IBasicContainerCreator<ComponentBackedInventorySlot> DRAIN_ENERGY_SLOT_CREATOR = (type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo,
           containerIndex, DRAIN_ENERGY_SLOT_CAN_EXTRACT, DRAIN_ENERGY_SLOT_CAN_INSERT, EnergyInventorySlot.DRAIN_VALIDATOR);

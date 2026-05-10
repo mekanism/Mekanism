@@ -1,10 +1,7 @@
 package mekanism.common.content.gear.mekasuit;
 
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
-import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -14,17 +11,20 @@ import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
 import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.integration.energy.EnergyCompatUtils;
+import mekanism.common.util.CableUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.resources.Identifier;
+import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
 public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInventory) implements ICustomModule<ModuleChargeDistributionUnit> {
@@ -42,7 +42,10 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         if (chargeInventory) {
             IEnergyContainer energyContainer = module.getEnergyContainer(stack);
             if (energyContainer != null) {
-                chargeInventory(energyContainer, player);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    chargeInventory(energyContainer, player, transaction);
+                    transaction.commit();
+                }
             }
         }
         // distribute suit charge next, so that if we used power from the suit to charge an item, then we can balance across the suit properly
@@ -71,64 +74,36 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         }
     }
 
-    private void chargeInventory(IEnergyContainer energyContainer, Player player) {
+    private void chargeInventory(IEnergyContainer energyContainer, Player player, TransactionContext transaction) {
         //Only try to charge up to how much energy we actually have stored
         long toCharge = Math.min(MekanismConfig.gear.mekaSuitInventoryChargeRate.get(), energyContainer.getEnergy());
         if (toCharge == 0L) {
             return;
         }
+        //TODO - 26.1: Review usages of ItemAccess#forPlayerInteraction to see if any should bypass the infinite materials check like ItemAccess#forPlayerSlot allows
+        //TODO - 26.1: Evaluate the below which basically manually reimplements ItemAccess#forPlayerSlot but using the corresponding handlers
+        // as it uses a HandlerItemAccess instead of PlayerItemAccess, but I think that might be fine?
+        PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+        int selectedSlot = player.getInventory().getSelectedSlot();
         // first try to charge mainhand/offhand item
-        ItemStack mainHand = player.getMainHandItem();
-        ItemStack offHand = player.getOffhandItem();
-        toCharge = charge(energyContainer, mainHand, toCharge);
-        toCharge = charge(energyContainer, offHand, toCharge);
+        toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getHandSlots(), toCharge, transaction);
         if (toCharge > 0L) {
-            for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
-                if (stack != mainHand && stack != offHand) {
-                    toCharge = charge(energyContainer, stack, toCharge);
+            //TODO - 26.1: Should this just use the following, and not care that it "tries" to insert into the held hand a second time?
+            // toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getMainSlots(), toCharge, transaction);
+            for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
+                if (slot != selectedSlot) {
+                    toCharge -= CableUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(playerInv, slot), toCharge, transaction);
                     if (toCharge == 0L) {
                         return;
                     }
                 }
             }
-            if (Mekanism.hooks.curios.isLoaded()) {
+            if (toCharge > 0 && Mekanism.hooks.curios.isLoaded()) {
                 ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
                 if (handler != null) {
-                    for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
-                        //TODO - 26.1: Should this be using forHandlerIndex or forHandlerIndexStrict?
-                        toCharge = charge(energyContainer, ItemAccess.forHandlerIndexStrict(handler, slot), toCharge);
-                        if (toCharge == 0L) {
-                            return;
-                        }
-                    }
+                    CableUtils.chargeContents(energyContainer, handler, toCharge, transaction);
                 }
             }
         }
-    }
-
-    private long charge(IEnergyContainer energyContainer, ItemAccess itemAccess, long amount) {
-        if (!itemAccess.getResource().isEmpty() && amount > 0L) {
-            //TODO - 26.1: Figure out how to interact with and charge an ItemAccess
-
-        }
-        return amount;
-    }
-
-    /** return rejects */
-    private long charge(IEnergyContainer energyContainer, ItemStack stack, long amount) {
-        if (!stack.isEmpty() && amount > 0L) {
-            IStrictEnergyHandler handler = EnergyCompatUtils.getStrictEnergyHandler(stack);
-            if (handler != null) {
-                long remaining = handler.insertEnergy(amount, Action.SIMULATE);
-                if (remaining < amount) {
-                    //If we can actually insert any energy into
-                    long toExtract = amount - remaining;
-                    long extracted = energyContainer.extract(toExtract, Action.EXECUTE, AutomationType.MANUAL);
-                    long inserted = handler.insertEnergy(extracted, Action.EXECUTE);
-                    return inserted + remaining;
-                }
-            }
-        }
-        return amount;
     }
 }

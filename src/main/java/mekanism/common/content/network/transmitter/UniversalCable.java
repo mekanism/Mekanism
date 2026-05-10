@@ -4,7 +4,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -27,6 +26,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,8 +40,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public long lastWrite = 0L;
 
     public UniversalCable(Holder<Block> blockProvider, TileEntityTransmitter tile) {
-        super(tile, TransmissionType.ENERGY);
         this.tier = Attribute.getTier(blockProvider, CableTier.class);
+        super(tile, TransmissionType.ENERGY);
         buffer = BasicEnergyContainer.create(getCapacity(), ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), this);
         energyContainers = Collections.singletonList(buffer);
     }
@@ -67,27 +67,34 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             return;
         }
         EnergyAcceptorCache acceptorCache = getAcceptorCache();
+        IEnergyContainer buffer = getContainer();
         for (Direction side : EnumUtils.DIRECTIONS) {
             if (!isConnectionType(side, ConnectionType.PULL)) {
                 continue;
             }
             IStrictEnergyHandler connectedAcceptor = acceptorCache.getConnectedAcceptor(side);
             if (connectedAcceptor != null) {
-                long received = connectedAcceptor.extractEnergy(getAvailablePull(), Action.SIMULATE);
-                if (received > 0L && takeEnergy(received, Action.SIMULATE) == 0L) {
-                    //If we received some energy and are able to insert it all
-                    long remainder = takeEnergy(received, Action.EXECUTE);
-                    connectedAcceptor.extractEnergy(received - remainder, Action.EXECUTE);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    long extracted = connectedAcceptor.extract(getAvailablePull(), transaction);
+                    long inserted = buffer.insert(extracted, transaction, AutomationType.INTERNAL);
+                    if (inserted == extracted) {
+                        //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
+                        // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+                        // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+                        transaction.commit();
+                        //TODO - 26.1: Break if the buffer becomes full?
+                    }
                 }
             }
         }
     }
 
     private long getAvailablePull() {
-        if (hasTransmitterNetwork()) {
-            return Math.min(getCapacity(), getTransmitterNetwork().energyContainer.getNeeded());
-        }
-        return Math.min(getCapacity(), buffer.getNeeded());
+        return Math.min(getCapacity(), getContainer().getNeeded());
+    }
+
+    protected IEnergyContainer getContainer() {
+        return hasTransmitterNetwork() ? getTransmitterNetwork().energyContainer : buffer;
     }
 
     @NotNull
@@ -197,16 +204,6 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @Override
     public long getCapacity() {
         return tier.getCableCapacity();
-    }
-
-    /**
-     * @return remainder
-     */
-    private long takeEnergy(long amount, Action action) {
-        if (hasTransmitterNetwork()) {
-            return getTransmitterNetwork().energyContainer.insert(amount, action, AutomationType.INTERNAL);
-        }
-        return buffer.insert(amount, action, AutomationType.INTERNAL);
     }
 
     @Override

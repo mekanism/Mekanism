@@ -126,6 +126,7 @@ public class VoiceConnection extends Thread {
 
     public boolean canListen(int channel) {
         ServerPlayer player = getPlayer();
+        //TODO - 26.1: Do we want to use the player inv wrapper instead?
         for (ItemStack itemStack : player.getInventory().getNonEquipmentItems()) {
             if (canListen(channel, itemStack)) {
                 return true;

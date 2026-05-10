@@ -6,7 +6,6 @@ import mekanism.common.capabilities.MultiTypeCapability;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -83,11 +82,11 @@ public interface IEnergyCompat {
     /**
      * Gets an exposed capability of this compat's type from a stack and wraps it into a strict energy handler.
      *
-     * @param stack ItemStack to check for the capability
+     * @param itemAccess ItemStack to check for the capability
      */
     @Nullable
-    default IStrictEnergyHandler getStrictEnergyHandler(ItemStack stack) {
-        Object capability = getCapability().getCapability(ItemAccess.forStack(stack));//TODO - 26.1: Item access
+    default IStrictEnergyHandler getStrictEnergyHandler(ItemAccess itemAccess) {
+        Object capability = itemAccess.getCapability(getCapability().item());
         return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 

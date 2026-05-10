@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.PlayerInventoryWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -89,7 +90,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             BinInventorySlot binSlot = bin.getBinSlot();
             int binMaxSize = binSlot.getCurrentLimit();
             if (binSlot.amount() < binMaxSize) {
-                ItemResource binItemType = binSlot.getBinItemType();
+                boolean binHasItemType = !binSlot.getBinItemType().isEmpty();
                 //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
@@ -103,20 +104,31 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                                 return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack.copyWithCount(toInsert - inserted));
                             }
                         }
-                    } else if (!binItemType.isEmpty()) {
+                    } else if (binHasItemType) {
                         //Note: We set the add ticks if the stack is empty but the bin isn't empty so that we can allow double right-clicking
                         // to insert items from the player's inventory without requiring them to first be holding the same item
                         bin.addTicks = 5;
                     }
-                } else if (bin.addTicks > 0 && !binItemType.isEmpty()) {
+                } else if (bin.addTicks > 0 && binHasItemType) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         boolean added = false;
-                        for (ItemStack stackToAdd : player.getInventory().getNonEquipmentItems()) {
-                            if (!stackToAdd.isEmpty() && binItemType.matches(stackToAdd)) {
-                                stackToAdd.shrink(binSlot.insert(binItemType, stackToAdd.count(), transaction, AutomationType.MANUAL));
-                                added = true;
-                                if (binSlot.amount() == binMaxSize) {
-                                    break;
+                        PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
+                        ResourceHandler<ItemResource> playerInvHandler = playerInv.getMainSlots();
+                        for (int slot = 0, size = playerInvHandler.size(); slot < size; slot++) {
+                            ItemResource itemType = playerInvHandler.getResource(slot);
+                            if (!itemType.isEmpty()) {
+                                int toInsert = playerInvHandler.getAmountAsInt(slot);
+                                int inserted = binSlot.insert(itemType, toInsert, transaction, AutomationType.MANUAL);
+                                if (inserted > 0) {
+                                    //If we are able to insert the item into the bin, try extracting it from the player's handler
+                                    int extracted = playerInvHandler.extract(itemType, inserted, transaction);
+                                    if (inserted == extracted) {
+                                        //Validate we were actually able to extract the amount we inserted
+                                        added = true;
+                                        if (binSlot.amount() == binMaxSize) {
+                                            break;
+                                        }
+                                    }
                                 }
                             }
                         }

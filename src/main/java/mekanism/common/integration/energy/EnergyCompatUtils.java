@@ -123,16 +123,16 @@ public class EnergyCompatUtils {
 
     @Nullable
     public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemResource itemType) {//TODO - 26.1: Re-evaluate this
-        if (!itemType.isEmpty()) {
-            return getStrictEnergyHandler(itemType.toStack(), IEnergyCompat::getStrictEnergyHandler);
+        if (itemType.isEmpty()) {
+            return null;
         }
-        return null;
+        return getStrictEnergyHandler(ItemAccess.forStack(itemType.toStack()));
     }
 
     @Nullable
-    public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemStack stack) {
-        if (!stack.isEmpty()) {
-            return getStrictEnergyHandler(stack, IEnergyCompat::getStrictEnergyHandler);
+    public static IStrictEnergyHandler getStrictEnergyHandler(@NotNull ItemAccess itemAccess) {
+        if (!itemAccess.getResource().isEmpty()) {
+            return getStrictEnergyHandler(itemAccess, IEnergyCompat::getStrictEnergyHandler);
         }
         return null;
     }

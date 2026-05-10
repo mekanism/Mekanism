@@ -184,7 +184,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
             prevTransferAmount = 0;
         } else {
             try (Transaction transaction = Transaction.openRoot()) {
-                long  current = container.amountAsLong();
+                long current = container.amountAsLong();
                 prevTransferAmount = tickEmit(container.getResource(), current, transaction);
                 //TODO - 26.1: Evaluate this
                 container.setContentsUnchecked(container.getResource(), current - prevTransferAmount);

@@ -201,12 +201,10 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
      * @param connectedAcceptor  The acceptor
      * @param bufferWithFallback The buffer of the network
      * @param bufferIsEmpty      {@code true} if the buffer is empty, {@code false} otherwise
-     *
-     * @return {@code true} if we successfully pulled a resource, {@code false} if we were unable to pull a resource.
      */
-    private boolean pullFromAcceptor(ResourceHandler<RESOURCE> connectedAcceptor, RESOURCE bufferWithFallback, boolean bufferIsEmpty) {
+    private void pullFromAcceptor(ResourceHandler<RESOURCE> connectedAcceptor, RESOURCE bufferWithFallback, boolean bufferIsEmpty) {
         if (connectedAcceptor == null) {
-            return false;
+            return;
         }
         try (Transaction transaction = Transaction.openRoot()) {
             RESOURCE receivedType;
@@ -220,18 +218,16 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
                 receivedType = bufferWithFallback;
             }
             if (receivedType == null || receivedType.isEmpty()) {
-                return false;
+                return;
             }
             int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
             int inserted = getContainer().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
-            if (inserted < extracted) {
-                return false;
+            if (inserted == extracted) {
+                //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
+                // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+                // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+                transaction.commit();
             }
-            //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
-            // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
-            // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-            transaction.commit();
-            return true;
         }
     }
 

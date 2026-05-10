@@ -5,8 +5,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -108,17 +106,33 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
         }
     }
 
+    protected void tickEmit() {
+        if (energyContainer.isEmpty()) {
+            prevTransferAmount = 0;
+        } else {
+            try (Transaction transaction = Transaction.openRoot()) {
+                long current = energyContainer.getEnergy();
+                prevTransferAmount = tickEmit(current, transaction);
+                //TODO - 26.1: Evaluate this
+                energyContainer.setEnergy(current - prevTransferAmount);
+                transaction.commit();
+            }
+        }
+    }
+
     private long tickEmit(long energyToSend, TransactionContext transaction) {
         Collection<Map<Direction, IStrictEnergyHandler>> acceptorValues = acceptorCache.getAcceptorValues();
         EnergyAcceptorTarget target = null;
         for (Map<Direction, IStrictEnergyHandler> acceptors : acceptorValues) {
             for (IStrictEnergyHandler acceptor : acceptors.values()) {
-                if (acceptor.insertEnergy(energyToSend, Action.SIMULATE) < energyToSend) {
-                    if (target == null) {
-                        //Lazily initialize the target, which allows us to also skip attempting to start emitting
-                        target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    if (acceptor.insert(energyToSend, simulation) > 0) {
+                        if (target == null) {
+                            //Lazily initialize the target, which allows us to also skip attempting to start emitting
+                            target = new EnergyAcceptorTarget(acceptorValues.size() * 2);
+                        }
+                        target.addHandler(acceptor);
                     }
-                    target.addHandler(acceptor);
                 }
             }
         }
@@ -137,15 +151,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
             NeoForge.EVENT_BUS.post(new EnergyTransferEvent(this));
             needsUpdate = false;
         }
-        if (energyContainer.isEmpty()) {
-            prevTransferAmount = 0L;
-        } else {
-            try (Transaction transaction = Transaction.openRoot()) {
-                prevTransferAmount = tickEmit(energyContainer.getEnergy(), transaction);
-                energyContainer.extract(prevTransferAmount, Action.EXECUTE, AutomationType.INTERNAL);
-                transaction.commit();
-            }
-        }
+        tickEmit();
     }
 
     @Override
