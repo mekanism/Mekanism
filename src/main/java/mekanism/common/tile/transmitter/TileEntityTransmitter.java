@@ -115,7 +115,7 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
-        super.handleUpdateTag(input);
+        super.loadAdditional(input);//we do NOT call super directly, as it will call a load and the below check never sees the changes
         if (getTransmitter().handleUpdateTag(input)) {
             //Only update the model data if something got updated that caused the model data to change
             updateModelData();

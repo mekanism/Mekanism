@@ -149,7 +149,7 @@ public class TileEntityBoundingBlock extends TileEntityUpdateable implements IUp
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
-        super.handleUpdateTag(input);
+        super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
         input.read(SerializationConstants.MAIN, BlockPos.CODEC).ifPresent(pos -> mainPos = pos);
         currentRedstoneLevel = input.getIntOr(SerializationConstants.REDSTONE, currentRedstoneLevel);
     }

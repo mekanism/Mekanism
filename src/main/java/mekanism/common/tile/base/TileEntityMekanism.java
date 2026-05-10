@@ -990,7 +990,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @Override
     public void handleUpdateTag(@NotNull ValueInput input) {
-        super.handleUpdateTag(input);
+        super.loadAdditional(input);//we do NOT call super directly, as it will call a load (like from disk) and BEs will never see their changes
         for (ITileComponent component : components) {
             component.readFromUpdateTag(input);
         }
