@@ -57,7 +57,6 @@ public class GeneralConfig extends BaseMekanismConfig {
     //Energy Conversion
     public final CachedBooleanValue blacklistForge;
     public final CachedDoubleValue forgeConversionRate;
-    public final CachedBooleanValue blacklistFluxNetworks;
     public final CachedLongValue maxEnergyPerSteam;
     //Radiation
     public final CachedBooleanValue radiationEnabled;
@@ -191,9 +190,6 @@ public class GeneralConfig extends BaseMekanismConfig {
               .define("blacklistForge", false));
         forgeConversionRate = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_FE.applyToBuilder(builder)
               .defineInRange("feConversionRate", 1, 0.0001, 10_000 /* Inverse of min positive value */));
-        blacklistFluxNetworks = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_BLACKLIST_FN.applyToBuilder(builder)
-              .worldRestart()
-              .define("blacklistFluxNetworks", false));
         maxEnergyPerSteam = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GENERAL_ENERGY_CONVERSION_STEAM, "maxEnergyPerSteam", 10);
         builder.pop();
 

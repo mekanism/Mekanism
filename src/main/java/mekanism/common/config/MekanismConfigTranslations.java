@@ -167,8 +167,6 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
 
     GENERAL_ENERGY_CONVERSION("general.energy_conversion", "Energy Conversion Rate", "Settings for configuring Energy Conversions", "Edit Conversion Rates"),
     GENERAL_ENERGY_CONVERSION_BLACKLIST_FE("general.energy_conversion.blacklist.neoforge", "Blacklist Forge Energy", "Disables Forge Energy (FE/RF) power integration."),
-    GENERAL_ENERGY_CONVERSION_BLACKLIST_FN("general.energy_conversion.blacklist.fluxnetworks", "Blacklist Flux Networks",
-          "Disables Flux Networks' higher throughput Forge Energy (FE/RF) power integration. Note: Blacklisting Forge Energy also disables this."),
     GENERAL_ENERGY_CONVERSION_FE("general.energy_conversion.forge_energy", "FE Conversion Rate", "Conversion multiplier from Forge Energy to Joules (FE * feConversionRate = Joules)"),
     GENERAL_ENERGY_CONVERSION_STEAM("general.energy_conversion.steam", "Steam Energy Density", "Maximum Joules per mB of Steam. Also affects Thermoelectric Boiler."),
 
