@@ -6,7 +6,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.chemical.attribute.IChemicalAttribute;
 import net.minecraft.core.Holder;
 
-public interface ChemicalAttributeValidator {//TODO - 1.22: Re-evaluate how this class functions
+public interface ChemicalAttributeValidator {//TODO - 26.1: Re-evaluate how this class functions
 
     ChemicalAttributeValidator DEFAULT = new ChemicalAttributeValidator() {
         @Override

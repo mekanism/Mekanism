@@ -914,7 +914,7 @@ public class MekanismBlocks {
     public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> ELITE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.ELITE_THERMODYNAMIC_CONDUCTOR);
     public static final BlockRegistryObject<BlockSmallTransmitter<TileEntityThermodynamicConductor>, ItemBlockThermodynamicConductor> ULTIMATE_THERMODYNAMIC_CONDUCTOR = registerThermodynamicConductor(MekanismBlockTypes.ULTIMATE_THERMODYNAMIC_CONDUCTOR);
 
-    //TODO - 1.22: Evaluate not having an item form of the bounding block?
+    //TODO - 26.1: Evaluate not having an item form of the bounding block?
     public static final BlockRegistryObject<BlockBounding, BlockItem> BOUNDING_BLOCK = BLOCKS.register("bounding_block", BlockBounding::new);
 
     public static final BlockRegistryObject<BlockTileModel<TileEntityChemicalTank, Machine<TileEntityChemicalTank>>, ItemBlockChemicalTank> BASIC_CHEMICAL_TANK = registerChemicalTank(MekanismBlockTypes.BASIC_CHEMICAL_TANK);

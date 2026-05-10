@@ -24,7 +24,7 @@ import net.minecraft.world.item.TooltipFlag;
  * @since 10.7.11
  */
 public sealed interface IChemicalCoolant extends IChemicalAttribute permits CooledCoolant, HeatedCoolant {
-    //TODO - 1.22: Do we want to allow applying coolants to fluids so that we can define water directly that way?
+    //TODO - 26.1: Do we want to allow applying coolants to fluids so that we can define water directly that way?
 
     /**
      * Gets the thermal enthalpy of this coolant. Thermal Enthalpy defines how much energy one mB of the chemical can store.

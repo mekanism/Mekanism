@@ -9,7 +9,7 @@ import net.minecraft.world.inventory.Slot;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-//TODO - 1.22: Heavily re-evaluate this class/make sure nothing has gotten broken
+//TODO - 26.1: Heavily re-evaluate this class/make sure nothing has gotten broken
 public abstract class VirtualSlotContainerScreen<T extends AbstractContainerMenu> extends AbstractContainerScreen<T> {
 
     public VirtualSlotContainerScreen(T container, Inventory inv, Component titleIn) {
