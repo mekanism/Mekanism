@@ -8,10 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
 import mekanism.common.lib.transmitter.ConnectionType;
+import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
 import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
+import net.neoforged.neoforge.model.data.ModelData;
 import org.checkerframework.common.returnsreceiver.qual.This;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,22 +60,34 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         this.materialFlags = materialFlags;
     }
 
+    private static void addPart(Table<Direction, ConnectionType, BlockStateModelPart> partTable, List<BlockStateModelPart> partsList, Direction side, ConnectionType connectionType) {
+        BlockStateModelPart modelPart = partTable.get(side, connectionType);
+        if (modelPart != null) {
+            partsList.add(modelPart);
+        }
+    }
+
     @Override
     public void collectParts(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random, List<BlockStateModelPart> parts) {
-        //todo the rest of the owl
+        ModelData modelData = level.getModelData(pos);
+        TransmitterModelData transmitterModelData = modelData.get(TileEntityTransmitter.TRANSMITTER_PROPERTY);
 
-        //temp
-        for (Direction horizontalDirection : EnumUtils.HORIZONTAL_DIRECTIONS) {
-            parts.add(Objects.requireNonNull(baseParts.get(horizontalDirection, ConnectionType.NORMAL)));
-            if (glassParts != null) {
-                parts.add(Objects.requireNonNull(glassParts.get(horizontalDirection, ConnectionType.NORMAL)));
+        //Fallback to all none if no data
+        if (transmitterModelData == null) {
+            for (Direction direction : EnumUtils.DIRECTIONS) {
+                addPart(baseParts, parts, direction, ConnectionType.NONE);
+                if (glassParts != null) {
+                    addPart(glassParts, parts, direction, ConnectionType.NONE);
+                }
             }
+            return;
         }
-        parts.add(Objects.requireNonNull(baseParts.get(Direction.UP, ConnectionType.NONE)));
-        parts.add(Objects.requireNonNull(baseParts.get(Direction.DOWN, ConnectionType.NONE)));
-        if (glassParts != null) {
-            parts.add(Objects.requireNonNull(glassParts.get(Direction.UP, ConnectionType.NONE)));
-            parts.add(Objects.requireNonNull(glassParts.get(Direction.DOWN, ConnectionType.NONE)));
+
+        for (Map.Entry<Direction, ConnectionType> entry : transmitterModelData.getConnectionsMap().entrySet()) {
+            addPart(baseParts, parts, entry.getKey(), entry.getValue());
+            if (glassParts != null) {
+                addPart(glassParts, parts, entry.getKey(), entry.getValue());
+            }
         }
     }
 
