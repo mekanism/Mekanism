@@ -76,16 +76,14 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         if (transmitterModelData == null) {
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 addPart(baseParts, parts, direction, ConnectionType.NONE);
-                if (glassParts != null) {
-                    addPart(glassParts, parts, direction, ConnectionType.NONE);
-                }
             }
             return;
         }
 
         for (Map.Entry<Direction, ConnectionType> entry : transmitterModelData.getConnectionsMap().entrySet()) {
             addPart(baseParts, parts, entry.getKey(), entry.getValue());
-            if (glassParts != null) {
+            //Skip rendering the glass if we don't actually have any glass, or we don't have a color for it:
+            if (glassParts != null && transmitterModelData.getHasColor()) {
                 addPart(glassParts, parts, entry.getKey(), entry.getValue());
             }
         }
