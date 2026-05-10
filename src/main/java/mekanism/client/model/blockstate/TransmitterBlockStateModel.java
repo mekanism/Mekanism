@@ -2,12 +2,15 @@ package mekanism.client.model.blockstate;
 
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
+import com.mojang.math.Transformation;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.common.Mekanism;
@@ -20,24 +23,31 @@ import net.minecraft.client.renderer.block.dispatch.BlockStateModelPart;
 import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.renderer.block.dispatch.Variant;
 import net.minecraft.client.resources.model.ModelBaker;
+import net.minecraft.client.resources.model.ModelDebugName;
 import net.minecraft.client.resources.model.ResolvedModel;
 import net.minecraft.client.resources.model.SimpleModelWrapper;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.resources.model.sprite.Material;
+import net.minecraft.client.resources.model.sprite.MaterialBaker;
+import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.client.model.ComposedModelState;
 import net.neoforged.neoforge.client.model.DynamicBlockStateModel;
 import net.neoforged.neoforge.client.model.NeoForgeModelProperties;
 import net.neoforged.neoforge.client.model.block.CustomUnbakedBlockStateModel;
 import net.neoforged.neoforge.model.data.ModelData;
 import org.checkerframework.common.returnsreceiver.qual.This;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
@@ -50,18 +60,27 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
     private final Table<Direction, ConnectionType, BlockStateModelPart> baseParts;
     @Nullable
     private final Table<Direction, ConnectionType, BlockStateModelPart> glassParts;
+    private final Map<Direction, AltNoneParts> altNonePartsMap;
+    @Nullable
+    private final Map<Direction, AltNoneParts> altNonePartsGlassMap;
     private final Material.Baked particleMaterial;
     private final int materialFlags;
 
-    public TransmitterBlockStateModel(Table<Direction, ConnectionType, BlockStateModelPart> baseParts, @Nullable Table<Direction, ConnectionType, BlockStateModelPart> glassParts, Material.Baked particleMaterial, int materialFlags) {
+    public TransmitterBlockStateModel(Table<Direction, ConnectionType, BlockStateModelPart> baseParts, @Nullable Table<Direction, ConnectionType, BlockStateModelPart> glassParts, Map<Direction, AltNoneParts> altNonePartsMap, @Nullable Map<Direction, AltNoneParts> altNonePartsGlassMap, Material.Baked particleMaterial, int materialFlags) {
         this.baseParts = baseParts;
         this.glassParts = glassParts;
+        this.altNonePartsMap = altNonePartsMap;
+        this.altNonePartsGlassMap = altNonePartsGlassMap;
         this.particleMaterial = particleMaterial;
         this.materialFlags = materialFlags;
     }
 
     private static void addPart(Table<Direction, ConnectionType, BlockStateModelPart> partTable, List<BlockStateModelPart> partsList, Direction side, ConnectionType connectionType) {
         BlockStateModelPart modelPart = partTable.get(side, connectionType);
+        addIfNotNull(partsList, modelPart);
+    }
+
+    private static void addIfNotNull(List<BlockStateModelPart> partsList, @Nullable BlockStateModelPart modelPart) {
         if (modelPart != null) {
             partsList.add(modelPart);
         }
@@ -80,12 +99,57 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             return;
         }
 
-        for (Map.Entry<Direction, ConnectionType> entry : transmitterModelData.getConnectionsMap().entrySet()) {
-            addPart(baseParts, parts, entry.getKey(), entry.getValue());
-            //Skip rendering the glass if we don't actually have any glass, or we don't have a color for it:
-            if (glassParts != null && transmitterModelData.getHasColor()) {
-                addPart(glassParts, parts, entry.getKey(), entry.getValue());
+        Map<Direction, ConnectionType> connectionsMap = transmitterModelData.getConnectionsMap();
+        boolean isDiversion = transmitterModelData instanceof TransmitterModelData.Diversion;//todo - 26.1: Fold this into the Blockstate and pass it in
+        boolean needsGlass = glassParts != null && transmitterModelData.getHasColor();
+
+        for (Map.Entry<Direction, ConnectionType> entry : connectionsMap.entrySet()) {
+            Direction direction = entry.getKey();
+            ConnectionType connectionType = entry.getValue();
+
+            //determine if we need to check the alt parts
+            boolean needsAltCheck = !isDiversion && connectionType == ConnectionType.NONE;
+            IconStatus iconStatus = needsAltCheck ? getIconStatus(transmitterModelData, direction) : null;//null when needsAltCheck == false
+
+            if (needsAltCheck && iconStatus != IconStatus.NO_SIDE_REMAP) {
+                addAltParts(parts, direction, iconStatus, needsGlass, connectionType);
+            } else {
+                addRegularParts(parts, direction, connectionType, needsGlass);
             }
+        }
+    }
+
+    private void addAltParts(List<BlockStateModelPart> parts, Direction direction, IconStatus iconStatus, boolean needsGlass, ConnectionType connectionType) {
+        AltNoneParts altNoneParts = altNonePartsMap.get(direction);
+        if (altNoneParts != null) {
+            addAltPart(parts, iconStatus, altNoneParts);
+
+            //check the glass too. No fallback if somehow missing.
+            if (needsGlass && altNonePartsGlassMap != null) {
+                altNoneParts = altNonePartsGlassMap.get(direction);
+                if (altNoneParts != null) {
+                    addAltPart(parts, iconStatus, altNoneParts);
+                }
+            }
+        } else {
+            //main alt parts not found, fallback to regular
+            addRegularParts(parts, direction, connectionType, needsGlass);
+        }
+    }
+
+    private static void addAltPart(List<BlockStateModelPart> parts, IconStatus iconStatus, AltNoneParts altNoneParts) {
+        if (iconStatus == IconStatus.ROTATE_270) {
+            parts.add(altNoneParts.withRotation);
+        } else {
+            parts.add(altNoneParts.noRotation);
+        }
+    }
+
+    private void addRegularParts(List<BlockStateModelPart> parts, Direction direction, ConnectionType connectionType, boolean needsGlass) {
+        addPart(baseParts, parts, direction, connectionType);
+        //Skip rendering the glass if we don't actually have any glass, or we don't have a color for it:
+        if (needsGlass) {
+            addPart(Objects.requireNonNull(glassParts), parts, direction, connectionType);
         }
     }
 
@@ -108,6 +172,32 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
     private static String getPartName(Direction side, ConnectionType connectionType) {
         return side.getSerializedName() + connectionType.name();
+    }
+
+    //TODO fold this into the model data itself, generated at model data time?
+    public static IconStatus getIconStatus(TransmitterModelData modelData, Direction side) {
+        //If we don't have a connection coming out of this side
+        return switch (side) {
+            case DOWN, UP -> getStatus(modelData, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
+            case NORTH, SOUTH -> getStatus(modelData, Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST);
+            case WEST, EAST -> getStatus(modelData, Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH);
+        };
+    }
+
+    private static IconStatus getStatus(TransmitterModelData modelData, Direction a, Direction b, Direction c, Direction d) {
+        boolean hasA = modelData.getConnectionType(a) != ConnectionType.NONE;
+        boolean hasB = modelData.getConnectionType(b) != ConnectionType.NONE;
+        boolean hasC = modelData.getConnectionType(c) != ConnectionType.NONE;
+        boolean hasD = modelData.getConnectionType(d) != ConnectionType.NONE;
+        //If we don't have a connection coming out of one side, but have one coming out of the perpendicular one
+        if ((hasA || hasB) != (hasC || hasD)) {
+            if (hasA && hasB) {
+                return IconStatus.NO_ROTATION;
+            } else if (hasC && hasD) {
+                return IconStatus.ROTATE_270;
+            }
+        }
+        return IconStatus.NO_SIDE_REMAP;
     }
 
     public static class Unbaked implements CustomUnbakedBlockStateModel {
@@ -149,6 +239,8 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             ResolvedModel glassModel = glass != null ? modelBakery.getModel(glass) : null;
             Table<Direction, ConnectionType, BlockStateModelPart> baseParts = HashBasedTable.create(NUM_DIRECTIONS, NUM_CONNECTIONS);
             Table<Direction, ConnectionType, BlockStateModelPart> glassParts = glassModel != null ? HashBasedTable.create(NUM_DIRECTIONS, NUM_CONNECTIONS) : null;
+            Map<Direction, AltNoneParts> altNonePartsMap = new EnumMap<>(Direction.class);
+            Map<Direction, AltNoneParts> altNonePartsGlassMap = glassModel != null ? new EnumMap<>(Direction.class) : null;
             int materialFlags = 0;
             ModelState modelState = base.modelState().asModelState();
             Map<String, Boolean> partsVisibility = new HashMap<>(ALL_PART_GROUPS.size());//nb: shared with the delegate
@@ -158,8 +250,9 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                 partsVisibility.put(group, false);
             }
 
-            //create the delegate to help baking
-            DelegateResolvedModel delegate = new DelegateResolvedModel(partsVisibility);
+            //create the delegates to help baking
+            DelegateResolvedModel partVisibilityDelegate = new DelegateResolvedModel(partsVisibility);
+            BakerOverrider noneSegmentOverrider = new BakerOverrider(modelBakery, new NoneSegmentRemap(modelBakery.materials()));
 
             //now bake all the parts
             for (ConnectionType connectionType : ConnectionType.values()) {
@@ -169,15 +262,23 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                     partsVisibility.put(partName, true);
 
                     //bake core
-                    BlockStateModelPart baked = SimpleModelWrapper.bake(modelBakery, delegate.as(baseModel), modelState);
+                    BlockStateModelPart baked = SimpleModelWrapper.bake(modelBakery, partVisibilityDelegate.as(baseModel), modelState);
                     materialFlags |= baked.materialFlags();
                     baseParts.put(direction, connectionType, baked);
 
                     //if we have glass, bake that
                     if (glassModel != null) {
-                        baked = SimpleModelWrapper.bake(modelBakery, delegate.as(glassModel), modelState);
+                        baked = SimpleModelWrapper.bake(modelBakery, partVisibilityDelegate.as(glassModel), modelState);
                         glassParts.put(direction, connectionType, baked);
                         materialFlags |= baked.materialFlags();
+                    }
+
+                    if (connectionType == ConnectionType.NONE) {
+                        Transformation iconStatusTransform = makeIconStatusTransform(direction);
+                        bakeExtraNoneParts(direction, noneSegmentOverrider, partVisibilityDelegate, baseModel, modelState, altNonePartsMap, iconStatusTransform);
+                        if (glassModel != null) {
+                            bakeExtraNoneParts(direction, noneSegmentOverrider, partVisibilityDelegate, glassModel, modelState, altNonePartsGlassMap, iconStatusTransform);
+                        }
                     }
 
                     //reset the visibilities for the next round
@@ -185,7 +286,19 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                 }
             }
 
-            return new TransmitterBlockStateModel(baseParts, glassParts, baseModel.resolveParticleMaterial(baseModel.getTopTextureSlots(), modelBakery), materialFlags);
+            return new TransmitterBlockStateModel(baseParts, glassParts, altNonePartsMap, altNonePartsGlassMap, baseModel.resolveParticleMaterial(baseModel.getTopTextureSlots(), modelBakery), materialFlags);
+        }
+
+        private static void bakeExtraNoneParts(Direction direction, BakerOverrider noneSegmentOverrider, DelegateResolvedModel partVisibilityDelegate, ResolvedModel baseModel, ModelState modelState, Map<Direction, AltNoneParts> altNonePartsMap, Transformation iconStatusTransform) {
+            BlockStateModelPart unRotated = SimpleModelWrapper.bake(noneSegmentOverrider, partVisibilityDelegate.as(baseModel), modelState);
+            BlockStateModelPart rotated = SimpleModelWrapper.bake(noneSegmentOverrider, partVisibilityDelegate.as(baseModel), new ComposedModelState(modelState, iconStatusTransform));
+            altNonePartsMap.put(direction, new AltNoneParts(unRotated, rotated));
+        }
+
+        private static Transformation makeIconStatusTransform(Direction direction) {
+            Vector3f vecForDirection = direction.getUnitVec3f().mul(-1, new Vector3f());
+            Quaternionf quaternion = new Quaternionf().setAngleAxis(IconStatus.ROTATE_270.getAngle(), vecForDirection.x, vecForDirection.y, vecForDirection.z);
+            return new Transformation(null, quaternion, null, null);
         }
 
         @Override
@@ -251,4 +364,113 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             }
         }
     }
+
+    private static abstract class DelegateMaterialBaker implements MaterialBaker {
+
+        private final MaterialBaker upstream;
+
+        private DelegateMaterialBaker(MaterialBaker upstream) {
+            this.upstream = upstream;
+        }
+
+        @Override
+        public Material.Baked get(Material material, ModelDebugName name) {
+            return upstream.get(material, name);
+        }
+
+        @Override
+        public Material.Baked reportMissingReference(String reference, ModelDebugName name) {
+            return upstream.reportMissingReference(reference, name);
+        }
+
+        @Override
+        public Material.Baked resolveSlot(TextureSlots slots, String id, ModelDebugName name) {
+            return MaterialBaker.super.resolveSlot(slots, remapReference(id), name);
+        }
+
+        protected abstract String remapReference(String id);
+    }
+
+    /// Remaps the texture used in the NONE segment for use with [IconStatus] overrides
+    private static class NoneSegmentRemap extends DelegateMaterialBaker {
+
+        private NoneSegmentRemap(MaterialBaker upstream) {
+            super(upstream);
+        }
+
+        @Override
+        protected String remapReference(String id) {
+            if (isDirectional(id)) {
+                id = id.contains("glass") ? "#side_glass" : "#side";
+            }
+            return id;
+        }
+
+        private static boolean isDirectional(String piece) {
+            return piece.endsWith("down") ||
+                   piece.endsWith("up") ||
+                   piece.endsWith("north") ||
+                   piece.endsWith("south") ||
+                   piece.endsWith("east") ||
+                   piece.endsWith("west");
+        }
+    }
+
+    private static class BakerOverrider implements ModelBaker {
+
+        private final ModelBaker delegateBaker;
+        private final DelegateMaterialBaker materialBaker;
+
+        private BakerOverrider(ModelBaker delegateBaker, DelegateMaterialBaker materialBaker) {
+            this.delegateBaker = delegateBaker;
+            this.materialBaker = materialBaker;
+        }
+
+        @Override
+        public ResolvedModel getModel(Identifier location) {
+            return delegateBaker.getModel(location);
+        }
+
+        @Override
+        public BlockStateModelPart missingBlockModelPart() {
+            return delegateBaker.missingBlockModelPart();
+        }
+
+        @Override
+        public MaterialBaker materials() {
+            return materialBaker;
+        }
+
+        @Override
+        public Interner interner() {
+            return delegateBaker.interner();
+        }
+
+        @Override
+        public <T> T compute(SharedOperationKey<T> key) {
+            return delegateBaker.compute(key);
+        }
+    }
+
+    /// Determines remapping for NONE side. TODO: better name
+    public enum IconStatus {
+        NO_ROTATION(0),
+        ROTATE_270(270),
+        NO_SIDE_REMAP(0);
+
+        private final float angle;
+
+        IconStatus(float angle) {
+            this.angle = angle * Mth.DEG_TO_RAD;
+        }
+
+        /**
+         * Gets the angle in radians
+         */
+        public float getAngle() {
+            return angle;
+        }
+    }
+
+    private record AltNoneParts(BlockStateModelPart noRotation, BlockStateModelPart withRotation) {}
 }
