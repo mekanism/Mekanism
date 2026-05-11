@@ -231,11 +231,6 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
     }
 
     @Override
-    public void setStackUnchecked(ChemicalStack stack) {
-        setContentsUnchecked(ChemicalResource.of(stack), stack.amount());
-    }
-
-    @Override
     public boolean isValid(ChemicalResource chemicalType) {
         return getAttributeValidator().process(chemicalType) && super.isValid(chemicalType);
     }

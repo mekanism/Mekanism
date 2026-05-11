@@ -8,7 +8,6 @@ import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
@@ -17,7 +16,7 @@ import org.jetbrains.annotations.Range;
  * Like {@link ChemicalTankWrapper}
  */
 @NothingNullByDefault
-public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate this class
+public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate this and make sure it proxies all the methods we end up with
 
     private final IChemicalTank chemicalTank;
     private final IFluidTank internal;
@@ -69,16 +68,6 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     @Override
     public boolean isEmpty() {
         return internal.isEmpty();
-    }
-
-    @Override
-    public void setEmpty() {
-        internal.setEmpty();
-    }
-
-    @Override
-    public boolean isFluidEqual(FluidStack other) {
-        return internal.isFluidEqual(other);
     }
 
     @Override

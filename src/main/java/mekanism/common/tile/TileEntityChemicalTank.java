@@ -190,7 +190,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
             drainSlot.setContents(data.drainSlot.getResource(), data.drainSlot.amount());
             fillSlot.setContents(data.fillSlot.getResource(), data.fillSlot.amount());
             dumping = data.dumping;
-            getChemicalTank().setStack(data.storedChemical);
+            getChemicalTank().setContents(data.storedChemical);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -205,7 +205,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @NotNull
     @Override
     public ChemicalTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new ChemicalTankUpgradeData(provider, redstone, getControlType(), drainSlot, fillSlot, dumping, getChemicalTank().getStack(), getComponents(), problemPath());
+        return new ChemicalTankUpgradeData(provider, redstone, getControlType(), drainSlot, fillSlot, dumping, getChemicalTank().asStack(), getComponents(), problemPath());
     }
 
     @Override

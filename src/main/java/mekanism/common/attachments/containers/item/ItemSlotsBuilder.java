@@ -466,7 +466,7 @@ public class ItemSlotsBuilder {
 
         @Override
         public AttachedResources<ItemResource> initStorage(int containers) {
-            return AttachedResources.create(containers, ItemResource.EMPTY);
+            return AttachedResources.create(containers, LargeResourceStack.EMPTY_ITEM_STACK);
         }
     }
 }

@@ -1,17 +1,14 @@
 package mekanism.common.attachments.containers.chemical;
 
 import com.google.common.primitives.Ints;
-import com.mojang.serialization.Codec;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.container.LargeResourceStack;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
@@ -35,16 +32,6 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
         //TODO - 26.1: Make rate be an int supplier?
         this.rate = rate;
         this.attributeValidator = attributeValidator;
-    }
-
-    @Override
-    protected ChemicalResource getEmptyResource() {
-        return ChemicalResource.EMPTY;
-    }
-
-    @Override
-    protected Codec<LargeResourceStack<ChemicalResource>> getResourceStackCodec() {
-        return SerializerHelper.CHEMICAL_RESOURCE_STACK_CODEC;
     }
 
     @Override

@@ -17,6 +17,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -34,6 +35,7 @@ import mekanism.common.network.to_client.container.property.PropertyType;
 import mekanism.common.util.LambdaMetaFactoryUtil;
 import net.minecraft.core.BlockPos;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforgespi.language.IModFileInfo;
 import net.neoforged.neoforgespi.language.ModFileScanData.AnnotationData;
 import org.objectweb.asm.Type;
@@ -51,11 +53,14 @@ public class SyncMapper extends BaseAnnotationScanner {
         // used unchecked setters is that if a recipe got removed so there is a substance in a tank that was valid but no
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid
+        //TODO - 26.1: Re-evaluate these as fluids and eventually chemicals will fail to sync fully if there is more than max int stored
         specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
-              SpecialPropertyData.create(FluidStack.class, IFluidTank::getFluid, IFluidTank::setStackUnchecked)
+              SpecialPropertyData.create(FluidStack.class, tank -> tank.getResource().toStack(tank.amount()),
+                    (tank, stack) -> tank.setContentsUnchecked(FluidResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
-              SpecialPropertyData.create(ChemicalStack.class, IChemicalTank::getStack, IChemicalTank::setStackUnchecked)
+              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getResource().toStack(tank.amountAsLong()),
+                    (tank, stack) -> tank.setContentsUnchecked(ChemicalResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
               SpecialPropertyData.create(Long.TYPE, IEnergyContainer::getEnergy, IEnergyContainer::setEnergy)
@@ -65,8 +70,10 @@ public class SyncMapper extends BaseAnnotationScanner {
               SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeat, IHeatCapacitor::setHeat)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
-              SpecialPropertyData.create(FluidStack.class, obj -> obj.getFluidTank().getFluid(), (obj, val) -> obj.getFluidTank().setStackUnchecked(val)),
-              SpecialPropertyData.create(ChemicalStack.class, obj -> obj.getChemicalTank().getStack(), (obj, val) -> obj.getChemicalTank().setStackUnchecked(val))
+              SpecialPropertyData.create(FluidStack.class, tank -> tank.getFluidTank().getResource().toStack(tank.getFluidTank().amount()),
+                    (tank, stack) -> tank.getFluidTank().setContentsUnchecked(FluidResource.of(stack), stack.amount())),
+              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getChemicalTank().getResource().toStack(tank.getChemicalTank().amountAsLong()),
+                    (tank, stack) -> tank.getChemicalTank().setContentsUnchecked(ChemicalResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,
               SpecialPropertyData.create(BlockPos.class, VoxelCuboid::getMinPos, VoxelCuboid::setMinPos),

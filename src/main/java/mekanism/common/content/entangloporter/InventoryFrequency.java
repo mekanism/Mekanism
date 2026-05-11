@@ -20,7 +20,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
@@ -57,11 +56,9 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -71,23 +68,22 @@ import org.jetbrains.annotations.Nullable;
 
 public class InventoryFrequency extends Frequency implements ITileHeatHandler {
 
-    @SuppressWarnings("removal")
     public static final Codec<InventoryFrequency> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
-          SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.getFluid()),
-          ChemicalStack.LENIENT_OPTIONAL_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.getStack()),
-          SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.getStack()),
+          SerializerHelper.LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.asStack()),
+          SerializerHelper.LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.asStack()),
+          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.asStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
-        frequency.storedFluid.setStackUnchecked(fluid);
-        frequency.storedChemical.setStackUnchecked(chemical);
-        frequency.storedItem.setStackUnchecked(item);
+        frequency.storedFluid.setContentsUnchecked(fluid.resource(), fluid.amount());
+        frequency.storedChemical.setContentsUnchecked(chemical.resource(), chemical.amount());
+        frequency.storedItem.setContentsUnchecked(item.resource(), item.amount());
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
@@ -95,15 +91,16 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
           ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
-          FluidStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedFluid.getFluid(),
-          ChemicalStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedChemical.getStack(),
-          ItemStack.OPTIONAL_STREAM_CODEC, freq -> freq.storedItem.getStack(),
+          SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedFluid.asStack(),
+          SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedChemical.asStack(),
+          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedItem.asStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);
-              frequency.storedFluid.setStack(fluid);
-              frequency.storedChemical.setStack(chemical);
-              frequency.storedItem.setStack(item);
+              //TODO - 26.1: Should these be set unchecked?
+              frequency.storedFluid.setContents(fluid.resource(), fluid.amount());
+              frequency.storedChemical.setContents(chemical.resource(), chemical.amount());
+              frequency.storedItem.setContents(item.resource(), item.amount());
               frequency.storedHeat.setHeat(heat);
               return frequency;
           }

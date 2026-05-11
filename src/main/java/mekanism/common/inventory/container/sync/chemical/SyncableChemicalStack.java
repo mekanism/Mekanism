@@ -2,6 +2,7 @@ package mekanism.common.inventory.container.sync.chemical;
 
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.common.inventory.container.sync.ISyncableData;
@@ -26,7 +27,9 @@ public final class SyncableChemicalStack implements ISyncableData {
         // that we need to use unchecked setters on the client is that if a recipe got removed so there is a substance
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
-        return create(handler::getStack, isClient ? handler::setStackUnchecked : handler::setStack);
+        //TODO - 26.1: Re-evaluate this
+        return create(() -> handler.getResource().toStack(handler.amount()), isClient ? stack -> handler.setContentsUnchecked(ChemicalResource.of(stack), stack.amount())
+                                                                                      : stack -> handler.setContents(ChemicalResource.of(stack), stack.amount()));
     }
 
     public static SyncableChemicalStack create(Supplier<@NotNull ChemicalStack> getter, Consumer<@NotNull ChemicalStack> setter) {

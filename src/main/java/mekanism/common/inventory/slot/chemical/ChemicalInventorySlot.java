@@ -12,6 +12,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ItemStackToChemicalRecipe;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
@@ -241,28 +242,26 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      * Fills tank from slot, allowing for the item to also be converted to chemical if need be
      */
     public void fillTankOrConvert() {
-        if (!isEmpty() && chemicalTank.getNeeded() > 0) {
-            //Fill the tank from the item
-            if (!fillChemicalTankFromItem()) {
-                //If filling from item failed, try doing it by conversion
-                ItemStack current = getStack();
-                ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
-                if (foundRecipe != null) {
-                    ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
-                    if (!itemInput.isEmpty()) {
-                        ChemicalStack output = foundRecipe.getOutput(itemInput);
-                        if (!output.isEmpty()) {
-                            try (Transaction transaction = Transaction.openRoot()) {
-                                int recipeNeeded = itemInput.count();
-                                //TODO - 26.1: Make chemical stacks just be ints?
-                                int chemicalProduced = Ints.saturatedCast(output.amount());
-                                //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
-                                if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded &&
-                                    //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
-                                    chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, transaction, AutomationType.MANUAL) == chemicalProduced) {
-                                    // if we succeeded, commit the changes
-                                    transaction.commit();
-                                }
+        //Fill the tank from the item
+        if (!fillTank(this, chemicalTank, itemAccess())) {
+            //If filling from item failed, try doing it by conversion
+            ItemStack current = getResource().toStack(amount());
+            ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
+            if (foundRecipe != null) {
+                ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
+                if (!itemInput.isEmpty()) {
+                    ChemicalStack output = foundRecipe.getOutput(itemInput);
+                    if (!output.isEmpty()) {
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int recipeNeeded = itemInput.count();
+                            //TODO - 26.1: Make chemical stacks just be ints?
+                            int chemicalProduced = Ints.saturatedCast(output.amount());
+                            //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
+                            if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded &&
+                                //Note: We use manual as the automation type to bypass our container's rate limit insertion checks
+                                chemicalTank.insert(ChemicalResource.of(output), chemicalProduced, transaction, AutomationType.MANUAL) == chemicalProduced) {
+                                // if we succeeded, commit the changes
+                                transaction.commit();
                             }
                         }
                     }
@@ -275,19 +274,17 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      * Fills tank from slot, does not try converting the item via any conversions conversion
      */
     public void fillTank() {
-        if (!isEmpty() && chemicalTank.getNeeded() > 0) {
-            //Try filling from the tank's item
-            fillChemicalTankFromItem();
-        }
+        //Try filling from the tank's item
+        fillTank(this, chemicalTank, itemAccess());
     }
 
-    /**
-     * @implNote Does not pre-check if the current stack is empty or that the chemical tank needs chemical
-     */
-    private boolean fillChemicalTankFromItem() {
+    public static boolean fillTank(IInventorySlot slot, IChemicalTank chemicalTank, ItemAccess itemAccess) {
+        if (slot.isEmpty() || chemicalTank.getNeeded() == 0) {
+            return false;
+        }
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
-        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess());
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null) {
             ChemicalResource typeToExtract = ResourceUtils.getTypeToExtract(chemicalTank, handler, AutomationType.INTERNAL, null);
             if (typeToExtract.isEmpty()) {
@@ -309,7 +306,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     //Commit the transfer
                     transaction.commit();
                     //and mark that we were able to transfer at least some of it
-                    onContentsChanged();
+                    slot.onContentsChanged();
                     return true;
                 }
             }
@@ -321,10 +318,14 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
      * Drains tank into slot
      */
     public void drainTank() {
+        drainTank(this, chemicalTank, itemAccess());
+    }
+
+    public static void drainTank(IInventorySlot slot, IChemicalTank chemicalTank, ItemAccess itemAccess) {
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
-        if (!isEmpty() && !chemicalTank.isEmpty()) {
-            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess());
+        if (!slot.isEmpty() && !chemicalTank.isEmpty()) {
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
             if (handler != null) {
                 ChemicalResource chemicalType = chemicalTank.getResource();
                 //TODO - 26.1: Do we need to simulate how much we can actually drain? In case there is an extraction rate from the tank
@@ -336,7 +337,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     if (inserted > 0 && chemicalTank.extract(chemicalType, inserted, transaction, AutomationType.INTERNAL) == inserted) {
                         //If we were able to actually extract it from our tank, then insert it into the item
                         transaction.commit();
-                        onContentsChanged();
+                        slot.onContentsChanged();
                     }
                 }
             }

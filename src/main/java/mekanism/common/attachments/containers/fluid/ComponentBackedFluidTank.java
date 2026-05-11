@@ -1,13 +1,10 @@
 package mekanism.common.attachments.containers.fluid;
 
-import com.mojang.serialization.Codec;
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
@@ -29,16 +26,6 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
         //TODO - 26.1: Support long capacity
         this.capacity = capacity;
         this.rate = rate;
-    }
-
-    @Override
-    protected FluidResource getEmptyResource() {
-        return FluidResource.EMPTY;
-    }
-
-    @Override
-    protected Codec<LargeResourceStack<FluidResource>> getResourceStackCodec() {
-        return SerializerHelper.FLUID_RESOURCE_STACK_CODEC;
     }
 
     @Override

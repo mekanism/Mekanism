@@ -43,7 +43,8 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void unlock(@NotNull UUID ownerUUID) {
         if (!isEmpty()) {
-            ItemStack current = getStack();
+            //TODO - 26.1: Figure out and move item security utils to item access?
+            ItemStack current = getResource().toStack(amount());
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();
@@ -60,7 +61,8 @@ public class SecurityInventorySlot extends BasicInventorySlot {
 
     public void lock(UUID ownerUUID, SecurityFrequency frequency) {
         if (!isEmpty()) {
-            ItemStack current = getStack();
+            //TODO - 26.1: Figure out and move item security utils to item access?
+            ItemStack current = getResource().toStack(amount());
             IOwnerObject ownerObject = IItemSecurityUtils.INSTANCE.ownerCapability(current);
             if (ownerObject != null) {
                 UUID stackOwner = ownerObject.getOwnerUUID();

@@ -40,7 +40,7 @@ public class ResourceTransmitterSaveTarget<RESOURCE extends Resource, TRANSMITTE
 
         public SaveHandler(TRANSMITTER transmitter) {
             this.transmitter = transmitter;
-            this.currentType = this.transmitter.getEmptyResource();
+            this.currentType = this.transmitter.getEmptyResourceStack().resource();
             this.transmitterCapacity = this.transmitter.getCapacity();
         }
 

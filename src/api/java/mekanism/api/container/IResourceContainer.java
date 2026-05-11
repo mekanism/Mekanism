@@ -1,8 +1,13 @@
 package mekanism.api.container;
 
 import com.google.common.primitives.Ints;
+import com.mojang.serialization.Codec;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
+import mekanism.api.SerializationConstants;
+import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -11,9 +16,15 @@ import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Docs and decide if we want the bound for RESOURCE to be RegisteredResource or just Resource
 //TODO - 26.1: Should we rename this package to resource?
+@NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 
     RESOURCE getResource();
+
+    default LargeResourceStack<RESOURCE> asStack() {
+        //TODO - 26.1: Re-evaluate this method
+        return new LargeResourceStack<>(getResource(), amountAsLong());
+    }
 
     //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
     // It might be worth it, so that then fluids and chemicals can have storage of longs
@@ -26,9 +37,14 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Range(from = 0, to = Long.MAX_VALUE)
     long amountAsLong();
 
+    //TODO - 26.1: Re-evaluate this method
+    default void setContents(LargeResourceStack<RESOURCE> stack) {
+        setContents(stack.resource(), stack.amount());
+    }
+
     void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
-    //TODO - 26.1: Re-evaluate this method
+    //TODO - 26.1: Re-evaluate this method and its callers
     void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
     @Range(from = 0, to = Integer.MAX_VALUE)
@@ -113,5 +129,35 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /**
      * Convenience method for emptying this {@link IResourceContainer}.
      */
-    void setEmpty();//TODO - 26.1: Re-evaluate usages and the existence of this method
+    @NonExtendable
+    default void setEmpty() {//TODO - 26.1: Re-evaluate usages and the existence of this method
+        setContents(emptyStack());
+    }
+
+    @Override
+    default void serialize(ValueOutput output) {
+        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
+        // that method as special component backed inventory slots, that then access and put that other data as a different component?
+        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
+        LargeResourceStack<RESOURCE> stored = asStack();
+        if (!stored.isEmpty()) {
+            //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
+            // Items used to store to the key "item", but fluids and chemicals used "stored"
+            output.store(SerializationConstants.STORED, resourceStackCodec(), stored);
+            //TODO - 26.1: Should we remove the key if stored is empty like we do for transmitters?
+        }
+    }
+
+    @Override
+    default void deserialize(ValueInput input) {
+        LargeResourceStack<RESOURCE> stack = input.read(SerializationConstants.STORED, resourceStackCodec()).orElse(emptyStack());
+        //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
+        // crashing due to the stack not being valid
+        setContentsUnchecked(stack.resource(), stack.amount());
+    }
+
+    Codec<LargeResourceStack<RESOURCE>> resourceStackCodec();
+
+    //TODO - 26.1: Re-evaluate this method vs having inheritors implement deserialize and setEmpty
+    LargeResourceStack<RESOURCE> emptyStack();
 }

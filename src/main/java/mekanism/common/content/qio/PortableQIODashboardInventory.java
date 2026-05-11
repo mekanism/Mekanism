@@ -2,12 +2,14 @@ package mekanism.common.content.qio;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
@@ -24,7 +26,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
         this.level = level;
         List<IInventorySlot> slots = new ArrayList<>();
         craftingWindows = new QIOCraftingWindow[MAX_CRAFTING_WINDOWS];
-        List<ItemStack> contents = stack.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY).contents();
+        List<LargeResourceStack<ItemResource>> contents = stack.getOrDefault(MekanismDataComponents.QIO_DASHBOARD, PortableDashboardContents.EMPTY).contents();
         initializing = true;
         for (int tableIndex = 0; tableIndex < craftingWindows.length; tableIndex++) {
             int finalTableIndex = tableIndex;
@@ -41,8 +43,7 @@ public class PortableQIODashboardInventory implements IQIOCraftingWindowHolder {
             for (int slot = 0; slot < 9; slot++) {
                 IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
                 slots.add(inputSlot);
-                //Note: setStack will ensure the stack is copied
-                inputSlot.setStack(contents.get(tableIndex * 9 + slot));
+                inputSlot.setContents(contents.get(tableIndex * 9 + slot));
             }
             slots.add(craftingWindow.getOutputSlot());
         }

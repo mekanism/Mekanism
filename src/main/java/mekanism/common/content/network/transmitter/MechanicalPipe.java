@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.block.attribute.Attribute;
@@ -45,8 +46,8 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     }
 
     @Override
-    public FluidResource getEmptyResource() {
-        return FluidResource.EMPTY;
+    public LargeResourceStack<FluidResource> getEmptyResourceStack() {
+        return LargeResourceStack.EMPTY_FLUID_STACK;
     }
 
     @Override

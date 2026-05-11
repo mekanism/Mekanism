@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.AttachedResources;
@@ -73,7 +74,7 @@ public class ChemicalTanksBuilder {
 
         @Override
         public AttachedResources<ChemicalResource> initStorage(int containers) {
-            return AttachedResources.create(containers, ChemicalResource.EMPTY);
+            return AttachedResources.create(containers, LargeResourceStack.EMPTY_CHEMICAL_STACK);
         }
     }
 }

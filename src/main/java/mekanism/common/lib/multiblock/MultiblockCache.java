@@ -154,7 +154,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
             @Override
             public void sync(IInventorySlot cache, IInventorySlot data) {
-                cache.setContents(data.getResource(), data.amount());
+                cache.setContents(data.getResource(), data.amountAsLong());
             }
         };
 
@@ -171,7 +171,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
             @Override
             public void sync(IFluidTank cache, IFluidTank data) {
-                cache.setContents(data.getResource(), data.amount());
+                cache.setContents(data.getResource(), data.amountAsLong());
             }
         };
 
@@ -188,7 +188,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
 
             @Override
             public void sync(IChemicalTank cache, IChemicalTank data) {
-                cache.setStack(data.getStack());
+                cache.setContents(data.getResource(), data.amountAsLong());
             }
         };
 

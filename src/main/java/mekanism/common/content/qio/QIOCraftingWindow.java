@@ -164,7 +164,8 @@ public class QIOCraftingWindow implements IContentsListener {
                 // and otherwise we update so that cases like bin upgrade recipes that the inputs match the recipe but the
                 // output is dependent on the specific inputs gets updated properly
                 //Note: We make sure to only call updateOutputSlot if we believe our inputs have changed type
-                outputSlot.setStack(assembleRecipe(craftingInput, lastRecipe.value(), world.registryAccess()));
+                ItemStack result = assembleRecipe(craftingInput, lastRecipe.value(), world.registryAccess());
+                outputSlot.setContents(ItemResource.of(result), result.count());
             } else {
                 //If we don't have a cached recipe, or our cached recipe doesn't match our inventory contents, lookup the recipe
                 RecipeHolder<CraftingRecipe> recipe = MekanismRecipeType.getRecipeFor(RecipeType.CRAFTING, craftingInput, world).orElse(null);
@@ -178,7 +179,8 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //If the recipe is different, update the output
                         lastRecipe = recipe;
-                        outputSlot.setStack(assembleRecipe(craftingInput, lastRecipe.value(), world.registryAccess()));
+                        ItemStack result = assembleRecipe(craftingInput, lastRecipe.value(), world.registryAccess());
+                        outputSlot.setContents(ItemResource.of(result), result.count());
                     }
                 }
             }

@@ -56,7 +56,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     protected LargeResourceStack<RESOURCE> createSnapshot() {
-        return new LargeResourceStack<>(getResource(), amountAsLong());
+        return asStack();
     }
 
     @Override

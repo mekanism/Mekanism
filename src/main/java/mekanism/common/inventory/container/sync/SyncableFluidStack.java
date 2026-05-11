@@ -8,6 +8,7 @@ import mekanism.common.network.to_client.container.property.IntPropertyData;
 import mekanism.common.network.to_client.container.property.PropertyData;
 import net.minecraft.core.RegistryAccess;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -25,7 +26,9 @@ public class SyncableFluidStack implements ISyncableData {
         // that we need to use unchecked setters on the client is that if a recipe got removed so there is a substance
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
-        return create(handler::getFluid, isClient ? handler::setStackUnchecked : handler::setStack);
+        //TODO - 26.1: If more than max int is stored, this won't work
+        return create(() -> handler.getResource().toStack(handler.amount()), isClient ? stack -> handler.setContentsUnchecked(FluidResource.of(stack), stack.amount())
+                                                                                      : stack -> handler.setContents(FluidResource.of(stack), stack.amount()));
     }
 
     public static SyncableFluidStack create(Supplier<@NotNull FluidStack> getter, Consumer<@NotNull FluidStack> setter) {

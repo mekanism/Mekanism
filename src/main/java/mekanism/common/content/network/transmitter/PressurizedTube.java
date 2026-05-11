@@ -8,6 +8,7 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.ChemicalNetwork;
@@ -44,8 +45,8 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     }
 
     @Override
-    public ChemicalResource getEmptyResource() {
-        return ChemicalResource.EMPTY;
+    public LargeResourceStack<ChemicalResource> getEmptyResourceStack() {
+        return LargeResourceStack.EMPTY_CHEMICAL_STACK;
     }
 
     @Override

@@ -13,6 +13,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
@@ -176,12 +177,16 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     public boolean validateDashboard(PortableDashboardContents contents) {
         return contents.contents().size() == PortableDashboardContents.TOTAL_SLOTS &&
                //First window
-               ItemStack.matches(contents.getSlotContents(0, 1), new ItemStack(Items.OAK_PLANKS, 4)) &&
-               ItemStack.matches(contents.getSlotContents(0, 4), new ItemStack(Items.OAK_PLANKS, 5)) &&
+               matches(contents.getSlotContents(0, 1), Items.OAK_PLANKS, 4) &&
+               matches(contents.getSlotContents(0, 4), Items.OAK_PLANKS, 5) &&
                //Second window
-               ItemStack.matches(contents.getSlotContents(1, 0), new ItemStack(Items.STONE)) &&
+               matches(contents.getSlotContents(1, 0), Items.STONE, 1) &&
                //Third window
-               ItemStack.matches(contents.getSlotContents(2, 8), new ItemStack(Items.OAK_LOG, 64));
+               matches(contents.getSlotContents(2, 8), Items.OAK_LOG, 64);
+    }
+
+    private static boolean matches(LargeResourceStack<ItemResource> stack, Item item, long amount) {
+        return stack.amount() == amount && stack.resource().is(item);
     }
 
     private Map<Upgrade, Integer> getUpgrades() {

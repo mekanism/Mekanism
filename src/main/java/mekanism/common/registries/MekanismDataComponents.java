@@ -79,19 +79,19 @@ public class MekanismDataComponents {
                 .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.ITEM_RESOURCE_STACK_CODEC, ItemResource.EMPTY, SerializationConstants.ITEMS))
-                .networkSynchronized(AttachedResources.streamCodec(ItemResource.STREAM_CODEC))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC, SerializationConstants.ITEMS))
+                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC))
                 .cacheEncoding()
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.FLUID_RESOURCE_STACK_CODEC, FluidResource.EMPTY, SerializationConstants.FLUID_TANKS))
-                .networkSynchronized(AttachedResources.streamCodec(FluidResource.STREAM_CODEC))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC, SerializationConstants.FLUID_TANKS))
+                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC))
                 .cacheEncoding()
     );
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.CHEMICAL_RESOURCE_STACK_CODEC, ChemicalResource.EMPTY, SerializationConstants.CHEMICAL_TANKS))
-                .networkSynchronized(AttachedResources.streamCodec(ChemicalResource.STREAM_CODEC))
+          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, SerializationConstants.CHEMICAL_TANKS))
+                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC))
                 .cacheEncoding()
     );
 

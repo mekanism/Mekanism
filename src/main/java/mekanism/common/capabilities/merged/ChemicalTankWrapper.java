@@ -16,7 +16,7 @@ import org.jetbrains.annotations.Range;
  * one chemical tank of a {@link MergedTank} can have a chemical in it at any time.
  */
 @NothingNullByDefault
-public class ChemicalTankWrapper implements IChemicalTank {
+public class ChemicalTankWrapper implements IChemicalTank {//TODO - 26.1: Re-evaluate this and make sure it proxies all the methods we end up with
 
     private final IChemicalTank internal;
     private final BooleanSupplier insertCheck;
@@ -96,11 +96,6 @@ public class ChemicalTankWrapper implements IChemicalTank {
     @Override
     public boolean isEmpty() {
         return internal.isEmpty();
-    }
-
-    @Override
-    public void setEmpty() {
-        internal.setEmpty();
     }
 
     @Override

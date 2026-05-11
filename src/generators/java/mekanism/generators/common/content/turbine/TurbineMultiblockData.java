@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -45,7 +45,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -233,8 +232,8 @@ public class TurbineMultiblockData extends MultiblockData {
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
         //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(chemicalTank::setStack);
-        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(ventTank::setStack);
+        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(chemicalTank::setContents);
+        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(ventTank::setContents);
         input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
         clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -246,8 +245,8 @@ public class TurbineMultiblockData extends MultiblockData {
         output.putFloat(SerializationConstants.SCALE, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
         output.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, chemicalTank.getStack());
-        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, ventTank.getFluid());
+        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, chemicalTank.asStack());
+        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, ventTank.asStack());
         output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
         output.putFloat(SerializationConstants.ROTATION, clientRotation);
     }

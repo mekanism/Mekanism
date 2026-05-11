@@ -123,13 +123,11 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     }
 
     public void drainChemicalTank() {
-        //todo - 26.1: itemaccess
-        //ChemicalInventorySlot.drainChemicalTank(this, mergedTank.getChemicalTank(), Capabilities.CHEMICAL.getCapability(current));
+        ChemicalInventorySlot.drainTank(this, mergedTank.getChemicalTank(), itemAccess());
     }
 
     public void fillChemicalTank() {
-        //todo - 26.1: itemaccess
-        //ChemicalInventorySlot.fillChemicalTank(this, mergedTank.getChemicalTank(), Capabilities.CHEMICAL.getCapability(current));
+        ChemicalInventorySlot.fillTank(this, mergedTank.getChemicalTank(), itemAccess());
     }
 
 }

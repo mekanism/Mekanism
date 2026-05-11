@@ -94,19 +94,13 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         boolean hasNonEmpty = false;
         List<LargeResourceStack<ItemResource>> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            LargeResourceStack<ItemResource> stack;
-            if (slot instanceof CraftingWindowOutputInventorySlot) {
-                //TODO - 26.1: Do we want to define this as a constant somewhere?
-                stack = new LargeResourceStack<>(ItemResource.EMPTY, 0);
-            } else {
-                stack = new LargeResourceStack<>(slot.getResource(), slot.amountAsLong());
-            }
+            LargeResourceStack<ItemResource> stack = slot instanceof CraftingWindowOutputInventorySlot ? LargeResourceStack.EMPTY_ITEM_STACK : slot.asStack();
             stacks.add(stack);
             if (!stack.isEmpty()) {
                 hasNonEmpty = true;
             }
         }
-        return hasNonEmpty ? new AttachedResources<ItemResource>(stacks) : null;
+        return hasNonEmpty ? new AttachedResources<>(stacks) : null;
     }
 
     @Override

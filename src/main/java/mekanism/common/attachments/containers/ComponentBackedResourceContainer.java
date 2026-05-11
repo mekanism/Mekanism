@@ -1,17 +1,13 @@
 package mekanism.common.attachments.containers;
 
 import com.google.common.primitives.Ints;
-import com.mojang.serialization.Codec;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.container.LargeResourceStack;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -21,7 +17,6 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault//TODO - 26.1: Do we want to change TYPE to being ResourceStack<RESOURCE>? It would probably make the logic a little cleaner
 public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource> extends ComponentBackedContainer<LargeResourceStack<RESOURCE>, AttachedResources<RESOURCE>> implements IResourceContainer<RESOURCE> {
 
-    private final LargeResourceStack<RESOURCE> emptyStack = new LargeResourceStack<>(getEmptyResource(), 0);
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
@@ -37,28 +32,25 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         this.limit = limit;
     }
 
-    protected abstract RESOURCE getEmptyResource();
-
-    protected abstract Codec<LargeResourceStack<RESOURCE>> getResourceStackCodec();
-
     @Override
     protected boolean isEmpty(LargeResourceStack<RESOURCE> stack) {
         return stack.isEmpty();
     }
 
-    protected LargeResourceStack<RESOURCE> getResourceStack() {
+    @Override
+    public LargeResourceStack<RESOURCE> asStack() {
         return getContents(getAttached());
     }
 
     @Override
     public RESOURCE getResource() {
-        return getResourceStack().resource();
+        return asStack().resource();
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long amountAsLong() {
-        return getResourceStack().amount();
+        return asStack().amount();
     }
 
     @Override
@@ -175,25 +167,5 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
             setContents(attached, currentType, currentStored - toRemove);
         }
         return toRemove;
-    }
-
-    @Override
-    public void serialize(ValueOutput output) {
-        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
-        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
-        LargeResourceStack<RESOURCE> stored = getResourceStack();
-        if (!stored.isEmpty()) {
-            //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
-            // Items used to store to the key "item", but fluids and chemicals used "stored"
-            output.store(SerializationConstants.STORED, getResourceStackCodec(), stored);
-            //TODO - 26.1: Should we remove the key if stored is empty like we do for transmitters?
-        }
-    }
-
-    @Override
-    public void deserialize(ValueInput input) {
-        LargeResourceStack<RESOURCE> stack = input.read(SerializationConstants.STORED, getResourceStackCodec()).orElse(emptyStack);
-        setContentsUnchecked(stack.resource(), stack.amount());
     }
 }

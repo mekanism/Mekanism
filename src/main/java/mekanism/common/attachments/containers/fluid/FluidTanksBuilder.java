@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.Predicate;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.AttachedResources;
@@ -73,7 +74,7 @@ public class FluidTanksBuilder {
 
         @Override
         public AttachedResources<FluidResource> initStorage(int containers) {
-            return AttachedResources.create(containers, FluidResource.EMPTY);
+            return AttachedResources.create(containers, LargeResourceStack.EMPTY_FLUID_STACK);
         }
     }
 }

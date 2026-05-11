@@ -7,9 +7,9 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.LongSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -269,10 +269,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(coolantTank.getFluidTank()::setStack);
-        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(fuelTank::setStack);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT, ChemicalStack.OPTIONAL_CODEC).ifPresent(heatedCoolantTank::setStack);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, ChemicalStack.OPTIONAL_CODEC).ifPresent(wasteTank::setStack);
+        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(coolantTank.getFluidTank()::setContents);
+        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(fuelTank::setContents);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(heatedCoolantTank::setContents);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(wasteTank::setContents);
         readValves(input);
         assemblies.clear();
         for (FormedAssembly assembly : input.listOrEmpty(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC)) {
@@ -288,10 +288,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         output.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         output.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
-        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, coolantTank.getFluidTank().getFluid());
-        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, fuelTank.getStack());
-        output.store(SerializationConstants.CHEMICAL_STORED_ALT, ChemicalStack.OPTIONAL_CODEC, heatedCoolantTank.getStack());
-        output.store(SerializationConstants.CHEMICAL_STORED_ALT_2, ChemicalStack.OPTIONAL_CODEC, wasteTank.getStack());
+        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, coolantTank.getFluidTank().asStack());
+        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, fuelTank.asStack());
+        output.store(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, heatedCoolantTank.asStack());
+        output.store(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, wasteTank.asStack());
         writeValves(output);
         if (!assemblies.isEmpty()) {
             TypedOutputList<FormedAssembly> serializedAssemblies = output.list(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC);
@@ -478,7 +478,9 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         double storedFuel = fuelTank.amountAsLong() + burnRemaining;
         double toBurn = Math.min(Math.min(rateLimit, storedFuel), fuelAssemblies * MekanismGeneratorsConfig.generators.burnPerAssembly.get());
         storedFuel -= toBurn;
-        fuelTank.setStackSize((long) storedFuel, Action.EXECUTE);
+        ChemicalResource fuel = fuelTank.getResource();
+        //TODO - 26.1: Re-evaluate this.. it seems weird
+        fuelTank.setContentsUnchecked(fuel, Math.min((long) storedFuel, fuelTank.getLimitAsLong(fuel)));
         burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste

@@ -92,7 +92,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
         if (isEmpty()) {
             return ItemStack.EMPTY;
         }
-        LargeResourceStack<ItemResource> stack = getResourceStack();
+        LargeResourceStack<ItemResource> stack = asStack();
         ItemResource current = stack.resource();
         return current.toStack(Math.min(Ints.saturatedCast(stack.amount()), current.getMaxStackSize()));
     }

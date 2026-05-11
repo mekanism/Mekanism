@@ -1,12 +1,9 @@
 package mekanism.common.attachments.containers.item;
 
-import com.mojang.serialization.Codec;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
@@ -32,16 +29,6 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
           @Range(from = 0, to = Long.MAX_VALUE) long limit) {
         super(attachedTo, slotIndex, limit, canExtract, canInsert, validator);
         this.obeyStackLimit = obeyStackLimit;
-    }
-
-    @Override
-    protected ItemResource getEmptyResource() {
-        return ItemResource.EMPTY;
-    }
-
-    @Override
-    protected Codec<LargeResourceStack<ItemResource>> getResourceStackCodec() {
-        return SerializerHelper.ITEM_RESOURCE_STACK_CODEC;
     }
 
     @Override

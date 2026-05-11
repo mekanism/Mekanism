@@ -64,7 +64,7 @@ public class MissingObjectSerializationTest {
         LargeResourceStack<ItemResource> initialStick = new LargeResourceStack<>(ItemResource.of(Items.STICK), 10);
         LargeResourceStack<ItemResource> initialStone = new LargeResourceStack<>(ItemResource.of(Items.STONE), 5);
         helper.succeedIfInvalidItemSerializationCycle(MekanismDataComponents.ATTACHED_ITEMS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(new LargeResourceStack<>(ItemResource.EMPTY, 0),
+              NonNullList.of(LargeResourceStack.EMPTY_ITEM_STACK,
                     initialStick,
                     new LargeResourceStack<>(help.failureItemType(), 3),
                     initialStone
@@ -82,7 +82,7 @@ public class MissingObjectSerializationTest {
         LargeResourceStack<FluidResource> initialWater = new LargeResourceStack<>(FluidResource.of(Fluids.WATER), 10);
         LargeResourceStack<FluidResource> initialLava = new LargeResourceStack<>(FluidResource.of(Fluids.LAVA), 5);
         helper.succeedIfInvalidFluidSerializationCycle(MekanismDataComponents.ATTACHED_FLUIDS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(new LargeResourceStack<>(FluidResource.EMPTY, 0),
+              NonNullList.of(LargeResourceStack.EMPTY_FLUID_STACK,
                     initialWater,
                     new LargeResourceStack<>(help.failureFluidType(), 3),
                     initialLava
@@ -100,7 +100,7 @@ public class MissingObjectSerializationTest {
         LargeResourceStack<ChemicalResource> initialAntimatter = new LargeResourceStack<>(MekanismChemicals.ANTIMATTER.asResource(), 10);
         LargeResourceStack<ChemicalResource> initialGold = new LargeResourceStack<>(MekanismChemicals.GOLD.asResource(), 5);
         helper.succeedIfInvalidChemicalSerializationCycle(MekanismDataComponents.ATTACHED_CHEMICALS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(new LargeResourceStack<>(ChemicalResource.EMPTY, 0),
+              NonNullList.of(LargeResourceStack.EMPTY_CHEMICAL_STACK,
                     initialAntimatter,
                     new LargeResourceStack<>(help.failureChemicalType(), 3),
                     initialGold
@@ -306,7 +306,7 @@ public class MissingObjectSerializationTest {
                   InventoryFrequency frequency = new InventoryFrequency("test", null, SecurityMode.PUBLIC);
                   frequency.getEnergyContainers().getFirst().setEnergy(100);
                   frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
-                  frequency.getChemicalTanks().getFirst().setStack(help.failureChemical());
+                  frequency.getChemicalTanks().getFirst().setContents(help.failureChemicalType(), 1);
                   frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME);
                   frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1);
                   return frequency;

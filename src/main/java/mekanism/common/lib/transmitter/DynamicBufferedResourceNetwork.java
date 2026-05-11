@@ -57,7 +57,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     @Override
     public LargeResourceStack<RESOURCE> getBuffer() {
         //TODO - 26.1: Evaluate callers and see what can skip wrapping in a large resource stack/if we can at least cache the empty large resource stack?
-        return new LargeResourceStack<>(container.getResource(), container.amount());
+        return container.asStack();
     }
 
     @Override

@@ -94,6 +94,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 ItemResource moduleResource = moduleSlot.getResource();
                 //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
                 ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
+                //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
                 ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                 if (container != null) {
                     // make sure the container supports this module and that we can still install more of this module
@@ -110,7 +111,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                                     //Validate that the module is actually able to be extracted from the module slot (this should always be true)
                                     if (moduleSlot.extract(moduleResource, added, transaction, AutomationType.INTERNAL) == added) {
                                         //Update the item type of the module container to the version that has the moduled added
-                                        containerSlot.setStack(stack);
+                                        containerSlot.setContents(ItemResource.of(stack), stack.count());
                                         transaction.commit();
                                     }
                                 }
@@ -134,6 +135,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
     public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
         ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
+        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {
             int installed = container.installedCount(type);
@@ -142,7 +144,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                 if (player.getInventory().add(new ItemStack(type.value().getItemHolder(), toRemove))) {
                     container.removeModule(player.registryAccess(), stack, type, toRemove);
                     //Update the item type of the module container to the version that has the moduled added
-                    containerSlot.setStack(stack);
+                    containerSlot.setContents(ItemResource.of(stack), stack.count());
                 }
             }
         }

@@ -1,7 +1,8 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.tile.component.ITileComponent;
@@ -17,10 +18,11 @@ public class ChemicalTankUpgradeData implements IUpgradeData {
     public final ChemicalInventorySlot drainSlot;
     public final ChemicalInventorySlot fillSlot;
     public final GasMode dumping;
-    public final ChemicalStack storedChemical;
+    public final LargeResourceStack<ChemicalResource> storedChemical;
     public final CompoundTag components;
 
-    public ChemicalTankUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot, GasMode dumping, ChemicalStack storedChemical, List<ITileComponent> components, PathElement problemPath) {
+    public ChemicalTankUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, ChemicalInventorySlot drainSlot, ChemicalInventorySlot fillSlot,
+          GasMode dumping, LargeResourceStack<ChemicalResource> storedChemical, List<ITileComponent> components, PathElement problemPath) {
         this.redstone = redstone;
         this.controlType = controlType;
         this.drainSlot = drainSlot;

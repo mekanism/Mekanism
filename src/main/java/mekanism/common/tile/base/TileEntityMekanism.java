@@ -1252,7 +1252,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         boolean hasNonEmpty = false;
         List<LargeResourceStack<RESOURCE>> stacks = new ArrayList<>(containers.size());
         for (CONTAINER container : containers) {
-            stacks.add(new LargeResourceStack<>(container.getResource(), container.amountAsLong()));
+            stacks.add(container.asStack());
             if (!container.isEmpty()) {
                 hasNonEmpty = true;
             }
@@ -1324,11 +1324,10 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (IChemicalTank tank : tanks) {
             if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
-                //TODO - 26.1: Should this be a constant
-                stacks.add(new LargeResourceStack<>(ChemicalResource.EMPTY, 0));
+                stacks.add(LargeResourceStack.EMPTY_CHEMICAL_STACK);
             } else {
                 hasNonEmpty = true;
-                stacks.add(new LargeResourceStack<>(tank.getResource(), tank.amountAsLong()));
+                stacks.add(tank.asStack());
             }
         }
         return hasNonEmpty ? new AttachedResources<>(stacks) : null;

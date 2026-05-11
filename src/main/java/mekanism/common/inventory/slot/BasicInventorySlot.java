@@ -6,8 +6,6 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.BasicResourceContainer;
 import mekanism.api.functions.ConstantPredicates;
@@ -18,8 +16,6 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
@@ -101,11 +97,6 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
         return x;
     }
 
-    @Deprecated(forRemoval = true)//TODO - 26.1: Move calls to setStackUnchecked(ItemResource, int)
-    public void setStackUnchecked(ItemStack stack) {
-        setContentsUnchecked(ItemResource.of(stack), stack.count());
-    }
-
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(ItemResource resource) {
@@ -142,13 +133,6 @@ public class BasicInventorySlot extends BasicResourceContainer<ItemResource> imp
 
     protected final ContainerSlotType getSlotType() {
         return slotType;
-    }
-
-    @Override
-    public void deserialize(ValueInput input) {
-        //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
-        // crashing due to the stack not being valid
-        setStackUnchecked(input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY));
     }
 
     //TODO - 26.1: review this

@@ -10,6 +10,7 @@ import java.util.UUID;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
@@ -46,7 +47,6 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -251,8 +251,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setWaterVolume);
         input.getInt(SerializationConstants.LOWER_VOLUME).ifPresent(this::setSteamVolume);
         //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC).ifPresent(waterTank::setStack);
-        input.read(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC).ifPresent(steamTank::setStack);
+        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(waterTank::setContents);
+        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(steamTank::setContents);
         input.read(SerializationConstants.RENDER_Y, BlockPos.CODEC).ifPresent(value -> upperRenderLocation = value);
         readValves(input);
     }
@@ -264,8 +264,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         output.putFloat(SerializationConstants.SCALE_ALT, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, getWaterVolume());
         output.putInt(SerializationConstants.LOWER_VOLUME, getSteamVolume());
-        output.store(SerializationConstants.FLUID, FluidStack.OPTIONAL_CODEC, waterTank.getFluid());
-        output.store(SerializationConstants.CHEMICAL, ChemicalStack.OPTIONAL_CODEC, steamTank.getStack());
+        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, waterTank.asStack());
+        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, steamTank.asStack());
         output.store(SerializationConstants.RENDER_Y, BlockPos.CODEC, upperRenderLocation);
         writeValves(output);
     }

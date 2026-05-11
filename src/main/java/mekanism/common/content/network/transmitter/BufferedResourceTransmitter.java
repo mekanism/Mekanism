@@ -30,7 +30,6 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
       TRANSMITTER extends BufferedResourceTransmitter<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>>
       extends BufferedTransmitter<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> implements IContentsListener {
 
-    private final LargeResourceStack<RESOURCE> emptyStack = new LargeResourceStack<>(getEmptyResource(), 0);
     private final Codec<LargeResourceStack<RESOURCE>> resourceStackCodec;
     private final CONTAINER bufferContainer;
     private final List<CONTAINER> containers;
@@ -43,10 +42,10 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         this.resourceStackCodec = resourceStackCodec;
         this.bufferContainer = bufferCreator.create(getCapacity(), this);
         this.containers = Collections.singletonList(this.bufferContainer);
-        saveShare = emptyStack;
+        saveShare = getEmptyResourceStack();
     }
 
-    public abstract RESOURCE getEmptyResource();
+    public abstract LargeResourceStack<RESOURCE> getEmptyResourceStack();
 
     @Override
     @SuppressWarnings("unchecked")
@@ -70,7 +69,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        saveShare = input.read(SerializationConstants.STORED, resourceStackCodec).orElse(emptyStack);
+        saveShare = input.read(SerializationConstants.STORED, resourceStackCodec).orElse(getEmptyResourceStack());
         bufferContainer.setContents(getCurrentSaveType(),  getCurrentSaveAmount());
     }
 
@@ -113,10 +112,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getShare() {
-        if (bufferContainer.isEmpty()) {
-            return emptyStack;
-        }
-        return new LargeResourceStack<>(bufferContainer.getResource(), bufferContainer.amountAsLong());
+        return bufferContainer.isEmpty() ? getEmptyResourceStack() : bufferContainer.asStack();
     }
 
     @NotNull
