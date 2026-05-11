@@ -100,7 +100,7 @@ public interface IRecipeLookupHandler<RECIPE extends MekanismRecipe<?>> extends 
          *
          * @return Constant amount of secondary input that had been used before saving.
          */
-        default long getSavedUsedSoFar(int cacheIndex) {
+        default int getSavedUsedSoFar(int cacheIndex) {
             return 0;
         }
     }

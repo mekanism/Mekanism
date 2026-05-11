@@ -1,12 +1,10 @@
 package mekanism.common.tile.factory;
 
 import com.google.common.primitives.Ints;
-import com.mojang.serialization.Codec;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.LongStream;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -23,7 +21,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
-import mekanism.api.recipes.inputs.ILongInputHandler;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
@@ -88,16 +86,16 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
           RecipeError.NOT_ENOUGH_SECONDARY_INPUT
     );
 
-    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getChemicalItem", docPlaceholder = "chemical item (extra) slot")
     ChemicalInventorySlot extraSlot;
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
     IChemicalTank chemicalTank;
     private final ChemicalUsageMultiplier chemicalUsageMultiplier;
-    private final long[] usedSoFar;
+    private final int[] usedSoFar;
     private double chemicalPerTickMeanMultiplier = 1;
-    private long baseTotalUsage;
+    private int baseTotalUsage;
 
     public TileEntityItemStackChemicalToItemStackFactory(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state, TRACKED_ERROR_TYPES, GLOBAL_ERROR_TYPES);
@@ -108,11 +106,11 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
             configComponent.setupInputConfig(TransmissionType.CHEMICAL, chemicalTank);
         }
         baseTotalUsage = BASE_TICKS_REQUIRED;
-        usedSoFar = new long[tier.processes];
+        usedSoFar = new int[tier.processes];
         if (useStatisticalMechanics()) {
             //Note: Statistical mechanics works best by just using the mean gas usage we want to target
             // rather than adjusting the mean each time to try and reach a given target
-            chemicalUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(chemicalPerTickMeanMultiplier);
+            chemicalUsageMultiplier = (_, _) -> StatUtils.inversePoisson(chemicalPerTickMeanMultiplier);
         } else {
             chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
         }
@@ -256,9 +254,9 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        Optional<LongStream> savedUsage = input.read(SerializationConstants.USED_SO_FAR, Codec.LONG_STREAM);
+        Optional<int[]> savedUsage = input.getIntArray(SerializationConstants.USED_SO_FAR);
         if (savedUsage.isPresent()) {
-            long[] savedUsed = savedUsage.get().toArray();
+            int[] savedUsed = savedUsage.get();
             if (tier.processes > savedUsed.length) {
                 //If we have more elements than were saved make sure to zero everything so that the ones past the end get properly reset
                 Arrays.fill(usedSoFar, 0);
@@ -274,11 +272,11 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        output.store(SerializationConstants.USED_SO_FAR, Codec.LONG_STREAM, Arrays.stream(usedSoFar));
+        output.putIntArray(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
-    public long getSavedUsedSoFar(int cacheIndex) {
+    public int getSavedUsedSoFar(int cacheIndex) {
         return usedSoFar[cacheIndex];
     }
 

@@ -17,7 +17,6 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -76,8 +75,8 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     private final ChemicalUsageMultiplier gasUsageMultiplier;
     private double gasPerTickMeanMultiplier = 1;
-    private long baseTotalUsage;
-    private long usedSoFar;
+    private int baseTotalUsage;
+    private int usedSoFar;
 
     @WrappingComputerMethod(wrapper = ComputerChemicalTankWrapper.class, methodNames = {"getChemical", "getChemicalCapacity", "getChemicalNeeded",
                                                                                         "getChemicalFilledPercentage"}, docPlaceholder = "chemical tank")
@@ -85,7 +84,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
 
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
+    protected final IInputHandler<Chemical, @NotNull ChemicalStack> chemicalInputHandler;
 
     private MachineEnergyContainer<TileEntityAdvancedElectricMachine> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
@@ -117,7 +116,7 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
         if (useStatisticalMechanics()) {
             //Note: Statistical mechanics works best by just using the mean gas usage we want to target
             // rather than adjusting the mean each time to try and reach a given target
-            gasUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(gasPerTickMeanMultiplier);
+            gasUsageMultiplier = (_, _) -> StatUtils.inversePoisson(gasPerTickMeanMultiplier);
         } else {
             gasUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> baseTotalUsage, this::getTicksRequired);
         }
@@ -227,20 +226,20 @@ public abstract class TileEntityAdvancedElectricMachine extends TileEntityProgre
     }
 
     @Override
-    public long getSavedUsedSoFar(int cacheIndex) {
+    public int getSavedUsedSoFar(int cacheIndex) {
         return usedSoFar;
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
+        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     //Methods relating to IComputerTile

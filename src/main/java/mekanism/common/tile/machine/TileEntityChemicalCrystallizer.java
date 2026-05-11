@@ -10,7 +10,7 @@ import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.cache.OneInputCachedRecipe;
-import mekanism.api.recipes.inputs.ILongInputHandler;
+import mekanism.api.recipes.inputs.IInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -66,7 +66,7 @@ public class TileEntityChemicalCrystallizer extends TileEntityProgressMachine<Ch
     public IChemicalTank inputTank;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> inputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalCrystallizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputItem", docPlaceholder = "input item slot")

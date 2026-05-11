@@ -2,9 +2,8 @@ package mekanism.api.recipes.cache;
 
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
+import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import java.util.function.LongConsumer;
-import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -15,7 +14,6 @@ import mekanism.api.recipes.ChemicalDissolutionRecipe;
 import mekanism.api.recipes.ItemStackChemicalToItemStackRecipe;
 import mekanism.api.recipes.ItemStackChemicalToObjectRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -36,11 +34,11 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     private final Predicate<OUTPUT> outputEmptyCheck;
     private final IOutputHandler<@NotNull OUTPUT> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
+    private final IInputHandler<Chemical, ChemicalStack> chemicalInputHandler;
     private final ChemicalUsageMultiplier chemicalUsage;
-    private final LongConsumer chemicalUsedSoFarChanged;
-    private long chemicalUsageMultiplier;
-    private long chemicalUsedSoFar;
+    private final IntConsumer chemicalUsedSoFarChanged;
+    private int chemicalUsageMultiplier;
+    private int chemicalUsedSoFar;
 
     private ItemStack recipeItem = ItemStack.EMPTY;
     //Note: Shouldn't be null in places it is actually used, but we mark it as nullable, so we don't have to initialize it
@@ -60,7 +58,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      * @param outputHandler            Output handler.
      */
     public ItemStackConstantChemicalToObjectCachedRecipe(RECIPE recipe, BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler,
-          ILongInputHandler<Chemical, ChemicalStack> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged,
+          IInputHandler<Chemical, ChemicalStack> chemicalInputHandler, ChemicalUsageMultiplier chemicalUsage, IntConsumer chemicalUsedSoFarChanged,
           IOutputHandler<@NotNull OUTPUT> outputHandler, Predicate<OUTPUT> outputEmptyCheck) {
         super(recipe, recheckAllErrors);
         this.itemInputHandler = Objects.requireNonNull(itemInputHandler, "Item input handler cannot be null.");
@@ -76,7 +74,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      *
      * @param chemicalUsedSoFar Amount of chemical that has been used so far.
      */
-    public void loadSavedUsageSoFar(long chemicalUsedSoFar) {
+    public void loadSavedUsageSoFar(int chemicalUsedSoFar) {
         if (chemicalUsedSoFar > 0) {
             this.chemicalUsedSoFar = chemicalUsedSoFar;
         }
@@ -151,7 +149,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
         }
         try (Transaction transaction = Transaction.openRoot()) {
             //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
-            long toUse = operations * chemicalUsageMultiplier;
+            int toUse = operations * chemicalUsageMultiplier;
             chemicalInputHandler.use(recipeChemical, toUse, transaction);
             chemicalUsedSoFar += toUse;
             chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
@@ -184,11 +182,11 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     @FunctionalInterface
     public interface ChemicalUsageMultiplier {
 
-        long getToUse(long usedSoFar, int operatingTicks);
+        int getToUse(int usedSoFar, int operatingTicks);
 
-        static ChemicalUsageMultiplier constantUse(LongSupplier baseTotalUsage, IntSupplier ticksRequired) {
+        static ChemicalUsageMultiplier constantUse(IntSupplier baseTotalUsage, IntSupplier ticksRequired) {
             return (usedSoFar, operatingTicks) -> {
-                long baseRemaining = baseTotalUsage.getAsLong() - usedSoFar;
+                int baseRemaining = baseTotalUsage.getAsInt() - usedSoFar;
                 int remainingTicks = ticksRequired.getAsInt() - operatingTicks;
                 if (baseRemaining < remainingTicks) {
                     //If we already used more than we would need to use (due to removing speed upgrades or adding gas upgrades)
@@ -197,7 +195,7 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
                 } else if (baseRemaining == remainingTicks) {
                     return 1;
                 }
-                return Math.max(MathUtils.clampToLong(baseRemaining / (double) remainingTicks), 0);
+                return Math.max(MathUtils.clampToInt(baseRemaining / (double) remainingTicks), 0);
             };
         }
     }
@@ -213,8 +211,8 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      * @param outputHandler            Output handler.
      */
     public static <RECIPE extends ItemStackChemicalToItemStackRecipe> ItemStackConstantChemicalToObjectCachedRecipe<ItemStackTemplate, RECIPE> toItem(RECIPE recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler, ILongInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
-          ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
+          BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler, IInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
+          ChemicalUsageMultiplier chemicalUsage, IntConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ItemStackTemplate> outputHandler) {
         return new ItemStackConstantChemicalToObjectCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, chemicalUsage,
               chemicalUsedSoFarChanged, outputHandler, ConstantPredicates.INVALID_ITEM_TEMPLATE);
     }
@@ -230,8 +228,8 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
      * @param outputHandler            Output handler.
      */
     public static ItemStackConstantChemicalToObjectCachedRecipe<ChemicalStack, ChemicalDissolutionRecipe> dissolution(ChemicalDissolutionRecipe recipe,
-          BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler, ILongInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
-          ChemicalUsageMultiplier chemicalUsage, LongConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
+          BooleanSupplier recheckAllErrors, IInputHandler<Item, @NotNull ItemStack> itemInputHandler, IInputHandler<Chemical, ChemicalStack> chemicalInputHandler,
+          ChemicalUsageMultiplier chemicalUsage, IntConsumer chemicalUsedSoFarChanged, IOutputHandler<@NotNull ChemicalStack> outputHandler) {
         return new ItemStackConstantChemicalToObjectCachedRecipe<>(recipe, recheckAllErrors, itemInputHandler, chemicalInputHandler, chemicalUsage,
               chemicalUsedSoFarChanged, outputHandler, ConstantPredicates.CHEMICAL_EMPTY);
     }

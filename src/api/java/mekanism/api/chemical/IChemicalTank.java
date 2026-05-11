@@ -56,16 +56,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
     }
 
     /**
-     * Retrieves the maximum stack size allowed to exist in this {@link IChemicalTank}.
-     *
-     * @return The maximum stack size allowed in this {@link IChemicalTank}.
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Replace with limits
-    default long getCapacity() {
-        return getLimitAsLong(ChemicalResource.EMPTY);
-    }
-
-    /**
      * Convenience method for modifying the size of the stored stack.
      * <p>
      * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this chemical tank's limit. If the amount is less than or equal to

@@ -1,5 +1,6 @@
 package mekanism.common.util;
 
+import com.google.common.primitives.Ints;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -274,7 +275,7 @@ public final class MekanismUtils {
         return true;
     }
 
-    public static long getBaseUsage(IUpgradeTile tile, int def) {
+    public static int getBaseUsage(IUpgradeTile tile, int def) {
         if (tile.supportsUpgrades()) {
             //getGasPerTickMean * required ticks (not rounded)
             if (tile.supportsUpgrade(Upgrade.CHEMICAL)) {
@@ -282,8 +283,9 @@ public final class MekanismUtils {
                 // def * upgradeMultiplier ^ ((speed - gas) / 8)
                 //TODO: We may want to validate this provides the numbers we desire if we ever end up with any machines
                 // that use this that are not statistical and have gas upgrades so would go through this code path
-                return Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
-                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL)));
+                //TODO - 26.1: Re-evaluate this cast
+                return Ints.saturatedCast(Math.round(def * Math.pow(MekanismConfig.general.maxUpgradeMultiplier.get(),
+                      fractionUpgrades(tile, Upgrade.SPEED) - fractionUpgrades(tile, Upgrade.CHEMICAL))));
             }
             //If it doesn't support gas upgrades, we can fall through to the default value as the math would be:
             // def * (upgradeMultiplier ^ (speed / 8)) * (upgradeMultiplier ^ (-speed / 8)) =

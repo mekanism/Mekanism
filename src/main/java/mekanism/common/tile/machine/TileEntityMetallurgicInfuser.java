@@ -16,7 +16,6 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -85,10 +84,10 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     public IChemicalTank infusionTank;
 
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
-    private long usedSoFar;
+    private int usedSoFar;
 
     private final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
-    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> infusionInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> infusionInputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
 
     private MachineEnergyContainer<TileEntityMetallurgicInfuser> energyContainer;
@@ -204,20 +203,20 @@ public class TileEntityMetallurgicInfuser extends TileEntityProgressMachine<Item
     }
 
     @Override
-    public long getSavedUsedSoFar(int cacheIndex) {
+    public int getSavedUsedSoFar(int cacheIndex) {
         return usedSoFar;
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
+        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override

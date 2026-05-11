@@ -9,11 +9,11 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 /**
  * Interface describing handling of an input.
  *
- * @param <HOLDERTYPE> Type of input handled by this handler.
+ * @param <HOLDER_TYPE> Type of input handled by this handler.
  * @param <STACK>      Stack Type of HOLDERTYPE.
  */
 @NothingNullByDefault
-public interface IInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYPE>> {
+public interface IInputHandler<HOLDER_TYPE, STACK extends TypedInstance<HOLDER_TYPE>> {
 
     /**
      * Returns the currently stored input.
@@ -39,7 +39,7 @@ public interface IInputHandler<HOLDERTYPE, STACK extends TypedInstance<HOLDERTYP
      *
      * @return Matching instance. The returned value can be safely modified after.
      */
-    STACK getRecipeInput(InputIngredient<HOLDERTYPE, STACK> recipeIngredient);
+    STACK getRecipeInput(InputIngredient<HOLDER_TYPE, STACK> recipeIngredient);
 
     /**
      * Adds {@code operations} operations worth of {@code recipeInput} from the input.

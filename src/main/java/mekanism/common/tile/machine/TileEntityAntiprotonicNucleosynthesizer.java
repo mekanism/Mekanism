@@ -14,7 +14,6 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -82,11 +81,11 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     public IChemicalTank gasTank;
 
     private final ChemicalUsageMultiplier chemicalUsageMultiplier = ChemicalUsageMultiplier.constantUse(() -> ticksRequired, this::getTicksRequired);
-    private long usedSoFar;
+    private int usedSoFar;
 
     protected final IOutputHandler<@NotNull ItemStackTemplate> outputHandler;
     protected final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    protected final ILongInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
+    protected final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityAntiprotonicNucleosynthesizer> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputChemicalItem", docPlaceholder = "input gas item slot")
@@ -206,20 +205,20 @@ public class TileEntityAntiprotonicNucleosynthesizer extends TileEntityProgressM
     }
 
     @Override
-    public long getSavedUsedSoFar(int cacheIndex) {
+    public int getSavedUsedSoFar(int cacheIndex) {
         return usedSoFar;
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
+        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @NotNull

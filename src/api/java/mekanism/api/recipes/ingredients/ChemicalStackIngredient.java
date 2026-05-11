@@ -28,7 +28,7 @@ import org.jetbrains.annotations.Nullable;
  * @see net.neoforged.neoforge.common.crafting.SizedIngredient
  */
 @NothingNullByDefault
-public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalStack> {
+public final class ChemicalStackIngredient implements InputIngredient<Chemical, ChemicalStack> {//TODO - 26.1: Change chemical stack ingredients to act on ints
 
     /**
      * The "flat" codec for {@link ChemicalStackIngredient}.

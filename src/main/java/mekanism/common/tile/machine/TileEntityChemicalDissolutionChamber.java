@@ -16,7 +16,6 @@ import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe;
 import mekanism.api.recipes.cache.ItemStackConstantChemicalToObjectCachedRecipe.ChemicalUsageMultiplier;
 import mekanism.api.recipes.cache.TwoInputCachedRecipe;
 import mekanism.api.recipes.inputs.IInputHandler;
-import mekanism.api.recipes.inputs.ILongInputHandler;
 import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.api.recipes.outputs.IOutputHandler;
 import mekanism.api.recipes.outputs.OutputHelper;
@@ -82,11 +81,11 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     public IChemicalTank outputTank;
     private final ChemicalUsageMultiplier injectUsageMultiplier;
     private double injectUsage = 1;
-    private long usedSoFar;
+    private int usedSoFar;
 
     private final IOutputHandler<ChemicalStack> outputHandler;
     private final IInputHandler<Item, @NotNull ItemStack> itemInputHandler;
-    private final ILongInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
+    private final IInputHandler<Chemical, @NotNull ChemicalStack> gasInputHandler;
 
     private MachineEnergyContainer<TileEntityChemicalDissolutionChamber> energyContainer;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInputGasItem", docPlaceholder = "gas input item slot")
@@ -114,7 +113,7 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
 
         //Note: Statistical mechanics works best by just using the mean gas usage we want to target
         // rather than adjusting the mean each time to try and reach a given target
-        injectUsageMultiplier = (usedSoFar, operatingTicks) -> StatUtils.inversePoisson(injectUsage);
+        injectUsageMultiplier = (_, _) -> StatUtils.inversePoisson(injectUsage);
     }
 
     @NotNull
@@ -209,20 +208,20 @@ public class TileEntityChemicalDissolutionChamber extends TileEntityProgressMach
     }
 
     @Override
-    public long getSavedUsedSoFar(int cacheIndex) {
+    public int getSavedUsedSoFar(int cacheIndex) {
         return usedSoFar;
     }
 
     @Override
     public void loadAdditional(@NotNull ValueInput input) {
         super.loadAdditional(input);
-        usedSoFar = input.getLongOr(SerializationConstants.USED_SO_FAR, usedSoFar);
+        usedSoFar = input.getIntOr(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     @Override
     public void saveAdditional(@NotNull ValueOutput output) {
         super.saveAdditional(output);
-        output.putLong(SerializationConstants.USED_SO_FAR, usedSoFar);
+        output.putInt(SerializationConstants.USED_SO_FAR, usedSoFar);
     }
 
     //Methods relating to IComputerTile

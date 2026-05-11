@@ -17,19 +17,19 @@ public class AdvancedMachineUpgradeData extends MachineUpgradeData {
 
     public final IChemicalTank stored;
     public final ChemicalInventorySlot chemicalSlot;
-    public final long[] usedSoFar;
+    public final int[] usedSoFar;
 
     //Advanced Machine Constructor
-    public AdvancedMachineUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, long usedSoFar, IChemicalTank stored,
+    public AdvancedMachineUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int operatingTicks, int usedSoFar, IChemicalTank stored,
           ChemicalInventorySlot chemicalSlot, EnergyInventorySlot energySlot, InputInventorySlot inputSlot, OutputInventorySlot outputSlot, List<ITileComponent> components, PathElement problemPath) {
         super(provider, redstone, controlType, energyContainer, operatingTicks, energySlot, inputSlot, outputSlot, components, problemPath);
         this.stored = stored;
         this.chemicalSlot = chemicalSlot;
-        this.usedSoFar = new long[]{usedSoFar};
+        this.usedSoFar = new int[]{usedSoFar};
     }
 
     //Advanced Machine Factory Constructor
-    public AdvancedMachineUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, long[] usedSoFar, IChemicalTank stored,
+    public AdvancedMachineUpgradeData(Provider provider, boolean redstone, RedstoneControl controlType, IEnergyContainer energyContainer, int[] progress, int[] usedSoFar, IChemicalTank stored,
           ChemicalInventorySlot chemicalSlot, EnergyInventorySlot energySlot, List<IInventorySlot> inputSlots, List<IInventorySlot> outputSlots, boolean sorting,
           List<ITileComponent> components, PathElement problemPath) {
         super(provider, redstone, controlType, energyContainer, progress, energySlot, inputSlots, outputSlots, sorting, components, problemPath);
