@@ -1,9 +1,9 @@
 package mekanism.common.block;
 
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.block.prefab.BlockTile.BlockTileModel;
+import mekanism.common.capabilities.chemical.StackedWasteBarrel;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.registries.MekanismBlockTypes;
 import mekanism.common.tile.TileEntityRadioactiveWasteBarrel;
@@ -36,13 +36,13 @@ public class BlockRadioactiveWasteBarrel extends BlockTileModel<TileEntityRadioa
         if (tile == null) {
             return InteractionResult.PASS;
         } else if (!world.isClientSide()) {
-            ChemicalStack stored = tile.getChemicalTank().getStack();
+            StackedWasteBarrel chemicalTank = tile.getChemicalTank();
             Component text;
-            if (stored.isEmpty()) {
+            if (chemicalTank.isEmpty()) {
                 text = MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY);
             } else {
-                text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, stored, EnumColor.GRAY,
-                      TextUtils.format(stored.amount()), TextUtils.getPercent(tile.getChemicalScale()));
+                text = MekanismLang.STORED_MB_PERCENTAGE.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalTank.getResource(), EnumColor.GRAY,
+                      TextUtils.format(chemicalTank.amountAsLong()), TextUtils.getPercent(tile.getChemicalScale()));
             }
             player.sendSystemMessage(text);
         }

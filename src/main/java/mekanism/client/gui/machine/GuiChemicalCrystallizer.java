@@ -1,7 +1,7 @@
 package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.client.gui.GuiConfigurableTile;
@@ -59,14 +59,14 @@ public class GuiChemicalCrystallizer extends GuiConfigurableTile<TileEntityChemi
 
         @NotNull
         @Override
-        public ChemicalStack getInputChemical() {
-            return tile.inputTank.getStack();
+        public ChemicalResource getInputChemical() {
+            return tile.inputTank.getResource();
         }
 
         @Nullable
         @Override
         public ChemicalCrystallizerRecipe getRecipe() {
-            ChemicalStack input = getInputChemical();
+            ChemicalResource input = getInputChemical();
             if (input.isEmpty()) {
                 return null;
             }

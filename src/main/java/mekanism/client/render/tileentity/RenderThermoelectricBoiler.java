@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
@@ -26,7 +26,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -53,8 +53,8 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         }
         int height = multiblock.upperRenderLocation.getY() - 1 - multiblock.renderLocation.getY();
         if (height > 0) {
-            FluidStack fluid = multiblock.waterTank.getFluid();
-            state.waterData = RenderData.Builder.create(fluid)
+            FluidResource fluid = multiblock.waterTank.getResource();
+            state.waterData = RenderData.Builder.create(multiblock.waterTank)
                   .of(multiblock)
                   .height(height)
                   .build();
@@ -67,13 +67,13 @@ public class RenderThermoelectricBoiler extends MultiblockTileEntityRenderer<Boi
         }
         int steamHeight = multiblock.renderLocation.getY() + multiblock.height() - 2 - multiblock.upperRenderLocation.getY();
         if (steamHeight > 0) {
-            ChemicalStack chemicalStack = multiblock.steamTank.getStack();
-            state.steamData = RenderData.Builder.create(chemicalStack)
+            ChemicalResource chemicalType = multiblock.steamTank.getResource();
+            state.steamData = RenderData.Builder.create(chemicalType)
                   .of(multiblock)
                   .location(multiblock.upperRenderLocation.offset(1, 0, 1))
                   .height(steamHeight)
                   .build();
-            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+            state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
         } else {
             state.steamData = null;
         }

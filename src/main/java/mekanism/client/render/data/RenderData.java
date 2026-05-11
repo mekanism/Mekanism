@@ -4,11 +4,12 @@ import java.util.Objects;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.client.render.ModelRenderer;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,11 +65,16 @@ public abstract class RenderData {
             this.fluid = fluid;
         }
 
-        public static Builder<ChemicalRenderData> create(ChemicalStack chemical) {
-            if (chemical.isEmpty()) {
+        public static Builder<ChemicalRenderData> create(TypedInstance<Chemical> chemical) {
+            Holder<Chemical> chemicalHolder = chemical.typeHolder();
+            if (chemicalHolder.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
                 throw new IllegalArgumentException("Chemical may not be empty");
             }
             return new Builder<>(chemical.typeHolder(), FluidStack.EMPTY);
+        }
+
+        public static Builder<FluidRenderData> create(IFluidTank tank) {
+            return create(tank.getResource().toStack(tank.amount()));
         }
 
         public static Builder<FluidRenderData> create(FluidStack fluid) {

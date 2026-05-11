@@ -12,7 +12,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
@@ -151,8 +150,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
 
     @Nullable
     private HeatedCoolant getHeatedCoolant() {
-        ChemicalStack stack = superheatedCoolantTank.getStack();
-        return stack.isEmpty() ? null : stack.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
+        ChemicalResource resource = superheatedCoolantTank.getResource();
+        return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.heatedChemicalCoolant());
     }
 
     @Override

@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.fission;
 
-import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
@@ -11,10 +10,10 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.container.IResourceContainer;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.fluid.IFluidTank;
@@ -62,7 +61,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.minecraft.world.phys.AABB;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -401,8 +399,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
      */
     private double getTankRadioactivityAndDump(IChemicalTank tank) {
         if (!tank.isEmpty()) {
-            ChemicalStack stored = tank.getStack();
-            double radioactivity = stored.getRadioactivity();
+            double radioactivity = tank.getResource().getRadioactivity() * tank.amountAsLong();
             if (radioactivity > 0) {
                 //If we have a radioactive substance, then we need to set the tank to empty
                 tank.setEmpty();
@@ -414,7 +411,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @Nullable
     private CooledCoolant getCooledCoolant(ChemicalResource resource) {
-        return resource.isEmpty() ? null : resource.typeHolder().getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
+        return resource.isEmpty() ? null : resource.getData(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant());
     }
 
     private void handleCoolant() {
@@ -645,12 +642,12 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setRateLimit(rate);
     }
 
-    @ComputerMethod
-    Either<ChemicalStack, FluidStack> getCoolant() {//TODO - 26.1: Return Resource or LargeResourceStack rather than either?
+    //@ComputerMethod//TODO - 26.1: Add a wrapper type for this
+    LargeResourceStack<?> getCoolant() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            return Either.left(coolantTank.getChemicalTank().getStack());
+            return coolantTank.getChemicalTank().asStack();
         }
-        return Either.right(coolantTank.getFluidTank().getFluid());
+        return coolantTank.getFluidTank().asStack();
     }
 
     @ComputerMethod

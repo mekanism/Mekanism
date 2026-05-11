@@ -2,7 +2,7 @@ package mekanism.generators.client.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
 import mekanism.client.render.RenderResizableCuboid;
@@ -45,12 +45,12 @@ public class RenderIndustrialTurbine extends MultiblockTileEntityRenderer<Turbin
         if (!multiblock.chemicalTank.isEmpty() && multiblock.length() > 0) {
             int height = multiblock.lowerVolume / (multiblock.length() * multiblock.width());
             if (height > 0) {
-                ChemicalStack chemicalStack = multiblock.chemicalTank.getStack();
-                state.steamData = RenderData.Builder.create(chemicalStack)
+                ChemicalResource chemicalType = multiblock.chemicalTank.getResource();
+                state.steamData = RenderData.Builder.create(chemicalType)
                       .of(multiblock)
                       .height(height)
                       .build();
-                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+                state.steamTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
             }
         }
     }

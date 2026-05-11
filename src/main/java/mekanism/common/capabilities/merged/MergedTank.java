@@ -51,7 +51,6 @@ public class MergedTank {
     public void readFromUpdateTag(@NotNull ValueInput input) {
         input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(fluidTank::setContents);
         input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(chemicalTank::setContents);
-
     }
 
     public enum CurrentType {

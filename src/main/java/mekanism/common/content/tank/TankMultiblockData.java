@@ -1,12 +1,11 @@
 package mekanism.common.content.tank;
 
-import com.mojang.datafixers.util.Either;
 import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
@@ -30,7 +29,6 @@ import mekanism.common.util.MekanismUtils;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 public class TankMultiblockData extends MultiblockData implements IValveHandler {
@@ -181,12 +179,12 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         setContainerEditMode(editMode.getPrevious());
     }
 
-    @ComputerMethod
-    Either<ChemicalStack, FluidStack> getStored() {
+    //@ComputerMethod//TODO - 26.1: Add a wrapper type for this
+    LargeResourceStack<?> getStored() {
         return switch (mergedTank.getCurrentType()) {
-            case FLUID -> Either.right(getFluidTank().getFluid());
-            case CHEMICAL -> Either.left(getChemicalTank().getStack());
-            default -> Either.right(FluidStack.EMPTY);
+            case FLUID -> getFluidTank().asStack();
+            case CHEMICAL -> getChemicalTank().asStack();
+            default -> LargeResourceStack.EMPTY_FLUID_STACK;
         };
     }
 

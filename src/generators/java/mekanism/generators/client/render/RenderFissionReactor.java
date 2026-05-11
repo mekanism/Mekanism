@@ -9,7 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.fluid.IFluidTank;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.MekanismRenderer.LazyModel;
 import mekanism.client.render.MekanismRenderer.Model3D;
@@ -35,7 +36,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -88,23 +88,23 @@ public class RenderFissionReactor extends MultiblockTileEntityRenderer<FissionRe
         state.coolantTexture = null;
         state.heatedCoolantTexture = null;
         if (multiblock.coolantTank.getCurrentType() == CurrentType.FLUID) {
-            FluidStack fluid = multiblock.coolantTank.getFluidTank().getFluid();
-            state.coolantData = RenderData.Builder.create(fluid).of(multiblock).buildScaled(state.coolantScale);
-            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluid, MekanismRenderer.FluidTextureType.STILL));
+            IFluidTank fluidTank = multiblock.coolantTank.getFluidTank();
+            state.coolantData = RenderData.Builder.create(fluidTank).of(multiblock).buildScaled(state.coolantScale);
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidTank.getResource(), MekanismRenderer.FluidTextureType.STILL));
         } else if (multiblock.coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            ChemicalStack chemicalStack = multiblock.coolantTank.getChemicalTank().getStack();
-            state.coolantData = RenderData.Builder.create(chemicalStack).of(multiblock).buildScaled(state.coolantScale);
-            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+            ChemicalResource chemicalType = multiblock.coolantTank.getChemicalTank().getResource();
+            state.coolantData = RenderData.Builder.create(chemicalType).of(multiblock).buildScaled(state.coolantScale);
+            state.coolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
         }
         if (state.coolantData != null) {
             state.coolantModel = getCoolantModel(state.coolantData);
         }
         if (!multiblock.heatedCoolantTank.isEmpty()) {
-            ChemicalStack chemicalStack = multiblock.heatedCoolantTank.getStack();
-            state.heatedCoolantData = RenderData.Builder.create(chemicalStack).of(multiblock).build();
+            ChemicalResource chemicalType = multiblock.heatedCoolantTank.getResource();
+            state.heatedCoolantData = RenderData.Builder.create(chemicalType).of(multiblock).build();
             //Create a slightly shrunken version of the model if it is missing to prevent z-fighting
             state.heatedCoolantModel = cachedHeatedCoolantModels.computeIfAbsent(state.heatedCoolantData, d -> ModelRenderer.getModel(d, 1).copy().shrink(0.01F));
-            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalStack));
+            state.heatedCoolantTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getChemicalTexture(chemicalType));
         }
 
         if (multiblock.isBurning()) {

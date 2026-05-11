@@ -46,7 +46,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
             @NotNull
             @Override
             public FluidStack getStack() {
-                return tank.getFluid();
+                return tank.getResource().toStack(tank.amount());
             }
 
             @Override

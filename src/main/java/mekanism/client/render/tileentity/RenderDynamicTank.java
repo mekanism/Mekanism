@@ -82,8 +82,8 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
             return null;
         }
         return (switch (currentType) {
-            case FLUID -> RenderData.Builder.create(multiblock.getFluidTank().getFluid());
-            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().getStack());
+            case FLUID -> RenderData.Builder.create(multiblock.getFluidTank());
+            case CHEMICAL -> RenderData.Builder.create(multiblock.getChemicalTank().getResource());
             default -> throw new IllegalStateException("Unknown current type.");
         }).of(multiblock).build();
     }
@@ -96,7 +96,7 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         }
         return switch (currentType) {
             case FLUID -> MekanismRenderer.getFluidTexture(multiblock.getFluidTank().getResource(), MekanismRenderer.FluidTextureType.STILL);
-            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().getStack());
+            case CHEMICAL -> MekanismRenderer.getChemicalTexture(multiblock.getChemicalTank().getResource());
             default -> throw new IllegalStateException("Unknown current type.");
         };
     }

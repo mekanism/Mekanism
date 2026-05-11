@@ -4,10 +4,12 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.vanilla_input.SingleChemicalRecipeInput;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
@@ -43,7 +45,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
      * @implNote The passed in input should <strong>NOT</strong> be modified.
      */
     @Contract(value = "_ -> new", pure = true)
-    public abstract ItemStackTemplate getOutput(ChemicalStack input);
+    public abstract ItemStackTemplate getOutput(TypedInstance<Chemical> input);
 
     /**
      * For JEI, gets the output representations to display.
@@ -85,7 +87,7 @@ public abstract class ChemicalCrystallizerRecipe extends MekanismRecipe<SingleCh
      * @return {@code true} if the stack's type matches the input.
      *
      */
-    public abstract boolean testType(ChemicalStack stack);
+    public abstract boolean testType(TypedInstance<Chemical> stack);
 
     /**
      * Gets the input ingredient.

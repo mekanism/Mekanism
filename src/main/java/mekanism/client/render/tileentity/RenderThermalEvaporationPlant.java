@@ -25,7 +25,7 @@ import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -45,8 +45,8 @@ public class RenderThermalEvaporationPlant extends MultiblockTileEntityRenderer<
         super.extractRenderState(controller, state, partialTick, cameraPosition, breakProgress);
         EvaporationMultiblockData multiblock = controller.getMultiblock();
         state.scale = Math.min(1, multiblock.prevScale);
-        FluidStack fluid = multiblock.inputTank.getFluid();
-        state.data = RenderData.Builder.create(fluid)
+        FluidResource fluid = multiblock.inputTank.getResource();
+        state.data = RenderData.Builder.create(multiblock.inputTank)
               .of(multiblock)
               .height(multiblock.height() - 1)
               .build();

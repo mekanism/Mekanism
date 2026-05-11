@@ -51,7 +51,6 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -141,7 +140,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                             //Note: We already validated that the fluid tank is not empty so our resource doesn't represent the empty resource
                             if (canReplace(below, false, false) &&
                                 fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, transaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
-                                WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
+                                WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidType.toStack(FluidType.BUCKET_VOLUME), null)) {
                                 level.gameEvent(null, GameEvent.FLUID_PLACE, below);
                                 clientEnergyUsed = energyPerTick;
                                 transaction.commit();
@@ -188,7 +187,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
                     //TODO - 26.1: Make sure fluid type isn't empty?
                     if (canReplace(nodePos, true, false) &&
                         fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, subTransaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
-                        WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
+                        WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidType.toStack(FluidType.BUCKET_VOLUME), null)) {
                         level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
                         subTransaction.commit();
                     }
@@ -227,12 +226,12 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
             //Always return true if it is not a source block
             return true;
         }
-        FluidStack stack = fluidTank.getFluid();
-        if (stack.isEmpty()) {
+        FluidResource fluidType = fluidTank.getResource();
+        if (fluidType.isEmpty()) {
             //If we are empty, base it off of if it is replaceable in general or if it is a liquid container
             return state.canBeReplaced() || state.getBlock() instanceof LiquidBlockContainer;
         }
-        Fluid fluid = stack.getFluid();
+        Fluid fluid = fluidType.getFluid();
         if (state.canBeReplaced(fluid)) {
             //If we can replace the block then return so
             return true;

@@ -1322,7 +1322,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         List<LargeResourceStack<ChemicalResource>> stacks = new ArrayList<>(tanks.size());
         boolean skipRadioactive = RadiationManager.isGlobalRadiationEnabled() && shouldDumpRadiation();
         for (IChemicalTank tank : tanks) {
-            if (tank.isEmpty() || skipRadioactive && tank.getStack().isRadioactive()) {
+            if (tank.isEmpty() || skipRadioactive && tank.getResource().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
                 stacks.add(LargeResourceStack.EMPTY_CHEMICAL_STACK);
             } else {

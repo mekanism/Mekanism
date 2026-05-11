@@ -5,10 +5,12 @@ import java.util.List;
 import java.util.Objects;
 import mekanism.api.ItemStackTemplateHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalCrystallizerRecipe;
 import mekanism.api.recipes.MekanismRecipeSerializers;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -33,7 +35,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
 
     @Contract(value = "_ -> new", pure = true)
     @Override
-    public ItemStackTemplate getOutput(ChemicalStack input) {
+    public ItemStackTemplate getOutput(TypedInstance<Chemical> input) {
         return output;
     }
 
@@ -48,7 +50,7 @@ public class BasicChemicalCrystallizerRecipe extends ChemicalCrystallizerRecipe 
     }
 
     @Override
-    public boolean testType(ChemicalStack stack) {
+    public boolean testType(TypedInstance<Chemical> stack) {
         return input.testType(stack);
     }
 

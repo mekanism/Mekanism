@@ -1,6 +1,7 @@
 package mekanism.client.gui.machine;
 
 import java.lang.ref.WeakReference;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.recipes.ChemicalChemicalToChemicalRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -62,7 +63,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.getStack().getChemicalColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.getResource().getChemical().getColorRepresentation());
         }
     }
 
@@ -70,7 +71,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.getStack().getChemicalColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.getResource().getChemical().getColorRepresentation());
         }
     }
 
@@ -90,8 +91,8 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             if (tile.outputTank.isEmpty()) {
                 //If the pigment tank is empty, try looking up the recipe and grabbing the color from it
                 if (!tile.leftInputTank.isEmpty() && !tile.rightInputTank.isEmpty()) {
-                    ChemicalStack leftInput = tile.leftInputTank.getStack();
-                    ChemicalStack rightInput = tile.rightInputTank.getStack();
+                    ChemicalResource leftInput = tile.leftInputTank.getResource();
+                    ChemicalResource rightInput = tile.rightInputTank.getResource();
                     ChemicalChemicalToChemicalRecipe recipe;
                     if (cachedRecipe == null) {
                         recipe = getRecipeAndCache();
@@ -102,12 +103,13 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                         }
                     }
                     if (recipe != null) {
-                        return getColor(recipe.getOutput(leftInput, rightInput).getChemicalColorRepresentation());
+                        ChemicalStack output = recipe.getOutput(leftInput.toStack(tile.leftInputTank.amountAsLong()), rightInput.toStack(tile.rightInputTank.amountAsLong()));
+                        return getColor(output.getChemicalColorRepresentation());
                     }
                 }
                 return 0xFFFFFFFF;
             }
-            return getColor(tile.outputTank.getStack().getChemicalColorRepresentation());
+            return getColor(tile.outputTank.getResource().getChemical().getColorRepresentation());
         }
 
         private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {
@@ -120,7 +122,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
             return recipe;
         }
 
-        private boolean isValid(ChemicalChemicalToChemicalRecipe recipe, ChemicalStack leftInput, ChemicalStack rightInput) {
+        private boolean isValid(ChemicalChemicalToChemicalRecipe recipe, ChemicalResource leftInput, ChemicalResource rightInput) {
             return (recipe.getLeftInput().testType(leftInput) && recipe.getRightInput().testType(rightInput)) ||
                    (recipe.getLeftInput().testType(rightInput) && recipe.getRightInput().testType(leftInput));
         }

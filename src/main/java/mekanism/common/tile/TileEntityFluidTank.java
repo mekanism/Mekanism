@@ -318,7 +318,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amount());
             outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amount());
             editMode = data.editMode;
-            fluidTank.setContents(FluidResource.of(data.stored), data.stored.amount());
+            fluidTank.setContents(data.stored);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -333,7 +333,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     public FluidTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.getFluid(), getComponents(), problemPath());
+        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.asStack(), getComponents(), problemPath());
     }
 
     @Override

@@ -120,12 +120,14 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
 
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(dummy || getTank() == null ? dummyType : getTank().getFluid());
+        IFluidTank tank = getTank();
+        MekanismRenderer.color(dummy || tank == null ? dummyType : tank.getResource().toStack(tank.amount()));
     }
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
-        return getTank().isEmpty() ? Optional.empty() : Optional.of(getTank().getFluid());
+        IFluidTank tank = getTank();
+        return tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amount()));
     }
 
     @Override
