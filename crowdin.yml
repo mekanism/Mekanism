@@ -1,5 +1,6 @@
 project_identifier: mekanism
-api_key_env: CROWDIN_API_KEY
+project_id: "1"
+api_token_env: CROWDIN_PERSONAL_TOKEN
 commit_message: '[ci skip]'
 preserve_hierarchy: true
 base_path: .
@@ -18,7 +19,7 @@ files:
         ba: ba_ru
         be: be_by
         bg: bg_bg
-        br-FR: br_fr
+        br: br_fr
         bs: bs_ba
         ca: ca_es
         cs: cs_cz
@@ -38,7 +39,7 @@ files:
         eo: eo_uy
         es-AR: es_ar
         es-CL: es_cl
-        es-ES: es_es
+        es: es_es
         es-MX: es_mx
         es-UY: es_uy
         es-VE: es_ve
@@ -50,42 +51,42 @@ files:
         fo: fo_fo
         fr-CA: fr_ca
         fr: fr_fr
-        fra-DE: fra_de
-        fy-NL: fy_nl
-        ga-IE: ga_ie
+        fra: fra_de
+        fy: fy_nl
+        ga: ga_ie
         gd: gd_gb
         gl: gl_es
-        got: got_de
-        gv: gv_im
+        #not on crowdin - got: got_de
+        #not on crowdin - gv: gv_im
         haw: haw_us
         he: he_il
         hi: hi_in
         hr: hr_hr
         hu: hu_hu
-        hy-AM: hy_am
+        hy: hy_am
         id: id_id
         ig: ig_ng
         ido: io_en
         is: is_is
         it: it_it
         ja: ja_jp
-        jbo: jbo_en
+        #not on crowdin - jbo: jbo_en
         ka: ka_ge
         kab: kab_kab
         kk: kk_kz
         kn: kn_in
         ko: ko_kr
         kw: kw_gb
-        la-LA: la_va
+        la: la_va
         lb: lb_lu
         li: li_li
-        lol: lol_us
+        #not on crowdin - lol: lol_us
         lt: lt_lt
         lv: lv_lv
         mi: mi_nz
         mk: mk_mk
         mn: mn_mn
-        moh: moh_ca
+        #not on crowdin - moh: moh_ca
         ms: ms_my
         mt: mt_mt
         nb: nb_no
@@ -97,8 +98,8 @@ files:
         oj: oj_ca
         pl: pl_pl
         pt-BR: pt_br
-        pt-PT: pt_pt
-        qya-AA: qya_aa
+        pt: pt_pt
+        #not on crowdin - qya-AA: qya_aa
         ro: ro_ro
         ru: ru_ru
         sk: sk_sk
@@ -106,17 +107,17 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-CS: sr_cs
-        sv-SE: sv_se
+        sr-Cyrl: sr_cs
+        sv: sv_se
         ta: ta_in
         th: th_th
         tl: tl_ph
-        tlh-AA: tlh_aa
+        #not on crowdin - tlh-AA: tlh_aa
         tr: tr_tr
-        tt-RU: tt_ru
-        tzl: tzl_tzl
+        tt: tt_ru
+        #not on crowdin - tzl: tzl_tzl
         uk: uk_ua
-        val-ES: val_es
+        val: val_es
         vec: vec_it
         vi: vi_vn
         yi: yi_de
@@ -124,7 +125,7 @@ files:
         zh-CN: zh_cn
         zh-TW: zh_tw
         zh-HK: zh_hk
-        fur-IT: fur_it
+        fur: fur_it
         ry: ry_ua
   - source: /src/datagen/generated/mekanismadditions/assets/mekanismadditions/lang/en_us.json
     translation: /src/additions/resources/assets/mekanismadditions/lang/%locale_with_underscore%.json
@@ -139,7 +140,7 @@ files:
         ba: ba_ru
         be: be_by
         bg: bg_bg
-        br-FR: br_fr
+        br: br_fr
         bs: bs_ba
         ca: ca_es
         cs: cs_cz
@@ -159,7 +160,7 @@ files:
         eo: eo_uy
         es-AR: es_ar
         es-CL: es_cl
-        es-ES: es_es
+        es: es_es
         es-MX: es_mx
         es-UY: es_uy
         es-VE: es_ve
@@ -171,42 +172,42 @@ files:
         fo: fo_fo
         fr-CA: fr_ca
         fr: fr_fr
-        fra-DE: fra_de
-        fy-NL: fy_nl
-        ga-IE: ga_ie
+        fra: fra_de
+        fy: fy_nl
+        ga: ga_ie
         gd: gd_gb
         gl: gl_es
-        got: got_de
-        gv: gv_im
+        #not on crowdin - got: got_de
+        #not on crowdin - gv: gv_im
         haw: haw_us
         he: he_il
         hi: hi_in
         hr: hr_hr
         hu: hu_hu
-        hy-AM: hy_am
+        hy: hy_am
         id: id_id
         ig: ig_ng
         ido: io_en
         is: is_is
         it: it_it
         ja: ja_jp
-        jbo: jbo_en
+        #not on crowdin - jbo: jbo_en
         ka: ka_ge
         kab: kab_kab
         kk: kk_kz
         kn: kn_in
         ko: ko_kr
         kw: kw_gb
-        la-LA: la_va
+        la: la_va
         lb: lb_lu
         li: li_li
-        lol: lol_us
+        #not on crowdin - lol: lol_us
         lt: lt_lt
         lv: lv_lv
         mi: mi_nz
         mk: mk_mk
         mn: mn_mn
-        moh: moh_ca
+        #not on crowdin - moh: moh_ca
         ms: ms_my
         mt: mt_mt
         nb: nb_no
@@ -218,8 +219,8 @@ files:
         oj: oj_ca
         pl: pl_pl
         pt-BR: pt_br
-        pt-PT: pt_pt
-        qya-AA: qya_aa
+        pt: pt_pt
+        #not on crowdin - qya-AA: qya_aa
         ro: ro_ro
         ru: ru_ru
         sk: sk_sk
@@ -227,17 +228,17 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-CS: sr_cs
-        sv-SE: sv_se
+        sr-Cyrl: sr_cs
+        sv: sv_se
         ta: ta_in
         th: th_th
         tl: tl_ph
-        tlh-AA: tlh_aa
+        #not on crowdin - tlh-AA: tlh_aa
         tr: tr_tr
-        tt-RU: tt_ru
-        tzl: tzl_tzl
+        tt: tt_ru
+        #not on crowdin - tzl: tzl_tzl
         uk: uk_ua
-        val-ES: val_es
+        val: val_es
         vec: vec_it
         vi: vi_vn
         yi: yi_de
@@ -245,7 +246,7 @@ files:
         zh-CN: zh_cn
         zh-TW: zh_tw
         zh-HK: zh_hk
-        fur-IT: fur_it
+        fur: fur_it
         ry: ry_ua
   - source: /src/datagen/generated/mekanismgenerators/assets/mekanismgenerators/lang/en_us.json
     translation: /src/generators/resources/assets/mekanismgenerators/lang/%locale_with_underscore%.json
@@ -260,7 +261,7 @@ files:
         ba: ba_ru
         be: be_by
         bg: bg_bg
-        br-FR: br_fr
+        br: br_fr
         bs: bs_ba
         ca: ca_es
         cs: cs_cz
@@ -280,7 +281,7 @@ files:
         eo: eo_uy
         es-AR: es_ar
         es-CL: es_cl
-        es-ES: es_es
+        es: es_es
         es-MX: es_mx
         es-UY: es_uy
         es-VE: es_ve
@@ -292,42 +293,42 @@ files:
         fo: fo_fo
         fr-CA: fr_ca
         fr: fr_fr
-        fra-DE: fra_de
-        fy-NL: fy_nl
-        ga-IE: ga_ie
+        fra: fra_de
+        fy: fy_nl
+        ga: ga_ie
         gd: gd_gb
         gl: gl_es
-        got: got_de
-        gv: gv_im
+        #not on crowdin - got: got_de
+        #not on crowdin - gv: gv_im
         haw: haw_us
         he: he_il
         hi: hi_in
         hr: hr_hr
         hu: hu_hu
-        hy-AM: hy_am
+        hy: hy_am
         id: id_id
         ig: ig_ng
         ido: io_en
         is: is_is
         it: it_it
         ja: ja_jp
-        jbo: jbo_en
+        #not on crowdin - jbo: jbo_en
         ka: ka_ge
         kab: kab_kab
         kk: kk_kz
         kn: kn_in
         ko: ko_kr
         kw: kw_gb
-        la-LA: la_va
+        la: la_va
         lb: lb_lu
         li: li_li
-        lol: lol_us
+        #not on crowdin - lol: lol_us
         lt: lt_lt
         lv: lv_lv
         mi: mi_nz
         mk: mk_mk
         mn: mn_mn
-        moh: moh_ca
+        #not on crowdin - moh: moh_ca
         ms: ms_my
         mt: mt_mt
         nb: nb_no
@@ -339,8 +340,8 @@ files:
         oj: oj_ca
         pl: pl_pl
         pt-BR: pt_br
-        pt-PT: pt_pt
-        qya-AA: qya_aa
+        pt: pt_pt
+        #not on crowdin - qya-AA: qya_aa
         ro: ro_ro
         ru: ru_ru
         sk: sk_sk
@@ -348,17 +349,17 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-CS: sr_cs
-        sv-SE: sv_se
+        sr-Cyrl: sr_cs
+        sv: sv_se
         ta: ta_in
         th: th_th
         tl: tl_ph
-        tlh-AA: tlh_aa
+        #not on crowdin - tlh-AA: tlh_aa
         tr: tr_tr
-        tt-RU: tt_ru
-        tzl: tzl_tzl
+        tt: tt_ru
+        #not on crowdin - tzl: tzl_tzl
         uk: uk_ua
-        val-ES: val_es
+        val: val_es
         vec: vec_it
         vi: vi_vn
         yi: yi_de
@@ -366,7 +367,7 @@ files:
         zh-CN: zh_cn
         zh-TW: zh_tw
         zh-HK: zh_hk
-        fur-IT: fur_it
+        fur: fur_it
         ry: ry_ua
   - source: /src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
     translation: /src/tools/resources/assets/mekanismtools/lang/%locale_with_underscore%.json
@@ -381,7 +382,7 @@ files:
         ba: ba_ru
         be: be_by
         bg: bg_bg
-        br-FR: br_fr
+        br: br_fr
         bs: bs_ba
         ca: ca_es
         cs: cs_cz
@@ -401,7 +402,7 @@ files:
         eo: eo_uy
         es-AR: es_ar
         es-CL: es_cl
-        es-ES: es_es
+        es: es_es
         es-MX: es_mx
         es-UY: es_uy
         es-VE: es_ve
@@ -413,42 +414,42 @@ files:
         fo: fo_fo
         fr-CA: fr_ca
         fr: fr_fr
-        fra-DE: fra_de
-        fy-NL: fy_nl
-        ga-IE: ga_ie
+        fra: fra_de
+        fy: fy_nl
+        ga: ga_ie
         gd: gd_gb
         gl: gl_es
-        got: got_de
-        gv: gv_im
+        #not on crowdin - got: got_de
+        #not on crowdin - gv: gv_im
         haw: haw_us
         he: he_il
         hi: hi_in
         hr: hr_hr
         hu: hu_hu
-        hy-AM: hy_am
+        hy: hy_am
         id: id_id
         ig: ig_ng
         ido: io_en
         is: is_is
         it: it_it
         ja: ja_jp
-        jbo: jbo_en
+        #not on crowdin - jbo: jbo_en
         ka: ka_ge
         kab: kab_kab
         kk: kk_kz
         kn: kn_in
         ko: ko_kr
         kw: kw_gb
-        la-LA: la_va
+        la: la_va
         lb: lb_lu
         li: li_li
-        lol: lol_us
+        #not on crowdin - lol: lol_us
         lt: lt_lt
         lv: lv_lv
         mi: mi_nz
         mk: mk_mk
         mn: mn_mn
-        moh: moh_ca
+        #not on crowdin - moh: moh_ca
         ms: ms_my
         mt: mt_mt
         nb: nb_no
@@ -460,8 +461,8 @@ files:
         oj: oj_ca
         pl: pl_pl
         pt-BR: pt_br
-        pt-PT: pt_pt
-        qya-AA: qya_aa
+        pt: pt_pt
+        #not on crowdin - qya-AA: qya_aa
         ro: ro_ro
         ru: ru_ru
         sk: sk_sk
@@ -469,17 +470,17 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-CS: sr_cs
-        sv-SE: sv_se
+        sr-Cyrl: sr_cs
+        sv: sv_se
         ta: ta_in
         th: th_th
         tl: tl_ph
-        tlh-AA: tlh_aa
+        #not on crowdin - tlh-AA: tlh_aa
         tr: tr_tr
-        tt-RU: tt_ru
-        tzl: tzl_tzl
+        tt: tt_ru
+        #not on crowdin - tzl: tzl_tzl
         uk: uk_ua
-        val-ES: val_es
+        val: val_es
         vec: vec_it
         vi: vi_vn
         yi: yi_de
@@ -487,5 +488,5 @@ files:
         zh-CN: zh_cn
         zh-TW: zh_tw
         zh-HK: zh_hk
-        fur-IT: fur_it
+        fur: fur_it
         ry: ry_ua
