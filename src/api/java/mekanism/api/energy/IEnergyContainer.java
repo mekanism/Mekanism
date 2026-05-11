@@ -31,40 +31,6 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      */
     void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
 
-    /**
-     * <p>
-     * Inserts energy into this {@link IEnergyContainer} and return the remainder.
-     * </p>
-     *
-     * @param amount         Energy to insert. Must be positive.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this container is being interacted from.
-     *
-     * @return The remaining energy that was not inserted (if the entire amount is accepted, then return 0).
-     *
-     * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}.
-     */
-    @Range(from = 0, to = Long.MAX_VALUE)
-    @Deprecated(forRemoval = true)//TODO - 26.1: Switch usages of this to the transactional form
-    default long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, Action action, AutomationType automationType) {
-        if (amount <= 0 || !isValidForInsertion(automationType)) {
-            //"Fail quick" if the given amount is empty
-            return amount;
-        }
-        long needed = getNeeded();
-        if (needed == 0) {
-            //Fail if we are a full container
-            return amount;
-        }
-        long toAdd = Math.min(amount, needed);
-        if (action.execute()) {
-            //If we want to actually insert the energy, then update the current energy
-            // Note: this also will mark that the contents changed
-            setEnergy(getEnergy() + toAdd);
-        }
-        return amount - toAdd;
-    }
-
     //TODO - 26.1: Docs
     @Range(from = 0, to = Long.MAX_VALUE)
     long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);

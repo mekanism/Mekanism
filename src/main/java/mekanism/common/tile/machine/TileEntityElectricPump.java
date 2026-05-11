@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -69,6 +68,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -151,23 +151,25 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         long clientEnergyUsed = 0L;
         if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeeded())) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                if (!activeType.isEmpty()) {
-                    //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually
-                    // anything to suck that use energy, but those will balance out with the first set of ticks where it doesn't
-                    // use any energy until it actually picks up the first block
-                    clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                }
-                operatingTicks++;
-                if (operatingTicks >= ticksRequired) {
-                    operatingTicks = 0;
-                    if (suck((ServerLevel) level)) {
-                        if (clientEnergyUsed == 0L) {
-                            //If it didn't already have an active type (hasn't used energy this tick), then extract energy
-                            clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    if (!activeType.isEmpty()) {
+                        //If we have an active type of fluid, use energy. This can cause there to be ticks where there isn't actually
+                        // anything to suck that use energy, but those will balance out with the first set of ticks where it doesn't
+                        // use any energy until it actually picks up the first block
+                        clientEnergyUsed = energyPerTick;
+                    }
+                    operatingTicks++;
+                    if (operatingTicks >= ticksRequired) {
+                        operatingTicks = 0;
+                        if (suck((ServerLevel) level, transaction)) {
+                            clientEnergyUsed = energyPerTick;
+                        } else {
+                            reset();
                         }
-                    } else {
-                        reset();
+                    }
+                    if (clientEnergyUsed > 0) {
+                        transaction.commit();
                     }
                 }
             }
@@ -186,10 +188,10 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return fluidTank.getResource().is(MekanismFluids.HEAVY_WATER) ? MekanismConfig.general.pumpHeavyWaterAmount.get() : FluidType.BUCKET_VOLUME;
     }
 
-    private boolean suck(ServerLevel level) {
+    private boolean suck(ServerLevel level, TransactionContext transaction) {
         boolean hasFilter = upgradeComponent.isUpgradeInstalled(Upgrade.FILTER);
         //First see if there are any fluid blocks under the pump - if so, suck and adds the location to the recurring list
-        if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true)) {
+        if (suck(level, worldPosition.relative(Direction.DOWN), hasFilter, true, transaction)) {
             return true;
         }
         //Even though we can add to recurring in the above for loop, we always then exit and don't get to here if we did so
@@ -199,14 +201,14 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         //and then add the adjacent block to the recurring list
         BlockPos.MutableBlockPos mutable = new BlockPos.MutableBlockPos();
         for (BlockPos tempPumpPos : tempPumpList) {
-            if (suck(level, tempPumpPos, hasFilter, false)) {
+            if (suck(level, tempPumpPos, hasFilter, false, transaction)) {
                 return true;
             }
             //Add all the blocks surrounding this recurring node to the recurring node list
             for (Direction orientation : EnumUtils.DIRECTIONS) {
                 mutable.setWithOffset(tempPumpPos, orientation);
                 if (WorldUtils.distanceBetween(worldPosition, mutable) <= MekanismConfig.general.maxPumpRange.get()) {
-                    if (suck(level, mutable, hasFilter, true)) {
+                    if (suck(level, mutable, hasFilter, true, transaction)) {
                         return true;
                     }
                 }
@@ -216,7 +218,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         return false;
     }
 
-    private boolean suck(ServerLevel level, BlockPos pos, boolean hasFilter, boolean addRecurring) {
+    private boolean suck(ServerLevel level, BlockPos pos, boolean hasFilter, boolean addRecurring, TransactionContext transaction) {
         //Note: we get the block state from the world so that we can get the proper block in case it is fluid logged
         Optional<BlockState> state = WorldUtils.getBlockState(level, pos);
         if (state.isEmpty()) {
@@ -229,20 +231,20 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             return false;
         }
         Fluid sourceFluid = fluidState.getType();
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
             if (!activeType.isEmpty() && !activeType.matches(fluidStack)) {
                 return false;
             }
             FluidResource fluidType = FluidResource.of(fluidStack);
             int amountProduced = fluidStack.amount();
-            int inserted = fluidTank.insert(fluidType, amountProduced, transaction, AutomationType.INTERNAL);
+            int inserted = fluidTank.insert(fluidType, amountProduced, subTransaction, AutomationType.INTERNAL);
             if (inserted < amountProduced) {
                 //If we can't insert everything that we would pump up, just return that we couldn't suck
                 return false;
             } else if (isInfiniteSource(level, sourceFluid)) {
                 //If it is an infinite source, we can just go ahead and commit and mark it as having been sucked
-                transaction.commit();
+                subTransaction.commit();
                 suck(fluidType, pos, addRecurring);
                 return true;
             }
@@ -257,7 +259,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 //This isn't the best validation check given it may not return a bucket, but it is good enough for now
                 if (sourceFluid == bucket.content) {
                     //Same type as expected, commit the insertion and mark things as having happened
-                    transaction.commit();
+                    subTransaction.commit();
                     suck(fluidType, pos, addRecurring);
                     return true;
                 }
@@ -267,16 +269,16 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
                 return false;
             }
         }
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             //Update the fluid stack in case something somehow changed about the type making sure that we replace to heavy water if we got heavy water
             FluidStack fluidStack = getOutput(sourceFluid, hasFilter);
             //Note: We don't validate the active type matching, as if the tank is empty we would rather try inserting it
             // rather than voiding the picked up fluid
             FluidResource fluidType = FluidResource.of(fluidStack);
             int amountProduced = fluidStack.amount();
-            int inserted = fluidTank.insert(fluidType, amountProduced, transaction, AutomationType.INTERNAL);
+            int inserted = fluidTank.insert(fluidType, amountProduced, subTransaction, AutomationType.INTERNAL);
             if (inserted > 0) {
-                transaction.commit();
+                subTransaction.commit();
                 suck(fluidType, pos, addRecurring);
                 if (inserted < amountProduced) {
                     //If we can't insert everything that we would pump up, log a warning

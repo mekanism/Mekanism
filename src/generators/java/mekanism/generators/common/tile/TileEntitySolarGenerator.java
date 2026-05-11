@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -24,6 +23,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,14 +69,15 @@ public class TileEntitySolarGenerator extends TileEntityGenerator {
         // since under the new rules, we can still generate power when it's raining, albeit at a
         // significant penalty.
         seesSun = checkCanSeeSun();
-        if (seesSun && canFunction() && getEnergyContainer().getNeeded() > 0L) {
-            setActive(true);
-            long production = getProduction();
-            lastProductionAmount = production - getEnergyContainer().insert(production, Action.EXECUTE, AutomationType.INTERNAL);
+        if (seesSun && canFunction()) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                lastProductionAmount = getEnergyContainer().insert(getProduction(), transaction, AutomationType.INTERNAL);
+                transaction.commit();
+            }
         } else {
-            setActive(false);
             lastProductionAmount = 0L;
         }
+        setActive(lastProductionAmount > 0);
         return sendUpdatePacket;
     }
 

@@ -18,7 +18,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
@@ -252,27 +251,27 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             }
         }
 
+        boolean isActive = false;
+
         //Note: If we have any overflow don't function or use any energy until the overflow has been dealt with
         if (!hasOverflow && canFunction() && running && searcher.state == State.FINISHED && !oresToMine.isEmpty()) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                setActive(true);
-                if (delay > 0) {
-                    delay--;
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    isActive = true;
+                    if (delay > 0) {
+                        delay--;
+                    }
+                    //TODO: Eventually we may want to avoid draining energy if we can't function due to a missing replace stack or the normal drops
+                    // being too much to fit
+                    if (delay == 0) {
+                        tryMineBlock(transaction);
+                        delay = getDelay();
+                    }
                 }
-                //TODO: Eventually we may want to avoid draining energy if we can't function due to a missing replace stack or the normal drops
-                // being too much to fit
-                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                if (delay == 0) {
-                    tryMineBlock();
-                    delay = getDelay();
-                }
-            } else {
-                setActive(false);
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
 
         if (doEject && delayTicks == 0) {
             Direction direction = getDirection();
@@ -446,7 +445,7 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         }
     }
 
-    private void tryMineBlock() {
+    private void tryMineBlock(TransactionContext transaction) {
         BlockPos startingPos = getStartingPos();
         int diameter = getDiameter();
         long target = targetChunk == null ? ChunkPos.INVALID_CHUNK_POS : targetChunk.pack();
@@ -498,17 +497,17 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
                         if (inverse == (matchingFilter == null) && canMine(state, pos)) {
                             //If we can, then validate we can fit the drops and try to see if we can replace it properly as well
                             List<ItemStack> drops = getDrops((ServerLevel) level, state, pos);
-                            try (Transaction transaction = Transaction.openRoot()) {
-                                if (tryInsert(drops, transaction)) {
+                            try (Transaction subTransaction = Transaction.open(transaction)) {
+                                if (tryInsert(drops, subTransaction)) {
                                     CommonWorldTickHandler.fallbackItemCollector = overflowCollector;
                                     //Validate if we can replace the block with the replace stack that we will extract
-                                    if (setReplace(state, pos, matchingFilter, transaction)) {
+                                    if (setReplace(state, pos, matchingFilter, subTransaction)) {
                                         //Try to add any drops that might have been caused by breaking the block but didn't show up in the loot table.
                                         // This mainly will be the case for some single block multiblocks and also for storage containers like chests
-                                        tryAddOverflow(transaction);
+                                        tryAddOverflow(subTransaction);
                                         //Commit the transaction to actually insert the items that we checked if we could fit
                                         // and to actually remove the item we tried to use to replace the block
-                                        transaction.commit();
+                                        subTransaction.commit();
                                         missingStack = ItemStack.EMPTY;
                                         level.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
                                         //Remove the block from our list of blocks to mine, and reduce the number of blocks we have to mine

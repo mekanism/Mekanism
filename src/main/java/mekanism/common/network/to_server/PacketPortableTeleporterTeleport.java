@@ -1,7 +1,6 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.event.MekanismTeleportEvent;
@@ -31,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketPortableTeleporterTeleport(InteractionHand currentHand, FrequencyIdentity identity) implements IMekanismPacket {
@@ -64,48 +64,48 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                 TileEntityTeleporter teleporter = WorldUtils.getTileEntity(TileEntityTeleporter.class, teleWorld, coords.pos());
                 if (teleporter != null) {
                     long energyCost;
-                    Runnable energyExtraction = null;
-                    if (!player.isCreative()) {
-                        energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        if (energyContainer == null || energyContainer.extract(energyCost, Action.SIMULATE, AutomationType.MANUAL) < energyCost) {
-                            return;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (!player.isCreative()) {
+                            energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
+                            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+                            if (energyContainer == null || energyContainer.extract(energyCost, transaction, AutomationType.MANUAL) < energyCost) {
+                                //Fail if there is not enough energy available
+                                return;
+                            }
+                        } else {
+                            energyCost = 0L;
                         }
-                        energyExtraction = () -> energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.MANUAL);
-                    } else {
-                        energyCost = 0L;
-                    }
-                    //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
-                    try {
-                        teleporter.didTeleport.add(player.getUUID());
-                        teleporter.teleDelay = 5;
-                        BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
-                        MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
-                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                            //Fail if the event was cancelled
-                            return;
+                        //TODO: Figure out what this try catch is meant to be catching as I don't see much of a reason for it to exist
+                        try {
+                            teleporter.didTeleport.add(player.getUUID());
+                            teleporter.teleDelay = 5;
+                            BlockPos teleporterTargetPos = teleporter.getTeleporterTargetPos();
+                            MekanismTeleportEvent.PortableTeleporter event = new MekanismTeleportEvent.PortableTeleporter(player, teleporterTargetPos, teleWorld, stack, energyCost);
+                            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                                //Fail if the event was cancelled
+                                return;
+                            }
+                            //Commit the energy usage
+                            transaction.commit();
+                            player.connection.aboveGroundTickCount = 0;
+                            player.closeContainer();
+                            PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
+                            if (player.isPassenger()) {
+                                player.stopRiding();
+                            }
+                            double oldX = player.getX();
+                            double oldY = player.getY();
+                            double oldZ = player.getZ();
+                            Level oldWorld = player.level();
+                            TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporter, event, false, TeleportTransition.DO_NOTHING);
+                            if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                                //If the player teleported over 5 blocks, play the sound at both the destination and the source
+                                oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
+                            }
+                            player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
+                            teleporter.sendTeleportParticles();
+                        } catch (Exception ignored) {//TODO - 26.1: What exception are we catching??
                         }
-                        if (energyExtraction != null) {
-                            energyExtraction.run();
-                        }
-                        player.connection.aboveGroundTickCount = 0;
-                        player.closeContainer();
-                        PacketUtils.sendToAllTracking(new PacketPortalFX(player.blockPosition()), player.level(), coords.pos());
-                        if (player.isPassenger()) {
-                            player.stopRiding();
-                        }
-                        double oldX = player.getX();
-                        double oldY = player.getY();
-                        double oldZ = player.getZ();
-                        Level oldWorld = player.level();
-                        TileEntityTeleporter.teleportEntityTo(player, teleWorld, teleporter, event, false, TeleportTransition.DO_NOTHING);
-                        if (player.level() != oldWorld || player.distanceToSqr(oldX, oldY, oldZ) >= 25) {
-                            //If the player teleported over 5 blocks, play the sound at both the destination and the source
-                            oldWorld.playSound(null, oldX, oldY, oldZ, SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                        }
-                        player.level().playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                        teleporter.sendTeleportParticles();
-                    } catch (Exception ignored) {
                     }
                 }
             }

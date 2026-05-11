@@ -5,7 +5,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
@@ -55,6 +54,8 @@ import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IConfigurable {
@@ -127,25 +128,32 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         energySlot.fillContainerOrConvert();
         inputSlot.fillTank(outputSlot);
         long clientEnergyUsed = 0L;
-        if (canFunction() && !fluidTank.isEmpty()) {
-            long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                if (!finishedCalc) {
-                    clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                }
-                operatingTicks++;
-                if (operatingTicks >= ticksRequired) {
-                    operatingTicks = 0;
-                    if (finishedCalc) {
-                        BlockPos below = getBlockPos().below();
-                        if (canReplace(below, false, false) && canExtractBucket() &&
-                            WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
-                            level.gameEvent(null, GameEvent.FLUID_PLACE, below);
-                            clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                            fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+        if (canFunction() && fluidTank.amount() >= FluidType.BUCKET_VOLUME) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                long energyPerTick = energyContainer.getEnergyPerTick();
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    operatingTicks++;
+                    if (operatingTicks >= ticksRequired) {
+                        operatingTicks = 0;
+                        FluidResource fluidType = fluidTank.getResource();
+                        if (finishedCalc) {
+                            BlockPos below = getBlockPos().below();
+                            //Note: We already validated that the fluid tank is not empty so our resource doesn't represent the empty resource
+                            if (canReplace(below, false, false) &&
+                                fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, transaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
+                                WorldUtils.tryPlaceContainedLiquid(null, level, below, fluidTank.getFluid(), null)) {
+                                level.gameEvent(null, GameEvent.FLUID_PLACE, below);
+                                clientEnergyUsed = energyPerTick;
+                                transaction.commit();
+                            }
+                        } else {
+                            doPlenish(fluidType, transaction);
+                            clientEnergyUsed = energyPerTick;
+                            transaction.commit();
                         }
-                    } else {
-                        doPlenish();
+                    } else if (!finishedCalc) {
+                        clientEnergyUsed = energyPerTick;
+                        transaction.commit();
                     }
                 }
             }
@@ -154,11 +162,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         return sendUpdatePacket;
     }
 
-    private boolean canExtractBucket() {
-        return fluidTank.extract(FluidType.BUCKET_VOLUME, Action.SIMULATE, AutomationType.INTERNAL).amount() == FluidType.BUCKET_VOLUME;
-    }
-
-    private void doPlenish() {
+    private void doPlenish(FluidResource fluidType, TransactionContext transaction) {
         if (usedNodes.size() >= MekanismConfig.general.maxPlenisherNodes.get()) {
             finishedCalc = true;
             return;
@@ -180,10 +184,14 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
         Set<BlockPos> toRemove = new ObjectOpenHashSet<>();
         for (BlockPos nodePos : activeNodes) {
             if (WorldUtils.isBlockLoaded(level, nodePos)) {
-                if (canReplace(nodePos, true, false) && canExtractBucket() &&
-                    WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
-                    level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
-                    fluidTank.extract(FluidType.BUCKET_VOLUME, Action.EXECUTE, AutomationType.INTERNAL);
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    //TODO - 26.1: Make sure fluid type isn't empty?
+                    if (canReplace(nodePos, true, false) &&
+                        fluidTank.extract(fluidType, FluidType.BUCKET_VOLUME, subTransaction, AutomationType.INTERNAL) == FluidType.BUCKET_VOLUME &&
+                        WorldUtils.tryPlaceContainedLiquid(null, level, nodePos, fluidTank.getFluid(), null)) {
+                        level.gameEvent(null, GameEvent.FLUID_PLACE, nodePos);
+                        subTransaction.commit();
+                    }
                 }
                 for (Direction dir : dirs) {
                     mutable.setWithOffset(nodePos, dir);

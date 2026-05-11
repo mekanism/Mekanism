@@ -1,6 +1,5 @@
 package mekanism.common.tile.machine;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -38,6 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityResistiveHeater extends TileEntityMekanism {
@@ -93,10 +93,12 @@ public class TileEntityResistiveHeater extends TileEntityMekanism {
         energySlot.fillContainerOrConvert();
         long toUse = 0;
         if (canFunction()) {
-            toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.SIMULATE, AutomationType.INTERNAL);
-            if (toUse > 0L) {
-                heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
-                energyContainer.extract(toUse, Action.EXECUTE, AutomationType.INTERNAL);
+            try (Transaction transaction = Transaction.openRoot()) {
+                toUse = energyContainer.extract(energyContainer.getEnergyPerTick(), transaction, AutomationType.INTERNAL);
+                if (toUse > 0L) {
+                    heatCapacitor.handleHeat(toUse * MekanismConfig.general.resistiveHeaterEfficiency.get());
+                    transaction.commit();
+                }
             }
         }
         setActive(toUse > 0L);

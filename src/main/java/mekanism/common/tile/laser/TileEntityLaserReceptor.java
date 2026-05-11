@@ -1,12 +1,12 @@
 package mekanism.common.tile.laser;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.lasers.ILaserReceptor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser implements ILaserReceptor {
 
@@ -15,8 +15,8 @@ public abstract class TileEntityLaserReceptor extends TileEntityBasicLaser imple
     }
 
     @Override
-    public void receiveLaserEnergy(long energy) {
-        energyContainer.insert(energy, Action.EXECUTE, AutomationType.INTERNAL);
+    public long receiveLaserEnergy(long energy, TransactionContext transaction) {
+        return energyContainer.insert(energy, transaction, AutomationType.INTERNAL);
     }
 
     @Override

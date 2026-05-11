@@ -7,6 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock implements ILaserReceptor {
 
@@ -15,11 +16,13 @@ public class TileEntityLaserFocusMatrix extends TileEntityFusionReactorBlock imp
     }
 
     @Override
-    public void receiveLaserEnergy(long energy) {
+    public long receiveLaserEnergy(long energy, TransactionContext transaction) {
         FusionReactorMultiblockData multiblock = getMultiblock();
         if (multiblock.isFormed()) {
-            multiblock.addTemperatureFromEnergyInput(energy);
+            multiblock.addTemperatureFromEnergyInput(energy, transaction);
+            return energy;
         }
+        return 0;
     }
 
     @Override

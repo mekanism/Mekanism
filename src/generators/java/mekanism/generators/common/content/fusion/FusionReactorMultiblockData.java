@@ -60,7 +60,9 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 
 public class FusionReactorMultiblockData extends MultiblockData {
@@ -134,6 +136,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getHohlraum", docPlaceholder = "Hohlraum slot")
     final ReactorInventorySlot reactorSlot;
 
+    private final PlasmaJournal plasmaJournal = new PlasmaJournal();
     private boolean clientBurning;
     private double clientTemp;
 
@@ -195,11 +198,11 @@ public class FusionReactorMultiblockData extends MultiblockData {
         output.putBoolean(SerializationConstants.BURNING, isBurning());
     }
 
-    public void addTemperatureFromEnergyInput(long energyAdded) {
+    public void addTemperatureFromEnergyInput(long energyAdded, TransactionContext transaction) {
         if (isBurning()) {
-            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity));
+            plasmaJournal.incrementPlasmaTemperature((double) energyAdded / plasmaHeatCapacity, transaction);
         } else {
-            setPlasmaTemp(getPlasmaTemp() + ((double) energyAdded / plasmaHeatCapacity) * 10);
+            plasmaJournal.incrementPlasmaTemperature(((double) energyAdded / plasmaHeatCapacity) * 10, transaction);
         }
     }
 
@@ -310,21 +313,42 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void injectFuel() {
-        long amountNeeded = fuelTank.getNeededAsLong();
-        long amountAvailable = 2 * Math.min(deuteriumTank.amountAsLong(), tritiumTank.amountAsLong());
-        long amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
+        int amountNeeded = fuelTank.getNeeded();
+        int amountAvailable = 2 * Math.min(deuteriumTank.amount(), tritiumTank.amount());
+        int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
-        long injectingAmount = amountToInject / 2;
-        MekanismUtils.logMismatchedStackSize(deuteriumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
-        MekanismUtils.logMismatchedStackSize(tritiumTank.shrinkStack(injectingAmount, Action.EXECUTE), injectingAmount);
-        fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asStack(amountToInject), Action.EXECUTE, AutomationType.INTERNAL);
+        int injectingAmount = amountToInject / 2;
+        if (injectingAmount > 0) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                //Note: We don't have to validate if the deuterium or tritium resources are empty, as if either is, then the injecting amount will be zero
+                if (deuteriumTank.extract(deuteriumTank.getResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
+                    tritiumTank.extract(tritiumTank.getResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount &&
+                    fuelTank.insert(GeneratorsChemicals.FUSION_FUEL.asResource(), injectingAmount, transaction, AutomationType.MANUAL) == injectingAmount) {
+                    //Only inject if we actually are able to transfer the proper amounts
+                    transaction.commit();
+                }
+            }
+        }
     }
 
     private long burnFuel() {
-        long fuelBurned = MathUtils.clampToLong(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.amountAsLong()));
-        MekanismUtils.logMismatchedStackSize(fuelTank.shrinkStack(fuelBurned, Action.EXECUTE), fuelBurned);
-        setPlasmaTemp(getPlasmaTemp() + (MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity));
-        return fuelBurned;
+        ChemicalResource fuel = fuelTank.getResource();
+        if (fuel.isEmpty()) {
+            //Nothing to burn
+            return 0;
+        }
+        try (Transaction transaction = Transaction.openRoot()) {
+            //TODO - 26.1: Evaluate clamping this to int, and if we can simplify the math so that it just acts on ints
+            // I assume we should also change it to fuelTank.amountAsInt?
+            int fuelBurned = MathUtils.clampToInt(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.amountAsLong()));
+            int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
+            if (fuelUsed < fuelBurned) {//Failed to actually burn anything
+                return 0;
+            }
+            plasmaJournal.incrementPlasmaTemperature(MathUtils.multiplyClamped(MekanismGeneratorsConfig.generators.energyPerFusionFuel.get(), fuelBurned) / (double) plasmaHeatCapacity, transaction);
+            transaction.commit();
+            return fuelBurned;
+        }
     }
 
     private void transferHeat() {
@@ -344,7 +368,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
                 try (Transaction transaction = Transaction.openRoot()) {
                     int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeeded()), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
-                        steamTank.insert(MekanismChemicals.STEAM.asStack(vaporized), Action.EXECUTE, AutomationType.INTERNAL);
+                        //TODO - 26.1: Should we be checking if this matched? I think not, as we intentionally allow excess steam to be vented
+                        steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);
                         caseWaterHeat = vaporized * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency();
                         heatCapacitor.handleHeat(-caseWaterHeat);
                         transaction.commit();
@@ -361,7 +386,10 @@ public class FusionReactorMultiblockData extends MultiblockData {
         double caseAirHeat = MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseAirHeat) > HeatAPI.EPSILON) {
             heatCapacitor.handleHeat(-caseAirHeat);
-            energyContainer.insert(MathUtils.clampToLong(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), Action.EXECUTE, AutomationType.INTERNAL);
+            try (Transaction transaction = Transaction.openRoot()) {
+                energyContainer.insert(MathUtils.clampToLong(caseAirHeat * MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get()), transaction, AutomationType.INTERNAL);
+                transaction.commit();
+            }
         }
     }
 
@@ -497,7 +525,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     public long getPassiveGeneration(boolean active, boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(active);
         return MathUtils.clampToLong(MekanismGeneratorsConfig.generators.fusionThermocoupleEfficiency.get() *
-                                   MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
+                                     MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
     }
 
     public long getSteamPerTick(boolean current) {
@@ -532,4 +560,32 @@ public class FusionReactorMultiblockData extends MultiblockData {
         return getPassiveGeneration(false, true);
     }
     //End computer related methods
+
+    private class PlasmaJournal extends SnapshotJournal<Double> {
+
+        private double temperatureDiff;
+
+        public void incrementPlasmaTemperature(double temperatureDiff, TransactionContext transaction) {
+            updateSnapshots(transaction);
+            this.temperatureDiff += temperatureDiff;
+        }
+
+        @Override
+        protected Double createSnapshot() {
+            return temperatureDiff;
+        }
+
+        @Override
+        protected void revertToSnapshot(Double snapshot) {
+            temperatureDiff = snapshot;
+        }
+
+        @Override
+        protected void onRootCommit(Double originalState) {
+            super.onRootCommit(originalState);
+            if (!Mth.equal(originalState, temperatureDiff)) {
+                setPlasmaTemp(getPlasmaTemp() + temperatureDiff);
+            }
+        }
+    }
 }

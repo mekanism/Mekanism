@@ -3,7 +3,6 @@ package mekanism.common.tile.multiblock;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
@@ -28,6 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,7 +46,10 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         boolean needsPacket = super.onUpdateServer(multiblock);
         if (multiblock.isFormed()) {
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
-                multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), Action.EXECUTE, AutomationType.INTERNAL));
+                try (Transaction transaction = Transaction.openRoot()) {
+                    multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), transaction, AutomationType.INTERNAL));
+                    transaction.commit();
+                }
             }
         }
         return needsPacket;

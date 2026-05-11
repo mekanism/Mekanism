@@ -11,7 +11,6 @@ import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -253,9 +252,12 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     }
                 } else {
                     long energyPerTick = energyContainer.getEnergyPerTick();
-                    if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                        clientEnergyUsed = energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                        operatingTicks++;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                            clientEnergyUsed = energyPerTick;
+                            transaction.commit();
+                            operatingTicks++;
+                        }
                     }
                 }
             } else {

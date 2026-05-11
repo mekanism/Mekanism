@@ -1,7 +1,7 @@
 package mekanism.generators.common.tile;
 
+import com.google.common.primitives.Ints;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -30,6 +30,7 @@ import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -92,15 +93,17 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             //maximum amount that can be produced AND stored
             long maxJoulesThisTick = energyDensity * Math.min((long) Math.ceil(cachedFuel.maxBurnPerTick() * fullness), fuelTank.amountAsLong());
             if (maxJoulesThisTick > 0) {
-                maxJoulesThisTick -= getEnergyContainer().insert(maxJoulesThisTick, Action.SIMULATE, AutomationType.INTERNAL);
-            }
-
-            if (maxJoulesThisTick > 0) {
-                //calculate the mB for this amount of energy, rounded up
-                long mbThisTick = Math.ceilDiv(maxJoulesThisTick, energyDensity);
-                getEnergyContainer().insert(maxJoulesThisTick, Action.EXECUTE, AutomationType.INTERNAL);
-                fuelTank.extract(mbThisTick, Action.EXECUTE, AutomationType.INTERNAL);
-                gasUsedLastTick = mbThisTick;
+                try (Transaction transaction = Transaction.openRoot()) {
+                    long inserted = getEnergyContainer().insert(maxJoulesThisTick, transaction, AutomationType.INTERNAL);
+                    if (inserted > 0) {
+                        //calculate the mB for this amount of energy, rounded up
+                        long mbThisTick = Math.ceilDiv(inserted, energyDensity);
+                        //TODO - 26.1: Figure out this long to int conversion. We should make it so that the math doesn't cause issues
+                        //TODO - 26.1: Do we want to validate anything about the value we extracted from the fuel tank?
+                        gasUsedLastTick = fuelTank.extract(fuelTank.getResource(), Ints.saturatedCast(mbThisTick), transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
+                }
             }
         }
 

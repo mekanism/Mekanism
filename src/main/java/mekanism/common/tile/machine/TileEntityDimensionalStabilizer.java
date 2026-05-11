@@ -2,7 +2,6 @@ package mekanism.common.tile.machine;
 
 import java.util.HashSet;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -39,6 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDimensionalStabilizer extends TileEntityMekanism implements IChunkLoader, IHasVisualization {
@@ -90,17 +90,17 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
         //Only attempt to use power if chunk loading isn't disabled in the config
+        boolean isActive = false;
         if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                setActive(true);
-            } else {
-                setActive(false);
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    isActive = true;
+                    transaction.commit();
+                }
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
         return sendUpdatePacket;
     }
 

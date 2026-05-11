@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
@@ -23,6 +22,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityWindGenerator extends TileEntityGenerator implements IBoundingBlock {
@@ -66,8 +66,11 @@ public class TileEntityWindGenerator extends TileEntityGenerator implements IBou
             currentMultiplier = getMultiplier();
             setActive(canFunction() && currentMultiplier != 0L);
         }
-        if (currentMultiplier != 0L && canFunction() && getEnergyContainer().getNeeded() > 0L) {
-            getEnergyContainer().insert(getCurrentGeneration(), Action.EXECUTE, AutomationType.INTERNAL);
+        if (currentMultiplier != 0L && canFunction()) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                getEnergyContainer().insert(getCurrentGeneration(), transaction, AutomationType.INTERNAL);
+                transaction.commit();
+            }
         }
         return sendUpdatePacket;
     }

@@ -1,5 +1,6 @@
 package mekanism.generators.common.content.turbine;
 
+import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.ArrayList;
@@ -49,6 +50,7 @@ import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -141,30 +143,31 @@ public class TurbineMultiblockData extends MultiblockData {
         double flowRate = 0;
 
         long energyNeeded = energyContainer.getNeeded();
+        long flow = 0;
         if (stored > 0 && energyNeeded > 0L) {
             double energyMultiplier = (MekanismGeneratorsConfig.generators.turbineJoulesPerSteam.get() / (double) TurbineValidator.MAX_BLADES)
-                                      * (Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get()));
-            if (energyMultiplier < Mth.EPSILON) {
-                clientFlow = 0;
-            } else {
+                                      * Math.min(blades, coils * MekanismGeneratorsConfig.generators.turbineBladesPerCoil.get());
+            if (energyMultiplier >= Mth.EPSILON) {
                 double rate = getMaxFlowRateDouble();
                 double proportion = stored / (double) getSteamCapacity();
                 double origRate = rate;
                 rate = Math.min(Math.min(stored, rate), (energyNeeded / energyMultiplier) * MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt()) * proportion;
                 long amountGenerated = MathUtils.clampToLong(energyMultiplier * (rate / MekanismGeneratorsConfig.generators.turbineSteamDivisor.getAsInt()));
                 if (rate > Mth.EPSILON && amountGenerated > 0) {
-                    clientFlow = MathUtils.clampToLong(rate);
+                    flow = MathUtils.clampToLong(rate);
                     flowRate = rate / origRate;
-                    energyContainer.insert(amountGenerated, Action.EXECUTE, AutomationType.INTERNAL);
-                    chemicalTank.shrinkStack(clientFlow, Action.EXECUTE);
-                    ventTank.insert(new FluidStack(Fluids.WATER, Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get())), Action.EXECUTE, AutomationType.INTERNAL);
-                } else {
-                    clientFlow = 0;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        //TODO - 26.1: Is there any validation we want to perform for any of the following operations?
+                        energyContainer.insert(amountGenerated, transaction, AutomationType.INTERNAL);
+                        //TODO - 26.1: Should we just make flow be an int?
+                        chemicalTank.extract(chemicalTank.getResource(), Ints.saturatedCast(flow), transaction, AutomationType.INTERNAL);
+                        ventTank.insert(FluidResource.of(Fluids.WATER), Math.min(MathUtils.clampToInt(rate), condensers * MekanismGeneratorsConfig.generators.condenserRate.get()), transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
                 }
             }
-        } else {
-            clientFlow = 0;
         }
+        clientFlow = flow;
         if (!fluidOutputTargets.isEmpty() && !ventTank.isEmpty()) {
             //Note: We know that the tank has whatever amount it has stored, we can just perform the simulated extraction
             ventTank.extract(FluidUtils.emit(fluidOutputTargets, ventTank.getFluid()), Action.EXECUTE, AutomationType.INTERNAL);

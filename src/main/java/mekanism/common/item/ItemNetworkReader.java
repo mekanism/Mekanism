@@ -2,7 +2,6 @@ package mekanism.common.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.energy.IEnergyContainer;
@@ -31,6 +30,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemNetworkReader extends ItemEnergized {
@@ -60,10 +60,15 @@ public class ItemNetworkReader extends ItemEnergized {
                 if (!player.isCreative()) {
                     long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItemInHand(), 0);
-                    if (energyContainer == null || energyContainer.extract(energyPerUse, Action.SIMULATE, AutomationType.MANUAL) < energyPerUse) {
+                    if (energyContainer == null) {
                         return InteractionResult.FAIL;
                     }
-                    energyContainer.extract(energyPerUse, Action.EXECUTE, AutomationType.MANUAL);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (energyContainer.extract(energyPerUse, transaction, AutomationType.MANUAL) < energyPerUse) {
+                            return InteractionResult.FAIL;
+                        }
+                        transaction.commit();
+                    }
                 }
                 Direction opposite = context.getClickedFace().getOpposite();
                 if (tile instanceof TileEntityTransmitter transmitterTile) {

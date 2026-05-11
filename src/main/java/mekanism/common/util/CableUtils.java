@@ -59,7 +59,7 @@ public final class CableUtils {
                 // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
                 if (energyToSend == 0) {
                     energyToSend = energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-                    if (energyToSend <= 0) {
+                    if (energyToSend == 0) {
                         //If we failed to extract from it, just exit early
                         return 0;
                     }

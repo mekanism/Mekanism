@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -119,20 +118,18 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         long prev = getEnergyContainer().getEnergy();
         heatCapacitor.handleHeat(getBoost());
         FluidResource lavaResource = lavaTank.getResource();
+        boolean isActive = false;
         if (canFunction() && !lavaResource.isEmpty() && getEnergyContainer().getNeeded() > 0L) {
             int fluidRate = MekanismGeneratorsConfig.generators.heatGenerationFluidRate.get();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (lavaTank.extract(lavaResource, fluidRate, transaction, AutomationType.INTERNAL) == fluidRate) {
-                    setActive(true);
-                    transaction.commit();
+                    isActive = true;
                     heatCapacitor.handleHeat(MekanismGeneratorsConfig.generators.heatGeneration.get());
-                } else {
-                    setActive(false);
+                    transaction.commit();
                 }
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.adjacentTransfer();
         lastEnvironmentLoss = loss.environmentTransfer();
@@ -193,7 +190,10 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         double heatLost = THERMAL_EFFICIENCY * (temp - ambientTemp);
         heatCapacitor.handleHeat(-heatLost);
         long energyFromHeat = MathUtils.clampToLong(Math.abs(heatLost) * carnotEfficiency);
-        getEnergyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsLong()), Action.EXECUTE, AutomationType.INTERNAL);
+        try (Transaction transaction = Transaction.openRoot()) {
+            getEnergyContainer().insert(Math.min(energyFromHeat, MAX_PRODUCTION.getAsLong()), transaction, AutomationType.INTERNAL);
+            transaction.commit();
+        }
         return super.simulate();
     }
 

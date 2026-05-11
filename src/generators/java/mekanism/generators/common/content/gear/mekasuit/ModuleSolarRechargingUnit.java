@@ -1,6 +1,5 @@
 package mekanism.generators.common.content.gear.mekasuit;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -15,6 +14,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biome.Precipitation;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @ParametersAreNotNullByDefault
 public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRechargingUnit> {
@@ -48,8 +48,11 @@ public class ModuleSolarRechargingUnit implements ICustomModule<ModuleSolarRecha
                 //Production is a function of the peak possible output in this biome and sun's current brightness
                 double production = peakOutput * brightness;
 
-                //Multiply actual production based on how many modules are installed
-                energyContainer.insert(MathUtils.clampToLong(production * module.getInstalledCount()), Action.EXECUTE, AutomationType.MANUAL);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //Multiply actual production based on how many modules are installed
+                    energyContainer.insert(MathUtils.clampToLong(production * module.getInstalledCount()), transaction, AutomationType.MANUAL);
+                    transaction.commit();
+                }
             }
         }
     }

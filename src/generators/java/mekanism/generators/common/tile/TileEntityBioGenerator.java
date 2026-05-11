@@ -1,6 +1,5 @@
 package mekanism.generators.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -28,6 +27,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityBioGenerator extends TileEntityGenerator {
@@ -80,19 +80,25 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        if (canFunction() && !bioFuelTank.isEmpty() &&
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.SIMULATE, AutomationType.INTERNAL) == 0L) {
-            setActive(true);
-            MekanismUtils.logMismatchedStackSize(bioFuelTank.shrinkStack(1, Action.EXECUTE), 1);
-            getEnergyContainer().insert(MekanismGeneratorsConfig.generators.bioGeneration.get(), Action.EXECUTE, AutomationType.INTERNAL);
-            float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
-            if (MekanismUtils.scaleChanged(fluidScale, lastFluidScale)) {
-                lastFluidScale = fluidScale;
-                sendUpdatePacket = true;
+        boolean isActive = false;
+        if (canFunction() && !bioFuelTank.isEmpty()) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                long toGenerate = MekanismGeneratorsConfig.generators.bioGeneration.get();
+                //If we can insert all the energy we would generate, and can extract 1 mB of fuel
+                if (getEnergyContainer().insert(toGenerate, transaction, AutomationType.INTERNAL) == toGenerate &&
+                    bioFuelTank.extract(bioFuelTank.getResource(), 1, transaction, AutomationType.INTERNAL) == 1) {
+                    //Then mark the generator as active and commit the changes
+                    isActive = true;
+                    transaction.commit();
+                    float fluidScale = MekanismUtils.getScale(lastFluidScale, bioFuelTank);
+                    if (MekanismUtils.scaleChanged(fluidScale, lastFluidScale)) {
+                        lastFluidScale = fluidScale;
+                        sendUpdatePacket = true;
+                    }
+                }
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
         return sendUpdatePacket;
     }
 

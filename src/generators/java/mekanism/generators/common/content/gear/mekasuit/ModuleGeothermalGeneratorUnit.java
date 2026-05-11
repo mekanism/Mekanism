@@ -3,7 +3,6 @@ package mekanism.generators.common.content.gear.mekasuit;
 import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Map;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
@@ -17,15 +16,16 @@ import mekanism.common.config.listener.ConfigBasedCachedFloatSupplier;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
-import net.minecraft.util.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.DamageTypeTags;
+import net.minecraft.util.Util;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
@@ -87,7 +87,10 @@ public class ModuleGeothermalGeneratorUnit implements ICustomModule<ModuleGeothe
                 }
                 //Insert energy
                 long rate = MathUtils.clampToLong(module.getInstalledCount() * MekanismGeneratorsConfig.gear.mekaSuitGeothermalChargingRate.get() * highestScaledDegrees);
-                energyContainer.insert(rate, Action.EXECUTE, AutomationType.MANUAL);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    energyContainer.insert(rate, transaction, AutomationType.MANUAL);
+                    transaction.commit();
+                }
             }
         }
     }

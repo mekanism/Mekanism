@@ -3,7 +3,6 @@ package mekanism.common.tile.machine;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import java.util.Map;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -26,6 +25,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBoundingBlock {
@@ -70,20 +70,20 @@ public class TileEntitySeismicVibrator extends TileEntityMekanism implements IBo
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.fillContainerOrConvert();
+        boolean isActive = false;
         if (canFunction()) {
             long energyPerTick = energyContainer.getEnergyPerTick();
-            if (energyContainer.extract(energyPerTick, Action.SIMULATE, AutomationType.INTERNAL) == energyPerTick) {
-                setActive(true);
-                energyContainer.extract(energyPerTick, Action.EXECUTE, AutomationType.INTERNAL);
-                if (ticker % (2 * SharedConstants.TICKS_PER_SECOND) == 0) {//Every two seconds allow for a new vibration to be sent
-                    level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION, worldPosition);
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                    isActive = true;
+                    transaction.commit();
+                    if (ticker % (2 * SharedConstants.TICKS_PER_SECOND) == 0) {//Every two seconds allow for a new vibration to be sent
+                        level.gameEvent(null, MekanismGameEvents.SEISMIC_VIBRATION, worldPosition);
+                    }
                 }
-            } else {
-                setActive(false);
             }
-        } else {
-            setActive(false);
         }
+        setActive(isActive);
         updateActiveVibrators();
         return sendUpdatePacket;
     }

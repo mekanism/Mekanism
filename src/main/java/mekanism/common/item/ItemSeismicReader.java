@@ -1,7 +1,6 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.text.EnumColor;
@@ -26,6 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemSeismicReader extends ItemEnergized {
@@ -56,20 +56,25 @@ public class ItemSeismicReader extends ItemEnergized {
         ItemStack stack = player.getItemInHand(hand);
         if (!WorldUtils.isChunkVibrated(ChunkPos.containing(player.blockPosition()), player.level())) {
             player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NO_VIBRATIONS));
-        } else {
-            if (!player.isCreative()) {
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                long energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
-                if (energyContainer == null || energyContainer.extract(energyUsage, Action.SIMULATE, AutomationType.MANUAL) < energyUsage) {
-                    player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
-                    return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);//todo - 26.1: check this
-                }
-                energyContainer.extract(energyUsage, Action.EXECUTE, AutomationType.MANUAL);
+            return InteractionResult.SUCCESS_SERVER;
+        } else if (!player.isCreative()) {
+            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+            if (energyContainer == null) {
+                player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
+                return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?
             }
-            ServerPlayer serverPlayer = (ServerPlayer) player;
-            MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger(serverPlayer);
-            MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand, stack);
+            try (Transaction transaction = Transaction.openRoot()) {
+                long energyUsage = MekanismConfig.gear.seismicReaderEnergyUsage.get();
+                if (energyContainer.extract(energyUsage, transaction, AutomationType.MANUAL) < energyUsage) {
+                    player.sendSystemMessage(MekanismUtils.logFormat(EnumColor.RED, MekanismLang.NEEDS_ENERGY));
+                    return InteractionResult.SUCCESS_SERVER;//TODO - 26.1: Should this return a fail?
+                }
+                transaction.commit();
+            }
         }
-        return InteractionResult.SUCCESS_SERVER;
+        ServerPlayer serverPlayer = (ServerPlayer) player;
+        MekanismCriteriaTriggers.VIEW_VIBRATIONS.value().trigger(serverPlayer);
+        MekanismContainerTypes.SEISMIC_READER.tryOpenGui(serverPlayer, hand, stack);
+        return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack);//todo - 26.1: check this
     }
 }
