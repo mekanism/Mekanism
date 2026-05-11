@@ -1,4 +1,9 @@
 {
+  "advancements.mekanism.diversion_item_transport.title": "אור ירוק, אור אדום",
+  "advancements.mekanism.energy_transport.description": "צור כבל אוניברסלי",
+  "advancements.mekanism.painting_machine.title": "בואו נצייר!",
+  "advancements.mekanism.root.description": "ברוכים הבאים ל- Mekanism!",
+  "advancements.mekanism.root.title": "Mekanism",
   "assemblicator.mekanism.auto_mode_toggle": "מצב אוטומטי",
   "assemblicator.mekanism.craft_available": "הכנת פריטים זמינים",
   "assemblicator.mekanism.craft_single": "הכנת פריט יחיד",

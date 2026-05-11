@@ -1,0 +1,46 @@
+name: Crowdin Upload
+on:
+  push:
+    paths:
+      - src/datagen/generated/mekanism/assets/mekanism/lang/en_us.json
+      - src/datagen/generated/mekanismadditions/assets/mekanismadditions/lang/en_us.json
+      - src/datagen/generated/mekanismgenerators/assets/mekanismgenerators/lang/en_us.json
+      - src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
+    branches:
+      - "1.21.x"
+      - "26.1"
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  crowdin:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Generate GitHub App Token
+        id: generate-token
+        uses: actions/create-github-app-token@v2
+        with:
+          app-id: ${{ vars.CROWDIN_APP_ID }}
+          private-key: ${{ secrets.CROWDIN_APP_PRIVATE_KEY }}
+          permission-contents: write
+          permission-pull-requests: write
+
+      - name: Upload to Crowdin
+        uses: crowdin/github-action@v2
+        with:
+          upload_sources: true
+          upload_translations: false
+          download_translations: false
+          crowdin_branch_name: ${{ github.ref_name }}
+          create_pull_request: false
+        env:
+          GH_TOKEN: ${{ steps.generate-token.outputs.token }}
+          CROWDIN_PROJECT_ID: 1
+          CROWDIN_PERSONAL_TOKEN: ${{ secrets.CROWDIN_PERSONAL_TOKEN }}
