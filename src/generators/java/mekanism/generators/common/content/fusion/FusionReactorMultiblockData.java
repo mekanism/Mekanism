@@ -8,7 +8,6 @@ import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
@@ -206,19 +205,6 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    private boolean hasHohlraum() {
-        if (!reactorSlot.isEmpty()) {
-            if (GeneratorsItems.HOHLRAUM.is(reactorSlot.getResource())) {
-                IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(reactorSlot.itemAccess());
-                if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
-                    //Validate something didn't go terribly wrong, and we actually do have the tank we expect to have
-                    return gasHandlerItem.getChemicalInTank(0).amount() == gasHandlerItem.getChemicalTankCapacity(0);
-                }
-            }
-        }
-        return false;
-    }
-
     @Override
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
@@ -226,7 +212,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         //Only thermal transfer happens unless we're hot enough to burn.
         if (getPlasmaTemp() >= burnTemperature) {
             //If we're not burning, yet we need a hohlraum to ignite
-            if (!burning && hasHohlraum()) {
+            if (!burning) {
                 vaporiseHohlraum();
             }
 
@@ -303,12 +289,25 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void vaporiseHohlraum() {
-        IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(reactorSlot.itemAccess());
-        if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
-            fuelTank.insert(gasHandlerItem.getChemicalInTank(0), Action.EXECUTE, AutomationType.INTERNAL);
-            lastPlasmaTemperature = getPlasmaTemp();
-            reactorSlot.setEmpty();
-            setBurning(true);
+        if (!reactorSlot.isEmpty()) {
+            if (GeneratorsItems.HOHLRAUM.is(reactorSlot.getResource())) {
+                ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(reactorSlot.itemAccess());
+                if (handler != null) {
+                    //Validate that the handler has some fusion fuel in it
+                    ChemicalResource fuelType = ResourceUtils.getTypeToExtract(fuelTank, handler, AutomationType.INTERNAL, null);
+                    if (!fuelType.isEmpty()) {
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int availableFuel = handler.extract(fuelType, fuelTank.getNeeded(), transaction);
+                            if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
+                                lastPlasmaTemperature = getPlasmaTemp();
+                                reactorSlot.setEmpty();
+                                setBurning(true);
+                                transaction.commit();
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
 

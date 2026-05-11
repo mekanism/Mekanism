@@ -17,6 +17,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.BasicInventorySlot;
 import mekanism.common.recipe.MekanismRecipeType;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -288,16 +289,13 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         // Note: None of Mekanism's chemical items stack so at the moment it doesn't fully matter
         ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess());
         if (handler != null) {
-            ChemicalResource typeToExtract = chemicalTank.getResource();
+            ChemicalResource typeToExtract = ResourceUtils.getTypeToExtract(chemicalTank, handler, AutomationType.INTERNAL, null);
+            if (typeToExtract.isEmpty()) {
+                //No known type, try to see what valid types we are able to extract from the handler
+                return false;
+            }
             int amountToExtract;
             try (Transaction simulation = Transaction.openRoot()) {
-                if (typeToExtract.isEmpty()) {
-                    //No known type, try to see what valid types we are able to extract from the handler
-                    typeToExtract = ResourceHandlerUtil.findExtractableResource(handler, type -> chemicalTank.isValidForInsertion(type, AutomationType.INTERNAL), simulation);
-                    if (typeToExtract == null) {
-                        return false;
-                    }
-                }
                 amountToExtract = handler.extract(typeToExtract, chemicalTank.getNeeded(), simulation);
                 if (amountToExtract == 0) {
                     return false;

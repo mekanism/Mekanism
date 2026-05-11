@@ -7,7 +7,6 @@ import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -36,7 +35,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class StorageUtils {
+public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are the same and can be deduplicated and moved to ResourceUtils
 
     private StorageUtils() {
     }
@@ -63,20 +62,19 @@ public class StorageUtils {
     }
 
     public static void addStoredChemical(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder) {
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         if (handler == null) {
             //Fall back to trying to look up the stored chemical by the container type if the stack doesn't expose it
             handler = ContainerType.CHEMICAL.createHandlerIfData(stack);
         }
         if (handler != null) {
-            int tanks = handler.getChemicalTanks();
-            for (int tank = 0; tank < tanks; tank++) {
-                ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
+            for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+                ChemicalResource chemicalInTank = handler.getResource(tank);
                 if (chemicalInTank.isEmpty()) {
                     tooltipAdder.accept(MekanismLang.NO_CHEMICAL.translateColored(EnumColor.GRAY));
                 } else {
                     tooltipAdder.accept(MekanismLang.STORED.translateColored(EnumColor.ORANGE, EnumColor.ORANGE, chemicalInTank, EnumColor.GRAY,
-                          MekanismLang.GENERIC_MB.translate(TextUtils.format(chemicalInTank.amount()))));
+                          MekanismLang.GENERIC_MB.translate(TextUtils.format(handler.getAmountAsLong(tank)))));
                 }
             }
         } else {
@@ -146,15 +144,17 @@ public class StorageUtils {
 
     @NotNull
     public static ChemicalStack getContainedChemical(ItemStack stack, Holder<Chemical> type) {
-        return getContainedChemical(Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack)), type);
+        return getContainedChemical(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)), type);
     }
 
     @NotNull
-    public static ChemicalStack getContainedChemical(IChemicalHandler handler, Holder<Chemical> type) {
-        for (int tank = 0, tanks = handler.getChemicalTanks(); tank < tanks; tank++) {
-            ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-            if (chemicalInTank.is(type)) {
-                return chemicalInTank;
+    public static ChemicalStack getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, Holder<Chemical> type) {
+        if (handler != null) {
+            for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+                ChemicalResource chemicalInTank = handler.getResource(tank);
+                if (chemicalInTank.is(type)) {
+                    return chemicalInTank.toStack(handler.getAmountAsLong(tank));
+                }
             }
         }
         return ChemicalStack.EMPTY;
@@ -373,10 +373,13 @@ public class StorageUtils {
     private static double getDurabilityForDisplay(ItemStack stack) {
         double bestRatio = 0;
         ItemAccess itemAccess = ItemAccess.forStack(stack);
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemAccess);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemAccess);
         if (handler != null) {
-            for (int chemTack = 0, chemTanks = handler.getChemicalTanks(); chemTack < chemTanks; chemTack++) {
-                bestRatio = Math.max(bestRatio, getRatio(handler.getChemicalInTank(chemTack).amount(), handler.getChemicalTankCapacity(chemTack)));
+            for (int chemTank = 0, chemTanks = handler.size(); chemTank < chemTanks; chemTank++) {
+                ChemicalResource chemicalType = handler.getResource(chemTank);
+                if (!chemicalType.isEmpty()) {
+                    bestRatio = Math.max(bestRatio, getRatio(handler.getAmountAsLong(chemTank), handler.getCapacityAsLong(chemTank, chemicalType)));
+                }
             }
         }
         ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);

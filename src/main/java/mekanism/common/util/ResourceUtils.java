@@ -4,6 +4,7 @@ import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.container.IResourceContainer;
@@ -11,6 +12,7 @@ import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -63,11 +65,30 @@ public final class ResourceUtils {
         }
     }
 
+    public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(IResourceContainer<RESOURCE> container, ResourceHandler<RESOURCE> handler,
+          AutomationType automationType, @Nullable TransactionContext transaction) {
+        return getTypeToExtract(container, handler, type -> container.isValidForInsertion(type, automationType), transaction);
+    }
+
+    public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(IResourceContainer<RESOURCE> container, ResourceHandler<RESOURCE> handler,
+          Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
+        return getTypeToExtract(container.getResource(), handler, filter, transaction);
+    }
+
+    public static <RESOURCE extends Resource> RESOURCE getTypeToExtract(RESOURCE type, ResourceHandler<RESOURCE> handler, Predicate<RESOURCE> filter, @Nullable TransactionContext transaction) {
+        if (type.isEmpty()) {
+            RESOURCE extractableType = ResourceHandlerUtil.findExtractableResource(handler, filter, transaction);
+            if (extractableType != null) {
+                return extractableType;
+            }
+        }
+        return type;
+    }
+
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, @Nullable TransactionContext transaction) {
         return emit(targets, tank, tank.getCurrentLimit(), transaction);
     }
-
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, int maxOutput, @Nullable TransactionContext transaction) {

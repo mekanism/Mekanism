@@ -1,7 +1,6 @@
 package mekanism.api.chemical;
 
 import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -54,55 +53,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
      */
     default void setStackUnchecked(ChemicalStack stack) {
         setContentsUnchecked(ChemicalResource.of(stack), stack.amount());
-    }
-
-    /**
-     * <p>
-     * Inserts a {@link ChemicalStack} into this {@link IChemicalTank} and return the remainder. The {@link ChemicalStack} <em>should not</em> be modified in this
-     * function!
-     * </p>
-     *
-     * @param stack          {@link ChemicalStack} to insert. This must not be modified by the tank.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this tank is being interacted from.
-     *
-     * @return The remaining {@link ChemicalStack} that was not inserted (if the entire stack is accepted, then return an empty {@link ChemicalStack}). May be the same as
-     * the input {@link ChemicalStack} if unchanged, otherwise a new {@link ChemicalStack}. The returned {@link ChemicalStack} can be safely modified after
-     *
-     * @implNote The {@link ChemicalStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
-     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have to be made
-     * every run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default ChemicalStack insert(ChemicalStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty() || !isChemicalValid(stack)) {
-            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
-            return stack;
-        }
-        long needed = getNeededAsLong();
-        if (needed <= 0) {
-            //Fail if we are a full tank
-            return stack;
-        }
-        boolean sameType = false;
-        if (isEmpty() || (sameType = isTypeEqual(stack))) {
-            long toAdd = Math.min(stack.amount(), needed);
-            if (action.execute()) {
-                //If we want to actually insert the chemical, then update the current chemical
-                if (sameType) {
-                    //We can just grow our stack by the amount we want to increase it
-                    // Note: this also will mark that the contents changed
-                    growStack(toAdd, action);
-                } else {
-                    //If we are not the same type then we have to copy the stack and set it
-                    // Note: this also will mark that the contents changed
-                    setStack(stack.copyWithAmount(toAdd));
-                }
-            }
-            return stack.copyWithAmount(stack.amount() - toAdd);
-        }
-        //If we didn't accept this chemical, then just return the given stack
-        return stack;
     }
 
     /**
@@ -222,19 +172,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
     @Override
     default void setEmpty() {
         setContents(ChemicalResource.EMPTY, 0);
-    }
-
-    /**
-     * Convenience method for checking if this tank's contents are of an equal type to a given chemical stack's.
-     *
-     * @param other The stack to compare to.
-     *
-     * @return True if the tank's contents are equal, false otherwise.
-     *
-     * @implNote If your implementation of {@link #getStack()} returns a copy, this should be overridden to directly check against the internal stack.
-     */
-    default boolean isTypeEqual(ChemicalStack other) {
-        return getResource().matches(other);
     }
 
     /**

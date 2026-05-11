@@ -8,7 +8,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
@@ -168,14 +167,17 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         if (!superheatedCoolantTank.isEmpty()) {
             HeatedCoolant coolantType = getHeatedCoolant();
             if (coolantType != null) {
-                double portionToCool = coolantType.conductivity() * superheatedCoolantTank.amountAsLong();
-                long toCool = Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature()));
-                ChemicalStack cooledCoolant = coolantType.cool(toCool);
-                long amountCooled = toCool - cooledCoolantTank.insert(cooledCoolant, Action.EXECUTE, AutomationType.INTERNAL).amount();
-                if (amountCooled > 0) {
-                    double heatEnergy = amountCooled * coolantType.thermalEnthalpy();
-                    heatCapacitor.handleHeat(heatEnergy);
-                    superheatedCoolantTank.shrinkStack(amountCooled, Action.EXECUTE);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    ChemicalResource heatedTankType = superheatedCoolantTank.getResource();
+                    double portionToCool = coolantType.conductivity() * superheatedCoolantTank.amountAsLong();
+                    //TODO - 26.1: Re-evaluate this cast
+                    int toCool = Ints.saturatedCast(Math.round(portionToCool * (1 - heatCapacitor.getTemperature() / coolantType.temperature())));
+                    ChemicalResource cooledCoolant = coolantType.cool();
+                    int amountCooled = cooledCoolantTank.insert(cooledCoolant, toCool, transaction, AutomationType.INTERNAL);
+                    if (amountCooled > 0 && superheatedCoolantTank.extract(heatedTankType, amountCooled, transaction, AutomationType.INTERNAL) == amountCooled) {
+                        heatCapacitor.handleHeat(amountCooled * coolantType.thermalEnthalpy());
+                        transaction.commit();
+                    }
                 }
             }
         }
@@ -190,13 +192,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
                 try (Transaction transaction = Transaction.openRoot()) {
                     int amountToBoil = Math.min(lastMaxBoil, Ints.saturatedCast(steamTank.getNeededAsLong()));
                     int boiled = waterTank.extract(water, amountToBoil, transaction, AutomationType.INTERNAL);
-                    if (boiled > 0) {
-                        //TODO - 26.1: Change the steam tank to validate that it can actually insert the amount
-                        if (steamTank.isEmpty()) {
-                            steamTank.setStack(MekanismChemicals.STEAM.asStack(boiled));
-                        } else {
-                            steamTank.growStack(boiled, Action.EXECUTE);
-                        }
+                    if (boiled > 0 && steamTank.insert(MekanismChemicals.STEAM.asResource(), boiled, transaction, AutomationType.INTERNAL) == boiled) {
                         heatCapacitor.handleHeat(-boiled * HeatUtils.getWaterThermalEnthalpy() / HeatUtils.getSteamEnergyEfficiency());
                         transaction.commit();
                     }

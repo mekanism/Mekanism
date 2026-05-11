@@ -133,7 +133,7 @@ public class FormationProtocol<T extends MultiblockData> {
                     for (ObjectIterator<Object2LongMap.Entry<ChemicalResource>> iter = Object2LongMaps.fastIterator(rejectContents.rejectedChemicals); iter.hasNext(); ) {
                         Object2LongMap.Entry<ChemicalResource> rejectedChemical = iter.next();
                         //If we have a radioactive substance, we need to calculate how much radiation got vented
-                        radiation += rejectedChemical.getKey().getChemical().getRadioactivity() * rejectedChemical.getLongValue();
+                        radiation += rejectedChemical.getKey().getRadioactivity() * rejectedChemical.getLongValue();
                     }
                     if (radiation > 0) {
                         IRadiationManager.INSTANCE.radiate(world, structureFound.getBounds().getCenter(), radiation);

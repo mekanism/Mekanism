@@ -181,4 +181,12 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         }
         return true;
     }
+
+    //@Override
+    default void setContents(int index, RESOURCE type, long amount) {//TODO - 26.1: Re-evaluate, previously was in IItemHandlerModifiable
+        CONTAINER container = getContainer(index);
+        if (container != null) {
+            container.setContents(type, amount);
+        }
+    }
 }

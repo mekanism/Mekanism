@@ -7,8 +7,9 @@ import java.util.function.Consumer;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -30,6 +31,7 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 
 @ParametersAreNotNullByDefault
@@ -46,12 +48,12 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void addHUDElements(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player, Consumer<IHUDElement> hudElementAdder) {
         if (module.isEnabled()) {
-            IChemicalHandler chemicalHandler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
+            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
                 ChemicalStack stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored.amount(), chemicalHandler.getChemicalTankCapacity(0));
+                double ratio = StorageUtils.getRatio(stored.amount(), chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }
@@ -71,14 +73,17 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
     @Override
     public void onRemoved(IModule<ModuleJetpackUnit> module, IModuleContainer moduleContainer, ItemStack stack, boolean last) {
         //Vent the excess hydrogen from the jetpack
-        IChemicalHandler chemicalHandler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
+        ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         if (chemicalHandler != null) {
-            for (int tank = 0, tanks = chemicalHandler.getChemicalTanks(); tank < tanks; tank++) {
-                ChemicalStack stored = chemicalHandler.getChemicalInTank(tank);
-                if (!stored.isEmpty()) {
-                    long capacity = chemicalHandler.getChemicalTankCapacity(tank);
-                    if (stored.amount() > capacity) {
-                        chemicalHandler.setChemicalInTank(tank, stored.copyWithAmount(capacity));
+            for (int tank = 0, tanks = chemicalHandler.size(); tank < tanks; tank++) {
+                ChemicalResource storedType = chemicalHandler.getResource(tank);
+                if (!storedType.isEmpty()) {
+                    long capacity = chemicalHandler.getCapacityAsLong(tank, storedType);
+                    if (chemicalHandler.getAmountAsLong(tank) > capacity) {
+                        //TODO - 26.1: Figure out how to reimplement this
+                        if (chemicalHandler instanceof IMekanismChemicalHandler mekChemicalHandler) {
+                            mekChemicalHandler.setContents(tank, storedType, capacity);
+                        }
                     }
                 }
             }

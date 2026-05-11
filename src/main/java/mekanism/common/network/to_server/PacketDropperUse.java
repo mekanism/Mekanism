@@ -30,7 +30,6 @@ import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -110,7 +109,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             tank.setEmpty();
             if (tank instanceof IChemicalTank chemicalTank) {
                 //If the tank has radioactive substances in it make sure we properly emit the radiation to the environment
-                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.getStack());
+                IRadiationManager.INSTANCE.dumpRadiation(level, pos, chemicalTank.getResource(), chemicalTank.amountAsLong());
             }
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
@@ -127,19 +126,15 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                 //Extract fluid from dropper
                 int tankNeeded = tank.getNeeded();
                 if (tankNeeded > 0) {
-                    RESOURCE currentType = tank.getResource();
+                    RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
                     if (currentType.isEmpty()) {
-                        //The tank is empty, try to figure out what is in the dropper that is able to be inserted into the tank
-                        currentType = ResourceHandlerUtil.findExtractableResource(dropperHandler, resource -> tank.isValidForInsertion(resource, AutomationType.MANUAL), null);
-                        if (currentType == null) {
-                            //Failed to find a resource that could be extracted that is valid for the fluid tank, exit
-                            return;
-                        }
-                        //Update how much the tank needs based on the type we are going to try to insert in case it has a lower limit than its maximum capacity
-                        tankNeeded = tank.getLimit(currentType);
-                        if (tankNeeded == 0) {
-                            return;
-                        }
+                        //Failed to find a resource that could be extracted that is valid for the fluid tank, exit
+                        return;
+                    }
+                    //Update how much the tank needs based on the type we are going to try to insert in case it has a lower limit than its maximum capacity
+                    tankNeeded = tank.getLimit(currentType);
+                    if (tankNeeded == 0) {
+                        return;
                     }
                     transferBetween(currentType, tankNeeded, player, UseDropperAction.DRAIN,
                           dropperHandler, ResourceUtils::extractManual,

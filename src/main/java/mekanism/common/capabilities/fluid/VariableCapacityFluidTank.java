@@ -68,7 +68,7 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
         return capacity.getAsLong();
     }
 
-    @Override
+    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
     public int setStackSize(int amount, @NotNull Action action) {
         if (isEmpty()) {
             return 0;

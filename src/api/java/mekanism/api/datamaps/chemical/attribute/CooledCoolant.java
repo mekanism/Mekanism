@@ -5,7 +5,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.Identifier;
 
@@ -47,7 +47,7 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
      *
      * @return Chemical stack representing the heated coolant.
      */
-    public ChemicalStack heat(long amountHeated) {
-        return new ChemicalStack(otherVariant, amountHeated);
+    public ChemicalResource heat() {//TODO - 26.1: Update docs
+        return ChemicalResource.of(otherVariant);
     }
 }

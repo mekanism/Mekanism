@@ -24,7 +24,7 @@ public class ChemicalTankHelper {
         //Allow extracting out of the input gas tank if it isn't external OR the output tank is empty AND the input is radioactive
         //Note: This only is the case if radiation is enabled as otherwise things like gauge droppers can work as the way to remove radioactive contents
         return (type, automationType) -> automationType != AutomationType.EXTERNAL ||
-                                         (outputTank.get().isEmpty() && type.value().isRadioactive() && RadiationManager.isGlobalRadiationEnabled());
+                                         (outputTank.get().isEmpty() && type.isRadioactive() && RadiationManager.isGlobalRadiationEnabled());
     }
 
     public static ChemicalTankHelper forSide(Supplier<Direction> facingSupplier) {

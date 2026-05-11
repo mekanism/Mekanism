@@ -16,7 +16,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -72,17 +71,10 @@ public final class FluidUtils {
         if (handler == null) {
             return false;
         }
-        FluidResource fluidType;
-        if (fluidTank.isEmpty()) {
-            //If we don't have a fluid stored try draining in general a fluid that will be able to be inserted into the tank
-            fluidType = ResourceHandlerUtil.findExtractableResource(handler, type -> fluidTank.isValidForInsertion(type, AutomationType.MANUAL), null);
-            if (fluidType == null) {
-                //Nothing extractable and tank is empty so can't go from tank to handler
-                return false;
-            }
-        } else {
-            //Otherwise, try draining the same type of fluid we have stored
-            fluidType = fluidTank.getResource();
+        FluidResource fluidType = ResourceUtils.getTypeToExtract(fluidTank, handler, AutomationType.MANUAL, null);
+        if (fluidType.isEmpty()) {
+            //Nothing extractable and tank is empty so can't go from tank to handler
+            return false;
         }
         int amountInItem;
         try (Transaction simulation = Transaction.openRoot()) {

@@ -1,16 +1,13 @@
 package mekanism.common.content.sps;
 
-import com.google.common.primitives.Ints;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.math.MathUtils;
@@ -49,6 +46,7 @@ import net.minecraft.world.level.storage.ValueOutput.ValueOutputList;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.event.EventHooks;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class SPSMultiblockData extends MultiblockData implements IValveHandler {
@@ -106,7 +104,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (couldOperate && receivedEnergy > 0L) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-            long inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsLong() - 1);
+            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeeded() - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);
@@ -114,11 +112,11 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             } else {
                 processed = processable;
                 progress += processable;
-                long toProcess = MathUtils.clampToLong(progress);
-                long actualProcessed = process(toProcess);
+                int toProcess = MathUtils.clampToInt(progress);
+                int actualProcessed = process(toProcess);
                 if (actualProcessed < toProcess) {
                     //If we processed less than we intended to we need to adjust how much our values actually changed by
-                    long processedDif = toProcess - actualProcessed;
+                    int processedDif = toProcess - actualProcessed;
                     progress -= processedDif;
                     processed -= processedDif;
                 }
@@ -177,24 +175,30 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         return MekanismUtils.redstoneLevelFromContents(inputTank);
     }
 
-    private long process(long operations) {
-        if (operations == 0) {
+    private int process(int operations) {
+        ChemicalResource inputResource = inputTank.getResource();
+        if (operations == 0 || inputResource.isEmpty()) {
             return 0;
         }
-        long processed = inputTank.shrinkStack(operations, Action.EXECUTE);
-        int lastInputProcessed = inputProcessed;
-        //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
-        inputProcessed += Ints.saturatedCast(processed);
-        final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-        if (inputProcessed >= inputPerAntimatter) {
-            ChemicalStack toAdd = MekanismChemicals.ANTIMATTER.asStack(inputProcessed / inputPerAntimatter);
-            outputTank.insert(toAdd, Action.EXECUTE, AutomationType.INTERNAL);
-            inputProcessed %= inputPerAntimatter;
+        try (Transaction transaction = Transaction.openRoot()) {
+            int processed = inputTank.extract(inputResource, operations, transaction, AutomationType.INTERNAL);
+            //Limit how much input we actually increase the input processed by to how much we were actually able to remove from the input tank
+            int totalProcessed = inputProcessed + processed;
+            final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
+            if (totalProcessed >= inputPerAntimatter) {
+                int toAdd = totalProcessed / inputPerAntimatter;
+                if (outputTank.insert(MekanismChemicals.ANTIMATTER.asResource(), toAdd, transaction, AutomationType.INTERNAL) < toAdd) {
+                    return 0;
+                }
+                totalProcessed %= inputPerAntimatter;
+            }
+            if (totalProcessed != inputProcessed) {
+                inputProcessed = totalProcessed;
+                markDirty();
+            }
+            transaction.commit();
+            return processed;
         }
-        if (lastInputProcessed != inputProcessed) {
-            markDirty();
-        }
-        return processed;
     }
 
     private void kill(ServerLevel world) {

@@ -15,11 +15,11 @@ import mekanism.common.lib.transmitter.TransmissionType;
 import mekanism.common.lib.transmitter.acceptor.AcceptorCache;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
@@ -191,42 +191,20 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             if (connectedAcceptor != null) {
                 //Note: We recheck the buffer each time in case we ended up accepting the resource somewhere
                 // and our buffer changed and is no longer empty
-                LargeResourceStack<RESOURCE> bufferWithFallback = getBufferWithFallback();
-                pullFromAcceptor(connectedAcceptor, bufferWithFallback.resource(), bufferWithFallback.isEmpty());
-            }
-        }
-    }
-
-    /**
-     * @param connectedAcceptor  The acceptor
-     * @param bufferWithFallback The buffer of the network
-     * @param bufferIsEmpty      {@code true} if the buffer is empty, {@code false} otherwise
-     */
-    private void pullFromAcceptor(ResourceHandler<RESOURCE> connectedAcceptor, RESOURCE bufferWithFallback, boolean bufferIsEmpty) {
-        if (connectedAcceptor == null) {
-            return;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {
-            RESOURCE receivedType;
-            if (bufferIsEmpty) {
-                //If we don't have a resource stored try pulling as much as we are able to
-                receivedType = ResourceHandlerUtil.findExtractableResource(connectedAcceptor, ConstantPredicates.alwaysTrue(), transaction);
-            } else {
-                //Otherwise, try draining the same type of resource we have stored requesting up to as much as we are able to pull
-                // We do this to better support multiple tanks in case the resource we have stored we could pull out of a block's
-                // second tank but just asking to drain a specific amount
-                receivedType = bufferWithFallback;
-            }
-            if (receivedType == null || receivedType.isEmpty()) {
-                return;
-            }
-            int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
-            int inserted = getContainer().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
-            if (inserted == extracted) {
-                //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
-                // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
-                // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
-                transaction.commit();
+                RESOURCE receivedType = ResourceUtils.getTypeToExtract(getBufferWithFallback().resource(), connectedAcceptor, ConstantPredicates.alwaysTrue(), null);
+                if (receivedType.isEmpty()) {
+                    return;
+                }
+                try (Transaction transaction = Transaction.openRoot()) {
+                    int extracted = connectedAcceptor.extract(receivedType, getAvailablePull(), transaction);
+                    int inserted = getContainer().insert(receivedType, extracted, transaction, AutomationType.INTERNAL);
+                    if (inserted == extracted) {
+                        //If we received some resource and are able to insert it all, then actually extract it and insert it into our thing.
+                        // Note: We extract first after simulating ourselves because if the target gave a faulty simulation value, we want to handle it properly
+                        // and not accidentally dupe anything, and we know our simulation we just performed on taking it is valid
+                        transaction.commit();
+                    }
+                }
             }
         }
     }

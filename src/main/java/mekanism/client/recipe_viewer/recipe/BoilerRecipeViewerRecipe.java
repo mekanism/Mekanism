@@ -63,7 +63,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
             recipes.add(new BoilerRecipeViewerRecipe(
                   RegistryUtils.synthetic(key.identifier(), "boiler", Mekanism.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), coolantAmount), water,
-                  steam, coolant.cool(coolantAmount),
+                  steam, coolant.cool().toStack(coolantAmount),
                   HeatUtils.BASE_BOIL_TEMP
             ));
         }

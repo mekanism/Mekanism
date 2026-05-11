@@ -1,6 +1,5 @@
 package mekanism.api.fluid;
 
-import mekanism.api.Action;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IResourceContainer;
@@ -36,89 +35,6 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      */
     default void setStackUnchecked(FluidStack stack) {//TODO - 26.1: Re-evaluate callers
         setContentsUnchecked(FluidResource.of(stack), stack.amount());
-    }
-
-    /**
-     * Convenience method for modifying the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this fluid tank's limit. If the amount is less than or equal to zero,
-     * then this instead sets the stack to the empty stack.
-     *
-     * @param amount The desired size to set the stack to.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual size the stack was set to.
-     *
-     * @implNote It is recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every run. If the internal
-     * stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default int setStackSize(int amount, Action action) {
-        if (isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        int maxStackSize = getCurrentLimit();
-        if (amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (amount() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setContentsUnchecked(getResource(), amount);
-        return amount;
-    }
-
-    /**
-     * Convenience method for growing the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this tank, increase its size by the given amount. Capping at this fluid tank's limit. If the stack shrinks to an amount of less than
-     * or equal to zero, then this instead sets the stack to the empty stack.
-     *
-     * @param amount The desired amount to grow the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack grew.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default int growStack(int amount, Action action) {
-        int current = amount();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk integer overflow
-            amount = Math.min(amount, getNeeded());
-        }
-        int newSize = setStackSize(current + amount, action);
-        return newSize - current;
-    }
-
-    /**
-     * Convenience method for shrinking the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this tank, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
-     * to the empty stack. If this method is used to grow the stack the size gets capped at this fluid tank's limit.
-     *
-     * @param amount The desired amount to shrink the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack shrunk.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default int shrinkStack(int amount, Action action) {
-        return -growStack(-amount, action);
     }
 
     @Override

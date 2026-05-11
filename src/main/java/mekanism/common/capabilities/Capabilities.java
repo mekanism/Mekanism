@@ -5,7 +5,6 @@ import mekanism.api.IConfigCardAccess;
 import mekanism.api.IConfigurable;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.lasers.ILaserDissipation;
@@ -53,8 +52,6 @@ public class Capabilities {
     public static final MultiTypeCapability<ResourceHandler<ItemResource>> ITEM = new MultiTypeCapability<>(Item.BLOCK, Item.ITEM, Item.ENTITY);
 
     public static final MultiTypeCapability<ResourceHandler<ChemicalResource>> CHEMICAL = new MultiTypeCapability<>(Mekanism.rl("chemical_handler"), ResourceHandler.asClass());
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    public static final MultiTypeCapability<IChemicalHandler> CHEMICAL_LEGACY = new MultiTypeCapability<>(Mekanism.rl("legacy_chemical"), IChemicalHandler.class);
 
     public static final BlockCapability<IHeatHandler, @Nullable Direction> HEAT = BlockCapability.createSided(Mekanism.rl("heat_handler"), IHeatHandler.class);
 

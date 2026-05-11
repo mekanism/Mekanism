@@ -178,12 +178,28 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
     @Override
     public Component getTextComponent() {
         //Wrapper to get display name of the chemical type easier
-        return getChemical().getTextComponent();
+        return value().getTextComponent();
     }
 
     @Override
     public String getTranslationKey() {
         //Wrapper to get translation key of the chemical type easier
-        return getChemical().getTranslationKey();
+        return value().getTranslationKey();
+    }
+
+    /**
+     * Helper to check if this chemical is radioactive without having to look it up from the attributes.
+     *
+     * @return {@code true} if this chemical is radioactive.
+     */
+    public boolean isRadioactive() {
+        return value().isRadioactive();
+    }
+
+    /**
+     * {@return radiation level of this chemical, or zero if it is not radioactive}.
+     */
+    public double getRadioactivity() {
+        return value().getRadioactivity();
     }
 }

@@ -4,8 +4,7 @@ import java.util.Collections;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.RegistryAccess;
@@ -15,6 +14,8 @@ import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import org.jetbrains.annotations.Range;
 
 /**
  * The RadiationManager handles radiation across all in-game dimensions. Radiation exposure levels are provided in _sieverts, defining a rate of accumulation of
@@ -172,11 +173,9 @@ public interface IRadiationManager {
      * @param chemicalHandler  Chemical handler to process the tanks of.
      * @param clearRadioactive {@code true} to clear any chemical tanks that have radioactive substances.
      *
-     * @throws RuntimeException if {@code clearRadioactive = true} and the passed in handler does not expect to have
-     *                          {@link IChemicalHandler#setChemicalInTank(int, ChemicalStack)} called wth an empty stack.
      * @since 10.7.15
      */
-    void dumpRadiation(Level level, BlockPos pos, IChemicalHandler chemicalHandler, boolean clearRadioactive);
+    void dumpRadiation(Level level, BlockPos pos, ResourceHandler<ChemicalResource> chemicalHandler, boolean clearRadioactive);
 
     /**
      * Helper to "dump" any radioactive chemicals stored in the given chemical tanks.
@@ -191,16 +190,17 @@ public interface IRadiationManager {
     void dumpRadiation(Level level, BlockPos pos, List<IChemicalTank> chemicalTanks, boolean clearRadioactive);
 
     /**
-     * Checks if the given {@link ChemicalStack} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
+     * Checks if the given {@link ChemicalResource chemical type} is radioactive and if it is dumps a proportionate amount of radiation at the given location.
      *
-     * @param level The level on which to act
-     * @param pos   Location to dump radiation at.
-     * @param stack Stack to check.
+     * @param level  The level on which to act.
+     * @param pos    Location to dump radiation at.
+     * @param type   Chemical type to check.
+     * @param amount Amount of the chemical to dump.
      *
-     * @return {@code true} if the stack was radioactive and radiation got dumped.
+     * @return {@code true} if the chemical was radioactive and radiation got dumped.
      *
      * @apiNote If radiation is disabled this may still return {@code true}.
-     * @since 10.7.15
+     * @since 10.8.0
      */
-    boolean dumpRadiation(Level level, BlockPos pos, ChemicalStack stack);
+    boolean dumpRadiation(Level level, BlockPos pos, ChemicalResource type, @Range(from = 0, to = Long.MAX_VALUE) long amount);
 }

@@ -10,6 +10,7 @@ import java.util.function.LongSupplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.container.IResourceContainer;
 import mekanism.api.container.LargeResourceStack;
+import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
@@ -56,6 +57,44 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
     public LargeResourceStack<RESOURCE> getBuffer() {
         //TODO - 26.1: Evaluate callers and see what can skip wrapping in a large resource stack/if we can at least cache the empty large resource stack?
         return new LargeResourceStack<>(container.getResource(), container.amount());
+    }
+
+    @Override
+    public List<TRANSMITTER> adoptTransmittersAndAcceptorsFrom(NETWORK net) {
+        float oldScale = currentScale;
+        long oldCapacity = getCapacity();
+        List<TRANSMITTER> transmittersToUpdate = super.adoptTransmittersAndAcceptorsFrom(net);
+        //Merge the chemical scales
+        long capacity = getCapacity();
+        currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
+        if (isRemote()) {
+            if (this.container.isEmpty()) {
+                this.container.setContents(net.container.getResource(), net.container.amountAsLong());
+                net.container.setEmpty();
+            }
+        } else {
+            if (!net.container.isEmpty()) {
+                if (this.container.isEmpty()) {
+                    this.container.setContents(net.container.getResource(), net.container.amountAsLong());
+                    net.container.setEmpty();
+                } else {
+                    // compare the chemicals themselves
+                    if (this.container.getResource().equals(net.container.getResource())) {
+                        long amount = net.container.amountAsLong();
+                        //TODO - 26.1: Do we need to check for long overflow?
+                        this.container.setContentsUnchecked(this.container.getResource(), this.container.amountAsLong() + amount);
+                    } else {
+                        Mekanism.logger.error("Incompatible buffed resource networks merged: {}, {}.", this.container.getResource(), net.container.getResource());
+                    }
+                    net.container.setEmpty();
+                }
+            }
+            if (oldScale != currentScale) {
+                //We want to make sure we update to the scale change
+                needsUpdate = true;
+            }
+        }
+        return transmittersToUpdate;
     }
 
     @Override

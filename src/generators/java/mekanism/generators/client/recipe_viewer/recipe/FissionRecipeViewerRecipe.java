@@ -66,7 +66,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
                   RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
-                  coolant.heat(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
+                  coolant.heat().toStack(amount), MekanismChemicals.NUCLEAR_WASTE.asStack(1)
             ));
         }
         return recipes;
