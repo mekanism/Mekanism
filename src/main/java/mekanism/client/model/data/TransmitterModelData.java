@@ -6,6 +6,7 @@ import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
 
 public sealed class TransmitterModelData permits Diversion {
 
@@ -57,6 +58,26 @@ public sealed class TransmitterModelData permits Diversion {
         int result = connections.hashCode();
         result = 31 * result + Boolean.hashCode(hasColor);
         return result;
+    }
+
+    /// Determines remapping for NONE side. TODO: better name
+    public enum IconStatus {
+        NO_ROTATION(0),
+        ROTATE_270(270),
+        NO_SIDE_REMAP(0);
+
+        private final float angle;
+
+        IconStatus(float angle) {
+            this.angle = angle * Mth.DEG_TO_RAD;
+        }
+
+        /**
+         * Gets the angle in radians
+         */
+        public float getAngle() {
+            return angle;
+        }
     }
 
     public static final class Diversion extends TransmitterModelData {

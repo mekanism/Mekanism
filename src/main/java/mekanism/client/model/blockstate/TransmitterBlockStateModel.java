@@ -36,7 +36,6 @@ import net.minecraft.client.resources.model.sprite.TextureSlots;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.context.ContextKeySet;
 import net.minecraft.util.context.ContextMap;
@@ -113,9 +112,9 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
             //determine if we need to check the alt parts
             boolean needsAltCheck = hideContiguousJoin && connectionType == ConnectionType.NONE;
-            IconStatus iconStatus = needsAltCheck ? getIconStatus(transmitterModelData, direction) : null;//null when needsAltCheck == false
+            TransmitterModelData.IconStatus iconStatus = needsAltCheck ? getIconStatus(transmitterModelData, direction) : null;//null when needsAltCheck == false
 
-            if (needsAltCheck && iconStatus != IconStatus.NO_SIDE_REMAP) {
+            if (needsAltCheck && iconStatus != TransmitterModelData.IconStatus.NO_SIDE_REMAP) {
                 addAltParts(parts, direction, iconStatus, needsGlass, connectionType);
             } else {
                 addRegularParts(parts, direction, connectionType, needsGlass);
@@ -123,7 +122,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
     }
 
-    private void addAltParts(List<BlockStateModelPart> parts, Direction direction, IconStatus iconStatus, boolean needsGlass, ConnectionType connectionType) {
+    private void addAltParts(List<BlockStateModelPart> parts, Direction direction, TransmitterModelData.IconStatus iconStatus, boolean needsGlass, ConnectionType connectionType) {
         AltNoneParts altNoneParts = altNonePartsMap.get(direction);
         if (altNoneParts != null) {
             addAltPart(parts, iconStatus, altNoneParts);
@@ -141,8 +140,8 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
     }
 
-    private static void addAltPart(List<BlockStateModelPart> parts, IconStatus iconStatus, AltNoneParts altNoneParts) {
-        if (iconStatus == IconStatus.ROTATE_270) {
+    private static void addAltPart(List<BlockStateModelPart> parts, TransmitterModelData.IconStatus iconStatus, AltNoneParts altNoneParts) {
+        if (iconStatus == TransmitterModelData.IconStatus.ROTATE_270) {
             parts.add(altNoneParts.withRotation);
         } else {
             parts.add(altNoneParts.noRotation);
@@ -173,7 +172,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
     }
 
     //TODO fold this into the model data itself, generated at model data time?
-    public static IconStatus getIconStatus(TransmitterModelData modelData, Direction side) {
+    public static TransmitterModelData.IconStatus getIconStatus(TransmitterModelData modelData, Direction side) {
         //If we don't have a connection coming out of this side
         return switch (side) {
             case DOWN, UP -> getStatus(modelData, Direction.NORTH, Direction.SOUTH, Direction.EAST, Direction.WEST);
@@ -182,7 +181,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         };
     }
 
-    private static IconStatus getStatus(TransmitterModelData modelData, Direction a, Direction b, Direction c, Direction d) {
+    private static TransmitterModelData.IconStatus getStatus(TransmitterModelData modelData, Direction a, Direction b, Direction c, Direction d) {
         boolean hasA = modelData.getConnectionType(a) != ConnectionType.NONE;
         boolean hasB = modelData.getConnectionType(b) != ConnectionType.NONE;
         boolean hasC = modelData.getConnectionType(c) != ConnectionType.NONE;
@@ -190,12 +189,12 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         //If we don't have a connection coming out of one side, but have one coming out of the perpendicular one
         if ((hasA || hasB) != (hasC || hasD)) {
             if (hasA && hasB) {
-                return IconStatus.NO_ROTATION;
+                return TransmitterModelData.IconStatus.NO_ROTATION;
             } else if (hasC && hasD) {
-                return IconStatus.ROTATE_270;
+                return TransmitterModelData.IconStatus.ROTATE_270;
             }
         }
-        return IconStatus.NO_SIDE_REMAP;
+        return TransmitterModelData.IconStatus.NO_SIDE_REMAP;
     }
 
     public static class Unbaked implements CustomUnbakedBlockStateModel {
@@ -302,7 +301,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
         private static Transformation makeIconStatusTransform(Direction direction) {
             Vector3f vecForDirection = direction.getUnitVec3f().mul(-1, new Vector3f());
-            Quaternionf quaternion = new Quaternionf().setAngleAxis(IconStatus.ROTATE_270.getAngle(), vecForDirection.x, vecForDirection.y, vecForDirection.z);
+            Quaternionf quaternion = new Quaternionf().setAngleAxis(TransmitterModelData.IconStatus.ROTATE_270.getAngle(), vecForDirection.x, vecForDirection.y, vecForDirection.z);
             return new Transformation(null, quaternion, null, null);
         }
 
@@ -396,7 +395,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         protected abstract String remapReference(String id);
     }
 
-    /// Remaps the texture used in the NONE segment for use with [IconStatus] overrides
+    /// Remaps the texture used in the NONE segment for use with [TransmitterModelData.IconStatus] overrides
     private static class NoneSegmentRemap extends DelegateMaterialBaker {
 
         private NoneSegmentRemap(MaterialBaker upstream) {
@@ -454,26 +453,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         @Override
         public <T> T compute(SharedOperationKey<T> key) {
             return delegateBaker.compute(key);
-        }
-    }
-
-    /// Determines remapping for NONE side. TODO: better name
-    public enum IconStatus {
-        NO_ROTATION(0),
-        ROTATE_270(270),
-        NO_SIDE_REMAP(0);
-
-        private final float angle;
-
-        IconStatus(float angle) {
-            this.angle = angle * Mth.DEG_TO_RAD;
-        }
-
-        /**
-         * Gets the angle in radians
-         */
-        public float getAngle() {
-            return angle;
         }
     }
 
