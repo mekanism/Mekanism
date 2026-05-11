@@ -308,10 +308,13 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     }
 
     protected void updateModelData(TransmitterModelData modelData) {
+        Transmitter<?, ?, ?> myTransmitter = getTransmitter();
         //Update the data, using information about if there is actually a connection on a given side
+        ConnectionType[] connections = new ConnectionType[EnumUtils.DIRECTIONS.length];
         for (Direction side : EnumUtils.DIRECTIONS) {
-            modelData.setConnectionData(side, getTransmitter().getConnectionType(side));
+            connections[side.ordinal()] = myTransmitter.getConnectionType(side);
         }
+        modelData.setConnectionData(connections);
     }
 
     @NotNull

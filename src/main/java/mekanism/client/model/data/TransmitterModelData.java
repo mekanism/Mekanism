@@ -1,7 +1,6 @@
 package mekanism.client.model.data;
 
-import java.util.EnumMap;
-import java.util.Map;
+import java.util.Arrays;
 import mekanism.client.model.data.TransmitterModelData.Diversion;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
@@ -10,19 +9,21 @@ import net.minecraft.util.Mth;
 
 public sealed class TransmitterModelData permits Diversion {
 
-    private final Map<Direction, ConnectionType> connections = new EnumMap<>(Direction.class);
+    private final VisualConnectionStatus[] connections = new VisualConnectionStatus[EnumUtils.DIRECTIONS.length];
     private boolean hasColor;
 
-    public void setConnectionData(Direction direction, ConnectionType connectionType) {
-        connections.put(direction, connectionType);
+    public void setConnectionData(ConnectionType[] connectionsIn) {
+        for (int i = 0; i < EnumUtils.DIRECTIONS.length; i++) {
+            connections[i] = getVisualStatus(EnumUtils.DIRECTIONS[i], connectionsIn[i], connectionsIn);
+        }
     }
 
-    public Map<Direction, ConnectionType> getConnectionsMap() {
-        return connections;
+    public VisualConnectionStatus getConnectionType(int side) {
+        return connections[side];
     }
 
-    public ConnectionType getConnectionType(Direction side) {
-        return connections.get(side);
+    public VisualConnectionStatus getConnectionType(Direction side) {
+        return connections[side.ordinal()];
     }
 
     public void setHasColor(boolean hasColor) {
@@ -33,50 +34,87 @@ public sealed class TransmitterModelData permits Diversion {
         return hasColor;
     }
 
-    public boolean check(ConnectionType... types) {
-        if (types.length != EnumUtils.DIRECTIONS.length) {
-            return false;
-        }
-        for (int i = 0; i < types.length; i++) {
-            if (connections.get(EnumUtils.DIRECTIONS[i]) != types[i]) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (o == this) {
             return true;
         }
-        return o instanceof TransmitterModelData other && hasColor == other.hasColor && connections.equals(other.connections);
+        return o instanceof TransmitterModelData other && hasColor == other.hasColor && Arrays.equals(connections, other.connections);
     }
 
     @Override
     public int hashCode() {
-        int result = connections.hashCode();
+        int result = Arrays.hashCode(connections);
         result = 31 * result + Boolean.hashCode(hasColor);
         return result;
     }
 
-    /// Determines remapping for NONE side. TODO: better name
-    public enum IconStatus {
-        NO_ROTATION(0),
-        ROTATE_270(270),
-        NO_SIDE_REMAP(0);
+    private VisualConnectionStatus getVisualStatus(Direction side, ConnectionType sideConnection, ConnectionType[] allConnections) {
+        if (sideConnection != ConnectionType.NONE || this instanceof Diversion) {
+            return VisualConnectionStatus.from(sideConnection);
+        }
+        return getVisualStatus(
+              side,
+              allConnections[Direction.NORTH.ordinal()],
+              allConnections[Direction.SOUTH.ordinal()],
+              allConnections[Direction.EAST.ordinal()],
+              allConnections[Direction.WEST.ordinal()],
+              allConnections[Direction.UP.ordinal()],
+              allConnections[Direction.DOWN.ordinal()]
+        );
+    }
 
-        private final float angle;
+    public static VisualConnectionStatus getVisualStatus(Direction side, ConnectionType northConnection, ConnectionType southConnection, ConnectionType eastConnection, ConnectionType westConnection, ConnectionType upConnection, ConnectionType downConnection) {
+        //If we don't have a connection coming out of this side
+        return switch (side) {
+            case DOWN, UP -> getStatus(northConnection, southConnection, eastConnection, westConnection);
+            case NORTH, SOUTH -> getStatus(upConnection, downConnection, eastConnection, westConnection);
+            case WEST, EAST -> getStatus(upConnection, downConnection, northConnection, southConnection);
+        };
+    }
 
-        IconStatus(float angle) {
-            this.angle = angle * Mth.DEG_TO_RAD;
+    private static VisualConnectionStatus getStatus(ConnectionType connectionA, ConnectionType connectionB, ConnectionType connectionC, ConnectionType connectionD) {
+        boolean hasA = connectionA != ConnectionType.NONE;
+        boolean hasB = connectionB != ConnectionType.NONE;
+        boolean hasC = connectionC != ConnectionType.NONE;
+        boolean hasD = connectionD != ConnectionType.NONE;
+        //If we don't have a connection coming out of one side, but have one coming out of the perpendicular one
+        if ((hasA || hasB) != (hasC || hasD)) {
+            if (hasA && hasB) {
+                return VisualConnectionStatus.NONE_CONTIGUOUS;
+            } else if (hasC && hasD) {
+                return VisualConnectionStatus.NONE_CONTIGUOUS_ROTATED;
+            }
+        }
+        return VisualConnectionStatus.NONE;
+    }
+
+    public enum VisualConnectionStatus {
+        NORMAL,
+        PUSH,
+        PULL,
+        NONE,
+        NONE_CONTIGUOUS,
+        NONE_CONTIGUOUS_ROTATED;
+
+        public String partName() {
+            return switch (this) {
+                case NORMAL -> "NORMAL";
+                case PUSH -> "PUSH";
+                case PULL -> "PULL";
+                case NONE, NONE_CONTIGUOUS, NONE_CONTIGUOUS_ROTATED -> "NONE";
+            };
         }
 
-        /**
-         * Gets the angle in radians
-         */
-        public float getAngle() {
-            return angle;
+        public static final float CONTIGUOUS_ROTATION = 270 * Mth.DEG_TO_RAD;
+
+        public static VisualConnectionStatus from(ConnectionType raw) {
+            return switch (raw) {
+                case NORMAL -> VisualConnectionStatus.NORMAL;
+                case PUSH -> VisualConnectionStatus.PUSH;
+                case PULL -> VisualConnectionStatus.PULL;
+                case NONE -> VisualConnectionStatus.NONE;
+            };
         }
     }
 
