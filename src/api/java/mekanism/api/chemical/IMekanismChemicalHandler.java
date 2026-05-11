@@ -1,8 +1,6 @@
 package mekanism.api.chemical;
 
 import java.util.List;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IMekanismResourceHandler;
 import org.jetbrains.annotations.Nullable;
@@ -51,33 +49,5 @@ public interface IMekanismChemicalHandler extends IMekanismResourceHandler<Chemi
     default long getChemicalTankCapacity(int tank) {
         IChemicalTank chemicalTank = getChemicalTank(tank);
         return chemicalTank == null ? 0 : chemicalTank.getCapacity();
-    }
-
-    @Override
-    default ChemicalStack insertChemical(ChemicalStack stack, Action action) {
-        if (stack.isEmpty()) {
-            //Short circuit if nothing is actually being inserted
-            return ChemicalStack.EMPTY;
-        }
-        List<IChemicalTank> chemicalTanks = getContainers();
-        return ChemicalUtils.insert(stack, action, AutomationType.INTERNAL, chemicalTanks.size(), chemicalTanks);
-    }
-
-    @Override
-    default ChemicalStack extractChemical(long amount, Action action) {
-        if (amount == 0) {
-            return ChemicalStack.EMPTY;
-        }
-        List<IChemicalTank> chemicalTanks = getContainers();
-        return ChemicalUtils.extract(amount, action, AutomationType.INTERNAL, chemicalTanks.size(), chemicalTanks);
-    }
-
-    @Override
-    default ChemicalStack extractChemical(ChemicalStack stack, Action action) {
-        if (stack.isEmpty()) {
-            return ChemicalStack.EMPTY;
-        }
-        List<IChemicalTank> chemicalTanks = getContainers();
-        return ChemicalUtils.extract(stack, action, AutomationType.INTERNAL, chemicalTanks.size(), chemicalTanks);
     }
 }

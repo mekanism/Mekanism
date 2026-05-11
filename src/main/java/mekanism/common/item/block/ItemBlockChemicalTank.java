@@ -16,7 +16,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.ChemicalTankTier;
 import mekanism.common.tile.TileEntityChemicalTank;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.network.chat.Component;
@@ -70,7 +70,7 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
             // but we may as well short circuit it here
             return false;
         }
-        return ChemicalUtil.hasAnyChemical(stack);
+        return ChemicalUtils.hasAnyChemical(stack);
     }
 
     @Override
@@ -80,6 +80,6 @@ public class ItemBlockChemicalTank extends ItemBlockTooltip<BlockTileModel<TileE
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
     }
 }

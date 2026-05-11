@@ -13,7 +13,7 @@ import mekanism.common.block.attribute.Attributes.AttributeRedstoneEmitter;
 import mekanism.common.content.blocktype.BlockTypeTile;
 import mekanism.common.content.blocktype.BlockTypeTile.BlockTileBuilder;
 import mekanism.common.lib.math.Pos3D;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.generators.common.GeneratorsLang;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -121,7 +121,7 @@ public class GeneratorsBlockTypes {
           .createGenerator(() -> GeneratorsTileEntityTypes.GAS_BURNING_GENERATOR, GeneratorsLang.DESCRIPTION_GAS_BURNING_GENERATOR)
           .withGui(() -> GeneratorsContainerTypes.GAS_BURNING_GENERATOR)
           //todo: re-implement the change here
-          .withEnergyConfig(() -> MathUtils.multiplyClamped(1_000, ChemicalUtil.hydrogenEnergyDensity()))
+          .withEnergyConfig(() -> MathUtils.multiplyClamped(1_000, ChemicalUtils.hydrogenEnergyDensity()))
           .withCustomShape(BlockShapes.GAS_BURNING_GENERATOR)
           .with(AttributeCustomSelectionBox.JSON)
           .withSound(GeneratorsSounds.GAS_BURNING_GENERATOR)

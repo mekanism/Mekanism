@@ -13,6 +13,7 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.advancements.triggers.UseGaugeDropperTrigger.UseDropperAction;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.MultiTypeCapability;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.item.ItemGaugeDropper;
 import mekanism.common.lib.multiblock.MultiblockData;
@@ -27,7 +28,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.ByIdMap;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.capabilities.ItemCapability;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
@@ -70,9 +70,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                         MultiblockData structure = multiblock.getMultiblock();
                         if (structure.isFormed()) {
                             if (tankType == TankType.FLUID_TANK) {
-                                handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                                handleResourceTank(player, itemAccess, Capabilities.FLUID, structure.getFluidTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             } else if (tankType == TankType.CHEMICAL_TANK) {
-                                handleResourceTank(player, itemAccess, Capabilities.CHEMICAL.item(), structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
+                                handleResourceTank(player, itemAccess, Capabilities.CHEMICAL, structure.getChemicalTanks(), tile.getLevel(), structure.getBounds().getCenter());
                             }
                         }
                     } else {
@@ -85,9 +85,9 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                             }
                         }
                         if (tankType == TankType.FLUID_TANK) {
-                            handleResourceTank(player, itemAccess, Capabilities.FLUID.item(), tile.getFluidTanks(), tile.getLevel(), tile.getBlockPos());
+                            handleResourceTank(player, itemAccess, Capabilities.FLUID, tile.getFluidTanks(), tile.getLevel(), tile.getBlockPos());
                         } else if (tankType == TankType.CHEMICAL_TANK) {
-                            handleResourceTank(player, itemAccess, Capabilities.CHEMICAL.item(), tile.getChemicalTanks(), tile.getLevel(), tile.getBlockPos());
+                            handleResourceTank(player, itemAccess, Capabilities.CHEMICAL, tile.getChemicalTanks(), tile.getLevel(), tile.getBlockPos());
                         }
                     }
                 }
@@ -101,7 +101,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
     }
 
     private <RESOURCE extends Resource, TANK extends IResourceContainer<RESOURCE>> void handleResourceTank(ServerPlayer player, ItemAccess itemAccess,
-          ItemCapability<ResourceHandler<RESOURCE>, ItemAccess> capability, List<TANK> tanks, Level level, BlockPos pos) {
+          MultiTypeCapability<ResourceHandler<RESOURCE>> capability, List<TANK> tanks, Level level, BlockPos pos) {
         TANK tank = getTank(tanks);
         if (tank == null) {
             return;
@@ -115,7 +115,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
             MekanismCriteriaTriggers.USE_GAUGE_DROPPER.value().trigger(player, UseDropperAction.DUMP);
             return;
         }
-        ResourceHandler<RESOURCE> dropperHandler = itemAccess.getCapability(capability);
+        ResourceHandler<RESOURCE> dropperHandler = capability.getCapability(itemAccess);
         if (dropperHandler != null) {
             if (action == DropperAction.FILL_DROPPER) {
                 //Insert fluid into dropper

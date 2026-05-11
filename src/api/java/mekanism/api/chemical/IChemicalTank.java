@@ -106,36 +106,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
     }
 
     /**
-     * Extracts a {@link ChemicalStack} from this {@link IChemicalTank}.
-     * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
-     * </p>
-     *
-     * @param amount         Amount to extract (may be greater than the current stack's max limit)
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this tank is being interacted from.
-     *
-     * @return {@link ChemicalStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link ChemicalStack} can be safely modified after,
-     * so the tank should return a new or copied stack.
-     *
-     * @implNote The returned {@link ChemicalStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
-     * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link ChemicalStack} is mutable so that a copy does not have
-     * to be made every run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default ChemicalStack extract(long amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1) {
-            return ChemicalStack.EMPTY;
-        }
-        ChemicalStack ret = getResource().toStack(Math.min(amountAsLong(), amount));
-        if (!ret.isEmpty() && action.execute()) {
-            // Note: this also will mark that the contents changed
-            shrinkStack(ret.amount(), action);
-        }
-        return ret;
-    }
-
-    /**
      * Retrieves the maximum stack size allowed to exist in this {@link IChemicalTank}.
      *
      * @return The maximum stack size allowed in this {@link IChemicalTank}.

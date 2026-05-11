@@ -4,7 +4,7 @@ import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.common.item.interfaces.IChemicalItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,7 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public boolean hasChemical(ItemStack stack) {
-        return ChemicalUtil.hasChemicalOfType(stack, getChemicalType());
+        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
     }
 
     @Override
@@ -49,11 +49,11 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(item, getChemicalType()));
+        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType()));
     }
 }

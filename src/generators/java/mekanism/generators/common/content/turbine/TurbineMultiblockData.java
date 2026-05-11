@@ -28,8 +28,8 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.tile.turbine.TileEntityTurbineCasing;
@@ -170,7 +170,7 @@ public class TurbineMultiblockData extends MultiblockData {
         clientFlow = flow;
         if (!fluidOutputTargets.isEmpty() && !ventTank.isEmpty()) {
             //Note: We know that the tank has whatever amount it has stored, we can just perform the simulated extraction
-            ventTank.extract(FluidUtils.emit(fluidOutputTargets, ventTank.getFluid()), Action.EXECUTE, AutomationType.INTERNAL);
+            ResourceUtils.emit(fluidOutputTargets, ventTank, null);
         }
         CableUtils.emit(energyOutputTargets, energyContainer);
 

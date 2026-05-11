@@ -11,7 +11,7 @@ import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.FluidUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.network.chat.Component;
@@ -63,7 +63,7 @@ public class ItemGaugeDropper extends Item {
         if (!fluid.isEmpty()) {
             return FluidUtils.getRGBDurabilityForDisplay(stack);
         }
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
     }
 
     @NotNull

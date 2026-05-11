@@ -2,10 +2,8 @@ package mekanism.common.content.gear.mekasuit;
 
 import com.google.common.primitives.Ints;
 import java.util.Map;
-import mekanism.api.Action;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -16,7 +14,7 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.FluidInDetails;
 import net.minecraft.resources.Identifier;
@@ -28,7 +26,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @ParametersAreNotNullByDefault
 public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICustomModule<ModuleElectrolyticBreathingUnit> {
@@ -62,28 +62,32 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
-            long usage = MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity());
+            long usage = MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity());
             int maxRate = Ints.saturatedCast(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
-            long hydrogenUsed = 0;
-            ChemicalStack hydrogenStack = MekanismChemicals.HYDROGEN.asStack(maxRate * 2L);
+            int hydrogenUsed = 0;
+            int availableHydrogen = 2 * maxRate;
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);
-            if (checkChestPlate(chestStack)) {
-                IChemicalHandler chestCapability = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(chestStack));
-                if (chestCapability != null) {
-                    hydrogenUsed = maxRate * 2L - chestCapability.insertChemical(hydrogenStack, Action.EXECUTE).amount();
-                    hydrogenStack.shrink(hydrogenUsed);
+            try (Transaction transaction = Transaction.openRoot()) {
+                if (checkChestPlate(chestStack)) {
+                    ResourceHandler<ChemicalResource> chestCapability = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(chestStack));
+                    if (chestCapability != null) {
+                        hydrogenUsed = chestCapability.insert(MekanismChemicals.HYDROGEN.asResource(), availableHydrogen, transaction);
+                        availableHydrogen -= hydrogenUsed;
+                    }
                 }
-            }
-            if (fillHeld) {
-                IChemicalHandler handCapability = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
-                if (handCapability != null) {
-                    hydrogenUsed = maxRate * 2L - handCapability.insertChemical(hydrogenStack, Action.EXECUTE).amount();
+                if (fillHeld) {
+                    ResourceHandler<ChemicalResource> handCapability = Capabilities.CHEMICAL.getCapability(ItemAccess.forPlayerInteraction(player, InteractionHand.MAIN_HAND));
+                    if (handCapability != null) {
+                        //TODO - 26.1: This didn't used to increment hydrogenUsed, but I believe it should be
+                        hydrogenUsed += handCapability.insert(MekanismChemicals.HYDROGEN.asResource(), availableHydrogen, transaction);
+                    }
                 }
+                int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
+                int used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
+                module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used));
+                player.setAirSupply(player.getAirSupply() + oxygenUsed);
+                transaction.commit();
             }
-            int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
-            long used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
-            module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used));
-            player.setAirSupply(player.getAirSupply() + oxygenUsed);
         }
     }
 

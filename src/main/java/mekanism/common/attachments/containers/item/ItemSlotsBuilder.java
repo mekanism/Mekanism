@@ -6,11 +6,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -345,13 +342,13 @@ public class ItemSlotsBuilder {
     public ItemSlotsBuilder addFluidFuelSlot(int tankIndex, Predicate<ItemResource> hasFuelValue) {
         //Copy of FluidFuelInventorySlot's forFuel insert and extract predicates
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex, (itemType, _) -> {
-            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
-            if (itemHandler != null) {
-                int tanks = itemHandler.size();
+            ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(itemType);
+            if (handler != null) {
+                int tanks = handler.size();
                 if (tanks > 0) {
                     IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                     for (int tank = 0; tank < tanks; tank++) {
-                        if (fluidTank.isValid(itemHandler.getResource(tank))) {
+                        if (fluidTank.isValid(handler.getResource(tank))) {
                             //False if the items contents are still valid
                             return false;
                         }
@@ -367,137 +364,50 @@ public class ItemSlotsBuilder {
 
     private boolean canChemicalDrainInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getDrainInsertPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
         if (handler != null) {
-            //Note: We don't need to create a fake tank using the container type, as we only care about the stored type
-            AttachedResources<ChemicalResource> containers = ContainerType.CHEMICAL.getOrEmpty(attachedTo);
-            LargeResourceStack<ChemicalResource> chemicalInTank = containers.getOrNull(tankIndex);
-            if (chemicalInTank == null || chemicalInTank.isEmpty()) {
-                //If the chemical tank is empty, accept the chemical item as long as it is not full
-                for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                    if (handler.getChemicalInTank(tank).amount() < handler.getChemicalTankCapacity(tank)) {
-                        //True if we have any space in this tank
-                        return true;
-                    }
-                }
-                return false;
-            }
-            //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-            return handler.insertChemical(chemicalInTank.resource().toStack(chemicalInTank.amount()), Action.SIMULATE).amount() < chemicalInTank.amount();
+            IChemicalTank tank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
+            return ChemicalInventorySlot.canDrainInsert(tank, handler);
         }
         return false;
     }
 
     private boolean canChemicalFillExtract(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillExtractPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
-        if (handler != null) {
-            IChemicalTank chemicalTank = null;
-            for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                ChemicalStack storedChemical = handler.getChemicalInTank(tank);
-                if (!storedChemical.isEmpty()) {
-                    if (chemicalTank == null) {
-                        chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-                    }
-                    if (chemicalTank.isChemicalValid(storedChemical)) {
-                        //False if the item isn't empty and the contents are still valid
-                        return false;
-                    }
-                }
-            }
-            //If we have no contents that are still valid, allow extraction
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
+        if (handler == null) {
+            return true;
         }
-        //Always allow it if we are not a chemical item (For example this may be true for hybrid inventory slots)
-        return true;
+        IChemicalTank tank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
+        return ChemicalInventorySlot.fillExtractCheck(tank, handler);
     }
 
     private boolean canChemicalFillInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#fillInsertCheck
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(itemType);
         if (handler != null) {
-            IChemicalTank chemicalTank = null;
-            for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                if (!chemicalInTank.isEmpty()) {
-                    if (chemicalTank == null) {
-                        chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-                    }
-                    if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < chemicalInTank.amount()) {
-                        //True if we can fill the tank with any of our contents
-                        // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
-                        return true;
-                    }
-                }
-            }
+            IChemicalTank chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
+            return ChemicalInventorySlot.fillInsertCheck(chemicalTank, handler);
         }
         return false;
     }
 
     private boolean canChemicalFillOrConvertExtract(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertExtractPredicate
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
-        IChemicalTank chemicalTank = null;
-        if (handler != null) {
-            int tanks = handler.getChemicalTanks();
-            if (tanks > 0) {
-                chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-                for (int tank = 0; tank < tanks; tank++) {
-                    if (chemicalTank.isChemicalValid(handler.getChemicalInTank(tank))) {
-                        //False if the items contents are still valid
-                        return false;
-                    }
-                }
-            }
-            //Only allow extraction if our item is out of chemical, and doesn't have a valid conversion for it
-        }
-        //Always allow extraction if something went horribly wrong, and we are not a chemical item AND we can't provide a valid type of chemical
-        // This might happen after a reload for example
-        ChemicalStack conversion = ChemicalInventorySlot.getPotentialConversion(null, itemType);
-        if (conversion.isEmpty()) {
-            return true;
-        } else if (chemicalTank == null) {
-            //If we haven't resolved the tank yet, we need to do it now
-            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-        }
-        return !chemicalTank.isChemicalValid(conversion);
+        //Note: We eagerly resolve the chemical tank as it makes things easier, as the only case where we would not need it is:
+        // no handler on the item, AND no conversion recipe
+        //TODO: If it turns out to be an issue, we can make the method we call lazily initialize the chemical tank
+        IChemicalTank chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
+        return ChemicalInventorySlot.fillOrConvertExtractCheck(chemicalTank, () -> null, itemType);
     }
 
     private boolean canChemicalFillOrConvertInsert(ItemStack attachedTo, int tankIndex, ItemResource itemType) {
         //Copy of logic from ChemicalInventorySlot#getFillOrConvertInsertPredicate
-        IChemicalTank chemicalTank = null;
-        {//Fill insert check logic, we want to avoid resolving the tank as long as possible
-            IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(itemType);
-            if (handler != null) {
-                for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                    ChemicalStack chemicalInTank = handler.getChemicalInTank(tank);
-                    if (!chemicalInTank.isEmpty()) {
-                        if (chemicalTank == null) {
-                            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-                        }
-                        if (chemicalTank.insert(chemicalInTank, Action.SIMULATE, AutomationType.INTERNAL).amount() < chemicalInTank.amount()) {
-                            //True if we can fill the tank with any of our contents
-                            // Note: We need to recheck the fact the chemical is not empty in case the item has multiple tanks and only some of the chemicals are valid
-                            return true;
-                        }
-                    }
-                }
-            }
-        }
-        ChemicalStack conversion = ChemicalInventorySlot.getPotentialConversion(null, itemType);
-        //Note: We recheck about this being empty and that it is still valid as the conversion list might have changed, such as after a reload
-        if (conversion.isEmpty()) {
-            return false;
-        } else if (chemicalTank == null) {
-            //If we haven't resolved the tank yet, we need to do it now
-            chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
-        }
-        if (chemicalTank.insert(conversion, Action.SIMULATE, AutomationType.INTERNAL).amount() < conversion.amount()) {
-            //If we can insert the converted substance into the tank allow insertion
-            return true;
-        }
-        //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
-        // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
-        return chemicalTank.getNeededAsLong() == 0 && chemicalTank.isTypeEqual(conversion) && chemicalTank.isChemicalValid(conversion);
+        //Note: We eagerly resolve the chemical tank as it makes things easier, as the only case where we would not need it is:
+        // no handler on the item, AND no conversion recipe
+        //TODO: If it turns out to be an issue, we can make the method we call lazily initialize the chemical tank
+        IChemicalTank chemicalTank = ContainerType.CHEMICAL.createContainer(attachedTo, tankIndex);
+        return ChemicalInventorySlot.fillOrConvertInsertCheck(chemicalTank, () -> null, itemType);
     }
 
     public ItemSlotsBuilder addChemicalFillSlot(int tankIndex) {

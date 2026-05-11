@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
@@ -13,12 +12,12 @@ import mekanism.api.inventory.access.InventorySlotItemAccess;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public interface IFluidHandlerSlot extends IInventorySlot {
 
@@ -41,17 +40,20 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             } else if (editMode == ContainerEditMode.BOTH) {
                 IFluidTank fluidTank = getFluidTank();
                 //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access?
-                ItemAccess access = new InventorySlotItemAccess(this, AutomationType.INTERNAL);
-                ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
-                if (itemHandler != null) {
+                ItemAccess access = new InOutSlotItemAccess(this, outputSlot);
+                ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(access);
+                if (handler != null) {
                     boolean hasEmpty = false;
-                    for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
-                        FluidResource fluidInTank = itemHandler.getResource(tank);
+                    for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
+                        FluidResource fluidInTank = handler.getResource(tank);
                         if (fluidInTank.isEmpty()) {
                             hasEmpty = true;
                         } else if (!isDraining()) {
-                            int fluidStored = itemHandler.getAmountAsInt(tank);
-                            if (fluidTank.insert(fluidInTank.toStack(fluidStored), Action.SIMULATE, AutomationType.INTERNAL).amount() < fluidStored) {
+                            boolean canFill;
+                            try (Transaction simulation = Transaction.openRoot()) {
+                                canFill = fluidTank.insert(fluidInTank, handler.getAmountAsInt(tank), simulation, AutomationType.INTERNAL) > 0;
+                            }
+                            if (canFill) {
                                 //If we support either mode and our container is not empty or currently being filled, then drain the item into the tank
                                 fillTank(outputSlot);
                                 return;
@@ -60,9 +62,10 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                     }
                     if (isFilling()) {
                         //if we were filling, but can no longer fill the tank, attempt to move the item to the output slot
-                        if (moveItem(outputSlot, getStack())) {//TODO - 26.1: Figure out what we should be passing here
+                        //TODO - 26.1: Figure out what the logic should be here, as moving the item is part of the item access' job now
+                        //if (moveItem(outputSlot, getStack(), transaction)) {
                             setFilling(false);
-                        }
+                        //}
                     } else if (fluidTank.isEmpty() && hasEmpty || isDraining()) {
                         //If we have no valid fluids, we return if there is at least one empty tank in the item so that we can then drain into it
                         drainTank(outputSlot);
@@ -70,8 +73,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                         //try to fill the item from the fluid in the tank
                         boolean canDrain;
                         try (Transaction simulation = Transaction.openRoot()) {
-                            FluidStack fluid = fluidTank.getFluid();
-                            canDrain = itemHandler.insert(FluidResource.of(fluid), fluid.amount(), simulation) > 0;
+                            canDrain = handler.insert(fluidTank.getResource(), fluidTank.amount(), simulation) > 0;
                         }
                         if (canDrain) {
                             //If we can drain anything into it, then drain
@@ -90,10 +92,10 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         //Try filling from the tank's item
         //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access?
         ItemAccess access = new InOutSlotItemAccess(this, outputSlot);
-        ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
-        if (itemHandler != null) {
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(access);
+        if (handler != null) {
             //Start by gathering all the fluids in the item that are valid for the tank
-            Object2IntMap<FluidResource> knownFluids = gatherKnownFluids(itemHandler);
+            Object2IntMap<FluidResource> knownFluids = gatherKnownFluids(handler);
             for (ObjectIterator<Object2IntMap.Entry<FluidResource>> iterator = Object2IntMaps.fastIterator(knownFluids); iterator.hasNext(); ) {
                 Object2IntMap.Entry<FluidResource> knownFluid = iterator.next();
                 if (drainItemAndMove(outputSlot, knownFluid.getKey(), knownFluid.getIntValue()) && isEmpty()) {
@@ -118,51 +120,50 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access?
         // I am guessing we should potentially be doing a oneByOne access here
         ItemAccess access = new InOutSlotItemAccess(this, outputSlot);
-        ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
-        if (itemHandler != null) {
-            IFluidTank fluidTank = getFluidTank();
-            FluidStack fluidInTank = fluidTank.getFluid();
-            if (!fluidInTank.isEmpty()) {
-                //If we have a fluid attempt to drain it into our item
-                FluidStack simulatedDrain = fluidTank.extract(fluidInTank.amount(), Action.SIMULATE, AutomationType.INTERNAL);
-                if (simulatedDrain.isEmpty()) {
-                    //If we cannot actually drain from our fluid handler then just exit early
-                    return;
-                }
-                //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
-                // and it does not actually matter that we are directly executing on the item
-                try (Transaction transaction = Transaction.openRoot()) {
-                    int toDrain = itemHandler.insert(FluidResource.of(fluidInTank), fluidInTank.amount(), transaction);
-                    if (toDrain == 0) {
-                        //If we cannot actually fill the item then just exit early
-                        return;
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(access);
+        if (handler == null) {
+            return;
+        }
+        IFluidTank fluidTank = getFluidTank();
+        if (fluidTank.isEmpty()) {
+            return;
+        }
+        FluidResource fluidType = fluidTank.getResource();
+        int fluidAmount = fluidTank.amount();
+        try (Transaction transaction = Transaction.openRoot()) {
+            //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
+            // and it does not actually matter that we are directly executing on the item
+            int toDrain = handler.insert(fluidType, fluidAmount, transaction);
+            if (toDrain == 0) {
+                //If we cannot actually fill the item then just exit early
+                return;
+            }
+            //If we have a fluid attempt to drain it into our item
+            int extractable = fluidTank.extract(fluidType, toDrain, transaction, AutomationType.INTERNAL);
+            if (extractable < toDrain) {
+                //If we cannot actually drain enough fluid from our fluid handler then just exit early
+                return;
+            }
+
+            boolean draining = false;
+            if (amount() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
+                //TODO - 26.1: Do we need to look up the cap again? In case the item got moved out? How do caps with item access work
+                //ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(access);
+                //if (containerCap != null) {
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    //TODO - 26.1: Do we want to just pass a bucket's volume for the amount to transfer?
+                    if (handler.insert(fluidType, fluidAmount, simulation) > 0) {
+                        //If we have a single item in the input slot, and we can continue to fill it after
+                        // our current fill, then mark that we are currently draining
+                        draining = true;
                     }
-                    //TODO - 26.1: adapt for ItemAccess
-                    /*if (getCount() == 1) {
-                        ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(itemHandler.getContainer());
-                        if (containerCap != null && containerCap.fill(fluidInTank.copy(), FluidAction.SIMULATE) > 0) {
-                            //If we have a single item in the input slot, and we can continue to fill it after
-                            // our current fill, then mark that we don't want to move it to the output slot, yet
-                            // Additionally we replace our input item with its container
-                            setStack(itemHandler.getContainer());
-                            //Mark that we are currently draining
-                            setDraining(true);
-                            //Actually remove the fluid from our handler
-                            MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(toDrain, Action.EXECUTE), toDrain);
-                            transaction.commit();
-                            return;
-                        }
-                    }
-                    //If we can move it to the output slot then actually drain our tank
-                    if (moveItem(outputSlot, itemHandler.getContainer())) {
-                        //Actually remove the fluid from our handler
-                        MekanismUtils.logMismatchedStackSize(fluidTank.shrinkStack(toDrain, Action.EXECUTE), toDrain);
-                        //Mark we are no longer draining (as we have moved the item to the output slot)
-                        setDraining(false);
-                        transaction.commit();
-                    }*/
                 }
             }
+            //TODO - 26.1: Do we want to do this in a custom item access so it happens when things actually move?
+            //Mark we are no longer draining (as we have moved the item to the output slot)
+            setDraining(draining);
+            //Actually remove the fluid from our handler and fill the item handler
+            transaction.commit();
         }
     }
 
@@ -175,17 +176,19 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     /// @return True if we can drain the fluid from the item and the item after being drained can (and was) moved to the output slot, false otherwise
     private boolean drainItemAndMove(IInventorySlot outputSlot, FluidResource fluidToTransfer, int amountToTransfer) {
         IFluidTank fluidTank = getFluidTank();
-        FluidStack simulatedRemainder = fluidTank.insert(fluidToTransfer.toStack(amountToTransfer), Action.SIMULATE, AutomationType.INTERNAL);
-        int remainder = simulatedRemainder.amount();
-        if (remainder == amountToTransfer) {
-            //If we cannot actually fill our fluid handler then just exit early
-            return false;
+        int roomFor;
+        try (Transaction simulation = Transaction.openRoot()) {
+            roomFor = fluidTank.insert(fluidToTransfer, amountToTransfer, simulation, AutomationType.INTERNAL);
+            if (roomFor == 0) {
+                //If we cannot actually fill our fluid handler then just exit early
+                return false;
+            }
         }
         //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access?
         // I am guessing we should potentially be doing a oneByOne access here
         ItemAccess access = new InOutSlotItemAccess(this, outputSlot);
-        ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
-        if (itemHandler == null) {
+        ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(access);
+        if (handler == null) {
             //If the stack doesn't have a capability just exit. There may be cases like our fluid tank where it will have a capability
             // if the stack size is one, but not when the stack size is greater
             return false;
@@ -193,34 +196,28 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         try (Transaction transaction = Transaction.openRoot()) {
             //Drain the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
             // and it does not actually matter that we are directly executing on the item
-            int drained = itemHandler.extract(fluidToTransfer, amountToTransfer - remainder, transaction);
-            if (drained == 0) {
-                //If we cannot actually drain from the item then just exit early
+            int drained = handler.extract(fluidToTransfer, roomFor, transaction);
+            if (drained == 0 || fluidTank.insert(fluidToTransfer, drained, transaction, AutomationType.INTERNAL) != drained) {
+                //If we cannot actually drain from the item, or fill our tank with all of what we extracted from the item then just exit early
                 return false;
             }
-            //TODO - 26.1: adapt for ItemAccess
-            /*if (getCount() == 1) {
-                ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(itemHandler.getContainer());
-                if (containerCap != null && !containerCap.drain(Integer.MAX_VALUE, FluidAction.SIMULATE).isEmpty()) {
-                    //If we have a single item in the input slot, and we can continue to drain from it
-                    // after our current drain, then we allow for draining and actually fill our handler
-                    // Additionally we replace our input item with its container
-                    setStack(itemHandler.getContainer());
-                    fluidTank.insert(drained, Action.EXECUTE, AutomationType.INTERNAL);
-                    //Mark that we are currently filling
-                    setFilling(true);
-                    return true;
+            if (amount() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
+                //TODO - 26.1: Do we need to look up the cap again? In case the item got moved out? How do caps with item access work
+                //ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(access);
+                //if (containerCap != null) {
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    //TODO - 26.1: Do we want to just pass a bucket's volume for the amount to transfer?
+                    if (handler.extract(fluidToTransfer, amountToTransfer, simulation) > 0) {
+                        //If we have a single item in the input slot, and we can continue to drain from it
+                        // after our current drain, then we are currently filling
+                        setFilling(true);
+                    }
                 }
             }
-            //Otherwise, we try to move the item to the output and then actually fill it
-            if (moveItem(outputSlot, itemHandler.getContainer())) {
-                //Actually fill our handler with the fluid
-                fluidTank.insert(fluidToTransfer.toStack(drained), Action.EXECUTE, AutomationType.INTERNAL);
-                transaction.commit();
-                return true;
-            }*/
+            //Actually fill our handler with the fluid
+            transaction.commit();
+            return true;
         }
-        return false;
     }
 
     /// Tries to move a stack from our slot to the output slot
@@ -229,26 +226,26 @@ public interface IFluidHandlerSlot extends IInventorySlot {
     /// @param stackToMove The stack we are moving, this is our container
     ///
     /// @return True if we are able to move the stack and did so, false otherwise
-    private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove) {//TODO - 26.1: Have this be handled by the item access?
+    private boolean moveItem(IInventorySlot outputSlot, ItemStack stackToMove, TransactionContext transaction) {//TODO - 26.1: Have this be handled by the item access?
         if (isEmpty() || stackToMove.isEmpty()) {
             //Nothing is stored so we can't extract it, or we aren't actually trying to move anything
             return false;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
+        try (Transaction subTransaction = Transaction.open(transaction)) {
             ItemResource typeToMove = ItemResource.of(stackToMove);
             //TODO - 26.1: Should amount be gotten from the stack?
-            int inserted = outputSlot.insert(typeToMove, 1, transaction, AutomationType.INTERNAL);
+            int inserted = outputSlot.insert(typeToMove, 1, subTransaction, AutomationType.INTERNAL);
             if (inserted == 0) {
                 //We won't be able to move our container to the output slot so exit
                 return false;
             }
             //TODO - 26.1: Should we be passing in what the resource is to here?
-            int removed = extract(getResource(), 1, transaction, AutomationType.INTERNAL);
+            int removed = extract(getResource(), 1, subTransaction, AutomationType.INTERNAL);
             if (removed == 0) {
                 //Something failed extracting the item from our current slot, fail and roll back
                 return false;
             }
-            transaction.commit();
+            subTransaction.commit();
             return true;
         }
     }
@@ -260,16 +257,16 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             // we don't need to but for others we will
             ItemAccess access = new InventorySlotItemAccess(this, AutomationType.INTERNAL);
             //Try filling from the tank's item
-            ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(access);
-            if (itemHandler != null) {
+            ResourceHandler<FluidResource> handler = Capabilities.FLUID.getCapability(access);
+            if (handler != null) {
                 IFluidTank fluidTank = getFluidTank();
                 //Start by gathering all the fluids in the item that are valid for the tank
-                Object2IntMap<FluidResource> knownFluids = gatherKnownFluids(itemHandler);
+                Object2IntMap<FluidResource> knownFluids = gatherKnownFluids(handler);
                 if (!knownFluids.isEmpty()) {
                     //If we found any fluids that we can support if they are able to be drained, attempt to drain them into our item
                     for (ObjectIterator<Object2IntMap.Entry<FluidResource>> iterator = Object2IntMaps.fastIterator(knownFluids); iterator.hasNext(); ) {
                         Object2IntMap.Entry<FluidResource> knownFluid = iterator.next();
-                        fillHandlerFromOther(fluidTank, itemHandler, knownFluid.getKey(), knownFluid.getIntValue());
+                        fillHandlerFromOther(fluidTank, handler, knownFluid.getKey(), knownFluid.getIntValue());
                     }
                 }
             }
@@ -312,16 +309,12 @@ public interface IFluidHandlerSlot extends IInventorySlot {
         }
         try (Transaction transaction = Transaction.openRoot()) {
             //Check how much of it we will be able to put into the handler we are filling
-            //TODO - 26.1: Make our fluid tanks use transactions
-            FluidStack simulatedRemainder = getFluidTank().insert(fluidType.toStack(extracted), Action.SIMULATE, AutomationType.INTERNAL);
-            int inserted = extracted - simulatedRemainder.amount();
+            int inserted = handlerToFill.insert(fluidType, extracted, transaction, AutomationType.INTERNAL);
             if (inserted == 0 || handlerToDrain.extract(fluidType, inserted, transaction) != inserted) {
                 //If we failed to insert anything, or something went wrong extracting from the original handler the amount that we determined should fit,
                 // roll back the transaction and bail
                 return false;
             }
-            //TODO - 26.1: Remove this line once we make our simulated remainder not actually be simulated, and instead use transactions
-            handlerToFill.insert(fluidType.toStack(inserted), Action.EXECUTE, AutomationType.INTERNAL);
             //Commit the changes and return that we were able to transfer some contents
             transaction.commit();
             return true;

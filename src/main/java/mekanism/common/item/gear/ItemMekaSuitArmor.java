@@ -9,8 +9,8 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IEnergyContainer;
@@ -49,7 +49,7 @@ import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
@@ -77,7 +77,9 @@ import net.minecraft.world.item.equipment.ArmorType;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -338,7 +340,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public boolean canUseJetpack(ItemStack stack) {
         if (armorType == ArmorType.CHESTPLATE) {
             if (isModuleEnabled(stack, MekanismModules.JETPACK_UNIT)) {
-                return ChemicalUtil.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN);
+                return ChemicalUtils.hasChemicalOfType(stack, MekanismChemicals.HYDROGEN);
             }
             return getModules(stack).stream().anyMatch(module -> module.isEnabled() && module.getUntypedData().isExclusive(ExclusiveFlag.OVERRIDE_JUMP.getMask()));
         }
@@ -379,10 +381,15 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
     public void useJetpackFuel(ItemStack stack) {
         IModule<ModuleJetpackUnit> module = getEnabledModule(stack, MekanismModules.JETPACK_UNIT);
         if (module != null) {
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
-            if (gasHandlerItem != null) {
+            //TODO - 26.1: Change params passed to this method to get a better item access?
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            if (handler != null) {
                 int amount = Mth.ceil(module.getCustomInstance().getThrustMultiplier());
-                gasHandlerItem.extractChemical(MekanismChemicals.HYDROGEN.asStack(amount), Action.EXECUTE);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Validate we have enough fuel?
+                    handler.extract(MekanismChemicals.HYDROGEN.asResource(), amount, transaction);
+                    transaction.commit();
+                }
             }
         }
     }

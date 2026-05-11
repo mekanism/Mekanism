@@ -16,7 +16,7 @@ import mekanism.common.registration.impl.CreativeTabDeferredRegister;
 import mekanism.common.resource.PrimaryResource;
 import mekanism.common.resource.ore.OreBlockType;
 import mekanism.common.tier.TransporterTier;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.FluidUtils;
 import net.minecraft.core.Holder;
@@ -64,7 +64,7 @@ public class MekanismCreativeTabs {
                     parameters.holders().lookupOrThrow(MekanismAPI.CHEMICAL_REGISTRY_NAME)
                           .listElements()
                           .filter(holder -> !holder.is(MekanismAPITags.Chemicals.HIDDEN_FROM_RECIPE_VIEWERS) && !holder.is(MekanismAPI.EMPTY_CHEMICAL_KEY))
-                          .forEach(holder -> output.accept(ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder)));
+                          .forEach(holder -> output.accept(ChemicalUtils.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), holder)));
                 }
             }
         }

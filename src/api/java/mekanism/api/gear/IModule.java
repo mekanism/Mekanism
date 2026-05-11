@@ -239,7 +239,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @implNote By default, this method does not use any energy from players that are in creative.
      */
-    long useEnergy(LivingEntity wearer, ItemStack stack, long energy);
+    long useEnergy(LivingEntity wearer, ItemStack stack, long energy);//TODO - 26.1: Make energy usage transactional for modules
 
     /**
      * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for players in creative or

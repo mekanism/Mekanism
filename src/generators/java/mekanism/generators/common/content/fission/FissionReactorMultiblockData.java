@@ -12,7 +12,6 @@ import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
@@ -41,9 +40,9 @@ import mekanism.common.lib.multiblock.MultiblockManager;
 import mekanism.common.lib.radiation.RadiationManager;
 import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismChemicals;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.block.attribute.AttributeStateFissionPortMode.FissionPortMode;
@@ -197,10 +196,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         handleCoolant();
         if (!chemicalOutputTargets.isEmpty()) {
             if (!heatedCoolantTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank);
+                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_COOLANT), heatedCoolantTank, null);
             }
             if (!wasteTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_WASTE), wasteTank);
+                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, FissionPortMode.OUTPUT_WASTE), wasteTank, null);
             }
         }
         // external heat dissipation

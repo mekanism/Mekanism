@@ -140,7 +140,7 @@ import mekanism.common.tile.transmitter.TileEntityRestrictiveTransporter;
 import mekanism.common.tile.transmitter.TileEntityThermodynamicConductor;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.tile.transmitter.TileEntityUniversalCable;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.BlockPos;
@@ -318,7 +318,7 @@ public class MekanismBlockTypes {
           .createMachine(() -> MekanismTileEntityTypes.ELECTROLYTIC_SEPARATOR, MekanismLang.DESCRIPTION_ELECTROLYTIC_SEPARATOR)
           .withGui(() -> MekanismContainerTypes.ELECTROLYTIC_SEPARATOR)
           .withSound(MekanismSounds.ELECTROLYTIC_SEPARATOR)
-          .withEnergyConfig(() -> MathUtils.multiplyClamped(2, ChemicalUtil.hydrogenEnergyDensity()), MekanismConfig.storage.electrolyticSeparator)
+          .withEnergyConfig(() -> MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity()), MekanismConfig.storage.electrolyticSeparator)
           .withSideConfig(TransmissionType.FLUID, TransmissionType.CHEMICAL, TransmissionType.ITEM, TransmissionType.ENERGY)
           .withCustomShape(BlockShapes.ELECTROLYTIC_SEPARATOR)
           .withComputerSupport("electrolyticSeparator")

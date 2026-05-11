@@ -1,5 +1,6 @@
 package mekanism.common.tile.component;
 
+import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,12 +48,11 @@ import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.TransporterUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -225,11 +225,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     case CHEMICAL -> {
                         IChemicalTank tank = (IChemicalTank) entry.getKey();
                         List<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
-                        ChemicalUtil.emit(caches, tank, chemicalEjectRate.getAsLong());
+                        //TODO - 26.1: Make the chemical eject rate be an int? Or do we want to allow ejecting as long, but have to split among the different outputs?
+                        ResourceUtils.emit(caches, tank, Ints.saturatedCast(chemicalEjectRate.getAsLong()), null);
                     }
                     case FLUID -> {
                         List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                        FluidUtils.emit(caches, (IFluidTank) entry.getKey(), fluidEjectRate.getAsInt());
+                        ResourceUtils.emit(caches, (IFluidTank) entry.getKey(), fluidEjectRate.getAsInt(), null);
                     }
                     case ENERGY -> {
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();

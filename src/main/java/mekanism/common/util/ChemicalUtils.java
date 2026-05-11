@@ -1,16 +1,11 @@
 package mekanism.common.util;
 
-import com.google.common.primitives.Ints;
-import java.util.Collection;
 import java.util.function.Predicate;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
@@ -21,24 +16,18 @@ import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tier.ChemicalTankTier;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
-/**
- * @apiNote This class is called ChemicalUtil instead of ChemicalUtils so that it does not overlap with {@link mekanism.api.chemical.ChemicalUtils}
- */
 @NothingNullByDefault
-public class ChemicalUtil {
+public class ChemicalUtils {
 
-    private ChemicalUtil() {
+    private ChemicalUtils() {
     }
 
     /**
@@ -93,48 +82,21 @@ public class ChemicalUtil {
     }
 
     public static boolean hasChemicalOfType(ItemStack stack, Holder<Chemical> type) {
-        return hasChemical(stack, s -> s.is(type));
+        ChemicalResource chemicalType = ChemicalResource.of(type);
+        return hasChemical(stack, chemicalType::equals);
     }
 
-    public static boolean hasChemical(ItemStack stack, Predicate<ChemicalStack> validityCheck) {
-        IChemicalHandler handler = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
+    public static boolean hasChemical(ItemStack stack, Predicate<ChemicalResource> validityCheck) {
+        ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
         if (handler != null) {
-            for (int tank = 0; tank < handler.getChemicalTanks(); tank++) {
-                ChemicalStack chemicalStack = handler.getChemicalInTank(tank);
-                if (!chemicalStack.isEmpty() && validityCheck.test(chemicalStack)) {
+            for (int tank = 0, size = handler.size(); tank < size; tank++) {
+                ChemicalResource chemicalType = handler.getResource(tank);
+                if (!chemicalType.isEmpty() && validityCheck.test(chemicalType)) {
                     return true;
                 }
             }
         }
         return false;
-    }
-
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, IChemicalTank tank) {
-        emit(targets, tank, tank.getCapacity());
-    }
-
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, IChemicalTank tank, long maxOutput) {
-        if (!tank.isEmpty() && maxOutput > 0) {
-            tank.extract(emit(targets, ChemicalStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
-        }
-    }
-
-    /**
-     * Emits chemical from a central block by splitting the received stack among the sides given.
-     *
-     * @param targets - the list of capabilities to output to
-     * @param stack   - the stack to output
-     *
-     * @return the amount of chemical emitted
-     */
-    public static long emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, @NotNull ChemicalStack stack) {
-        return emit(targets, stack, null, Long.MAX_VALUE);
-    }
-
-    private static long emit(Collection<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> targets, @NotNull ChemicalStack stack,
-          @UnknownNullability IChemicalTank tank, long maxOutput) {
-        //TODO - 26.1: Re-evaluate this
-        return ResourceUtils.emit(targets, ChemicalResource.of(stack), Ints.saturatedCast(stack.amount()), tank, Ints.saturatedCast(maxOutput));
     }
 
     public static long hydrogenEnergyDensity() {

@@ -36,9 +36,9 @@ import mekanism.common.lib.multiblock.Structure;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.multiblock.TileEntityBoilerCasing;
 import mekanism.common.tile.multiblock.TileEntityBoilerValve;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
@@ -209,10 +209,10 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
         }
         if (!chemicalOutputTargets.isEmpty()) {
             if (!steamTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_STEAM), steamTank);
+                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_STEAM), steamTank, null);
             }
             if (!cooledCoolantTank.isEmpty()) {
-                ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_COOLANT), cooledCoolantTank);
+                ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets, BoilerValveMode.OUTPUT_COOLANT), cooledCoolantTank, null);
             }
         }
         float waterScale = MekanismUtils.getScale(prevWaterScale, waterTank);

@@ -28,9 +28,9 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -133,7 +133,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
             needsPacket = true;
         }
         if (!chemicalOutputTargets.isEmpty() && !outputTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), outputTank);
+            ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), outputTank, null);
         }
         lastReceivedEnergy = receivedEnergy;
         receivedEnergy = 0L;

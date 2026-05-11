@@ -86,7 +86,7 @@ public interface IEnergyCompat {
      */
     @Nullable
     default IStrictEnergyHandler getStrictEnergyHandler(ItemAccess itemAccess) {
-        Object capability = itemAccess.getCapability(getCapability().item());
+        Object capability = getCapability().getCapability(itemAccess);
         return capability == null ? null : wrapAsStrictEnergyHandler(capability);
     }
 

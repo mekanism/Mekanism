@@ -16,7 +16,6 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 //TODO - 26.1: Docs
 public final class ResourceUtils {
@@ -65,44 +64,55 @@ public final class ResourceUtils {
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
-          RESOURCE resourceType, int resourceAmount, @UnknownNullability CONTAINER tank, int maxOutput) {
-        if (resourceType.isEmpty() != (resourceAmount == 0)) {
-            //Something went wrong in calling this method
-            //TODO - 26.1: Do we want to log a warning or throw an illegal argument exception?
-            return 0;
-        } else if (targets.isEmpty()) {
-            return 0;
-        } else if (resourceType.isEmpty()) {
-            if (tank == null) {
-                //Something went wrong in calling this method
-                return 0;
+          CONTAINER tank, @Nullable TransactionContext transaction) {
+        return emit(targets, tank, tank.getCurrentLimit(), transaction);
+    }
+
+
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
+          CONTAINER tank, int maxOutput, @Nullable TransactionContext transaction) {
+        if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
+            RESOURCE resourceType = tank.getResource();
+            int resourceAmount;
+            try (Transaction simulation = Transaction.open(transaction)) {
+                resourceAmount = tank.extract(resourceType, maxOutput, simulation, AutomationType.INTERNAL);
+                if (resourceAmount == 0) {
+                    //If we failed to extract from it, just exit early
+                    return 0;
+                }
             }
-            resourceType = tank.getResource();
-            if (resourceType.isEmpty()) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
                 //We won't be able to extract the resource, just fail early
-                return 0;
+                int sent = emit(targets, resourceType, resourceAmount, subTransaction);
+                if (tank.extract(resourceType, sent, subTransaction, AutomationType.INTERNAL) == sent) {
+                    //Validate that we were able to extract the amount we sent. In theory this should always be true
+                    subTransaction.commit();
+                    return sent;
+                }
             }
+        }
+        return 0;
+    }
+
+    /**
+     * Emits fluid from a central block by splitting the received stack among the sides given.
+     *
+     * @param targets - the list of capabilities to output to
+     * @param stack   - the stack to output
+     *
+     * @return the amount of fluid emitted
+     */
+    public static <RESOURCE extends Resource> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets, RESOURCE resourceType,
+          int resourceAmount, @Nullable TransactionContext transaction) {
+        if (resourceType.isEmpty() || targets.isEmpty() || resourceAmount == 0) {
+            return 0;
         }
         ResourceHandlerTarget<RESOURCE> target = null;
         for (BlockCapabilityCache<ResourceHandler<RESOURCE>, Direction> capability : targets) {
             //Insert to access side and collect the cap if it is present, and we can insert the type of the stack into it
             ResourceHandler<RESOURCE> handler = capability.getCapability();
             if (handler != null) {
-                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
-                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
-                //TODO - 26.1: Update comment because we do partially initialize it (namely we initialize the type)
-                if (resourceAmount == 0) {
-                    //TODO - 26.1: Check callers as they might be in a transaction context
-                    try (Transaction simulation = Transaction.openRoot()) {
-                        resourceAmount = tank.extract(resourceType, maxOutput, simulation, AutomationType.INTERNAL);
-                        if (resourceAmount == 0) {
-                            //If we failed to extract from it, just exit early
-                            return 0;
-                        }
-                    }
-                }
-                //TODO - 26.1: Check callers as they might be in a transaction context, and can this and the lazy amount share a simulation context?
-                try (Transaction simulation = Transaction.openRoot()) {
+                try (Transaction simulation = Transaction.open(transaction)) {
                     if (handler.insert(resourceType, resourceAmount, simulation) > 0) {
                         if (target == null) {
                             target = new ResourceHandlerTarget<>(targets.size());
@@ -115,10 +125,9 @@ public final class ResourceUtils {
         if (target == null) {
             return 0;
         }
-        //TODO - 26.1: Check callers as they might be in a transaction context
-        try (Transaction transaction = Transaction.openRoot()) {
-            int sent = EmitUtils.sendToAcceptors(target, resourceAmount, resourceType, transaction);
-            transaction.commit();
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            int sent = EmitUtils.sendToAcceptors(target, resourceAmount, resourceType, subTransaction);
+            subTransaction.commit();
             return sent;
         }
     }

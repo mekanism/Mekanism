@@ -36,9 +36,9 @@ import mekanism.common.tile.component.ITileComponent;
 import mekanism.common.tile.interfaces.IFluidContainerManager;
 import mekanism.common.upgrade.FluidTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -186,11 +186,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             }
             IFluidTank below = getBelowTank();
             if (below == null) {
-                FluidUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput());
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, tier.getOutput(), null);
             } else {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                FluidUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeeded(), tier.getOutput()));
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeeded(), tier.getOutput()), null);
             }
         }
         if (needsPacket) {

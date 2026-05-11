@@ -15,7 +15,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
@@ -56,7 +56,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return ChemicalUtil.hasChemicalOfType(stack, getChemicalType());
+        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
     }
 
     @Override

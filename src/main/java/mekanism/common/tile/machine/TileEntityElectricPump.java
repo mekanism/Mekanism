@@ -40,8 +40,8 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.FluidUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -179,7 +179,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
             if (fluidHandlerAbove.isEmpty()) {
                 fluidHandlerAbove = List.of(Capabilities.FLUID.createCache((ServerLevel) level, worldPosition.above(), Direction.DOWN));
             }
-            FluidUtils.emit(fluidHandlerAbove, fluidTank, outputRate);
+            ResourceUtils.emit(fluidHandlerAbove, fluidTank, outputRate, null);
         }
         return sendUpdatePacket;
     }

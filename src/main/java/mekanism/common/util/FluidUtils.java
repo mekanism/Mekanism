@@ -1,14 +1,11 @@
 package mekanism.common.util;
 
-import java.util.Collection;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
@@ -17,15 +14,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.loading.FMLEnvironment;
-import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 public final class FluidUtils {
 
@@ -67,34 +61,6 @@ public final class FluidUtils {
             return MekanismRenderer.getColorARGB(stack);
         }
         return 0xFFFFFFFF;
-    }
-
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank) {
-        emit(targets, tank, tank.getCurrentLimit());
-    }
-
-    public static void emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, IFluidTank tank, int maxOutput) {
-        if (!tank.isEmpty() && maxOutput > 0 && !targets.isEmpty()) {
-            tank.extract(emit(targets, FluidStack.EMPTY, tank, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
-        }
-    }
-
-    /**
-     * Emits fluid from a central block by splitting the received stack among the sides given.
-     *
-     * @param targets - the list of capabilities to output to
-     * @param stack   - the stack to output
-     *
-     * @return the amount of fluid emitted
-     */
-    public static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack) {
-        return emit(targets, stack, null, Integer.MAX_VALUE);
-    }
-
-    private static int emit(Collection<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> targets, @NotNull FluidStack stack, IFluidTank tank,
-          int maxOutput) {
-        //TODO - 26.1: Re-evaluate this
-        return ResourceUtils.emit(targets, FluidResource.of(stack), stack.amount(), tank, maxOutput);
     }
 
     //TODO - 26.1: Do we want to just replace this with FluidUtil#interactWithFluidHandler?

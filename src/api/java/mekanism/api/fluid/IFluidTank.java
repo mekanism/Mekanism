@@ -1,7 +1,6 @@
 package mekanism.api.fluid;
 
 import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.container.IResourceContainer;
@@ -9,7 +8,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @NothingNullByDefault
 public interface IFluidTank extends IResourceContainer<FluidResource> {
@@ -38,70 +36,6 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
      */
     default void setStackUnchecked(FluidStack stack) {//TODO - 26.1: Re-evaluate callers
         setContentsUnchecked(FluidResource.of(stack), stack.amount());
-    }
-
-    /**
-     * <p>
-     * Inserts a {@link FluidStack} into this {@link IFluidTank} and return the remainder. The {@link FluidStack} <em>should not</em> be modified in this
-     * function!
-     * </p>
-     *
-     * @param stack          {@link FluidStack} to insert. This must not be modified by the tank.
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this tank is being interacted from.
-     *
-     * @return The remaining {@link FluidStack} that was not inserted (if the entire stack is accepted, then return an empty {@link FluidStack}). May be the same as the
-     * input {@link FluidStack} if unchanged, otherwise a new {@link FluidStack}. The returned {@link FluidStack} can be safely modified after
-     *
-     * @implNote The {@link FluidStack} <em>should not</em> be modified in this function! If the internal stack does get updated make sure to call
-     * {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to be made every
-     * run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default FluidStack insert(FluidStack stack, Action action, AutomationType automationType) {
-        if (stack.isEmpty()) {
-            //"Fail quick" if the given stack is empty, or we can never insert the item or currently are unable to insert it
-            return stack;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {
-            int inserted = insert(FluidResource.of(stack), stack.amount(), transaction, automationType);
-            if (action.execute()) {
-                transaction.commit();
-            }
-            return stack.copyWithAmount(stack.amount() - inserted);
-        }
-    }
-
-    /**
-     * Extracts a {@link FluidStack} from this {@link IFluidTank}.
-     * <p>
-     * The returned value must be empty if nothing is extracted, otherwise its stack size must be less than or equal to {@code amount}.
-     * </p>
-     *
-     * @param amount         Amount to extract (may be greater than the current stack's max limit)
-     * @param action         The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     * @param automationType The method that this tank is being interacted from.
-     *
-     * @return {@link FluidStack} extracted from the tank, must be empty if nothing can be extracted. The returned {@link FluidStack} can be safely modified after, so the
-     * tank should return a new or copied stack.
-     *
-     * @implNote The returned {@link FluidStack} can be safely modified after, so a new or copied stack should be returned. If the internal stack does get updated make
-     * sure to call {@link #onContentsChanged()}. It is also recommended to override this if your internal {@link FluidStack} is mutable so that a copy does not have to
-     * be made every run
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default FluidStack extract(int amount, Action action, AutomationType automationType) {
-        if (isEmpty() || amount < 1) {
-            return FluidStack.EMPTY;
-        }
-        try (Transaction transaction = Transaction.openRoot()) {
-            FluidResource resource = getResource();
-            int extracted = extract(resource, amount, transaction, automationType);
-            if (action.execute()) {
-                transaction.commit();
-            }
-            return resource.toStack(extracted);
-        }
     }
 
     /**

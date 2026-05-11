@@ -35,9 +35,9 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.CableUtils;
-import mekanism.common.util.ChemicalUtil;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -256,7 +256,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
 
         if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {
-            ChemicalUtil.emit(getActiveOutputs(chemicalOutputTargets), steamTank);
+            ResourceUtils.emit(getActiveOutputs(chemicalOutputTargets), steamTank, null);
         }
 
         if (isBurning()) {

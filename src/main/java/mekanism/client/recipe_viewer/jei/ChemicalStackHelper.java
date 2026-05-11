@@ -13,7 +13,7 @@ import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.registries.MekanismBlocks;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.RegistryUtils;
 import mezz.jei.api.helpers.IColorHelper;
 import mezz.jei.api.ingredients.IIngredientHelper;
@@ -54,7 +54,7 @@ public class ChemicalStackHelper implements IIngredientHelper<ChemicalStack> {
 
     @Override
     public ItemStack getCheatItemStack(ChemicalStack ingredient) {
-        return ChemicalUtil.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), ingredient.typeHolder());
+        return ChemicalUtils.getFilledVariant(MekanismBlocks.CREATIVE_CHEMICAL_TANK.getItemHolder(), ingredient.typeHolder());
     }
 
     @Override

@@ -23,7 +23,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
-import mekanism.common.util.ChemicalUtil;
+import mekanism.common.util.ChemicalUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.SharedConstants;
@@ -88,7 +88,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public InteractionResult useOn(UseOnContext context) {
         Player player = context.getPlayer();
-        if (player != null && ChemicalUtil.hasChemicalOfType(context.getItemInHand(), getChemicalType())) {
+        if (player != null && ChemicalUtils.hasChemicalOfType(context.getItemInHand(), getChemicalType())) {
             player.startUsingItem(context.getHand());
             return InteractionResult.CONSUME;
         }
@@ -99,7 +99,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     @Override
     public InteractionResult use(@NotNull Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
-        if (ChemicalUtil.hasChemicalOfType(stack, getChemicalType())) {
+        if (ChemicalUtils.hasChemicalOfType(stack, getChemicalType())) {
             player.awardStat(Stats.ITEM_USED.get(this));
             player.startUsingItem(hand);
             return InteractionResult.SUCCESS;
@@ -151,12 +151,12 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public int getBarColor(@NotNull ItemStack stack) {
-        return ChemicalUtil.getRGBDurabilityForDisplay(stack);
+        return ChemicalUtils.getRGBDurabilityForDisplay(stack);
     }
 
     @Override
     public void addItems(Holder<Item> item, Consumer<ItemStack> tabOutput) {
-        tabOutput.accept(ChemicalUtil.getFilledVariant(item, getChemicalType()));
+        tabOutput.accept(ChemicalUtils.getFilledVariant(item, getChemicalType()));
     }
 
     private Holder<Chemical> getChemicalType() {
@@ -165,7 +165,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
 
     @Override
     public boolean hasChemical(ItemStack stack) {
-        return ChemicalUtil.hasChemicalOfType(stack, getChemicalType());
+        return ChemicalUtils.hasChemicalOfType(stack, getChemicalType());
     }
 
     @Override
@@ -224,7 +224,7 @@ public class ItemFlamethrower extends Item implements IItemHUDProvider, IChemica
     public static boolean isIdleFlamethrower(Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         //If a flamethrower has no gas it can't be idle
-        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtil.hasAnyChemical(stack);
+        return !stack.isEmpty() && stack.getItem() instanceof ItemFlamethrower && ChemicalUtils.hasAnyChemical(stack);
     }
 
     @NothingNullByDefault
