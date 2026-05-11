@@ -32,7 +32,7 @@ jobs:
           download_translations: true
           localization_branch_name: l10n_${{ github.ref_name }}
           crowdin_branch_name: ${{ github.ref_name }}
-
+          commit_message: New Crowdin translations
           create_pull_request: true
           pull_request_title: 'New Crowdin translations'
           pull_request_body: 'Translations updated on Crowdin'
