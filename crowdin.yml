@@ -1,10 +1,14 @@
 project_identifier: mekanism
 api_key_env: CROWDIN_API_KEY
 commit_message: '[ci skip]'
+preserve_hierarchy: true
 base_path: .
+base_url: https://mekanism.api.crowdin.com
 files:
   - source: /src/datagen/generated/mekanism/assets/mekanism/lang/en_us.json
     translation: /src/main/resources/assets/mekanism/lang/%locale_with_underscore%.json
+    export_string_that_passed_workflow: true # Export only strings that passed crowdsource workflow
+    skip_untranslated_strings: true
     languages_mapping:
       locale_with_underscore:
         af: af_za
@@ -124,6 +128,8 @@ files:
         ry: ry_ua
   - source: /src/datagen/generated/mekanismadditions/assets/mekanismadditions/lang/en_us.json
     translation: /src/additions/resources/assets/mekanismadditions/lang/%locale_with_underscore%.json
+    export_string_that_passed_workflow: true # Export only strings that passed crowdsource workflow
+    skip_untranslated_strings: true
     languages_mapping:
       locale_with_underscore:
         af: af_za
@@ -243,6 +249,8 @@ files:
         ry: ry_ua
   - source: /src/datagen/generated/mekanismgenerators/assets/mekanismgenerators/lang/en_us.json
     translation: /src/generators/resources/assets/mekanismgenerators/lang/%locale_with_underscore%.json
+    export_string_that_passed_workflow: true # Export only strings that passed crowdsource workflow
+    skip_untranslated_strings: true
     languages_mapping:
       locale_with_underscore:
         af: af_za
@@ -362,6 +370,8 @@ files:
         ry: ry_ua
   - source: /src/datagen/generated/mekanismtools/assets/mekanismtools/lang/en_us.json
     translation: /src/tools/resources/assets/mekanismtools/lang/%locale_with_underscore%.json
+    export_string_that_passed_workflow: true # Export only strings that passed crowdsource workflow
+    skip_untranslated_strings: true
     languages_mapping:
       locale_with_underscore:
         af: af_za
