@@ -168,12 +168,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         return materialFlags;
     }
 
-    @Override
-    @Nullable//TODO
-    public Object createGeometryKey(BlockAndTintGetter level, BlockPos pos, BlockState state, RandomSource random) {
-        return DynamicBlockStateModel.super.createGeometryKey(level, pos, state, random);
-    }
-
     private static String getPartName(Direction side, ConnectionType connectionType) {
         return side.getSerializedName() + connectionType.name();
     }
