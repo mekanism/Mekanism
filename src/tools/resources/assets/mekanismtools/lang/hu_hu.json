@@ -1,4 +1,10 @@
 {
+  "configuration.mekanismtools.server.gear_spawn_chance": "Esély arra, hogy a mob valamien felszerelésel idéződik meg",
+  "configuration.mekanismtools.server.gear_spawn_chance.bronze.chance.multiple_piece": "Több rész esélye",
+  "configuration.mekanismtools.server.gear_spawn_chance.bronze.chance.multiple_piece.hard.tooltip": "Nehéz fokozaton annak az esélye, hogy minden bronz páncél darab után egy újabb mob jelenik meg, amelyből már nem lesznek további darabok. A kipróbált darabok sorrendje: csizma, leggings, mellvért, sisak.",
+  "configuration.mekanismtools.server.gear_spawn_chance.bronze.spawn_weapon": "Fegyverrel",
+  "configuration.mekanismtools.server.gear_spawn_chance.bronze.sword_weight": "Kard Súlya",
+  "configuration.mekanismtools.server.gear_spawn_chance.lapis_lazuli.chance.helmet": "Sisak Esély",
   "constants.mekanismtools.mod_name": "Mekanism: Eszközök",
   "constants.mekanismtools.pack_description": "Mekanism: Eszközök-höz felhasznált források",
   "item.mekanismtools.bronze_hoe": "Bronz Kapa",
