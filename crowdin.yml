@@ -107,7 +107,8 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-Cyrl: sr_cs
+        sr-Cyrl: sr_sp
+        sr-Latn: sr_cs
         sv: sv_se
         ta: ta_in
         th: th_th
@@ -228,7 +229,8 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-Cyrl: sr_cs
+        sr-Cyrl: sr_sp
+        sr-Latn: sr_cs
         sv: sv_se
         ta: ta_in
         th: th_th
@@ -349,7 +351,8 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-Cyrl: sr_cs
+        sr-Cyrl: sr_sp
+        sr-Latn: sr_cs
         sv: sv_se
         ta: ta_in
         th: th_th
@@ -470,7 +473,8 @@ files:
         so: so_so
         sq: sq_al
         sr: sr_sp
-        sr-Cyrl: sr_cs
+        sr-Cyrl: sr_sp
+        sr-Latn: sr_cs
         sv: sv_se
         ta: ta_in
         th: th_th
