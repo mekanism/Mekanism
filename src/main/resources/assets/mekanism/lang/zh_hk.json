@@ -1,5 +1,7 @@
 {
   "_mekanism_force_utf8": " ",
+  "advancements.mekanism.mekasuit.description": "用一件完整嘅MekaSuit同Meka工具嚟保護自己",
+  "advancements.mekanism.mekasuit.title": "機械師",
   "assemblicator.mekanism.auto_mode_toggle": "自動模式：%1$s",
   "assemblicator.mekanism.craft_available": "可合成物品",
   "assemblicator.mekanism.craft_single": "合成單個物品",
