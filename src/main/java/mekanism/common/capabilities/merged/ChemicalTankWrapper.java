@@ -1,7 +1,6 @@
 package mekanism.common.capabilities.merged;
 
 import java.util.function.BooleanSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
@@ -92,21 +91,6 @@ public class ChemicalTankWrapper implements IChemicalTank {
     @Override
     public void onContentsChanged() {
         internal.onContentsChanged();
-    }
-
-    @Override
-    public long setStackSize(long amount, Action action) {
-        return internal.setStackSize(amount, action);
-    }
-
-    @Override
-    public long growStack(long amount, Action action) {
-        return internal.growStack(amount, action);
-    }
-
-    @Override
-    public long shrinkStack(long amount, Action action) {
-        return internal.shrinkStack(amount, action);
     }
 
     @Override

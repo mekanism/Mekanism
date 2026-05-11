@@ -4,7 +4,6 @@ import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
@@ -441,16 +440,8 @@ public class FusionReactorMultiblockData extends MultiblockData {
             maxWater = injectionRate * MekanismGeneratorsConfig.generators.fusionWaterPerInjection.get();
             maxSteam = injectionRate * MekanismGeneratorsConfig.generators.fusionSteamPerInjection.get();
             if (getLevel() != null && !isRemote()) {
-                FluidResource water = waterTank.getResource();
-                if (!water.isEmpty()) {
-                    int capacity = waterTank.getLimit(water);
-                    if (capacity < waterTank.amount()) {
-                        waterTank.setContentsUnchecked(water, capacity);
-                    }
-                }
-                if (!steamTank.isEmpty()) {
-                    steamTank.setStackSize(Math.min(steamTank.amountAsLong(), steamTank.getCapacity()), Action.EXECUTE);
-                }
+                ResourceUtils.clampContents(waterTank);
+                ResourceUtils.clampContents(steamTank);
             }
             markDirty();
         }

@@ -2,11 +2,11 @@ package mekanism.api.recipes.inputs;
 
 import com.google.common.primitives.Ints;
 import java.util.Objects;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
@@ -229,8 +229,10 @@ public class InputHelper {
             }
             ChemicalStack inputChemical = getInput();
             if (!inputChemical.isEmpty()) {
-                long amount = recipeInput.amount() * operations;
-                logMismatchedStackSize(tank.shrinkStack(amount, Action.EXECUTE), amount);
+                int amount = Ints.saturatedCast(recipeInput.amount() * operations);
+                int extracted = tank.extract(ChemicalResource.of(recipeInput), amount, transaction, AutomationType.INTERNAL);
+                //TODO - 26.1: We probably should abort if this fails to extract what we expect instead of just logging a warning
+                logMismatchedStackSize(extracted, amount);
             }
         }
 

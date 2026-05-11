@@ -2,7 +2,7 @@ package mekanism.common.tile;
 
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPITags;
@@ -36,6 +36,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -72,11 +73,17 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
         if (level.getGameTime() > lastProcessTick) {
             //If we are not on the same tick do stuff, otherwise ignore it (anti tick accelerator protection)
             lastProcessTick = level.getGameTime();
-            if (MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get() > 0 && !chemicalTank.isEmpty() &&
-                !chemicalTank.getResource().is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST) &&
-                ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
-                processTicks = 0;
-                chemicalTank.shrinkStack(MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get(), Action.EXECUTE);
+            if (!chemicalTank.isEmpty()) {
+                ChemicalResource chemicalType = chemicalTank.getResource();
+                int decayAmount = MekanismConfig.general.radioactiveWasteBarrelDecayAmount.get();
+                if (decayAmount > 0 && !chemicalType.is(MekanismAPITags.Chemicals.WASTE_BARREL_DECAY_BLACKLIST) &&
+                    ++processTicks >= MekanismConfig.general.radioactiveWasteBarrelProcessTicks.get()) {
+                    processTicks = 0;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        chemicalTank.extract(chemicalType, decayAmount, transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
+                }
             }
             if (getActive()) {
                 if (chemicalHandlerBelow.isEmpty()) {
@@ -124,7 +131,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     public double getChemicalScale() {
-        return chemicalTank.amountAsLong() / (double) chemicalTank.getCapacity();
+        return chemicalTank.amountAsLong() / (double) chemicalTank.getCurrentLimit();
     }
 
     @Override

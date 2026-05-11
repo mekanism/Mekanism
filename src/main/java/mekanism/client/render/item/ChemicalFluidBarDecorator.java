@@ -3,6 +3,7 @@ package mekanism.client.render.item;
 import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.function.Predicate;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.client.gui.GuiUtils;
@@ -65,13 +66,13 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
-        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.getCapacity(), tank.getStack().getChemicalColorRepresentation());
+        ChemicalResource chemicalType = tank.getResource();
+        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.getLimitAsLong(chemicalType), chemicalType.getChemical().getColorRepresentation());
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IFluidTank tank) {
         FluidResource fluidType = tank.getResource();
-        int amount = tank.amount();
-        renderBar(guiGraphics, stackXPos, yPos, amount, tank.getLimit(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType.toStack(amount)));
+        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.getLimitAsLong(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType.toStack(tank.amount())));
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {

@@ -4,14 +4,12 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.lib.multiblock.MultiblockData;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -66,31 +64,5 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(FluidResource resource) {
         return capacity.getAsLong();
-    }
-
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    public int setStackSize(int amount, @NotNull Action action) {
-        if (isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        int maxStackSize = getCurrentLimit();
-        //Our capacity should never actually be zero, and given we fake it being zero
-        // until we finish building the network, we need to override this method to bypass the upper limit check
-        // when our upper limit is zero
-        if (maxStackSize > 0 && amount > maxStackSize) {//TODO - 26.1: This is the part of the method that is different
-            amount = maxStackSize;
-        }
-        if (amount() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setContentsUnchecked(getResource(), amount);
-        onContentsChanged();
-        return amount;
     }
 }

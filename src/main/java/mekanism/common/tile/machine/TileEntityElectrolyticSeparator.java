@@ -1,11 +1,13 @@
 package mekanism.common.tile.machine;
 
+import com.google.common.primitives.Ints;
 import java.util.List;
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.BasicChemicalTank;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.functions.LongObjectToLongFunction;
 import mekanism.api.math.MathUtils;
@@ -76,6 +78,7 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -125,7 +128,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     private long recipeEnergyMultiplier = 1L;
     private boolean isMakingHydrogen = false;
     private int baselineMaxOperations = 1;
-    private long dumpRate = BASE_DUMP_RATE;
+    private int dumpRate = BASE_DUMP_RATE;
 
     private final IOutputHandler<@NotNull ElectrolysisRecipeOutput> outputHandler;
     private final IInputHandler<Fluid, @NotNull FluidStack> inputHandler;
@@ -253,22 +256,32 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private void handleTank(IChemicalTank tank, GasMode mode) {
-        if (!tank.isEmpty()) {
+        ChemicalResource chemicalType = tank.getResource();
+        if (!chemicalType.isEmpty()) {
+            long toDump = 0;
             if (mode == GasMode.DUMPING) {
-                tank.shrinkStack(dumpRate, Action.EXECUTE);
+                toDump = dumpRate;
             } else if (mode == GasMode.DUMPING_EXCESS) {
                 long target = getDumpingExcessTarget(tank);
                 long stored = tank.amountAsLong();
                 if (target < stored) {
                     //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                    tank.shrinkStack(Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get()), Action.EXECUTE);
+                    toDump = Math.min(stored - target, MekanismConfig.general.chemicalAutoEjectRate.get());
+                }
+            }
+            if (toDump > 0) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
+                    // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
+                    tank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
+                    transaction.commit();
                 }
             }
         }
     }
 
     private long getDumpingExcessTarget(IChemicalTank tank) {
-        return MathUtils.clampToLong(tank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
+        return MathUtils.clampToLong(tank.getCurrentLimitAsLong() * MekanismConfig.general.dumpExcessKeepRatio.get());
     }
 
     private boolean atDumpingExcessTarget(IChemicalTank tank) {
@@ -288,7 +301,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     public long getRecipeEnergyMultiplier() {
         return recipeEnergyMultiplier;
     }
-    
+
     @ComputerMethod(nameOverride = "getEnergyUsage", methodDescription = ComputerConstants.DESCRIPTION_GET_ENERGY_USAGE)
     public long getEnergyUsed() {
         return clientEnergyUsed;
@@ -330,7 +343,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
         if (upgrade == Upgrade.SPEED) {
             double speed = Math.pow(2, upgradeComponent.getUpgrades(Upgrade.SPEED));
             baselineMaxOperations = (int) speed;
-            dumpRate = (long) (BASE_DUMP_RATE * speed);
+            dumpRate = (int) (BASE_DUMP_RATE * speed);
         }
     }
 

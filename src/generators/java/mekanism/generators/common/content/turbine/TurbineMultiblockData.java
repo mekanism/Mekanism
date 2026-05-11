@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -175,16 +175,26 @@ public class TurbineMultiblockData extends MultiblockData {
         CableUtils.emit(energyOutputTargets, energyContainer);
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
+            ChemicalResource chemicalType = chemicalTank.getResource();
             long amount = chemicalTank.amountAsLong();
-            if (dumpMode == GasMode.DUMPING) {
-                chemicalTank.shrinkStack(getDumpingAmount(amount), Action.EXECUTE);
-            } else {//DUMPING_EXCESS
-                //Don't allow dumping more than the configured amount
-                long targetLevel = MathUtils.clampToLong(chemicalTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
-                if (targetLevel < amount) {
-                    chemicalTank.shrinkStack(Math.min(amount - targetLevel, getDumpingAmount(amount)), Action.EXECUTE);
+            long toDump = 0;
+                if (dumpMode == GasMode.DUMPING) {
+                    toDump = getDumpingAmount(amount);
+                } else {//DUMPING_EXCESS
+                    //Don't allow dumping more than the configured amount
+                    long targetLevel = MathUtils.clampToLong(chemicalTank.getLimitAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    if (targetLevel < amount) {
+                        toDump = Math.min(amount - targetLevel, getDumpingAmount(amount));
+                    }
                 }
-            }
+                if (toDump > 0) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
+                        // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
+                        chemicalTank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
+                }
         }
 
         float newRotation = (float) flowRate;
@@ -202,7 +212,7 @@ public class TurbineMultiblockData extends MultiblockData {
     }
 
     private long getDumpingAmount(long stored) {
-        return Math.min(stored, Math.max(stored / 50, lastSteamInput * 2));
+        return Math.clamp(lastSteamInput * 2, stored / 50, stored);
     }
 
     public void updateVentData(List<VentData> vents) {

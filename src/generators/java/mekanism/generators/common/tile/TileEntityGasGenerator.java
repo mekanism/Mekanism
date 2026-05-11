@@ -85,9 +85,10 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
         gasUsedLastTick = 0;
 
         if (!fuelTank.isEmpty() && canFunction() && cachedFuel != null) {
+            ChemicalResource fuel = fuelTank.getResource();
 
             //how full the tank is, poor-man's "pressure" measurement
-            double fullness = fuelTank.amountAsLong() / (double) fuelTank.getCapacity();
+            double fullness = fuelTank.amountAsLong() / (double) fuelTank.getLimitAsLong(fuel);
 
             long energyDensity = cachedFuel.energyDensity();
             //maximum amount that can be produced AND stored
@@ -100,7 +101,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
                         long mbThisTick = Math.ceilDiv(inserted, energyDensity);
                         //TODO - 26.1: Figure out this long to int conversion. We should make it so that the math doesn't cause issues
                         //TODO - 26.1: Do we want to validate anything about the value we extracted from the fuel tank?
-                        gasUsedLastTick = fuelTank.extract(fuelTank.getResource(), Ints.saturatedCast(mbThisTick), transaction, AutomationType.INTERNAL);
+                        gasUsedLastTick = fuelTank.extract(fuel, Ints.saturatedCast(mbThisTick), transaction, AutomationType.INTERNAL);
                         transaction.commit();
                     }
                 }

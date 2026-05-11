@@ -1,15 +1,17 @@
 package mekanism.common.tile;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.ByteBuf;
 import java.util.Locale;
 import java.util.function.IntFunction;
-import mekanism.api.Action;
+import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.IIncrementalEnum;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.math.MathUtils;
 import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
@@ -63,6 +65,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -122,14 +125,26 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         drainSlot.drainTank();
         fillSlot.fillTank();
         if (dumping != GasMode.IDLE && tier != ChemicalTankTier.CREATIVE) {
-            if (dumping == GasMode.DUMPING) {
-                chemicalTank.shrinkStack(tier.getStorage() / 400, Action.EXECUTE);
-            } else {//dumping == GasMode.DUMPING_EXCESS
-                long target = MathUtils.clampToLong(chemicalTank.getCapacity() * MekanismConfig.general.dumpExcessKeepRatio.get());
-                long stored = chemicalTank.amountAsLong();
-                if (target < stored) {
-                    //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
-                    chemicalTank.shrinkStack(Math.min(stored - target, tier.getOutput()), Action.EXECUTE);
+            ChemicalResource chemicalType = chemicalTank.getResource();
+            if (!chemicalType.isEmpty()) {
+                long toDump = 0;
+                if (dumping == GasMode.DUMPING) {
+                    toDump = tier.getStorage() / 400;
+                } else {//dumping == GasMode.DUMPING_EXCESS
+                    long target = MathUtils.clampToLong(chemicalTank.getLimitAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    long stored = chemicalTank.amountAsLong();
+                    if (target < stored) {
+                        //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
+                        toDump = Math.min(stored - target, tier.getOutput());
+                    }
+                }
+                if (toDump > 0) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        //TODO - 26.1: Re-evaluate this clamping and see how we can avoid it
+                        // Also do we have any rate limits on our chemical tank that might mean we need to just directly modify the stack?
+                        chemicalTank.extract(chemicalType, Ints.saturatedCast(toDump), transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
                 }
             }
         }

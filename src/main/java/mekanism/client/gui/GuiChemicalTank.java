@@ -2,6 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.element.GuiSideHolder;
@@ -40,12 +41,13 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
                 ret.add(MekanismLang.GENERIC_FRACTION.translate(0, tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE :
                                                                    TextUtils.format(tile.getTier().getStorage())));
             } else {
-                ret.add(MekanismLang.CHEMICAL.translate(tank.getResource()));
+                ChemicalResource resource = tank.getResource();
+                ret.add(MekanismLang.CHEMICAL.translate(resource));
                 if (tile.getTier() == ChemicalTankTier.CREATIVE) {
                     ret.add(MekanismLang.INFINITE.translate());
                 } else {
                     ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.amountAsLong()),
-                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.getCapacity())));
+                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.getLimitAsLong(resource))));
                 }
             }
             return ret;

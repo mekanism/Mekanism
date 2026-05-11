@@ -22,7 +22,7 @@ import net.minecraft.world.item.Item.TooltipContext;
 import net.minecraft.world.item.TooltipFlag;
 import org.jetbrains.annotations.Nullable;
 
-public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {
+public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank> {//TODO - 26.1: Deduplicate things between this and fluid gauges
 
     public static GuiChemicalGauge getDummy(GaugeType type, IGuiWrapper gui, int x, int y) {
         GuiChemicalGauge gauge = new GuiChemicalGauge(null, type, gui, x, y, type.getGaugeOverlay().getWidth() + 2, type.getGaugeOverlay().getHeight() + 2);
@@ -68,10 +68,16 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
             return height - 2;
         }
         IChemicalTank tank = getTank();
-        if (tank == null || tank.isEmpty() || tank.getCapacity() == 0) {
+        if (tank == null || tank.isEmpty()) {
             return 0;
         }
-        double scale = tank.amountAsLong() / (double) tank.getCapacity();
+        long capacity = tank.getCurrentLimitAsLong();
+        if (capacity == 0) {
+            return 0;
+        } else if (tank.amountAsLong() == Long.MAX_VALUE) {
+            return height - 2;
+        }
+        double scale = tank.amountAsLong() / (double) capacity;
         return Ints.saturatedCast(Math.max(1, Math.round(scale * (height - 2))));
     }
 

@@ -76,13 +76,13 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
         if (tank == null || tank.isEmpty()) {
             return 0;
         }
-        int capacity = tank.getCurrentLimit();
+        long capacity = tank.getCurrentLimitAsLong();
         if (capacity == 0) {
             return 0;
-        } else if (tank.amount() == Integer.MAX_VALUE) {
+        } else if (tank.amountAsLong() == Long.MAX_VALUE) {
             return height - 2;
         }
-        float scale = tank.amount() / (float) capacity;
+        float scale = tank.amountAsLong() / (float) capacity;
         return Math.max(1, Math.round(scale * (height - 2)));
     }
 

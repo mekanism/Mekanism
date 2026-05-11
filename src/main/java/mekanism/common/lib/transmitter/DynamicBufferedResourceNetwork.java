@@ -16,6 +16,7 @@ import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import mekanism.common.content.network.distribution.ResourceTransmitterSaveTarget;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.util.EmitUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.neoforged.neoforge.transfer.ResourceHandler;
@@ -121,12 +122,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
 
     @Override
     public void clampBuffer() {
-        if (!container.isEmpty()) {
-            long capacity = getCapacity();
-            if (container.amountAsLong() > capacity) {
-                container.setContentsUnchecked(container.getResource(), capacity);
-            }
-        }
+        ResourceUtils.clampContents(container);
     }
 
     @Override

@@ -12,7 +12,6 @@ import java.util.function.BiPredicate;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -35,6 +34,7 @@ import mekanism.common.lib.multiblock.MultiblockCache.CacheSubstance;
 import mekanism.common.tile.prefab.TileEntityMultiblock;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnumUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -46,7 +46,6 @@ import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -215,18 +214,12 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
 
         if (shouldCache(CacheSubstance.FLUID)) {
             for (IFluidTank tank : getFluidTanks()) {
-                FluidResource fluidType = tank.getResource();
-                if (!fluidType.isEmpty()) {
-                    int capacity = tank.getLimit(fluidType);
-                    if (capacity < tank.amount()) {
-                        tank.setContentsUnchecked(fluidType, capacity);
-                    }
-                }
+                ResourceUtils.clampContents(tank);
             }
         }
         if (shouldCache(CacheSubstance.CHEMICAL)) {
             for (IChemicalTank tank : getChemicalTanks()) {
-                tank.setStackSize(Math.min(tank.amountAsLong(), tank.getCapacity()), Action.EXECUTE);
+                ResourceUtils.clampContents(tank);
             }
         }
         if (shouldCache(CacheSubstance.ENERGY)) {

@@ -66,27 +66,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
     }
 
     /**
-     * <p>
-     * This function should be used instead of simulated insertions in cases where the contents and state of the tank are irrelevant, mainly for the purpose of automation
-     * and logic.
-     * </p>
-     * <ul>
-     * <li>isValid is false when insertion of the chemical is never valid.</li>
-     * <li>When isValid is true, no assumptions can be made and insertion must be simulated case-by-case.</li>
-     * <li>The actual chemical stacks in the tank, its fullness, or any other state are <strong>not</strong> considered by isValid.</li>
-     * </ul>
-     *
-     * @param stack Stack to test with for validity
-     *
-     * @return true if this {@link IChemicalTank} can accept the {@link ChemicalStack}, not considering the current state of the tank. false if this {@link IChemicalTank}
-     * can never insert the {@link ChemicalStack} in any situation.
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default boolean isChemicalValid(ChemicalStack stack) {
-        return isValid(ChemicalResource.of(stack));
-    }
-
-    /**
      * Convenience method for modifying the size of the stored stack.
      * <p>
      * If there is a stack stored in this tank, set the size of it to the given amount. Capping at this chemical tank's limit. If the amount is less than or equal to
@@ -110,7 +89,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
             }
             return 0;
         }
-        long maxStackSize = getCapacity();
+        long maxStackSize = getCurrentLimitAsLong();
         if (amount > maxStackSize) {
             amount = maxStackSize;
         }
@@ -120,53 +99,6 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
         }
         setContents(getResource(), amount);
         return amount;
-    }
-
-    /**
-     * Convenience method for growing the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this tank, increase its size by the given amount. Capping at this chemical tank's limit. If the stack shrinks to an amount of less
-     * than or equal to zero, then this instead sets the stack to the empty stack.
-     *
-     * @param amount The desired amount to grow the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack grew.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to shrink.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default long growStack(long amount, Action action) {
-        long current = amountAsLong();
-        if (current == 0) {
-            //"Fail quick" if our stack is empty, so we can't grow it
-            return 0;
-        } else if (amount > 0) {
-            //Cap adding amount at how much we need, so that we don't risk long overflow
-            amount = Math.min(amount, getNeededAsLong());
-        }
-        long newSize = setStackSize(current + amount, action);
-        return newSize - current;
-    }
-
-    /**
-     * Convenience method for shrinking the size of the stored stack.
-     * <p>
-     * If there is a stack stored in this tank, shrink its size by the given amount. If this causes its size to become less than or equal to zero, then the stack is set
-     * to the empty stack. If this method is used to grow the stack the size gets capped at this chemical tank's limit.
-     *
-     * @param amount The desired amount to shrink the stack by.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
-     *
-     * @return Actual amount the stack shrunk.
-     *
-     * @apiNote Negative values for amount are valid, and will instead cause the stack to grow.
-     * @implNote If the internal stack does get updated make sure to call {@link #onContentsChanged()}
-     */
-    @Deprecated(forRemoval = true)//TODO - 26.1: Remove this
-    default long shrinkStack(long amount, Action action) {
-        return -growStack(-amount, action);
     }
 
     @Override

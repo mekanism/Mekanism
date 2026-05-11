@@ -66,7 +66,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue radiationNegativeEffectsMinSeverity;
     public final CachedLongValue radioactiveWasteBarrelMaxChemical;
     public final CachedIntValue radioactiveWasteBarrelProcessTicks;
-    public final CachedLongValue radioactiveWasteBarrelDecayAmount;
+    public final CachedIntValue radioactiveWasteBarrelDecayAmount;
     //Digital Miner
     public final CachedIntValue minerSilkMultiplier;
     public final CachedIntValue minerMaxRadius;
@@ -208,8 +208,8 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("wasteBarrelCapacity", 512L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         radioactiveWasteBarrelProcessTicks = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_FREQUENCY.applyToBuilder(builder)
               .defineInRange("wasteBarrelProcessTicks", SharedConstants.TICKS_PER_SECOND, 1, Integer.MAX_VALUE));
-        radioactiveWasteBarrelDecayAmount = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_AMOUNT.applyToBuilder(builder)
-              .defineInRange("wasteBarrelDecayAmount", 1, 0, Long.MAX_VALUE));
+        radioactiveWasteBarrelDecayAmount = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_RADIATION_BARREL_DECAY_AMOUNT.applyToBuilder(builder)
+              .defineInRange("wasteBarrelDecayAmount", 1, 0, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_MINER.applyToBuilder(builder).push("digital_miner");

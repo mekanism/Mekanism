@@ -4,7 +4,6 @@ import java.util.Objects;
 import java.util.function.BiPredicate;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -14,8 +13,8 @@ import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.lib.multiblock.MultiblockData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class VariableCapacityChemicalTank extends BasicChemicalTank {
@@ -79,32 +78,8 @@ public class VariableCapacityChemicalTank extends BasicChemicalTank {
     }
 
     @Override
-    public long getCapacity() {
+    @Range(from = 0, to = Long.MAX_VALUE)
+    public long getLimitAsLong(ChemicalResource resource) {
         return capacity.getAsLong();
-    }
-
-    @Override
-    public long setStackSize(long amount, @NotNull Action action) {
-        if (isEmpty()) {
-            return 0;
-        } else if (amount <= 0) {
-            if (action.execute()) {
-                setEmpty();
-            }
-            return 0;
-        }
-        long maxStackSize = getCapacity();
-        //Our capacity should never actually be zero, and given we fake it being zero
-        // until we finish building the network, we need to override this method to bypass the upper limit check
-        // when our upper limit is zero
-        if (maxStackSize > 0 && amount > maxStackSize) {
-            amount = maxStackSize;
-        }
-        if (amountAsLong() == amount || action.simulate()) {
-            //If our size is not changing, or we are only simulating the change, don't do anything
-            return amount;
-        }
-        setContentsUnchecked(getResource(), amount);
-        return amount;
     }
 }

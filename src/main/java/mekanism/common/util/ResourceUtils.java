@@ -8,6 +8,8 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.container.IMekanismResourceHandler;
 import mekanism.api.container.IResourceContainer;
+import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
+import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
@@ -150,6 +152,23 @@ public final class ResourceUtils {
             int sent = EmitUtils.sendToAcceptors(target, resourceAmount, resourceType, subTransaction);
             subTransaction.commit();
             return sent;
+        }
+    }
+
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void clampContents(CONTAINER container) {
+        RESOURCE resource = container.getResource();
+        if (!resource.isEmpty()) {
+            long capacity = container.getLimitAsLong(resource);
+            if (capacity == 0 && (container instanceof VariableCapacityFluidTank || container instanceof VariableCapacityChemicalTank)) {
+                //TODO - 26.1: Re-evaluate this, and add comments
+                //Our capacity should never actually be zero, and given we fake it being zero
+                // until we finish building the network, we need to override this method to bypass the upper limit check
+                // when our upper limit is zero
+                return;
+            }
+            if (container.amountAsLong() > capacity) {
+                container.setContentsUnchecked(resource, capacity);
+            }
         }
     }
 }
