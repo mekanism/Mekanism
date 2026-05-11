@@ -476,7 +476,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         Block block = registryObject.value();
         Variant baseModel = BlockModelGenerators.plainModel(validateModelExists(modLocation(base)));
         Identifier glassModel = glass != null ? existingModel(glass) : null;
-        MultiVariant multiVariant = customVariant(new TransmitterBlockStateModel.Unbaked(baseModel, Optional.ofNullable(glassModel)));
+        MultiVariant multiVariant = customVariant(new TransmitterBlockStateModel.Unbaked(baseModel, Optional.ofNullable(glassModel), registryObject != MekanismBlocks.DIVERSION_TRANSPORTER));
         blockModels.blockStateOutput.accept(
               MultiVariantGenerator.dispatch(
                     block,

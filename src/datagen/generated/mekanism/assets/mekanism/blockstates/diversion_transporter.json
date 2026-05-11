@@ -2,6 +2,7 @@
   "variants": {
     "": {
       "type": "mekanism:special/transmitter",
+      "hideContiguousJoin": false,
       "model": "mekanism:block/transmitter/large/diversion_transporter"
     }
   }

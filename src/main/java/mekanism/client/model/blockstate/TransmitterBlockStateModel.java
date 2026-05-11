@@ -3,6 +3,7 @@ package mekanism.client.model.blockstate;
 import com.google.common.collect.HashBasedTable;
 import com.google.common.collect.Table;
 import com.mojang.math.Transformation;
+import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
@@ -65,14 +66,17 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
     private final Map<Direction, AltNoneParts> altNonePartsGlassMap;
     private final Material.Baked particleMaterial;
     private final int materialFlags;
+    /// When true (default), straight-through segments will remap the perpendicular none faces and be a 'straight pipe' using the altParts
+    private final boolean hideContiguousJoin;
 
-    public TransmitterBlockStateModel(Table<Direction, ConnectionType, BlockStateModelPart> baseParts, @Nullable Table<Direction, ConnectionType, BlockStateModelPart> glassParts, Map<Direction, AltNoneParts> altNonePartsMap, @Nullable Map<Direction, AltNoneParts> altNonePartsGlassMap, Material.Baked particleMaterial, int materialFlags) {
+    public TransmitterBlockStateModel(Table<Direction, ConnectionType, BlockStateModelPart> baseParts, @Nullable Table<Direction, ConnectionType, BlockStateModelPart> glassParts, Map<Direction, AltNoneParts> altNonePartsMap, @Nullable Map<Direction, AltNoneParts> altNonePartsGlassMap, Material.Baked particleMaterial, int materialFlags, boolean hideContiguousJoin) {
         this.baseParts = baseParts;
         this.glassParts = glassParts;
         this.altNonePartsMap = altNonePartsMap;
         this.altNonePartsGlassMap = altNonePartsGlassMap;
         this.particleMaterial = particleMaterial;
         this.materialFlags = materialFlags;
+        this.hideContiguousJoin = hideContiguousJoin;
     }
 
     private static void addPart(Table<Direction, ConnectionType, BlockStateModelPart> partTable, List<BlockStateModelPart> partsList, Direction side, ConnectionType connectionType) {
@@ -100,7 +104,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         }
 
         Map<Direction, ConnectionType> connectionsMap = transmitterModelData.getConnectionsMap();
-        boolean isDiversion = transmitterModelData instanceof TransmitterModelData.Diversion;//todo - 26.1: Fold this into the Blockstate and pass it in
         boolean needsGlass = glassParts != null && transmitterModelData.getHasColor();
 
         for (Map.Entry<Direction, ConnectionType> entry : connectionsMap.entrySet()) {
@@ -108,7 +111,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             ConnectionType connectionType = entry.getValue();
 
             //determine if we need to check the alt parts
-            boolean needsAltCheck = !isDiversion && connectionType == ConnectionType.NONE;
+            boolean needsAltCheck = hideContiguousJoin && connectionType == ConnectionType.NONE;
             IconStatus iconStatus = needsAltCheck ? getIconStatus(transmitterModelData, direction) : null;//null when needsAltCheck == false
 
             if (needsAltCheck && iconStatus != IconStatus.NO_SIDE_REMAP) {
@@ -205,7 +208,8 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         public static final Identifier ID = Mekanism.rl("special/transmitter");
         public static final MapCodec<Unbaked> MAP_CODEC = RecordCodecBuilder.mapCodec(inst -> inst.group(
               Variant.MAP_CODEC.forGetter(Unbaked::base),
-              Identifier.CODEC.optionalFieldOf("glass").forGetter(Unbaked::glass)
+              Identifier.CODEC.optionalFieldOf("glass").forGetter(Unbaked::glass),
+              Codec.BOOL.optionalFieldOf("hideContiguousJoin", true).forGetter(Unbaked::hideContiguousJoin)
         ).apply(inst, Unbaked::new));
         public static final int NUM_DIRECTIONS = Direction.values().length;
         public static final int NUM_CONNECTIONS = ConnectionType.values().length;
@@ -213,10 +217,12 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         private final Variant base;
         @Nullable
         private final Identifier glass;
+        private final boolean hideContiguousJoin;
 
-        public Unbaked(Variant base, Optional<Identifier> glass) {
+        public Unbaked(Variant base, Optional<Identifier> glass, boolean hideContiguousJoin) {
             this.base = base;
             this.glass = glass.orElse(null);
+            this.hideContiguousJoin = hideContiguousJoin;
         }
 
         public Variant base() {
@@ -226,6 +232,10 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         @Nullable
         public Optional<Identifier> glass() {
             return Optional.ofNullable(glass);
+        }
+
+        public boolean hideContiguousJoin() {
+            return hideContiguousJoin;
         }
 
         @Override
@@ -286,7 +296,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                 }
             }
 
-            return new TransmitterBlockStateModel(baseParts, glassParts, altNonePartsMap, altNonePartsGlassMap, baseModel.resolveParticleMaterial(baseModel.getTopTextureSlots(), modelBakery), materialFlags);
+            return new TransmitterBlockStateModel(baseParts, glassParts, altNonePartsMap, altNonePartsGlassMap, baseModel.resolveParticleMaterial(baseModel.getTopTextureSlots(), modelBakery), materialFlags, hideContiguousJoin);
         }
 
         private static void bakeExtraNoneParts(Direction direction, BakerOverrider noneSegmentOverrider, DelegateResolvedModel partVisibilityDelegate, ResolvedModel baseModel, ModelState modelState, Map<Direction, AltNoneParts> altNonePartsMap, Transformation iconStatusTransform) {
