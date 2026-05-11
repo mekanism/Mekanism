@@ -7,6 +7,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -249,8 +250,8 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             ResolvedModel glassModel = glass != null ? modelBakery.getModel(glass) : null;
             Table<Direction, ConnectionType, BlockStateModelPart> baseParts = HashBasedTable.create(NUM_DIRECTIONS, NUM_CONNECTIONS);
             Table<Direction, ConnectionType, BlockStateModelPart> glassParts = glassModel != null ? HashBasedTable.create(NUM_DIRECTIONS, NUM_CONNECTIONS) : null;
-            Map<Direction, AltNoneParts> altNonePartsMap = new EnumMap<>(Direction.class);
-            Map<Direction, AltNoneParts> altNonePartsGlassMap = glassModel != null ? new EnumMap<>(Direction.class) : null;
+            Map<Direction, AltNoneParts> altNonePartsMap = hideContiguousJoin ? new EnumMap<>(Direction.class) : Collections.emptyMap();
+            Map<Direction, AltNoneParts> altNonePartsGlassMap = (glassModel != null && hideContiguousJoin) ? new EnumMap<>(Direction.class) : null;
             int materialFlags = 0;
             ModelState modelState = base.modelState().asModelState();
             Map<String, Boolean> partsVisibility = new HashMap<>(ALL_PART_GROUPS.size());//nb: shared with the delegate
@@ -283,7 +284,7 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
                         materialFlags |= baked.materialFlags();
                     }
 
-                    if (connectionType == ConnectionType.NONE) {
+                    if (connectionType == ConnectionType.NONE && hideContiguousJoin) {
                         Transformation iconStatusTransform = makeIconStatusTransform(direction);
                         bakeExtraNoneParts(direction, noneSegmentOverrider, partVisibilityDelegate, baseModel, modelState, altNonePartsMap, iconStatusTransform);
                         if (glassModel != null) {
