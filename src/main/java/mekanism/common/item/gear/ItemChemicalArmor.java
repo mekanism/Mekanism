@@ -26,6 +26,11 @@ public abstract class ItemChemicalArmor extends ItemSpecialArmor implements IChe
     protected abstract Holder<Chemical> getChemicalType();
 
     @Override
+    public boolean hasChemical(ItemStack stack) {
+        return ChemicalUtil.hasChemicalOfType(stack, getChemicalType());
+    }
+
+    @Override
     @Deprecated
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);

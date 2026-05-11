@@ -7,13 +7,14 @@ import java.util.function.LongSupplier;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.math.MathUtils;
 import mekanism.common.base.KeySync;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.mekasuit.ModuleGravitationalModulatingUnit;
@@ -26,6 +27,7 @@ import mekanism.common.item.interfaces.IFreeRunnerItem;
 import mekanism.common.item.interfaces.IJetpackItem;
 import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.radiation.PlayerExposure;
+import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
@@ -55,6 +57,9 @@ import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
 import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent.BreakSpeed;
 import net.neoforged.neoforge.event.tick.PlayerTickEvent;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
 public class CommonPlayerTickHandler {
@@ -127,12 +132,18 @@ public class CommonPlayerTickHandler {
 
         ItemStack chest = player.getItemBySlot(EquipmentSlot.CHEST);
         if (isScubaMaskOn(player, chest)) {
-            ItemScubaTank tank = (ItemScubaTank) chest.getItem();
             final int max = player.getMaxAirSupply();
-            tank.useChemical(chest, 1);
-            ChemicalStack received = tank.useChemical(chest, max - player.getAirSupply());
-            if (!received.isEmpty()) {
-                player.setAirSupply(player.getAirSupply() + (int) received.amount());
+            ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(chest));//TODO - 26.1 check this Access works
+            if (chemicalHandler != null) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Re-evaluate this single usage on its own
+                    chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), 1, transaction);
+                    int extracted = chemicalHandler.extract(MekanismChemicals.OXYGEN.asResource(), max - player.getAirSupply(), transaction);
+                    if (extracted > 0) {
+                        player.setAirSupply(player.getAirSupply() + extracted);
+                        transaction.commit();
+                    }
+                }
             }
             if (player.getAirSupply() == max) {
                 for (MobEffectInstance effect : player.getActiveEffects()) {

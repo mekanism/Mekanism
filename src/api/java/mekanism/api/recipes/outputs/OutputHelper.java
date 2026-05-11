@@ -2,9 +2,9 @@ package mekanism.api.recipes.outputs;
 
 import com.google.common.primitives.Ints;
 import java.util.Objects;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IResourceContainer;
@@ -250,8 +250,8 @@ public class OutputHelper {
             //This should not happen
             return;
         }
-        ChemicalStack output = toOutput.copyWithAmount(toOutput.amount() * operations);
-        tank.insert(output, Action.EXECUTE, AutomationType.INTERNAL);
+        //TODO - 26.1: Evaluate this and adjust things so that it shouldn't have to clamp
+        tank.insert(ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount() * operations), transaction, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
@@ -279,24 +279,8 @@ public class OutputHelper {
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, ChemicalStack toOutput) {
-        //If our output is empty, we have nothing to add, so we treat it as being able to fit all
-        if (!toOutput.isEmpty()) {
-            //Copy the stack and make it be max size
-            ChemicalStack maxOutput = toOutput.copyWithAmount(Long.MAX_VALUE);
-            //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            ChemicalStack remainder = tank.insert(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-            long amountUsed = maxOutput.amount() - remainder.amount();
-            //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about
-            int operations = Ints.saturatedCast(amountUsed / toOutput.amount());
-            tracker.updateOperations(operations);
-            if (operations == 0) {
-                if (amountUsed == 0 && tank.getNeededAsLong() > 0) {
-                    tracker.addError(RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT);
-                } else {
-                    tracker.addError(notEnoughSpace);
-                }
-            }
-        }
+        //TODO - 26.1: Re-evaluate this clamping
+        calculateOperationsCanSupport(tracker, notEnoughSpace, tank, ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount()), Integer.MAX_VALUE);
     }
 
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IFluidTank tank, @Nullable FluidStackTemplate toOutput) {

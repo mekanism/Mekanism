@@ -92,7 +92,7 @@ public class ChemicalUtil {
         return hasChemical(stack, ConstantPredicates.alwaysTrue());
     }
 
-    public static boolean hasChemicalOfType(ItemStack stack, Chemical type) {
+    public static boolean hasChemicalOfType(ItemStack stack, Holder<Chemical> type) {
         return hasChemical(stack, s -> s.is(type));
     }
 

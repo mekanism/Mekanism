@@ -4,8 +4,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
-import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IChemicalHandler;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
 import mekanism.common.capabilities.Capabilities;
@@ -16,6 +15,7 @@ import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registries.MekanismArmorMaterials;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.ChemicalUtil;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.network.chat.Component;
@@ -27,7 +27,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, IJetpackItem, IAttachmentBasedModeItem<JetpackMode> {
@@ -54,7 +56,7 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     public boolean canUseJetpack(ItemStack stack) {
-        return hasChemical(stack);
+        return ChemicalUtil.hasChemicalOfType(stack, getChemicalType());
     }
 
     @Override
@@ -79,7 +81,15 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
 
     @Override
     public void useJetpackFuel(ItemStack stack) {
-        useChemical(stack, 1);
+        ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));//TODO - 26.1 check this Access works
+        if (chemicalHandler != null) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                int extracted = chemicalHandler.extract(ChemicalResource.of(getChemicalType()), 1, transaction);
+                if (extracted == 1) {
+                    transaction.commit();
+                }
+            }
+        }
     }
 
     @Override
@@ -87,14 +97,14 @@ public class ItemJetpack extends ItemChemicalArmor implements IItemHUDProvider, 
         if (slotType == EquipmentSlot.CHEST) {
             ItemJetpack jetpack = (ItemJetpack) stack.getItem();
             list.add(MekanismLang.JETPACK_MODE.translateColored(EnumColor.DARK_GRAY, jetpack.getMode(stack)));
-            ChemicalStack stored = ChemicalStack.EMPTY;
+            long stored = 0;
             long capacity = 1;
-            IChemicalHandler gasHandlerItem = Capabilities.CHEMICAL_LEGACY.getCapability(ItemAccess.forStack(stack));
-            if (gasHandlerItem != null && gasHandlerItem.getChemicalTanks() > 0) {
-                stored = gasHandlerItem.getChemicalInTank(0);
-                capacity = gasHandlerItem.getChemicalTankCapacity(0);
+            ResourceHandler<ChemicalResource> handler = Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack));
+            if (handler != null && handler.size() > 0) {
+                stored = handler.getAmountAsLong(0);
+                capacity = handler.getCapacityAsLong(0, handler.getResource(0));
             }
-            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored.amount(), String.format(Locale.ROOT, "%.0f", 100.0 * stored.amount() / capacity)));
+            list.add(MekanismLang.JETPACK_STORED.translateColored(EnumColor.DARK_GRAY, EnumColor.ORANGE, stored, String.format(Locale.ROOT, "%.0f", 100.0 * stored / capacity)));
         }
     }
 
