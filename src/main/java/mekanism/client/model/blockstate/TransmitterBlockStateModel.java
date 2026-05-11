@@ -1,7 +1,5 @@
 package mekanism.client.model.blockstate;
 
-import com.google.common.collect.HashBasedTable;
-import com.google.common.collect.Table;
 import com.mojang.math.Transformation;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
@@ -15,6 +13,7 @@ import java.util.Optional;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
 import mekanism.common.Mekanism;
+import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.client.renderer.block.BlockAndTintGetter;
@@ -56,20 +55,20 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
           )
           .toList();
 
-    private final Table<Direction, VisualConnectionStatus, BlockStateModelPart> baseParts;
+    private final PartStorage baseParts;
     @Nullable
-    private final Table<Direction, VisualConnectionStatus, BlockStateModelPart> glassParts;
+    private final PartStorage glassParts;
     private final Material.Baked particleMaterial;
     private final int materialFlags;
 
-    public TransmitterBlockStateModel(Table<Direction, VisualConnectionStatus, BlockStateModelPart> baseParts, @Nullable Table<Direction, VisualConnectionStatus, BlockStateModelPart> glassParts, Material.Baked particleMaterial, int materialFlags) {
+    private TransmitterBlockStateModel(PartStorage baseParts, @Nullable PartStorage glassParts, Material.Baked particleMaterial, int materialFlags) {
         this.baseParts = baseParts;
         this.glassParts = glassParts;
         this.particleMaterial = particleMaterial;
         this.materialFlags = materialFlags;
     }
 
-    private static void addPart(Table<Direction, VisualConnectionStatus, BlockStateModelPart> partTable, List<BlockStateModelPart> partsList, Direction side, VisualConnectionStatus connectionType) {
+    private static void addPart(PartStorage partTable, List<BlockStateModelPart> partsList, Direction side, VisualConnectionStatus connectionType) {
         BlockStateModelPart modelPart = partTable.get(side, connectionType);
         if (modelPart != null) {
             partsList.add(modelPart);
@@ -125,9 +124,6 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
               Identifier.CODEC.optionalFieldOf("glass").forGetter(Unbaked::glass),
               Codec.BOOL.optionalFieldOf("hideContiguousJoin", true).forGetter(Unbaked::hideContiguousJoin)
         ).apply(inst, Unbaked::new));
-        public static final int NUM_DIRECTIONS = Direction.values().length;
-        public static final int NUM_CONNECTIONS = VisualConnectionStatus.values().length;
-        public static final int NUM_CONNECTIONS_ALT = VisualConnectionStatus.values().length;
 
         private final Variant base;
         @Nullable
@@ -162,8 +158,8 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
         public BlockStateModel bake(ModelBaker modelBakery) {
             ResolvedModel baseModel = modelBakery.getModel(base.modelLocation());
             ResolvedModel glassModel = glass != null ? modelBakery.getModel(glass) : null;
-            Table<Direction, VisualConnectionStatus, BlockStateModelPart> baseParts = HashBasedTable.create(NUM_DIRECTIONS, hideContiguousJoin ? NUM_CONNECTIONS : NUM_CONNECTIONS_ALT);
-            Table<Direction, VisualConnectionStatus, BlockStateModelPart> glassParts = glassModel != null ? HashBasedTable.create(NUM_DIRECTIONS, hideContiguousJoin ? NUM_CONNECTIONS : NUM_CONNECTIONS_ALT) : null;
+            PartStorage baseParts = new PartStorage(hideContiguousJoin);
+            PartStorage glassParts = glassModel != null ? new PartStorage(hideContiguousJoin) : null;
             int materialFlags = 0;
             ModelState modelState = base.modelState().asModelState();
             Map<String, Boolean> partsVisibility = new HashMap<>(ALL_PART_GROUPS.size());//nb: shared with the delegate
@@ -224,6 +220,25 @@ public class TransmitterBlockStateModel implements DynamicBlockStateModel {
             if (glass != null) {
                 resolver.markDependency(glass);
             }
+        }
+    }
+
+    private static class PartStorage {
+
+        private final BlockStateModelPart[][] parts;
+
+        private PartStorage(boolean hideContiguousJoin) {
+            int connections = hideContiguousJoin ? VisualConnectionStatus.values().length : ConnectionType.values().length;
+            parts = new BlockStateModelPart[EnumUtils.DIRECTIONS.length][connections];
+        }
+
+        public void put(Direction direction, VisualConnectionStatus status, BlockStateModelPart part) {
+            parts[direction.ordinal()][status.ordinal()] = part;
+        }
+
+        @Nullable//technically, but shouldn't be in practice
+        public BlockStateModelPart get(Direction direction, VisualConnectionStatus status) {
+            return parts[direction.ordinal()][status.ordinal()];
         }
     }
 
