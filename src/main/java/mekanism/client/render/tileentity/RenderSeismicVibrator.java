@@ -12,11 +12,14 @@ import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.tileentity.RenderSeismicVibrator.VibratorRenderState;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.tile.machine.TileEntitySeismicVibrator;
+import net.minecraft.client.renderer.Sheets;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -53,20 +56,19 @@ public class RenderSeismicVibrator extends MekanismTileEntityRenderer<TileEntity
 
     @Override
     public void submit(VibratorRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
-        //TODO - 26.1: rendering
-        /*poseStack.pushPose();
+        poseStack.pushPose();
         poseStack.translate(0, 0.625 * state.piston, 0);
-        nodeCollector.submitModel(
-              MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
-              Unit.INSTANCE,
+        //TODO - 26.1: Test crumbling
+        nodeCollector.submitBlockModel(
               poseStack,
-              Sheets.solidBlockSheet(),//TODO - 26.1: Test this
+              Sheets.cutoutBlockSheet(),
+              MekanismModelCache.INSTANCE.VIBRATOR_SHAFT.getBakedModel(),
+              BlockModelRenderState.EMPTY_TINTS,
               state.lightCoords,
               OverlayTexture.NO_OVERLAY,
-              0,//No outline
-              state.breakProgress
+              0//No outline
         );
-        poseStack.popPose();*/
+        poseStack.popPose();
     }
 
     @Override
