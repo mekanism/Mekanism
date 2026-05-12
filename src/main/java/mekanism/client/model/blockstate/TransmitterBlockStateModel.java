@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 import mekanism.client.model.data.TransmitterModelData;
 import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
 import mekanism.common.Mekanism;
@@ -49,11 +51,11 @@ import org.joml.Vector3f;
 
 public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
-    private static final List<String> ALL_PART_GROUPS = Direction.stream()
+    private static final Set<String> ALL_PART_GROUPS = Direction.stream()
           .flatMap(direction -> Arrays.stream(VisualConnectionStatus.values())
                 .map(connectionType -> getPartName(direction, connectionType))
           )
-          .toList();
+          .collect(Collectors.toSet());
 
     private final PartStorage baseParts;
     @Nullable
