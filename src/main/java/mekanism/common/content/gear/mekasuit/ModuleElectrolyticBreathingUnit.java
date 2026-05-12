@@ -62,8 +62,13 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
             productionRate = getMaxRate(module) / 2;
         }
         if (productionRate > 0) {
+            int maxRate;
             long usage = MathUtils.multiplyClamped(2, ChemicalUtils.hydrogenEnergyDensity());
-            int maxRate = Ints.saturatedCast(Math.min(productionRate, module.getContainerEnergy(stack) / usage));
+            try (Transaction simulation = Transaction.openRoot()) {
+                //Calculate the max rate based on how much energy is available and can be extracted
+                long energyRate = module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, productionRate), simulation) / usage;
+                maxRate = Ints.saturatedCast(energyRate);
+            }
             int hydrogenUsed = 0;
             int availableHydrogen = 2 * maxRate;
             ItemStack chestStack = player.getItemBySlot(EquipmentSlot.CHEST);

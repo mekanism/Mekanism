@@ -6,7 +6,6 @@ import java.util.Locale;
 import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -18,7 +17,6 @@ import mekanism.common.MekanismLang;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
-import mekanism.common.util.MekanismUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -46,26 +44,24 @@ public record ModuleMagneticAttractionUnit(Range range) implements ICustomModule
         if (range != Range.OFF) {
             float size = 4 + range.getRange();
             long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitEnergyUsageItemAttraction.get() * range.getRange());
-            boolean free = usage == 0L || !MekanismUtils.isPlayingMode(player);
-            IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
-            if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {
-                //If the energy cost is free, or we have enough energy for at least one pull grab all the items that can be picked up.
-                //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
-                // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
-                for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay())) {
-                    if (item.distanceTo(player) > 0.001) {
-                        if (free) {
-                            pullItem(player, item);
-                        } else {
-                            try (Transaction transaction = Transaction.openRoot()) {
-                                if (module.useEnergy(player, energyContainer, usage, null, true) < usage) {
-                                    //If we can't able to actually extract energy, exit
-                                    break;
-                                }
-                                pullItem(player, item);
-                                transaction.commit();
-                            }
+            try (Transaction simulation = Transaction.openRoot()) {
+                if (module.useEnergy(player, stack, usage, simulation) < usage) {
+                    //Not enough energy, just exit
+                    return;
+                }
+            }
+            //If the energy cost is free, or we have enough energy for at least one pull grab all the items that can be picked up.
+            //Note: We check distance afterwards so that we aren't having to calculate a bunch of distances when we may run out
+            // of energy, and calculating distance is a bit more expensive than just checking if it can be picked up
+            for (ItemEntity item : player.level().getEntitiesOfClass(ItemEntity.class, player.getBoundingBox().inflate(size, size, size), item -> !item.hasPickUpDelay())) {
+                if (item.distanceTo(player) > 0.001) {
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        if (module.useEnergy(player, stack, usage, transaction) < usage) {
+                            //If we aren't able to extract enough energy, stop trying to pull any further items
+                            break;
                         }
+                        pullItem(player, item);
+                        transaction.commit();
                     }
                 }
             }

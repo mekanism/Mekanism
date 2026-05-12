@@ -14,7 +14,6 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.IntFunction;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -154,16 +153,20 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer == null) {
+        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        if (energyHandler == null) {
             return 0;
         }
-        //Use raw hardness to get the best guess of if it is zero or not
-        long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
-        long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
-        if (energyAvailable < energyRequired) {
-            //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-            return (float) (DisassemblerMode.NORMAL.getEfficiency() * (energyAvailable / (double) energyRequired));
+        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+        // and wraps the entire hitting the entity within their transaction?
+        try (Transaction simulation = Transaction.openRoot()) {
+            //Use raw hardness to get the best guess of if it is zero or not
+            long energyRequired = getDestroyEnergy(stack, state.destroySpeed);
+            long energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
+            if (energyAvailable < energyRequired) {
+                //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
+                return (float) (DisassemblerMode.NORMAL.getEfficiency() * (energyAvailable / (double) energyRequired));
+            }
         }
         return getMode(stack).getEfficiency();
     }
@@ -174,18 +177,26 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         if (energyContainer != null) {
             long baseDestroyEnergy = getDestroyEnergy(stack);
             long energyRequired = getDestroyEnergy(baseDestroyEnergy, state.getDestroySpeed(world, pos));
-            energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
-            //Vein mining handling
-            if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN &&
-                energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL) == energyRequired) {
-                // Only allow mining things that are considered an ore
-                if (ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
-                    Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
-                          Reference2BooleanMaps.singleton(state.getBlock(), true));
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, 0L, baseDestroyEnergy, world, pos, player, stack, this, found,
-                          (base, hardness) -> 0L,
-                          (base, hardness, distance, bs) -> MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+            // and wraps the entire hitting the entity within their transaction?
+            try (Transaction transaction = Transaction.openRoot()) {
+                energyContainer.extract(energyRequired, transaction, AutomationType.MANUAL);
+                //Vein mining handling
+                if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() && getMode(stack) == DisassemblerMode.VEIN) {
+                    boolean hasEnergyToVeinMine;
+                    try (Transaction simulation = Transaction.open(transaction)) {
+                        hasEnergyToVeinMine = energyContainer.extract(energyRequired, simulation, AutomationType.MANUAL) == energyRequired;
+                    }
+                    // Only allow mining things that are considered an ore
+                    if (hasEnergyToVeinMine && ModuleVeinMiningUnit.canVeinBlock(state) && state.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE)) {
+                        Object2IntMap<BlockPos> found = ModuleVeinMiningUnit.findPositions(world, Map.of(pos, state), 0,
+                              Reference2BooleanMaps.singleton(state.getBlock(), true));
+                        MekanismUtils.veinMineArea(energyContainer, 0L, baseDestroyEnergy, world, pos, player, stack, this, found, transaction,
+                              (_, _) -> 0L,
+                              (base, hardness, distance, _) -> MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * (0.5 * Math.pow(distance, 1.5))));
+                    }
                 }
+                transaction.commit();
             }
         }
         return true;

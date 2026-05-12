@@ -3,7 +3,6 @@ package mekanism.common.content.gear.mekasuit;
 import java.util.List;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -20,8 +19,8 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects,
-                                               boolean harmfulEffects) implements ICustomModule<ModuleInhalationPurificationUnit> {
+public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects, boolean harmfulEffects)
+      implements ICustomModule<ModuleInhalationPurificationUnit> {
 
     private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
           MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
@@ -52,32 +51,30 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
 
     private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemStack stack, Player player, TransactionContext transaction) {
         long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-        boolean free = usage == 0L || !MekanismUtils.isPlayingMode(player);
-        IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
-        if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {
-            //Gather all the active effects that we can handle, so that we have them in their own list and
-            // don't run into any issues related to CMEs
-            List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
-            for (MobEffectInstance effect : effects) {
-                if (free) {
-                    speedupEffect(player, effect);
-                } else {
-                    try (Transaction subTransaction = Transaction.open(transaction)) {
-                        if (module.useEnergy(player, energyContainer, usage, transaction, true) < usage) {
-                            //If we can't able to actually extract energy, exit
-                            break;
-                        }
-                        speedupEffect(player, effect);
-                        subTransaction.commit();
-                    }
+        try (Transaction simulation = Transaction.openRoot()) {
+            if (module.useEnergy(player, stack, usage, simulation) < usage) {
+                //Not enough energy, just exit
+                return;
+            }
+        }
+        //Gather all the active effects that we can handle, so that we have them in their own list and
+        // don't run into any issues related to CMEs
+        List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
+        for (MobEffectInstance effect : effects) {
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                if (module.useEnergy(player, stack, usage, transaction) < usage) {
+                    //If we can't able to actually extract energy, exit
+                    break;
                 }
+                speedupEffect(player, effect);
+                subTransaction.commit();
             }
         }
     }
 
     @Nullable
     @Override
-    public ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
+    public ICustomModule.ModuleDamageAbsorbInfo getDamageAbsorbInfo(IModule<ModuleInhalationPurificationUnit> module, DamageSource damageSource) {
         return damageSource.is(MekanismAPITags.DamageTypes.IS_PREVENTABLE_MAGIC) ? INHALATION_ABSORB_INFO : null;
     }
 

@@ -3,6 +3,7 @@ package mekanism.api.gear;
 import java.util.function.LongSupplier;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.config.ModuleConfig;
 import mekanism.api.text.IHasTextComponent;
 import net.minecraft.core.Holder;
@@ -153,16 +154,11 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @return Energy container or {@code null} if something failed.
      */
     @Nullable
-    IEnergyContainer getEnergyContainer(ItemStack stack);
+    IEnergyContainer getEnergyContainer(ItemStack stack);//TODO - 26.1: Evaluate usages and probably try to remove this method
 
-    /**
-     * Helper to get the energy stored in {@link #getEnergyContainer(ItemStack)}.
-     *
-     * @param stack The stack this module is installed on.
-     *
-     * @return Energy stored, or 0 if the energy container is {@code null}.
-     */
-    long getContainerEnergy(ItemStack stack);
+    //TODO - 26.1: Docs and re-evaluate this method
+    @Nullable
+    IStrictEnergyHandler getEnergyHandler(ItemStack stack);
 
     /**
      * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
@@ -188,9 +184,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.4.0
      */
-    default boolean hasEnoughEnergy(ItemStack stack, long energy) {
-        return energy == 0L || getContainerEnergy(stack) >= energy;
-    }
+    boolean hasEnoughEnergy(ItemStack stack, long energy);
 
     /**
      * Helper to use energy from the item this module is installed on.
@@ -232,4 +226,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
      */
     long useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
+
+    //TODO - 26.1: Docs
+    long useEnergy(@Nullable LivingEntity wearer, @Nullable IStrictEnergyHandler energyHandler, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
 }

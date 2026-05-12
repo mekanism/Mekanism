@@ -18,8 +18,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.MekanismAPITags;
@@ -59,7 +57,6 @@ import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -96,6 +93,8 @@ import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -631,33 +630,6 @@ public final class MekanismUtils {
         return false;
     }
 
-    /**
-     * Performs a set of actions, until we find a success or run out of actions.
-     *
-     * @implNote Only returns that we failed if all the tested actions failed.
-     */
-    @SafeVarargs
-    public static InteractionResult performActions(InteractionResult firstAction, Supplier<InteractionResult>... secondaryActions) {
-        if (firstAction.consumesAction()) {
-            return firstAction;
-        }
-        InteractionResult result = firstAction;
-        boolean hasFailed = result == InteractionResult.FAIL;
-        for (Supplier<InteractionResult> secondaryAction : secondaryActions) {
-            result = secondaryAction.get();
-            if (result.consumesAction()) {
-                //If we were successful
-                return result;
-            }
-            hasFailed &= result == InteractionResult.FAIL;
-        }
-        if (hasFailed) {
-            //If at least one step failed, consider ourselves unsuccessful
-            return InteractionResult.FAIL;
-        }
-        return InteractionResult.PASS;
-    }
-
     //TODO - 26.1: Docs
     public static int redstoneLevelFromContents(IResourceContainer<?> container) {
         return redstoneLevelFromContents(container.amountAsLong(), container.getCurrentLimitAsLong());
@@ -784,13 +756,8 @@ public final class MekanismUtils {
         return fluidsIn;
     }
 
-    public static void veinMineArea(IEnergyContainer energyContainer, long energyRequired, long baseBlastEnergy, long baseVeinEnergy,
-          Level world, BlockPos pos, ServerPlayer player, ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, BlastEnergyFunction blastEnergy,
-          VeinEnergyFunction veinEnergy) {
-        long energyUsed = 0L;
-        long energyAvailable = energyContainer.getEnergy();
-        //Subtract from our available energy the amount that we will require to break the target block
-        energyAvailable = energyAvailable - energyRequired;
+    public static void veinMineArea(IEnergyContainer energyContainer, long baseBlastEnergy, long baseVeinEnergy, Level world, BlockPos pos, ServerPlayer player,
+          ItemStack stack, Item usedTool, Object2IntMap<BlockPos> found, TransactionContext transaction, BlastEnergyFunction blastEnergy, VeinEnergyFunction veinEnergy) {
         Stat<Item> itemStat = Stats.ITEM_USED.get(usedTool);
         for (ObjectIterator<Object2IntMap.Entry<BlockPos>> iterator = Object2IntMaps.fastIterator(found); iterator.hasNext(); ) {
             Object2IntMap.Entry<BlockPos> foundEntry = iterator.next();
@@ -808,38 +775,39 @@ public final class MekanismUtils {
             }
             int distance = foundEntry.getIntValue();
             long destroyEnergy = distance == 0 ? blastEnergy.calc(baseBlastEnergy, hardness) : veinEnergy.calc(baseVeinEnergy, hardness, distance, targetState);
-            if (energyUsed + destroyEnergy >= energyAvailable) {
-                //If we don't have energy to break the block continue
-                //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
-                // Given we validate the blocks are the same but their block states may be different thus making them have different
-                // block hardness values in a modded context
-                continue;
-            }
-            //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
-            BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
-            if (event.isCanceled()) {
-                //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
-                continue;
-            }
-            //Otherwise, break the block
-            FluidState fluidState = targetState.getFluidState();
-            //Get the tile now so that we have it for when we try to harvest the block
-            BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
-            //Update what the state will be if the player is destroying it, so that things like angering piglins, and firing block destroy game events occur
-            // This also ensures that things like decorated pots are able to properly update to cracked and drop sherds rather than the pot block itself
-            targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
-            Block block = targetState.getBlock();
-            //Remove the block
-            if (targetState.onDestroyedByPlayer(world, foundPos, player, stack, true, fluidState)) {
-                block.destroy(world, foundPos, targetState);
-                //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
-                block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
-                player.awardStat(itemStat);
-                //Mark that we used that portion of the energy
-                energyUsed += destroyEnergy;
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                if (energyContainer.extract(destroyEnergy, subTransaction, AutomationType.MANUAL) < destroyEnergy) {
+                    //If we don't have energy to break the block continue
+                    //Note: We do not break as given the energy scales with hardness, so it is possible we still have energy to break another block
+                    // Given we validate the blocks are the same but their block states may be different thus making them have different
+                    // block hardness values in a modded context
+                    continue;
+                }
+                //TODO - 26.1: Check about if we need to fire this on the client as well, or maybe just default mark it as notifying the client?
+                BreakBlockEvent event = CommonHooks.fireBlockBreak(world, player.gameMode.getGameModeForPlayer(), player, foundPos, targetState);
+                if (event.isCanceled()) {
+                    //If we can't actually break the block continue (this allows mods to stop us from vein mining into protected land)
+                    continue;
+                }
+                //Otherwise, break the block
+                FluidState fluidState = targetState.getFluidState();
+                //Get the tile now so that we have it for when we try to harvest the block
+                BlockEntity tileEntity = WorldUtils.getTileEntity(world, foundPos);
+                //Update what the state will be if the player is destroying it, so that things like angering piglins, and firing block destroy game events occur
+                // This also ensures that things like decorated pots are able to properly update to cracked and drop sherds rather than the pot block itself
+                targetState = targetState.getBlock().playerWillDestroy(world, foundPos, targetState, player);
+                Block block = targetState.getBlock();
+                //Remove the block
+                if (targetState.onDestroyedByPlayer(world, foundPos, player, stack, true, fluidState)) {
+                    block.destroy(world, foundPos, targetState);
+                    //Harvest the block allowing it to handle block drops, incrementing block mined count, and adding exhaustion
+                    block.playerDestroy(world, player, foundPos, targetState, tileEntity, stack);
+                    player.awardStat(itemStat);
+                    //Mark that we used that portion of the energy
+                    subTransaction.commit();
+                }
             }
         }
-        energyContainer.extract(energyUsed, Action.EXECUTE, AutomationType.MANUAL);
     }
 
     public enum ResourceType {

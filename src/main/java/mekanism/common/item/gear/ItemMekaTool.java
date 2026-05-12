@@ -11,7 +11,6 @@ import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -245,16 +244,20 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
 
     @Override
     public float getDestroySpeed(@NotNull ItemStack stack, @NotNull BlockState state) {
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer == null) {
+        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        if (energyHandler == null) {
             return 0;
         }
-        //Use raw hardness to get the best guess of if it is zero or not
-        long energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
-        long energyAvailable = energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL);
-        if (energyAvailable < energyRequired) {
-            //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
-            return (float) (MekanismConfig.gear.mekaToolBaseEfficiency.get() * ((double) energyAvailable / energyRequired));
+        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+        // and wraps the entire hitting the entity within their transaction?
+        try (Transaction simulation = Transaction.openRoot()) {
+            //Use raw hardness to get the best guess of if it is zero or not
+            long energyRequired = getDestroyEnergy(stack, state.destroySpeed, isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT));
+            long energyAvailable = EnergyUtils.extractManual(energyHandler, energyRequired, simulation);
+            if (energyAvailable < energyRequired) {
+                //If we can't extract all the energy we need to break it go at base speed reduced by how much we actually have available
+                return (float) (MekanismConfig.gear.mekaToolBaseEfficiency.get() * ((double) energyAvailable / energyRequired));
+            }
         }
         IModule<ModuleExcavationEscalationUnit> module = getEnabledModule(stack, MekanismModules.EXCAVATION_ESCALATION_UNIT);
         return module == null ? MekanismConfig.gear.mekaToolBaseEfficiency.get() : module.getCustomInstance().getEfficiency();
@@ -267,26 +270,36 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             boolean silk = isModuleEnabled(stack, MekanismModules.SILK_TOUCH_UNIT);
             long modDestroyEnergy = getDestroyEnergy(stack, silk);
             long energyRequired = getDestroyEnergy(modDestroyEnergy, state.getDestroySpeed(world, pos));
-            energyContainer.extract(energyRequired, Action.EXECUTE, AutomationType.MANUAL);
-            //AOE/vein mining handling
-            if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative() &&
-                energyContainer.extract(energyRequired, Action.SIMULATE, AutomationType.MANUAL) >= energyRequired) {
-                Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
-                blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
+            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+            // and wraps the entire hitting the entity within their transaction?
+            try (Transaction transaction = Transaction.openRoot()) {
+                energyContainer.extract(energyRequired, transaction, AutomationType.MANUAL);
+                //AOE/vein mining handling
+                if (!world.isClientSide() && entity instanceof ServerPlayer player && !player.isCreative()) {
+                    boolean hasEnergyToVeinMine;
+                    try (Transaction simulation = Transaction.open(transaction)) {
+                        hasEnergyToVeinMine = energyContainer.extract(energyRequired, simulation, AutomationType.MANUAL) == energyRequired;
+                    }
+                    if (hasEnergyToVeinMine) {
+                        Map<BlockPos, BlockState> blocks = getBlastedBlocks(world, player, stack, pos, state);
+                        blocks = blocks.isEmpty() && ModuleVeinMiningUnit.canVeinBlock(state) ? Map.of(pos, state) : blocks;
 
-                Reference2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
-                      bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, r) -> l, Reference2BooleanArrayMap::new));
+                        Reference2BooleanMap<Block> oreTracker = blocks.values().stream().collect(Collectors.toMap(BlockStateBase::getBlock,
+                              bs -> bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE), (l, _) -> l, Reference2BooleanArrayMap::new));
 
-                Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
-                if (!veinedBlocks.isEmpty()) {
-                    //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
-                    long baseDestroyEnergy = getDestroyEnergy(silk);
-                    MekanismUtils.veinMineArea(energyContainer, energyRequired, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
-                          ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
-                              double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
-                              return MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * multiplier);
-                          });
+                        Object2IntMap<BlockPos> veinedBlocks = getVeinedBlocks(world, stack, blocks, oreTracker);
+                        if (!veinedBlocks.isEmpty()) {
+                            //Don't include bonus energy required by efficiency modules when calculating energy of vein mining targets
+                            long baseDestroyEnergy = getDestroyEnergy(silk);
+                            MekanismUtils.veinMineArea(energyContainer, modDestroyEnergy, baseDestroyEnergy, world, pos, player, stack, this, veinedBlocks,
+                                  transaction, ItemMekaTool::getDestroyEnergy, (base, hardness, distance, bs) -> {
+                                      double multiplier = 0.5 * Math.pow(distance, bs.is(MekanismTags.Blocks.ATOMIC_DISASSEMBLER_ORE) ? 1.5 : 2);
+                                      return MathUtils.ceilToLong(getDestroyEnergy(base, hardness) * multiplier);
+                                  });
+                        }
+                    }
                 }
+                transaction.commit();
             }
         }
         return true;

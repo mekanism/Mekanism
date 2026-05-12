@@ -1,10 +1,7 @@
 package mekanism.common.content.gear.mekatool;
 
 import java.util.function.Predicate;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
-import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
@@ -34,6 +31,7 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.common.ItemAbilities;
 import net.neoforged.neoforge.common.ItemAbility;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -71,11 +69,17 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     @Override
     public InteractionResult onInteract(IModule<ModuleShearingUnit> module, Player player, LivingEntity entity, InteractionHand hand, IModuleContainer moduleContainer, ItemStack stack) {
         if (entity instanceof IShearable) {
-            long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-            IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-            if (cost == 0L || energyContainer != null && energyContainer.getEnergy() >= cost &&
-                              shearEntity(energyContainer, entity, player, stack, entity.level(), entity.blockPosition())) {
-                return InteractionResult.SUCCESS;
+            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+            // and wraps the entire hitting the entity within their transaction?
+            try (Transaction transaction = Transaction.openRoot()) {
+                Level level = entity.level();
+                long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+                if (module.useEnergy(player, stack, cost, transaction) == cost && shearEntity(entity, player, stack, level, entity.blockPosition())) {
+                    if (!level.isClientSide()) {
+                        transaction.commit();
+                    }
+                    return InteractionResult.SUCCESS;
+                }
             }
         }
         return InteractionResult.PASS;
@@ -86,23 +90,26 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
     public InteractionResult onItemUse(IModule<ModuleShearingUnit> module, UseOnContext context) {
         long cost = MekanismConfig.gear.mekaToolEnergyUsageShearTrim.get();
         ItemStack stack = context.getItemInHand();
-        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
-        if (cost == 0L || energyContainer != null && energyContainer.getEnergy() >= cost) {
-            //Copy of ShearsItem#useOn
-            Level level = context.getLevel();
-            BlockPos blockpos = context.getClickedPos();
-            BlockState state = level.getBlockState(blockpos);
-            BlockState trimmedState = state.getToolModifiedState(context, ItemAbilities.SHEARS_TRIM, false);
-            if (trimmedState != null) {
-                if (context.getPlayer() instanceof ServerPlayer player) {
-                    CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(player, blockpos, stack);
+        Player player = context.getPlayer();
+        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+        // and wraps the entire hitting the entity within their transaction?
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (module.useEnergy(player, stack, cost, transaction) == cost) {
+                //Copy of ShearsItem#useOn
+                Level level = context.getLevel();
+                BlockPos blockpos = context.getClickedPos();
+                BlockState state = level.getBlockState(blockpos);
+                BlockState trimmedState = state.getToolModifiedState(context, ItemAbilities.SHEARS_TRIM, false);
+                if (trimmedState != null) {
+                    if (player instanceof ServerPlayer serverPlayer) {
+                        CriteriaTriggers.ITEM_USED_ON_BLOCK.trigger(serverPlayer, blockpos, stack);
+                    }
+                    level.setBlockAndUpdate(blockpos, trimmedState);
+                    level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(player, trimmedState));
+                    //TODO - 26.1: Should we only commit on the server?
+                    transaction.commit();
+                    return InteractionResult.SUCCESS;
                 }
-                level.setBlockAndUpdate(blockpos, trimmedState);
-                level.gameEvent(GameEvent.BLOCK_CHANGE, blockpos, GameEvent.Context.of(context.getPlayer(), trimmedState));
-                if (cost > 0) {
-                    energyContainer.extract(cost, Action.EXECUTE, AutomationType.MANUAL);
-                }
-                return InteractionResult.SUCCESS;
             }
         }
         return InteractionResult.PASS;
@@ -114,26 +121,30 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
         ServerLevel world = source.level();
         Direction facing = source.state().getValue(DispenserBlock.FACING);
         BlockPos pos = source.pos().relative(facing);
-        if (CommonHooks.tryDispenseShearsHarvestBlock(source, stack, world, pos) || tryShearLivingEntity(module.getEnergyContainer(stack), world, pos, stack)) {
+        if (CommonHooks.tryDispenseShearsHarvestBlock(source, stack, world, pos)) {
             return ModuleDispenseResult.HANDLED;
+        }
+        //TODO - 26.1: Vanilla dispensers try shearing a beehive at the location before trying to shear any entities
+        // Should we be doing so here? I think at one point we did, so figure out what happened to it
+        //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
+        try (Transaction transaction = Transaction.openRoot()) {
+            long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
+            //If we are able to use the energy we need to (or there is no cost) then try to see if any of the entities can be sheared
+            if (module.useEnergy(null, stack, cost, transaction) == cost) {
+                for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
+                    if (shearEntity(entity, null, stack, world, pos)) {
+                        if (!world.isClientSide()) {
+                            transaction.commit();
+                        }
+                        return ModuleDispenseResult.HANDLED;
+                    }
+                }
+            }
         }
         return ModuleDispenseResult.FAIL_PREVENT_DROP;
     }
 
-    //Modified copy of ShearsDispenseItemBehavior#tryShearLivingEntity to work with IForgeShearable
-    private boolean tryShearLivingEntity(@Nullable IEnergyContainer energyContainer, ServerLevel world, BlockPos pos, ItemStack stack) {
-        long cost = MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get();
-        if (cost == 0L || energyContainer != null && energyContainer.getEnergy() >= MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get()) {
-            for (LivingEntity entity : world.getEntitiesOfClass(LivingEntity.class, new AABB(pos), SHEARABLE)) {
-                if (shearEntity(energyContainer, entity, null, stack, world, pos)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
-    private boolean shearEntity(@Nullable IEnergyContainer energyContainer, LivingEntity entity, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
+    private boolean shearEntity(LivingEntity entity, @Nullable Player player, ItemStack stack, Level world, BlockPos pos) {
         IShearable target = (IShearable) entity;
         if (target.isShearable(player, stack, world, pos)) {
             if (!world.isClientSide() && world instanceof ServerLevel level) {
@@ -141,9 +152,6 @@ public class ModuleShearingUnit implements ICustomModule<ModuleShearingUnit> {
                     target.spawnShearedDrop(level, pos, drop);
                 }
                 entity.gameEvent(GameEvent.SHEAR, player);
-                if (energyContainer != null) {
-                    energyContainer.extract(MekanismConfig.gear.mekaToolEnergyUsageShearEntity.get(), Action.EXECUTE, AutomationType.MANUAL);
-                }
             }
             return true;
         }

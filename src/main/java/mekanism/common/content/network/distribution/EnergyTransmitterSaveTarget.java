@@ -28,10 +28,5 @@ public class EnergyTransmitterSaveTarget extends EnergySaveTarget<CableSaveHandl
                 transmitter.getTransmitterTile().markForSave();
             }
         }
-
-        @Override
-        protected long getStored() {
-            return transmitter.getShare();
-        }
     }
 }

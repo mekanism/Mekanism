@@ -319,7 +319,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         return toFill;
     }
 
-    @Nullable
+    @Nullable//TODO - 26.1: Evaluate usages and probably try to remove this method
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
         //TODO - 26.1: See which ones of these can be moved to the item access method with more specific item access values
         if (stack.isEmpty()) {

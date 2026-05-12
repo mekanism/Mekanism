@@ -136,4 +136,45 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
         }
         return 0;
     }
+
+    /// @return amount transferred
+    public static long chargeContents(IStrictEnergyHandler chargeFrom, ResourceHandler<ItemResource> handler, long amount, TransactionContext transaction) {
+        //TODO - 26.1: Docs
+        long charged = 0;
+        for (int slot = 0, slots = handler.size(); slot < slots; slot++) {
+            charged += charge(chargeFrom, ItemAccess.forHandlerIndexStrict(handler, slot), amount - charged, transaction);
+            if (charged == amount) {
+                break;
+            }
+        }
+        return charged;
+    }
+
+    /// @return amount transferred
+    public static long charge(IStrictEnergyHandler chargeFrom, ItemAccess itemAccess, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
+        return amount == 0 ? 0 : charge(chargeFrom, EnergyCompatUtils.getStrictEnergyHandler(itemAccess), amount, transaction);
+    }
+
+    /// @return amount transferred
+    public static long charge(IStrictEnergyHandler chargeFrom, @Nullable IStrictEnergyHandler handlerToCharge, long amount, TransactionContext transaction) {//TODO - 26.1: Update docs
+        if (amount == 0 || handlerToCharge == null) {
+            return 0;
+        }
+        long toExtract;
+        try (Transaction simulation = Transaction.open(transaction)) {//TODO - 26.1: Re-evaluate this simulation
+            toExtract = handlerToCharge.extract(amount, simulation);
+        }
+        if (toExtract > 0) {
+            //If we can actually insert any energy into the item
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                long extracted = extractManual(chargeFrom, toExtract, subTransaction);
+                long inserted = handlerToCharge.insert(extracted, subTransaction);
+                if (inserted == extracted) {
+                    subTransaction.commit();
+                    return inserted;
+                }
+            }
+        }
+        return 0;
+    }
 }
