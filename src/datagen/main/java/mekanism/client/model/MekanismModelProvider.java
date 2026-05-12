@@ -583,6 +583,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         itemModels.declareCustomModelItem(MekanismItems.REFINED_GLOWSTONE_NUGGET.asItem());
         itemModels.declareCustomModelItem(MekanismItems.STEEL_NUGGET.asItem());
         itemModels.declareCustomModelItem(MekanismBlocks.PERSONAL_CHEST.asItem());
+        itemModels.declareCustomModelItem(MekanismBlocks.SEISMIC_VIBRATOR.asItem());
     }
 
     private void markManualBlocks() {

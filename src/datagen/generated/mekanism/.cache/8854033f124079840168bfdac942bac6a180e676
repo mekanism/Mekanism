@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-12T14:53:51.508966	Model Definitions - mekanism
+// 26.1.2	2026-05-12T21:36:43.1194542	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -384,7 +384,7 @@ a548abbe57e9c10cd4eb810780110a576e9101c6 assets/mekanism/items/sawdust.json
 a119b0e9fee21c6a1ede0bd44a1897a28a71b7de assets/mekanism/items/scuba_tank.json
 5dc2744d163895c436f9713b8aee89acae56fc18 assets/mekanism/items/security_desk.json
 796358e5652a5c19de6a3d90f48abb774cf4295e assets/mekanism/items/seismic_reader.json
-788ff8a159ee7babb2e50545d345190099f8c4c8 assets/mekanism/items/seismic_vibrator.json
+2506dbdfa1861447608005234788a24c31bda908 assets/mekanism/items/seismic_vibrator.json
 d195b739be8c00886c5b4df6a1260fbfc4015639 assets/mekanism/items/shard_copper.json
 7f658ff339136cd3ddad0daabfe35b0cf470c29b assets/mekanism/items/shard_gold.json
 b90db788210d265d0f3da788840eb6b2f564983d assets/mekanism/items/shard_iron.json
