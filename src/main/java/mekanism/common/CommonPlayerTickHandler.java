@@ -4,11 +4,9 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
 import java.util.function.LongSupplier;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.FloatSupplier;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleHelper;
@@ -32,8 +30,8 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.registries.MekanismGameEvents;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Mth;
@@ -246,7 +244,7 @@ public class CommonPlayerTickHandler {
             return;
         }
         FallEnergyInfo info = getFallAbsorptionEnergyInfo(entity);
-        if (info != null && info.container != null) {
+        if (info != null && info.energyHandler != null) {
             float absorption = info.damageRatio.getAsFloat();
             float amount = fallDamage * absorption;
             long energyRequirement = MathUtils.ceilToLong(info.energyCost.getAsLong() * amount);
@@ -256,8 +254,12 @@ public class CommonPlayerTickHandler {
                 // or how small the amount to absorb is
                 ratioAbsorbed = absorption;
             } else {
-                long extracted = info.container.extract(energyRequirement, Action.EXECUTE, AutomationType.MANUAL);
-                ratioAbsorbed = (float) (absorption * ((double) extracted / energyRequirement));
+                //TODO - 26.1: Is there a chance of mods firing this even from within a transaction context?
+                try (Transaction transaction = Transaction.openRoot()) {
+                    long extracted = EnergyUtils.extractManual(info.energyHandler, energyRequirement, transaction);
+                    ratioAbsorbed = (float) (absorption * ((double) extracted / energyRequirement));
+                    transaction.commit();
+                }
             }
             if (ratioAbsorbed > 0) {
                 float damageRemaining = fallDamage * Math.max(0, 1 - ratioAbsorbed);
@@ -288,15 +290,21 @@ public class CommonPlayerTickHandler {
             if (propulsionModule != null && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
                 float boost = propulsionModule.getCustomInstance().getBoost();
                 long usage = MathUtils.ceilToLong(MekanismConfig.gear.mekaSuitBaseJumpEnergyUsage.get() * boost / 0.1F);
-                if (propulsionModule.canUseEnergy(player, boots, usage)) {
-                    // if we're sprinting with the boost module, limit the height
-                    ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
-                    IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
-                    if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, legs, player)) {
-                        boost = Mth.sqrt(boost);
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //TODO - 26.1: Why did this used to check if it can use energy from the boots but then actually use it from the legs?
+                    // Is it that it was meant to use it from both, but instead just wasn't? (And that we still need to have the legs add their energy?)
+                    if (propulsionModule.useEnergy(player, boots, usage, transaction) == usage) {
+                        // if we're sprinting with the boost module, limit the height
+                        ItemStack legs = player.getItemBySlot(EquipmentSlot.LEGS);
+                        IModule<ModuleLocomotiveBoostingUnit> boostModule = IModuleHelper.INSTANCE.getIfEnabled(legs, MekanismModules.LOCOMOTIVE_BOOSTING_UNIT);
+                        try (Transaction simulation = Transaction.open(transaction)) {
+                            if (boostModule != null && boostModule.getCustomInstance().canFunction(boostModule, legs, player, simulation)) {
+                                boost = Mth.sqrt(boost);
+                            }
+                        }
+                        player.addDeltaMovement(new Vec3(0, boost, 0));
+                        transaction.commit();
                     }
-                    player.addDeltaMovement(new Vec3(0, boost, 0));
-                    propulsionModule.useEnergy(player, legs, usage, true);
                 }
             }
         }
@@ -309,21 +317,21 @@ public class CommonPlayerTickHandler {
     private FallEnergyInfo getFallAbsorptionEnergyInfo(LivingEntity base) {
         ItemStack feetStack = base.getItemBySlot(EquipmentSlot.FEET);
         if (!feetStack.isEmpty() && feetStack.getItem() instanceof ItemMekaSuitArmor) {
-            return new FallEnergyInfo(StorageUtils.getEnergyContainer(feetStack, 0), MekanismConfig.gear.mekaSuitFallDamageRatio,
+            return new FallEnergyInfo(Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(feetStack)), MekanismConfig.gear.mekaSuitFallDamageRatio,
                   MekanismConfig.gear.mekaSuitEnergyUsageFall);
         }
         ItemStack freeRunners = IFreeRunnerItem.getActiveFreeRunners(base);
         if (!freeRunners.isEmpty()) {
             ItemStack primaryFreeRunners = IFreeRunnerItem.getPrimaryFreeRunners(base);
             if (!primaryFreeRunners.isEmpty() && ((IFreeRunnerItem) primaryFreeRunners.getItem()).getFreeRunnerMode(primaryFreeRunners).preventsFallDamage()) {
-                return new FallEnergyInfo(((IFreeRunnerItem) freeRunners.getItem()).getRunnerEnergyContainer(freeRunners), MekanismConfig.gear.freeRunnerFallDamageRatio,
+                return new FallEnergyInfo(Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(freeRunners)), MekanismConfig.gear.freeRunnerFallDamageRatio,
                       MekanismConfig.gear.freeRunnerFallEnergyCost);
             }
         }
         return null;
     }
 
-    private record FallEnergyInfo(@Nullable IEnergyContainer container, FloatSupplier damageRatio, LongSupplier energyCost) {
+    private record FallEnergyInfo(@Nullable IStrictEnergyHandler energyHandler, FloatSupplier damageRatio, LongSupplier energyCost) {
     }
 
     @SubscribeEvent

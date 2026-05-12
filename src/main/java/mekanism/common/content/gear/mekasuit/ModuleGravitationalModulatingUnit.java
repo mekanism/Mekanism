@@ -29,6 +29,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 @ParametersAreNotNullByDefault
 public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implements ICustomModule<ModuleGravitationalModulatingUnit> {
@@ -86,15 +87,27 @@ public record ModuleGravitationalModulatingUnit(SprintBoost speedBoost) implemen
     public void tickServer(IModule<ModuleGravitationalModulatingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         //If the player is actively flying (not just allowed to), they are using the grav unit, apply movement boost if active, and use energy
         // Note: If they don't have enough energy to use the grav unit, don't try to process the player, and assume another mod is providing flight
-        if (shouldProcess(player) && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation)) {
-            float boost = speedBoost.getBoost();
-            if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST) && module.hasEnoughEnergy(stack, BOOST_USAGE)) {
-                player.moveRelative(boost, BOOST_VEC);
-                module.useEnergy(player, stack, BOOST_USAGE.getAsLong());
-                gravUnitGameEvent(player, MekanismGameEvents.GRAVITY_MODULATE_BOOSTED);
-            } else {
-                module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get());
-                gravUnitGameEvent(player, MekanismGameEvents.GRAVITY_MODULATE);
+        if (shouldProcess(player)) {
+            try (Transaction transaction = Transaction.openRoot()) {
+                long energyUsage = MekanismConfig.gear.mekaSuitEnergyUsageGravitationalModulation.get();
+                if (module.useEnergy(player, stack, energyUsage, transaction) == energyUsage) {
+                    float boost = speedBoost.getBoost();
+                    Holder<GameEvent> gameEvent = MekanismGameEvents.GRAVITY_MODULATE;
+                    if (boost > 0 && Mekanism.keyMap.has(player.getUUID(), KeySync.BOOST)) {
+                        try (Transaction subTransaction = Transaction.openRoot()) {
+                            //Note: Boost usage is a multiplicative amount of our energy usage, as we have already extracted our energy once,
+                            // we need to subtract it from our attempted boost handling
+                            long energyToBoost = BOOST_USAGE.getAsLong() - energyUsage;
+                            if (module.useEnergy(player, stack, energyToBoost, subTransaction) == energyToBoost) {
+                                player.moveRelative(boost, BOOST_VEC);
+                                gameEvent = MekanismGameEvents.GRAVITY_MODULATE_BOOSTED;
+                                subTransaction.commit();
+                            }
+                        }
+                    }
+                    gravUnitGameEvent(player, gameEvent);
+                    transaction.commit();
+                }
             }
         }
     }

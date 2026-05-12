@@ -19,6 +19,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IDisableableEnum;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radial.IRadialDataHelper;
@@ -29,6 +30,7 @@ import mekanism.api.text.IHasTextComponent.IHasEnumNameTextComponent;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.mekatool.ModuleExcavationEscalationUnit.ExcavationMode;
 import mekanism.common.content.gear.mekatool.ModuleVeinMiningUnit;
@@ -40,6 +42,7 @@ import mekanism.common.lib.radial.IRadialModeItem;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -76,6 +79,8 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDProvider, IRadialModeItem<DisassemblerMode>, IHasConditionalAttributes {
@@ -133,12 +138,17 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
     @Override
     public void postHurtEnemy(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
         super.postHurtEnemy(stack, target, attacker);
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-        if (energyContainer != null && !energyContainer.isEmpty()) {
+        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        if (energyHandler != null && !energyHandler.isEmpty()) {
             //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
             // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
             // to the amount of damage we will actually do
-            energyContainer.extract(MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), Action.EXECUTE, AutomationType.MANUAL);
+            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+            // and wraps the entire hitting the entity within their transaction?
+            try (Transaction transaction = Transaction.openRoot()) {
+                EnergyUtils.extractManual(energyHandler, MekanismConfig.gear.disassemblerEnergyUsageWeapon.get(), transaction);
+                transaction.commit();
+            }
         }
     }
 

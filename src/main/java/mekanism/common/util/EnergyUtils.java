@@ -3,6 +3,7 @@ package mekanism.common.util;
 import java.util.Collection;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergyAcceptorTarget;
@@ -18,6 +19,22 @@ import org.jspecify.annotations.Nullable;
 public final class EnergyUtils {//TODO - 26.1: Update docs
 
     private EnergyUtils() {
+    }
+
+    public static long extractManual(IStrictEnergyHandler handler, long amount, TransactionContext transaction) {
+        if (handler instanceof IMekanismStrictEnergyHandler mekHandler) {
+            //Ensure droppers use the manual automation type
+            return mekHandler.extract(amount, transaction, AutomationType.MANUAL);
+        }
+        return handler.extract(amount, transaction);
+    }
+
+    public static long insertManual(IStrictEnergyHandler handler, long amount, TransactionContext transaction) {
+        if (handler instanceof IMekanismStrictEnergyHandler mekHandler) {
+            //Ensure droppers use the manual automation type
+            return mekHandler.insert(amount, transaction, AutomationType.MANUAL);
+        }
+        return handler.insert(amount, transaction);
     }
 
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {

@@ -14,8 +14,12 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.neoforged.neoforge.client.gui.GuiLayer;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import org.jetbrains.annotations.NotNull;
 
 public class MekaSuitEnergyLevel implements GuiLayer {
@@ -34,9 +38,11 @@ public class MekaSuitEnergyLevel implements GuiLayer {
             return;
         }
         long capacity = 0L, stored = 0L;
-        for (ItemStack stack : MekanismUtils.getArmorSlots(minecraft.player)) {
-            if (stack.getItem() instanceof ItemMekaSuitArmor) {
-                IEnergyContainer container = StorageUtils.getEnergyContainer(stack, 0);
+        ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(minecraft.player, EquipmentSlot.Type.HUMANOID_ARMOR);
+        for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
+            ItemResource itemType = armorSlots.getResource(slot);
+            if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor) {
+                IEnergyContainer container = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot), 0);
                 if (container != null) {
                     capacity = MathUtils.addClamped(capacity, container.getMaxEnergy());
                     stored = MathUtils.addClamped(stored, container.getEnergy());

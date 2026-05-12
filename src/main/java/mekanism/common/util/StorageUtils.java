@@ -321,11 +321,17 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemStack stack, int container) {
+        //TODO - 26.1: See which ones of these can be moved to the item access method with more specific item access values
         if (stack.isEmpty()) {
             //While getCapability will return null for an empty stack, we just short circuit here
             return null;
         }
-        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+        return getEnergyContainer(ItemAccess.forStack(stack), container);
+    }
+
+    @Nullable
+    public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess, int container) {//TODO - 26.1: Re-evaluate callers
+        IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             return energyHandler.getContainer(container);
         }

@@ -15,6 +15,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
 public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICustomModule<ModuleHydrostaticRepulsorUnit> {
@@ -34,20 +36,30 @@ public record ModuleHydrostaticRepulsorUnit(boolean swimBoost) implements ICusto
         //Note: Value copied from default for depth strider
         AttributeModifier modifier = new AttributeModifier(WATER_MOVEMENT, Math.min(1, 0.33333334F * module.getInstalledCount()), AttributeModifier.Operation.ADD_VALUE);
         event.addModifier(Attributes.WATER_MOVEMENT_EFFICIENCY, modifier, EquipmentSlotGroup.LEGS);
-        if (isSwimBoost(module, event.getItemStack())) {
-            event.addModifier(NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER, EquipmentSlotGroup.LEGS);
+        //TODO - 26.1: Can this event ever be called from a transactional context?
+        try (Transaction simulation = Transaction.openRoot()) {
+            if (isSwimBoost(module, event.getItemStack(), simulation)) {
+                event.addModifier(NeoForgeMod.SWIM_SPEED, SWIM_BOOST_MODIFIER, EquipmentSlotGroup.LEGS);
+            }
         }
     }
 
     @Override
     public void tickServer(IModule<ModuleHydrostaticRepulsorUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
-        if (isSwimBoost(module, stack) && player.isEyeInFluid(FluidTags.WATER)) {
-            module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get());
+        try (Transaction transaction = Transaction.openRoot()) {
+            //todo - 26.1 if we want to do more than water, EntityFluidInteraction needs interrogating
+            if (isSwimBoost(module, stack, transaction) && player.isEyeInFluid(FluidTags.WATER)) {
+                transaction.commit();
+            }
         }
     }
 
-    private boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module, ItemStack stack) {
-        return swimBoost && module.getInstalledCount() >= BOOST_STACKS && module.hasEnoughEnergy(stack, MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion);
+    private boolean isSwimBoost(IModule<ModuleHydrostaticRepulsorUnit> module, ItemStack stack, TransactionContext transaction) {
+        if (swimBoost && module.getInstalledCount() >= BOOST_STACKS) {
+            long usage = MekanismConfig.gear.mekaSuitEnergyUsageHydrostaticRepulsion.get();
+            //Note: We don't let creative process for free, as we don't have enough of a context when modifying atributes to be able to tell whether to apply functionality
+            return module.useEnergy(null, stack, usage, transaction, false) == usage;
+        }
+        return false;
     }
 }

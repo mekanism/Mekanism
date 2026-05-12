@@ -21,7 +21,6 @@ import mekanism.common.network.to_client.PacketLightningRender;
 import mekanism.common.network.to_client.PacketLightningRender.LightningPreset;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -81,7 +80,7 @@ public record ModuleFarmingUnit(FarmingRadius farmingRadius) implements ICustomM
             return InteractionResult.PASS;
         }
         ItemStack stack = context.getItemInHand();
-        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
+        IEnergyContainer energyContainer = module.getEnergyContainer(stack);
         if (energyContainer == null) {
             return InteractionResult.FAIL;
         }

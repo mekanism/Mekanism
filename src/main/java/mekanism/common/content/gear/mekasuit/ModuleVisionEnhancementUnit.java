@@ -22,7 +22,7 @@ public class ModuleVisionEnhancementUnit implements ICustomModule<ModuleVisionEn
 
     @Override
     public void tickServer(IModule<ModuleVisionEnhancementUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get());
+        module.useEnergy(player, stack, MekanismConfig.gear.mekaSuitEnergyUsageVisionEnhancement.get(), null);
     }
 
     @Override

@@ -100,12 +100,6 @@ public class ItemFreeRunners extends ItemSpecialArmor implements IItemHUDProvide
         return getMode(stack);
     }
 
-    @Nullable
-    @Override
-    public IEnergyContainer getRunnerEnergyContainer(ItemStack stack) {
-        return StorageUtils.getEnergyContainer(stack, 0);
-    }
-
     @Override
     public void addHUDStrings(List<Component> list, Player player, ItemStack stack, EquipmentSlot slotType) {
         if (slotType == EquipmentSlot.FEET) {

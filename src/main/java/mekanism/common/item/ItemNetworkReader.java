@@ -2,9 +2,8 @@ package mekanism.common.item;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.Set;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
@@ -16,9 +15,9 @@ import mekanism.common.content.network.transmitter.Transmitter;
 import mekanism.common.lib.transmitter.DynamicNetwork;
 import mekanism.common.lib.transmitter.TransmitterNetworkRegistry;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.MekanismUtils;
-import mekanism.common.util.StorageUtils;
 import mekanism.common.util.UnitDisplayUtils.TemperatureUnit;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.Rarity;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -59,12 +59,12 @@ public class ItemNetworkReader extends ItemEnergized {
             if (tile != null) {
                 if (!player.isCreative()) {
                     long energyPerUse = MekanismConfig.gear.networkReaderEnergyUsage.get();
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(context.getItemInHand(), 0);
-                    if (energyContainer == null) {
+                    IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(context.getItemInHand()));
+                    if (energyHandler == null) {
                         return InteractionResult.FAIL;
                     }
                     try (Transaction transaction = Transaction.openRoot()) {
-                        if (energyContainer.extract(energyPerUse, transaction, AutomationType.MANUAL) < energyPerUse) {
+                        if (EnergyUtils.extractManual(energyHandler, energyPerUse, transaction) < energyPerUse) {
                             return InteractionResult.FAIL;
                         }
                         transaction.commit();

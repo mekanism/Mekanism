@@ -10,7 +10,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
@@ -64,7 +63,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.HumanoidArm;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -729,16 +727,6 @@ public final class MekanismUtils {
             }
         }
         return Collections.emptyList();
-    }
-
-    public static Iterable<ItemStack> getArmorSlots(LivingEntity livingEntity) {
-        return Arrays.asList(
-              livingEntity.getItemBySlot(EquipmentSlot.HEAD),
-              livingEntity.getItemBySlot(EquipmentSlot.BODY),//animals
-              livingEntity.getItemBySlot(EquipmentSlot.CHEST),
-              livingEntity.getItemBySlot(EquipmentSlot.LEGS),
-              livingEntity.getItemBySlot(EquipmentSlot.FEET)
-        );
     }
 
     @FunctionalInterface

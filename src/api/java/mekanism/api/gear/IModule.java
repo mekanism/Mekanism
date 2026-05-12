@@ -11,6 +11,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -173,7 +174,9 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.4.0
      */
-    boolean hasEnoughEnergy(ItemStack stack, LongSupplier energySupplier);
+    default boolean hasEnoughEnergy(ItemStack stack, LongSupplier energySupplier) {
+        return hasEnoughEnergy(stack, energySupplier.getAsLong());
+    }
 
     /**
      * Helper to check if there is at least a certain amount of energy stored in {@link #getEnergyContainer(ItemStack)}.
@@ -185,48 +188,9 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @since 10.4.0
      */
-    boolean hasEnoughEnergy(ItemStack stack, long energy);
-
-    /**
-     * Helper to check if the item this module is installed on can provide the given amount of energy.
-     *
-     * @param wearer Wearer/User of the item the module is installed on.
-     * @param stack  The stack this module is installed on.
-     * @param energy Energy amount to check.
-     *
-     * @return {@code true} if the energy can be used/provided.
-     *
-     * @implNote By default, this method checks players in creative as well.
-     */
-    boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy);
-
-    /**
-     * Helper to check if the item this module is installed on can provide the given amount of energy. If {@code checkCreative} is {@code false} this method will return
-     * {@code false} for players in creative or spectator.
-     *
-     * @param wearer         Wearer/User of the item the module is installed on.
-     * @param stack          The stack this module is installed on.
-     * @param energy         Energy amount to check.
-     * @param ignoreCreative {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
-     *
-     * @return {@code true} if the energy can be used/provided.
-     */
-    boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean ignoreCreative);
-
-    /**
-     * Helper to check if the item this module is installed on can provide the given amount of energy. If the {@code energyContainer} is null this will return
-     * {@code false}. If {@code checkCreative} is {@code false} this method will return {@code false} for players in creative or spectator.
-     *
-     * @param wearer          Wearer/User of the item the module is installed on.
-     * @param energyContainer Energy container, most likely gotten from {@link #getEnergyContainer(ItemStack)}.
-     * @param energy          Energy amount to check.
-     * @param ignoreCreative  {@code true} to not check the item for energy if the wearer is in creative and just return {@code false} for player's in creative.
-     *
-     * @return {@code true} if the energy can be used/provided.
-     *
-     * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
-     */
-    boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean ignoreCreative);
+    default boolean hasEnoughEnergy(ItemStack stack, long energy) {
+        return energy == 0L || getContainerEnergy(stack) >= energy;
+    }
 
     /**
      * Helper to use energy from the item this module is installed on.
@@ -239,7 +203,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @implNote By default, this method does not use any energy from players that are in creative.
      */
-    long useEnergy(LivingEntity wearer, ItemStack stack, long energy);//TODO - 26.1: Make energy usage transactional for modules
+    long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction);//TODO - 26.1: Make energy usage transactional for modules
 
     /**
      * Helper to use energy from the item this module is installed on. If {@code checkCreative} is {@code false} this method will return 0 for players in creative or
@@ -252,7 +216,7 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @return Actual amount of energy used.
      */
-    long useEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean freeCreative);
+    long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
 
     /**
      * Helper to use energy from the given energy container. If the {@code energyContainer} is null this will return 0. If {@code checkCreative} is {@code false} this
@@ -267,5 +231,5 @@ public interface IModule<MODULE extends ICustomModule<MODULE>> {
      *
      * @apiNote This method is mostly for use in not having to look up the energy container multiple times.
      */
-    long useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean freeCreative);
+    long useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, @Nullable TransactionContext transaction, boolean freeCreative);
 }

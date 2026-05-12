@@ -26,6 +26,7 @@ import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import mekanism.common.util.text.TextUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.TypedInstance;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -35,9 +36,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Item.Properties;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.fml.event.lifecycle.InterModProcessEvent;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -176,14 +175,8 @@ public class ModuleHelper implements IModuleHelper {//TODO - 26.1: Evaluate movi
 
     @Override
     @Nullable
-    public ModuleContainer getModuleContainer(ItemStack stack) {
+    public <ITEM extends TypedInstance<Item> & DataComponentGetter> ModuleContainer getModuleContainer(ITEM stack) {
         return isModuleContainer(stack) ? getModuleContainerUnsafe(stack) : null;
-    }
-
-    @Override
-    @Nullable
-    public ModuleContainer getModuleContainer(ItemResource itemResource) {
-        return isModuleContainer(itemResource) ? getModuleContainerUnsafe(itemResource) : null;
     }
 
     public ModuleContainer getModuleContainerUnsafe(DataComponentGetter dataComponentGetter) {

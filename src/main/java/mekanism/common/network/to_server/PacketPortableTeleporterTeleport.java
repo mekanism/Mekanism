@@ -1,10 +1,10 @@
 package mekanism.common.network.to_server;
 
 import io.netty.buffer.ByteBuf;
-import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.common.Mekanism;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.item.ItemPortableTeleporter;
 import mekanism.common.lib.frequency.Frequency.FrequencyIdentity;
@@ -13,7 +13,7 @@ import mekanism.common.network.IMekanismPacket;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.tile.TileEntityTeleporter;
-import mekanism.common.util.StorageUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.GlobalPos;
@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.portal.TeleportTransition;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
@@ -67,8 +68,8 @@ public record PacketPortableTeleporterTeleport(InteractionHand currentHand, Freq
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (!player.isCreative()) {
                             energyCost = TileEntityTeleporter.calculateEnergyCost(player, teleWorld, coords);
-                            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                            if (energyContainer == null || energyContainer.extract(energyCost, transaction, AutomationType.MANUAL) < energyCost) {
+                            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forPlayerInteraction(player, currentHand));
+                            if (energyHandler == null || EnergyUtils.extractManual(energyHandler, energyCost, transaction) < energyCost) {
                                 //Fail if there is not enough energy available
                                 return;
                             }

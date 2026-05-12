@@ -6,13 +6,12 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.LongSupplier;
-import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.ICustomModule.ModuleDamageAbsorbInfo;
 import mekanism.api.gear.IModule;
@@ -49,7 +48,7 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.util.ChemicalUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup.RegistryLookup;
@@ -78,6 +77,8 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -425,18 +426,21 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         List<FoundArmorDetails> armorDetails = new ArrayList<>();
         try (Transaction transaction = Transaction.openRoot()) {
             //Start by looping the armor, allowing modules to absorb damage if they can
-            for (ItemStack stack : MekanismUtils.getArmorSlots(player)) {
-                if (!stack.isEmpty() && stack.getItem() instanceof ItemMekaSuitArmor armor) {
-                    IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                    if (energyContainer != null) {
-                        FoundArmorDetails details = new FoundArmorDetails(energyContainer, armor);
+            ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(player, EquipmentSlot.Type.HUMANOID_ARMOR);
+            for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
+                ItemResource itemType = armorSlots.getResource(slot);
+                if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor armor) {
+                    ItemAccess itemAccess = ItemAccess.forHandlerIndexStrict(armorSlots, slot);
+                    IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
+                    if (energyHandler != null) {
+                        FoundArmorDetails details = new FoundArmorDetails(energyHandler, armor.absorption);
                         armorDetails.add(details);
-                        for (IModule<?> module : armor.getModules(stack)) {
+                        for (IModule<?> module : IModuleHelper.INSTANCE.getAllModules(itemType)) {
                             if (module.isEnabled()) {
                                 ModuleDamageAbsorbInfo damageAbsorbInfo = getModuleDamageAbsorbInfo(module, source);
                                 if (damageAbsorbInfo != null) {
                                     float absorption = damageAbsorbInfo.absorptionRatio().getAsFloat();
-                                    ratioAbsorbed += absorbDamage(details.energyContainer, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost(), transaction);
+                                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, damageAbsorbInfo.energyCost(), transaction);
                                     if (ratioAbsorbed >= 1) {
                                         //If we have fully absorbed the damage, stop checking/trying to absorb more
                                         break;
@@ -474,8 +478,8 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                             break;
                         }
                     }
-                    float absorption = details.armor.absorption * absorbRatio;
-                    ratioAbsorbed += absorbDamage(details.energyContainer, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage, transaction);
+                    float absorption = details.armorAbsorption * absorbRatio;
+                    ratioAbsorbed += absorbDamage(details.energyHandler, amount, absorption, ratioAbsorbed, MekanismConfig.gear.mekaSuitEnergyUsageDamage, transaction);
                     if (ratioAbsorbed >= 1) {
                         //If we have fully absorbed the damage, stop checking/trying to absorb more
                         break;
@@ -493,7 +497,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return module.getCustomInstance().getDamageAbsorbInfo(module, damageSource);
     }
 
-    private static float absorbDamage(IEnergyContainer energyContainer, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost, TransactionContext transaction) {
+    private static float absorbDamage(IStrictEnergyHandler energyHandler, float amount, float absorption, float currentAbsorbed, LongSupplier energyCost, TransactionContext transaction) {
         //Cap the amount that we can absorb to how much we have left to absorb
         absorption = Math.min(1 - currentAbsorbed, absorption);
         float toAbsorb = amount * absorption;
@@ -504,7 +508,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
                 // or how small the amount to absorb is
                 return absorption;
             }
-            long energyUsed = energyContainer.extract(usage, transaction, AutomationType.MANUAL);
+            long energyUsed = EnergyUtils.extractManual(energyHandler, usage, transaction);
             if (energyUsed == usage) {
                 //If we have more energy available than we need, return that we can absorb it all
                 return absorption;
@@ -518,6 +522,6 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         return 0;
     }
 
-    private record FoundArmorDetails(IEnergyContainer energyContainer, ItemMekaSuitArmor armor) {
+    private record FoundArmorDetails(IStrictEnergyHandler energyHandler, float armorAbsorption) {
     }
 }

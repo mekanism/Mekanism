@@ -84,7 +84,8 @@ public record ModuleElectrolyticBreathingUnit(boolean fillHeld) implements ICust
                 }
                 int oxygenUsed = Math.min(maxRate, player.getMaxAirSupply() - player.getAirSupply());
                 int used = Math.max(Mth.ceil(hydrogenUsed / 2D), oxygenUsed);
-                module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used));
+                //TODO - 26.1: Do we want to validate we actually used the energy we expected to?
+                module.useEnergy(player, stack, MathUtils.multiplyClamped(usage, used), transaction);
                 player.setAirSupply(player.getAirSupply() + oxygenUsed);
                 transaction.commit();
             }

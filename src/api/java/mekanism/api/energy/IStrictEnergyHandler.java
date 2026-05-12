@@ -86,4 +86,13 @@ public interface IStrictEnergyHandler {//TODO - 26.1: Redo the documentation for
         }
         return extracted;
     }
+
+    default boolean isEmpty() {
+        for (int i = 0, size = size(); i < size; i++) {
+            if (getAmountAsLong(i) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 }

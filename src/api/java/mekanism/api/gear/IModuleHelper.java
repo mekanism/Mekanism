@@ -12,6 +12,7 @@ import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.gear.IHUDElement.HUDColor;
 import net.minecraft.core.Holder;
 import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.damagesource.DamageSource;
@@ -19,11 +20,9 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -134,22 +133,22 @@ public interface IModuleHelper {
     /**
      * Helper method to check if an item has a module installed and the module is enabled.
      *
-     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
      * @param type  Module type.
      *
      * @return {@code true} if the item has the module installed and enabled.
      *
      * @since 10.7.11
      */
-    default boolean isEnabled(ItemStack stack, Holder<ModuleData<?>> type) {
-        IModuleContainer container = getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean isEnabled(ITEM itemType, Holder<ModuleData<?>> type) {
+        IModuleContainer container = getModuleContainer(itemType);
         return container != null && container.hasEnabled(type);
     }
 
     /**
      * Helper method to try and load a module from an item.
      *
-     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
      * @param type  Module type.
      *
      * @return Module, or {@code null} if no module of the given type is installed.
@@ -157,22 +156,24 @@ public interface IModuleHelper {
      * @since 10.7.11
      */
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ItemStack stack, DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        IModuleContainer container = getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getModule(ITEM itemType,
+          DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        IModuleContainer container = getModuleContainer(itemType);
         return container == null ? null : container.get(type);
     }
 
     /**
-     * {@return the module if it is installed on the given stack and is currently enabled}
+     * {@return the module if it is installed on the given item and is currently enabled}
      *
-     * @param stack Stack to check for being a module container and then to retrieve the container of.
+     * @param itemType Item type to check for being a module container and then to retrieve the container of.
      * @param type  Module type.
      *
      * @since 10.7.11
      */
     @Nullable
-    default <MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ItemStack stack, DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
-        IModuleContainer container = getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<MODULE>> IModule<MODULE> getIfEnabled(ITEM itemType,
+          DeferredHolder<ModuleData<?>, ModuleData<MODULE>> type) {
+        IModuleContainer container = getModuleContainer(itemType);
         return container == null ? null : container.getIfEnabled(type);
     }
 
@@ -193,27 +194,17 @@ public interface IModuleHelper {
     }
 
     /**
-     * {@return module container for the stack, or null if the stack is empty or not a module container}
+     * {@return module container for the item, or null if the item is empty or not a module container}
      *
-     * @param stack Stack to check for being a module container and then to retrieve the container of.
+     * @param itemType Item typee to check for being a module container and then to retrieve the container of.
      *
      * @since 10.5.15
      */
     @Nullable
-    IModuleContainer getModuleContainer(ItemStack stack);
+    <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer getModuleContainer(ITEM itemType);
 
     /**
-     * @param itemResource Resource to check for being a module container and then to retrieve the container of.
-     *
-     * @return module container for the resource, or null if the resource is empty or not a module container. DO NOT ATTEMPT TO MODIFY.
-     *
-     * @since 10.8.0
-     */
-    @Nullable
-    IModuleContainer getModuleContainer(ItemResource itemResource);
-
-    /**
-     * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the stack is empty or not a module container}
+     * {@return module container for the item in entity's equipment slot, or null if the entity is null, or the item is empty or not a module container}
      *
      * @param entity Entity that has the stack.
      * @param slot   Slot the stack is in.
@@ -231,24 +222,11 @@ public interface IModuleHelper {
     /**
      * Checks if the item is a module container and can store modules.
      *
-     * @param stack Stack containing the item to check.
-     *
-     * @return {@code true} if the stack is a module container.
-     *
-     * @since 10.5.0
-     */
-    default boolean isModuleContainer(ItemStack stack) {
-        return !stack.isEmpty() && isModuleContainer(stack.typeHolder());
-    }
-
-    /**
-     * Checks if the item is a module container and can store modules.
-     *
-     * @param typedInstance Stack containing the item to check.
+     * @param typedInstance Typed instance containing the item to check.
      *
      * @return {@code true} if the typedInstance is a module container.
      *
-     * @since 10.8.0
+     * @since 10.5.0
      */
     default boolean isModuleContainer(TypedInstance<Item> typedInstance) {
         return !typedInstance.is(Items.AIR) && isModuleContainer(typedInstance.typeHolder());
@@ -279,27 +257,28 @@ public interface IModuleHelper {
     }
 
     /**
-     * {@return all the installed modules on an item stack, or empty if the item doesn't support modules}
+     * {@return all the installed modules on an item, or empty if the item doesn't support modules}
      *
-     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
      */
-    default Collection<? extends IModule<?>> getAllModules(ItemStack stack) {
-        IModuleContainer container = getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Collection<? extends IModule<?>> getAllModules(ITEM itemType) {
+        IModuleContainer container = getModuleContainer(itemType);
         return container == null ? Collections.emptyList() : container.modules();
     }
 
     /**
-     * Gets a list of all modules on an item stack that have a custom module matching a given class.
+     * Gets a list of all modules on an item that have a custom module matching a given class.
      *
-     * @param stack       Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param itemType       Module container, for example a Meka-Tool or MekaSuit piece.
      * @param moduleClass Class representing the type of module's to load.
      *
      * @return List of modules on an item of the given class, or an empty list if the item doesn't support modules or has no modules of that type.
      */
     @SuppressWarnings("unchecked")
-    default <MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> getAllModules(ItemStack stack, Class<MODULE> moduleClass) {
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter, MODULE extends ICustomModule<?>> List<? extends IModule<? extends MODULE>> getAllModules(ITEM itemType,
+          Class<MODULE> moduleClass) {
         List<IModule<? extends MODULE>> list = new ArrayList<>();
-        for (IModule<?> module : getAllModules(stack)) {
+        for (IModule<?> module : getAllModules(itemType)) {
             if (moduleClass.isInstance(module.getCustomInstance())) {
                 list.add((IModule<? extends MODULE>) module);
             }
@@ -308,14 +287,14 @@ public interface IModuleHelper {
     }
 
     /**
-     * Gets all the module types on an item stack.
+     * Gets all the module types on an item.
      *
-     * @param stack Module container, for example a Meka-Tool or MekaSuit piece.
+     * @param itemType Module container, for example a Meka-Tool or MekaSuit piece.
      *
      * @return Module types on an item.
      */
-    default Set<ModuleData<?>> getAllTypes(ItemStack stack) {
-        IModuleContainer container = getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> Set<ModuleData<?>> getAllTypes(ITEM itemType) {
+        IModuleContainer container = getModuleContainer(itemType);
         return container != null ? container.moduleTypes() : Collections.emptySet();
     }
 

@@ -1,6 +1,5 @@
 package mekanism.common.tile;
 
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
@@ -90,31 +89,37 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         long clientEnergyUsed = 0L;
         if (canFunction()) {
             boolean operated = false;
-            if (energyContainer.getEnergy() >= energyContainer.getEnergyPerTick() && !moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
-                ItemResource moduleResource = moduleSlot.getResource();
-                //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
-                //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
-                ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
-                if (container != null) {
-                    // make sure the container supports this module and that we can still install more of this module
-                    Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
-                    if (container.canInstall(stack, data)) {
-                        operated = true;
-                        operatingTicks++;
-                        clientEnergyUsed = energyContainer.extract(energyContainer.getEnergyPerTick(), Action.EXECUTE, AutomationType.INTERNAL);
-                        if (operatingTicks == ticksRequired) {
-                            operatingTicks = 0;
-                            int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amount());
-                            if (added > 0) {
-                                try (Transaction transaction = Transaction.openRoot()) {
-                                    //Validate that the module is actually able to be extracted from the module slot (this should always be true)
-                                    if (moduleSlot.extract(moduleResource, added, transaction, AutomationType.INTERNAL) == added) {
-                                        //Update the item type of the module container to the version that has the moduled added
-                                        containerSlot.setContents(ItemResource.of(stack), stack.count());
-                                        transaction.commit();
+            if (!moduleSlot.isEmpty() && !containerSlot.isEmpty()) {
+                long energyPerTick = energyContainer.getEnergyPerTick();
+                try (Transaction transaction = Transaction.openRoot()) {
+                    if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
+                        ItemResource moduleResource = moduleSlot.getResource();
+                        //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
+                        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
+                        //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
+                        ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
+                        if (container != null) {
+                            // make sure the container supports this module and that we can still install more of this module
+                            Holder<ModuleData<?>> data = ((IModuleItem) moduleResource.getItem()).getModuleData();
+                            if (container.canInstall(stack, data)) {
+                                operated = true;
+                                operatingTicks++;
+                                clientEnergyUsed = energyPerTick;
+                                if (operatingTicks == ticksRequired) {
+                                    operatingTicks = 0;
+                                    int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amount());
+                                    if (added > 0) {
+                                        try (Transaction subTransaction = Transaction.open(transaction)) {
+                                            //Validate that the module is actually able to be extracted from the module slot (this should always be true)
+                                            if (moduleSlot.extract(moduleResource, added, subTransaction, AutomationType.INTERNAL) == added) {
+                                                //Update the item type of the module container to the version that has the moduled added
+                                                containerSlot.setContents(ItemResource.of(stack), stack.count());
+                                                subTransaction.commit();
+                                            }
+                                        }
                                     }
                                 }
+                                transaction.commit();
                             }
                         }
                     }
@@ -132,7 +137,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
         return usedEnergy;
     }
 
-    public  void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
+    public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
         ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
         //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents

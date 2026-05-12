@@ -43,20 +43,23 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
                 try (Transaction simulation = Transaction.openRoot()) {
                     //TODO - 26.1: Is there a worry of this multiplication overflowing?
                     foodToFill = fluidHandler.extract(paste, missingFood * pastePerFood, simulation) / pastePerFood;
+                    if (foodToFill == 0) {
+                        return;
+                    }
                     //Limit how much food we can handle by the amount of energy stored
-                    foodToFill = Math.min(foodToFill, Ints.saturatedCast(module.getContainerEnergy(stack) / energyUsage));
+                    foodToFill = Ints.saturatedCast(module.useEnergy(player, stack, foodToFill * energyUsage, simulation) / energyUsage);
+                    if (foodToFill == 0) {
+                        return;
+                    }
                 }
-                if (foodToFill > 0) {
+                try (Transaction transaction = Transaction.openRoot()) {
+                    long energyToUse = foodToFill * energyUsage;
                     int pasteToUse = foodToFill * pastePerFood;
-                    try (Transaction transaction = Transaction.openRoot()) {
-                        int extracted = fluidHandler.extract(paste, pasteToUse, transaction);
-                        if (extracted == pasteToUse) {
-                            //Note: This if statement should always be true given we already simulated that we could extract at least this much,
-                            // but we validate it just in case before actually committing any changes
-                            module.useEnergy(player, stack, energyUsage * foodToFill);
-                            player.getFoodData().eat(foodToFill, MekanismConfig.general.nutritionalPasteSaturation.get());
-                            transaction.commit();
-                        }
+                    //Note: This if statement should always be true given we already simulated that we could extract at least this much,
+                    // but we validate it just in case before actually committing any changes
+                    if (fluidHandler.extract(paste, pasteToUse, transaction) == pasteToUse && module.useEnergy(player, stack, energyToUse, transaction) == energyToUse) {
+                        player.getFoodData().eat(foodToFill, MekanismConfig.general.nutritionalPasteSaturation.get());
+                        transaction.commit();
                     }
                 }
             }
@@ -71,7 +74,7 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             if (fluidHandler != null) {
                 try (Transaction simulation = Transaction.openRoot()) {
                     int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();
-                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), max,  simulation);
+                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), max, simulation);
                     ratio = StorageUtils.getRatio(extracted, max);
                 }
             }

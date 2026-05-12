@@ -25,6 +25,8 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @ParametersAreNotNullByDefault
 public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements ICustomModule<ModuleLocomotiveBoostingUnit> {
@@ -48,19 +50,23 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
 
     @Override
     public void tickServer(IModule<ModuleLocomotiveBoostingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        if (tick(module, stack, player)) {
-            module.useEnergy(player, stack, MathUtils.clampToLong(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1D));
+        try (Transaction transaction = Transaction.openRoot()) {
+            if (tick(module, stack, player, transaction)) {
+                transaction.commit();
+            }
         }
     }
 
     @Override
     public void tickClient(IModule<ModuleLocomotiveBoostingUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
         // leave energy usage up to server
-        tick(module, stack, player);
+        try (Transaction simulation = Transaction.openRoot()) {
+            tick(module, stack, player, simulation);
+        }
     }
 
-    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player) {
-        if (canFunction(module, stack, player)) {
+    private boolean tick(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player, TransactionContext transaction) {
+        if (canFunction(module, stack, player, transaction)) {
             float boost = sprintBoost.getBoost();
             if (!player.onGround()) {
                 boost /= 5F; // throttle if we're in the air
@@ -74,10 +80,13 @@ public record ModuleLocomotiveBoostingUnit(SprintBoost sprintBoost) implements I
         return false;
     }
 
-    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player) {
+    public boolean canFunction(IModule<ModuleLocomotiveBoostingUnit> module, ItemStack stack, Player player, TransactionContext transaction) {
         //Don't allow boosting unit to work when flying with the elytra, a jetpack should be used instead
-        return !player.isFallFlying() && player.isSprinting() && module.canUseEnergy(player, stack,
-              MathUtils.clampToLong(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1D));
+        if (!player.isFallFlying() && player.isSprinting()) {
+            long energyRequired = MathUtils.clampToLong(MekanismConfig.gear.mekaSuitEnergyUsageSprintBoost.get() * sprintBoost.getBoost() / 0.1D);
+            return module.useEnergy(player, stack, energyRequired, transaction) == energyRequired;
+        }
+        return false;
     }
 
     @NothingNullByDefault

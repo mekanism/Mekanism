@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.event.MekanismTeleportEvent;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IModule;
@@ -25,6 +26,7 @@ import mekanism.client.key.MekKeyHandler;
 import mekanism.client.key.MekanismKeyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.gear.IBlastingItem;
 import mekanism.common.content.gear.IRadialModuleContainerItem;
@@ -39,6 +41,7 @@ import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.PacketPortalFX;
 import mekanism.common.registries.MekanismModules;
 import mekanism.common.tags.MekanismTags;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
 import net.minecraft.core.BlockPos;
@@ -84,6 +87,8 @@ import net.neoforged.neoforge.common.ItemAbility;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
 import net.neoforged.neoforge.registries.holdersets.AnyHolderSet;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -295,12 +300,17 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
             // if we don't have an enabled attack amplification unit
             int unitDamage = attackAmplificationUnit.getCustomInstance().getDamage();
             if (unitDamage > 0) {
-                IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                if (energyContainer != null && !energyContainer.isEmpty()) {
+                IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
+                if (energyHandler != null && !energyHandler.isEmpty()) {
                     //Try to extract full energy, even if we have a lower damage amount this is fine as that just means
                     // we don't have enough energy, but we will remove as much as we can, which is how much corresponds
                     // to the amount of damage we will actually do
-                    energyContainer.extract(MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D)), Action.EXECUTE, AutomationType.MANUAL);
+                    //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+                    // and wraps the entire hitting the entity within their transaction?
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        EnergyUtils.extractManual(energyHandler, MathUtils.clampToLong(MekanismConfig.gear.mekaToolEnergyUsageWeapon.get() * (unitDamage / 4D)), transaction);
+                        transaction.commit();
+                    }
                 }
             }
         }
@@ -392,30 +402,37 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
                         if (distance < 5) {
                             return InteractionResult.PASS;
                         }
-                        IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
-                        long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
-                        if (energyContainer == null || energyContainer.getEnergy() < energyNeeded) {
+                        //TODO - 26.1: Review usages of ItemAccess#forPlayerInteraction to see if any should bypass the infinite materials check like ItemAccess#forPlayerSlot allows
+                        IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forPlayerInteraction(player, hand));
+                        if (energyHandler == null) {
                             return InteractionResult.PASS;
                         }
-                        double targetX = pos.getX() + 0.5;
-                        double targetY = pos.getY() + 1.5;
-                        double targetZ = pos.getZ() + 0.5;
-                        MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, (ServerLevel) player.level(), targetX, targetY, targetZ, stack, result);
-                        if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                            //Fail if the event was cancelled
-                            return InteractionResult.FAIL;
+                        long energyNeeded = MathUtils.ceilToLong(MekanismConfig.gear.mekaToolEnergyUsageTeleport.get() * (distance / 10D));
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            if (EnergyUtils.extractManual(energyHandler, energyNeeded, transaction) < energyNeeded) {
+                                //Not enough energy to operate
+                                return InteractionResult.PASS;
+                            }
+                            double targetX = pos.getX() + 0.5;
+                            double targetY = pos.getY() + 1.5;
+                            double targetZ = pos.getZ() + 0.5;
+                            MekanismTeleportEvent.MekaTool event = new MekanismTeleportEvent.MekaTool(player, (ServerLevel) player.level(), targetX, targetY, targetZ, stack, result);
+                            if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                                //Fail if the event was cancelled
+                                return InteractionResult.FAIL;
+                            }
+                            transaction.commit();
+                            //Note: We intentionally don't use the event's coordinates as we do not support changing the location the Meka-Tool is teleporting to
+                            if (player.isPassenger()) {
+                                player.dismountTo(targetX, targetY, targetZ);
+                            } else {
+                                player.teleportTo(targetX, targetY, targetZ);
+                            }
+                            player.resetFallDistance();
+                            PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
+                            world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
+                            return InteractionResult.SUCCESS_SERVER;
                         }
-                        //Note: We intentionally don't use the event's coordinates as we do not support changing the location the Meka-Tool is teleporting to
-                        energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
-                        if (player.isPassenger()) {
-                            player.dismountTo(targetX, targetY, targetZ);
-                        } else {
-                            player.teleportTo(targetX, targetY, targetZ);
-                        }
-                        player.resetFallDistance();
-                        PacketUtils.sendToAllTracking(new PacketPortalFX(pos.above()), world, pos);
-                        world.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.PLAYER_TELEPORT, SoundSource.PLAYERS);
-                        return InteractionResult.SUCCESS_SERVER;
                     }
                 }
             }

@@ -7,8 +7,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.LongSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
@@ -36,6 +34,8 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
@@ -134,53 +134,26 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, LongSupplier energySupplier) {
-        return hasEnoughEnergy(stack, energySupplier.getAsLong());
+    public long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction) {
+        return useEnergy(wearer, stack, energy, transaction, true);
     }
 
     @Override
-    public boolean hasEnoughEnergy(ItemStack stack, long cost) {
-        return cost == 0L || getContainerEnergy(stack) >= cost;
+    public long useEnergy(@Nullable LivingEntity wearer, ItemStack stack, long energy, @Nullable TransactionContext transaction, boolean freeCreative) {
+        return useEnergy(wearer, getEnergyContainer(stack), energy, transaction, freeCreative);
     }
 
     @Override
-    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy) {
-        //Note: This is subtly different than how useEnergy does it so that we can get to useEnergy when in creative
-        return canUseEnergy(wearer, stack, energy, false);
-    }
-
-    @Override
-    public boolean canUseEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean ignoreCreative) {
-        return canUseEnergy(wearer, getEnergyContainer(stack), energy, ignoreCreative);
-    }
-
-    @Override
-    public boolean canUseEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean ignoreCreative) {
-        if (energyContainer != null && !wearer.isSpectator()) {
-            //Don't check spectators in general
-            if (!ignoreCreative || !(wearer instanceof Player player) || !player.isCreative()) {
-                return energyContainer.extract(energy, Action.SIMULATE, AutomationType.MANUAL) == energy;
-            }
-        }
-        return false;
-    }
-
-    @Override
-    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy) {
-        return useEnergy(wearer, stack, energy, true);
-    }
-
-    @Override
-    public long useEnergy(LivingEntity wearer, ItemStack stack, long energy, boolean freeCreative) {
-        return useEnergy(wearer, getEnergyContainer(stack), energy, freeCreative);
-    }
-
-    @Override
-    public long useEnergy(LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, boolean freeCreative) {
+    public long useEnergy(@Nullable LivingEntity wearer, @Nullable IEnergyContainer energyContainer, long energy, @Nullable TransactionContext transaction, boolean freeCreative) {
         if (energyContainer != null) {
             //Use from spectators if this is called due to the various edge cases that exist for when things are calculated manually
-            if (!freeCreative || !(wearer instanceof Player player) || MekanismUtils.isPlayingMode(player)) {
-                return energyContainer.extract(energy, Action.EXECUTE, AutomationType.MANUAL);
+            if (freeCreative && wearer instanceof Player player && !MekanismUtils.isPlayingMode(player)) {
+                return energy;
+            }
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                long extracted = energyContainer.extract(energy, subTransaction, AutomationType.MANUAL);
+                subTransaction.commit();
+                return extracted;
             }
         }
         return 0L;

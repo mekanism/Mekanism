@@ -12,7 +12,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.BiFunction;
 import java.util.function.BooleanSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismAPI;
@@ -319,7 +318,10 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
             if (getFollowing()) {
                 Player owner = getOwner();
                 if (owner != null && distanceToSqr(owner) > 4 && !getNavigation().isDone() && !energyContainer.isEmpty()) {
-                    energyContainer.extract(getRoundedTravelEnergy(), Action.EXECUTE, AutomationType.INTERNAL);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        energyContainer.extract(getRoundedTravelEnergy(), transaction, AutomationType.INTERNAL);
+                        transaction.commit();
+                    }
                 }
             }
         }
@@ -503,7 +505,12 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
 
     @Override
     public void onDamageTaken(@NotNull DamageContainer damageContainer) {
-        energyContainer.extract(MathUtils.clampToLong(1_000D * damageContainer.getNewDamage()), Action.EXECUTE, AutomationType.INTERNAL);
+        //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+        // and wraps the entire hitting the entity within their transaction?
+        try (Transaction transaction = Transaction.openRoot()) {
+            energyContainer.extract(MathUtils.clampToLong(1_000D * damageContainer.getNewDamage()), transaction, AutomationType.INTERNAL);
+            transaction.commit();
+        }
         //Don't actually allow taking damage to reduce the robit's health
         setHealth(getMaxHealth());
     }

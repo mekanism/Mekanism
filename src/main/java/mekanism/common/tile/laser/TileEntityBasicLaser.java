@@ -23,7 +23,6 @@ import mekanism.common.network.to_client.PacketHitBlockEffect;
 import mekanism.common.particle.LaserParticleData;
 import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -36,6 +35,7 @@ import net.minecraft.stats.Stats;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
@@ -61,6 +61,9 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
 import net.neoforged.neoforge.event.entity.living.LivingShieldBlockEvent;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
+import net.neoforged.neoforge.transfer.ResourceHandler;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -185,9 +188,11 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
                     //After our shield checks see if the armor the entity is wearing can dissipate or refract lasers
                     double dissipationPercent = 0;
                     double refractionPercent = 0;
-                    for (ItemStack armor : MekanismUtils.getArmorSlots(livingEntity)) {
-                        if (!armor.isEmpty()) {
-                            ILaserDissipation laserDissipation = armor.getCapability(Capabilities.LASER_DISSIPATION);
+                    ResourceHandler<ItemResource> armorSlots = LivingEntityEquipmentWrapper.of(livingEntity, EquipmentSlot.Type.HUMANOID_ARMOR);
+                    for (int slot = 0, size = armorSlots.size(); slot < size; slot++) {
+                        ItemResource itemType = armorSlots.getResource(slot);
+                        if (!itemType.isEmpty()) {
+                            ILaserDissipation laserDissipation = itemType.toStack(armorSlots.getAmountAsInt(slot)).getCapability(Capabilities.LASER_DISSIPATION);
                             if (laserDissipation != null) {
                                 dissipationPercent += laserDissipation.getDissipationPercent();
                                 refractionPercent += laserDissipation.getRefractionPercent();

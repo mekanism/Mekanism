@@ -15,10 +15,13 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @ParametersAreNotNullByDefault
-public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects, boolean harmfulEffects) implements ICustomModule<ModuleInhalationPurificationUnit> {
+public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolean neutralEffects,
+                                               boolean harmfulEffects) implements ICustomModule<ModuleInhalationPurificationUnit> {
 
     private static final ModuleDamageAbsorbInfo INHALATION_ABSORB_INFO = new ModuleDamageAbsorbInfo(MekanismConfig.gear.mekaSuitMagicDamageRatio,
           MekanismConfig.gear.mekaSuitEnergyUsageMagicReduce);
@@ -33,35 +36,23 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
 
     @Override
     public void tickClient(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
-        //Messy rough estimate version of tickServer so that the timer actually properly updates
-        if (!player.isSpectator()) {
-            long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-            boolean free = usage == 0L || player.isCreative();
-            long energy = free ? 0L : module.getContainerEnergy(stack);
-            if (free || energy >= usage) {
-                //Gather all the active effects that we can handle, so that we have them in their own list and
-                // don't run into any issues related to CMEs
-                List<MobEffectInstance> effects = player.getActiveEffects().stream().filter(this::canHandle).toList();
-                for (MobEffectInstance effect : effects) {
-                    if (free) {
-                        speedupEffect(player, effect);
-                    } else {
-                        energy -= usage;
-                        speedupEffect(player, effect);
-                        if (energy < usage) {
-                            //If after using energy, our remaining energy is now smaller than how much we need to use, exit
-                            break;
-                        }
-                    }
-                }
-            }
+        try (Transaction simulation = Transaction.openRoot()) {
+            //Version of tickServer that doesn't commit so that the timer actually properly updates
+            tick(module, stack, player, simulation);
         }
     }
 
     @Override
     public void tickServer(IModule<ModuleInhalationPurificationUnit> module, IModuleContainer moduleContainer, ItemStack stack, Player player) {
+        try (Transaction transaction = Transaction.openRoot()) {
+            tick(module, stack, player, transaction);
+            transaction.commit();
+        }
+    }
+
+    private void tick(IModule<ModuleInhalationPurificationUnit> module, ItemStack stack, Player player, TransactionContext transaction) {
         long usage = MekanismConfig.gear.mekaSuitEnergyUsagePotionTick.get();
-        boolean free = usage == 0L || player.isCreative();
+        boolean free = usage == 0L || !MekanismUtils.isPlayingMode(player);
         IEnergyContainer energyContainer = free ? null : module.getEnergyContainer(stack);
         if (free || (energyContainer != null && energyContainer.getEnergy() >= usage)) {
             //Gather all the active effects that we can handle, so that we have them in their own list and
@@ -70,14 +61,14 @@ public record ModuleInhalationPurificationUnit(boolean beneficialEffects, boolea
             for (MobEffectInstance effect : effects) {
                 if (free) {
                     speedupEffect(player, effect);
-                } else if (module.useEnergy(player, energyContainer, usage, true) == 0L) {
-                    //If we can't actually extract energy, exit
-                    break;
                 } else {
-                    speedupEffect(player, effect);
-                    if (energyContainer.getEnergy() < usage) {
-                        //If after using energy, our remaining energy is now smaller than how much we need to use, exit
-                        break;
+                    try (Transaction subTransaction = Transaction.open(transaction)) {
+                        if (module.useEnergy(player, energyContainer, usage, transaction, true) < usage) {
+                            //If we can't able to actually extract energy, exit
+                            break;
+                        }
+                        speedupEffect(player, effect);
+                        subTransaction.commit();
                     }
                 }
             }

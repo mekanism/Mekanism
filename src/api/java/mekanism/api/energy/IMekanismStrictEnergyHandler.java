@@ -122,4 +122,14 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
         IEnergyContainer energyContainer = getContainer(container);
         return energyContainer == null ? 0L : energyContainer.getNeeded();
     }
+
+    @Override
+    default boolean isEmpty() {
+        for (IEnergyContainer container : getContainers()) {
+            if (!container.isEmpty()) {
+                return false;
+            }
+        }
+        return true;
+    }
 }
