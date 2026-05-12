@@ -127,7 +127,7 @@ public final class ResourceUtils {
      */
     public static <RESOURCE extends Resource> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets, RESOURCE resourceType,
           int resourceAmount, @Nullable TransactionContext transaction) {
-        if (resourceType.isEmpty() || targets.isEmpty() || resourceAmount == 0) {
+        if (resourceType.isEmpty() || targets.isEmpty() || resourceAmount <= 0) {
             return 0;
         }
         ResourceHandlerTarget<RESOURCE> target = null;

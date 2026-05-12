@@ -47,7 +47,7 @@ import mekanism.common.tile.component.config.slot.EnergySlotInfo;
 import mekanism.common.tile.component.config.slot.FluidSlotInfo;
 import mekanism.common.tile.component.config.slot.ISlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EnumUtils;
 import mekanism.common.util.InventoryUtils;
 import mekanism.common.util.MekanismUtils;
@@ -243,7 +243,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             }
                             caches.add(cache);
                         }
-                        CableUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong());
+                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.getMaxEnergy() : energyEjectRate.getAsLong(), null);
                     }
                 }
             }

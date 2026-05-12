@@ -11,7 +11,7 @@ import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.distribution.EnergySaveTarget;
 import mekanism.common.content.network.distribution.EnergySaveTarget.DelegateSaveHandler;
 import mekanism.common.integration.curios.CuriosIntegration;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.EmitUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.StorageUtils;
@@ -86,13 +86,13 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
         PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);
         int selectedSlot = player.getInventory().getSelectedSlot();
         // first try to charge mainhand/offhand item
-        toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getHandSlots(), toCharge, transaction);
+        toCharge -= EnergyUtils.chargeContents(energyContainer, playerInv.getHandSlots(), toCharge, transaction);
         if (toCharge > 0L) {
             //TODO - 26.1: Should this just use the following, and not care that it "tries" to insert into the held hand a second time?
             // toCharge -= CableUtils.chargeContents(energyContainer, playerInv.getMainSlots(), toCharge, transaction);
             for (int slot = 0; slot < Inventory.INVENTORY_SIZE; slot++) {
                 if (slot != selectedSlot) {
-                    toCharge -= CableUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(playerInv, slot), toCharge, transaction);
+                    toCharge -= EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(playerInv, slot), toCharge, transaction);
                     if (toCharge == 0L) {
                         return;
                     }
@@ -101,7 +101,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
             if (toCharge > 0 && Mekanism.hooks.curios.isLoaded()) {
                 ResourceHandler<ItemResource> handler = CuriosIntegration.getCuriosInventory(player);
                 if (handler != null) {
-                    CableUtils.chargeContents(energyContainer, handler, toCharge, transaction);
+                    EnergyUtils.chargeContents(energyContainer, handler, toCharge, transaction);
                 }
             }
         }

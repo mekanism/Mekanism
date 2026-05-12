@@ -32,7 +32,7 @@ import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
@@ -237,7 +237,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         updateTemperatures();
 
         if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
-            CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer);
+            EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, null);
         }
 
         if (!chemicalOutputTargets.isEmpty() && !steamTank.isEmpty()) {

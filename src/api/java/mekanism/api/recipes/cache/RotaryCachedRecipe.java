@@ -17,7 +17,7 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -120,24 +120,18 @@ public class RotaryCachedRecipe extends CachedRecipe<RotaryRecipe> {
     }
 
     @Override
-    protected void finishProcessing(int operations) {
+    protected void finishProcessing(int operations, TransactionContext transaction) {
         //Mode == true if fluid to chemical
         if (modeSupplier.getAsBoolean()) {
             //Validate something didn't go horribly wrong and the fluid is somehow empty
             if (recipe.hasFluidToChemical() && !recipeFluid.isEmpty() && !chemicalOutput.isEmpty()) {
-                try (Transaction transaction = Transaction.openRoot()) {
-                    fluidInputHandler.use(recipeFluid, operations, transaction);
-                    chemicalOutputHandler.handleOutput(chemicalOutput, operations, transaction);
-                    transaction.commit();
-                }
+                fluidInputHandler.use(recipeFluid, operations, transaction);
+                chemicalOutputHandler.handleOutput(chemicalOutput, operations, transaction);
             }
         } else if (recipe.hasChemicalToFluid() && !recipeChemical.isEmpty() && fluidOutput != null) {
             //Validate something didn't go horribly wrong and the chemical is somehow empty
-            try (Transaction transaction = Transaction.openRoot()) {
-                chemicalInputHandler.use(recipeChemical, operations, transaction);
-                fluidOutputHandler.handleOutput(fluidOutput, operations, transaction);
-                transaction.commit();
-            }
+            chemicalInputHandler.use(recipeChemical, operations, transaction);
+            fluidOutputHandler.handleOutput(fluidOutput, operations, transaction);
         }
     }
 }

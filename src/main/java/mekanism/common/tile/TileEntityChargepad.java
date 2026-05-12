@@ -15,7 +15,7 @@ import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -91,7 +91,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
             //TODO - 26.1: We are using this as a energy per target per tick limit. Do we want to somehow document that fact for the chargepad's limit
             long energyToGive = energyContainer.getEnergyPerTick();
             for (int slot = 0, slots = itemHandler.size(); slot < slots; slot++) {
-                long inserted = CableUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);
+                long inserted = EnergyUtils.charge(energyContainer, ItemAccess.forHandlerIndexStrict(itemHandler, slot), energyToGive, transaction);
                 if (inserted > 0) {
                     //Only allow charging one item per player each check of the chargepad
                     return true;
@@ -102,7 +102,7 @@ public class TileEntityChargepad extends TileEntityMekanism {
     }
 
     private boolean provideEnergy(@Nullable IStrictEnergyHandler energyHandler, TransactionContext transaction) {
-        return CableUtils.charge(energyContainer, energyHandler, energyContainer.getEnergyPerTick(), transaction) > 0;
+        return EnergyUtils.charge(energyContainer, energyHandler, energyContainer.getEnergyPerTick(), transaction) > 0;
     }
 
     @Override

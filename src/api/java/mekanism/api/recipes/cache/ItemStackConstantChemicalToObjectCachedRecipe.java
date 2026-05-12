@@ -18,13 +18,13 @@ import mekanism.api.recipes.outputs.IOutputHandler;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
-import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
- * Base class to help implement handling of item chemical to object recipes. Unlike {@link TwoInputCachedRecipe#itemChemicalToItem} this variant has constant
- * chemical usage.
+ * Base class to help implement handling of item chemical to object recipes. Unlike {@link TwoInputCachedRecipe#itemChemicalToItem} this variant has constant chemical
+ * usage.
  *
  * @since 10.7.0
  */
@@ -138,8 +138,8 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     }
 
     @Override
-    protected void useResources(int operations) {
-        super.useResources(operations);
+    protected void useResources(int operations, TransactionContext transaction) {
+        super.useResources(operations, transaction);
         if (chemicalUsageMultiplier <= 0) {
             //We don't need to use the chemical
             return;
@@ -147,14 +147,12 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
             //Something went wrong, this if should never really be true if we are in useResources
             return;
         }
-        try (Transaction transaction = Transaction.openRoot()) {
-            //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
-            int toUse = operations * chemicalUsageMultiplier;
-            chemicalInputHandler.use(recipeChemical, toUse, transaction);
-            chemicalUsedSoFar += toUse;
-            chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
-            transaction.commit();
-        }
+        //Note: We should have enough because of the getOperationsThisTick call to reduce it based on amounts
+        int toUse = operations * chemicalUsageMultiplier;
+        //TODO - 26.1: Should we validate that we have enough, and if not then fail?
+        chemicalInputHandler.use(recipeChemical, toUse, transaction);
+        chemicalUsedSoFar += toUse;
+        chemicalUsedSoFarChanged.accept(chemicalUsedSoFar);
     }
 
     @Override
@@ -165,17 +163,14 @@ public class ItemStackConstantChemicalToObjectCachedRecipe<OUTPUT, RECIPE extend
     }
 
     @Override
-    protected void finishProcessing(int operations) {
+    protected void finishProcessing(int operations, TransactionContext transaction) {
         //Validate something didn't go horribly wrong
         if (recipeChemical != null && output != null && !recipeItem.isEmpty() && !recipeChemical.isEmpty() && !outputEmptyCheck.test(output)) {
-            try (Transaction transaction = Transaction.openRoot()) {
-                itemInputHandler.use(recipeItem, operations, transaction);
-                if (chemicalUsageMultiplier > 0) {
-                    chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier, transaction);
-                }
-                outputHandler.handleOutput(output, operations, transaction);
-                transaction.commit();
+            itemInputHandler.use(recipeItem, operations, transaction);
+            if (chemicalUsageMultiplier > 0) {
+                chemicalInputHandler.use(recipeChemical, operations * chemicalUsageMultiplier, transaction);
             }
+            outputHandler.handleOutput(output, operations, transaction);
         }
     }
 

@@ -11,7 +11,7 @@ import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -62,7 +62,7 @@ public abstract class TileEntityGenerator extends TileEntityMekanism {
                     outputCaches.add(BlockEnergyCapabilityCache.create((ServerLevel) level, worldPosition.relative(side), side.getOpposite()));
                 }
             }
-            CableUtils.emit(outputCaches, energyContainer);
+            EnergyUtils.emit(outputCaches, energyContainer, null);
         }
         return sendUpdatePacket;
     }

@@ -10,6 +10,7 @@ import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.api.recipes.ingredients.InputIngredient;
 import net.minecraft.core.TypedInstance;
 import net.neoforged.neoforge.transfer.resource.RegisteredResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 @NothingNullByDefault//TODO - 26.1: Do we want to make this public and add docs?
@@ -43,14 +44,8 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
 
     @Override
     public void use(STACK recipeInput, int operations, TransactionContext transaction) {
-        if (operations == 0 || isEmpty(recipeInput)) {
-            //Just exit if we are somehow here at zero operations
-            // or if something went wrong, this if should never really be true if we got to finishProcessing
-            return;
-        }
-        //TODO - 26.1: Why did input tanks check the current stack isn't empty instead of the recipe input not being empty?
-        // I am guessing that they are theoretically the same "type" if we get to here so that is why, but it still seems like it was wrong
-        if (!isEmpty(recipeInput)) {
+        //Ensure that we have operations to perform and the input is not empty. This if should really always be true if we got to finishProcessing
+        if (operations > 0 && !isEmpty(recipeInput)) {
             //TODO - 26.1: Protect against overflow by adding a MathUtils#multiplyClamped for ints?
             int amount = getAmount(recipeInput) * operations;
             int extracted = container.extract(asResource(recipeInput), amount, transaction, AutomationType.INTERNAL);
@@ -68,12 +63,18 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputFluid)
             // Note: If we can't, we treat it as we just don't have enough of the input to better support cases
             // where we may want to allow not having the input be required for recipe matching
-            if (!isEmpty(recipeInput)) {
-                //TODO - 26.1: Simulate the drain?
-                int operations = container.amount() / (getAmount(recipeInput) * usageMultiplier);
-                if (operations > 0) {
-                    tracker.updateOperations(operations);
-                    return;
+            RESOURCE inputType = asResource(recipeInput);
+            if (!inputType.isEmpty()) {
+                try (Transaction simulation = tracker.openSimulation()) {
+                    //Calculate how much we are actually able to extract from the container
+                    int available = container.extract(inputType, container.amount(), simulation, AutomationType.INTERNAL);
+                    if (available > 0) {
+                        int operations = available / (getAmount(recipeInput) * usageMultiplier);
+                        if (operations > 0) {
+                            tracker.updateOperations(operations);
+                            return;
+                        }
+                    }
                 }
             }
             // Not enough input to match the recipe, reset the progress

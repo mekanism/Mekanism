@@ -1,7 +1,6 @@
 package mekanism.common.util;
 
 import java.util.Collection;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -16,20 +15,36 @@ import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jspecify.annotations.Nullable;
 
-//TODO - 26.1: Rename this to EnergyUtils?
-public final class CableUtils {
+public final class EnergyUtils {//TODO - 26.1: Update docs
 
-    private CableUtils() {
+    private EnergyUtils() {
     }
 
-    public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer) {
-        emit(targets, energyContainer, energyContainer.getMaxEnergy());
+    public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
+        return emit(targets, energyContainer, energyContainer.getMaxEnergy(), transaction);
     }
 
-    public static void emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput) {
+    public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput, @Nullable TransactionContext transaction) {
         if (!energyContainer.isEmpty() && maxOutput > 0L) {
-            energyContainer.extract(emit(targets, 0, energyContainer, maxOutput), Action.EXECUTE, AutomationType.INTERNAL);
+            long energyToSend;
+            try (Transaction simulation = Transaction.open(transaction)) {
+                energyToSend = energyContainer.extract(maxOutput, simulation, AutomationType.INTERNAL);
+                if (energyToSend == 0) {
+                    //If we failed to extract from it, just exit early
+                    return 0;
+                }
+            }
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                //We won't be able to extract the resource, just fail early
+                long sent = emit(targets, energyToSend, subTransaction);
+                if (energyContainer.extract(sent, subTransaction, AutomationType.INTERNAL) == sent) {
+                    //Validate that we were able to extract the amount we sent. In theory this should always be true
+                    subTransaction.commit();
+                    return sent;
+                }
+            }
         }
+        return 0;
     }
 
     /**
@@ -40,40 +55,26 @@ public final class CableUtils {
      *
      * @return the amount of energy emitted
      */
-    public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend) {
-        return emit(targets, energyToSend, null, energyToSend);
-    }
-
-    private static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend, IEnergyContainer energyContainer, long maxOutput) {
-        if (energyToSend == 0 && energyContainer == null) {
-            //Something went wrong in calling this method
-            return 0;
-        } else if (energyToSend < 0 || targets.isEmpty()) {
+    public static long emit(Collection<BlockEnergyCapabilityCache> targets, long energyToSend, @Nullable TransactionContext transaction) {
+        if (energyToSend <= 0 || targets.isEmpty()) {
             return 0;
         }
         EnergyAcceptorTarget target = null;
         for (BlockEnergyCapabilityCache capability : targets) {
             IStrictEnergyHandler handler = capability.getCapability();
             if (handler != null) {
-                //If we weren't given a stack by the caller, then we want to lazily try to extract from the tank to see how much we are trying to emit
-                // so that we don't have to attempt an extraction if all our targets are actually not currently fluid handlers
-                if (energyToSend == 0) {
-                    energyToSend = energyContainer.extract(maxOutput, Action.SIMULATE, AutomationType.INTERNAL);
-                    if (energyToSend == 0) {
-                        //If we failed to extract from it, just exit early
-                        return 0;
-                    }
-                }
                 if (target == null) {
                     target = new EnergyAcceptorTarget(targets.size());
                 }
                 target.addHandler(handler);
             }
         }
-        //TODO - 26.1: Re-evaluate how we handle transactions for energy
-        try (Transaction transaction = Transaction.openRoot()) {
-            long sent = EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, transaction);
-            transaction.commit();
+        if (target == null) {
+            return 0;
+        }
+        try (Transaction subTransaction = Transaction.open(transaction)) {
+            long sent = EmitUtils.sendToAcceptors(target, energyToSend, EnergyNetwork.ENERGY, subTransaction);
+            subTransaction.commit();
             return sent;
         }
     }

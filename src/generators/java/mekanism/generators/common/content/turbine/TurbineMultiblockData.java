@@ -27,7 +27,7 @@ import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
@@ -171,7 +171,7 @@ public class TurbineMultiblockData extends MultiblockData {
             //Note: We know that the tank has whatever amount it has stored, we can just perform the simulated extraction
             ResourceUtils.emit(fluidOutputTargets, ventTank, null);
         }
-        CableUtils.emit(energyOutputTargets, energyContainer);
+        EnergyUtils.emit(energyOutputTargets, energyContainer, null);
 
         if (dumpMode != GasMode.IDLE && !chemicalTank.isEmpty()) {
             ChemicalResource chemicalType = chemicalTank.getResource();

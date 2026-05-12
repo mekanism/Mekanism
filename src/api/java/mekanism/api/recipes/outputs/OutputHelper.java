@@ -121,12 +121,8 @@ public class OutputHelper {
             public void handleOutput(ChanceOutput toOutput, int operations, TransactionContext transaction) {
                 OutputHelper.handleOutput(mainSlot, toOutput.getMainOutput(), operations, transaction);
                 //TODO: Batch this into a single addition call, by looping over and calculating things?
-                ItemStackTemplate secondaryOutput = toOutput.getSecondaryOutput();
                 for (int i = 0; i < operations; i++) {
-                    OutputHelper.handleOutput(secondarySlot, secondaryOutput, operations, transaction);
-                    if (i < operations - 1) {
-                        secondaryOutput = toOutput.nextSecondaryOutput();
-                    }
+                    OutputHelper.handleOutput(secondarySlot, toOutput.getSecondaryOutput(), 1, transaction);
                 }
             }
 
@@ -246,28 +242,23 @@ public class OutputHelper {
      * @param operations Operations to perform.
      */
     private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations, TransactionContext transaction) {
-        if (operations == 0) {
-            //This should not happen
-            return;
+        if (operations > 0) {
+            //TODO - 26.1: Evaluate this and adjust things so that it shouldn't have to clamp
+            tank.insert(ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount() * operations), transaction, AutomationType.INTERNAL);
         }
-        //TODO - 26.1: Evaluate this and adjust things so that it shouldn't have to clamp
-        tank.insert(ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount() * operations), transaction, AutomationType.INTERNAL);
     }
 
     private static void handleOutput(IFluidTank fluidTank, @Nullable FluidStackTemplate toOutput, int operations, TransactionContext transaction) {
-        if (operations == 0 || toOutput == null) {
-            //This should not happen
-            return;
+        if (operations > 0 && toOutput != null) {
+            fluidTank.insert(FluidResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
         }
-        fluidTank.insert(FluidResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
     }
 
     //TODO - 26.1: Do we want to validate that the amount we expected to insert was able to be inserted before we commit? Probably
     private static void handleOutput(IInventorySlot inventorySlot, @Nullable ItemStackTemplate toOutput, int operations, TransactionContext transaction) {
-        if (operations == 0 || toOutput == null) {
-            return;
+        if (operations > 0 && toOutput != null) {
+            inventorySlot.insert(ItemResource.of(toOutput), toOutput.count() * operations, transaction, AutomationType.INTERNAL);
         }
-        inventorySlot.insert(ItemResource.of(toOutput), toOutput.count() * operations, transaction, AutomationType.INTERNAL);
     }
 
     /**
@@ -301,9 +292,7 @@ public class OutputHelper {
           RESOURCE toOutput, int outputSize, int maxStackSize) {
         //If our output is empty, we have nothing to add, so we treat it as being able to fit all
         if (!toOutput.isEmpty()) {
-            //TODO - 26.1: Should a parent transaction be passed in/have the operation tracker keep track of that?
-            //TODO - 26.1: Evaluate whether we think Transaction.openRoot() or Transaction.open(null) is cleaner
-            try (Transaction simulation = Transaction.openRoot()) {
+            try (Transaction simulation = tracker.openSimulation()) {
                 //Try inserting an amount corresponding to the maximum size of the output
                 int amountUsed = container.insert(toOutput, maxStackSize, simulation, AutomationType.INTERNAL);
                 //Divide the amount we can actually use by the amount one output operation is equal to, capping it at the max we were told about

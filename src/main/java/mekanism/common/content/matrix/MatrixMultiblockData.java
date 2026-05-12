@@ -16,7 +16,7 @@ import mekanism.common.tile.multiblock.TileEntityInductionCasing;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionPort;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
-import mekanism.common.util.CableUtils;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.server.level.ServerLevel;
@@ -103,7 +103,7 @@ public class MatrixMultiblockData extends MultiblockData {
         energyInputSlot.drainContainer();
         energyOutputSlot.fillContainerOrConvert();
         if (!energyOutputTargets.isEmpty() && !energyContainer.isEmpty()) {
-            CableUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer());
+            EnergyUtils.emit(getActiveOutputs(energyOutputTargets), energyContainer, energyContainer.getMaxTransfer(), null);
         }
         if (getLastInput() != 0L || getLastOutput() != 0L) {
             // If the stored energy changed, update the comparator

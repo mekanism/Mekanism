@@ -10,15 +10,15 @@ import java.util.function.BooleanSupplier;
 import java.util.function.Consumer;
 import java.util.function.IntConsumer;
 import java.util.function.IntSupplier;
-import java.util.function.LongConsumer;
 import java.util.function.LongSupplier;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Base class to help implement handling of Mekanism recipes.
@@ -86,12 +86,11 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
      */
     private LongSupplier storedEnergy = ConstantPredicates.ZERO_LONG;
     /**
-     * Called to consume energy.
+     * Called to consume energy and get how much was actually consumed.
      *
      * @implNote Defaults to doing nothing.
      */
-    private LongConsumer useEnergy = energy -> {
-    };
+    private EnergyUsage energyUsage = (_, _) -> 0;
 
     /**
      * Gets the baseline maximum number of operations that can be performed if everything is working properly. The returned value should be at least one.
@@ -128,8 +127,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     };
 
     /**
-     * Whether multiple operations multiply the power usage.
-     * Currently only used for Hydrogen separating.
+     * Whether multiple operations multiply the power usage. Currently only used for Hydrogen separating.
      */
     private boolean multipleOperationsCost = false;
 
@@ -184,7 +182,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
         this.perTickEnergy = Objects.requireNonNull(perTickEnergy, "The per tick energy cannot be null.");
         Objects.requireNonNull(energyContainer, "Energy container cannot be null.");
         this.storedEnergy = energyContainer::getEnergy;
-        this.useEnergy = energy -> energyContainer.extract(energy, Action.EXECUTE, AutomationType.INTERNAL);
+        this.energyUsage = (energy, transaction) -> energyContainer.extract(energy, transaction, AutomationType.INTERNAL);
         return this;
     }
 
@@ -259,8 +257,7 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     }
 
     /**
-     * Sets whether the calculated operations increase the energy cost subtracted from the container.
-     * Currently only used for Hydrogen Separation.
+     * Sets whether the calculated operations increase the energy cost subtracted from the container. Currently only used for Hydrogen Separation.
      */
     public CachedRecipe<RECIPE> setOperationsCost(boolean value) {
         this.multipleOperationsCost = value;
@@ -326,57 +323,62 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
             setActive.accept(false);
             return;
         }
-        int operations;
-        if (canHolderFunction.getAsBoolean()) {
-            setupVariableValues();
-            OperationTracker tracker = new OperationTracker(errors, recheckAllErrors.getAsBoolean(), baselineMaxOperations.getAsInt());
-            calculateOperationsThisTick(tracker);
-            if (tracker.shouldContinueChecking()) {
-                postProcessOperations.accept(tracker);
-                //If we should continue checking try to cap the max at the max amount we have for energy that we didn't cap it at earlier
-                // Note: We don't have to always try and cap it as if we shouldn't continue checking that means we are already stopped.
-                if (tracker.shouldContinueChecking() && (multipleOperationsCost && tracker.capAtMaxForEnergy())) {
-                    //If we lowered the maximum number of operations due to our available energy, then we add an error that we don't have
-                    // enough energy to run at our maximum rate
-                    tracker.addError(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
+        try (Transaction transaction = Transaction.openRoot()) {
+            int operations;
+            if (canHolderFunction.getAsBoolean()) {
+                setupVariableValues();
+                OperationTracker tracker = new OperationTracker(errors, recheckAllErrors.getAsBoolean(), baselineMaxOperations.getAsInt(), transaction);
+                calculateOperationsThisTick(tracker);
+                if (tracker.shouldContinueChecking()) {
+                    postProcessOperations.accept(tracker);
+                    //If we should continue checking try to cap the max at the max amount we have for energy that we didn't cap it at earlier
+                    // Note: We don't have to always try and cap it as if we shouldn't continue checking that means we are already stopped.
+                    if (tracker.shouldContinueChecking() && multipleOperationsCost && tracker.capAtMaxForEnergy()) {
+                        //If we lowered the maximum number of operations due to our available energy, then we add an error that we don't have
+                        // enough energy to run at our maximum rate
+                        tracker.addError(RecipeError.NOT_ENOUGH_ENERGY_REDUCED_RATE);
+                    }
+                }
+                operations = tracker.currentMax;
+                if (tracker.hasErrorsToCopy()) {
+                    updateErrors(tracker.errors);
+                }
+            } else {
+                operations = 0;
+                if (!errors.isEmpty()) {
+                    updateErrors(Collections.emptySet());
                 }
             }
-            operations = tracker.currentMax;
-            if (tracker.hasErrorsToCopy()) {
-                updateErrors(tracker.errors);
-            }
-        } else {
-            operations = 0;
-            if (!errors.isEmpty()) {
-                updateErrors(Collections.emptySet());
-            }
-        }
-        if (operations > 0) {
-            setActive.accept(true);
-            //Always use energy, as that is a constant thing we can check
-            useEnergy(operations);
-            operatingTicks++;
-            int ticksRequired = requiredTicks.getAsInt();
-            if (operatingTicks >= ticksRequired) {
-                operatingTicks = 0;
-                finishProcessing(operations);
-                onFinish.run();
-                resetCache();
+            if (operations > 0) {
+                setActive.accept(true);
+                //Always use energy, as that is a constant thing we can check
+                useEnergy(operations, transaction);
+                operatingTicks++;
+                int ticksRequired = requiredTicks.getAsInt();
+                if (operatingTicks >= ticksRequired) {
+                    operatingTicks = 0;
+                    //TODO - 26.1: Do we want to add some sort of validation that the inputs were able to be consumed and the output able to be placed
+                    finishProcessing(operations, transaction);
+                    transaction.commit();
+                    onFinish.run();
+                    resetCache();
+                } else {
+                    //If we still have ticks left required to operate, use the contents
+                    useResources(operations, transaction);
+                    transaction.commit();
+                }
+                if (ticksRequired > 1) {
+                    //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
+                    operatingTicksChanged.accept(operatingTicks);
+                }
             } else {
-                //If we still have ticks left required to operate, use the contents
-                useResources(operations);
-            }
-            if (ticksRequired > 1) {
-                //If no ticks are required don't bother marking it as changed as it resets itself back to the same value
-                operatingTicksChanged.accept(operatingTicks);
-            }
-        } else {
-            setActive.accept(false);
-            if (operations < 0) {
-                //Reset the progress
-                operatingTicks = 0;
-                operatingTicksChanged.accept(operatingTicks);
-                resetCache();
+                setActive.accept(false);
+                if (operations < 0) {
+                    //Reset the progress
+                    operatingTicks = 0;
+                    operatingTicksChanged.accept(operatingTicks);
+                    resetCache();
+                }
             }
         }
     }
@@ -398,12 +400,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     /**
      * Called each tick to allow for {@link CachedRecipe}s to consume any per tick resources.
      *
-     * @param operations Number of operations being performed.
+     * @param operations  Number of operations being performed.
+     * @param transaction The transaction that this operation is part of.
      *
      * @implNote It is safe to assume that {@link #calculateOperationsThisTick(OperationTracker)} will have been called before this method and there will be at least one
      * operation being performed. This means that caching of types can be done inside of {@link #calculateOperationsThisTick(OperationTracker)} and safely used here.
      */
-    protected void useResources(int operations) {
+    protected void useResources(int operations, TransactionContext transaction) {
     }
 
     /**
@@ -415,14 +418,15 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     /**
      * Called each tick to consume energy for a given number of operations.
      *
-     * @param operations Number of operations being performed.
+     * @param operations  Number of operations being performed.
+     * @param transaction The transaction that this operation is part of.
      */
-    protected void useEnergy(int operations) {
+    protected void useEnergy(int operations, TransactionContext transaction) {
         long energy = perTickEnergy.getAsLong();
         if (this.multipleOperationsCost) {
-            energy = energy * operations;
+            energy *= operations;
         }
-        useEnergy.accept(energy);
+        energyUsage.useEnergy(energy, transaction);
     }
 
     /**
@@ -438,10 +442,15 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     protected void calculateOperationsThisTick(OperationTracker tracker) {
         if (tracker.shouldContinueChecking()) {
             long energyPerTick = perTickEnergy.getAsLong();
-            //If we don't have an energy requirement return what we were told the max is
-            if (energyPerTick != 0L) {
-                //Make sure we don't have any integer overflow in calculating how much we have room for
-                int operations = Ints.saturatedCast(storedEnergy.getAsLong() / energyPerTick);
+            //If we don't have an energy requirement, don't bother lowering the number of operations
+            if (energyPerTick > 0) {
+                int operations;
+                try (Transaction simulation = tracker.openSimulation()) {
+                    //Validate how much energy we are able to extract from the stored value
+                    long availableEnergy = energyUsage.useEnergy(storedEnergy.getAsLong(), simulation);
+                    //Make sure we don't have any integer overflow in calculating how much we have room for
+                    operations = Ints.saturatedCast(availableEnergy / energyPerTick);
+                }
                 //Update the max amount we can perform from our energy (we apply this at the end so that we can see if we have a reduced
                 // operation count due to energy
                 tracker.maxForEnergy = operations;
@@ -464,19 +473,26 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
     /**
      * Called when a recipe finishes processing. This method consumes any recipe inputs and produces the recipe outputs.
      *
-     * @param operations Number of operations being performed.
+     * @param operations  Number of operations being performed.
+     * @param transaction The transaction that this operation is part of.
      *
      * @implNote It is safe to assume that {@link #calculateOperationsThisTick(OperationTracker)} will have been called before this method and there will be at least one
      * operation being performed. This means that caching of types and outputs can be done inside of {@link #calculateOperationsThisTick(OperationTracker)} and safely
      * used here.
      */
-    protected abstract void finishProcessing(int operations);
+    protected abstract void finishProcessing(int operations, TransactionContext transaction);
 
     /**
      * Gets the actual recipe object this {@link CachedRecipe} has cached and operates on.
      */
     public RECIPE getRecipe() {
         return recipe;
+    }
+
+    @FunctionalInterface
+    private interface EnergyUsage {
+
+        long useEnergy(long energyToUse, TransactionContext transaction);
     }
 
     /**
@@ -496,6 +512,8 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
          */
         private static final int MISMATCHED_RECIPE = -2;
 
+        /// Current outer transaction context that will be used for creating simulations.
+        private final TransactionContext transaction;
         /**
          * Set of all the errors from when the {@link CachedRecipe} last calculated the complete set of errors.
          */
@@ -527,12 +545,14 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
          * @param lastErrors  Set of the last errors the {@link CachedRecipe} had.
          * @param checkAll    {@code true} if this tracker should try and check for all existing errors.
          * @param startingMax Starting maximum number of operations that the {@link CachedRecipe} can perform this tick.
+         * @param transaction Current outer transaction context that will be used for creating simulations.
          */
-        private OperationTracker(Set<RecipeError> lastErrors, boolean checkAll, int startingMax) {
+        private OperationTracker(Set<RecipeError> lastErrors, boolean checkAll, int startingMax, TransactionContext transaction) {
             this.lastErrors = lastErrors;
             this.checkAll = checkAll;
             this.currentMax = startingMax;
             this.maxForEnergy = currentMax;
+            this.transaction = transaction;
         }
 
         /**
@@ -588,6 +608,13 @@ public abstract class CachedRecipe<RECIPE extends MekanismRecipe<?>> {
                 }
             }
             return false;
+        }
+
+        /// Opens a new transaction for simulation purposes using the proper transactional context.
+        ///
+        /// @return Simulation transaction context.
+        public Transaction openSimulation() {
+            return Transaction.open(transaction);
         }
 
         /**

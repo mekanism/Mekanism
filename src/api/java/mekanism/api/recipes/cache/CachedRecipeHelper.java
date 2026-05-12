@@ -70,10 +70,11 @@ public class CachedRecipeHelper {
      * @param emptyCheckA      Checks if the primary input is empty.
      * @param emptyCheckB      Checks if the secondary input is empty.
      */
-    public static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> void twoInputCalculateOperationsThisTick(OperationTracker tracker, IInputHandler<HOLDER_A, INPUT_A> inputAHandler,
-          Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputAIngredient, IInputHandler<HOLDER_B, INPUT_B> inputBHandler,
-          Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter, IOutputHandler<OUTPUT> outputHandler,
-          BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT_A> emptyCheckA, Predicate<INPUT_B> emptyCheckB) {
+    public static <HOLDER_A, INPUT_A extends TypedInstance<HOLDER_A>, HOLDER_B, INPUT_B extends TypedInstance<HOLDER_B>, OUTPUT> void twoInputCalculateOperationsThisTick(
+          OperationTracker tracker, IInputHandler<HOLDER_A, INPUT_A> inputAHandler, Supplier<? extends InputIngredient<HOLDER_A, INPUT_A>> inputAIngredient,
+          IInputHandler<HOLDER_B, INPUT_B> inputBHandler, Supplier<? extends InputIngredient<HOLDER_B, INPUT_B>> inputBIngredient, BiConsumer<INPUT_A, INPUT_B> inputsSetter,
+          IOutputHandler<OUTPUT> outputHandler, BiFunction<INPUT_A, INPUT_B, OUTPUT> outputGetter, Consumer<OUTPUT> outputSetter, Predicate<INPUT_A> emptyCheckA,
+          Predicate<INPUT_B> emptyCheckB) {
         if (tracker.shouldContinueChecking()) {
             INPUT_A inputA = inputAHandler.getRecipeInput(inputAIngredient.get());
             //Test to make sure we can even perform a single operation. This is akin to !recipe.test(inputA)
