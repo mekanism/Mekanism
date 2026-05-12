@@ -7,7 +7,8 @@ import net.minecraft.world.level.block.state.BlockState;
 
 public interface IWireFrameRenderer {
 
-    void renderWireFrame(BlockEntity tile, float partialTick, PoseStack matrix, VertexConsumer buffer);
+    //TODO - 26.1: convert this to a separate extract?
+    void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack matrix, VertexConsumer buffer, boolean isHighContrast);
 
     default boolean hasSelectionBox(BlockState state) {
         return true;

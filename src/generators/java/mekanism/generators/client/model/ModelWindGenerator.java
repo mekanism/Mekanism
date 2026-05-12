@@ -138,10 +138,9 @@ public class ModelWindGenerator extends MekanismJavaModel<WindGeneratorRotationR
         collectParts(allParts, poseStack, RENDER_TYPE, submitNodeCollector, light, overlayLight, -1, null, hasEffect);
     }
 
-    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, float angle) {
-        WindGeneratorRotationRenderState state = new WindGeneratorRotationRenderState(angle);
+    public void renderWireFrame(PoseStack matrix, VertexConsumer vertexBuilder, WindGeneratorRotationRenderState state, boolean isHighContrast) {
         setupAnim(state);
-        renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder);
+        renderPartsAsWireFrame(root().getAllParts(), matrix, vertexBuilder, isHighContrast);
     }
 
     @Override

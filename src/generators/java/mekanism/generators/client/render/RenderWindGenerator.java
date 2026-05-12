@@ -21,6 +21,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -89,7 +90,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack poseStack, VertexConsumer buffer) {
+    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack poseStack, VertexConsumer buffer, boolean isHighContrast) {
         if (tile instanceof TileEntityWindGenerator generator) {
             poseStack.pushPose();
             poseStack.translate(0.5, 1.5, 0.5);
@@ -99,7 +100,7 @@ public class RenderWindGenerator extends MekanismTileEntityRenderer<TileEntityWi
             if (generator.getActive() && partialTick > 0) {
                 angle = (angle + generator.getHeightSpeedRatio() * partialTick) % 360;
             }
-            model.renderWireFrame(poseStack, buffer, angle);
+            model.renderWireFrame(poseStack, buffer, new WindGeneratorRotationRenderState(angle), isHighContrast);
             poseStack.popPose();
         }
     }

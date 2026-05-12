@@ -162,6 +162,7 @@ public class BaseModelCache {
 
     public static class JSONModelData extends MekanismModelData {
 
+        //this is a list due to SubmitNodeCollector wanting a list
         private List<BlockStateModelPart> bakedModel;
         private final StandaloneModelKey<BlockStateModelPart> key;
 

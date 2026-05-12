@@ -1,5 +1,6 @@
 package mekanism.client.render;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import it.unimi.dsi.fastutil.objects.Reference2ObjectOpenHashMap;
 import java.util.Collection;
@@ -7,32 +8,59 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
+import mekanism.api.RelativeSide;
 import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.GuiRadialSelector;
 import mekanism.client.render.MekanismRenderer.Model3D;
 import mekanism.client.render.armor.ISpecialGear;
 import mekanism.client.render.armor.MekaSuitArmor;
 import mekanism.client.render.hud.RadiationOverlay;
+import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.lib.effect.BoltRenderer;
+import mekanism.client.render.tileentity.IWireFrameRenderer;
 import mekanism.common.Mekanism;
+import mekanism.common.base.ProfilerConstants;
+import mekanism.common.block.BlockBounding;
+import mekanism.common.block.attribute.Attribute;
+import mekanism.common.block.attribute.AttributeCustomSelectionBox;
+import mekanism.common.item.ItemConfigurator;
 import mekanism.common.item.gear.ItemFlamethrower;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import mekanism.common.lib.effect.BoltEffect;
 import mekanism.common.lib.math.Pos3D;
 import mekanism.common.lib.transmitter.TransmissionType;
+import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismParticleTypes;
+import mekanism.common.tile.component.TileComponentConfig;
+import mekanism.common.tile.component.config.ConfigInfo;
+import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.WorldUtils;
 import mezz.jei.api.runtime.IRecipesGui;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.model.HumanoidModel.ArmPose;
 import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.player.AbstractClientPlayer;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.block.dispatch.BlockStateModel;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.BlockOutlineRenderState;
+import net.minecraft.client.renderer.state.level.LevelRenderState;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.CommonColors;
 import net.minecraft.util.Mth;
+import net.minecraft.util.profiling.Profiler;
+import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -41,11 +69,15 @@ import net.minecraft.world.entity.Pose;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.CustomBlockOutlineRenderer;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
+import net.neoforged.neoforge.client.event.ExtractBlockOutlineRenderStateEvent;
 import net.neoforged.neoforge.client.event.RenderArmEvent;
 import net.neoforged.neoforge.client.event.RenderGuiLayerEvent;
 import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
@@ -58,6 +90,8 @@ import org.joml.Matrix3x2fStack;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 public class RenderTickHandler {
 
@@ -301,24 +335,21 @@ public class RenderTickHandler {
     }
 
     //TODO - 26.1 CustomBlockOutlineRenderer
-    /*@SubscribeEvent
-    public void onBlockHover(RenderHighlightEvent.Block event) {
+    @SubscribeEvent
+    public void onBlockHover(ExtractBlockOutlineRenderStateEvent event) {
         //TODO - 26.1: ExtractBlockOutlineRenderStateEvent and CustomBlockOutlineRenderer?
         LocalPlayer player = minecraft.player;
         if (player == null) {
             return;
         }
-        BlockHitResult rayTraceResult = event.getTarget();
-        if (rayTraceResult.getType() != Type.MISS) {
-            ClientLevel world = (ClientLevel) player.level();
-            BlockPos pos = rayTraceResult.getBlockPos();
-            MultiBufferSource renderer = event.getMultiBufferSource();
-            Camera info = event.getCamera();
-            PoseStack matrix = event.getPoseStack();
-            ProfilerFiller profiler = Profiler.get();
-            BlockState blockState = world.getBlockState(pos);
+        BlockHitResult rayTraceResult = event.getHitResult();
+        ClientLevel world = (ClientLevel) player.level();
+        BlockPos pos = event.getBlockPos();
+        ProfilerFiller profiler = Profiler.get();
+        BlockState blockState = event.getBlockState();
 
-            profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
+        //todo - 26.1: blasting unit. don't forget translucency check
+            /*profiler.push(ProfilerConstants.AREA_MINE_OUTLINE);
             // Draw outlines for area mining blocks
             if (!outliningArea) {
                 ItemStack stack = player.getMainHandItem();
@@ -326,148 +357,125 @@ public class RenderTickHandler {
                     Map<BlockPos, BlockState> blocks = tool.getBlastedBlocks(world, player, stack, pos, blockState);
                     if (!blocks.isEmpty()) {
                         outliningArea = true;
-                        Vec3 renderView = info.getPosition();
+                        Vec3 renderView = camera.position();
                         LevelRenderer levelRenderer = event.getLevelRenderer();
-                        Lazy<VertexConsumer> lineConsumer = Lazy.of(() -> renderer.getBuffer(RenderType.lines()));
-                        for (Entry<BlockPos, BlockState> block : blocks.entrySet()) {
+                        for (Map.Entry<BlockPos, BlockState> block : blocks.entrySet()) {
                             BlockPos blastingTarget = block.getKey();
                             // simulate ray tracing results for all block positions
-                            if (!pos.equals(blastingTarget) && !ClientHooks.onDrawHighlight(levelRenderer, info, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
-                                levelRenderer.renderHitOutline(matrix, lineConsumer.get(), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
+                            if (!pos.equals(blastingTarget) && todo - 26.1: also move out of here. !ClientHooks.onDrawHighlight(levelRenderer, camera, rayTraceResult.withPosition(blastingTarget), event.getDeltaTracker(), matrix, renderer)) {
+                                levelRenderer.renderHitOutline(matrix, renderer.getBuffer(RenderTypes.lines()), player, renderView.x, renderView.y, renderView.z, blastingTarget, block.getValue());
                             }
                         }
                         outliningArea = false;
                     }
                 }
             }
-            profiler.pop();
+            profiler.pop();*/
 
-            boolean shouldCancel = false;
-            profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
-            if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
-                BlockPos actualPos = pos;
-                BlockState actualState = blockState;
-                if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
-                    BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
-                    if (mainPos != null) {
-                        actualPos = mainPos;
-                        actualState = world.getBlockState(actualPos);
-                    }
-                }
-                AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
-                if (customSelectionBox != null) {
-                    if (customSelectionBox.isJavaModel()) {
-                        //If we use a TER to render the wire frame, grab the tile
-                        BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
-                        if (tile != null) {
-                            BlockEntityRenderer<BlockEntity, ?> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
-                            if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
-                                matrix.pushPose();
-                                Vec3 viewPosition = info.position();
-                                matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                                //0.4 Alpha
-                                VertexConsumer buffer = renderer.getBuffer(RenderType.lines());
-                                //0.4 Alpha
-                                if (wireFrameRenderer.isCombined()) {
-                                    renderQuadsWireFrame(world, actualPos, actualState, buffer, matrix);
-                                }
-                                wireFrameRenderer.renderWireFrame(tile, event.getDeltaTracker().getGameTimeDeltaPartialTick(false), matrix, buffer);
-                                matrix.popPose();
-                                shouldCancel = true;
-                            }
-                        }
-                    } else {
-                        //Otherwise, skip getting the tile and just grab the model
-                        matrix.pushPose();
-                        Vec3 viewPosition = info.position();
-                        matrix.translate(actualPos.getX() - viewPosition.x, actualPos.getY() - viewPosition.y, actualPos.getZ() - viewPosition.z);
-                        //0.4 Alpha
-                        renderQuadsWireFrame(world, actualPos, actualState, renderer.getBuffer(RenderType.lines()), matrix, world);
-                        matrix.popPose();
-                        shouldCancel = true;
-                    }
+        profiler.push(ProfilerConstants.MEKANISM_OUTLINE);
+        if (!blockState.isAir() && world.getWorldBorder().isWithinBounds(pos)) {
+            BlockPos actualPos = pos;
+            BlockState actualState = blockState;
+            if (blockState.is(MekanismBlocks.BOUNDING_BLOCK)) {
+                BlockPos mainPos = BlockBounding.getMainBlockPos(world, pos);
+                if (mainPos != null) {
+                    actualPos = mainPos;
+                    actualState = world.getBlockState(actualPos);
                 }
             }
-            profiler.pop();
-
-            ItemStack stack = player.getMainHandItem();
-            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
-                //If we are not holding a configurator, look if we are in the offhand
-                stack = player.getOffhandItem();
-                if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
-                    if (shouldCancel) {
-                        event.setCanceled(true);
-                    }
-                    return;
-                }
-            }
-            profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
-            ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
-            if (state.isConfigurating()) {
-                TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
-                BlockEntity tile = WorldUtils.getTileEntity(world, pos);
-                if (tile instanceof ISideConfiguration configurable) {
-                    TileComponentConfig config = configurable.getConfig();
-                    if (config.supports(type)) {
-                        Direction face = rayTraceResult.getDirection();
-                        ConfigInfo configInfo = config.getConfig(type);
-                        if (configInfo != null) {
-                            RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
-                            if (configInfo.isSideEnabled(side)) {
-                                Vec3 viewPosition = info.position();
-                                matrix.pushPose();
-                                matrix.translate(pos.getX() - viewPosition.x, pos.getY() - viewPosition.y, pos.getZ() - viewPosition.z);
-                                TextureAtlasSprite tex = MekanismRenderer.overlays.get(type);
-                                @Nullable Model3D object = getOverlayModel(face, type);
-                                VertexConsumer buffer = renderer.getBuffer(Sheets.translucentCullBlockSheet());
-                                int argb = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
-                                if (object != null) {
-                                    RenderResizableCuboid.renderCube(object, matrix, buffer, argb, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FaceDisplay.FRONT, info, null);
-                                }
-                                matrix.popPose();
-                            }
+            AttributeCustomSelectionBox customSelectionBox = Attribute.get(actualState, AttributeCustomSelectionBox.class);
+            if (customSelectionBox != null) {
+                if (customSelectionBox.isJavaModel()) {
+                    //If we use a TER to render the wire frame, grab the tile
+                    BlockEntity tile = WorldUtils.getTileEntity(world, actualPos);
+                    if (tile != null) {
+                        BlockEntityRenderer<BlockEntity, ?> tileRenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
+                        if (tileRenderer instanceof IWireFrameRenderer wireFrameRenderer && wireFrameRenderer.hasSelectionBox(actualState)) {
+                            List<Line> outlinesFromModel = wireFrameRenderer.isCombined() ? getOutlinesFromModel(world, actualPos, actualState) : null;
+                            event.addCustomRenderer(new IWireframeRendererHandler(actualPos, outlinesFromModel, wireFrameRenderer, tile, actualState, event.isHighContrast()));
                         }
                     }
+                } else {
+                    //Otherwise, skip getting the tile and just grab the model
+                    List<Line> outlinesFromModel = getOutlinesFromModel(world, actualPos, actualState);
+                    event.addCustomRenderer(new ModelOutlineHandler(actualPos, outlinesFromModel, event.isHighContrast()));
                 }
-            }
-            profiler.pop();
-            if (shouldCancel) {
-                event.setCanceled(true);
             }
         }
-    }*/
+        profiler.pop();
 
-    /*private void renderQuadsWireFrame(Level level, BlockPos pos, BlockState state, VertexConsumer buffer, PoseStack matrix) {
+        ItemStack stack = player.getMainHandItem();
+        if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+            //If we are not holding a configurator, look if we are in the offhand
+            stack = player.getOffhandItem();
+            if (stack.isEmpty() || !(stack.getItem() instanceof ItemConfigurator)) {
+                return;
+            }
+        }
+        profiler.push(ProfilerConstants.CONFIGURABLE_MACHINE);
+        ItemConfigurator.ConfiguratorMode state = ((ItemConfigurator) stack.getItem()).getMode(stack);
+        if (state.isConfigurating()) {
+            TransmissionType type = Objects.requireNonNull(state.getTransmission(), "Configurating state requires transmission type");
+            BlockEntity tile = WorldUtils.getTileEntity(world, pos);
+            if (tile instanceof ISideConfiguration configurable) {
+                TileComponentConfig config = configurable.getConfig();
+                if (config.supports(type)) {
+                    Direction face = rayTraceResult.getDirection();
+                    ConfigInfo configInfo = config.getConfig(type);
+                    if (configInfo != null) {
+                        RelativeSide side = RelativeSide.fromDirections(configurable.getDirection(), face);
+                        if (configInfo.isSideEnabled(side)) {
+                            int transmissionColor = MekanismRenderer.getColorARGB(configInfo.getDataType(side).getColor(), 0.6F);
+                            event.addCustomRenderer(new ConfiguratorOverlayHandler(pos, type, face, transmissionColor));
+                        }
+                    }
+                }
+            }
+        }
+        profiler.pop();
+    }
+
+    private void renderQuadsWireFrame(VertexConsumer buffer, PoseStack matrix, List<Line> lines, boolean isHighContrast) {
+        PoseStack.Pose pose = matrix.last();
+        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
+    }
+
+    @NonNull
+    private static List<Line> getOutlinesFromModel(ClientLevel level, BlockPos pos, BlockState state) {
         List<Line> lines = cachedWireFrames.get(state);
         if (lines == null) {
-            BlockStateModel bakedModel = Minecraft.getInstance().getBlockRenderer().getBlockModel(state);
+            BlockStateModel bakedModel = Minecraft.getInstance().getModelManager().getBlockStateModelSet().get(state);
             lines = Outlines.extract(level, pos, state, bakedModel);
             cachedWireFrames.put(state, lines);
         }
-        PoseStack.Pose pose = matrix.last();
-        renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
-    }*/
+        return lines;
+    }
 
-    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal) {
+    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, boolean isHighContrast) {
         //tmp variables to avoid allocating each loop
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();
-        renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal);
+        renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal, isHighContrast);
     }
 
-    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal) {
+    public static void renderVertexWireFrame(Collection<Line> lines, VertexConsumer buffer, Matrix4f pose, Matrix3f poseNormal, Vector4f pos, Vector3f normal, boolean isHighContrast) {
+        float lineWidth = Minecraft.getInstance().getWindow().getAppropriateLineWidth();
+        //todo - 26.1: vanilla high contrast also does a black render. See net.minecraft.client.renderer.LevelRenderer.renderBlockOutline
+        int color = isHighContrast ? CommonColors.HIGH_CONTRAST_DIAMOND : ARGB.black(102);
         for (Line line : lines) {
             poseNormal.transform(line.nX(), line.nY(), line.nZ(), normal);
 
             pose.transform(line.x1(), line.y1(), line.z1(), 1F, pos);
             buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(0x66000000)
-                  .setNormal(normal.x, normal.y, normal.z);
+                  .setColor(color)
+                  .setNormal(normal.x, normal.y, normal.z)
+                  .setLineWidth(lineWidth);
 
             pose.transform(line.x2(), line.y2(), line.z2(), 1F, pos);
             buffer.addVertex(pos.x, pos.y, pos.z)
-                  .setColor(0x66000000)
-                  .setNormal(normal.x, normal.y, normal.z);
+                  .setColor(color)
+                  .setNormal(normal.x, normal.y, normal.z)
+                  .setLineWidth(lineWidth);
         }
     }
 
@@ -476,7 +484,7 @@ public class RenderTickHandler {
         world.addParticle(MekanismParticleTypes.JETPACK_SMOKE.get(), pos.x, pos.y, pos.z, motion.x, motion.y, motion.z);
     }
 
-    private Model3D getOverlayModel(Direction side, TransmissionType type) {
+    public static Model3D getOverlayModel(Direction side, TransmissionType type) {
         Map<TransmissionType, Model3D> modelMap = cachedOverlays.computeIfAbsent(side, s -> new EnumMap<>(TransmissionType.class));
         Model3D model = modelMap.get(type);
         if (model == null) {
@@ -486,4 +494,71 @@ public class RenderTickHandler {
         }
         return model;
     }
+
+    @NullMarked
+    private class IWireframeRendererHandler implements CustomBlockOutlineRenderer {
+
+        private final BlockPos blockPos;
+        @Nullable
+        private final List<Line> outlinesFromModel;
+        private final IWireFrameRenderer wireFrameRenderer;
+        private final BlockEntity tile;
+        private final BlockState blockState;
+        private final boolean isHighContrast;
+
+        public IWireframeRendererHandler(BlockPos blockPos, @Nullable List<Line> outlinesFromModel, IWireFrameRenderer wireFrameRenderer, BlockEntity tile, BlockState blockState, boolean isHighContrast) {
+            this.blockPos = blockPos;
+            this.outlinesFromModel = outlinesFromModel;
+            this.wireFrameRenderer = wireFrameRenderer;
+            this.tile = tile;
+            this.blockState = blockState;
+            this.isHighContrast = isHighContrast;
+        }
+
+        @Override
+        public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack matrix, boolean translucentPass, LevelRenderState levelRenderState) {
+            if (renderState.isTranslucent() == translucentPass) {
+                matrix.pushPose();
+                Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+                matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
+                //0.4 Alpha
+                VertexConsumer buffer = renderer.getBuffer(RenderTypes.lines());
+                //0.4 Alpha
+                if (outlinesFromModel != null) {
+                    renderQuadsWireFrame(buffer, matrix, outlinesFromModel, isHighContrast);
+                }
+                wireFrameRenderer.renderWireFrame(tile, blockState, MekanismRenderer.getPartialTick(), matrix, buffer, isHighContrast);
+                matrix.popPose();
+            }
+            return true;
+        }
+    }
+
+    @NullMarked
+    private class ModelOutlineHandler implements CustomBlockOutlineRenderer {
+
+        private final BlockPos blockPos;
+        private final List<Line> outlinesFromModel;
+        private final boolean isHighContrast;
+
+        public ModelOutlineHandler(BlockPos blockPos, List<Line> outlinesFromModel, boolean isHighContrast) {
+            this.blockPos = blockPos;
+            this.outlinesFromModel = outlinesFromModel;
+            this.isHighContrast = isHighContrast;
+        }
+
+        @Override
+        public boolean render(BlockOutlineRenderState renderState, MultiBufferSource.BufferSource renderer, PoseStack matrix, boolean translucentPass, LevelRenderState levelRenderState) {
+            if (renderState.isTranslucent() == translucentPass) {
+                matrix.pushPose();
+                Vec3 viewPosition = levelRenderState.cameraRenderState.pos;
+                matrix.translate(blockPos.getX() - viewPosition.x, blockPos.getY() - viewPosition.y, blockPos.getZ() - viewPosition.z);
+                //0.4 Alpha
+                renderQuadsWireFrame(renderer.getBuffer(RenderTypes.lines()), matrix, outlinesFromModel, isHighContrast);
+                matrix.popPose();
+            }
+            return true;
+        }
+    }
+
 }

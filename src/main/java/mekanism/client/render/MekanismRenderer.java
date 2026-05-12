@@ -68,7 +68,7 @@ public class MekanismRenderer {
     //todo - 26.1: all usages of this likely do NOT need to use RenderResizableCuboid in its current form, as tiling a blank texture is... questionable
     public static RenderResizableCuboid.TexturePicker WHITE_ICON_GETTER;
     public static RenderResizableCuboid.TexturePicker teleporterPortal;
-    public static final Map<TransmissionType, TextureAtlasSprite> overlays = new EnumMap<>(TransmissionType.class);
+    public static final Map<TransmissionType, SingleTexturePicker> overlays = new EnumMap<>(TransmissionType.class);
     private static final Map<TextureAtlasSprite, RenderResizableCuboid.TexturePicker> SINGLE_TEXTURE_PICKERS = new IdentityHashMap<>();
     private static final Map<Fluid, ValveTextureGetter> VALVE_FLUID_TEX_CACHE = new HashMap<>();
 
@@ -280,7 +280,7 @@ public class MekanismRenderer {
             return;
         }
         for (TransmissionType type : EnumUtils.TRANSMISSION_TYPES) {
-            overlays.put(type, map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay")));
+            overlays.put(type, new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/" + type.getTransmission() + "_overlay"))));
         }
 
         WHITE_ICON_GETTER = new SingleTexturePicker(map.getSprite(Mekanism.rl("block/overlay/overlay_white")));

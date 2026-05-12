@@ -19,9 +19,13 @@ import org.joml.Vector3fc;
 public class Outlines {
 
     public static List<Line> extract(ClientLevel level, BlockPos pos, BlockState state, BlockStateModel model) {
-        Set<Line> lines = new HashSet<>();
         List<BlockStateModelPart> parts = new ArrayList<>();
         model.collectParts(level, pos, state, level.getRandom(), parts);
+        return extract(parts);
+    }
+
+    public static List<Line> extract(List<BlockStateModelPart> parts) {
+        Set<Line> lines = new HashSet<>();
         for (BlockStateModelPart part : parts) {
             for (Direction direction : EnumUtils.DIRECTIONS) {
                 for (BakedQuad quad : part.getQuads(direction)) {

@@ -80,7 +80,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         return LayerDefinition.create(mesh, textureWidth, textureHeight);
     }
 
-    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer) {
+    protected static void renderPartsAsWireFrame(List<ModelPart> parts, PoseStack poseStack, @NotNull VertexConsumer vertexConsumer, boolean isHighContrast) {
         //tmp variables to avoid allocating for each model part
         Vector4f pos = new Vector4f();
         Vector3f normal = new Vector3f();
@@ -89,30 +89,30 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
         Vector3f v2 = new Vector3f();
         Vector3f v3 = new Vector3f();
         for (ModelPart part : parts) {
-            visit(part, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3);
+            visit(part, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
         }
     }
 
     //Simplified version of ModelPart#visit that also avoids capturing lambdas
     private static void visit(ModelPart part, PoseStack poseStack, VertexConsumer vertexConsumer,
           //Variables that are just used to skip allocating extra times
-          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3) {
+          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, boolean isHighContrast) {
         if (part.visible) {
             if (!part.isEmpty() || !part.children.isEmpty()) {
                 poseStack.pushPose();
                 part.translateAndRotate(poseStack);
-                visitAndRender(part.cubes, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3);
+                visitAndRender(part.cubes, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
                 for (ModelPart child : part.children.values()) {
-                    visit(child, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3);
+                    visit(child, poseStack, vertexConsumer, pos, normal, v0, v1, v2, v3, isHighContrast);
                 }
                 poseStack.popPose();
             }
         }
     }
 
-    private static void visitAndRender(List<ModelPart.Cube> cubes, PoseStack matrix, VertexConsumer buffer,
+    private static void visitAndRender(List<Cube> cubes, PoseStack matrix, VertexConsumer buffer,
           //Variables that are just used to skip allocating extra times
-          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3) {
+          Vector4f pos, Vector3f normal, Vector3f v0, Vector3f v1, Vector3f v2, Vector3f v3, boolean isHighContrast) {
         Matrix4f pose = matrix.last().pose();
         Matrix3f poseNormal = matrix.last().normal();
         Set<Line> lines = new HashSet<>();
@@ -128,7 +128,7 @@ public abstract class MekanismJavaModel<STATE> /*extends Model<STATE>*/ {
                 lines.add(Line.from(v3, v0));
             }
         }
-        RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal);
+        RenderTickHandler.renderVertexWireFrame(lines, buffer, pose, poseNormal, pos, normal, isHighContrast);
     }
 
     private static void setVectorFromVertex(ModelPart.Vertex vertex, Vector3f vector) {

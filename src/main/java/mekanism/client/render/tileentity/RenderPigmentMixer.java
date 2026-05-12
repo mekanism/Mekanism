@@ -6,7 +6,9 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import java.util.List;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.client.model.MekanismModelCache;
 import mekanism.client.render.RenderTickHandler;
+import mekanism.client.render.lib.Outlines;
 import mekanism.client.render.lib.Outlines.Line;
 import mekanism.client.render.tileentity.RenderPigmentMixer.PigmentMixerRenderState;
 import mekanism.common.base.ProfilerConstants;
@@ -103,12 +105,11 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
     }
 
     @Override
-    public void renderWireFrame(BlockEntity tile, float partialTick, PoseStack poseStack, VertexConsumer buffer) {
+    public void renderWireFrame(BlockEntity tile, BlockState blockState, float partialTick, PoseStack poseStack, VertexConsumer buffer, boolean isHighContrast) {
         if (tile instanceof TileEntityPigmentMixer mixer) {
-            //TODO - 26.1: rendering
-            /*if (lines == null) {
-                lines = Outlines.extract(tile.getLevel(), tile.getBlockPos(), state, MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel());
-            }*/
+            if (lines == null) {
+                lines = Outlines.extract(MekanismModelCache.INSTANCE.PIGMENT_MIXER_SHAFT.getBakedModel());
+            }
             poseStack.pushPose();
             switch (mixer.getDirection()) {
                 case NORTH -> poseStack.translate(7 / 16F, 0, 6 / 16F);
@@ -121,7 +122,7 @@ public class RenderPigmentMixer extends MekanismTileEntityRenderer<TileEntityPig
             poseStack.mulPose(Axis.YN.rotationDegrees((tile.getLevel().getGameTime() + partialTick) * SHAFT_SPEED % 360));
             poseStack.translate(-shift, 0, -shift);
             Pose pose = poseStack.last();
-            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal());
+            RenderTickHandler.renderVertexWireFrame(lines, buffer, pose.pose(), pose.normal(), isHighContrast);
             poseStack.popPose();
         }
     }
