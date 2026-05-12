@@ -1,4 +1,4 @@
-// 26.1.2	2026-05-12T12:00:16.3969857	Model Definitions - mekanism
+// 26.1.2	2026-05-12T14:53:51.508966	Model Definitions - mekanism
 2e09b81571bcad7a3e925d2b03b1ec1dd0f9b71f assets/mekanism/blockstates/advanced_energy_cube.json
 00c0d0e76b525301d8b7a1adc5dcb5d3807c4d38 assets/mekanism/blockstates/advanced_logistical_transporter.json
 84712d3beb4b5acb6a471b330f3bfa9dcf4de4fa assets/mekanism/blockstates/advanced_mechanical_pipe.json
@@ -349,7 +349,7 @@ a32a281771ba65ebbe393aa93c8f9fdf47594ab3 assets/mekanism/items/pellet_antimatter
 8a8d334f59c5b50daeea7cb2ecec392144b2ea8a assets/mekanism/items/pellet_plutonium.json
 51a0bc4d3bd34a512cec21ffd62bed6154d2f78d assets/mekanism/items/pellet_polonium.json
 215aa2f59abff974a2e8a6ed28ddd4eecca5e49e assets/mekanism/items/personal_barrel.json
-2e200b05a4be1d924d5e1aebdda57f3f4cae9ae6 assets/mekanism/items/personal_chest.json
+8276c84a9c6e78bbb21803610638289cadc134c6 assets/mekanism/items/personal_chest.json
 76168a29914ac7bd0d6ba97f3d7e3307b94b2485 assets/mekanism/items/pigment_extractor.json
 5724c939677a6ed1ce6ee5a6a0229e0bae0ad927 assets/mekanism/items/pigment_mixer.json
 6fa01761f71258b81591e29e258172fb376e5a43 assets/mekanism/items/portable_qio_dashboard.json

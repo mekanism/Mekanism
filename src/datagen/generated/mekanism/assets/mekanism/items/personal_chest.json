@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/personal_chest"
+    "model": "mekanism:item/personal_chest"
   }
 }
