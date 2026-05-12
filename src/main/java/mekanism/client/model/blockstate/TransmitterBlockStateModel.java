@@ -51,7 +51,7 @@ import org.joml.Vector3f;
 
 public class TransmitterBlockStateModel implements DynamicBlockStateModel {
 
-    private static final Set<String> ALL_PART_GROUPS = Direction.stream()
+    public static final Set<String> ALL_PART_GROUPS = Direction.stream()
           .flatMap(direction -> Arrays.stream(VisualConnectionStatus.values())
                 .map(connectionType -> getPartName(direction, connectionType))
           )

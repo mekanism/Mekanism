@@ -1,0 +1,29 @@
+{
+  "parent": "mekanism:block/transmitter/small/thermodynamic_conductor/basic",
+  "visibility": {
+    "downNONE": true,
+    "downNORMAL": false,
+    "downPULL": false,
+    "downPUSH": false,
+    "eastNONE": true,
+    "eastNORMAL": false,
+    "eastPULL": false,
+    "eastPUSH": false,
+    "northNONE": true,
+    "northNORMAL": false,
+    "northPULL": false,
+    "northPUSH": false,
+    "southNONE": true,
+    "southNORMAL": false,
+    "southPULL": false,
+    "southPUSH": false,
+    "upNONE": true,
+    "upNORMAL": false,
+    "upPULL": false,
+    "upPUSH": false,
+    "westNONE": true,
+    "westNORMAL": false,
+    "westPULL": false,
+    "westPUSH": false
+  }
+}

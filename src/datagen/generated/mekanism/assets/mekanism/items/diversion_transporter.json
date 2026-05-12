@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/diversion_transporter"
+    "model": "mekanism:item/diversion_transporter"
   }
 }

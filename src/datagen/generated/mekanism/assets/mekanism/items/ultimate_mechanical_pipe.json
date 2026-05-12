@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/ultimate_mechanical_pipe"
+    "model": "mekanism:item/ultimate_mechanical_pipe"
   }
 }

@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/restrictive_transporter"
+    "model": "mekanism:item/restrictive_transporter"
   }
 }

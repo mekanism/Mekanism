@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/basic_thermodynamic_conductor"
+    "model": "mekanism:item/basic_thermodynamic_conductor"
   }
 }

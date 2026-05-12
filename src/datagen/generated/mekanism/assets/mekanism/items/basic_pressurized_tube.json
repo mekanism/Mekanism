@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/basic_pressurized_tube"
+    "model": "mekanism:item/basic_pressurized_tube"
   }
 }

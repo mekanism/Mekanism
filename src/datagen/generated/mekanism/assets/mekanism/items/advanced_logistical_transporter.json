@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/advanced_logistical_transporter"
+    "model": "mekanism:item/advanced_logistical_transporter"
   }
 }

@@ -1,7 +1,9 @@
 package mekanism.client.model;
 
 import com.google.common.collect.Table;
+import com.google.gson.JsonObject;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -9,6 +11,7 @@ import mekanism.api.tier.BaseTier;
 import mekanism.client.model.blockstate.EnergyCubeModel;
 import mekanism.client.model.blockstate.QIORedstoneAdapterModel;
 import mekanism.client.model.blockstate.TransmitterBlockStateModel;
+import mekanism.client.model.data.TransmitterModelData.VisualConnectionStatus;
 import mekanism.client.model.itemtint.ColorComponent;
 import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
@@ -84,6 +87,15 @@ public class MekanismModelProvider extends BaseModelProvider {
     public static final ModelTemplate COLORED_CUBE = new ModelTemplate(Optional.of(Mekanism.rl("block/colored_cube")), Optional.empty(), TextureSlot.ALL);
     /// Used to skip a tint index
     private static final Constant IGNORE_LAYER = new Constant(-1);
+    private static final Map<String, Boolean> TRANSMITTER_ITEM_PART_VISIBILITY = new HashMap<>();
+    private static final TextureMapping NO_TEXTURES = new TextureMapping();
+
+    static {
+        //set all to false as base, but NONE parts to true
+        for (String partGroup : TransmitterBlockStateModel.ALL_PART_GROUPS) {
+            TRANSMITTER_ITEM_PART_VISIBILITY.put(partGroup, partGroup.contains(VisualConnectionStatus.NONE.partName()));
+        }
+    }
 
     public MekanismModelProvider(PackOutput packOutput, ResourceManager clientResources) {
         super(packOutput, Mekanism.MODID, clientResources);
@@ -483,7 +495,8 @@ public class MekanismModelProvider extends BaseModelProvider {
                     multiVariant
               )
         );
-        //todo item model
+        ModelTemplate template = new TransmitterItemModelTemplate(baseModel.modelLocation(), TRANSMITTER_ITEM_PART_VISIBILITY);
+        blockModels.itemModelOutput.accept(registryObject.asItem(), ItemModelUtils.plainModel(template.create(registryObject.asItem(), NO_TEXTURES, blockModels.modelOutput)));
     }
 
     private void registerManualItemModels(ItemModelGenerators itemModels) {
@@ -770,6 +783,29 @@ public class MekanismModelProvider extends BaseModelProvider {
         @Override
         public CustomUnbakedBlockStateModel toUnbaked() {
             return this.blockStateModel;
+        }
+    }
+
+    //TODO - 26.1: class can be replaced with ExtendedModelTemplateBuilder if https://github.com/neoforged/NeoForge/pull/3166 is merged
+    private static class TransmitterItemModelTemplate extends ModelTemplate {
+
+        private final Map<String, Boolean> partVisibility;
+
+        public TransmitterItemModelTemplate(Identifier parent, Map<String, Boolean> partVisibility) {
+            super(Optional.of(parent), Optional.empty());
+            this.partVisibility = partVisibility;
+        }
+
+        @Override
+        public JsonObject createBaseTemplate(Identifier target, Map<TextureSlot, Material> slots) {
+            JsonObject root = super.createBaseTemplate(target, slots);
+            JsonObject visibilityJson = new JsonObject();
+            for (Map.Entry<String, Boolean> entry : partVisibility.entrySet()) {
+                visibilityJson.addProperty(entry.getKey(), entry.getValue());
+            }
+            root.add("visibility", visibilityJson);
+
+            return root;
         }
     }
 }

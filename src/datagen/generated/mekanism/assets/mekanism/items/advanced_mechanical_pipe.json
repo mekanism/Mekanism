@@ -1,6 +1,6 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "mekanism:block/advanced_mechanical_pipe"
+    "model": "mekanism:item/advanced_mechanical_pipe"
   }
 }
