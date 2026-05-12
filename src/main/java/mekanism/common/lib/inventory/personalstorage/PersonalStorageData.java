@@ -20,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 class PersonalStorageData extends SavedData {
     
     private static final Codec<Map<UUID, PersonalStorageItemInventory>> MAP_CODEC = Codec.unboundedMap(
-          UUIDUtil.CODEC,
+          UUIDUtil.STRING_CODEC,
           PersonalStorageItemInventory.CODEC
     ).promotePartial(error -> Mekanism.logger.error("Some Personal Storage items failed: {}", error));
 
