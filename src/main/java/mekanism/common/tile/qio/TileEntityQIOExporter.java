@@ -13,7 +13,6 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.ToIntFunction;
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
@@ -251,7 +250,13 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     @Override
     public boolean canSendHome(@NotNull ItemStack stack) {
         QIOFrequency frequency = getQIOFrequency();
-        return frequency != null && frequency.massInsert(stack, stack.count(), Action.SIMULATE) > 0;
+        if (frequency == null) {
+            return false;
+        }
+        //TODO - 26.1: Do we ever call this method from within a transactional context?
+        try (Transaction simulation = Transaction.openRoot()) {
+            return frequency.massInsert(ItemResource.of(stack), stack.count(), simulation) > 0;
+        }
     }
 
     @NotNull
@@ -262,11 +267,15 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         }
         QIOFrequency frequency = getQIOFrequency();
         if (frequency != null) {
-            for (ItemData data : request) {
-                ItemResource itemType = data.getItemType();
-                int inserted = frequency.addItem(itemType, data.getTotalCount());
-                if (inserted > 0) {
-                    return request.createResponse(itemType.toStack(inserted), data);
+            //TODO - 26.1: Do we ever call this method from within a transactional context?
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (ItemData data : request) {
+                    ItemResource itemType = data.getItemType();
+                    int inserted = frequency.addItem(itemType, data.getTotalCount(), transaction);
+                    if (inserted > 0) {
+                        transaction.commit();
+                        return request.createResponse(itemType.toStack(inserted), data);
+                    }
                 }
             }
         }
@@ -379,13 +388,16 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 }
             }
             // actually remove the items from the QIO frequency
-            for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(removed); iterator.hasNext(); ) {
-                Object2IntMap.Entry<ItemResource> entry = iterator.next();
-                int amount = entry.getIntValue();
-                int ret = freq.removeByType(entry.getKey(), amount);
-                if (ret != amount) {
-                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret, amount);
+            try (Transaction transaction = Transaction.openRoot()) {
+                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(removed); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<ItemResource> entry = iterator.next();
+                    int amount = entry.getIntValue();
+                    int ret = freq.removeByType(entry.getKey(), amount, transaction);
+                    if (ret != amount) {//TODO - 26.1: Can we roll back a transaction instead of just logging an error
+                        Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret, amount);
+                    }
                 }
+                transaction.commit();
             }
         }
     }

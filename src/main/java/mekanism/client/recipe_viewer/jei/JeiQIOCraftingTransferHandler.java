@@ -2,7 +2,6 @@ package mekanism.client.recipe_viewer.jei;
 
 import java.util.List;
 import java.util.Optional;
-import mekanism.api.Action;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeSlot;
@@ -61,7 +60,7 @@ public class JeiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     public IRecipeTransferError transferRecipe(CONTAINER container, RecipeHolder<CraftingRecipe> recipeHolder, IRecipeSlotsView recipeSlots, Player player,
           boolean maxTransfer, boolean doTransfer) {
         return QIOCraftingTransferHandler.transferRecipe(new JeiRecipeInfo(container, recipeHolder, recipeSlots, player, maxTransfer ? Integer.MAX_VALUE : 1, handlerHelper, stackHelper),
-              Action.get(doTransfer));
+              doTransfer);
     }
 
     private record JeiRecipeInfo(

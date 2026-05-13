@@ -115,7 +115,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                 if (extractable == 0) {//Nothing can be extracted, skip it
                     continue;
                 }
-                int inserted = freq.addItem(type, extractable);
+                int inserted = freq.addItem(type, extractable, transaction);
                 if (extractable == inserted) {
                     //Everything from our initial extraction could be inserted, just commit the transaction as the changes made are the ones we want
                     transaction.commit();
@@ -124,6 +124,8 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
                     countAdded += extractable;
                     continue;
                 }
+                //TODO - 26.1: Re-evaluate this? as both the extraction and the insertion are rolled back at this point
+                // So I think we still need to do *something*
                 amountInserted = extractable - inserted;
             }
             if (amountInserted > 0) {

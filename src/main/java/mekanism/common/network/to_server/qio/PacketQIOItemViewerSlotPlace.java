@@ -11,6 +11,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket {
@@ -37,10 +38,13 @@ public record PacketQIOItemViewerSlotPlace(int count) implements IMekanismPacket
                     ItemResource curType = ItemResource.of(curStack);
                     //Calculate how much we are adding, whether it is only part of the stack or the full stack
                     int toAdd = Math.min(count, curStack.count());
-                    int placed = freq.addItem(curType, toAdd);
-                    if (placed > 0) {
-                        //If we added any from the held stack, shrink the held stack (which will cause it to be updated on the client)
-                        curStack.shrink(placed);
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        int placed = freq.addItem(curType, toAdd, transaction);
+                        if (placed > 0) {
+                            //If we added any from the held stack, shrink the held stack (which will cause it to be updated on the client)
+                            curStack.shrink(placed);
+                            transaction.commit();
+                        }
                     }
                 }
             }

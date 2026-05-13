@@ -8,16 +8,11 @@ import it.unimi.dsi.fastutil.bytes.Byte2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
@@ -28,8 +23,8 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.slot.HotBarSlot;
-import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
+import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
@@ -154,7 +149,7 @@ public class QIOServerCraftingTransferHandler {
         CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest, true).input();
         if (!recipe.matches(dummy, player.level())) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
-        } else if (!hasRoomToShuffle()) {
+        } else if (!hasRoomToShuffle(transaction)) {
             //Note: Uses debug logging level as there are a couple cases this might not be 100% accurate on the client side
             Mekanism.logger.debug("Received transfer request from: {}, but there is not enough room to shuffle items around for the requested recipe: {}.",
                   player, recipeID);
@@ -293,7 +288,7 @@ public class QIOServerCraftingTransferHandler {
      * @implNote As it simplifies the logic (and is what we had initially written), this simulates if we can shuffle with the player inventory before checking the
      * frequency. (I believe this is also more efficient than doing the simulated checks against the frequency)
      */
-    private boolean hasRoomToShuffle() {
+    private boolean hasRoomToShuffle(TransactionContext transaction) {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down
         // on how many times we have to check if things can stack
         Object2IntMap<ItemResource> leftOverInput = new Object2IntArrayMap<>(9);
@@ -323,94 +318,13 @@ public class QIOServerCraftingTransferHandler {
             if (!stillLeftOver.isEmpty() && frequency != null) {
                 //If we still have left over things try adding them to the frequency
                 // Note: We validate the frequency is not null, even though it shouldn't be null if we have anything still left over
-                //We start by doing a "precheck" to see if it is potentially even possible to fit the contents in based on type counts
-                //Note: We calculate these numbers as a difference so that it is easier to make sure none of the numbers accidentally overflow
-                int availableItemTypes = frequency.getTotalItemTypeCapacity() - frequency.getTotalItemTypes(false);
-                long availableItemSpace = frequency.getTotalItemCountCapacity() - frequency.getTotalItemCount();
-                for (FrequencySlotData slotData : frequencyAvailableItems.values()) {
-                    //Free up however much space as we used of the item
-                    availableItemSpace += slotData.getUsed();
-                    if (slotData.getAvailable() == 0) {
-                        //If we used all that is available, we need to also free up an item type
-                        //Note: Given we can't use as much as a full integer as we have nine slots that stack up to a max of Item.ABSOLUTE_MAX_STACK_SIZE
-                        // if we get down to zero then we know that we actually used it all, and it isn't just the case that we
-                        // think we are at zero because of clamping a long to an int
-                        availableItemTypes++;
-                    }
-                }
-                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
-                    Object2IntMap.Entry<ItemResource> entry = iterator.next();
-                    availableItemSpace -= entry.getIntValue();
-                    if (availableItemSpace <= 0) {
-                        //No room for all our items, fail
-                        return false;
-                    }
-                    if (frequency.isStoring(entry.getKey())) {
-                        //It is stored, check to make sure it isn't a type we are removing fully
-                        UUID uuid = QIOGlobalItemLookup.instance().getUUIDForType(entry.getKey());
-                        if (uuid != null) {
-                            FrequencySlotData slotData = frequencyAvailableItems.get(uuid);
-                            if (slotData != null && slotData.getAvailable() == 0) {
-                                // if it is, then we need to reclaim the item type as being available
-                                availableItemTypes--;
-                                if (availableItemTypes <= 0) {
-                                    //Not enough room for types
-                                    return false;
-                                }
-                            }
-                        }
-                    } else {
-                        //It is not stored, we need to use an item type up
-                        availableItemTypes--;
-                        if (availableItemTypes <= 0) {
-                            //Not enough room for types
-                            return false;
-                        }
-                    }
-                }
-                Collection<QIODriveData> drives = frequency.getAllDrives();
-                List<SimulatedQIODrive> simulatedDrives = new ArrayList<>(drives.size());
-                for (QIODriveData drive : drives) {
-                    simulatedDrives.add(new SimulatedQIODrive(drive));
-                }
-                for (Map.Entry<UUID, FrequencySlotData> entry : frequencyAvailableItems.entrySet()) {
-                    FrequencySlotData slotData = entry.getValue();
-                    ItemResource type = slotData.getType();
-                    if (type != null) {
-                        //If there is something actually stored in the frequency for this UUID, we need to try and remove it from our simulated drives
-                        int toRemove = slotData.getUsed();
-                        for (SimulatedQIODrive drive : simulatedDrives) {
-                            toRemove = drive.remove(type, toRemove);
-                            if (toRemove == 0) {
-                                break;
-                            }
-                        }
-                    }
-                }
-                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
-                    Object2IntMap.Entry<ItemResource> entry = iterator.next();
-                    ItemResource item = entry.getKey();
-                    int toAdd = entry.getIntValue();
-                    //Start by trying to add to ones it can stack with
-                    for (SimulatedQIODrive drive : simulatedDrives) {
-                        toAdd = drive.add(item, toAdd, true);
-                        if (toAdd == 0) {
-                            break;
-                        }
-                    }
-                    //Note: Ideally the adding to empty slots would be done afterwards for keeping it as compact as possible
-                    // but due to how our actual adding to the slots works, the way it is here ends up actually having a more
-                    // accurate simulation result
-                    if (toAdd > 0) {
-                        //And then add to empty slots if we couldn't add it all in a way that stacks
-                        for (SimulatedQIODrive drive : simulatedDrives) {
-                            toAdd = drive.add(item, toAdd, false);
-                            if (toAdd == 0) {
-                                break;
-                            }
-                        }
-                        if (toAdd > 0) {
-                            //There are some items we can't fit anywhere, fail
+                //TODO - 26.1: Re-evaluate this, and see about changing the simulated inventory to be simulated with transactions
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                        Object2IntMap.Entry<ItemResource> entry = iterator.next();
+                        int toAdd = entry.getIntValue();
+                        if (frequency.addItem(entry.getKey(), toAdd, simulation) < toAdd) {
+                            //No room for all our items, fail
                             return false;
                         }
                     }
@@ -439,10 +353,10 @@ public class QIOServerCraftingTransferHandler {
                         return;
                     } else if (!frequency.isStoring(itemType)) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, could not find stored item with UUID: {}. "
-                                             + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
+                                                          + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
                         return;
                     }
-                    amountExtracted = frequency.removeByType(itemType, source.getUsed());
+                    amountExtracted = frequency.removeByType(itemType, source.getUsed(), transaction);
                     if (amountExtracted == 0) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, but could not extract item: {} from the QIO.",
                               player, recipeID, itemType);
@@ -476,7 +390,7 @@ public class QIOServerCraftingTransferHandler {
                     }
                     if (amountExtracted == 0) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, could not extract item from {} slot: {}. "
-                                             + "This likely means that more of it was requested than is stored.", player, recipeID, slotType, actualSlot);
+                                                          + "This likely means that more of it was requested than is stored.", player, recipeID, slotType, actualSlot);
                         return;
                     } else if (amountExtracted < source.getUsed()) {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} from {} slot: {}. "
@@ -520,7 +434,7 @@ public class QIOServerCraftingTransferHandler {
                     remainingCraftingGridContents.put(slot, resource.toStack(extracted));
                 } else {
                     bail(targetContents, remainingCraftingGridContents, transaction, "Received transfer request from: {}, for: {}, but failed to remove items from crafting "
-                                                                        + "input slot: {}. This should not be possible as it should have been caught by an earlier check.",
+                                                                                     + "input slot: {}. This should not be possible as it should have been caught by an earlier check.",
                           player, recipeID, slot);
                     return;
                 }
@@ -569,7 +483,7 @@ public class QIOServerCraftingTransferHandler {
                     if (amountToInsert > 0) {
                         //If we couldn't insert all of it, then try to put the remaining items in the frequency
                         if (frequency != null) {
-                            amountToInsert -= frequency.addItem(itemType, amountToInsert);
+                            amountToInsert -= frequency.addItem(itemType, amountToInsert, transaction);
                             if (amountToInsert == 0) {//If we inserted everything skip to the next item
                                 continue;
                             }
@@ -596,7 +510,7 @@ public class QIOServerCraftingTransferHandler {
             //If we have any contents we wanted to move remaining try to return them, in theory
             // this should never happen but in case it does make sure we don't void any items
             bail(targetContents, transaction, "Received transfer request from: {}, for: {}, but ended up with {} items that could not be transferred into "
-                                 + "the proper crafting grid slot. This should not be possible as it should have been caught during simulation.", player, recipeID,
+                                              + "the proper crafting grid slot. This should not be possible as it should have been caught during simulation.", player, recipeID,
                   targetContents.size());
         }
     }
@@ -652,7 +566,7 @@ public class QIOServerCraftingTransferHandler {
         if (amountToInsert > 0) {
             //If we couldn't insert it, then try to put the remaining items in the frequency
             if (frequency != null) {
-                amountToInsert -= frequency.addItem(itemType, amountToInsert);
+                amountToInsert -= frequency.addItem(itemType, amountToInsert, transaction);
             }
             if (amountToInsert > 0) {
                 //If we couldn't insert it all, either because there was no frequency or it didn't have room for it all
@@ -685,74 +599,6 @@ public class QIOServerCraftingTransferHandler {
     private int fail(String format, Object... args) {
         Mekanism.logger.warn(format, args);
         return -1;
-    }
-
-    private static class SimulatedQIODrive {
-
-        /**
-         * Pointer to the actual map from the real QIODrive. Do not modify this map, it is mainly to reduce the need for doing potentially massive map copies.
-         */
-        private final Object2LongMap<ItemResource> sourceItemMap;
-        private Set<ItemResource> removedTypes;
-        private int availableItemTypes;
-        private long availableItemSpace;
-
-        public SimulatedQIODrive(QIODriveData sourceDrive) {
-            this.sourceItemMap = sourceDrive.getItemMap();
-            this.availableItemSpace = sourceDrive.getCountCapacity() - sourceDrive.getTotalCount();
-            this.availableItemTypes = sourceDrive.getTypeCapacity() - sourceDrive.getTotalTypes();
-        }
-
-        public int remove(ItemResource item, int count) {
-            long stored = sourceItemMap.getOrDefault(item, 0);
-            if (stored == 0) {
-                return count;
-            }
-            if (stored <= count) {
-                //If we have less stored then we are trying to remove
-                if (removedTypes == null) {
-                    removedTypes = new HashSet<>();
-                }
-                // remove the type, and refund the amount of space we get from removing it
-                removedTypes.add(item);
-                availableItemTypes++;
-                availableItemSpace += stored;
-                return count - (int) stored;
-            }
-            availableItemSpace += count;
-            return 0;
-        }
-
-        public int add(ItemResource item, int count, boolean mustContain) {
-            if (availableItemSpace == 0) {
-                //No space, fail
-                return count;
-            }
-            //Note: We don't need to accurately keep track of the item types we add as we only have it happening once,
-            // and if we fill it up on the first go around then we would be skipping it from there being no space available
-            boolean contains = sourceItemMap.containsKey(item) && (removedTypes == null || !removedTypes.contains(item));
-            if (mustContain != contains) {
-                //If we don't have the item and are only adding if we do, or vice versa, just return we didn't add anything
-                return count;
-            }
-            if (!contains) {
-                if (availableItemTypes == 0) {
-                    //If we don't contain it and no space for new item types, fail
-                    return count;
-                }
-                //If we don't contain it, we need to reduce our type count
-                availableItemTypes--;
-            }
-            if (count < availableItemSpace) {
-                //We can fit all of it
-                availableItemSpace -= count;
-                return 0;
-            }
-            //We can't fit it all so use up all the space we can
-            count -= (int) availableItemSpace;
-            availableItemSpace = 0;
-            return count;
-        }
     }
 
     private abstract static class ItemData {
@@ -806,9 +652,6 @@ public class QIOServerCraftingTransferHandler {
 
         public static final FrequencySlotData EMPTY = new FrequencySlotData(null, 0);
 
-        /**
-         * @apiNote Don't mutate this stack
-         */
         private final ItemResource type;
         private int used;
 

@@ -341,7 +341,8 @@ public class QIOCraftingWindow implements IContentsListener {
                             }
                         }
                         try (Transaction transaction = Transaction.openRoot()) {
-                            int inserted = frequency.addItem(slotResource, extracted);
+                            int inserted = frequency.addItem(slotResource, extracted, transaction);
+                            //TODO - 26.1: Validate that we extracted the same amount as we inserted?
                             inputSlot.extract(slotResource, inserted, transaction, AutomationType.INTERNAL);
                             transaction.commit();
                         }
@@ -469,8 +470,7 @@ public class QIOCraftingWindow implements IContentsListener {
                         } else {
                             //Otherwise, try and remove the stack from the QIO frequency
                             ItemResource current = inputSlot.getResource();
-                            int removed = frequency.removeByType(current, 1);
-                            if (removed == 0) {
+                            if (frequency.removeByType(current, 1, transaction) == 0) {
                                 //If we were not able to remove any from the frequency, remove it from the crafting grid
                                 useInput(inputSlot, transaction);
                                 // see if we have another valid input stored in the frequency and replace it with it if we do
@@ -568,8 +568,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     } else {
                         //Otherwise, try and remove the stack from the QIO frequency
                         ItemResource current = inputSlot.getResource();
-                        int removed = frequency.removeByType(current, 1);
-                        if (removed == 0) {
+                        if (frequency.removeByType(current, 1, transaction) == 0) {
                             //If we were not able to remove any from the frequency, remove it from the crafting grid
                             useInput(inputSlot, transaction);
                             // see if we have another valid input stored in the frequency and replace it with it if we do
@@ -614,8 +613,7 @@ public class QIOCraftingWindow implements IContentsListener {
             if (toInsert > 0) {
                 //failing that try adding it to the qio frequency if there is one
                 if (frequency != null) {
-                    //TODO - 26.1: Make this transactional in case we need to roll back
-                    toInsert -= frequency.addItem(itemType, toInsert);
+                    toInsert -= frequency.addItem(itemType, toInsert, transaction);
                     if (toInsert == 0) {
                         //If we added it all to the QIO, don't bother trying to drop it
                         return;
@@ -844,11 +842,12 @@ public class QIOCraftingWindow implements IContentsListener {
                 try (Transaction subTransaction = Transaction.open(transaction)) {
                     int inserted = slot.insert(replacementType, 1, subTransaction, AutomationType.INTERNAL);
                     if (inserted == 1) {
-                        int removed = frequency.removeByType(replacementType, 1);
-                        if (removed == 1) {
+                        if (frequency.removeByType(replacementType, 1, subTransaction) == 1) {
                             //We were able to remove the one item we tried to, so commit our insertion to the slot
                             //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player
                             // that something about the slot changed.
+                            //TODO - 26.1: Validate that this commit is appropriate
+                            subTransaction.commit();
                             return true;
                         }
                     }

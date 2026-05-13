@@ -23,7 +23,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import mekanism.api.Action;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.config.MekanismConfig;
@@ -89,7 +88,7 @@ public class QIOCraftingTransferHandler {
     }
 
     @Nullable
-    public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, Action action) {
+    public static <RESULT, SLOT extends RVRecipeSlot, ITEM_UUID> RESULT transferRecipe(RVRecipeInfo<RESULT, SLOT, ITEM_UUID> recipeHelper, boolean execute) {
         if (recipeHelper.transferAmount() < 1) {
             //Short circuit if for some reason our caller is trying to transfer an invalid amount of items
             return recipeHelper.createInternalError();
@@ -105,7 +104,7 @@ public class QIOCraftingTransferHandler {
         QIOCraftingWindow craftingWindow = container.getCraftingWindow(selectedCraftingGrid);
         //Note: This variable is only used for when doTransfer is false
         byte nonEmptyCraftingSlots = 0;
-        if (action.simulate()) {
+        if (!execute) {
             List<ItemStack> dummy = new ArrayList<>(9);
             for (int slot = 0; slot < 9; slot++) {
                 ItemResource inputStack = craftingWindow.getInputSlot(slot).getResource();
@@ -274,7 +273,7 @@ public class QIOCraftingTransferHandler {
                 return recipeHelper.createMissingSlotsError(missing);
             }
         }
-        if (action.execute() || (nonEmptyCraftingSlots > 0 && nonEmptyCraftingSlots >= qioTransferHelper.getEmptyInventorySlots())) {
+        if (execute || (nonEmptyCraftingSlots > 0 && nonEmptyCraftingSlots >= qioTransferHelper.getEmptyInventorySlots())) {
             //Note: If all our crafting inventory slots are not empty, and we don't "obviously" have enough room due to empty slots,
             // then we need to calculate how much we can actually transfer and where it is coming from so that we are able to calculate
             // if we actually have enough room to shuffle the items around, even though otherwise we would only need to do these
@@ -345,7 +344,7 @@ public class QIOCraftingTransferHandler {
             if (!hasRoomToShuffle(qioTransferHelper, frequency, craftingWindow, container.getHotBarSlots(), container.getMainInventorySlots(), shuffleLookup)) {
                 return recipeHelper.createNoRoomError();
             }
-            if (action.execute()) {
+            if (execute) {
                 //Note: We skip doing a validation check on if the recipe matches or not, as there is a chance that for some recipes
                 // things may not fully be accurate on the client side with the stacks that JEI lets us know match the recipe, as
                 // they may require extra NBT that is server side only.

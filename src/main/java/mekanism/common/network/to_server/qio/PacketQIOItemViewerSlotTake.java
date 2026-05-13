@@ -15,6 +15,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements IMekanismPacket {
@@ -50,13 +51,16 @@ public record PacketQIOItemViewerSlotTake(UUID typeUUID, int count) implements I
                     // before processing our response to the first one, but we need to validate it to make sure it can actually stack
                     // so that we can avoid accidentally voiding any items
                     if (toRemove > 0 && InventoryUtils.areItemsStackable(curStack, itemType)) {
-                        int extracted = freq.removeByType(itemType, toRemove);
-                        if (extracted > 0) {
-                            if (curStack.isEmpty()) {
-                                container.setCarried(itemType.toStack(extracted));
-                            } else {
-                                //If we removed any from the held stack, shrink the held stack (which will cause it to be updated on the client)
-                                curStack.grow(extracted);
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            int extracted = freq.removeByType(itemType, toRemove, transaction);
+                            if (extracted > 0) {
+                                if (curStack.isEmpty()) {
+                                    container.setCarried(itemType.toStack(extracted));
+                                } else {
+                                    //If we removed any from the held stack, shrink the held stack (which will cause it to be updated on the client)
+                                    curStack.grow(extracted);
+                                }
+                                transaction.commit();
                             }
                         }
                     }

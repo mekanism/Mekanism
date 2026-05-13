@@ -62,6 +62,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.common.TranslatableEnum;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
@@ -252,26 +253,26 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         lastStack = stack;
     }
 
-    private void doDoubleClickTransfer(Player player) {
+    private void doDoubleClickTransfer(Player player, TransactionContext transaction) {
         QIOFrequency freq = getFrequency();
         if (freq != null) {
             for (TransactionalSlot slot : mainInventorySlots) {
-                handleDoDoubleClickTransfer(player, slot, freq);
+                handleDoDoubleClickTransfer(player, slot, freq, transaction);
             }
             for (TransactionalSlot slot : hotBarSlots) {
-                handleDoDoubleClickTransfer(player, slot, freq);
+                handleDoDoubleClickTransfer(player, slot, freq, transaction);
             }
         }
     }
 
-    private void handleDoDoubleClickTransfer(Player player, TransactionalSlot slot, QIOFrequency freq) {
+    private void handleDoDoubleClickTransfer(Player player, TransactionalSlot slot, QIOFrequency freq, TransactionContext transaction) {
         if (slot.hasItem() && slot.mayPickup(player)) {
             //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotItem = slot.getItem();
             ItemResource slotType = ItemResource.of(slotItem);
             if (InventoryUtils.areItemsStackable(lastStack, slotType)) {
-                transferSuccess(slot, player, freq.addItem(slotType, slotItem.count()));
+                transferSuccess(slot, player, freq.addItem(slotType, slotItem.count(), transaction));
             }
         }
     }
@@ -298,63 +299,66 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
     @Override
     public ItemStack quickMoveStack(@NotNull Player player, int slotID) {
         Slot currentSlot = slots.get(slotID);
-        switch (currentSlot) {
-            case null -> {
-                return ItemStack.EMPTY;
-            }
-            case VirtualCraftingOutputSlot virtualSlot -> {
-                //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
-                return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
-            }
-            case InventoryContainerSlot inventoryContainerSlot -> {
-                //Otherwise, if we are an inventory container slot (crafting input slots in this case)
-                // use our normal handling to attempt and transfer the contents to the player's inventory
-                return super.quickMoveStack(player, slotID);
-            }
-            default -> {
-            }
+        if (currentSlot == null) {
+            return ItemStack.EMPTY;
+        } else if (currentSlot instanceof VirtualCraftingOutputSlot virtualSlot) {
+            //If we are clicking an output crafting slot, allow the slot itself to handle the transferring
+            return virtualSlot.shiftClickSlot(player, hotBarSlots, mainInventorySlots);
+        } else if (currentSlot instanceof InventoryContainerSlot) {
+            //Otherwise, if we are an inventory container slot (crafting input slots in this case)
+            // use our normal handling to attempt and transfer the contents to the player's inventory
+            return super.quickMoveStack(player, slotID);
         }
-        // special handling for shift-clicking into GUI
-        if (!player.level().isClientSide()) {
-            //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
-            // can be extracted at once so even if they somehow have an oversized stack it will be fine
-            ItemStack slotStack = currentSlot.getItem();
-            if (!shiftClickIntoFrequency()) {
-                Optional<ItemStack> windowHandling = tryTransferToWindow(player, currentSlot, slotStack);
-                if (windowHandling.isPresent()) {
-                    return windowHandling.get();
-                }
-            }
-            QIOFrequency frequency = getFrequency();
-            if (frequency != null) {
-                if (!slotStack.isEmpty()) {
-                    //There is an item in the slot
-                    int inserted = frequency.addItem(ItemResource.of(slotStack), slotStack.count());
-                    if (inserted > 0) {
-                        //We were able to insert some of it
-                        //Make sure that we copy it so that we aren't just pointing to the reference of it
-                        setTransferTracker(slotStack.copy(), slotID);
-                        return transferSuccess(currentSlot, player, inserted);
+        try (Transaction transaction = Transaction.openRoot()) {
+            // special handling for shift-clicking into GUI
+            if (!player.level().isClientSide()) {
+                //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
+                // can be extracted at once so even if they somehow have an oversized stack it will be fine
+                ItemStack slotStack = currentSlot.getItem();
+                if (!shiftClickIntoFrequency()) {
+                    Optional<ItemStack> windowHandling = tryTransferToWindow(player, currentSlot, slotStack, transaction);
+                    if (windowHandling.isPresent()) {
+                        transaction.commit();
+                        return windowHandling.get();
                     }
-                } else {
-                    if (slotID == lastSlot && !lastStack.isEmpty()) {
-                        doDoubleClickTransfer(player);
-                    }
-                    resetTransferTracker();
-                    return ItemStack.EMPTY;
                 }
-            }
-            if (shiftClickIntoFrequency()) {
-                //If we tried to shift click it into the frequency first, but weren't able to transfer it
-                // either because we don't have a frequency or the frequency is full:
-                // try to transfer it a potentially open window
-                return tryTransferToWindow(player, currentSlot, slotStack).orElse(ItemStack.EMPTY);
+                QIOFrequency frequency = getFrequency();
+                if (frequency != null) {
+                    if (!slotStack.isEmpty()) {
+                        //There is an item in the slot
+                        int inserted = frequency.addItem(ItemResource.of(slotStack), slotStack.count(), transaction);
+                        if (inserted > 0) {
+                            //We were able to insert some of it
+                            //Make sure that we copy it so that we aren't just pointing to the reference of it
+                            setTransferTracker(slotStack.copy(), slotID);
+                            transaction.commit();
+                            return transferSuccess(currentSlot, player, inserted);
+                        }
+                    } else {
+                        if (slotID == lastSlot && !lastStack.isEmpty()) {
+                            doDoubleClickTransfer(player, transaction);
+                            transaction.commit();
+                        }
+                        resetTransferTracker();
+                        return ItemStack.EMPTY;
+                    }
+                }
+                if (shiftClickIntoFrequency()) {
+                    //If we tried to shift click it into the frequency first, but weren't able to transfer it
+                    // either because we don't have a frequency or the frequency is full:
+                    // try to transfer it a potentially open window
+                    Optional<ItemStack> windowHandling = tryTransferToWindow(player, currentSlot, slotStack, transaction);
+                    if (windowHandling.isPresent()) {
+                        transaction.commit();
+                        return windowHandling.get();
+                    }
+                }
             }
         }
         return ItemStack.EMPTY;
     }
 
-    private Optional<ItemStack> tryTransferToWindow(Player player, Slot currentSlot, ItemStack slotStack) {
+    private Optional<ItemStack> tryTransferToWindow(Player player, Slot currentSlot, ItemStack slotStack, TransactionContext transaction) {
         byte selectedCraftingGrid = getSelectedCraftingGrid(player.getUUID());
         if (selectedCraftingGrid != -1) {
             //If the player has a crafting window open
@@ -366,16 +370,13 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                 List<InventoryContainerSlot> craftingGridSlots = getCraftingGridSlots(selectedCraftingGrid);
                 SelectedWindowData windowData = craftingWindow.getWindowData();
                 //Start by trying to stack it with other things and if that fails try to insert it into empty slots
-                try (Transaction transaction = Transaction.openRoot()) {
-                    int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), transaction, windowData);
-                    if (inserted > 0) {
-                        //If something changed, decrease the stack by the amount we inserted,
-                        // and return it as a new stack for what is now in the slot
-                        transaction.commit();
-                        return Optional.of(transferSuccess(currentSlot, player, inserted));
-                    }
-                    //Otherwise, if nothing changed, try to transfer into the QIO Frequency
+                int inserted = insertItem(craftingGridSlots, ItemResource.of(slotStack), slotStack.count(), transaction, windowData);
+                if (inserted > 0) {
+                    //If something changed, decrease the stack by the amount we inserted,
+                    // and return it as a new stack for what is now in the slot
+                    return Optional.of(transferSuccess(currentSlot, player, inserted));
                 }
+                //Otherwise, if nothing changed, try to transfer into the QIO Frequency
             }
         }
         return Optional.empty();
@@ -609,20 +610,6 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         toInsert -= insertItem(hotBarSlots, itemType, toInsert, transaction, false, selectedWindow);
         toInsert -= insertItem(mainInventorySlots, itemType, toInsert, transaction, false, selectedWindow);
         return toInsert;
-    }
-
-    /**
-     * @apiNote Only call on server
-     */
-    public int simulateInsertIntoPlayerInventory(UUID player, ItemStack stack) {
-        SelectedWindowData selectedWindow = getSelectedWindow(player);
-        try (Transaction simulation = Transaction.openRoot()) {
-            ItemResource itemType = ItemResource.of(stack);
-            int toInsert = stack.count();
-            toInsert -= insertItemCheckAll(hotBarSlots, itemType, toInsert, simulation, selectedWindow);
-            toInsert -= insertItemCheckAll(mainInventorySlots, itemType, toInsert, simulation, selectedWindow);
-            return stack.count() - toInsert;
-        }
     }
 
     private void updateSort() {

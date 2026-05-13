@@ -16,7 +16,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
@@ -58,13 +57,13 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
-        return recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE) == null;
+        return recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, false) == null;
     }
 
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
-        if (recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.EXECUTE) == null) {
+        if (recipeInfo != null && QIOCraftingTransferHandler.transferRecipe(recipeInfo, true) == null) {
             //Note: We are expected to handle switching back to the backing screen
             Minecraft.getInstance().setScreen(context.getScreen());
             return true;
@@ -76,7 +75,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
     public List<ClientTooltipComponent> getTooltip(EmiRecipe recipe, EmiCraftContext<CONTAINER> context) {
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {
-            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE);
+            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, false);
             if (transferResult != null && transferResult.tooltip() != null) {
                 return List.of(EmiTooltipComponents.of(transferResult.tooltip()));
             }
@@ -89,7 +88,7 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         //Based on StandardRecipeHandler#renderMissing, except with our own logic for determining what ingredients are missing
         EmiRecipeInfo recipeInfo = EmiRecipeInfo.create(recipe, context);
         if (recipeInfo != null) {
-            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, Action.SIMULATE);
+            TransferResult transferResult = QIOCraftingTransferHandler.transferRecipe(recipeInfo, false);
             if (transferResult != null && transferResult.missingSlots() != null) {
                 RenderSystem.enableDepthTest();
                 Object2IntMap<EmiIngredient> missingIngredients = new Object2IntOpenHashMap<>(transferResult.missingSlots().size());

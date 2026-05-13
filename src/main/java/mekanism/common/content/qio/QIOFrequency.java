@@ -9,7 +9,6 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,7 +26,6 @@ import java.util.function.Function;
 import java.util.function.ObjLongConsumer;
 import java.util.function.Supplier;
 import java.util.function.ToLongFunction;
-import mekanism.api.Action;
 import mekanism.api.SerializationConstants;
 import mekanism.api.inventory.qio.IQIOFrequency;
 import mekanism.api.security.SecurityMode;
@@ -59,6 +57,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public class QIOFrequency extends Frequency implements IColorableFrequency, IQIOFrequency, TickableFrequency {
@@ -155,40 +155,11 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public long massInsert(ItemStack stack, long amount, Action action) {
-        if (stack.isEmpty() || amount <= 0) {
-            return 0;
-        }
-        ItemResource type = ItemResource.of(stack);
-        // these checks are extremely important; they prevent us from wasting CPU searching for a place to put the new items,
-        // and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
-        if (totalCount == totalCountCapacity || (!itemDataMap.containsKey(type) && itemDataMap.size() == totalTypeCapacity)) {
-            return 0;
-        }
-        // at this point we're guaranteed at least part of the input stack will be inserted
-        QIOItemTypeData data;
-        if (action.execute()) {
-            data = itemDataMap.computeIfAbsent(type, this::createTypeDataForAbsent);
-        } else {
-            //If we are simulating, look it up
-            data = itemDataMap.get(type);
-            if (data == null) {
-                // if it doesn't already have that type, fall back to a new item type data that doesn't actually get added
-                data = new QIOItemTypeData(type);
-            }
-        }
-        return amount - data.add(amount, action);
-    }
-
-    /**
-     * @return Amount inserted
-     */
-    public int addItem(ItemResource itemType, int amount) {//TODO - 26.1: Make this transactional
-        if (itemType.isEmpty() || amount == 0) {
+    public long massInsert(ItemResource itemType, long amount, TransactionContext transaction) {
+        if (amount <= 0 || itemType.isEmpty()) {
             return 0;
         } else if (totalCount == totalCountCapacity) {
-            //This check and the pre-check in the computeIfAbsent are extremely important; they prevent us from wasting CPU searching for
-            // a place to put the new items, and they also prevent us from adding a ghost type to the itemDataMap if nothing is inserted
+            // this check and the one below for if the map contains the type are extremely important; they prevent us from wasting CPU searching for a place to put the new items
             return 0;
         }
         QIOItemTypeData data = itemDataMap.get(itemType);
@@ -204,11 +175,23 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                 itemDataMap.put(itemType, data);
             }
         }
-        int excess = Ints.saturatedCast(data.add(amount, Action.EXECUTE));
-        return amount - excess;
+        long inserted = data.add(amount, transaction);
+        //TODO - 26.1: Make this part of the snapshot as well
+        totalCount += inserted;
+        return inserted;
+    }
+
+    /**
+     * @return Amount inserted
+     */
+    public int addItem(ItemResource itemType, int amount, TransactionContext transaction) {
+        //Note: As the passed in amount is an int, this should always be able to be easily cast to an int
+        // We clamp it just in case though
+        return Ints.saturatedCast(massInsert(itemType, amount, transaction));
     }
 
     private QIOItemTypeData createTypeDataForAbsent(ItemResource type) {
+        //TODO - 26.1: Do we only want to add these lookup maps when the transaction's root commit is done?
         List<String> tags = TagCache.getItemTags(type);
         if (!tags.isEmpty()) {
             boolean hasAllKeys = tagLookupMap.hasAllKeys(tags);
@@ -239,38 +222,24 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     }
 
     @Override
-    public long massExtract(ItemStack stack, long amount, Action action) {
-        if (amount <= 0 || stack.isEmpty() || itemDataMap.isEmpty()) {
-            return 0;
-        }
-        ItemResource type = ItemResource.of(stack);
-        QIOItemTypeData data = itemDataMap.get(type);
-        if (data == null) {
-            return 0;
-        }
-        long removed = data.remove(amount, action);
-        // remove this item type if it's now empty
-        if (action.execute() && data.count == 0) {
-            removeItemData(data.itemType);
-        }
-        return removed;
-    }
-
-    public int removeByType(ItemResource itemType, int amount) {//TODO - 26.1: Make this transactional
-        if (itemType.isEmpty() || itemDataMap.isEmpty() || amount <= 0) {
+    public long massExtract(ItemResource itemType, long amount, TransactionContext transaction) {
+        if (amount <= 0 || itemType.isEmpty() || itemDataMap.isEmpty()) {
             return 0;
         }
         QIOItemTypeData data = itemDataMap.get(itemType);
         if (data == null) {
             return 0;
         }
+        long extracted = data.remove(amount, transaction);
+        //TODO - 26.1: Make this part of the snapshot as well
+        totalCount -= extracted;
+        return extracted;
+    }
 
-        ItemStack removed = data.remove(amount);
-        // remove this item type if it's now empty
-        if (data.count == 0) {
-            removeItemData(data.itemType);
-        }
-        return removed.count();
+    public int removeByType(ItemResource itemType, int amount, TransactionContext transaction) {
+        //Note: As the passed in amount is an int, this should always be able to be easily cast to an int
+        // We clamp it just in case though
+        return Ints.saturatedCast(massExtract(itemType, amount, transaction));
     }
 
     private void removeItemData(ItemResource type) {
@@ -582,14 +551,16 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             totalCountCapacity += data.getCountCapacity();
             totalTypeCapacity += data.getTypeCapacity();
             driveMap.put(key, data);
-            for (ObjectIterator<Object2LongMap.Entry<ItemResource>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
-                Object2LongMap.Entry<ItemResource> entry = iterator.next();
-                ItemResource storedKey = entry.getKey();
-                itemDataMap.computeIfAbsent(storedKey, this::createTypeDataForAbsent).addFromDrive(data, entry.getLongValue());
-                markForUpdate(storedKey);
-            }
+            data.forDriveContents(key, this::addDriveContent);
             setNeedsUpdate();
         }
+    }
+
+    private void addDriveContent(QIODriveKey key, ItemResource storedType, long amountStored) {
+        QIOItemTypeData typeData = itemDataMap.computeIfAbsent(storedType, this::createTypeDataForAbsent);
+        totalCount += amountStored;
+        typeData.driveAdded(key, amountStored);
+        markForUpdate(storedType);
     }
 
     @Deprecated(forRemoval = true)//TODO - 26.1: Re-evaluate usages and fix things so that the proper stack gets updated
@@ -603,22 +574,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         }
         QIODriveData data = driveMap.get(key);
         if (updateItemMap) {
-            for (ObjectIterator<Object2LongMap.Entry<ItemResource>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
-                Object2LongMap.Entry<ItemResource> entry = iterator.next();
-                ItemResource storedKey = entry.getKey();
-                long value = entry.getLongValue();
-                QIOItemTypeData itemData = itemDataMap.get(storedKey);
-                if (itemData != null) {
-                    itemData.containingDrives.remove(key);
-                    itemData.count -= value;
-                    totalCount -= value;
-                    markForUpdate(storedKey);
-                    // remove this entry from the item data map if it's now empty
-                    if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
-                        removeItemData(storedKey);
-                    }
-                }
-            }
+            data.forDriveContents(key, this::removeDriveContent);
             setNeedsUpdate();
         }
         // remove drive and capacity info from core tracking
@@ -628,6 +584,20 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         // save the item list onto the physical drive
         //TODO - 26.1: When doing it from the drive slot, we need to do this before extraction (and maybe even getting of the resource type??)
         key.save(data);
+    }
+
+    private void removeDriveContent(QIODriveKey key, ItemResource storedType, long amountStored) {
+        QIOItemTypeData itemData = itemDataMap.get(storedType);
+        if (itemData != null) {
+            itemData.containingDrives.remove(key);
+            itemData.count -= amountStored;
+            totalCount -= amountStored;
+            markForUpdate(storedType);
+            // remove this entry from the item data map if it's now empty
+            if (itemData.containingDrives.isEmpty() || itemData.count == 0) {
+                removeItemData(storedType);
+            }
+        }
     }
 
     public void saveAll() {
@@ -664,7 +634,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         setNeedsUpdate(null);
     }
 
-    public class QIOItemTypeData {
+    public class QIOItemTypeData extends SnapshotJournal<QIOItemTypeData.Snapshot> {
 
         private final Set<QIODriveKey> containingDrives = new HashSet<>();
         private final ItemResource itemType;
@@ -677,58 +647,68 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             this.itemType = itemType;
         }
 
-        private void addFromDrive(QIODriveData data, long toAdd) {
+        private void driveAdded(QIODriveKey driveKey, long toAdd) {
             count += toAdd;
-            totalCount += toAdd;
-            containingDrives.add(data.getKey());
-            setNeedsUpdate();
+            containingDrives.add(driveKey);
         }
 
-        //TODO - 26.1: Make this support transactions?
-        private long add(long amount, Action action) {
-            long toAdd = amount;
+        private long add(long amount, TransactionContext transaction) {
+            long added = 0;
+            boolean hasUpdated = false;
             // first we try to add the items to an already-containing drive
             for (QIODriveKey key : containingDrives) {
-                toAdd = addItemsToDrive(toAdd, driveMap.get(key), action);
-                if (toAdd == 0) {
+                added += driveMap.get(key).add(itemType, amount - added, transaction);
+                if (added == amount) {
                     break;
                 }
             }
             // next, we add the items to any drive that will take it
-            if (toAdd > 0) {
-                for (QIODriveData data : driveMap.values()) {
-                    if (!containingDrives.contains(data.getKey())) {
-                        toAdd = addItemsToDrive(toAdd, data, action);
-                        if (toAdd == 0) {
+            if (added < amount) {
+                for (Map.Entry<QIODriveKey, QIODriveData> entry : driveMap.entrySet()) {
+                    QIODriveKey driveKey = entry.getKey();
+                    QIODriveData data = entry.getValue();
+                    if (!containingDrives.contains(driveKey)) {
+                        long addedToDrive = data.add(itemType, amount - added, transaction);
+                        if (addedToDrive > 0) {
+                            if (!hasUpdated) {
+                                //If we haven't updated the snapshot for this item type yet, do so
+                                updateSnapshots(transaction);
+                                hasUpdated = true;
+                            }
+                            //Add the drive to the list of drives that contain this item
+                            containingDrives.add(driveKey);
+                        }
+                        added += addedToDrive;
+                        if (added == amount) {
                             break;
                         }
                     }
                 }
             }
-            if (action.execute()) {
+            if (added > 0) {
+                if (!hasUpdated) {
+                    //If we haven't updated the snapshot for this item type yet, do so
+                    updateSnapshots(transaction);
+                }
                 // update internal/core values
-                count += amount - toAdd;
-                totalCount += amount - toAdd;
-                setNeedsUpdate(itemType);
+                count += added;
             }
-            return toAdd;
+            return added;
         }
 
-        private long addItemsToDrive(long toAdd, QIODriveData data, Action action) {
-            long rejects = data.add(itemType, toAdd, action);
-            if (action.execute() && rejects < toAdd) {
-                containingDrives.add(data.getKey());
-            }
-            return rejects;
-        }
-
-        private long remove(long amount, Action action) {
+        private long remove(long amount, TransactionContext transaction) {
             long removed = 0;
+            boolean hasUpdated = false;
             for (Iterator<QIODriveKey> iter = containingDrives.iterator(); iter.hasNext(); ) {
                 QIODriveData data = driveMap.get(iter.next());
-                removed += data.remove(itemType, amount - removed, action);
+                removed += data.remove(itemType, amount - removed, transaction);
                 // remove this drive from containingDrives if it doesn't have this item anymore
-                if (action.execute() && data.getStored(itemType) == 0) {
+                if (data.getStored(itemType) == 0) {
+                    if (!hasUpdated) {
+                        //If we haven't updated the snapshot for this item type yet, do so
+                        updateSnapshots(transaction);
+                        hasUpdated = true;
+                    }
                     iter.remove();
                 }
                 // break early if we found enough items
@@ -736,17 +716,14 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
                     break;
                 }
             }
-            if (action.execute()) {
+            if (removed > 0) {
+                if (!hasUpdated) {
+                    //If we haven't updated the snapshot for this item type yet, do so
+                    updateSnapshots(transaction);
+                }
                 count -= removed;
-                totalCount -= removed;
-                setNeedsUpdate(itemType);
             }
             return removed;
-        }
-
-        private ItemStack remove(int amount) {
-            int removed = Ints.saturatedCast(remove(amount, Action.EXECUTE));
-            return removed == 0 ? ItemStack.EMPTY : itemType.toStack(removed);
         }
 
         public long getCount() {
@@ -763,6 +740,43 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
         public ItemResource getItemType() {
             return itemType;
+        }
+
+        @Override
+        protected QIOItemTypeData.Snapshot createSnapshot() {
+            return new QIOItemTypeData.Snapshot(count, new HashSet<>(containingDrives));
+        }
+
+        @Override
+        protected void revertToSnapshot(QIOItemTypeData.Snapshot snapshot) {
+            //TODO - 26.1: Re-evaluate this impl
+            count = snapshot.count();
+            containingDrives.clear();
+            containingDrives.addAll(snapshot.containingDrives());
+            //TODO - 26.1: Do we also need to roll back whether the itemType is present or not for the frequency?
+            if (count == 0) {
+                //TODO - 26.1: Is this correct to do it when reverting? Or is it supposed to still be present for a bit
+                //If we end up with having nothing remove the tracking for this item type
+                removeItemData(itemType);
+            }
+        }
+
+        @Override
+        protected void onRootCommit(QIOItemTypeData.Snapshot originalState) {
+            super.onRootCommit(originalState);
+            if (originalState.count() != count || !containingDrives.equals(originalState.containingDrives())) {
+                if (count == 0) {
+                    // remove this item type if it's now empty
+                    removeItemData(itemType);
+                }
+
+                //TODO - 26.1: is marking it as needing an update handled by the remove item data path?
+                // Also should we mark this at the start of this method or at the end here
+                setNeedsUpdate(itemType);
+            }
+        }
+
+        public record Snapshot(long count, Set<QIODriveKey> containingDrives) {
         }
     }
 }

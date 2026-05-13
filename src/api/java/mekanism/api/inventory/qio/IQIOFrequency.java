@@ -1,10 +1,10 @@
 package mekanism.api.inventory.qio;
 
 import java.util.function.ObjLongConsumer;
-import mekanism.api.Action;
 import mekanism.api.IFrequency;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Basic definition of a QIO Frequency for use in exposing pieces of them to the API.
@@ -49,26 +49,22 @@ public interface IQIOFrequency extends IFrequency {//TODO - 26.1: Update docs
      *
      * @param type   Type of {@link ItemStack} to insert; this stack will not be modified and the count is ignored.
      * @param amount Amount to insert.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Amount actually inserted.
-     *
-     * @apiNote This method behaves <em>subtly</em> different from other insertion methods Mekanism exposes as when working with number based returns having a pointer to
-     * the remainder is not nearly as useful.
+
      * @implNote Negative amounts will lead to nothing being inserted rather than causing the item to be extracted.
      */
-    long massInsert(ItemStack type, long amount, Action action);
+    long massInsert(ItemResource type, long amount, TransactionContext transaction);//TODO - 26.1: Do we want this and massExtract to throw for empty item type and negative amounts?
 
     /**
      * Attempts to extract a given item type from this QIO Frequency.
      *
      * @param type   Type of {@link ItemStack} to extract; this stack will not be modified and the count is ignored.
      * @param amount Amount to extract.
-     * @param action The action to perform, either {@link Action#EXECUTE} or {@link Action#SIMULATE}
      *
      * @return Amount actually extracted.
      *
      * @implNote Negative amounts will lead to nothing being extracted rather than causing the item to be inserted.
      */
-    long massExtract(ItemStack type, long amount, Action action);
+    long massExtract(ItemResource type, long amount, TransactionContext transaction);
 }
