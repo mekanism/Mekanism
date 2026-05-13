@@ -674,6 +674,7 @@ public final class MekanismUtils {
      * @return true if the player is neither in creative mode, nor in spectator mode.
      */
     public static boolean isPlayingMode(Player player) {
+        //TODO - 26.1: Look at calls to Player#isCreative, and see what should potentially be going through here
         return !player.isCreative() && !player.isSpectator();
     }
 

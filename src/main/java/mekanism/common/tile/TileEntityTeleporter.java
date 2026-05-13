@@ -17,7 +17,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.function.IntFunction;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -92,6 +91,8 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -192,10 +193,13 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
         }
 
         TeleporterFrequency freq = getFrequency(FrequencyTypes.TELEPORTER);
-        TeleportInfo teleportInfo = canTeleport(freq);
-        status = teleportInfo.status();
-        if (status.isReady() && teleDelay == 0 && canFunction()) {
-            teleport(freq, teleportInfo);
+        try (Transaction transaction = Transaction.openRoot()) {
+            TeleportInfo teleportInfo = canTeleport(freq, transaction);
+            status = teleportInfo.status();
+            if (status.isReady() && teleDelay == 0 && canFunction()) {
+                teleport(freq, teleportInfo, transaction);
+                transaction.commit();
+            }
         }
         if (teleDelay == 0 && teleportBounds != null && !didTeleport.isEmpty()) {
             cleanTeleportCache();
@@ -252,7 +256,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
      *
      * @apiNote Only call on server
      */
-    private TeleportInfo canTeleport(@Nullable TeleporterFrequency frequency) {
+    private TeleportInfo canTeleport(@Nullable TeleporterFrequency frequency, TransactionContext transaction) {
         Direction direction = getFrameDirection();
         if (direction == null) {
             frameDirection = null;
@@ -290,10 +294,14 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             }
             sum = r;
         }
-        if (energyContainer.extract(sum, Action.SIMULATE, AutomationType.INTERNAL) < sum) {
-            return NOT_ENOUGH_ENERGY;
+        try (Transaction simulation = Transaction.open(transaction)) {
+            //TODO - 26.1: Can we make it so that the calculation of if there is enough energy only happens once?
+            // Maybe at the very least just simulate and then remove any extra enties from toTeleport that we don't have energy for
+            if (energyContainer.extract(sum, simulation, AutomationType.INTERNAL) < sum) {
+                return NOT_ENOUGH_ENERGY;
+            }
+            return new TeleportInfo(TeleporterStatus.READY, closestCoords, toTeleport);
         }
-        return new TeleportInfo(TeleporterStatus.READY, closestCoords, toTeleport);
     }
 
     public BlockPos getTeleporterTargetPos() {
@@ -323,7 +331,7 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
     /**
      * @apiNote Only call this from the server
      */
-    private void teleport(TeleporterFrequency frequency, TeleportInfo teleportInfo) {
+    private void teleport(TeleporterFrequency frequency, TeleportInfo teleportInfo, TransactionContext transaction) {
         if (teleportInfo.closest == null || level == null || teleportInfo.toTeleport.isEmpty()) {
             return;
         }
@@ -341,38 +349,44 @@ public class TileEntityTeleporter extends TileEntityMekanism implements IChunkLo
             for (Entity entity : teleportInfo.toTeleport) {
                 markTeleported(teleporter, entity, sameDimension, teleWorld);
                 teleporter.teleDelay = 5;
-                //Calculate energy cost before teleporting the entity, as after teleporting it
-                // the cost will be negligible due to being on top of the destination
-                long energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
-
-                MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld, energyCost);
-                if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
-                    //Skip the entity if the event was cancelled
-                    continue;
-                }
-
-                double oldX = entity.getX();
-                double oldY = entity.getY();
-                double oldZ = entity.getZ();
-                Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporter, event, true, AWARD_ADVANCEMENT);
-                //Note: The below logic isn't part of a PostTeleportTransition as the transition applies to all entities and passengers,
-                // and we want the below logic to only happen once
-                for (GlobalPos coords : activeCoords) {
-                    Level world = level.dimension() == coords.dimension() ? level : currentServer.getLevel(coords.dimension());
-                    TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.pos());
-                    if (tile != null) {
-                        tile.sendTeleportParticles();
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    //Calculate energy cost before teleporting the entity, as after teleporting it
+                    // the cost will be negligible due to being on top of the destination
+                    long energyCost = calculateEnergyCost(entity, teleWorld, teleportInfo.closest);
+                    if (energyContainer.extract(energyCost, subTransaction, AutomationType.INTERNAL) < energyCost) {
+                        //Failed to extract the energy we need for this action that we simulated we would have, skip teleporting this entity stack
+                        continue;
                     }
-                }
-                energyContainer.extract(energyCost, Action.EXECUTE, AutomationType.INTERNAL);
-                if (teleportedEntity != null) {
-                    SoundEvent sound = getTeleportSound(teleportedEntity);
-                    if (level != teleportedEntity.level() || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
-                        //If the entity teleported over 5 blocks, play the sound at both the destination and the source
-                        level.playSound(null, oldX, oldY, oldZ, sound, entity.getSoundSource());
+
+                    MekanismTeleportEvent.Teleporter event = new MekanismTeleportEvent.Teleporter(entity, teleporterTargetPos, teleWorld, energyCost);
+                    if (NeoForge.EVENT_BUS.post(event).isCanceled()) {
+                        //Skip the entity if the event was cancelled
+                        continue;
                     }
-                    teleportedEntity.level().playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(), sound,
-                          teleportedEntity.getSoundSource());
+
+                    double oldX = entity.getX();
+                    double oldY = entity.getY();
+                    double oldZ = entity.getZ();
+                    Entity teleportedEntity = teleportEntityTo(entity, teleWorld, teleporter, event, true, AWARD_ADVANCEMENT);
+                    //Note: The below logic isn't part of a PostTeleportTransition as the transition applies to all entities and passengers,
+                    // and we want the below logic to only happen once
+                    for (GlobalPos coords : activeCoords) {
+                        Level world = level.dimension() == coords.dimension() ? level : currentServer.getLevel(coords.dimension());
+                        TileEntityTeleporter tile = WorldUtils.getTileEntity(TileEntityTeleporter.class, world, coords.pos());
+                        if (tile != null) {
+                            tile.sendTeleportParticles();
+                        }
+                    }
+                    if (teleportedEntity != null) {
+                        SoundEvent sound = getTeleportSound(teleportedEntity);
+                        if (level != teleportedEntity.level() || teleportedEntity.distanceToSqr(oldX, oldY, oldZ) >= 25) {
+                            //If the entity teleported over 5 blocks, play the sound at both the destination and the source
+                            level.playSound(null, oldX, oldY, oldZ, sound, entity.getSoundSource());
+                        }
+                        teleportedEntity.level().playSound(null, teleportedEntity.getX(), teleportedEntity.getY(), teleportedEntity.getZ(), sound,
+                              teleportedEntity.getSoundSource());
+                    }
+                    subTransaction.commit();
                 }
             }
         }

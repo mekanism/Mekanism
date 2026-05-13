@@ -4,16 +4,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import javax.annotation.Nullable;
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
-import mekanism.api.energy.IEnergyContainer;
+import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.capabilities.Capabilities;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem.IAttachmentBasedModeItem;
 import mekanism.common.registration.impl.CreativeTabDeferredRegister.ICustomCreativeTabContents;
 import mekanism.common.registries.MekanismDataComponents;
+import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.StorageUtils;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.core.Holder;
@@ -37,6 +37,8 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.item.enchantment.ItemEnchantments;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICustomCreativeTabContents, IAttachmentBasedModeItem<Boolean> {
@@ -56,10 +58,18 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
     @Override
     public boolean releaseUsing(@NotNull ItemStack bow, @NotNull Level world, @NotNull LivingEntity entity, int timeLeft) {
         if (entity instanceof Player player && !player.isCreative()) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
-            long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-            if (energyContainer == null || energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(bow));
+            if (energyHandler == null) {
                 return false;
+            }
+            //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+            // and wraps the entire hitting the entity within their transaction?
+            // Either way should we maybe just compare against the stored energy instead of having to open a transaction
+            try (Transaction simulation = Transaction.openRoot()) {
+                long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                if (EnergyUtils.extractManual(energyHandler, energyNeeded, simulation) < energyNeeded) {
+                    return false;
+                }
             }
         }
         return super.releaseUsing(bow, world, entity, timeLeft);
@@ -70,11 +80,16 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
           @NotNull List<ItemStack> potentialAmmo, float velocity, float inaccuracy, boolean critical, @Nullable LivingEntity target) {
         super.shoot(world, entity, hand, bow, potentialAmmo, velocity, inaccuracy, critical, target);
         if (entity instanceof Player player && !player.isCreative() && !potentialAmmo.isEmpty()) {
-            IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(bow, 0);
-            if (energyContainer != null) {
-                //Use energy
-                long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
-                energyContainer.extract(energyNeeded, Action.EXECUTE, AutomationType.MANUAL);
+            IStrictEnergyHandler energyHandler = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(bow));
+            if (energyHandler != null) {
+                //TODO - 26.1: is there a risk that this is in a transactional context? Such as if an auto clicker is using energy,
+                // and wraps the entire hitting the entity within their transaction?
+                try (Transaction transaction = Transaction.openRoot()) {
+                    //Use energy
+                    long energyNeeded = getMode(bow) ? MekanismConfig.gear.electricBowEnergyUsageFire.get() : MekanismConfig.gear.electricBowEnergyUsage.get();
+                    EnergyUtils.extractManual(energyHandler, energyNeeded, transaction);
+                    transaction.commit();
+                }
             }
         }
     }
@@ -104,7 +119,7 @@ public class ItemElectricBow extends BowItem implements IItemHUDProvider, ICusto
             Optional<Reference<Enchantment>> enchantment = lookup.get(Enchantments.FLAME);
             if (enchantment.isPresent()) {
                 Holder<Enchantment> flame = enchantment.get();
-                if (enchantments.getLevel(flame) == 0){
+                if (enchantments.getLevel(flame) == 0) {
                     ItemEnchantments.Mutable mutable = new ItemEnchantments.Mutable(enchantments);
                     mutable.set(flame, 1);
                     return mutable.toImmutable();

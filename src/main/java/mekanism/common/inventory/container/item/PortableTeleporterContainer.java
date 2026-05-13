@@ -1,7 +1,5 @@
 package mekanism.common.inventory.container.item;
 
-import mekanism.api.Action;
-import mekanism.api.AutomationType;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.content.teleporter.TeleporterFrequency;
 import mekanism.common.inventory.container.IEmptyContainer;
@@ -66,7 +64,8 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                     GlobalPos coords = freq.getClosestCoords(getLevel().dimension(), inv.player.blockPosition());
                     if (coords != null) {
                         long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
-                        if (energyNeeded != -1 && energyContainer.extract(energyNeeded, Action.SIMULATE, AutomationType.MANUAL) < energyNeeded) {
+                        //TODO - 26.1: Is this rough estimate good enough? It allows us to skip needing a transactional state for sync checking
+                        if (energyNeeded != -1 && energyContainer.getEnergy() < energyNeeded) {
                             return TeleporterStatus.NOT_ENOUGH_ENERGY;
                         }
                     }
