@@ -2,6 +2,7 @@ package mekanism.common.attachments.containers.fluid;
 
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -17,13 +18,12 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource> implements IFluidTank {
 
-    private final IntSupplier capacity;
+    private final LongSupplier capacity;
     private final IntSupplier rate;
 
     public ComponentBackedFluidTank(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
-          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, IntSupplier capacity) {
-        super(attachedTo, tankIndex, capacity.getAsInt(), canExtract, canInsert, validator);
-        //TODO - 26.1: Support long capacity
+          BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, LongSupplier capacity) {
+        super(attachedTo, tankIndex, capacity.getAsLong(), canExtract, canInsert, validator);
         this.capacity = capacity;
         this.rate = rate;
     }
@@ -36,7 +36,7 @@ public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<F
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long getLimitAsLong(FluidResource resource) {
-        return capacity.getAsInt();
+        return capacity.getAsLong();
     }
 
     @Override

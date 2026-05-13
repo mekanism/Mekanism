@@ -72,11 +72,19 @@ public class ModuleNutritionalInjectionUnit implements ICustomModule<ModuleNutri
             double ratio = 0;
             ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(ItemAccess.forStack(stack));
             if (fluidHandler != null) {
-                try (Transaction simulation = Transaction.openRoot()) {
-                    int max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsInt();
-                    int extracted = fluidHandler.extract(MekanismFluids.NUTRITIONAL_PASTE.asResource(), max, simulation);
-                    ratio = StorageUtils.getRatio(extracted, max);
+                long max = MekanismConfig.gear.mekaSuitNutritionalMaxStorage.getAsLong();
+                long stored = 0;
+                for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
+                    if (fluidHandler.getResource(tank).is(MekanismFluids.NUTRITIONAL_PASTE)) {
+                        long inTank = fluidHandler.getAmountAsLong(tank);
+                        if (stored >= max - inTank) {
+                            stored = max;
+                            break;
+                        }
+                        stored += inTank;
+                    }
                 }
+                ratio = StorageUtils.getRatio(stored, max);
             }
             hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(icon, ratio));
         }

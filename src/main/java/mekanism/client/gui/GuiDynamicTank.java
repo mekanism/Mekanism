@@ -42,13 +42,10 @@ public class GuiDynamicTank extends GuiMekanismTile<TileEntityDynamicTank, Mekan
         addRenderableWidget(new GuiInnerScreen(this, 49, 21, 84, 46, () -> {
             List<Component> ret = new ArrayList<>();
             TankMultiblockData multiblock = tile.getMultiblock();
-            long capacity = multiblock.getChemicalTankCapacity();
+            long capacity = multiblock.getTankCapacity();
             switch (multiblock.mergedTank.getCurrentType()) {
                 case EMPTY -> ret.add(MekanismLang.EMPTY.translate());
-                case FLUID -> {
-                    addStored(ret, multiblock.getFluidTank());
-                    capacity = multiblock.getTankCapacity();
-                }
+                case FLUID -> addStored(ret, multiblock.getFluidTank());
                 case CHEMICAL -> addStored(ret, multiblock.getChemicalTank());
             }
             ret.add(MekanismLang.CAPACITY.translate(""));

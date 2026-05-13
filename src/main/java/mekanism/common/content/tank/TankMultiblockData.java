@@ -43,8 +43,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
     HybridInventorySlot inputSlot;
     @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getOutputItem", docPlaceholder = "output slot")
     HybridInventorySlot outputSlot;
-    private int tankCapacity;
-    private long chemicalTankCapacity;
+    private long tankCapacity;
     public float prevScale;
 
     public TankMultiblockData(TileEntityDynamicTank tile) {
@@ -52,7 +51,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         IContentsListener saveAndComparator = createSaveAndComparator();
         mergedTank = MergedTank.create(
               VariableCapacityFluidTank.create(this, this::getTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator),
-              VariableCapacityChemicalTank.create(this, this::getChemicalTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator)
+              VariableCapacityChemicalTank.create(this, this::getTankCapacity, ConstantPredicates.alwaysTrue(), saveAndComparator)
         );
         fluidTanks.add(mergedTank.getFluidTank());
         chemicalTanks.add(mergedTank.getChemicalTank());
@@ -110,19 +109,13 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> MekanismUtils.getScale(prevScale, getFluidTank());
             case CHEMICAL -> MekanismUtils.getScale(prevScale, getChemicalTank());
-            //todo shouldn't this use the lowest amount? - Thiakil
-            default -> MekanismUtils.getScale(prevScale, 0, getChemicalTankCapacity(), true);
+            default -> MekanismUtils.getScale(prevScale, 0, getTankCapacity(), true);
         };
     }
 
     @ComputerMethod
-    public int getTankCapacity() {
+    public long getTankCapacity() {
         return tankCapacity;
-    }
-
-    @ComputerMethod
-    public long getChemicalTankCapacity() {
-        return chemicalTankCapacity;
     }
 
     @Override
@@ -130,14 +123,12 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         if (getVolume() != volume) {
             super.setVolume(volume);
             tankCapacity = volume * MekanismConfig.general.dynamicTankFluidPerTank.get();
-            chemicalTankCapacity = volume * MekanismConfig.general.dynamicTankChemicalPerTank.get();
         }
     }
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
-        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), capacity);
+        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), getTankCapacity());
     }
 
     private long getStoredAmount() {
@@ -190,8 +181,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @ComputerMethod
     double getFilledPercentage() {
-        long capacity = mergedTank.getCurrentType() == CurrentType.FLUID ? getTankCapacity() : getChemicalTankCapacity();
-        return getStoredAmount() / (double) capacity;
+        return getStoredAmount() / (double) getTankCapacity();
     }
     //End computer related methods
 }

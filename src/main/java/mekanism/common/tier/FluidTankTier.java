@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
 import mekanism.common.config.value.CachedIntValue;
+import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.neoforge.fluids.FluidType;
 
 public enum FluidTankTier implements ITier {
@@ -10,17 +11,17 @@ public enum FluidTankTier implements ITier {
     ADVANCED(BaseTier.ADVANCED, 64 * FluidType.BUCKET_VOLUME, 4 * FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 128 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 256 * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
-    CREATIVE(BaseTier.CREATIVE, Integer.MAX_VALUE, Integer.MAX_VALUE / 2);
+    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
-    private final int baseStorage;
+    private final long baseStorage;
     private final int baseOutput;
     private final BaseTier baseTier;
-    private CachedIntValue storageReference;
+    private CachedLongValue storageReference;
     private CachedIntValue outputReference;
 
-    FluidTankTier(BaseTier tier, int s, int o) {
-        baseStorage = s;
-        baseOutput = o;
+    FluidTankTier(BaseTier tier, long storage, int output) {
+        baseStorage = storage;
+        baseOutput = output;
         baseTier = tier;
     }
 
@@ -29,7 +30,7 @@ public enum FluidTankTier implements ITier {
         return baseTier;
     }
 
-    public int getStorage() {
+    public long getStorage() {
         return storageReference == null ? getBaseStorage() : storageReference.getOrDefault();
     }
 
@@ -37,7 +38,7 @@ public enum FluidTankTier implements ITier {
         return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
-    public int getBaseStorage() {
+    public long getBaseStorage() {
         return baseStorage;
     }
 
@@ -48,7 +49,7 @@ public enum FluidTankTier implements ITier {
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the FluidTankTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedIntValue storageReference, CachedIntValue outputReference) {
+    public void setConfigReference(CachedLongValue storageReference, CachedIntValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

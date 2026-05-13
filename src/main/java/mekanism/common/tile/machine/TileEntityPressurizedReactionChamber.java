@@ -78,7 +78,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     private static final int BASE_DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
-    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",

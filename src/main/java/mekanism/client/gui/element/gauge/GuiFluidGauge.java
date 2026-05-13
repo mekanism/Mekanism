@@ -110,9 +110,9 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
         if (tank == null || tank.isEmpty()) {
             return Collections.singletonList(MekanismLang.EMPTY.translate());
         }
-        int amount = tank.amount();
+        long amount = tank.amountAsLong();
         FluidResource fluidType = tank.getResource();
-        if (amount == Integer.MAX_VALUE) {
+        if (amount == Long.MAX_VALUE) {
             return Collections.singletonList(MekanismLang.GENERIC_STORED.translate(fluidType, MekanismLang.INFINITE));
         }
         return Collections.singletonList(MekanismLang.GENERIC_STORED_MB.translate(fluidType, TextUtils.format(amount)));

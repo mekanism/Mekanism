@@ -55,8 +55,8 @@ public class TierConfig extends BaseMekanismConfig {
         for (FluidTankTier tier : EnumUtils.FLUID_TANK_TIERS) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
-            CachedIntValue storageReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+            CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
+                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Long.MAX_VALUE));
             CachedIntValue outputReference = CachedIntValue.wrap(this, translations.second().applyToBuilder(builder)
                   .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
@@ -83,8 +83,8 @@ public class TierConfig extends BaseMekanismConfig {
         for (BinTier tier : EnumUtils.BIN_TIERS) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
-            CachedIntValue storageReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Integer.MAX_VALUE));
+            CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
+                  .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Long.MAX_VALUE));
             tier.setConfigReference(storageReference);
         }
         builder.pop();

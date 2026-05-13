@@ -148,10 +148,8 @@ public enum MekanismConfigTranslations implements IConfigTranslation {
           "Edit Blacklist"),
 
     GENERAL_DYNAMIC_TANK("general.dynamic_tank", "Dynamic Tank Settings", "Settings for configuring Dynamic Tanks", true),
-    GENERAL_DYNAMIC_TANK_FLUID_CAPACITY("general.dynamic_tank.capacity.fluid", "Fluid Capacity Per Block",
-          "Amount of fluid (mB) that each block of the dynamic tank contributes to the volume. Total Fluid Capacity = volume * fluidPerTank"),
-    GENERAL_DYNAMIC_TANK_CHEMICAL_CAPACITY("general.dynamic_tank.capacity.chemical", "Chemical Capacity Per Block",
-          "Amount of chemical (mB) that each block of the dynamic tank contributes to the volume. Total Chemical Capacity = volume * chemicalPerTank"),
+    GENERAL_DYNAMIC_TANK_CAPACITY("general.dynamic_tank.capacity", "Capacity Per Block",
+          "Amount of mB that each block of the dynamic tank contributes to the volume. Total Capacity = volume * mBPerTank"),
 
     GENERAL_AUTO_EJECT("general.auto_eject", "Auto Eject Settings", "Settings for configuring Auto Eject from block entities", "Edit Ejection Settings"),
     GENERAL_AUTO_EJECT_RATE_FLUID("general.auto_eject.rate.fluid", "Fluid Rate", "Rate in mB/t at which fluid gets auto ejected from block entities."),

@@ -49,8 +49,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedLongValue chemicalAutoEjectRate;
     public final CachedDoubleValue dumpExcessKeepRatio;
     //Dynamic Tank
-    public final CachedIntValue dynamicTankFluidPerTank;
-    public final CachedLongValue dynamicTankChemicalPerTank;
+    public final CachedLongValue dynamicTankFluidPerTank;
     //Prefilled
     public final CachedBooleanValue prefilledFluidTanks;
     public final CachedBooleanValue prefilledChemicalTanks;
@@ -86,7 +85,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedIntValue maxPlenisherNodes;
     //Quantum Entangloporter
     public final CachedLongValue entangloporterEnergyBuffer;
-    public final CachedIntValue entangloporterFluidBuffer;
+    public final CachedLongValue entangloporterFluidBuffer;
     public final CachedLongValue entangloporterChemicalBuffer;
     //Security
     public final CachedBooleanValue allowProtection;
@@ -162,10 +161,9 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
         int maxVolume = 18 * 18 * 18;
-        dynamicTankFluidPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_FLUID_CAPACITY.applyToBuilder(builder)
-              .defineInRange("fluidPerTank", 350 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
-        dynamicTankChemicalPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CHEMICAL_CAPACITY.applyToBuilder(builder)
-              .defineInRange("chemicalPerTank", 16_000L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
+        //TODO - 26.1: Re-evaluate this default value
+        dynamicTankFluidPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_DYNAMIC_TANK_CAPACITY.applyToBuilder(builder)
+              .defineInRange("mBPerTank", 16_000L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_AUTO_EJECT.applyToBuilder(builder).push("auto_eject");
@@ -251,9 +249,9 @@ public class GeneralConfig extends BaseMekanismConfig {
         entangloporterEnergyBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_ENERGY.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("energyBuffer", EnergyCubeTier.ULTIMATE.getBaseMaxEnergy(), 1, Long.MAX_VALUE));
-        entangloporterFluidBuffer = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_FLUID.applyToBuilder(builder)
+        entangloporterFluidBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_FLUID.applyToBuilder(builder)
               .worldRestart()
-              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Integer.MAX_VALUE));
+              .defineInRange("fluidBuffer", FluidTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));
         entangloporterChemicalBuffer = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_QE_BUFFER_CHEMICAL.applyToBuilder(builder)
               .worldRestart()
               .defineInRange("chemicalBuffer", ChemicalTankTier.ULTIMATE.getBaseStorage(), 1, Long.MAX_VALUE));

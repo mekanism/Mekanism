@@ -6,6 +6,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
@@ -158,7 +159,7 @@ public class LookingAtUtils {
             //Fallback handling if it is not our fluid handler (probably never gets used)
             for (int tank = 0, size = fluidHandler.size(); tank < size; tank++) {
                 FluidResource resource = fluidHandler.getResource(tank);
-                addFluidInfo(info, resource, fluidHandler.getAmountAsInt(tank), fluidHandler.getCapacityAsInt(tank, resource), fallback);
+                addFluidInfo(info, resource, fluidHandler.getAmountAsLong(tank), fluidHandler.getCapacityAsLong(tank, resource), fallback);
             }
         }
     }
@@ -174,17 +175,17 @@ public class LookingAtUtils {
                 }
             }
             FluidResource storedType = fluidTank.getResource();
-            addFluidInfo(info, storedType, fluidTank.amount(), fluidTank.getLimit(storedType), fallback);
+            addFluidInfo(info, storedType, fluidTank.amountAsLong(), fluidTank.getLimitAsLong(storedType), fallback);
         }
     }
 
-    private static void addFluidInfo(LookingAtHelper info, FluidResource fluidType, int stored, int capacity, FluidResource fallback) {
+    private static void addFluidInfo(LookingAtHelper info, FluidResource fluidType, long stored, long capacity, FluidResource fallback) {
         if (!fluidType.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fluidType));
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fallback));
         }
-        info.addFluidElement(new FluidElement(fluidType, stored, capacity));
+        info.addFluidElement(new FluidElement(new LargeResourceStack<>(fluidType, stored), capacity));
     }
 
     private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {

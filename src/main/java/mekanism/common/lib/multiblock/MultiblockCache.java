@@ -161,7 +161,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
         public static final CacheSubstance<IFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
             @Override
             protected void defaultPrefab(MultiblockCache<?> cache) {
-                cache.fluidTanks.add(BasicFluidTank.create(Integer.MAX_VALUE, cache));
+                cache.fluidTanks.add(BasicFluidTank.create(Long.MAX_VALUE, cache));
             }
 
             @Override

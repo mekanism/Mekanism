@@ -74,7 +74,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     public static final long MAX_SLURRY = 10L * FluidType.BUCKET_VOLUME;
-    public static final int MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getFluid", "getFluidCapacity", "getFluidNeeded",
                                                                                      "getFluidFilledPercentage"}, docPlaceholder = "fluid tank")

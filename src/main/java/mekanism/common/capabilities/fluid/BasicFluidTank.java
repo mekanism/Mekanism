@@ -76,7 +76,6 @@ public class BasicFluidTank extends BasicResourceContainer<FluidResource> implem
               (stack, _) -> canInsert.test(stack), validator, listener);
     }
 
-    //TODO - 26.1: Evaluate callers and make sure that our capacity configs support longs where relevant
     protected BasicFluidTank(@Range(from = 0, to = Long.MAX_VALUE) long capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         super(FluidResource.EMPTY, capacity, canExtract, canInsert, validator, listener);

@@ -10,7 +10,7 @@ import net.minecraft.resources.Identifier;
 public class TOPFluidElement extends FluidElement implements IElement {
 
     public TOPFluidElement(FluidElement element) {
-        super(element.getFluidType(), element.getStored(), element.getCapacity());
+        super(element.getStored(), element.getCapacity());
     }
 
     @Override

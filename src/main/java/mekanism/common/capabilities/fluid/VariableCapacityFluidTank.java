@@ -53,7 +53,6 @@ public class VariableCapacityFluidTank extends BasicFluidTank {
 
     private final LongSupplier capacity;
 
-    //TODO - 26.1: Evaluate callers and make sure that our capacity configs support longs where relevant
     protected VariableCapacityFluidTank(LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, @Nullable IContentsListener listener) {
         super(capacity.getAsLong(), canExtract, canInsert, validator, listener);

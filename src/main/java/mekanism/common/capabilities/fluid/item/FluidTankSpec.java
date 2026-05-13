@@ -2,6 +2,7 @@ package mekanism.common.capabilities.fluid.item;
 
 import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
@@ -18,9 +19,9 @@ import org.jetbrains.annotations.Nullable;
 public class FluidTankSpec extends GenericTankSpec<FluidResource> {
 
     private final IntSupplier rate;
-    private final IntSupplier capacity;
+    private final LongSupplier capacity;
 
-    public FluidTankSpec(IntSupplier rate, IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
+    public FluidTankSpec(IntSupplier rate, LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
           TriPredicate<FluidResource, AutomationType, ItemStack> canInsert, Predicate<FluidResource> isValid, Predicate<ItemStack> supportsStack) {
         super(canExtract, canInsert, isValid, supportsStack);
         this.rate = rate;
@@ -37,16 +38,16 @@ public class FluidTankSpec extends GenericTankSpec<FluidResource> {
               (chemical, automationType) -> canInsert.test(chemical, automationType, attachedTo), isValid, rate, capacity));
     }
 
-    public static FluidTankSpec create(IntSupplier rate, IntSupplier capacity) {
+    public static FluidTankSpec create(IntSupplier rate, LongSupplier capacity) {
         return new FluidTankSpec(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
               ConstantPredicates.alwaysTrue());
     }
 
-    public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<FluidResource> isValid) {
+    public static FluidTankSpec createFillOnly(IntSupplier rate, LongSupplier capacity, Predicate<FluidResource> isValid) {
         return createFillOnly(rate, capacity, isValid, ConstantPredicates.alwaysTrue());
     }
 
-    public static FluidTankSpec createFillOnly(IntSupplier rate, IntSupplier capacity, Predicate<FluidResource> isValid, Predicate<ItemStack> supportsStack) {
+    public static FluidTankSpec createFillOnly(IntSupplier rate, LongSupplier capacity, Predicate<FluidResource> isValid, Predicate<ItemStack> supportsStack) {
         return new FluidTankSpec(rate, capacity, ConstantPredicates.notExternal(), (_, _, stack) -> supportsStack.test(stack), isValid, supportsStack);
     }
 
@@ -54,16 +55,16 @@ public class FluidTankSpec extends GenericTankSpec<FluidResource> {
     public interface ComponentTankFromSpecCreator {
 
         ComponentBackedFluidTank create(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
-              BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> isValid, IntSupplier rate, IntSupplier capacity);
+              BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> isValid, IntSupplier rate, LongSupplier capacity);
     }
 
     @FunctionalInterface
     public interface TankFromSpecCreator<TANK extends IFluidTank> {
 
-        TANK create(IntSupplier rate, IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
+        TANK create(IntSupplier rate, LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract, BiPredicate<FluidResource, AutomationType> canInsert,
               Predicate<FluidResource> isValid, @Nullable IContentsListener listener);
 
-        default TANK create(IntSupplier rate, IntSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
+        default TANK create(IntSupplier rate, LongSupplier capacity, BiPredicate<FluidResource, AutomationType> canExtract,
               BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> isValid) {
             return create(rate, capacity, canExtract, canInsert, isValid, null);
         }
