@@ -38,7 +38,6 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.slot.InternalInventorySlot;
 import mekanism.common.lib.SidedBlockPos;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.inventory.TransitRequest;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
@@ -65,9 +64,9 @@ import org.jetbrains.annotations.Nullable;
 
 public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements IAdvancedTransportEjector {
 
-    private static final EfficientEjector<Object2LongMap.Entry<HashedItem>> FILTER_EJECTOR = new EfficientEjector<>(Entry::getKey, e -> Ints.saturatedCast(e.getLongValue()),
+    private static final EfficientEjector<Object2LongMap.Entry<ItemResource>> FILTER_EJECTOR = new EfficientEjector<>(Entry::getKey, e -> Ints.saturatedCast(e.getLongValue()),
           (exporter, freq) -> exporter.getFilterEjectMap(freq).object2LongEntrySet());
-    private static final EfficientEjector<Map.Entry<HashedItem, QIOItemTypeData>> FILTERLESS_EJECTOR =
+    private static final EfficientEjector<Map.Entry<ItemResource, QIOItemTypeData>> FILTERLESS_EJECTOR =
           new EfficientEjector<>(Entry::getKey, e -> Ints.saturatedCast(e.getValue().getCount()), (exporter, freq) -> freq.getItemDataMap().entrySet());
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
@@ -139,15 +138,15 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         ejector.eject(this, freq, backHandler);
     }
 
-    private Object2LongMap<HashedItem> getFilterEjectMap(QIOFrequency freq) {
-        Object2LongMap<HashedItem> map = new Object2LongOpenHashMap<>();
+    private Object2LongMap<ItemResource> getFilterEjectMap(QIOFrequency freq) {
+        Object2LongMap<ItemResource> map = new Object2LongOpenHashMap<>();
         for (QIOFilter<?> filter : getFilterManager().getEnabledFilters()) {
             if (filter instanceof QIOItemStackFilter itemFilter) {
                 if (itemFilter.fuzzyMode) {
                     map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));
                 } else {
-                    HashedItem type = HashedItem.create(itemFilter.getItemStack());
-                    map.put(type, freq.getStoredByHash(type));
+                    ItemResource type = ItemResource.of(itemFilter.getItemStack());
+                    map.put(type, freq.getStored(type));
                 }
             } else if (filter instanceof QIOTagFilter tagFilter) {
                 String tagName = tagFilter.getTagName();
@@ -304,7 +303,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
      *
      * @author aidancbrady
      */
-    private record EfficientEjector<T>(Function<T, HashedItem> typeSupplier, ToIntFunction<T> countSupplier,
+    private record EfficientEjector<T>(Function<T, ItemResource> typeSupplier, ToIntFunction<T> countSupplier,
                                        BiFunction<TileEntityQIOExporter, QIOFrequency, Collection<T>> ejectMapCalculator) {
 
         private static final double MAX_EJECT_ATTEMPTS = 100;
@@ -337,7 +336,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
             double ejectChance = Math.min(1, MAX_EJECT_ATTEMPTS / ejectMap.size());
             boolean randomizeEject = ejectChance < 1;
             int maxTypes = exporter.getMaxTransitTypes(), maxCount = exporter.getMaxTransitCount();
-            Object2IntMap<HashedItem> removed = new Object2IntOpenHashMap<>();
+            Object2IntMap<ItemResource> removed = new Object2IntOpenHashMap<>();
             int amountRemoved = 0;
             for (T obj : ejectMap) {
                 // break if we've reached our quota
@@ -348,18 +347,18 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 if (randomizeEject && random.nextDouble() > ejectChance) {
                     continue;
                 }
-                HashedItem type = typeSupplier.apply(obj);
+                ItemResource type = typeSupplier.apply(obj);
                 int amountToInsert = Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj));
                 int toUse;
                 if (transporter == null) {
                     try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
                         //Insert the item into the resource handler, allowing the handler to decide how it is split among slots
                         //TODO - 26.1: Validate that the type can't somehow be empty
-                        toUse = inventory.insert(type.asResource(), amountToInsert, transaction);
+                        toUse = inventory.insert(type, amountToInsert, transaction);
                         transaction.commit();
                     }
                 } else {
-                    ItemStack origInsert = type.createStack(amountToInsert);
+                    ItemStack origInsert = type.toStack(amountToInsert);
                     //Note: We just simplify the logic that we would have when sending to a transporter via the handler
                     // and add support for also performing round-robin distribution. We don't just use a custom transit request
                     // as we want to be able to send multiple types at once, which is not that straightforward to do when trying
@@ -380,12 +379,12 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 }
             }
             // actually remove the items from the QIO frequency
-            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(removed); iterator.hasNext(); ) {
-                Object2IntMap.Entry<HashedItem> entry = iterator.next();
+            for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(removed); iterator.hasNext(); ) {
+                Object2IntMap.Entry<ItemResource> entry = iterator.next();
                 int amount = entry.getIntValue();
-                ItemStack ret = freq.removeByType(entry.getKey(), amount);
-                if (ret.count() != amount) {
-                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret.count(), amount);
+                int ret = freq.removeByType(entry.getKey(), amount);
+                if (ret != amount) {
+                    Mekanism.logger.error("QIO ejection item removal didn't line up with prediction: removed {}, expected {}", ret, amount);
                 }
             }
         }

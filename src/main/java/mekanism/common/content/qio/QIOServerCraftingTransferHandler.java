@@ -23,14 +23,13 @@ import mekanism.api.AutomationType;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOCraftingTransferHelper.BaseSimulatedInventory;
-import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularHashedItemSource;
+import mekanism.common.content.qio.QIOCraftingTransferHelper.SingularItemTypeSource;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
 import mekanism.common.inventory.container.SelectedWindowData;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.to_server.qio.PacketQIOFillCraftingWindow;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.core.NonNullList;
@@ -64,7 +63,7 @@ public class QIOServerCraftingTransferHandler {
     private final NonNullList<ItemStack> recipeToTest = NonNullList.withSize(9, ItemStack.EMPTY);
 
     public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
-          CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources) {
+          CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources) {
         QIOServerCraftingTransferHandler transferHandler = new QIOServerCraftingTransferHandler(container, selectedCraftingGrid, rejectToInventory, player, recipeID);
         try (Transaction transaction = Transaction.openRoot()) {
             transferHandler.tryTransfer(recipe, sources, transaction);
@@ -82,7 +81,7 @@ public class QIOServerCraftingTransferHandler {
         this.mainInventorySlots = container.getMainInventorySlots();
     }
 
-    private void tryTransfer(CraftingRecipe recipe, Byte2ObjectMap<List<SingularHashedItemSource>> sources, TransactionContext transaction) {
+    private void tryTransfer(CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources, TransactionContext transaction) {
         //Calculate what items are available inside the crafting window and if they can be extracted as we will
         // need to be able to extract the contents afterwards anyway
         for (byte slot = 0; slot < 9; slot++) {
@@ -104,17 +103,17 @@ public class QIOServerCraftingTransferHandler {
                 }
             }
         }
-        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
-            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularItemTypeSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularItemTypeSource>> entry = iterator.next();
             byte targetSlot = entry.getByteKey();
             if (targetSlot < 0 || targetSlot >= 9) {
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, with an invalid target slot id: {}.", player, recipeID, targetSlot);
                 return;
             }
             int stackSize = 0;
-            List<SingularHashedItemSource> singleSources = entry.getValue();
-            for (Iterator<SingularHashedItemSource> iter = singleSources.iterator(); iter.hasNext(); ) {
-                SingularHashedItemSource source = iter.next();
+            List<SingularItemTypeSource> singleSources = entry.getValue();
+            for (Iterator<SingularItemTypeSource> iter = singleSources.iterator(); iter.hasNext(); ) {
+                SingularItemTypeSource source = iter.next();
                 byte slot = source.getSlot();
                 int used;
                 if (slot == -1) {
@@ -178,11 +177,11 @@ public class QIOServerCraftingTransferHandler {
             if (frequency == null) {
                 return fail("Received transfer request from: {}, for: {}, with a QIO source but no selected frequency.", player, recipeID);
             }
-            HashedItem storedItem = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
-            if (storedItem == null) {
+            ItemResource storedItem = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
+            if (storedItem.isEmpty()) {
                 return fail("Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
             }
-            long stored = frequency.getStoredByHash(storedItem);
+            long stored = frequency.getStored(storedItem);
             slotData = stored == 0 ? FrequencySlotData.EMPTY : new FrequencySlotData(storedItem, stored);
             frequencyAvailableItems.put(qioSource, slotData);
         }
@@ -297,13 +296,13 @@ public class QIOServerCraftingTransferHandler {
     private boolean hasRoomToShuffle() {
         //Map used to keep track of inputs while also merging identical inputs, so we can cut down
         // on how many times we have to check if things can stack
-        Object2IntMap<HashedItem> leftOverInput = new Object2IntArrayMap<>(9);
+        Object2IntMap<ItemResource> leftOverInput = new Object2IntArrayMap<>(9);
         for (byte inputSlot = 0; inputSlot < 9; inputSlot++) {
             SlotData inputSlotData = availableItems.get(inputSlot);
             if (inputSlotData != null && inputSlotData.getAvailable() > 0) {
                 //If there was an item in the slot and there still is we need to see if we have room for it anywhere
                 //Note: We can just make the hashed item be raw as the stack does not get modified, and we don't persist this map
-                leftOverInput.mergeInt(HashedItem.fromResource(inputSlotData.getResource()), inputSlotData.getAvailable(), Integer::sum);
+                leftOverInput.mergeInt(inputSlotData.getResource(), inputSlotData.getAvailable(), Integer::sum);
             }
         }
         if (!leftOverInput.isEmpty()) {
@@ -316,7 +315,7 @@ public class QIOServerCraftingTransferHandler {
                     return slotData == null ? currentStored.count() : slotData.getAvailable();
                 }
             };
-            Object2IntMap<HashedItem> stillLeftOver = simulatedInventory.shuffleInputs(leftOverInput, frequency != null);
+            Object2IntMap<ItemResource> stillLeftOver = simulatedInventory.shuffleInputs(leftOverInput, frequency != null);
             if (stillLeftOver == null) {
                 //If we have remaining items and no frequency then we don't have room to shuffle
                 return false;
@@ -339,8 +338,8 @@ public class QIOServerCraftingTransferHandler {
                         availableItemTypes++;
                     }
                 }
-                for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
-                    Object2IntMap.Entry<HashedItem> entry = iterator.next();
+                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<ItemResource> entry = iterator.next();
                     availableItemSpace -= entry.getIntValue();
                     if (availableItemSpace <= 0) {
                         //No room for all our items, fail
@@ -376,7 +375,7 @@ public class QIOServerCraftingTransferHandler {
                 }
                 for (Map.Entry<UUID, FrequencySlotData> entry : frequencyAvailableItems.entrySet()) {
                     FrequencySlotData slotData = entry.getValue();
-                    HashedItem type = slotData.getType();
+                    ItemResource type = slotData.getType();
                     if (type != null) {
                         //If there is something actually stored in the frequency for this UUID, we need to try and remove it from our simulated drives
                         int toRemove = slotData.getUsed();
@@ -388,9 +387,9 @@ public class QIOServerCraftingTransferHandler {
                         }
                     }
                 }
-                for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
-                    Object2IntMap.Entry<HashedItem> entry = iterator.next();
-                    HashedItem item = entry.getKey();
+                for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(stillLeftOver); iterator.hasNext(); ) {
+                    Object2IntMap.Entry<ItemResource> entry = iterator.next();
+                    ItemResource item = entry.getKey();
                     int toAdd = entry.getIntValue();
                     //Start by trying to add to ones it can stack with
                     for (SimulatedQIODrive drive : simulatedDrives) {
@@ -421,38 +420,37 @@ public class QIOServerCraftingTransferHandler {
         return true;
     }
 
-    private void transferItems(Byte2ObjectMap<List<SingularHashedItemSource>> sources, TransactionContext transaction) {
+    private void transferItems(Byte2ObjectMap<List<SingularItemTypeSource>> sources, TransactionContext transaction) {
         SelectedWindowData windowData = craftingWindow.getWindowData();
         //Extract items that will be put into the crafting window
         Byte2ObjectMap<ItemStack> targetContents = new Byte2ObjectArrayMap<>(sources.size());
-        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularHashedItemSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
-            Byte2ObjectMap.Entry<List<SingularHashedItemSource>> entry = iterator.next();
-            for (SingularHashedItemSource source : entry.getValue()) {
+        for (ObjectIterator<Byte2ObjectMap.Entry<List<SingularItemTypeSource>>> iterator = Byte2ObjectMaps.fastIterator(sources); iterator.hasNext(); ) {
+            Byte2ObjectMap.Entry<List<SingularItemTypeSource>> entry = iterator.next();
+            for (SingularItemTypeSource source : entry.getValue()) {
                 byte slot = source.getSlot();
                 ItemResource itemType;
                 int amountExtracted;
                 if (slot == -1) {
                     UUID qioSource = source.getQioSource();
                     //Neither the source nor the frequency can be null here as we validated that during simulation
-                    HashedItem storedItem = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
-                    if (storedItem == null) {
+                    itemType = QIOGlobalItemLookup.instance().getTypeByUUID(qioSource);
+                    if (itemType.isEmpty()) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, for item with unknown UUID: {}.", player, recipeID, qioSource);
                         return;
-                    } else if (!frequency.isStoring(storedItem)) {
+                    } else if (!frequency.isStoring(itemType)) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, could not find stored item with UUID: {}. "
                                              + "This likely means that more of it was requested than is stored.", player, recipeID, qioSource);
                         return;
                     }
-                    itemType = storedItem.asResource();
                     amountExtracted = frequency.removeByType(itemType, source.getUsed());
                     if (amountExtracted == 0) {
                         bail(targetContents, transaction, "Received transfer request from: {}, for: {}, but could not extract item: {} from the QIO.",
-                              player, recipeID, storedItem);
+                              player, recipeID, itemType);
                         return;
                     } else if (amountExtracted < source.getUsed()) {
                         Mekanism.logger.warn("Received transfer request from: {}, for: {}, but was unable to extract the expected amount: {} of item: {} from the QIO. "
                                              + "This should not be possible as it should have been caught during simulation. Attempting to continue anyways with the actual "
-                                             + "extracted amount of {}.", player, recipeID, source.getUsed(), storedItem, amountExtracted);
+                                             + "extracted amount of {}.", player, recipeID, source.getUsed(), itemType, amountExtracted);
                     }
                 } else {
                     int actualSlot;
@@ -694,8 +692,8 @@ public class QIOServerCraftingTransferHandler {
         /**
          * Pointer to the actual map from the real QIODrive. Do not modify this map, it is mainly to reduce the need for doing potentially massive map copies.
          */
-        private final Object2LongMap<HashedItem> sourceItemMap;
-        private Set<HashedItem> removedTypes;
+        private final Object2LongMap<ItemResource> sourceItemMap;
+        private Set<ItemResource> removedTypes;
         private int availableItemTypes;
         private long availableItemSpace;
 
@@ -705,7 +703,7 @@ public class QIOServerCraftingTransferHandler {
             this.availableItemTypes = sourceDrive.getTypeCapacity() - sourceDrive.getTotalTypes();
         }
 
-        public int remove(HashedItem item, int count) {
+        public int remove(ItemResource item, int count) {
             long stored = sourceItemMap.getOrDefault(item, 0);
             if (stored == 0) {
                 return count;
@@ -725,7 +723,7 @@ public class QIOServerCraftingTransferHandler {
             return 0;
         }
 
-        public int add(HashedItem item, int count, boolean mustContain) {
+        public int add(ItemResource item, int count, boolean mustContain) {
             if (availableItemSpace == 0) {
                 //No space, fail
                 return count;
@@ -811,10 +809,10 @@ public class QIOServerCraftingTransferHandler {
         /**
          * @apiNote Don't mutate this stack
          */
-        private final HashedItem type;
+        private final ItemResource type;
         private int used;
 
-        public FrequencySlotData(HashedItem type, long stored) {
+        public FrequencySlotData(ItemResource type, long stored) {
             //Clamp to int as with how many slots we are filling even though the frequency may have more than
             // a certain amount stored, we can never need that many for usage, so we can save some extra memory
             super(Ints.saturatedCast(stored));
@@ -828,7 +826,7 @@ public class QIOServerCraftingTransferHandler {
 
         @Override
         protected ItemResource getResource() {
-            return type == null ? ItemResource.EMPTY : type.asResource();
+            return type == null ? ItemResource.EMPTY : type;
         }
 
         @Override
@@ -841,7 +839,7 @@ public class QIOServerCraftingTransferHandler {
             return used;
         }
 
-        public HashedItem getType() {
+        public ItemResource getType() {
             return type;
         }
     }

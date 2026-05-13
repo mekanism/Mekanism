@@ -877,7 +877,7 @@ public class MekanismBlocks {
                 .component(MekanismDataComponents.FUZZY, false)
                 .component(MekanismDataComponents.INVERSE, false)
                 .component(MekanismDataComponents.LONG_AMOUNT, 0L)
-                .component(MekanismDataComponents.ITEM_TARGET, Optional.empty())
+                .component(MekanismDataComponents.ITEM_TARGET, ItemResource.EMPTY)
           ));
 
     public static final BlockRegistryObject<BlockEnergyCube, ItemBlockEnergyCube> BASIC_ENERGY_CUBE = registerEnergyCube(MekanismBlockTypes.BASIC_ENERGY_CUBE);

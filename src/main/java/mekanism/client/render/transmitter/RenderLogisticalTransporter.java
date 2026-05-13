@@ -14,7 +14,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.base.ProfilerConstants;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.tile.transmitter.TileEntityLogisticalTransporterBase;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
@@ -38,6 +37,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -141,13 +141,13 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
 
         @Nullable
         private final EnumColor color;
-        private final HashedItem item;
+        private final ItemResource item;
         private final int progress;
 
         private TransportInformation(TransporterStack transporterStack) {
             this.progress = transporterStack.progress;
             this.color = transporterStack.color;
-            this.item = HashedItem.create(transporterStack.itemStack);
+            this.item = ItemResource.of(transporterStack.itemStack);
         }
 
         @Override

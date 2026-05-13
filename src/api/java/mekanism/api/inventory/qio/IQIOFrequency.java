@@ -3,15 +3,15 @@ package mekanism.api.inventory.qio;
 import java.util.function.ObjLongConsumer;
 import mekanism.api.Action;
 import mekanism.api.IFrequency;
-import mekanism.api.inventory.IHashedItem;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 /**
  * Basic definition of a QIO Frequency for use in exposing pieces of them to the API.
  *
  * @since 10.2.1
  */
-public interface IQIOFrequency extends IFrequency {
+public interface IQIOFrequency extends IFrequency {//TODO - 26.1: Update docs
 
     /**
      * Gets the amount of a given item type that is stored in this QIO Frequency.
@@ -20,7 +20,11 @@ public interface IQIOFrequency extends IFrequency {
      *
      * @return Amount stored.
      */
-    long getStored(ItemStack type);
+    default long getStored(ItemStack type) {
+        return type.isEmpty() ? 0 : getStored(ItemResource.of(type));
+    }
+
+    long getStored(ItemResource type);
 
     /**
      * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with a new {@link ItemStack} with a size of {@code 1}
@@ -31,14 +35,14 @@ public interface IQIOFrequency extends IFrequency {
     void forAllStored(ObjLongConsumer<ItemStack> consumer);
 
     /**
-     * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with the stored {@link IHashedItem} representing the type,
+     * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with the stored {@link ItemResource} representing the type,
      * and a long representing the amount of that item type that is stored.
      *
      * @param consumer Action to be performed.
      *
-     * @since 10.3.6
+     * @since 10.8.0
      */
-    void forAllHashedStored(ObjLongConsumer<IHashedItem> consumer);
+    void forAllStoredTypes(ObjLongConsumer<ItemResource> consumer);
 
     /**
      * Attempts to insert a given item type into this QIO Frequency.

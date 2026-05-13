@@ -1,5 +1,7 @@
 package mekanism.api;
 
+//TODO - 26.1: Remove this
+@Deprecated(forRemoval = true)
 public enum Action {
     EXECUTE,
     SIMULATE;

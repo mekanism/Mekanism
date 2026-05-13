@@ -1,7 +1,6 @@
 
 package mekanism.common.tests.codec;
 
-import java.util.Optional;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
@@ -13,7 +12,6 @@ import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
@@ -163,12 +161,12 @@ public class MissingObjectSerializationTest {
     public static void testItemTarget(final MissingObjectTestHelper helper) {
         helper.succeedIfInvalidItemSerializationCycle(ItemStack.CODEC, help -> {
             ItemStack adapter = new ItemStack(MekanismBlocks.QIO_REDSTONE_ADAPTER);
-            adapter.set(MekanismDataComponents.ITEM_TARGET, Optional.of(help.failureHashedItem()));
+            adapter.set(MekanismDataComponents.ITEM_TARGET, help.failureItemType());
             adapter.set(MekanismDataComponents.LONG_AMOUNT, 5L);
             return adapter;
         }, adapter -> {
             if (adapter.is(MekanismBlocks.QIO_REDSTONE_ADAPTER.getItemHolder())) {
-                Optional<HashedItem> itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
+                ItemResource itemTarget = adapter.get(MekanismDataComponents.ITEM_TARGET);
                 return itemTarget != null && itemTarget.isEmpty() && adapter.getComponentsPatch().getPatch(MekanismDataComponents.ITEM_TARGET.get()) == null &&
                        adapter.getOrDefault(MekanismDataComponents.LONG_AMOUNT, 0L) == 5;
             }

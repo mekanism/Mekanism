@@ -37,8 +37,7 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.VirtualCraftingOutputSlot;
 import mekanism.common.inventory.container.slot.VirtualInventoryContainerSlot;
-import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
+import mekanism.common.lib.inventory.UUIDItemResource;
 import mekanism.common.network.PacketUtils;
 import mekanism.common.network.to_client.qio.BulkQIOData;
 import mekanism.common.network.to_server.qio.PacketQIOItemViewerSlotPlace;
@@ -270,8 +269,9 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             //Note: We don't need to sanitize the slot's items as these are just InsertableSlots which have no restrictions on them on how much
             // can be extracted at once so even if they somehow have an oversized stack it will be fine
             ItemStack slotItem = slot.getItem();
-            if (InventoryUtils.areItemsStackable(lastStack, slotItem)) {
-                transferSuccess(slot, player, freq.addItem(ItemResource.of(slotItem), slotItem.count()));
+            ItemResource slotType = ItemResource.of(slotItem);
+            if (InventoryUtils.areItemsStackable(lastStack, slotType)) {
+                transferSuccess(slot, player, freq.addItem(slotType, slotItem.count()));
             }
         }
     }
@@ -381,7 +381,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         return Optional.empty();
     }
 
-    public void handleUpdate(Object2LongMap<UUIDAwareHashedItem> itemMap, long countCapacity, int typeCapacity) {
+    public void handleUpdate(Object2LongMap<UUIDItemResource> itemMap, long countCapacity, int typeCapacity) {
         cachedCountCapacity = countCapacity;
         cachedTypeCapacity = typeCapacity;
         if (itemMap.isEmpty()) {
@@ -389,10 +389,11 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // just short circuit a lot of logic
             return;
         }
-        for (ObjectIterator<Object2LongMap.Entry<UUIDAwareHashedItem>> iterator = Object2LongMaps.fastIterator(itemMap); iterator.hasNext(); ) {
-            Object2LongMap.Entry<UUIDAwareHashedItem> entry = iterator.next();
-            UUIDAwareHashedItem itemKey = entry.getKey();
-            UUID itemUUID = itemKey.getUUID();
+        for (ObjectIterator<Object2LongMap.Entry<UUIDItemResource>> iterator = Object2LongMaps.fastIterator(itemMap); iterator.hasNext(); ) {
+            Object2LongMap.Entry<UUIDItemResource> entry = iterator.next();
+            UUIDItemResource itemKey = entry.getKey();
+            UUID itemUUID = itemKey.uuid();
+            ItemResource itemType = itemKey.itemType();
             long value = entry.getLongValue();
             if (value == 0) {
                 //Note: No sorting is required when removing as the lists will already be in the correct order
@@ -425,7 +426,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     //Mark that we have some items that changed (which may affect the sort order)
                     sortingNeeded = sortingNeeded.concat(SortingNeeded.ITEMS_ONLY);
                     //If the item we added matches the current search query
-                    if (searchQuery.test(getLevel(), inv.player, slotData.getInternalStack())) {
+                    if (searchQuery.test(getLevel(), inv.player, slotData.itemType().toStack())) {
                         // add it to the end of the search list
                         // Note: We already know it isn't part of the searchList, as it wasn't part of our universe (cachedInventory)
                         searchList.add(slotData);
@@ -439,7 +440,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
                     if (sortType.usesCount()) {
                         //If our sort type actually makes use of the item count on some level, then we need to mark that the item list needs to be sorted
                         sortingNeeded = sortingNeeded.concat(SortingNeeded.ITEMS_ONLY);
-                        if (searchQuery.test(getLevel(), inv.player, slotData.getInternalStack())) {
+                        if (searchQuery.test(getLevel(), inv.player, slotData.itemType().toStack())) {
                             // and if the item is in our search query, then we also need to sort the search list
                             sortingNeeded = sortingNeeded.concat(SortingNeeded.SEARCH_ONLY);
                         }
@@ -467,7 +468,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             // we only need to do reference equality instead of object equality
             //TODO: Can we somehow make removing more efficient by taking advantage of the fact that itemList is sorted?
             itemList.remove(oldData);
-            if (searchQuery.test(getLevel(), inv.player, oldData.getInternalStack())) {
+            if (searchQuery.test(getLevel(), inv.player, oldData.itemType().toStack())) {
                 //If item being removed matched the existing search, we want to remove it from the search list as well
                 searchList.remove(oldData);
             }
@@ -669,7 +670,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
         searchList.clear();
         if (!searchQuery.isInvalid()) {
             for (IScrollableSlot slot : itemList) {
-                if (searchQuery.test(level, inv.player, slot.getInternalStack())) {
+                if (searchQuery.test(level, inv.player, slot.itemType().toStack())) {
                     searchList.add(slot);
                 }
             }
@@ -699,7 +700,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             if (heldItem.isEmpty()) {
                 IScrollableSlot slot = slotProvider.get();
                 if (slot != null && slot.count() > 0) {
-                    int maxStackSize = Math.min(Ints.saturatedCast(slot.count()), slot.item().getMaxStackSize());
+                    int maxStackSize = Math.min(Ints.saturatedCast(slot.count()), slot.itemType().getMaxStackSize());
                     //Left click -> as much as possible, right click -> half of a stack, middle click -> 1
                     //Cap it out at the max stack size of the item, but otherwise try to take the desired amount (taking at least one if it is a single item)
                     int toTake;
@@ -715,7 +716,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
             } else {
                 //middle click -> add to current stack if over slot and stackable, else normal storage functionality
                 IScrollableSlot slot;
-                if (button == InputConstants.MOUSE_BUTTON_MIDDLE && (slot = slotProvider.get()) != null && InventoryUtils.areItemsStackable(heldItem, slot.getInternalStack())) {
+                if (button == InputConstants.MOUSE_BUTTON_MIDDLE && (slot = slotProvider.get()) != null && InventoryUtils.areItemsStackable(heldItem, slot.itemType())) {
                     PacketUtils.sendToServer(new PacketQIOItemViewerSlotTake(slot.itemUUID(), 1));
                 } else {
                     //Left click -> all held, right click -> single item
@@ -728,30 +729,25 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
     public static final class ItemSlotData implements IScrollableSlot {
 
-        private final UUIDAwareHashedItem item;
+        private final UUIDItemResource item;
         private long count;
 
         private final HolderLookup.Provider registries;
 
-        public ItemSlotData(UUIDAwareHashedItem item, long count, HolderLookup.Provider registries) {
+        public ItemSlotData(UUIDItemResource item, long count, HolderLookup.Provider registries) {
             this.item = item;
             this.count = count;
             this.registries = registries;
         }
 
         @Override
-        public HashedItem asRawHashedItem() {
-            return item.asRawHashedItem();
-        }
-
-        @Override
-        public UUIDAwareHashedItem item() {
-            return item;
+        public ItemResource itemType() {
+            return item.itemType();
         }
 
         @Override
         public UUID itemUUID() {
-            return item.getUUID();
+            return item.uuid();
         }
 
         @Override
@@ -762,7 +758,7 @@ public abstract class QIOItemViewerContainer extends MekanismContainer implement
 
         @Override
         public String getModID() {
-            return MekanismUtils.getModId(registries, getInternalStack());
+            return MekanismUtils.getModId(registries, itemType().toStack());
         }
 
         @Override

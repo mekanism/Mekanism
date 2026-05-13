@@ -7,7 +7,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.qio.DriveContents;
 import mekanism.common.attachments.qio.DriveMetadata;
 import mekanism.common.inventory.slot.QIODriveSlot;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismDataComponents;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
@@ -16,7 +15,7 @@ public class QIODriveData {
     private final QIODriveKey key;
     private final long countCapacity;
     private final int typeCapacity;
-    private final Object2LongMap<HashedItem> itemMap = new Object2LongOpenHashMap<>();
+    private final Object2LongMap<ItemResource> itemMap = new Object2LongOpenHashMap<>();
     private long itemCount;
 
     public QIODriveData(QIODriveKey key, ItemResource driveData) {
@@ -33,7 +32,7 @@ public class QIODriveData {
         key.updateMetadata(this);
     }
 
-    public long add(HashedItem type, long amount, Action action) {
+    public long add(ItemResource type, long amount, Action action) {
         long stored = getStored(type);
         // fail if we've reached item count capacity or adding this item would make us exceed type capacity
         if (itemCount == countCapacity || (stored == 0 && itemMap.size() == typeCapacity)) {
@@ -49,7 +48,7 @@ public class QIODriveData {
         return amount - toAdd;
     }
 
-    public long remove(HashedItem type, long amount, Action action) {
+    public long remove(ItemResource type, long amount, Action action) {
         long stored = getStored(type);
         long removed = Math.min(amount, stored);
         if (action.execute()) {
@@ -66,11 +65,11 @@ public class QIODriveData {
         return removed;
     }
 
-    public long getStored(HashedItem type) {
+    public long getStored(ItemResource type) {
         return itemMap.getOrDefault(type, 0L);
     }
 
-    public Object2LongMap<HashedItem> getItemMap() {
+    public Object2LongMap<ItemResource> getItemMap() {
         return itemMap;
     }
 

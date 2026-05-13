@@ -10,11 +10,11 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
 import mekanism.common.Mekanism;
-import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,7 +52,8 @@ public class QIOGlobalItemLookup {
     );
 
     private static Codec<QIOGlobalItemLookupDataHandler> makeCodec() {
-        Codec<Map<UUID, HashedItem>> itemData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, HashedItem.CODEC).promotePartial(err -> LOGGER.error("Some QIO item data failed to load, items may be missing: {}", err));
+        //TODO - 26.1: Does this need to be ItemResource.OPTIONAL_CODEC?
+        Codec<Map<UUID, ItemResource>> itemData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, ItemResource.CODEC).promotePartial(err -> LOGGER.error("Some QIO item data failed to load, items may be missing: {}", err));
         Codec<Map<UUID, UUID>> aliasData = Codec.unboundedMap(UUIDUtil.STRING_CODEC, UUIDUtil.STRING_CODEC).promotePartial(err -> LOGGER.warn("Some QIO alias data failed to load, unmigrated items may be missing: {}", err));
         return RecordCodecBuilder.create(instance -> instance.group(
               itemData.fieldOf(SerializationConstants.ITEMS).forGetter(it -> it.itemCache),
@@ -66,7 +67,7 @@ public class QIOGlobalItemLookup {
         //keep track of a UUID for each hashed item. Note every hashed item in this can be assumed to be serializable
         // we only don't store them as such for the generic so that we don't have to create extra objects for purposes
         // of getting the uuid for a given item type
-        private final BiMap<UUID, HashedItem> itemCache = HashBiMap.create();
+        private final BiMap<UUID, ItemResource> itemCache = HashBiMap.create();
         /**
          * Map of "No longer valid" -> "New Id"
          */
@@ -76,7 +77,7 @@ public class QIOGlobalItemLookup {
             mergedIds = Collections.emptyMap();
         }
 
-        private QIOGlobalItemLookupDataHandler(Map<UUID, HashedItem> loadedData, Map<UUID, UUID> loadedAliases) {
+        private QIOGlobalItemLookupDataHandler(Map<UUID, ItemResource> loadedData, Map<UUID, UUID> loadedAliases) {
             Map<UUID, UUID> aliases = new HashMap<>(loadedAliases);//make it mutable
             loadedData.forEach((uuid, item) -> {
                 try {
@@ -110,15 +111,15 @@ public class QIOGlobalItemLookup {
         }
 
         @Nullable
-        public UUID getUUIDForType(HashedItem item) {
+        public UUID getUUIDForType(ItemResource item) {
             return itemCache.inverse().get(item);
         }
 
         /**
          * @apiNote Only call this with non-raw hashed items
          */
-        public UUID getOrTrackUUID(HashedItem item) {
-            BiMap<HashedItem, UUID> inverseCache = itemCache.inverse();
+        public UUID getOrTrackUUID(ItemResource item) {
+            BiMap<ItemResource, UUID> inverseCache = itemCache.inverse();
             UUID uuid = inverseCache.get(item);
             if (uuid == null) {
                 //Calculate and return a new UUID and mark the save data as dirty
@@ -129,9 +130,8 @@ public class QIOGlobalItemLookup {
             return uuid;
         }
 
-        @Nullable
-        public HashedItem getTypeByUUID(@Nullable UUID uuid) {
-            return uuid == null ? null : itemCache.get(uuid);
+        public ItemResource getTypeByUUID(@Nullable UUID uuid) {
+            return uuid == null ? ItemResource.EMPTY : itemCache.getOrDefault(uuid, ItemResource.EMPTY);
         }
 
     }

@@ -9,7 +9,6 @@ import com.mojang.serialization.JsonOps;
 import java.util.function.Function;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.commands.arguments.EntityAnchorArgument;
 import net.minecraft.core.BlockPos;
@@ -57,10 +56,6 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
     public GameTestAssertException assertionException(String description) {
         //TODO - 26.1: Do we want to make any of our assertions translatable so that they can replace parameters instead of using string concat?
         return assertionException(Component.literal(description));
-    }
-
-    public static HashedItem hashedStack(Item item) {
-        return HashedItem.raw(new ItemStack(item));
     }
 
     public ChunkMap getChunkMap() {

@@ -131,7 +131,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     private void renderSlot(GuiGraphicsExtractor guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
-        ItemStack stack = slot.getInternalStack();
+        ItemStack stack = slot.itemType().toStack();
         if (stack.isEmpty()) {//Sanity check
             return;
         }
@@ -157,7 +157,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     }
 
     private void renderSlotTooltip(GuiGraphicsExtractor guiGraphics, IScrollableSlot slot, int slotX, int slotY) {
-        ItemStack stack = slot.getInternalStack();
+        ItemStack stack = slot.itemType().toStack();
         if (stack.isEmpty()) {//Sanity check
             return;
         }
@@ -195,7 +195,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IScrollableSlot slot = getSlot(mouseX, mouseY);
-        return slot == null ? Optional.empty() : Optional.of(slot.getInternalStack());
+        return slot == null ? Optional.empty() : Optional.of(slot.itemType().toStack());
     }
 
     @Override

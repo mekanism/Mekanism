@@ -14,10 +14,10 @@ import java.util.stream.LongStream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
-import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault//Sorted map so that the save order is consistent
 public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
@@ -39,24 +39,24 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
     }
 
     public static DriveContents create(QIODriveData data) {
-        Object2LongMap<HashedItem> itemMap = data.getItemMap();
+        Object2LongMap<ItemResource> itemMap = data.getItemMap();
         if (itemMap.isEmpty()) {
             return EMPTY;
         }
         Object2LongSortedMap<UUID> namedItemMap = new Object2LongLinkedOpenHashMap<>(itemMap.size());
-        for (ObjectIterator<Object2LongMap.Entry<HashedItem>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
-            Object2LongMap.Entry<HashedItem> entry = iterator.next();
+        for (ObjectIterator<Object2LongMap.Entry<ItemResource>> iterator = Object2LongMaps.fastIterator(data.getItemMap()); iterator.hasNext(); ) {
+            Object2LongMap.Entry<ItemResource> entry = iterator.next();
             namedItemMap.put(QIOGlobalItemLookup.instance().getOrTrackUUID(entry.getKey()), entry.getLongValue());
         }
         return new DriveContents(namedItemMap);
     }
 
     public void loadItemMap(QIODriveData data) {
-        Object2LongMap<HashedItem> itemMap = data.getItemMap();
+        Object2LongMap<ItemResource> itemMap = data.getItemMap();
         for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(namedItemMap); iterator.hasNext(); ) {
             Object2LongMap.Entry<UUID> entry = iterator.next();
-            HashedItem type = QIOGlobalItemLookup.instance().getTypeByUUID(entry.getKey());
-            if (type != null) {
+            ItemResource type = QIOGlobalItemLookup.instance().getTypeByUUID(entry.getKey());
+            if (!type.isEmpty()) {
                 //Only add the item if the item type is known. If it can't that means the mod adding the item was probably removed
                 //TODO: Eventually we may want to keep the UUID so that if the mod gets added back it exists again?
                 itemMap.put(type, entry.getLongValue());

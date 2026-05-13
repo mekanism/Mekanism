@@ -24,7 +24,6 @@ import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
 import mekanism.common.inventory.container.slot.TransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
-import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
@@ -36,12 +35,12 @@ import org.jetbrains.annotations.Nullable;
 public class QIOCraftingTransferHelper {
 
     /**
-     * A map of {@link HashedItem}s to the item's sources for stored items in the frequency, the selected crafting grid, and the player's inventory. Any UUID distinct
+     * A map of {@link ItemResource}s to the item's sources for stored items in the frequency, the selected crafting grid, and the player's inventory. Any UUID distinct
      * items get merged into one as the client for checking amounts for JEI filling doesn't have access to the extra data anyway so makes do without it.
      *
      * @implNote We use raw hashed items as none of this stuff should or will be modified while doing these checks, so we may as well remove some unneeded copies.
      */
-    public final Map<HashedItem, HashedItemSource> reverseLookup;
+    public final Map<ItemResource, ItemTypeSource> reverseLookup;
     private byte emptyInventorySlots;
     private boolean isValid;
 
@@ -52,7 +51,7 @@ public class QIOCraftingTransferHelper {
         for (IScrollableSlot source : cachedInventory) {
             //Skip any items that are only still in the cache due to sorting being paused, as we don't have any of it available for crafting
             if (source.count() > 0) {
-                reverseLookup.computeIfAbsent(source.asRawHashedItem(), item -> new HashedItemSource()).addQIOSlot(source.itemUUID(), source.count());
+                reverseLookup.computeIfAbsent(source.itemType(), item -> new ItemTypeSource()).addQIOSlot(source.itemUUID(), source.count());
             }
         }
         byte inventorySlotIndex = 0;
@@ -71,7 +70,7 @@ public class QIOCraftingTransferHelper {
                         return;
                     }
                 }
-                reverseLookup.computeIfAbsent(HashedItem.fromResource(storedType), item -> new HashedItemSource()).addSlot(inventorySlotIndex, slot.amount());
+                reverseLookup.computeIfAbsent(storedType, item -> new ItemTypeSource()).addSlot(inventorySlotIndex, slot.amount());
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);
@@ -83,7 +82,7 @@ public class QIOCraftingTransferHelper {
             if (slot.hasItem()) {
                 if (slot.mayPickup(player)) {
                     ItemStack stack = slot.getItem();
-                    reverseLookup.computeIfAbsent(HashedItem.raw(stack), item -> new HashedItemSource()).addSlot(inventorySlotIndex, stack.count());
+                    reverseLookup.computeIfAbsent(ItemResource.of(stack), item -> new ItemTypeSource()).addSlot(inventorySlotIndex, stack.count());
                 }
             } else {
                 emptyInventorySlots++;
@@ -102,11 +101,11 @@ public class QIOCraftingTransferHelper {
     }
 
     @Nullable
-    public HashedItemSource getSource(@NotNull HashedItem item) {
+    public ItemTypeSource getSource(@NotNull ItemResource item) {
         return reverseLookup.get(item);
     }
 
-    public static class HashedItemSource {
+    public static class ItemTypeSource {
 
         @Nullable
         private Object2LongMap<UUID> qioSources;
@@ -161,13 +160,13 @@ public class QIOCraftingTransferHelper {
             return qioSources != null;
         }
 
-        public List<SingularHashedItemSource> use(int toUse) {
+        public List<SingularItemTypeSource> use(int toUse) {
             if (toUse > available) {
                 //If we don't have as many things available as we needed, then fail
                 return Collections.emptyList();
             }
             matches--;
-            List<SingularHashedItemSource> sources = new ArrayList<>();
+            List<SingularItemTypeSource> sources = new ArrayList<>();
             //Start by checking the crafting grid, hotbar, and main inventory for our items
             if (slots != null) {
                 //Note: This checks it in the order crafting grid, hotbar, main inventory
@@ -181,12 +180,12 @@ public class QIOCraftingTransferHelper {
                         //Note: We need to use put, as entry#setValue is not supported in Byte2IntArrayMaps
                         slots.put(slot, stored - toUse);
                         available -= toUse;
-                        sources.add(new SingularHashedItemSource(slot, toUse));
+                        sources.add(new SingularItemTypeSource(slot, toUse));
                         return sources;
                     }
                     //We have less stored than we need, use what we can and remove the source
                     available -= stored;
-                    sources.add(new SingularHashedItemSource(slot, Ints.saturatedCast(stored)));
+                    sources.add(new SingularItemTypeSource(slot, Ints.saturatedCast(stored)));
                     iterator.remove();
                     if (stored == toUse) {
                         //If we had the exact amount we needed then return our sources
@@ -209,12 +208,12 @@ public class QIOCraftingTransferHelper {
                         //We have more stored than we need, use it and return
                         entry.setValue(stored - toUse);
                         available -= toUse;
-                        sources.add(new SingularHashedItemSource(key, toUse));
+                        sources.add(new SingularItemTypeSource(key, toUse));
                         return sources;
                     }
                     //We have less stored than we need, use what we can and remove the source
                     available -= stored;
-                    sources.add(new SingularHashedItemSource(key, Ints.saturatedCast(stored)));
+                    sources.add(new SingularItemTypeSource(key, Ints.saturatedCast(stored)));
                     iter.remove();
                     if (stored == toUse) {
                         //If we had the exact amount we needed then return our sources
@@ -232,20 +231,20 @@ public class QIOCraftingTransferHelper {
         }
     }
 
-    public static class SingularHashedItemSource {
+    public static class SingularItemTypeSource {
 
         @Nullable
         private final UUID qioSource;
         private final byte slot;
         private int used;
 
-        public SingularHashedItemSource(@NotNull UUID qioSource, int used) {
+        public SingularItemTypeSource(@NotNull UUID qioSource, int used) {
             this.qioSource = qioSource;
             this.slot = -1;
             this.used = used;
         }
 
-        public SingularHashedItemSource(byte slot, int used) {
+        public SingularItemTypeSource(byte slot, int used) {
             this.qioSource = null;
             this.slot = slot;
             this.used = used;
@@ -277,14 +276,14 @@ public class QIOCraftingTransferHelper {
      */
     public abstract static class BaseSimulatedInventory {
 
-        private final ItemStack[] inventory;
+        private final ItemResource[] inventory;
         private final int[] stackSizes;
         private final int[] slotLimits;
 
         protected BaseSimulatedInventory(List<HotBarSlot> hotBarSlots, List<MainInventorySlot> mainInventorySlots) {
             int hotBarSize = hotBarSlots.size();
             int slots = hotBarSize + mainInventorySlots.size();
-            inventory = new ItemStack[slots];
+            inventory = new ItemResource[slots];
             stackSizes = new int[slots];
             slotLimits = new int[slots];
             TransactionalSlot inventorySlot;
@@ -301,7 +300,7 @@ public class QIOCraftingTransferHelper {
                     stack = ItemStack.EMPTY;
                 }
                 stackSizes[slot] = remaining;
-                inventory[slot] = stack;
+                inventory[slot] = ItemResource.of(stack);
                 //Note: For our slots the max stack size of the slot itself is always Item.ABSOLUTE_MAX_STACK_SIZE, but we look it up anyway just in case things change
                 if (stack.isEmpty()) {
                     slotLimits[slot] = inventorySlot.getMaxStackSize(stack);
@@ -321,7 +320,7 @@ public class QIOCraftingTransferHelper {
          *
          * @return The amount of the item that couldn't fit into the inventory.
          */
-        public int shuffleItem(HashedItem type, int amount) {
+        public int shuffleItem(ItemResource type, int amount) {
             if (amount == 0) {
                 return 0;
             }
@@ -330,7 +329,7 @@ public class QIOCraftingTransferHelper {
                 int currentAmount = stackSizes[slot];
                 int max = slotLimits[slot];
                 //If the slot has any room left, and our stack is able to stack with it
-                if (currentAmount < max && type.isSameItemSameComponents(inventory[slot])) {
+                if (currentAmount < max && type.equals(inventory[slot])) {
                     int toPlace = Math.min(max - currentAmount, amount);
                     stackSizes[slot] = currentAmount + toPlace;
                     amount -= toPlace;
@@ -352,7 +351,7 @@ public class QIOCraftingTransferHelper {
                         // stored and is no longer stored
                         //Note: We also can use the raw backing stack in this array as we do not do any mutations,
                         // and this allows us to then avoid an extra copy call
-                        inventory[slot] = type.getInternalStack();
+                        inventory[slot] = type;
                         slotLimits[slot] = max = Math.min(max, type.getMaxStackSize());
                         int toPlace = stackSizes[slot] = Math.min(amount, max);
                         amount -= toPlace;
@@ -367,10 +366,10 @@ public class QIOCraftingTransferHelper {
         }
 
         @Nullable
-        public Object2IntMap<HashedItem> shuffleInputs(Object2IntMap<HashedItem> leftOverInput, boolean hasFrequency) {
-            Object2IntMap<HashedItem> stillLeftOver = hasFrequency ? new Object2IntArrayMap<>(leftOverInput.size()) : Object2IntMaps.emptyMap();
-            for (ObjectIterator<Object2IntMap.Entry<HashedItem>> iterator = Object2IntMaps.fastIterator(leftOverInput); iterator.hasNext(); ) {
-                Object2IntMap.Entry<HashedItem> entry = iterator.next();
+        public Object2IntMap<ItemResource> shuffleInputs(Object2IntMap<ItemResource> leftOverInput, boolean hasFrequency) {
+            Object2IntMap<ItemResource> stillLeftOver = hasFrequency ? new Object2IntArrayMap<>(leftOverInput.size()) : Object2IntMaps.emptyMap();
+            for (ObjectIterator<Object2IntMap.Entry<ItemResource>> iterator = Object2IntMaps.fastIterator(leftOverInput); iterator.hasNext(); ) {
+                Object2IntMap.Entry<ItemResource> entry = iterator.next();
                 // And try to shuffle the remaining contents into the simulation updating as we go
                 int remaining = shuffleItem(entry.getKey(), entry.getIntValue());
                 if (remaining > 0) {

@@ -26,7 +26,6 @@ import mekanism.common.content.filter.IItemStackFilter;
 import mekanism.common.content.miner.MinerItemStackFilter;
 import mekanism.common.content.qio.filter.QIOItemStackFilter;
 import mekanism.common.content.transporter.SorterItemStackFilter;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
@@ -60,10 +59,6 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     public MissingObjectTestHelper(GameTestInfo info) {
         super(info);
-    }
-
-    public HashedItem failureHashedItem() {
-        return HashedItem.raw(failureItem());
     }
 
     public ItemResource failureItemType() {

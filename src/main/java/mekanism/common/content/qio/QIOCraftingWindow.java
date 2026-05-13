@@ -20,7 +20,6 @@ import mekanism.common.inventory.container.slot.ITransactionalSlot;
 import mekanism.common.inventory.container.slot.MainInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowInventorySlot;
 import mekanism.common.inventory.slot.CraftingWindowOutputInventorySlot;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.recipe.MekanismRecipeType;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -806,7 +805,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     }
                     //Start by checking against the exact stack it has stored as an item
                     // Note: We can use a raw hashed item here as we don't store it anywhere, and just use it as a lookup
-                    if (testEquivalentItem(world, frequency, slot, index, usedIngredient, HashedItem.raw(item), transaction)) {
+                    if (testEquivalentItem(world, frequency, slot, index, usedIngredient, ItemResource.of(item), transaction)) {
                         //Match found, we can exit
                         return;
                     }
@@ -816,7 +815,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     // get reflected in the ingredient matching, for example how MekanismShapedRecipe works. For more complex
                     // ingredients we do this because maybe we have some sort of "partial nbt" match or something and by checking
                     // the larger grouping of potential matches we may find one we would otherwise have missed
-                    for (HashedItem type : frequency.getTypesForItem(item.getItem())) {
+                    for (ItemResource type : frequency.getTypesForItem(item.getItem())) {
                         if (testEquivalentItem(world, frequency, slot, index, usedIngredient, type, transaction)) {
                             //Match found, we can exit
                             return;
@@ -827,26 +826,25 @@ public class QIOCraftingWindow implements IContentsListener {
         }
 
         private boolean testEquivalentItem(Level world, @NotNull QIOFrequency frequency, IInventorySlot slot, int index, Ingredient usedIngredient,
-              HashedItem replacementType, TransactionContext transaction) {
-            if (!frequency.isStoring(replacementType) || !usedIngredient.test(replacementType.getInternalStack())) {
+              ItemResource replacementType, TransactionContext transaction) {
+            if (!frequency.isStoring(replacementType) || !usedIngredient.test(replacementType.toStack())) {
                 //Our frequency doesn't actually have the item stored we are trying to use or the type we are trying
                 // doesn't actually match the ingredient we have for that slot
                 return false;
             }
-            ItemResource replacement = replacementType.asResource();
             //Make use of the fact that the remainder helper is called before checking for equivalent items so that
             // the base items in the recipe are filled in properly for it, we also make sure to properly initialize
             // the remainder helper's "inventory" while mapping the recipe if it hasn't already been initialized so
             // that we are able to just grab the "old" stack from the inventory like this
             ItemStack old = remainderHelper.dummy.get(index);
-            if (remainderHelper.isStackStillValid(world, replacement, index)) {
+            if (remainderHelper.isStackStillValid(world, replacementType, index)) {
                 // Then we test if our replacement will work properly in our recipe, and if it does, and we are able to
                 // insert it into the slot (which we should be able to), then we try removing the found item from the
                 // frequency and adding it to the slot
                 try (Transaction subTransaction = Transaction.open(transaction)) {
-                    int inserted = slot.insert(replacement, 1, subTransaction, AutomationType.INTERNAL);
+                    int inserted = slot.insert(replacementType, 1, subTransaction, AutomationType.INTERNAL);
                     if (inserted == 1) {
-                        int removed = frequency.removeByType(replacement, 1);
+                        int removed = frequency.removeByType(replacementType, 1);
                         if (removed == 1) {
                             //We were able to remove the one item we tried to, so commit our insertion to the slot
                             //TODO - 1.18: Debate potentially briefly highlighting the slot to make it more evident to the player

@@ -175,11 +175,11 @@ public final class InventoryUtils {
      *
      * @return true if they are compatible
      */
-    public static boolean areItemsStackable(ItemStack toInsert, ItemStack inSlot) {
+    public static boolean areItemsStackable(ItemStack toInsert, ItemResource inSlot) {
         if (toInsert.isEmpty() || inSlot.isEmpty()) {
             return true;
         }
-        return ItemStack.isSameItemSameComponents(inSlot, toInsert);
+        return inSlot.matches(toInsert);
     }
 
     public static boolean areItemsStackable(ItemStackTemplate toInsert, ItemStack inSlot) {

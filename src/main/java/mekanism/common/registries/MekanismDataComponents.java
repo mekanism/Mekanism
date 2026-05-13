@@ -1,6 +1,5 @@
 package mekanism.common.registries;
 
-import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
@@ -39,7 +38,6 @@ import mekanism.common.item.interfaces.IJetpackItem.JetpackMode;
 import mekanism.common.lib.frequency.Frequency;
 import mekanism.common.lib.frequency.FrequencyType;
 import mekanism.common.lib.frequency.FrequencyTypes;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.registration.MekanismDeferredHolder;
 import mekanism.common.registration.impl.DataComponentDeferredRegister;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
@@ -53,7 +51,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -181,13 +178,11 @@ public class MekanismDataComponents {
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> ENERGY_USAGE = DATA_COMPONENTS.registerNonNegativeLong("energy_usage");
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> LONG_AMOUNT = DATA_COMPONENTS.registerNonNegativeLong("long_amount");
-    //Note: We can't directly use ItemStack as it needs to override equals and hashcode, but as our only use case converts it to a HashedItem, we just use that
-    // We don't add this by default to the redstone adapter, so that the default state is there is no target set
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Optional<HashedItem>>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
-          builder -> builder.persistent(ExtraCodecs.optionalEmptyMap(HashedItem.CODEC)
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<ItemResource>> ITEM_TARGET = DATA_COMPONENTS.simple("item_target",
+          builder -> builder.persistent(ItemResource.OPTIONAL_CODEC
                 .promotePartial(error -> Mekanism.logger.error("Failed to load item target: {}", error))
-                .orElse(Optional.empty())
-          ).networkSynchronized(ByteBufCodecs.optional(HashedItem.STREAM_CODEC))
+                .orElse(ItemResource.EMPTY)
+          ).networkSynchronized(ItemResource.STREAM_CODEC)
     );
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<DriveMetadata>> DRIVE_METADATA = DATA_COMPONENTS.simple("drive_metadata",
           builder -> builder.persistent(DriveMetadata.CODEC)

@@ -10,10 +10,9 @@ import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOFrequency.QIOItemTypeData;
 import mekanism.common.inventory.ISlotClickHandler.IScrollableSlot;
 import mekanism.common.inventory.container.QIOItemViewerContainer.ItemSlotData;
-import mekanism.common.lib.inventory.HashedItem;
-import mekanism.common.lib.inventory.HashedItem.UUIDAwareHashedItem;
+import mekanism.common.lib.inventory.UUIDItemResource;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity, int typeCapacity, long totalItems, List<IScrollableSlot> items) {
@@ -23,13 +22,13 @@ public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity,
     public static void encodeToPacket(RegistryFriendlyByteBuf buffer, @Nullable QIOFrequency frequency) {
         buffer.writeBoolean(frequency != null);
         if (frequency != null) {
-            Map<HashedItem, QIOItemTypeData> itemDataMap = frequency.getItemDataMap();
-            //Manual implementation of encoding PacketUpdateItemViewer.ITEM_MAP_CODEC without having to actually create the intermediary UUIDAwareHashedItem instance
+            Map<ItemResource, QIOItemTypeData> itemDataMap = frequency.getItemDataMap();
+            //Manual implementation of encoding PacketUpdateItemViewer.ITEM_MAP_CODEC without having to actually create the intermediary UUIDItemResource instance
             buffer.writeVarInt(itemDataMap.size());
             for (QIOItemTypeData data : itemDataMap.values()) {
-                //The following two lines are equivalent to encoding UUIDAwareHashedItem.STREAM_CODEC
-                ItemStack.STREAM_CODEC.encode(buffer, data.getItemType().getInternalStack());
+                //The following two lines are equivalent to encoding UUIDItemResource.STREAM_CODEC
                 buffer.writeUUID(data.getItemUUID());
+                ItemResource.STREAM_CODEC.encode(buffer, data.getItemType());
                 buffer.writeVarLong(data.getCount());
             }
             //End implementation of encoding ITEM_MAP_CODEC
@@ -47,7 +46,7 @@ public record BulkQIOData(Map<UUID, ItemSlotData> inventory, long countCapacity,
             List<IScrollableSlot> itemList = new ReferenceArrayList<>(itemMapSize);
             Map<UUID, ItemSlotData> inventory = new Object2ObjectOpenHashMap<>(itemMapSize);
             for (int i = 0; i < itemMapSize; i++) {
-                ItemSlotData slotData = new ItemSlotData(UUIDAwareHashedItem.STREAM_CODEC.decode(buffer), buffer.readVarLong(), buffer.registryAccess());
+                ItemSlotData slotData = new ItemSlotData(UUIDItemResource.STREAM_CODEC.decode(buffer), buffer.readVarLong(), buffer.registryAccess());
                 totalItems += slotData.count();
                 itemList.add(slotData);
                 inventory.put(slotData.itemUUID(), slotData);

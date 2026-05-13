@@ -6,7 +6,6 @@ import mekanism.common.Mekanism;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.content.qio.QIOGlobalItemLookup;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.inventory.HashedItem;
 import mekanism.common.network.IMekanismPacket;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.codec.StreamCodec;
@@ -37,26 +36,25 @@ public record PacketQIOItemViewerSlotShiftTake(UUID typeUUID) implements IMekani
         if (player.containerMenu instanceof QIOItemViewerContainer container) {
             QIOFrequency freq = container.getFrequency();
             if (freq != null) {
-                HashedItem itemType = QIOGlobalItemLookup.instance().getTypeByUUID(typeUUID);
-                if (itemType != null) {
-                    ItemStack maxExtract = itemType.createStack(itemType.getMaxStackSize());
+                ItemResource itemType = QIOGlobalItemLookup.instance().getTypeByUUID(typeUUID);
+                if (!itemType.isEmpty()) {
+                    ItemStack maxExtract = itemType.toStack(itemType.getMaxStackSize());
                     //Simulate how much room we have in the player's inventory before trying to extract anything from the frequency
                     int amountInserted = container.simulateInsertIntoPlayerInventory(player.getUUID(), maxExtract);
                     //Extract a stack, or as much as the inventory has room for if it can't fit a full stack
-                    ItemStack extracted = freq.removeByType(itemType, amountInserted);
-                    if (!extracted.isEmpty()) {
+                    int extracted = freq.removeByType(itemType, amountInserted);
+                    if (extracted > 0) {
                         try (Transaction transaction = Transaction.openRoot()) {
-                            ItemResource type = ItemResource.of(extracted);
-                            int toInsert = container.insertIntoPlayerInventory(player.getUUID(), type, extracted.count(), transaction);
+                            int toInsert = container.insertIntoPlayerInventory(player.getUUID(), itemType, extracted, transaction);
                             //In theory this should never fail as we simulate above to make sure we don't try moving more than we can
                             // but validate it just in case and handle it gracefully
                             if (toInsert > 0) {
-                                toInsert -= freq.addItem(type, toInsert);
+                                toInsert -= freq.addItem(itemType, toInsert);
                                 if (toInsert > 0) {
                                     //Something went wrong, and we couldn't add it back into the frequency after just removing
                                     // log an error and just drop the item on the ground to avoid voiding it
-                                    Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({} {}). This shouldn't happen!", toInsert, type);
-                                    player.drop(type.toStack(toInsert), false);
+                                    Mekanism.logger.error("QIO shift-click transfer resulted in lost items ({} {}). This shouldn't happen!", toInsert, itemType);
+                                    player.drop(itemType.toStack(toInsert), false);
                                 }
                             }
                             transaction.commit();

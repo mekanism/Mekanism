@@ -23,7 +23,6 @@ import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeInfo;
 import mekanism.client.recipe_viewer.QIOCraftingTransferHandler.RVRecipeSlot;
 import mekanism.common.MekanismLang;
 import mekanism.common.inventory.container.QIOItemViewerContainer;
-import mekanism.common.lib.inventory.HashedItem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
@@ -33,6 +32,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingRecipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -164,11 +164,9 @@ public class EmiQIOCraftingTransferHandler<CONTAINER extends QIOItemViewerContai
         }
 
         @Override
-        public EmiStack itemUUID(HashedItem hashed) {
+        public EmiStack itemUUID(ItemResource itemType) {
             //TODO - 1.20.4: Evaluate this
-            //Note: ItemEmiStack copies the passed in stack before doing anything to it, so we can safely just pass the internal stack
-            // and let it get copied
-            return EmiStack.of(hashed.getInternalStack(), 1);
+            return EmiStack.of(itemType.toStack(), 1);
         }
     }
 
