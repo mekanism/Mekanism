@@ -31,12 +31,12 @@ public class MekanismModelCache extends BaseModelCache {
             return false;
         }
     });
-    public final JSONModelData LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
-    public final JSONModelData VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
-    public final JSONModelData PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
-    public final JSONModelData[] QIO_DRIVES = new JSONModelData[EnumUtils.DRIVE_STATUSES.length];
-    private final Map<Identifier, JSONModelData> CUSTOM_ROBIT_MODELS = new HashMap<>();
-    private final Map<Identifier, JSONModelData> ROBIT_SKINS = new HashMap<>();
+    public final BlockStateModelPartHelper LIQUIFIER_BLADE = registerJSON("block/liquifier_blade");
+    public final BlockStateModelPartHelper VIBRATOR_SHAFT = registerJSON("block/vibrator_shaft");
+    public final BlockStateModelPartHelper PIGMENT_MIXER_SHAFT = registerJSON("block/pigment_mixer_shaft");
+    public final BlockStateModelPartHelper[] QIO_DRIVES = new BlockStateModelPartHelper[EnumUtils.DRIVE_STATUSES.length];
+    private final Map<Identifier, BlockStateModelPartHelper> CUSTOM_ROBIT_MODELS = new HashMap<>();
+    private final Map<Identifier, BlockStateModelPartHelper> ROBIT_SKINS = new HashMap<>();
     //private BakedModel BASE_ROBIT;
 
     private MekanismModelCache() {

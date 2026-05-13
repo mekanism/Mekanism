@@ -7,8 +7,8 @@ public class AdditionsModelCache extends BaseModelCache {
 
     public static final AdditionsModelCache INSTANCE = new AdditionsModelCache();
 
-    public final JSONModelData BALLOON = registerJSON("item/balloon_latched");
-    public final JSONModelData BALLOON_FREE = registerJSON("item/balloon_free");
+    public final BlockStateModelPartHelper BALLOON = registerJSON("item/balloon_latched");
+    public final BlockStateModelPartHelper BALLOON_FREE = registerJSON("item/balloon_free");
 
     private AdditionsModelCache() {
         super(MekanismAdditions.MODID);

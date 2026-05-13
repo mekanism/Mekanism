@@ -46,12 +46,12 @@ public class BaseModelCache {
         return register(rl, OBJModelData::new);
     }
 
-    protected JSONModelData registerJSON(String path) {
+    protected BlockStateModelPartHelper registerJSON(String path) {
         return registerJSON(rl(path));
     }
 
-    protected JSONModelData registerJSON(Identifier rl) {
-        return register(rl, JSONModelData::new);
+    protected BlockStateModelPartHelper registerJSON(Identifier rl) {
+        return register(rl, BlockStateModelPartHelper::new);
     }
 
     /*protected JSONModelData registerJSONAndBake(Identifier rl) {
@@ -160,13 +160,13 @@ public class BaseModelCache {
         }
     }
 
-    public static class JSONModelData extends MekanismModelData {
+    public static class BlockStateModelPartHelper extends MekanismModelData {
 
         //this is a list due to SubmitNodeCollector wanting a list
         private List<BlockStateModelPart> bakedModel;
         private final StandaloneModelKey<BlockStateModelPart> key;
 
-        private JSONModelData(Identifier rl) {
+        private BlockStateModelPartHelper(Identifier rl) {
             super(rl);
             key = new StandaloneModelKey<>(this);
         }

@@ -47,7 +47,7 @@ public class RenderBalloon extends EntityRenderer<EntityBalloon, BalloonRenderSt
             Vec3 balloonLerp = Mth.lerp(partialTick, balloon.oldPosition(), balloon.position());
             state.latchedAdjustment = latchedLerp.subtract(balloonLerp);
         }
-        BaseModelCache.JSONModelData model = latched ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
+        BaseModelCache.BlockStateModelPartHelper model = latched ? AdditionsModelCache.INSTANCE.BALLOON : AdditionsModelCache.INSTANCE.BALLOON_FREE;
         state.model = model.getBakedModel();
     }
 
