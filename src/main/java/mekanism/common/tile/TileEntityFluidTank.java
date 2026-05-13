@@ -3,7 +3,6 @@ package mekanism.common.tile;
 import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
-import mekanism.api.Action;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -264,8 +263,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     }*/
 
     //TODO - 26.1: Hook valve transferring back up
-    private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (side == Direction.UP && action.execute() && remainder.amount() < stack.amount() && !isRemote()) {
+    private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, boolean execute, @NotNull FluidStack remainder) {
+        if (side == Direction.UP && execute && remainder.amount() < stack.amount() && !isRemote()) {
             if (valve == 0) {
                 //TODO - 1.21: Only mark it as needing a packet if our fluid tank volume is below a certain amount??
                 needsPacket = true;

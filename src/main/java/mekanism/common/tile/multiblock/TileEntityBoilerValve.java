@@ -5,7 +5,6 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.text.EnumColor;
@@ -117,8 +116,8 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     }*/
 
     //TODO - 26.1: Hook valve transferring back up
-    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (action.execute() && remainder.amount() < stack.amount()) {
+    private FluidStack handleValves(@NotNull FluidStack stack, boolean execute, @NotNull FluidStack remainder) {
+        if (execute && remainder.amount() < stack.amount()) {
             getMultiblock().triggerValveTransfer(this);
         }
         return remainder;

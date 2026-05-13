@@ -1,6 +1,5 @@
 package mekanism.common.tile.multiblock;
 
-import mekanism.api.Action;
 import mekanism.api.IContentsListener;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
@@ -51,8 +50,8 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     }*/
 
     //TODO - 26.1: Hook valve transferring back up
-    private FluidStack handleValves(@NotNull FluidStack stack, @NotNull Action action, @NotNull FluidStack remainder) {
-        if (action.execute() && remainder.amount() < stack.amount()) {
+    private FluidStack handleValves(@NotNull FluidStack stack, boolean execute, @NotNull FluidStack remainder) {
+        if (execute && remainder.amount() < stack.amount()) {
             getMultiblock().triggerValveTransfer(this);
         }
         return remainder;
