@@ -1,34 +1,22 @@
 package mekanism.common.lib.distribution.handler;
 
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import mekanism.common.lib.transaction.SimpleIntegerJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Created by Thiakil on 30/04/2021.
  */
-public abstract class IntegerHandler extends SnapshotJournal<Integer> {
-
-    private int accepted;
+public abstract class IntegerHandler extends SimpleIntegerJournal {
 
     protected int accept(int amount, TransactionContext transaction) {
         updateSnapshots(transaction);
-        accepted += amount;
+        value += amount;
         return amount;
     }
 
     public int getAccepted() {
-        return accepted;
+        return value;
     }
 
     public abstract int perform(int amountOffered, TransactionContext transaction);
-
-    @Override
-    protected Integer createSnapshot() {
-        return accepted;
-    }
-
-    @Override
-    protected void revertToSnapshot(Integer snapshot) {
-        accepted = snapshot;
-    }
 }

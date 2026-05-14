@@ -1,9 +1,9 @@
 package mekanism.common.tests.network;
 
-import static mekanism.common.tests.util.TransporterTestUtils.configured;
-import static mekanism.common.tests.util.TransporterTestUtils.containing;
-import static mekanism.common.tests.util.TransporterTestUtils.diversionMode;
-import static mekanism.common.tests.util.TransporterTestUtils.diversionModes;
+import static mekanism.common.tests.util.StructureBuilderUtils.configured;
+import static mekanism.common.tests.util.StructureBuilderUtils.containing;
+import static mekanism.common.tests.util.StructureBuilderUtils.diversionMode;
+import static mekanism.common.tests.util.StructureBuilderUtils.diversionModes;
 
 import java.util.function.Supplier;
 import mekanism.api.text.EnumColor;

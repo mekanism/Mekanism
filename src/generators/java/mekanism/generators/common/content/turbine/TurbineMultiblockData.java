@@ -26,6 +26,7 @@ import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.common.inventory.container.sync.dynamic.ContainerSync;
 import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import mekanism.common.lib.multiblock.MultiblockData;
+import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
@@ -48,7 +49,6 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -136,8 +136,7 @@ public class TurbineMultiblockData extends MultiblockData {
     public boolean tick(ServerLevel world) {
         boolean needsPacket = super.tick(world);
 
-        lastSteamInput = steamInputJournal.newSteamInput;
-        steamInputJournal.newSteamInput = 0;
+        lastSteamInput = steamInputJournal.getSteamInputAndReset();
         long stored = chemicalTank.amountAsLong();
         double flowRate = 0;
 
@@ -326,23 +325,17 @@ public class TurbineMultiblockData extends MultiblockData {
     public record VentData(BlockPos location, Direction side) {
     }
 
-    public static class SteamInput extends SnapshotJournal<Long> {
-
-        private long newSteamInput;
+    public static class SteamInput extends SimpleLongJournal {
 
         public void addSteam(long steamInput, TransactionContext transaction) {
             updateSnapshots(transaction);
-            newSteamInput += steamInput;
+            value += steamInput;
         }
 
-        @Override
-        protected Long createSnapshot() {
-            return newSteamInput;
-        }
-
-        @Override
-        protected void revertToSnapshot(Long snapshot) {
-            newSteamInput = snapshot;
+        public long getSteamInputAndReset() {
+            long steamInput = value;
+            value = 0;
+            return steamInput;
         }
     }
 }

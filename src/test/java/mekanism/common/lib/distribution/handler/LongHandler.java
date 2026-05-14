@@ -1,34 +1,22 @@
 package mekanism.common.lib.distribution.handler;
 
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import mekanism.common.lib.transaction.SimpleLongJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
  * Created by Thiakil on 30/04/2021.
  */
-public abstract class LongHandler extends SnapshotJournal<Long> {
-
-    private long accepted;
+public abstract class LongHandler extends SimpleLongJournal {
 
     protected long accept(long amount, TransactionContext transaction) {
         updateSnapshots(transaction);
-        accepted += amount;
+        value += amount;
         return amount;
     }
 
     public long getAccepted() {
-        return accepted;
+        return value;
     }
 
     public abstract long perform(long amountOffered, TransactionContext transaction);
-
-    @Override
-    protected Long createSnapshot() {
-        return accepted;
-    }
-
-    @Override
-    protected void revertToSnapshot(Long snapshot) {
-        accepted = snapshot;
-    }
 }

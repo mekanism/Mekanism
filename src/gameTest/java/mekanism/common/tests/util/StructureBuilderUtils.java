@@ -1,10 +1,16 @@
 package mekanism.common.tests.util;
 
+import java.util.ArrayList;
+import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
+import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.content.network.transmitter.DiversionTransporter.DiversionControl;
+import mekanism.common.content.qio.IQIODriveItem;
+import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.util.EnumUtils;
 import net.minecraft.core.Direction;
@@ -16,14 +22,16 @@ import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.TagValueOutput;
+import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
 //TODO: PR support to make custom StructureTemplateBuilders to Neo?
 @NothingNullByDefault
-public class TransporterTestUtils {
+public class StructureBuilderUtils {
 
-    private TransporterTestUtils() {
+    private StructureBuilderUtils() {
     }
 
     public static CompoundTag containing(Item item) {
@@ -47,6 +55,24 @@ public class TransporterTestUtils {
         try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
             TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
             ContainerHelper.saveAllItems(output, items);
+            return output.buildResult();
+        }
+    }
+
+    public static CompoundTag withDrive(DeferredHolder<Item, ? extends IQIODriveItem> drive) {
+        List<IInventorySlot> driveSlots = new ArrayList<>();
+        for (int y = 0; y < 2; y++) {
+            for (int x = 0; x < 6; x++) {
+                //Note: this is unsafe to pass null for the drive slot, but it isn't used for serialization
+                driveSlots.add(new QIODriveSlot(null, y * 6 + x, () -> null, null, 0, 0));
+            }
+        }
+        driveSlots.getFirst().setContents(ItemResource.of(drive), 1);
+
+        //TODO - 26.1: Should we pass a path to the scoped collector?
+        try (ProblemReporter.ScopedCollector reporter = new ProblemReporter.ScopedCollector(Mekanism.logger)) {
+            TagValueOutput output = TagValueOutput.createWithContext(reporter, registryAccess());
+            ContainerType.ITEM.saveTo(output, driveSlots);
             return output.buildResult();
         }
     }

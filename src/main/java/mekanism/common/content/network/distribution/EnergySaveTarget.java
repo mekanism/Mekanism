@@ -4,7 +4,7 @@ import java.util.Collection;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.lib.distribution.Target;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import mekanism.common.lib.transaction.SimpleLongJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> extends Target<HANDLER, Void> {
@@ -32,10 +32,9 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
     }
 
     @NothingNullByDefault
-    public abstract static class SaveHandler extends SnapshotJournal<Long> {
+    public abstract static class SaveHandler extends SimpleLongJournal {
 
         private final long maxEnergy;
-        protected long currentStored;
 
         protected SaveHandler(long maxEnergy) {
             this.maxEnergy = maxEnergy;
@@ -44,25 +43,15 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         protected Long accept(long amount, TransactionContext transaction) {
             //TODO - 26.1: Check if amount can be zero? If so we can just skip
             // Also see if there is a case an empty type can be passed to this (namely when amount is not zero)
-            long toAccept = Math.min(amount, maxEnergy - currentStored);
+            long toAccept = Math.min(amount, maxEnergy - value);
             if (toAccept > 0) {
                 updateSnapshots(transaction);
-                currentStored += amount;
+                value += amount;
             }
             return toAccept;
         }
 
         protected abstract void save();
-
-        @Override
-        protected Long createSnapshot() {
-            return currentStored;
-        }
-
-        @Override
-        protected void revertToSnapshot(Long snapshot) {
-            this.currentStored = snapshot;
-        }
     }
 
     @NothingNullByDefault
@@ -77,7 +66,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
 
         @Override
         protected void save() {
-            delegate.setEnergy(currentStored);
+            delegate.setEnergy(value);
         }
     }
 }

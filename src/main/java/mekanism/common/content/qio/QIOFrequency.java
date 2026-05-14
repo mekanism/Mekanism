@@ -9,7 +9,6 @@ import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongMaps;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -43,6 +42,7 @@ import mekanism.common.lib.frequency.FrequencyTypes;
 import mekanism.common.lib.frequency.IColorableFrequency;
 import mekanism.common.lib.inventory.UUIDItemResource;
 import mekanism.common.lib.security.SecurityFrequency;
+import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.network.to_client.qio.PacketUpdateItemViewer;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
@@ -79,7 +79,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
           ByteBufCodecs.VAR_INT, QIOFrequency::getTotalItemTypeCapacity,
           EnumColor.STREAM_CODEC, QIOFrequency::getColor,
           (frequency, totalCount, totalCountCapacity, totalTypes, totalTypeCapacity, color) -> {
-              frequency.totalCount = totalCount;
+              frequency.totalCount.value = totalCount;
               frequency.totalCountCapacity = totalCountCapacity;
               frequency.clientTypes = totalTypes;
               frequency.totalTypeCapacity = totalTypeCapacity;
@@ -112,7 +112,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     /** If we have new item changes that haven't been saved. */
     private boolean isDirty;//todo rename this so it's clearer what the difference is from Frequency.dirty
 
-    private long totalCount, totalCountCapacity;
+    private final SimpleLongJournal totalCount = new SimpleLongJournal();
+    private long totalCountCapacity;
     private int totalTypeCapacity;
     // only used on client side, for server side we can just look at itemDataMap.size()
     private int clientTypes;
@@ -158,7 +159,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     public long massInsert(ItemResource itemType, long amount, TransactionContext transaction) {
         if (amount <= 0 || itemType.isEmpty()) {
             return 0;
-        } else if (totalCount == totalCountCapacity) {
+        } else if (totalCount.value == totalCountCapacity) {
             // this check and the one below for if the map contains the type are extremely important; they prevent us from wasting CPU searching for a place to put the new items
             return 0;
         }
@@ -176,8 +177,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             }
         }
         long inserted = data.add(amount, transaction);
-        //TODO - 26.1: Make this part of the snapshot as well
-        totalCount += inserted;
+        totalCount.updateSnapshots(transaction);
+        totalCount.value += inserted;
         return inserted;
     }
 
@@ -231,8 +232,8 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
             return 0;
         }
         long extracted = data.remove(amount, transaction);
-        //TODO - 26.1: Make this part of the snapshot as well
-        totalCount -= extracted;
+        totalCount.updateSnapshots(transaction);
+        totalCount.value -= extracted;
         return extracted;
     }
 
@@ -386,7 +387,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     // utility methods for accessing descriptors
     public long getTotalItemCount() {
-        return totalCount;
+        return totalCount.value;
     }
 
     public long getTotalItemCountCapacity() {
@@ -416,13 +417,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     public QIODriveData getDriveData(QIODriveKey key) {
         return driveMap.get(key);
-    }
-
-    /**
-     * This is mainly for use by things that need to do simulation, and should not have any of the values of the drive get changed directly.
-     */
-    public Collection<QIODriveData> getAllDrives() {
-        return driveMap.values();
     }
 
     @Override
@@ -532,7 +526,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
     @Override
     public int getSyncHash() {
         int code = super.getSyncHash();
-        code = 31 * code + Long.hashCode(totalCount);
+        code = 31 * code + Long.hashCode(totalCount.value);
         code = 31 * code + Long.hashCode(totalCountCapacity);
         code = 31 * code + itemDataMap.size();
         code = 31 * code + totalTypeCapacity;
@@ -558,7 +552,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
 
     private void addDriveContent(QIODriveKey key, ItemResource storedType, long amountStored) {
         QIOItemTypeData typeData = itemDataMap.computeIfAbsent(storedType, this::createTypeDataForAbsent);
-        totalCount += amountStored;
+        totalCount.value += amountStored;
         typeData.driveAdded(key, amountStored);
         markForUpdate(storedType);
     }
@@ -591,7 +585,7 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
         if (itemData != null) {
             itemData.containingDrives.remove(key);
             itemData.count -= amountStored;
-            totalCount -= amountStored;
+            totalCount.value -= amountStored;
             markForUpdate(storedType);
             // remove this entry from the item data map if it's now empty
             if (itemData.containingDrives.isEmpty() || itemData.count == 0) {

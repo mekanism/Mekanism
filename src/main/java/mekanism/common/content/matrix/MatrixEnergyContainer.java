@@ -10,13 +10,13 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.math.MathUtils;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
+import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tier.InductionProviderTier;
 import mekanism.common.tile.multiblock.TileEntityInductionCell;
 import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
@@ -27,8 +27,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     private final Map<BlockPos, InductionProviderTier> providers = new Object2ObjectOpenHashMap<>();
     private final Map<BlockPos, IEnergyContainer> cells = new Object2ObjectOpenHashMap<>();
     private final Set<BlockPos> invalidPositions = new ObjectOpenHashSet<>();
-    private final QueuedEnergySnapshot queuedInput = new QueuedEnergySnapshot();
-    private final QueuedEnergySnapshot queuedOutput = new QueuedEnergySnapshot();
+    private final SimpleLongJournal queuedInput = new SimpleLongJournal();
+    private final SimpleLongJournal queuedOutput = new SimpleLongJournal();
 
     private long lastInput = 0L;
     private long lastOutput = 0L;
@@ -82,8 +82,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //And reset everything
         cells.clear();
         providers.clear();
-        queuedOutput.queued = 0L;
-        queuedInput.queued = 0L;
+        queuedOutput.value = 0L;
+        queuedInput.value = 0L;
         lastOutput = 0L;
         lastInput = 0L;
         cachedTotal = 0L;
@@ -99,9 +99,9 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             }
             invalidPositions.clear();
         }
-        if (queuedInput.queued != queuedOutput.queued){
+        if (queuedInput.value != queuedOutput.value){
             try (Transaction transaction = Transaction.openRoot()) {
-                if (queuedInput.queued < queuedOutput.queued) {
+                if (queuedInput.value < queuedOutput.value) {
                     //queuedInput is smaller - we are removing energy
                     removeEnergy(-getQueuedChange(), transaction);
                 } else {//if (queuedInput.queued > queuedOutput.queued)
@@ -111,10 +111,10 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                 transaction.commit();
             }
         }
-        lastInput = queuedInput.queued;
-        lastOutput = queuedOutput.queued;
-        queuedInput.queued = 0L;
-        queuedOutput.queued = 0L;
+        lastInput = queuedInput.value;
+        lastOutput = queuedOutput.value;
+        queuedInput.value = 0L;
+        queuedOutput.value = 0L;
     }
 
     private void addEnergy(long energy, TransactionContext transaction) {
@@ -149,7 +149,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private long getQueuedChange() {
-        return queuedInput.queued - queuedOutput.queued;
+        return queuedInput.value - queuedOutput.value;
     }
 
     /**
@@ -178,7 +178,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         if (toAdd != 0L) {
             queuedInput.updateSnapshots(transaction);
             //Increase how much we are inputting
-            queuedInput.queued += toAdd;
+            queuedInput.value += toAdd;
 
         }
         return toAdd;
@@ -200,7 +200,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput.updateSnapshots(transaction);
             //Increase how much we are inputting
-            queuedOutput.queued += amount;
+            queuedOutput.value += amount;
         }
         return amount;
     }
@@ -226,11 +226,11 @@ public class MatrixEnergyContainer implements IEnergyContainer {
     }
 
     private long getRemainingInput() {
-        return transferCap - queuedInput.queued;
+        return transferCap - queuedInput.value;
     }
 
     private long getRemainingOutput() {
-        return transferCap - queuedOutput.queued;
+        return transferCap - queuedOutput.value;
     }
 
     public long getMaxTransfer() {
@@ -251,20 +251,5 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     public int getProviders() {
         return providers.size();
-    }
-
-    private static class QueuedEnergySnapshot extends SnapshotJournal<Long> {
-
-        private long queued = 0L;
-
-        @Override
-        protected Long createSnapshot() {
-            return queued;
-        }
-
-        @Override
-        protected void revertToSnapshot(Long snapshot) {
-            queued = snapshot;
-        }
     }
 }

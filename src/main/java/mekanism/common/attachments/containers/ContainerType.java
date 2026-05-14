@@ -299,7 +299,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         saveTo(output, getContainers(tile));
     }
 
-    public void saveTo(ValueOutput output, List<CONTAINER> containers) {
+    public void saveTo(ValueOutput output, List<? extends CONTAINER> containers) {
         ValueOutputList storedContainers = output.childrenList(containerTag);
         DataHandlerUtils.writeContents(storedContainers, containerKey, containers);
         if (storedContainers.isEmpty()) {
@@ -311,7 +311,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         readFrom(input, getContainers(tile));
     }
 
-    public void readFrom(ValueInput input, List<CONTAINER> containers) {
+    public void readFrom(ValueInput input, List<? extends CONTAINER> containers) {
         //TODO - 26.1: Should this not be orEmpty?
         DataHandlerUtils.readContents(input.childrenListOrEmpty(containerTag), containerKey, containers);
     }
