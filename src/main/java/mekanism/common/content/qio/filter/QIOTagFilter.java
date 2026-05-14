@@ -11,7 +11,7 @@ import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<QIOTagFilter> {
 
@@ -43,7 +43,7 @@ public class QIOTagFilter extends QIOFilter<QIOTagFilter> implements ITagFilter<
     }
 
     @Override
-    public boolean test(ItemStack toCheck) {
+    public boolean test(ItemResource toCheck) {
         return Finder.tag(tagName, toCheck);
     }
 

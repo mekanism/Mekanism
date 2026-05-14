@@ -141,9 +141,9 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
         for (QIOFilter<?> filter : getFilterManager().getEnabledFilters()) {
             if (filter instanceof QIOItemStackFilter itemFilter) {
                 if (itemFilter.fuzzyMode) {
-                    map.putAll(freq.getStacksByItem(itemFilter.getItemStack().getItem()));
+                    map.putAll(freq.getStacksByItem(itemFilter.getItemType().getItem()));
                 } else {
-                    ItemResource type = ItemResource.of(itemFilter.getItemStack());
+                    ItemResource type = itemFilter.getItemType();
                     map.put(type, freq.getStored(type));
                 }
             } else if (filter instanceof QIOTagFilter tagFilter) {

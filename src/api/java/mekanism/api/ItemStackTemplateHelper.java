@@ -1,28 +1,14 @@
 package mekanism.api;
 
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import net.minecraft.core.component.DataComponentPatch;
-import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ItemStackTemplate;
 import org.jetbrains.annotations.Nullable;
 
 //TODO - 26.1: Docs
 public class ItemStackTemplateHelper {
-
-    //TODO - 26.1 These should probably be moved to ItemStackTemplate + NO_COUNT_CODEC ? Or more likely ItemResource
-    public static final Codec<ItemStack> NO_COUNT_ITEMSTACK = RecordCodecBuilder.create(
-          i -> i.group(
-                      Item.CODEC.fieldOf("id").forGetter(ItemStack::typeHolder),
-                      DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter((ItemStack stack) -> ((PatchedDataComponentMap) stack.getComponents()).asPatch()
-                      ))
-                .apply(i, (item, patch) -> new ItemStack(item, 1, patch)));
 
     //TODO - 26.1: Do we want to inline this?
     public static final StreamCodec<RegistryFriendlyByteBuf, Optional<ItemStackTemplate>> OPTIONAL_STREAM_CODEC = ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC);

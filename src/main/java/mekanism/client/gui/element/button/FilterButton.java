@@ -133,7 +133,7 @@ public class FilterButton extends MekanismButton {
             prevFilter = filter;
         }
         Component filterDescriptor = switch (filter) {
-            case IItemStackFilter<?> item -> item.getItemStack().getHoverName();
+            case IItemStackFilter<?> item -> item.getItemType().getHoverName();
             case ITagFilter<?> tag -> TextComponentUtil.getString(tag.getTagName());
             case IModIDFilter<?> modId -> TextComponentUtil.getString(modId.getModID());
             case OredictionificatorFilter<?, ?, ?> oredictionificatorFilter -> TextComponentUtil.getString(oredictionificatorFilter.getFilterText());

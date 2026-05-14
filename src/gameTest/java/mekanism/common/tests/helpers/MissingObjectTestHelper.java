@@ -262,7 +262,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     private boolean isStone(IItemStackFilter<?> filter) {
-        return filter.getItemStack().is(Items.STONE);
+        return filter.getItemType().is(Items.STONE);
     }
 
     public boolean testFilter(QIOItemStackFilter filter) {
@@ -283,7 +283,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         if (filters.size() == 2) {
             FILTER stickFilter = (FILTER) filters.getFirst();
             FILTER stoneFilter = (FILTER) filters.getLast();
-            return stickFilter.getItemStack().is(Items.STICK) && filterTester.test(stickFilter) &&
+            return stickFilter.getItemType().is(Items.STICK) && filterTester.test(stickFilter) &&
                    isStone(stoneFilter) && filterTester.test(stoneFilter);
         }
         return false;

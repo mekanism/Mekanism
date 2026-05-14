@@ -54,6 +54,7 @@ import net.minecraft.world.level.block.state.properties.Property;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -317,10 +318,10 @@ public abstract class BaseComputerHelper {
         wrapped.put(SerializationConstants.ENABLED, result.isEnabled());
         switch (result) {
             case IItemStackFilter<?> itemFilter -> {
-                ItemStack stack = itemFilter.getItemStack();
-                wrapped.put(SerializationConstants.ITEM, convert(stack.getItem()));
-                if (!stack.isEmpty()) {
-                    DataComponentPatch components = stack.getComponentsPatch();
+                ItemResource itemType = itemFilter.getItemType();
+                wrapped.put(SerializationConstants.ITEM, convert(itemType.getItem()));
+                if (!itemType.isEmpty()) {
+                    DataComponentPatch components = itemType.getComponentsPatch();
                     if (!components.isEmpty()) {
                         wrapped.put(SerializationConstants.COMPONENTS, SpecialConverters.wrapComponents(components));
                     }

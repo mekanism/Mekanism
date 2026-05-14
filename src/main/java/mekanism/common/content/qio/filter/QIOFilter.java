@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFilter<FILTER> {
 
@@ -34,7 +34,7 @@ public abstract class QIOFilter<FILTER extends QIOFilter<FILTER>> extends BaseFi
         super(filter);
     }
 
-    public abstract boolean test(ItemStack toCheck);
+    public abstract boolean test(ItemResource toCheck);
 
     @Override
     @ComputerMethod(threadSafe = true)

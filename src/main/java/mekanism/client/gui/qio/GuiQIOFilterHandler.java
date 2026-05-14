@@ -106,7 +106,7 @@ public class GuiQIOFilterHandler<TILE extends TileEntityQIOFilterHandler> extend
             }, this::onClick, index -> PacketUtils.sendToServer(new PacketGuiInteract(GuiInteraction.TOGGLE_FILTER_STATE, tile, index)), filter -> {
                 if (filter != null) {
                     return switch (filter) {
-                        case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemStack());
+                        case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemType().toStack());
                         case ITagFilter<?> tagFilter -> {
                             String name = tagFilter.getTagName();
                             if (name != null && !name.isEmpty()) {

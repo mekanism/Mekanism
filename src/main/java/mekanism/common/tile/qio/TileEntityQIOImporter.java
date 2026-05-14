@@ -36,7 +36,7 @@ public class TileEntityQIOImporter extends TileEntityQIOFilterHandler {
     private static final int MAX_DELAY = MekanismUtils.TICKS_PER_HALF_SECOND;
 
     //TODO - 26.1: Do we want to make filters able to check resources directly instead of having to convert it to a stack?
-    private final Predicate<ItemResource> FILTER_ENABLED = resource -> getFilterManager().anyEnabledMatch(resource.toStack(), QIOFilter::test);
+    private final Predicate<ItemResource> FILTER_ENABLED = resource -> getFilterManager().anyEnabledMatch(resource, QIOFilter::test);
 
     @Nullable
     private BlockCapabilityCache<ResourceHandler<ItemResource>, @Nullable Direction> backInventory;

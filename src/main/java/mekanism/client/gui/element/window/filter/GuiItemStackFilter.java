@@ -11,6 +11,7 @@ import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.tile.interfaces.ITileFilterHolder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -25,7 +26,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     protected List<Component> getScreenText() {
         List<Component> list = super.getScreenText();
         if (filter.hasFilter()) {
-            list.add(filter.getItemStack().getHoverName());
+            list.add(filter.getItemType().getHoverName());
         }
         return list;
     }
@@ -38,8 +39,8 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @NotNull
     @Override
     protected List<ItemStack> getRenderStacks() {
-        ItemStack stack = filter.getItemStack();
-        return stack.isEmpty() ? Collections.emptyList() : Collections.singletonList(stack);
+        ItemResource itemType = filter.getItemType();
+        return itemType.isEmpty() ? Collections.emptyList() : Collections.singletonList(itemType.toStack());
     }
 
     @Nullable
@@ -55,7 +56,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     }
 
     private void setFilterStack(@NotNull ItemStack stack) {
-        filter.setItemStack(stack);
+        filter.setItemType(ItemResource.of(stack));
         slotDisplay.updateStackList();
     }
 

@@ -32,9 +32,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,16 +55,16 @@ public class SpecialConverters {
         return null;
     }
 
-    private static ItemStack tryCreateFilterItem(@Nullable String rawName, @Nullable String rawComponents) throws ComputerException {
+    private static ItemResource tryCreateFilterItem(@Nullable String rawName, @Nullable String rawComponents) throws ComputerException {
         Item item = tryCreateItem(rawName);
         if (item == Items.AIR) {
-            return ItemStack.EMPTY;
+            return ItemResource.EMPTY;
         }
         if (rawComponents != null) {
             DataComponentPatch dataComponents = unwrapComponents(rawComponents);
-            return new ItemStack(item.builtInRegistryHolder(), 1, dataComponents);
+            return ItemResource.of(item.builtInRegistryHolder(), dataComponents);
         }
-        return new ItemStack(item);
+        return ItemResource.of(item);
     }
 
     private static Item tryCreateItem(@Nullable Object rawName) {
@@ -211,11 +211,11 @@ public class SpecialConverters {
     }
 
     private static void decodeItemStackFilter(@NotNull Map<?, ?> map, IItemStackFilter<?> itemFilter) throws ComputerException {
-        ItemStack stack = tryCreateFilterItem((String) map.get(SerializationConstants.ITEM), (String) map.get(SerializationConstants.COMPONENTS));
-        if (stack.isEmpty()) {
-            throw new ComputerException("Invalid or missing item specified for ItemStack filter");
+        ItemResource itemType = tryCreateFilterItem((String) map.get(SerializationConstants.ITEM), (String) map.get(SerializationConstants.COMPONENTS));
+        if (itemType.isEmpty()) {
+            throw new ComputerException("Invalid or missing item specified for ItemResource filter");
         }
-        itemFilter.setItemStack(stack);
+        itemFilter.setItemType(itemType);
     }
 
     static Map<String, Object> wrapStack(String name, String sizeKey, int amount, @NotNull DataComponentPatch components) {

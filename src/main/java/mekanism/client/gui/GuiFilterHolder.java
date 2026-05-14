@@ -82,7 +82,7 @@ public abstract class GuiFilterHolder<FILTER extends IFilter<?>, TILE extends Ti
     private List<ItemStack> getRenderStacks(@Nullable IFilter<?> filter) {
         if (filter != null) {
             return switch (filter) {
-                case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemStack());
+                case IItemStackFilter<?> itemFilter -> List.of(itemFilter.getItemType().toStack());
                 case ITagFilter<?> tagFilter -> getTagStacks(tagFilter.getTagName());
                 case IModIDFilter<?> modIDFilter -> getModIDStacks(modIDFilter.getModID());
                 default -> Collections.emptyList();

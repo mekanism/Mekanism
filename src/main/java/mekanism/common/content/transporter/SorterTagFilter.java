@@ -13,7 +13,7 @@ import mekanism.common.content.filter.ITagFilter;
 import mekanism.common.lib.inventory.Finder;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 
 public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements ITagFilter<SorterTagFilter> {
 
@@ -46,8 +46,8 @@ public class SorterTagFilter extends SorterFilter<SorterTagFilter> implements IT
     }
 
     @Override
-    public boolean test(ItemStack stack) {
-        return Finder.tag(tagName, stack);
+    public boolean test(ItemResource toCheck) {
+        return Finder.tag(tagName, toCheck);
     }
 
     @Override

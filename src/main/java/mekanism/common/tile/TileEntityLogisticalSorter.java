@@ -61,9 +61,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     private final SortableFilterManager<SorterFilter<?>> filterManager = new SortableFilterManager<SorterFilter<?>>((Class) SorterFilter.class, this::markForSave, this::getWorldNN);
-    private final Finder strictFinder = stack -> {
+    private final Finder strictFinder = itemType -> {
         for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
-            if (!filter.allowDefault && filter.test(stack)) {
+            if (!filter.allowDefault && filter.test(itemType)) {
                 return false;
             }
         }
