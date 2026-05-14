@@ -13,7 +13,6 @@ import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -76,7 +75,7 @@ public final class TransporterUtils {
             blockPos = transporter.getBlockPos();
         }
         TransporterManager.remove(transporter.getLevel(), stack);
-        InventoryUtils.dropStack(transporter.getLevel(), blockPos, null, stack.itemStack, (level, pos, ignored, item) -> Block.popResource(level, pos, item));
+        InventoryUtils.dropStack(transporter.getLevel(), blockPos, null, stack.asItemStack(), (level, pos, ignored, item) -> Block.popResource(level, pos, item));
     }
 
     public static Vector3f getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {
@@ -86,13 +85,14 @@ public final class TransporterUtils {
               .add(0.5F, 0.25F, 0.5F);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
-        return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemStack, side, force);
+    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force) {
+        return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemStack itemStack, Direction side, boolean force) {
+    //TODO - 26.1: What do we want to return if itemType is empty
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force) {
         if (force && tile instanceof IAdvancedTransportEjector sorter) {
-            return sorter.canSendHome(itemStack);
+            return sorter.canSendHome(itemType, itemAmount);
         }
         if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {
             Direction tileSide = config.getDirection();
@@ -105,12 +105,11 @@ public final class TransporterUtils {
         if (inventory == null) {
             return false;
         }
-        ItemResource itemType = ItemResource.of(itemStack);
         try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
             // Simulate insert, this will handle validating the item is valid for the inventory
             //TODO - 26.1: Should we be taking the item stack's count into account, and only return true if it can all be inserted, or should we maybe just try inserting
             // a single thing of the item for the simulation
-            return inventory.insert(itemType, itemStack.count(), transaction) > 0;
+            return inventory.insert(itemType, itemAmount, transaction) > 0;
         }
     }
 }

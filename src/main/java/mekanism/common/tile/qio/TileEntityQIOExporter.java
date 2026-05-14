@@ -50,7 +50,6 @@ import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -248,14 +247,14 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public boolean canSendHome(@NotNull ItemStack stack) {
+    public boolean canSendHome(@NotNull ItemResource itemType, int amount) {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null) {
             return false;
         }
         //TODO - 26.1: Do we ever call this method from within a transactional context?
         try (Transaction simulation = Transaction.openRoot()) {
-            return frequency.massInsert(ItemResource.of(stack), stack.count(), simulation) > 0;
+            return frequency.massInsert(itemType, amount, simulation) > 0;
         }
     }
 
@@ -274,7 +273,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                     int inserted = frequency.addItem(itemType, data.getTotalCount(), transaction);
                     if (inserted > 0) {
                         transaction.commit();
-                        return request.createResponse(itemType.toStack(inserted), data);
+                        return request.createResponse(itemType, inserted, data);
                     }
                 }
             }
@@ -367,20 +366,19 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                         transaction.commit();
                     }
                 } else {
-                    ItemStack origInsert = type.toStack(amountToInsert);
                     //Note: We just simplify the logic that we would have when sending to a transporter via the handler
                     // and add support for also performing round-robin distribution. We don't just use a custom transit request
                     // as we want to be able to send multiple types at once, which is not that straightforward to do when trying
                     // to re-use where we currently are in the iteration. Without that extra handling we can easily do a custom
                     // transit request similar to https://gist.github.com/pupnewfster/d0dac2098a2755dc60220f89873ff461,
                     // but it means we may not properly respect the maxTypes and maxCount
-                    TransitRequest request = TransitRequest.simple(origInsert);
+                    TransitRequest request = TransitRequest.simple(type, amountToInsert);
                     //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
                     // destinations, which this doesn't do as it only checks once, rather than trying to check again if we still have some that we
                     // are able to insert
                     //Note: We don't use transporter#insertMaybeRR so that we only have to validate the transporter once
                     TransitResponse response = transporter.insertUnchecked(exporter, request, transporter.getColor(), true, 1, pathCalculator);
-                    toUse = response.getSendingAmount();
+                    toUse = response.sendingAmount();
                 }
                 if (toUse > 0) {
                     amountRemoved += toUse;

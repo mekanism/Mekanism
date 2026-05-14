@@ -41,7 +41,6 @@ import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueInput.ValueInputList;
@@ -187,7 +186,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                     int stackId = entry.getIntKey();
                     TransporterStack stack = entry.getValue();
                     if (!stack.initiatedPath) {//Initiate any paths and remove things that can't go places
-                        if (stack.itemStack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE)) {
+                        if (stack.isEmpty() || !recalculate(stackId, stack, Long.MAX_VALUE)) {
                             deletes.add(stackId);
                             continue;
                         }
@@ -222,12 +221,12 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                                     if (acceptor == null && stack.getPathType().isHome()) {
                                         acceptor = getFallbackCapForSide(next, side);
                                     }
-                                    TransitResponse response = TransitRequest.simple(stack.itemStack).addToInventory(getLevel(), BlockPos.of(next), acceptor, 0,
+                                    TransitResponse response = TransitRequest.simple(stack).addToInventory(getLevel(), BlockPos.of(next), acceptor, 0,
                                           stack.getPathType().isHome());
                                     if (!response.isEmpty()) {
                                         //We were able to add at least part of the stack to the inventory
-                                        ItemStack rejected = response.getRejected();
-                                        if (rejected.isEmpty()) {
+                                        int rejected = response.getRejected();
+                                        if (rejected == 0) {
                                             //Nothing was rejected (it was all accepted); remove the stack from the prediction
                                             // tracker and schedule this stack for deletion. Continue the loop thereafter
                                             TransporterManager.remove(getLevel(), stack);
@@ -236,7 +235,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                                         }
                                         //Some portion of the stack got rejected; save the remainder and
                                         // recalculate below to sort out what to do next
-                                        stack.itemStack = rejected;
+                                        stack.setStack(response.slotData().getItemType(), rejected);
                                     }//else the entire stack got rejected (Note: we don't need to update the stack to point to itself)
                                     prevSet = next;
                                 }
@@ -257,7 +256,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
                                 Direction side = stack.getSide(this);
                                 ConnectionType connectionType = getConnectionType(side);
                                 tryRecalculate = !connectionType.canSendTo() ||
-                                                 !TransporterUtils.canInsert(getLevel(), BlockPos.of(stack.getDest()), stack.color, stack.itemStack, side, pathType.isHome());
+                                                 !TransporterUtils.canInsert(getLevel(), BlockPos.of(stack.getDest()), stack.color, stack.getItemType(), stack.size(), side, pathType.isHome());
                             } else {
                                 //Try to recalculate idles once they reach their destination
                                 tryRecalculate = true;
@@ -412,7 +411,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     private boolean recalculate(int stackId, TransporterStack stack, long from) {
         //TODO: Why do we skip recalculating the path if it is idle. Is it possible for idle paths to eventually stop being idle or are they just idle forever??
-        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack.itemStack), this, 0).isEmpty();
+        boolean noPath = stack.getPathType().noTarget() || stack.recalculatePath(TransitRequest.simple(stack), this, 0).isEmpty();
         if (noPath && !stack.calculateIdle(this)) {
             TransporterUtils.drop(this, stack);
             return false;
@@ -428,13 +427,13 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
 
     public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse insertMaybeRR(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
         if (outputter != null && outputter.getRoundRobin()) {
-            return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculateRRPath);
+            return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculateRRPath);
         }
         return insert(outputter, outputterPos, request, color, doEmit, min);
     }
 
     public TransitResponse insert(@Nullable BlockEntity outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color, boolean doEmit, int min) {
-        return insert(outputter, outputterPos, request, color, min, doEmit, mekanism.common.content.transporter.TransporterStack::recalculatePath);
+        return insert(outputter, outputterPos, request, color, min, doEmit, TransporterStack::recalculatePath);
     }
 
     private <BE extends BlockEntity> TransitResponse insert(@Nullable BE outputter, BlockPos outputterPos, TransitRequest request, @Nullable EnumColor color,
@@ -470,7 +469,7 @@ public abstract class LogisticalTransporterBase extends Transmitter<ResourceHand
     @NotNull
     private TransitResponse updateTransit(boolean doEmit, TransporterStack stack, TransitResponse response) {
         if (!response.isEmpty()) {
-            stack.itemStack = response.getStack();
+            stack.setStack(response.itemType(), response.sendingAmount());
             if (doEmit) {
                 int stackId = nextId++;
                 addStack(stackId, stack);

@@ -30,6 +30,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -58,7 +59,8 @@ public class TransporterStack {
           }
     );
 
-    public ItemStack itemStack = ItemStack.EMPTY;
+    //TODO - 26.1: Switch this to storing the item resource and size separately?
+    private ItemStack itemStack = ItemStack.EMPTY;
 
     public int progress;
 
@@ -141,6 +143,26 @@ public class TransporterStack {
         if (homeLocation != Long.MAX_VALUE) {
             output.putLong(SerializationConstants.HOME_LOCATION, homeLocation);
         }
+    }
+
+    public boolean isEmpty() {
+        return itemStack.isEmpty();
+    }
+
+    public ItemStack asItemStack() {
+        return itemStack;
+    }
+
+    public ItemResource getItemType() {
+        return ItemResource.of(itemStack);
+    }
+
+    public int size() {
+        return itemStack.count();
+    }
+
+    public void setStack(ItemResource itemType, int amount) {
+        this.itemStack = itemType.toStack(amount);
     }
 
     private void setPath(Level world, @NotNull LongList path, @NotNull Path type, boolean updateFlowing) {

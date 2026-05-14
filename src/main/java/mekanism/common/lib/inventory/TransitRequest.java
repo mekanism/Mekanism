@@ -8,7 +8,7 @@ import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
-import mekanism.common.content.transporter.TransporterManager;
+import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -23,10 +23,14 @@ import org.jetbrains.annotations.Nullable;
 
 public abstract class TransitRequest implements Iterable<ItemData> {
 
-    private final TransitResponse EMPTY = new TransitResponse(ItemStack.EMPTY, null);
+    private final TransitResponse EMPTY = new TransitResponse(ItemResource.EMPTY, 0, null);
 
-    public static SimpleTransitRequest simple(ItemStack stack) {
-        return new SimpleTransitRequest(stack);
+    public static SimpleTransitRequest simple(ItemResource itemType, int amount) {
+        return new SimpleTransitRequest(itemType, amount);
+    }
+
+    public static SimpleTransitRequest simple(TransporterStack stack) {
+        return simple(stack.getItemType(), stack.size());
     }
 
     public static TransitRequest anyItem(ResourceHandler<ItemResource> inventory, int amount) {
@@ -101,47 +105,20 @@ public abstract class TransitRequest implements Iterable<ItemData> {
     //Note: We are unchecked because we don't validate if we are empty or not
     @NotNull
     public TransitResponse addToInventoryUnchecked(@Nullable ResourceHandler<ItemResource> inventory, int min) {
-        if (inventory == null) {
-            return getEmptyResponse();
-        }
-        int slots = inventory.size();
-        if (slots == 0) {
+        if (inventory == null || inventory.size() == 0) {
             //If the inventory has no slots just exit early with the result that we can't send any items
             return getEmptyResponse();
         }
-        if (min > 1) {
-            //If we have a minimum amount of items we are trying to send, we need to start by simulating
-            // to see if we actually have enough room to send the minimum amount of our item. We can
-            // skip this step if we don't have a minimum amount being sent, as then whatever we are
-            // able to insert will be "good enough"
-            TransitResponse response = TransporterManager.getPredictedInsert(inventory, this);
-            if (response.isEmpty() || response.getSendingAmount() < min) {
-                //If we aren't able to send any items or are only able to send less than we have room for
-                // return that we aren't able to insert the requested amount
-                return getEmptyResponse();
-            }
-            // otherwise, continue on to actually sending items to the inventory
-        }
         for (ItemData data : this) {
-            ItemResource itemType = data.getItemType();
-            int totalCount = data.getTotalCount();
-            int toInsert = totalCount;
             try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
-                for (int i = 0; i < slots; i++) {
-                    // Do insert, this will handle validating the item is valid for the inventory
-                    toInsert -= inventory.insert(i, itemType, toInsert, transaction);
-                    if (toInsert == 0) {//If we inserted everything we wanted to break and create the response
-                        break;
-                    }
+                ItemResource itemType = data.getItemType();
+                int inserted = inventory.insert(itemType, data.getTotalCount(), transaction);
+                if (inserted > 0 && inserted >= min) {
+                    //If we are able to send any items, and the amount we are sending is at least what our minimum required amount is
+                    // commit the transaction and return a response of how much of the item was actually inserted
+                    transaction.commit();
+                    return createResponse(itemType, inserted, data);
                 }
-                transaction.commit();
-            }
-            //TODO - 26.1: Re-evaluate if we even need to be checking if toInsert is zero here?
-            // Main case that would matter where it isn't caught by the second check is if total count is zero
-            // is that a possible/valid state?
-            if (toInsert == 0 || toInsert < totalCount) {
-                //Return a response of how much of the item was inserted
-                return createResponse(itemType.toStack(totalCount - toInsert), data);
             }
         }
         return getEmptyResponse();
@@ -152,16 +129,11 @@ public abstract class TransitRequest implements Iterable<ItemData> {
     }
 
     @NotNull
-    public TransitResponse createResponse(ItemStack inserted, ItemData data) {
-        return new TransitResponse(inserted, data);
-    }
-
-    @NotNull
-    public TransitResponse createSimpleResponse() {
-        for (ItemData data : this) {
-            return createResponse(data.getStack(), data);
+    public TransitResponse createResponse(ItemResource itemType, int inserted, ItemData data) {
+        if (itemType.isEmpty() || inserted <= 0) {
+            return getEmptyResponse();
         }
-        return getEmptyResponse();
+        return new TransitResponse(itemType, inserted, data);
     }
 
     @NotNull
@@ -169,37 +141,17 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return EMPTY;
     }
 
-    public static class TransitResponse {
-
-        private final ItemStack inserted;
-        private final ItemData slotData;
-
-        public TransitResponse(@NotNull ItemStack inserted, ItemData slotData) {
-            this.inserted = inserted;
-            this.slotData = slotData;
-        }
-
-        public int getSendingAmount() {
-            return inserted.count();
-        }
-
-        public ItemData getSlotData() {
-            return slotData;
-        }
-
-        public ItemStack getStack() {
-            return inserted;
-        }
+    public record TransitResponse(ItemResource itemType, int sendingAmount, ItemData slotData) {
 
         public boolean isEmpty() {
-            return inserted.isEmpty() || slotData.getTotalCount() == 0;
+            return itemType.isEmpty() || sendingAmount <= 0 || slotData.getTotalCount() == 0;
         }
 
-        public ItemStack getRejected() {
+        public int getRejected() {
             if (isEmpty()) {
-                return ItemStack.EMPTY;
+                return 0;
             }
-            return slotData.getItemType().toStack(slotData.getTotalCount() - getSendingAmount());
+            return slotData.getTotalCount() - sendingAmount();
         }
 
         public ItemStack use(int amount) {
@@ -207,26 +159,7 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         }
 
         public ItemStack useAll() {
-            return use(getSendingAmount());
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            if (o == this) {
-                return true;
-            } else if (o == null || getClass() != o.getClass()) {
-                return false;
-            }
-            TransitResponse other = (TransitResponse) o;
-            return (inserted == other.inserted || ItemStack.matches(inserted, other.inserted)) && slotData.equals(other.slotData);
-        }
-
-        @Override
-        public int hashCode() {
-            int code = ItemStack.hashItemAndComponents(inserted);
-            code = 31 * code + inserted.count();
-            code = 31 * code + slotData.hashCode();
-            return code;
+            return use(sendingAmount());
         }
     }
 
@@ -277,8 +210,13 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
         private final List<ItemData> slotData;
 
-        protected SimpleTransitRequest(ItemStack stack) {
-            slotData = Collections.singletonList(new SimpleItemData(stack));
+        protected SimpleTransitRequest(ItemResource itemType, int amount) {
+            //TODO - 26.1: Re-evaluate this, but I think this makes sense and prevents transit requests from having any empty data in them
+            if (itemType.isEmpty() || amount <= 0) {
+                slotData = Collections.emptyList();
+            } else {
+                slotData = Collections.singletonList(new SimpleItemData(itemType, amount));
+            }
         }
 
         @Override
@@ -288,9 +226,9 @@ public abstract class TransitRequest implements Iterable<ItemData> {
 
         public static class SimpleItemData extends ItemData {
 
-            public SimpleItemData(ItemStack stack) {
-                super(ItemResource.of(stack));
-                totalCount = stack.count();
+            public SimpleItemData(ItemResource itemType, int amount) {
+                super(itemType);
+                totalCount = amount;
             }
         }
     }

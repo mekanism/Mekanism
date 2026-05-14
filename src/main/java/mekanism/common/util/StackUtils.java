@@ -21,11 +21,6 @@ public final class StackUtils {
     private StackUtils() {
     }
 
-    //TODO - 26.1: Evaluate moving remainder of uses to copyWithCount. This method mainly is just useful for better handling when size is <= 0
-    public static ItemStack size(ItemStack stack, int size) {
-        return size <= 0 ? ItemStack.EMPTY : stack.copyWithCount(size);
-    }
-
     /**
      * Get state for placement for a generic item, with our fake player
      *

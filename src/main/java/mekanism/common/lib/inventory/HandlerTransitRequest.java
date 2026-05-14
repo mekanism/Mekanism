@@ -67,7 +67,7 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         }
 
         @Override
-        public ItemStack use(int amount) {
+        public ItemStack use(int amount) {//TODO - 26.1: Can callers be done in such a way that they have a transaction, and just have to commit it to actually use?
             ResourceHandler<ItemResource> handler = getHandler();
             ItemResource itemType = getItemType();
             if (handler != null && !slotMap.isEmpty()) {

@@ -85,13 +85,13 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
             Set<TransportInformation> information = new ObjectOpenHashSet<>(inTransit.size());
             for (TransporterStack stack : inTransit) {
                 //Shrink the in transit list as much as possible. Don't try to render things of the same type that are in the same spot with the same color, ignoring stack size
-                if (stack != null && !stack.itemStack.isEmpty() && information.add(new TransportInformation(stack))) {
+                if (stack != null && !stack.isEmpty() && information.add(new TransportInformation(stack))) {
                     //Ensure the stack is valid AND we did not already have information matching the stack
                     //We use add to check if it already contained the value, so that we only have to query the set once
                     Vector3f stackPos = TransporterUtils.getStackPosition(transmitter, stack, partial);
                     TransporterStackRenderState stackRenderState = new TransporterStackRenderState(stackPos, stack.color);
                     //TODO - 26.1: Do we need to do any sort of seed?
-                    this.itemModelResolver.updateForTopItem(stackRenderState.item(), stack.itemStack, ItemDisplayContext.GROUND, level, null, 0);
+                    this.itemModelResolver.updateForTopItem(stackRenderState.item(), stack.asItemStack(), ItemDisplayContext.GROUND, level, null, 0);
                     state.stacks.add(stackRenderState);
                 }
             }
@@ -147,7 +147,7 @@ public class RenderLogisticalTransporter<TILE extends TileEntityLogisticalTransp
         private TransportInformation(TransporterStack transporterStack) {
             this.progress = transporterStack.progress;
             this.color = transporterStack.color;
-            this.item = ItemResource.of(transporterStack.itemStack);
+            this.item = transporterStack.getItemType();
         }
 
         @Override

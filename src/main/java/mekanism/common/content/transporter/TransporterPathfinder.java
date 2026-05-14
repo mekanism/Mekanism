@@ -33,10 +33,10 @@ import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.GlobalPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -82,14 +82,15 @@ public final class TransporterPathfinder {
     private static Destination getPath(InventoryNetwork network, AcceptorData data, LogisticalTransporterBase start, TransporterStack stack, int min,
           Long2ObjectMap<ChunkAccess> chunkMap) {
         TransitResponse response = data.getResponse();
-        if (response.getSendingAmount() >= min) {
+        if (response.sendingAmount() >= min) {
             BlockPos dest = data.getLocation();
             CachedPath test = PathfinderCache.getCache(start, dest, data.getSides());
             if (test != null && checkPath(network, test.path(), stack)) {
                 return new Destination(test, response);
             }
-            Pathfinder p = new Pathfinder(network, start.getLevel(), dest, start.getBlockPos(), stack, response.getStack(),
-                  (level, pos, tile, s, resp, side) -> TransporterUtils.canInsert(level, pos, tile, s.color, resp, side, false));
+            Pathfinder p = new Pathfinder(network, start.getLevel(), dest, start.getBlockPos(), stack, response.itemType(), response.sendingAmount(),
+                  (level, pos, tile, s, dataType, dataAmount, side) ->
+                        TransporterUtils.canInsert(level, pos, tile, s.color, dataType, dataAmount, side, false));
             p.find(chunkMap);
             if (p.hasPath()) {
                 return new Destination(PathfinderCache.addCachedPath(start, dest, p), response);
@@ -176,8 +177,9 @@ public final class TransporterPathfinder {
         if (stack.homeLocation != Long.MAX_VALUE) {
             Long2ObjectMap<ChunkAccess> chunkMap = new Long2ObjectOpenHashMap<>();
             //We are idling use the base stack
-            Pathfinder p = new Pathfinder(network, start.getLevel(), BlockPos.of(stack.homeLocation), start.getBlockPos(), stack, stack.itemStack,
-                  (level, pos, tile, s, resp, side) -> TransporterUtils.canInsert(level, pos, tile, s.color, resp, side, true));
+            Pathfinder p = new Pathfinder(network, start.getLevel(), BlockPos.of(stack.homeLocation), start.getBlockPos(), stack, stack.getItemType(), stack.size(),
+                  (level, pos, tile, s, dataType, dataAmount, side) ->
+                        TransporterUtils.canInsert(level, pos, tile, s.color, dataType, dataAmount, side, true));
             p.find(chunkMap);
             if (p.hasPath()) {
                 return new IdlePathData(p.getPath(), Path.HOME);
@@ -217,7 +219,7 @@ public final class TransporterPathfinder {
                 loopSide(ret, transportStack.idleDir, startTransmitter);
                 return createDestination(ret);
             }
-            TransitRequest request = TransitRequest.simple(transportStack.itemStack);
+            TransitRequest request = TransitRequest.simple(transportStack);
             if (startTransmitter != null) {
                 Destination newPath = getNewBasePath(startTransmitter, transportStack, request, 0);
                 if (newPath != null && newPath.getResponse() != null) {
@@ -372,22 +374,25 @@ public final class TransporterPathfinder {
         private final BlockPos finalNode;
         private final long finalNodeLong;
         private final TransporterStack transportStack;
-        private final ItemStack data;
+        private final ItemResource dataType;
+        private final int dataAmount;
         private final DestChecker destChecker;
         private final Level world;
         private double finalScore;
         private Direction side;
         private LongList results = new LongArrayList();
 
-        public Pathfinder(InventoryNetwork network, Level world, BlockPos finalNode, BlockPos start, TransporterStack stack, ItemStack data, DestChecker checker) {
-            destChecker = checker;
+        public Pathfinder(InventoryNetwork network, Level world, BlockPos finalNode, BlockPos start, TransporterStack stack, ItemResource dataType, int dataAmount,
+              DestChecker checker) {
+            this.destChecker = checker;
             this.network = network;
             this.world = world;
             this.finalNode = finalNode;
             this.finalNodeLong = finalNode.asLong();
             this.start = start;
-            transportStack = stack;
-            this.data = data;
+            this.transportStack = stack;
+            this.dataType = dataType;
+            this.dataAmount = dataAmount;
         }
 
         public boolean find(Long2ObjectMap<ChunkAccess> chunkMap) {
@@ -478,7 +483,7 @@ public final class TransporterPathfinder {
             //Check to make sure that it is the destination
             if (startTransporter != null && neighbor.equals(finalNode)) {
                 BlockEntity neighborTile = WorldUtils.getTileEntity(world, chunkMap, neighbor);
-                if (destChecker.isValid(world, neighbor, neighborTile, transportStack, data, direction)) {
+                if (destChecker.isValid(world, neighbor, neighborTile, transportStack, dataType, dataAmount, direction)) {
                     if (startTransporter.canEmitTo(direction) || (finalNodeLong == transportStack.homeLocation && startTransporter.canConnect(direction))) {
                         //If it is, and we can emit to it (normal or push mode),
                         // or it is the home location of the stack (it is returning due to not having been able to get to its destination) and
@@ -525,7 +530,7 @@ public final class TransporterPathfinder {
         @FunctionalInterface
         public interface DestChecker {
 
-            boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, ItemStack data, Direction side);
+            boolean isValid(Level level, BlockPos pos, @Nullable BlockEntity tile, TransporterStack stack, ItemResource dataType, int dataAmount, Direction side);
         }
     }
 

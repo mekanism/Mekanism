@@ -273,9 +273,9 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public boolean canSendHome(@NotNull ItemStack stack) {
+    public boolean canSendHome(@NotNull ItemResource itemType, int amount) {
         Direction oppositeDirection = getOppositeDirection();
-        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, stack, oppositeDirection, true);
+        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, itemType, amount, oppositeDirection, true);
     }
 
     @NotNull
