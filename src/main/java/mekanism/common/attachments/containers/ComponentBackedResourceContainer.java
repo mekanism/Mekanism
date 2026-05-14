@@ -76,6 +76,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     @Override
     public boolean isValid(RESOURCE resource) {
+        TransferPreconditions.checkNonEmpty(resource);
         return validator.test(resource);
     }
 
@@ -85,7 +86,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     private boolean isValidForExtraction(RESOURCE type, AutomationType automationType) {
-        return canExtract.test(type, automationType);
+        return !type.isEmpty() && canExtract.test(type, automationType);
     }
 
     @Override
@@ -152,7 +153,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         AttachedResources<RESOURCE> attached = getAttached();
         LargeResourceStack<RESOURCE> current = getContents(attached);
         RESOURCE currentType = current.resource();
-        if (currentType.isEmpty() || !resource.equals(currentType) || !isValidForExtraction(currentType, automationType)) {
+        if (!resource.equals(currentType) || !isValidForExtraction(currentType, automationType)) {
             //"Fail quick" if we are empty, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }

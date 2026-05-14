@@ -82,12 +82,14 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     public boolean isValid(RESOURCE type) {
+        TransferPreconditions.checkNonEmpty(type);
         return validator.test(type);
     }
 
     @Override
     public final boolean isCurrentValidForExtraction(AutomationType automationType) {
-        return canExtract.test(getResource(), automationType);
+        RESOURCE currentType = getResource();
+        return !currentType.isEmpty() && canExtract.test(currentType, automationType);
     }
 
     @Override
@@ -200,7 +202,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
     @Range(from = 0, to = Integer.MAX_VALUE)
     public int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        if (isEmpty() || amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
+        if (amount == 0 || !this.currentType.equals(resource) || !isCurrentValidForExtraction(automationType)) {
             //"Fail quick" if we are empty, nothing is being extracted, a different type is trying to be extracted, or if we can never extract from this slot
             return 0;
         }

@@ -10,6 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.container.BasicResourceContainer;
 import mekanism.api.functions.ConstantPredicates;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -232,6 +233,7 @@ public class BasicChemicalTank extends BasicResourceContainer<ChemicalResource> 
 
     @Override
     public boolean isValid(ChemicalResource chemicalType) {
+        TransferPreconditions.checkNonEmpty(chemicalType);
         return getAttributeValidator().process(chemicalType) && super.isValid(chemicalType);
     }
 

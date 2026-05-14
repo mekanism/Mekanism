@@ -13,6 +13,7 @@ import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
@@ -46,6 +47,7 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
 
     @Override
     public boolean isValid(ChemicalResource chemicalType) {
+        TransferPreconditions.checkNonEmpty(chemicalType);
         return getAttributeValidator().process(chemicalType) && super.isValid(chemicalType);
     }
 

@@ -348,7 +348,8 @@ public class ItemSlotsBuilder {
                 if (tanks > 0) {
                     IFluidTank fluidTank = ContainerType.FLUID.createContainer(attachedTo, tankIndex);
                     for (int tank = 0; tank < tanks; tank++) {
-                        if (fluidTank.isValid(handler.getResource(tank))) {
+                        FluidResource fluidType = handler.getResource(tank);
+                        if (!fluidType.isEmpty() && fluidTank.isValid(fluidType)) {
                             //False if the items contents are still valid
                             return false;
                         }

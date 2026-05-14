@@ -35,7 +35,8 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
             ResourceHandler<FluidResource> itemHandler = Capabilities.FLUID.getCapability(itemType);
             if (itemHandler != null) {
                 for (int tank = 0, tanks = itemHandler.size(); tank < tanks; tank++) {
-                    if (fluidTank.isValid(itemHandler.getResource(tank))) {
+                    FluidResource fluidType = itemHandler.getResource(tank);
+                    if (!fluidType.isEmpty() && fluidTank.isValid(fluidType)) {
                         //False if the items contents are still valid
                         return false;
                     }

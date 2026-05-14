@@ -107,6 +107,9 @@ final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCa
     }
 
     private static boolean isValidForHandler(ResourceHandler<ChemicalResource> handler, ChemicalResource chemicalType) {
+        if (chemicalType.isEmpty()) {
+            return false;
+        }
         for (int tank = 0, size = handler.size(); tank < size; tank++) {
             if (!handler.isValid(tank, chemicalType)) {
                 continue;
