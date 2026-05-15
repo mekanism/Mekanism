@@ -70,7 +70,7 @@ public class QIOCraftingTransferHelper {
                         return;
                     }
                 }
-                reverseLookup.computeIfAbsent(storedType, item -> new ItemTypeSource()).addSlot(inventorySlotIndex, slot.amount());
+                reverseLookup.computeIfAbsent(storedType, item -> new ItemTypeSource()).addSlot(inventorySlotIndex, slot.amountAsInt());
             }
         }
         inventorySlotIndex = addSlotsToMap(player, hotBarSlots, inventorySlotIndex);

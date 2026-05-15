@@ -41,24 +41,24 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @return the amount in this container, as an `int`
     ///
-    /// @implNote This method should not be implemented. The default method will call [#amountAsLong()] and convert the result appropriately.
+    /// @implNote This method should not be implemented. The default method will call [#amountAsLong] and convert the result appropriately.
     /// @see #amountAsLong() the long-returning overload
     @NonExtendable//TODO - 26.1: Do we want to rename this method to amountAsInt
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int amount() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
+    default int amountAsInt() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
     }
 
     /// Returns the amount of the [currently stored resource][#getResource] in this container, as a `long`.
     ///
     /// In general, resource containers can report `long` amounts. However, if the container is known to only support amounts up to `Integer.MAX_VALUE`, or if the caller
-    /// prefers to deal in `int`s only, the [int-returning overload][#amount] can be used instead.
+    /// prefers to deal in `int`s only, the [int-returning overload][#amountAsInt] can be used instead.
     ///
     /// The returned amount must be **non-negative**. If the [stored resource][#getResource] is empty, the amount must be 0.
     ///
     /// @return the amount in this container, as a long
     ///
-    /// @see #amount()
+    /// @see #amountAsInt()
     @Range(from = 0, to = Long.MAX_VALUE)
     long amountAsLong();
 
@@ -102,7 +102,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// This is a convenience method to get the capacity clamped to an `int`, for the cases where this container is known to only support capacities up to
     /// `Integer.MAX_VALUE`, or if the caller prefers to deal in `int`s only.
     ///
-    /// This function serves as a hint on the maximum [amount][#amount()] the resource container might contain, for example the container can be considered full if
+    /// This function serves as a hint on the maximum [amount][#amountAsInt()] the resource container might contain, for example the container can be considered full if
     /// `amount >= capacity`. Note that the returned capacity may overestimate the actual allowed amount, and it might be smaller than the current amount. The only way to
     /// know if a container will accept a resource, is to try to [`insert`][#insert] it.
     ///
@@ -110,20 +110,20 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @return the capacity in this container, as an `int`
     ///
-    /// @implNote This method should not be implemented. The default method will call [#getLimitAsLong(Resource)] and convert the result appropriately.
-    /// @see #getLimitAsLong(Resource)
+    /// @implNote This method should not be implemented. The default method will call [#capacityAsLong(Resource)] and convert the result appropriately.
+    /// @see #capacityAsLong(Resource)
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int getLimit(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to getLimitAsLong
+    default int capacityAsInt(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to getLimitAsLong
         //TODO - 26.1: Update docs
         //TODO - 26.1: Do we want limit and amount to both have asInt for the base method name?
-        return Ints.saturatedCast(getLimitAsLong(resource));
+        return Ints.saturatedCast(capacityAsLong(resource));
     }
 
     /// Returns the capacity of this container for the given resource, irrespective of the current amount or resource currently in this container is, as a `long`.
     ///
     /// In general, resource containers can report `long` capacities. However, if the container is known to only support capacities up to `Integer.MAX_VALUE`, or if the
-    /// caller prefers to deal in `int`s only, the [int-returning overload][#getLimit] can be used instead.
+    /// caller prefers to deal in `int`s only, the [int-returning overload][#capacityAsInt] can be used instead.
     ///
     /// This function serves as a hint on the maximum [amount][#amountAsLong()] the resource container might contain, for example the container can be considered full if
     /// `amount >= capacity`. Note that the returned capacity may overestimate the actual allowed amount, and it might be smaller than the current amount. The only way to
@@ -134,25 +134,25 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @return the capacity in this container, as a long
     ///
     /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`.
-    /// @see #getLimit(Resource)
+    /// @see #capacityAsInt(Resource)
     @Range(from = 0, to = Long.MAX_VALUE)
-    long getLimitAsLong(RESOURCE resource);//TODO - 26.1: Do we want to rename these getLimit to getCapacity?
+    long capacityAsLong(RESOURCE resource);//TODO - 26.1: Do we want to rename these getLimit to getCapacity?
 
     //TODO - 26.1: Re-evaluate name and add docs
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int getCurrentLimit() {
-        return Ints.saturatedCast(getCurrentLimitAsLong());
+    default int getCurrentCapacityAsInt() {
+        return Ints.saturatedCast(getCurrentCapacityAsLong());
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
-    default long getCurrentLimitAsLong() {
-        return getLimitAsLong(getResource());
+    default long getCurrentCapacityAsLong() {
+        return capacityAsLong(getResource());
     }
 
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int getNeeded() {
+    default int getNeededAsInt() {
         //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
         //TODO - 26.1: Should this be a saturated cast of getNeededAsLong
         //return Math.max(0, getCurrentLimit() - amount());
@@ -163,7 +163,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeededAsLong() {
         //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
-        return Math.max(0, getLimitAsLong(getResource()) - amountAsLong());
+        return Math.max(0, capacityAsLong(getResource()) - amountAsLong());
     }
 
     /// {@return whether the given resource is generally allowed to be contained in this container, irrespective of the current amount or resource currently in this

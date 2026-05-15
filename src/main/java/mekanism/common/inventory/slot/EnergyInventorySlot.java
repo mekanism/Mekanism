@@ -133,7 +133,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             //Fill the container from the item
             if (!fillContainerFromItem()) {
                 //If filling from item failed, try doing it by conversion
-                ItemStack current = getResource().toStack(amount());
+                ItemStack current = getResource().toStack(amountAsInt());
                 ItemStackToEnergyRecipe foundRecipe = MekanismRecipeType.ENERGY_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
                 if (foundRecipe != null) {
                     ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);

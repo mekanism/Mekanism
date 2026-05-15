@@ -89,7 +89,7 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, @Nullable TransactionContext transaction) {
-        return emit(targets, tank, tank.getCurrentLimit(), transaction);
+        return emit(targets, tank, tank.getCurrentCapacityAsInt(), transaction);
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
@@ -158,7 +158,7 @@ public final class ResourceUtils {
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> void clampContents(CONTAINER container) {
         RESOURCE resource = container.getResource();
         if (!resource.isEmpty()) {
-            long capacity = container.getLimitAsLong(resource);
+            long capacity = container.capacityAsLong(resource);
             if (capacity == 0 && (container instanceof VariableCapacityFluidTank || container instanceof VariableCapacityChemicalTank)) {
                 //TODO - 26.1: Re-evaluate this, and add comments
                 //Our capacity should never actually be zero, and given we fake it being zero

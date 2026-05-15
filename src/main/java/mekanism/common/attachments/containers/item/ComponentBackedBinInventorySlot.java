@@ -52,7 +52,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
             } else if (isCreative && automationType != AutomationType.EXTERNAL) {
                 //If a player manually inserts into a creative bin, that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative bin acts as a "void" for automation
-                int limit = getLimit(resource);
+                int limit = capacityAsInt(resource);
                 //Try to insert the entire limit so that then it just updates to being a full stack
                 int inserted = super.insert(attachedItems, currentType, currentAmount, resource, limit, transaction, automationType);
                 //If we did manage to insert anything then return that we inserted the entire amount that we were passed

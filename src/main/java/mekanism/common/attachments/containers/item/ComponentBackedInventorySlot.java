@@ -38,8 +38,8 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getLimitAsLong(ItemResource resource) {
-        long limit = super.getLimitAsLong(resource);
+    public long capacityAsLong(ItemResource resource) {
+        long limit = super.capacityAsLong(resource);
         return obeyStackLimit && !resource.isEmpty() ? Math.min(limit, resource.getMaxStackSize()) : limit;
     }
 }

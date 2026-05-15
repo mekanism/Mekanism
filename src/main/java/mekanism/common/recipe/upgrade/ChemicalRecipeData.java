@@ -45,7 +45,7 @@ public class ChemicalRecipeData implements RecipeUpgradeData<ChemicalRecipeData>
             for (IChemicalTank tank : this.tanks) {
                 if (!tank.isEmpty()) {
                     ChemicalResource fluidType = tank.getResource();
-                    int toInsert = tank.amount();
+                    int toInsert = tank.amountAsInt();
                     //Insert into the output using manual as the automation type
                     if (outputHandler.insert(fluidType, toInsert, transaction, AutomationType.MANUAL) < toInsert) {
                         //If we have a remainder something failed so bail

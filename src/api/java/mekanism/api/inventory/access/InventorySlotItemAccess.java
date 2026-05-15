@@ -27,7 +27,7 @@ public class InventorySlotItemAccess implements ItemAccess {
 
     @Override
     public int getAmount() {
-        return slot.amount();
+        return slot.amountAsInt();
     }
 
     @Override

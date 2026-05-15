@@ -27,8 +27,8 @@ public class SyncableFluidStack implements ISyncableData {
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
         //TODO - 26.1: If more than max int is stored, this won't work
-        return create(() -> handler.getResource().toStack(handler.amount()), isClient ? stack -> handler.setContentsUnchecked(FluidResource.of(stack), stack.amount())
-                                                                                      : stack -> handler.setContents(FluidResource.of(stack), stack.amount()));
+        return create(() -> handler.getResource().toStack(handler.amountAsInt()), isClient ? stack -> handler.setContentsUnchecked(FluidResource.of(stack), stack.amount())
+                                                                                           : stack -> handler.setContents(FluidResource.of(stack), stack.amount()));
     }
 
     public static SyncableFluidStack create(Supplier<@NotNull FluidStack> getter, Consumer<@NotNull FluidStack> setter) {

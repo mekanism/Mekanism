@@ -256,7 +256,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        long toSend = storedEnergy.extract(storedEnergy.getMaxEnergy(), simulation, AutomationType.INTERNAL);
+        long toSend = storedEnergy.extract(storedEnergy.getCapacity(), simulation, AutomationType.INTERNAL);
         if (toSend > 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
@@ -268,7 +268,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           int expected, TransmissionType transmissionType, IResourceContainer<RESOURCE> container, TransactionContext simulation) {
         RESOURCE type = container.getResource();
         if (!type.isEmpty()) {
-            int fluidToSend = container.extract(type, storedFluid.amount(), simulation, AutomationType.INTERNAL);
+            int fluidToSend = container.extract(type, storedFluid.amountAsInt(), simulation, AutomationType.INTERNAL);
             if (fluidToSend > 0) {
                 SendingResourceHandlerTarget<RESOURCE> target = new SendingResourceHandlerTarget<>(type, fluidToSend, expected, container);
                 typesToEject.put(transmissionType, target);

@@ -54,8 +54,8 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
           @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
         FluidResource fluidType = generator.bioFuelTank.getResource();
-        FluidStack fluid = fluidType.toStack(generator.bioFuelTank.amount());
-        float fluidScale = generator.bioFuelTank.amount() / (float) generator.bioFuelTank.getLimit(fluidType);
+        FluidStack fluid = fluidType.toStack(generator.bioFuelTank.amountAsInt());
+        float fluidScale = generator.bioFuelTank.amountAsInt() / (float) generator.bioFuelTank.capacityAsInt(fluidType);
         state.model = getModel(fluid, generator.getDirection(), fluidScale);
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);

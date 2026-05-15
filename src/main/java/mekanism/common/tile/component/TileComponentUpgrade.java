@@ -79,7 +79,7 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
                             upgradeTicks++;
                             return;
                         } else if (upgradeTicks == UPGRADE_TICKS_REQUIRED) {
-                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.amount());
+                            int toAdd = getUpgradesToAdd(type, upgrades, upgradeSlot.amountAsInt());
                             if (toAdd > 0) {
                                 try (Transaction transaction = Transaction.openRoot()) {
                                     int extracted = upgradeSlot.extract(itemType, toAdd, transaction, AutomationType.INTERNAL);

@@ -28,8 +28,8 @@ public final class SyncableChemicalStack implements ISyncableData {
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
         //TODO - 26.1: Re-evaluate this
-        return create(() -> handler.getResource().toStack(handler.amount()), isClient ? stack -> handler.setContentsUnchecked(ChemicalResource.of(stack), stack.amount())
-                                                                                      : stack -> handler.setContents(ChemicalResource.of(stack), stack.amount()));
+        return create(() -> handler.getResource().toStack(handler.amountAsInt()), isClient ? stack -> handler.setContentsUnchecked(ChemicalResource.of(stack), stack.amount())
+                                                                                           : stack -> handler.setContents(ChemicalResource.of(stack), stack.amount()));
     }
 
     public static SyncableChemicalStack create(Supplier<@NotNull ChemicalStack> getter, Consumer<@NotNull ChemicalStack> setter) {

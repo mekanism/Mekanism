@@ -21,7 +21,7 @@ public class EnergyDisplay implements IHasTextComponent {
     }
 
     public static EnergyDisplay of(IEnergyContainer container) {
-        return of(container.getEnergy(), container.getMaxEnergy());
+        return of(container.getEnergy(), container.getCapacity());
     }
 
     public static EnergyDisplay of(long energy, long max) {

@@ -129,7 +129,7 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
                 if (itemEmc == 0) {
                     return 0;
                 }
-                currentEMC = addEmc(currentEMC, itemEmc, slot.amount());
+                currentEMC = addEmc(currentEMC, itemEmc, slot.amountAsInt());
             }
         }
         return currentEMC;

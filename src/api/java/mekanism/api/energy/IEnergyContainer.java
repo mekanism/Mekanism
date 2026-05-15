@@ -44,7 +44,7 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      * @return The maximum amount of energy allowed in this {@link IEnergyContainer}.
      */
     @Range(from = 0, to = Long.MAX_VALUE)
-    long getMaxEnergy();//TODO - 26.1: Document about the fact it can return zero as the max energy?
+    long getCapacity();//TODO - 26.1: Document about the fact it can return zero as the max energy?
 
     /**
      * Ignores current contents
@@ -83,7 +83,7 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      */
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getNeeded() {
-        return Math.max(0L, getMaxEnergy() - getEnergy());
+        return Math.max(0L, getCapacity() - getEnergy());
     }
 
     @Override

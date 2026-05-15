@@ -128,7 +128,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
                     if (inventorySlots.size() == tileSlots.size()) {//TODO - 26.1: If they don't match how should we handle it?
                         for (int i = 0, size = inventorySlots.size(); i < size; i++) {
                             IInventorySlot slot = inventorySlots.get(i);
-                            tileSlots.get(i).setContents(slot.getResource(), slot.amount());
+                            tileSlots.get(i).setContents(slot.getResource(), slot.amountAsInt());
                         }
                     }
                 }

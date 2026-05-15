@@ -964,7 +964,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             for (IEnergyContainer energyContainer : energyContainers) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableLong.create(machineEnergy::getMaxEnergy, machineEnergy::setMaxEnergy));
+                        container.track(SyncableLong.create(machineEnergy::getCapacity, machineEnergy::setMaxEnergy));
                         container.track(SyncableLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
@@ -1654,7 +1654,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
     long getTotalMaxEnergy() {
-        return getTotalEnergy(IEnergyContainer::getMaxEnergy);
+        return getTotalEnergy(IEnergyContainer::getCapacity);
     }
 
     @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
@@ -1678,7 +1678,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         List<IEnergyContainer> energyContainers = getEnergyContainers();
         for (IEnergyContainer energyContainer : energyContainers) {
             stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
-            max = MathUtils.addClamped(max, energyContainer.getMaxEnergy());
+            max = MathUtils.addClamped(max, energyContainer.getCapacity());
         }
         return MathUtils.divideToLevel(stored, max);
     }

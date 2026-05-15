@@ -69,8 +69,8 @@ public class ChemicalTankWrapper implements IChemicalTank {//TODO - 26.1: Re-eva
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getLimitAsLong(ChemicalResource chemicalType) {
-        return internal.getLimitAsLong(chemicalType);
+    public long capacityAsLong(ChemicalResource chemicalType) {
+        return internal.capacityAsLong(chemicalType);
     }
 
     @Override

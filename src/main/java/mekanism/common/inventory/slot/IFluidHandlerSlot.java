@@ -73,7 +73,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                         //try to fill the item from the fluid in the tank
                         boolean canDrain;
                         try (Transaction simulation = Transaction.openRoot()) {
-                            canDrain = handler.insert(fluidTank.getResource(), fluidTank.amount(), simulation) > 0;
+                            canDrain = handler.insert(fluidTank.getResource(), fluidTank.amountAsInt(), simulation) > 0;
                         }
                         if (canDrain) {
                             //If we can drain anything into it, then drain
@@ -129,7 +129,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             return;
         }
         FluidResource fluidType = fluidTank.getResource();
-        int fluidAmount = fluidTank.amount();
+        int fluidAmount = fluidTank.amountAsInt();
         try (Transaction transaction = Transaction.openRoot()) {
             //Fill the stack, note our stack is a copy so this is how we simulate to get the proper "container" item,
             // and it does not actually matter that we are directly executing on the item
@@ -146,7 +146,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
             }
 
             boolean draining = false;
-            if (amount() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
+            if (amountAsInt() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
                 //TODO - 26.1: Do we need to look up the cap again? In case the item got moved out? How do caps with item access work
                 //ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(access);
                 //if (containerCap != null) {
@@ -201,7 +201,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
                 //If we cannot actually drain from the item, or fill our tank with all of what we extracted from the item then just exit early
                 return false;
             }
-            if (amount() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
+            if (amountAsInt() == 1) {//TODO - 26.1: This amount check is AFTER it might have already moved out, so we likely need to capture the value before hand?
                 //TODO - 26.1: Do we need to look up the cap again? In case the item got moved out? How do caps with item access work
                 //ResourceHandler<FluidResource> containerCap = Capabilities.FLUID.getCapability(access);
                 //if (containerCap != null) {
@@ -252,7 +252,7 @@ public interface IFluidHandlerSlot extends IInventorySlot {
 
     /// Fills tank from slot, ensuring the stack's count is one, and does not move it to an output slot afterward
     default boolean fillTank() {
-        if (amount() == 1) {
+        if (amountAsInt() == 1) {
             //TODO - 26.1: validate this makes sense, and see if we need to do anything about oneByOne item access? My guess is for this case
             // we don't need to but for others we will
             ItemAccess access = new InventorySlotItemAccess(this, AutomationType.INTERNAL);

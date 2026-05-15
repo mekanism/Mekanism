@@ -221,7 +221,7 @@ public final class MekanismUtils {
     }
 
     public static float getScale(float prevScale, IResourceContainer<?> container) {
-        return getScale(prevScale, container.amountAsLong(), container.getCurrentLimitAsLong(), container.isEmpty());
+        return getScale(prevScale, container.amountAsLong(), container.getCurrentCapacityAsLong(), container.isEmpty());
     }
 
     public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
@@ -235,7 +235,7 @@ public final class MekanismUtils {
     public static float getScale(float prevScale, IEnergyContainer container) {
         float targetScale;
         long stored = container.getEnergy();
-        long capacity = container.getMaxEnergy();
+        long capacity = container.getCapacity();
         if (capacity == 0L) {
             targetScale = 0;
         } else {
@@ -532,7 +532,7 @@ public final class MekanismUtils {
         List<ItemStack> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
             //Note: copyWithCount which is used by ItemResource#toStack returns EMPTY if the stack is empty, so we can skip checking
-            stacks.add(slot.getResource().toStack(resize ? 1 : slot.amount()));
+            stacks.add(slot.getResource().toStack(resize ? 1 : slot.amountAsInt()));
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }
@@ -627,7 +627,7 @@ public final class MekanismUtils {
 
     //TODO - 26.1: Docs
     public static int redstoneLevelFromContents(IResourceContainer<?> container) {
-        return redstoneLevelFromContents(container.amountAsLong(), container.getCurrentLimitAsLong());
+        return redstoneLevelFromContents(container.amountAsLong(), container.getCurrentCapacityAsLong());
     }
 
     /**
@@ -652,10 +652,10 @@ public final class MekanismUtils {
         long totalLimit = 0;
         for (IInventorySlot slot : slots) {
             if (slot.isEmpty()) {
-                totalLimit += slot.getLimit(ItemResource.EMPTY);
+                totalLimit += slot.capacityAsInt(ItemResource.EMPTY);
             } else {
-                totalCount += slot.amount();
-                totalLimit += slot.getCurrentLimit();
+                totalCount += slot.amountAsInt();
+                totalLimit += slot.getCurrentCapacityAsInt();
             }
         }
         return redstoneLevelFromContents(totalCount, totalLimit);

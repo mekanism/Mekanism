@@ -98,7 +98,7 @@ public class InputHelper {
 
         @Override
         public ItemStack getInput() {
-            return container.getResource().toStack(container.amount());
+            return container.getResource().toStack(container.amountAsInt());
         }
     }
 
@@ -130,7 +130,7 @@ public class InputHelper {
 
         @Override
         public FluidStack getInput() {
-            return container.getResource().toStack(container.amount());
+            return container.getResource().toStack(container.amountAsInt());
         }
     }
 
@@ -163,7 +163,7 @@ public class InputHelper {
 
         @Override
         public ChemicalStack getInput() {
-            return container.getResource().toStack(container.amount());
+            return container.getResource().toStack(container.amountAsInt());
         }
     }
 }

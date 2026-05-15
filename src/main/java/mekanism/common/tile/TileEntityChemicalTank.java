@@ -131,7 +131,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
                 if (dumping == GasMode.DUMPING) {
                     toDump = tier.getStorage() / 400;
                 } else {//dumping == GasMode.DUMPING_EXCESS
-                    long target = MathUtils.clampToLong(chemicalTank.getLimitAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    long target = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
                     long stored = chemicalTank.amountAsLong();
                     if (target < stored) {
                         //Dump excess that we need to get to the target (capping at our eject rate for how much we can dump at once)
@@ -187,8 +187,8 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            drainSlot.setContents(data.drainSlot.getResource(), data.drainSlot.amount());
-            fillSlot.setContents(data.fillSlot.getResource(), data.fillSlot.amount());
+            drainSlot.setContents(data.drainSlot.getResource(), data.drainSlot.amountAsInt());
+            fillSlot.setContents(data.fillSlot.getResource(), data.fillSlot.amountAsInt());
             dumping = data.dumping;
             getChemicalTank().setContents(data.storedChemical);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {

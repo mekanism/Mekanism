@@ -127,7 +127,7 @@ public class LookingAtUtils {
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
             for (IEnergyContainer container : structure.getEnergyContainers()) {
-                info.addEnergyElement(new EnergyElement(container.getEnergy(), container.getMaxEnergy()));
+                info.addEnergyElement(new EnergyElement(container.getEnergy(), container.getCapacity()));
             }
         }
         if (displayTanks) {
@@ -175,7 +175,7 @@ public class LookingAtUtils {
                 }
             }
             FluidResource storedType = fluidTank.getResource();
-            addFluidInfo(info, storedType, fluidTank.amountAsLong(), fluidTank.getLimitAsLong(storedType), fallback);
+            addFluidInfo(info, storedType, fluidTank.amountAsLong(), fluidTank.capacityAsLong(storedType), fallback);
         }
     }
 
@@ -233,7 +233,7 @@ public class LookingAtUtils {
             }
         }
         ChemicalResource resource = chemicalTank.getResource();
-        addChemicalInfo(info, resource.toStack(chemicalTank.amountAsLong()), chemicalTank.getLimitAsLong(resource), fallback);
+        addChemicalInfo(info, resource.toStack(chemicalTank.amountAsLong()), chemicalTank.capacityAsLong(resource), fallback);
     }
 
     private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, ChemicalResource fallback) {

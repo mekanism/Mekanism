@@ -74,7 +74,7 @@ public abstract class RenderData {
         }
 
         public static Builder<FluidRenderData> create(IFluidTank tank) {
-            return create(tank.getResource().toStack(tank.amount()));
+            return create(tank.getResource().toStack(tank.amountAsInt()));
         }
 
         public static Builder<FluidRenderData> create(FluidStack fluid) {

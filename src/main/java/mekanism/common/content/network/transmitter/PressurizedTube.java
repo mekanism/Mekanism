@@ -114,7 +114,7 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
         IChemicalTank chemicalTank = getContainer();
         ChemicalResource resource = chemicalTank.getResource();
         if (!resource.isEmpty() && resource.isRadioactive()) {
-            return chemicalTank.amountAsLong() / (float) chemicalTank.getLimitAsLong(resource);
+            return chemicalTank.amountAsLong() / (float) chemicalTank.capacityAsLong(resource);
         }
         return 0;
     }

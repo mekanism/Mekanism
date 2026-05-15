@@ -171,7 +171,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             case 0 -> FluidStack.EMPTY;
             case 1 -> {
                 IFluidTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amount());
+                yield tank.getResource().toStack(tank.amountAsInt());
             }
             default -> {
                 FluidResource fluidType = FluidResource.EMPTY;
@@ -181,7 +181,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
                         continue;
                     }
                     FluidResource tankType = tank.getResource();
-                    int tankAmount = tank.amount();
+                    int tankAmount = tank.amountAsInt();
                     if (fluidType.isEmpty()) {
                         fluidType = tankType;
                         storedAmount = tankAmount;
@@ -212,12 +212,12 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
             case 0 -> FluidStack.EMPTY;
             case 1 -> {
                 IFluidTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amount());
+                yield tank.getResource().toStack(tank.amountAsInt());
             }
             default -> {
                 for (IFluidTank tank : containers) {
                     if (!tank.isEmpty()) {
-                        yield tank.getResource().toStack(tank.amount());
+                        yield tank.getResource().toStack(tank.amountAsInt());
                     }
                 }
                 yield FluidStack.EMPTY;
@@ -312,7 +312,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getContainers()) {
-                energyContainer.setEnergy(energyContainer.getMaxEnergy());
+                energyContainer.setEnergy(energyContainer.getCapacity());
             }
         }
         //The item is now filled return it for convenience
@@ -340,7 +340,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static double getEnergyRatio(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack, 0);
-        return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getMaxEnergy());
+        return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getCapacity());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {

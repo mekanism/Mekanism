@@ -70,7 +70,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     protected long clampEnergy(long energy) {
-        return Math.min(energy, getMaxEnergy());
+        return Math.min(energy, getCapacity());
     }
 
     @Override
@@ -125,7 +125,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
         }
         long currentStored = getEnergy();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = getMaxEnergy() - currentStored;
+        long needed = getCapacity() - currentStored;
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
@@ -162,7 +162,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getMaxEnergy() {
+    public long getCapacity() {
         return maxEnergy;
     }
 

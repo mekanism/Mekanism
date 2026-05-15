@@ -46,7 +46,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
             @NotNull
             @Override
             public FluidStack getStack() {
-                return tank.getResource().toStack(tank.amount());
+                return tank.getResource().toStack(tank.amountAsInt());
             }
 
             @Override
@@ -61,12 +61,12 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
                 } else if (tank.amountAsLong() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(tank.getResource(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amount()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amountAsInt()));
             }
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(tank.amount(), tank.getCurrentLimit());
+                return MathUtils.divideToLevel(tank.amountAsInt(), tank.getCurrentCapacityAsInt());
             }
         };
     }

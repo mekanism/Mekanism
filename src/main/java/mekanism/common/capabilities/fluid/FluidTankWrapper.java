@@ -93,8 +93,8 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getLimitAsLong(FluidResource resource) {
-        return internal.getLimitAsLong(resource);
+    public long capacityAsLong(FluidResource resource) {
+        return internal.capacityAsLong(resource);
     }
 
     @Override

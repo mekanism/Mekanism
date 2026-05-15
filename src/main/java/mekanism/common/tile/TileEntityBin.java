@@ -101,7 +101,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 //Note: Instead of getting the bin item type, we just get the stored resource as we only do things if it isn't empty anyway
                 ItemResource storedType = binSlot.getResource();
                 //Limit how much we allow sending at once to a single stack of the stored item
-                request.addItem(storedType, Math.min(binSlot.amount(), storedType.getMaxStackSize()), 0);
+                request.addItem(storedType, Math.min(binSlot.amountAsInt(), storedType.getMaxStackSize()), 0);
                 if (targetInventory == null) {
                     targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
                 }
@@ -156,7 +156,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof BinUpgradeData(boolean redstoneData, BinInventorySlot slot)) {
             redstone = redstoneData;
-            binSlot.setContents(slot.getResource(), slot.amount());
+            binSlot.setContents(slot.getResource(), slot.amountAsInt());
             binSlot.setLockStack(slot.getLockType());
         } else {
             super.parseUpgradeData(upgradeData, provider);
@@ -207,7 +207,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     //Methods relating to IComputerTile
     @ComputerMethod(methodDescription = "Get the maximum number of items the bin can contain.")
     int getCapacity() {
-        return binSlot.getCurrentLimit();
+        return binSlot.getCurrentCapacityAsInt();
     }
 
     @ComputerMethod(methodDescription = "If true, the Bin is locked to a particular item type.")

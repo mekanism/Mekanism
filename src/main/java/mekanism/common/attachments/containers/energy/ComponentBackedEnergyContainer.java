@@ -59,7 +59,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     protected long clampEnergy(long energy) {
         //TODO - 26.1: Re-evaluate clamping
-        return Math.min(energy, getMaxEnergy());
+        return Math.min(energy, getCapacity());
     }
 
     @Override
@@ -90,7 +90,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
         AttachedEnergy attachedEnergy = getAttached();
         long currentStored = getContents(attachedEnergy);
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = getMaxEnergy() - currentStored;
+        long needed = getCapacity() - currentStored;
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
@@ -132,7 +132,7 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getMaxEnergy() {
+    public long getCapacity() {
         return maxEnergy.getAsLong();
     }
 

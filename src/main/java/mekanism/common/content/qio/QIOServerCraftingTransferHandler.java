@@ -83,7 +83,7 @@ public class QIOServerCraftingTransferHandler {
             IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             ItemResource storedType = inputSlot.getResource();
             if (!storedType.isEmpty()) {
-                int stored = inputSlot.amount();
+                int stored = inputSlot.amountAsInt();
                 try (Transaction simulation = Transaction.openRoot()) {
                     int available = inputSlot.extract(storedType, stored, simulation, AutomationType.INTERNAL);
                     if (available < stored) {
@@ -429,7 +429,7 @@ public class QIOServerCraftingTransferHandler {
             IInventorySlot inputSlot = craftingWindow.getInputSlot(slot);
             ItemResource resource = inputSlot.getResource();
             if (!resource.isEmpty()) {
-                int extracted = inputSlot.extract(resource, inputSlot.amount(), transaction, AutomationType.MANUAL);
+                int extracted = inputSlot.extract(resource, inputSlot.amountAsInt(), transaction, AutomationType.MANUAL);
                 if (extracted > 0) {
                     remainingCraftingGridContents.put(slot, resource.toStack(extracted));
                 } else {

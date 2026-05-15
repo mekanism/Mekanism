@@ -80,8 +80,8 @@ public class RenderNutritionalLiquifier extends MekanismTileEntityRenderer<TileE
         Level level = liquifier.getLevel();
         if (!liquifier.fluidTank.isEmpty()) {
             FluidResource paste = liquifier.fluidTank.getResource();
-            FluidStack pasteStack = paste.toStack(liquifier.fluidTank.amount());
-            float fluidScale = liquifier.fluidTank.amount() / (float) liquifier.fluidTank.getLimit(paste);
+            FluidStack pasteStack = paste.toStack(liquifier.fluidTank.amountAsInt());
+            float fluidScale = liquifier.fluidTank.amountAsInt() / (float) liquifier.fluidTank.capacityAsInt(paste);
             state.pasteTint = MekanismRenderer.getColorARGB(pasteStack, fluidScale);
             state.pasteModel = getPasteModel(pasteStack, fluidScale);
             state.pasteTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(paste, FluidTextureType.STILL));

@@ -38,7 +38,7 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         IEnergyContainer container = getContainer(index);
-        return container == null ? 0 : container.getMaxEnergy();
+        return container == null ? 0 : container.getCapacity();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)

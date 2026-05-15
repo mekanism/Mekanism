@@ -67,7 +67,7 @@ abstract class InputResourceHandler<HOLDER_TYPE, RESOURCE extends RegisteredReso
             if (!inputType.isEmpty()) {
                 try (Transaction simulation = tracker.openSimulation()) {
                     //Calculate how much we are actually able to extract from the container
-                    int available = container.extract(inputType, container.amount(), simulation, AutomationType.INTERNAL);
+                    int available = container.extract(inputType, container.amountAsInt(), simulation, AutomationType.INTERNAL);
                     if (available > 0) {
                         int operations = available / (getAmount(recipeInput) * usageMultiplier);
                         if (operations > 0) {

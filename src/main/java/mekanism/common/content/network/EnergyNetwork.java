@@ -48,8 +48,8 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected void forceScaleUpdate() {
-        if (!energyContainer.isEmpty() && energyContainer.getMaxEnergy() != 0L) {
-            currentScale = (float) Math.min(1, ((double) energyContainer.getEnergy() / energyContainer.getMaxEnergy()));
+        if (!energyContainer.isEmpty() && energyContainer.getCapacity() != 0L) {
+            currentScale = (float) Math.min(1, ((double) energyContainer.getEnergy() / energyContainer.getCapacity()));
         } else {
             currentScale = 0;
         }
@@ -156,7 +156,7 @@ public class EnergyNetwork extends DynamicBufferedNetwork<IStrictEnergyHandler, 
 
     @Override
     protected float computeContentScale() {
-        float scale = (float) MathUtils.divideToLevel(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
+        float scale = (float) MathUtils.divideToLevel(energyContainer.getEnergy(), energyContainer.getCapacity());
         float ret = Math.max(currentScale, scale);
         if (prevTransferAmount != 0 && ret < 1) {
             ret = Math.min(1, ret + 0.02F);

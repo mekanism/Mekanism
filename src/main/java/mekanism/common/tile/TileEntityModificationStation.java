@@ -95,7 +95,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                     if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                         ItemResource moduleResource = moduleSlot.getResource();
                         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-                        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
+                        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amountAsInt());
                         //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
                         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
                         if (container != null) {
@@ -107,7 +107,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
                                 clientEnergyUsed = energyPerTick;
                                 if (operatingTicks == ticksRequired) {
                                     operatingTicks = 0;
-                                    int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amount());
+                                    int added = container.addModule(level.registryAccess(), stack, data, moduleSlot.amountAsInt());
                                     if (added > 0) {
                                         try (Transaction subTransaction = Transaction.open(transaction)) {
                                             //Validate that the module is actually able to be extracted from the module slot (this should always be true)
@@ -139,7 +139,7 @@ public class TileEntityModificationStation extends TileEntityMekanism implements
 
     public void removeModule(Player player, Holder<ModuleData<?>> type, boolean removeAll) {
         //TODO - 26.1: Should we have any handling for if there is more than one item in the container slot?
-        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amount());
+        ItemStack stack = containerSlot.getResource().toStack(containerSlot.amountAsInt());
         //TODO - 26.1: Make the module container act upon an item access? And have that item access control setting the slot's contents
         ModuleContainer container = ModuleHelper.get().getModuleContainer(stack);
         if (container != null) {

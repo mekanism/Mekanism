@@ -47,7 +47,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
         cells.put(pos, energyContainer);
-        storageCap = MathUtils.addClamped(storageCap, energyContainer.getMaxEnergy());
+        storageCap = MathUtils.addClamped(storageCap, energyContainer.getCapacity());
         cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.getEnergy());
     }
 
@@ -70,7 +70,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                 //TODO: Handle this better, as I believe we *technically* could have this cause the cached total to become negative
                 // It may work better if we just flush the buffer writing immediately, and then recalculate the cached totals/caps
                 IEnergyContainer cellContainer = cells.get(pos);
-                storageCap += cellContainer.getMaxEnergy();
+                storageCap += cellContainer.getCapacity();
                 cachedTotal -= cellContainer.getEnergy();
             }
         }
@@ -207,7 +207,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getMaxEnergy() {
+    public long getCapacity() {
         return storageCap;
     }
 

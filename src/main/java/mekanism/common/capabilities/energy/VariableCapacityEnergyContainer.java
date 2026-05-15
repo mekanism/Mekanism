@@ -42,7 +42,7 @@ public class VariableCapacityEnergyContainer extends BasicEnergyContainer {
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getMaxEnergy() {
+    public long getCapacity() {
         return maxEnergy.getAsLong();
     }
 }

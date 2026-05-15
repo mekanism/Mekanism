@@ -485,7 +485,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             }
             for (int i = 0; i < data.outputSlots.size(); i++) {
                 IInventorySlot outputSlot = data.outputSlots.get(i);
-                outputSlots.get(i).setContents(outputSlot.getResource(), outputSlot.amount());
+                outputSlots.get(i).setContents(outputSlot.getResource(), outputSlot.amountAsInt());
             }
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
@@ -546,7 +546,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                 ItemResource inputType = inputSlot.getResource();
                 RecipeProcessInfo<RECIPE> recipeProcessInfo = processes.computeIfAbsent(inputType, i -> new RecipeProcessInfo<>());
                 recipeProcessInfo.processes.add(processInfo);
-                recipeProcessInfo.totalCount += inputSlot.amount();
+                recipeProcessInfo.totalCount += inputSlot.amountAsInt();
                 if (recipeProcessInfo.lazyMinPerSlot == null && !CommonWorldTickHandler.flushTagAndRecipeCaches) {
                     //If we don't have a lazily initialized min per slot calculation set for it yet
                     // and our cache is not invalid/out of date due to a reload
@@ -730,7 +730,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
                         //If the amount of the item we want to set it to is zero (all got used by earlier stacks, which might
                         // happen if the recipe requires a stacked input (minPerSlot > 1)), then we need to set the slot to empty
                         inputSlot.setEmpty();
-                    } else if (inputSlot.amount() != sizeForSlot) {
+                    } else if (inputSlot.amountAsInt() != sizeForSlot) {
                         //Otherwise, if our slot doesn't already contain the amount we want it to, we need to adjust how much is stored in it
                         //TODO - 26.1: Is resource the same as item?
                         inputSlot.setContentsUnchecked(inputSlot.getResource(), sizeForSlot);

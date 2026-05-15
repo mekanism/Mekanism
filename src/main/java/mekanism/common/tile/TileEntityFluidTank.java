@@ -191,7 +191,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             } else {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeeded(), tier.getOutput()), null);
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(), tier.getOutput()), null);
             }
         }
         if (needsPacket) {
@@ -314,8 +314,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
-            inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amount());
-            outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amount());
+            inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amountAsInt());
+            outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amountAsInt());
             editMode = data.editMode;
             fluidTank.setContents(data.stored);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {

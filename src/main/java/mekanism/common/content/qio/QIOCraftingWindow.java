@@ -261,7 +261,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Note: We start at the absolute max stack size, rather than at integer max value just to be a little more accurate
         int inputSize = Item.ABSOLUTE_MAX_STACK_SIZE;
         for (IInventorySlot inputSlot : inputSlots) {
-            int count = inputSlot.amount();
+            int count = inputSlot.amountAsInt();
             if (count > 0 && count < inputSize) {
                 inputSize = count;
                 if (inputSize == 1) {
@@ -309,7 +309,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 if (!slotResource.isEmpty()) {
                     int extracted;
                     try (Transaction simulation = Transaction.openRoot()) {
-                        extracted = inputSlot.extract(slotResource, inputSlot.amount(), simulation, AutomationType.INTERNAL);
+                        extracted = inputSlot.extract(slotResource, inputSlot.amountAsInt(), simulation, AutomationType.INTERNAL);
                         if (extracted == 0) {
                             continue;
                         }
@@ -335,7 +335,7 @@ public class QIOCraftingWindow implements IContentsListener {
                     if (!slotResource.isEmpty()) {
                         int extracted;
                         try (Transaction simulation = Transaction.openRoot()) {
-                            extracted = inputSlot.extract(slotResource, inputSlot.amount(), simulation, AutomationType.INTERNAL);
+                            extracted = inputSlot.extract(slotResource, inputSlot.amountAsInt(), simulation, AutomationType.INTERNAL);
                             if (extracted == 0) {
                                 continue;
                             }
@@ -371,7 +371,7 @@ public class QIOCraftingWindow implements IContentsListener {
         //Mark that we are crafting so changes to the slots below don't force a bunch of recalculations to take place
         craftingStarted(player);
         //Figure out the base of the result stack after crafting (onCreated can adjust it slightly)
-        ItemStack result = outputSlot.getResource().toStack(outputSlot.amount());
+        ItemStack result = outputSlot.getResource().toStack(outputSlot.amountAsInt());
         Item resultItem = result.getItem();
         resultItem.onCraftedBy(result, player);
         Stat<Item> itemCraftedStat = Stats.ITEM_CRAFTED.get(resultItem);
@@ -406,7 +406,7 @@ public class QIOCraftingWindow implements IContentsListener {
                 }
                 //If they may still be compatible, copy the stack, and apply the onCreated to it so that
                 // we can adjust the NBT if it needs adjusting
-                ItemStack potentialUpdatedOutput = updatedOutput.toStack(outputSlot.amount());
+                ItemStack potentialUpdatedOutput = updatedOutput.toStack(outputSlot.amountAsInt());
                 resultItem.onCraftedBy(potentialUpdatedOutput, player);
                 if (!ItemStack.matches(result, potentialUpdatedOutput)) {
                     //If some data is different about the output, stop crafting
@@ -454,11 +454,11 @@ public class QIOCraftingWindow implements IContentsListener {
                     ItemStack remainder = remaining.get(subIndex);
                     int index = getIndexFromRemaining(craftingInput, subIndex);
                     IInventorySlot inputSlot = inputSlots[index];
-                    if (inputSlot.amount() > 1) {
+                    if (inputSlot.amountAsInt() > 1) {
                         //If the input slot contains an item that is stacked, reduce the size of it by one
                         //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
                         useInput(inputSlot, transaction);
-                    } else if (inputSlot.amount() == 1) {
+                    } else if (inputSlot.amountAsInt() == 1) {
                         //Else if the input slot only has a single item in it, try removing from the frequency
                         if (frequency == null || remainderHelper.isStackStillValid(world, remainder, index)) {
                             //If the remaining item is still valid for the recipe in that slot, or we don't have a frequency, and it is the
@@ -555,11 +555,11 @@ public class QIOCraftingWindow implements IContentsListener {
                 ItemStack remainder = remaining.get(subIndex);
                 int index = getIndexFromRemaining(craftingInput, subIndex);
                 IInventorySlot inputSlot = inputSlots[index];
-                if (inputSlot.amount() > 1) {
+                if (inputSlot.amountAsInt() > 1) {
                     //If the input slot contains an item that is stacked, reduce the size of it by one
                     //Note: We "ignore" the fact that the container item may still be valid for the recipe, if the input is stacked
                     useInput(inputSlot, transaction);
-                } else if (inputSlot.amount() == 1) {
+                } else if (inputSlot.amountAsInt() == 1) {
                     //Else if the input slot only has a single item in it, try removing from the frequency
                     if (frequency == null || remainderHelper.isStackStillValid(world, remainder, index)) {
                         //If we have no frequency or the remaining item is still valid for the recipe in that slot,

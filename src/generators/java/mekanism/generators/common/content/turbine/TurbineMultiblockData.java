@@ -180,7 +180,7 @@ public class TurbineMultiblockData extends MultiblockData {
                     toDump = getDumpingAmount(amount);
                 } else {//DUMPING_EXCESS
                     //Don't allow dumping more than the configured amount
-                    long targetLevel = MathUtils.clampToLong(chemicalTank.getLimitAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
+                    long targetLevel = MathUtils.clampToLong(chemicalTank.capacityAsLong(chemicalType) * MekanismConfig.general.dumpExcessKeepRatio.get());
                     if (targetLevel < amount) {
                         toDump = Math.min(amount - targetLevel, getDumpingAmount(amount));
                     }

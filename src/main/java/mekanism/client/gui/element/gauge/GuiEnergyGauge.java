@@ -25,7 +25,7 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
 
             @Override
             public long getMaxEnergy() {
-                return container.getMaxEnergy();
+                return container.getCapacity();
             }
         }, type, gui, x, y);
     }

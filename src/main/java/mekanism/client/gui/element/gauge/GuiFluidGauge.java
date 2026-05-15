@@ -76,7 +76,7 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
         if (tank == null || tank.isEmpty()) {
             return 0;
         }
-        long capacity = tank.getCurrentLimitAsLong();
+        long capacity = tank.getCurrentCapacityAsLong();
         if (capacity == 0) {
             return 0;
         } else if (tank.amountAsLong() == Long.MAX_VALUE) {
@@ -121,13 +121,13 @@ public class GuiFluidGauge extends GuiTankGauge<FluidStack, IFluidTank> {
     @Override
     protected void applyRenderColor(GuiGraphicsExtractor guiGraphics) {
         IFluidTank tank = getTank();
-        MekanismRenderer.color(dummy || tank == null ? dummyType : tank.getResource().toStack(tank.amount()));
+        MekanismRenderer.color(dummy || tank == null ? dummyType : tank.getResource().toStack(tank.amountAsInt()));
     }
 
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IFluidTank tank = getTank();
-        return tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amount()));
+        return tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amountAsInt()));
     }
 
     @Override

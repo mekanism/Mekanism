@@ -137,7 +137,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         // If so we might need to pass Transaction#getCurrentOpenedTransaction to it
         try (Transaction simulation = Transaction.openRoot()) {
             //Otherwise, if we can accept any of the chemical that is currently stored in the tank, then we allow inserting the item
-            return handler.insert(chemicalTank.getResource(), chemicalTank.amount(), simulation) > 0;
+            return handler.insert(chemicalTank.getResource(), chemicalTank.amountAsInt(), simulation) > 0;
         }
     }
 
@@ -245,7 +245,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         //Fill the tank from the item
         if (!fillTank(this, chemicalTank, itemAccess())) {
             //If filling from item failed, try doing it by conversion
-            ItemStack current = getResource().toStack(amount());
+            ItemStack current = getResource().toStack(amountAsInt());
             ItemStackToChemicalRecipe foundRecipe = MekanismRecipeType.CHEMICAL_CONVERSION.getInputCache().findFirstRecipe(worldSupplier.get(), current);
             if (foundRecipe != null) {
                 ItemStack itemInput = foundRecipe.getInput().getMatchingInstance(current);
@@ -279,7 +279,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillTank(IInventorySlot slot, IChemicalTank chemicalTank, ItemAccess itemAccess) {
-        if (slot.isEmpty() || chemicalTank.getNeeded() == 0) {
+        if (slot.isEmpty() || chemicalTank.getNeededAsInt() == 0) {
             return false;
         }
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
@@ -293,7 +293,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             }
             int amountToExtract;
             try (Transaction simulation = Transaction.openRoot()) {
-                amountToExtract = handler.extract(typeToExtract, chemicalTank.getNeeded(), simulation);
+                amountToExtract = handler.extract(typeToExtract, chemicalTank.getNeededAsInt(), simulation);
                 if (amountToExtract == 0) {
                     return false;
                 }
@@ -329,7 +329,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             if (handler != null) {
                 ChemicalResource chemicalType = chemicalTank.getResource();
                 //TODO - 26.1: Do we need to simulate how much we can actually drain? In case there is an extraction rate from the tank
-                int amountToTransfer = chemicalTank.amount();
+                int amountToTransfer = chemicalTank.amountAsInt();
                 try (Transaction transaction = Transaction.openRoot()) {
                     int inserted = handler.insert(chemicalType, amountToTransfer, transaction);
                     //We are able to fit at least some of the chemical from our tank into the item

@@ -16,7 +16,7 @@ public interface ITileRadioactive {
                 if (!resource.isEmpty() && resource.isRadioactive()) {
                     //TODO: Eventually we may want to debate doing this based on the radioactivity
                     // but for now this will work well
-                    summedScale += tank.amountAsLong() / (float) tank.getLimitAsLong(resource);
+                    summedScale += tank.amountAsLong() / (float) tank.capacityAsLong(resource);
                 }
             }
             return summedScale / tanks.size();

@@ -3,7 +3,6 @@ package mekanism.common.capabilities.energy;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
-import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.functions.LongObjectToLongFunction;
@@ -48,7 +47,7 @@ public class ElectroSeparatorEnergyContainer extends MachineEnergyContainer<Tile
     public void updateMaxEnergy() {
         super.updateMaxEnergy();
         if (tile.isMakingHydrogen()) {
-            setMaxEnergy(getMaxEnergy() * tile.getBaselineMaxOperations() * 4);
+            setMaxEnergy(this.getCapacity() * tile.getBaselineMaxOperations() * 4);
         }
     }
 }

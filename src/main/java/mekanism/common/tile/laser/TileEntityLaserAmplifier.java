@@ -91,7 +91,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     @Override
     public int getRedstoneLevel() {
         if (outputMode == RedstoneOutput.ENERGY_CONTENTS) {
-            return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getMaxEnergy());
+            return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getCapacity());
         }
         return emittingRedstone ? Redstone.SIGNAL_MAX : Redstone.SIGNAL_NONE;
     }
@@ -167,7 +167,7 @@ public class TileEntityLaserAmplifier extends TileEntityLaserReceptor implements
     }
 
     private long getThreshold(long target) {
-        return Math.min(target, energyContainer.getMaxEnergy());
+        return Math.min(target, energyContainer.getCapacity());
     }
 
     @Override

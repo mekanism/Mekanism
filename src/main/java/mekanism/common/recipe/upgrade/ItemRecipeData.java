@@ -58,7 +58,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
         try (Transaction transaction = Transaction.openRoot()) {
             for (IInventorySlot slot : dataSlots) {
                 if (!slot.isEmpty()) {
-                    int amount = slot.amount();
+                    int amount = slot.amountAsInt();
                     //TODO - 26.1: The automation type here doesn't matter because we create slots that are always allowed to be interacted with
                     // but we should decide what one makes the most sense (probably whatever we decide to use for IMekanismResourceHandler#insert's default automation type
                     int inserted = InventoryUtils.insertItem(outputSlots, slot.getResource(), amount, transaction, AutomationType.MANUAL);

@@ -67,12 +67,12 @@ public class ChemicalFluidBarDecorator implements IItemDecorator {
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IChemicalTank tank) {
         ChemicalResource chemicalType = tank.getResource();
-        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.getLimitAsLong(chemicalType), chemicalType.getChemical().getColorRepresentation());
+        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.capacityAsLong(chemicalType), chemicalType.getChemical().getColorRepresentation());
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, IFluidTank tank) {
         FluidResource fluidType = tank.getResource();
-        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.getLimitAsLong(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType.toStack(tank.amount())));
+        renderBar(guiGraphics, stackXPos, yPos, tank.amountAsLong(), tank.capacityAsLong(fluidType), FluidUtils.getRGBDurabilityForDisplay(fluidType.toStack(tank.amountAsInt())));
     }
 
     protected static void renderBar(GuiGraphicsExtractor guiGraphics, int stackXPos, int yPos, long amount, long capacity, int color) {

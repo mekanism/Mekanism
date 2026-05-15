@@ -55,7 +55,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         // to the client thinking that it is invalid
         //TODO - 26.1: Re-evaluate these as fluids and eventually chemicals will fail to sync fully if there is more than max int stored
         specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
-              SpecialPropertyData.create(FluidStack.class, tank -> tank.getResource().toStack(tank.amount()),
+              SpecialPropertyData.create(FluidStack.class, tank -> tank.getResource().toStack(tank.amountAsInt()),
                     (tank, stack) -> tank.setContentsUnchecked(FluidResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
@@ -70,7 +70,7 @@ public class SyncMapper extends BaseAnnotationScanner {
               SpecialPropertyData.create(Double.TYPE, IHeatCapacitor::getHeat, IHeatCapacitor::setHeat)
         ));
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
-              SpecialPropertyData.create(FluidStack.class, tank -> tank.getFluidTank().getResource().toStack(tank.getFluidTank().amount()),
+              SpecialPropertyData.create(FluidStack.class, tank -> tank.getFluidTank().getResource().toStack(tank.getFluidTank().amountAsInt()),
                     (tank, stack) -> tank.getFluidTank().setContentsUnchecked(FluidResource.of(stack), stack.amount())),
               SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getChemicalTank().getResource().toStack(tank.getChemicalTank().amountAsLong()),
                     (tank, stack) -> tank.getChemicalTank().setContentsUnchecked(ChemicalResource.of(stack), stack.amount()))

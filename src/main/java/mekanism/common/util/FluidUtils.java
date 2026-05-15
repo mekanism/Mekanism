@@ -34,7 +34,7 @@ public final class FluidUtils {
         if (attachment != null) {
             FluidResource fluidType = FluidResource.of(fluid);
             for (IFluidTank fluidTank : attachment.getContainers()) {
-                fluidTank.setContents(fluidType, fluidTank.getLimit(fluidType));
+                fluidTank.setContents(fluidType, fluidTank.capacityAsInt(fluidType));
             }
         }
         //The item is now filled return it for convenience
@@ -86,7 +86,7 @@ public final class FluidUtils {
             }
             int spaceInItem;
             try (Transaction simulation = Transaction.openRoot()) {
-                spaceInItem = handler.insert(fluidTank.getResource(), fluidTank.amount(), simulation);
+                spaceInItem = handler.insert(fluidTank.getResource(), fluidTank.amountAsInt(), simulation);
                 if (spaceInItem == 0) {
                     return false;
                 }

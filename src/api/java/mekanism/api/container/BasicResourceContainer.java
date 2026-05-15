@@ -131,7 +131,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getLimitAsLong(RESOURCE resource) {
+    public long capacityAsLong(RESOURCE resource) {
         return limit;
     }
 
@@ -180,7 +180,7 @@ public abstract class BasicResourceContainer<RESOURCE extends Resource> extends 
         }
         long currentStored = amountAsLong();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = getLimitAsLong(resource) - currentStored;
+        long needed = capacityAsLong(resource) - currentStored;
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0 || !isValidForInsertion(resource, automationType)) {

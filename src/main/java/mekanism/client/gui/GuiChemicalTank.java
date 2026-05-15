@@ -47,7 +47,7 @@ public class GuiChemicalTank extends GuiConfigurableTile<TileEntityChemicalTank,
                     ret.add(MekanismLang.INFINITE.translate());
                 } else {
                     ret.add(MekanismLang.GENERIC_FRACTION.translate(TextUtils.format(tank.amountAsLong()),
-                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.getLimitAsLong(resource))));
+                          tile.getTier() == ChemicalTankTier.CREATIVE ? MekanismLang.INFINITE : TextUtils.format(tank.capacityAsLong(resource))));
                 }
             }
             return ret;

@@ -88,7 +88,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
             ChemicalResource fuel = fuelTank.getResource();
 
             //how full the tank is, poor-man's "pressure" measurement
-            double fullness = fuelTank.amountAsLong() / (double) fuelTank.getLimitAsLong(fuel);
+            double fullness = fuelTank.amountAsLong() / (double) fuelTank.capacityAsLong(fuel);
 
             long energyDensity = cachedFuel.energyDensity();
             //maximum amount that can be produced AND stored

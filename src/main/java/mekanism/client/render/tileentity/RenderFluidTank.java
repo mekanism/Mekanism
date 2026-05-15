@@ -52,7 +52,7 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
     public void extractRenderState(TileEntityFluidTank tank, FluidTankRenderState state, float partialTick, Vec3 cameraPosition, @Nullable ModelFeatureRenderer.CrumblingOverlay breakProgress) {
         super.extractRenderState(tank, state, partialTick, cameraPosition, breakProgress);
         //TODO - 26.1: Should we by copying the fluid stacks? - Pup. I think we should pass the texture instead - thiakil
-        state.fluid = tank.fluidTank.getResource().toStack(tank.fluidTank.amount());
+        state.fluid = tank.fluidTank.getResource().toStack(tank.fluidTank.amountAsInt());
         state.fluidTint = MekanismRenderer.getColorARGB(state.fluid, state.fluidScale);
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
         state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;

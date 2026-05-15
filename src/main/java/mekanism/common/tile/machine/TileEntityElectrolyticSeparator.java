@@ -281,7 +281,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private long getDumpingExcessTarget(IChemicalTank tank) {
-        return MathUtils.clampToLong(tank.getCurrentLimitAsLong() * MekanismConfig.general.dumpExcessKeepRatio.get());
+        return MathUtils.clampToLong(tank.getCurrentCapacityAsLong() * MekanismConfig.general.dumpExcessKeepRatio.get());
     }
 
     private boolean atDumpingExcessTarget(IChemicalTank tank) {

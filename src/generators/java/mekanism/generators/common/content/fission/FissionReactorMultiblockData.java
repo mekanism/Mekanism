@@ -444,7 +444,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
             heatedCoolant = coolantType.heat();
         }
         double caseCoolantHeat = heat * coolantConductivity;
-        lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantEnthalpy, coolantTank.amount());
+        lastBoilRate = clampCoolantHeated(caseCoolantHeat / coolantEnthalpy, coolantTank.amountAsInt());
         if (lastBoilRate > 0) {
             try (Transaction transaction = Transaction.openRoot()) {
                 //Note: The fluid resource should not be empty here
@@ -477,7 +477,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.getResource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
-        fuelTank.setContentsUnchecked(fuel, Math.min((long) storedFuel, fuelTank.getLimitAsLong(fuel)));
+        fuelTank.setContentsUnchecked(fuel, Math.min((long) storedFuel, fuelTank.capacityAsLong(fuel)));
         burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste
@@ -654,10 +654,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     long getCoolantCapacity() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             //TODO - 26.1: Should this be current limit or absolute limit
-            return coolantTank.getChemicalTank().getCurrentLimit();
+            return coolantTank.getChemicalTank().getCurrentCapacityAsInt();
         }
         //TODO - 26.1: Should this be current limit or absolute limit
-        return coolantTank.getFluidTank().getCurrentLimit();
+        return coolantTank.getFluidTank().getCurrentCapacityAsInt();
     }
 
     @ComputerMethod
@@ -665,17 +665,17 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             return coolantTank.getChemicalTank().getNeededAsLong();
         }
-        return coolantTank.getFluidTank().getNeeded();
+        return coolantTank.getFluidTank().getNeededAsInt();
     }
 
     @ComputerMethod
     double getCoolantFilledPercentage() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             IChemicalTank chemicalCoolantTank = coolantTank.getChemicalTank();
-            return chemicalCoolantTank.amountAsLong() / (double) chemicalCoolantTank.getCurrentLimit();
+            return chemicalCoolantTank.amountAsLong() / (double) chemicalCoolantTank.getCurrentCapacityAsInt();
         }
         IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
-        return fluidCoolantTank.amount() / (double) fluidCoolantTank.getCurrentLimit();
+        return fluidCoolantTank.amountAsInt() / (double) fluidCoolantTank.getCurrentCapacityAsInt();
     }
 
     @ComputerMethod
