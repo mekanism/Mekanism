@@ -26,7 +26,9 @@ import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import org.jetbrains.annotations.NotNull;
@@ -128,7 +130,11 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(getStoredAmount(), getTankCapacity());
+        return switch (mergedTank.getCurrentType()) {
+            case FLUID -> ResourceUtils.getRedstoneSignalFromContainer(getFluidTank());
+            case CHEMICAL -> ResourceUtils.getRedstoneSignalFromContainer(getChemicalTank());
+            default -> Redstone.SIGNAL_NONE;
+        };
     }
 
     private long getStoredAmount() {

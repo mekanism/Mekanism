@@ -149,7 +149,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
         energySlot.fillContainerOrConvert();
         inputSlot.drainTank(outputSlot);
         long clientEnergyUsed = 0L;
-        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt())) {
+        if (canFunction() && (fluidTank.isEmpty() || estimateIncrementAmount() <= fluidTank.getNeededAsInt(fluidTank.getResource()))) {
             long energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
@@ -387,7 +387,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override

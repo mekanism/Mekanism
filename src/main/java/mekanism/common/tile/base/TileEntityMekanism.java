@@ -112,6 +112,7 @@ import mekanism.common.upgrade.IUpgradeData;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.RegistryUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.client.Minecraft;
@@ -1145,7 +1146,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     public int getRedstoneLevel() {
         if (supportsComparator()) {
             if (hasInventory()) {
-                return MekanismUtils.redstoneLevelFromContents(getInventorySlots());
+                return ResourceUtils.getRedstoneSignalFromContainers(getInventorySlots());
             }
             //TODO: Do we want some other defaults as well?
         }

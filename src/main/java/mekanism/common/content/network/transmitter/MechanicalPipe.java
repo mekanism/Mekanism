@@ -57,7 +57,8 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
 
     @Override
     protected int getAvailablePull() {
-        return Math.min(tier.getPipePullAmount(), getContainer().getNeededAsInt());
+        IFluidTank container = getContainer();
+        return Math.min(tier.getPipePullAmount(), container.getNeededAsInt(container.getResource()));
     }
 
     @Nullable

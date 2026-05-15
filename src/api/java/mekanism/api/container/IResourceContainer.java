@@ -136,30 +136,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Range(from = 0, to = Long.MAX_VALUE)
     long capacityAsLong(RESOURCE resource);
 
-    //TODO - 26.1: Re-evaluate name and add docs
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int getCurrentCapacityAsInt() {
-        return Ints.saturatedCast(getCurrentCapacityAsLong());
-    }
-
-    @Range(from = 0, to = Long.MAX_VALUE)
-    default long getCurrentCapacityAsLong() {
-        return capacityAsLong(getResource());
-    }
-
-    @NonExtendable
-    @Range(from = 0, to = Integer.MAX_VALUE)
-    default int getNeededAsInt() {
-        //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
-        return Ints.saturatedCast(getNeededAsLong());
+    default int getNeededAsInt(RESOURCE resource) {
+        return Ints.saturatedCast(getNeededAsLong(resource));
     }
 
     //TODO - 26.1: Re-evaluate callers of this method that used to use IChemicalTank#getNeeded. Do they need to know it as a long? Most probably don't
     @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeededAsLong() {
-        //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
-        return Math.max(0, capacityAsLong(getResource()) - amountAsLong());
+    default long getNeededAsLong(RESOURCE resource) {
+        return Math.max(0, capacityAsLong(resource) - amountAsLong());
     }
 
     /// {@return whether the given resource is generally allowed to be contained in this container, irrespective of the current amount or resource currently in this

@@ -88,9 +88,9 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
             return bin.toggleLock() ? InteractionResult.SUCCESS_SERVER : InteractionResult.FAIL;
         } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
-            int binMaxSize = binSlot.getCurrentCapacityAsInt();
+            ItemResource binItemType = binSlot.getBinItemType();
+            int binMaxSize = binSlot.capacityAsInt(binItemType);
             if (binSlot.amountAsInt() < binMaxSize) {
-                boolean binHasItemType = !binSlot.getBinItemType().isEmpty();
                 //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
@@ -104,12 +104,12 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                                 return InteractionResult.SUCCESS_SERVER.heldItemTransformedTo(stack.copyWithCount(toInsert - inserted));
                             }
                         }
-                    } else if (binHasItemType) {
+                    } else if (!binItemType.isEmpty()) {
                         //Note: We set the add ticks if the stack is empty but the bin isn't empty so that we can allow double right-clicking
                         // to insert items from the player's inventory without requiring them to first be holding the same item
                         bin.addTicks = 5;
                     }
-                } else if (bin.addTicks > 0 && binHasItemType) {
+                } else if (bin.addTicks > 0 && !binItemType.isEmpty()) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         boolean added = false;
                         PlayerInventoryWrapper playerInv = PlayerInventoryWrapper.of(player);

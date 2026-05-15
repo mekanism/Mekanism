@@ -67,8 +67,8 @@ import mekanism.common.tile.component.config.slot.ChemicalSlotInfo;
 import mekanism.common.tile.component.config.slot.InventorySlotInfo;
 import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -281,7 +281,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
     }
 
     private long getDumpingExcessTarget(IChemicalTank tank) {
-        return MathUtils.clampToLong(tank.getCurrentCapacityAsLong() * MekanismConfig.general.dumpExcessKeepRatio.get());
+        return MathUtils.clampToLong(tank.capacityAsLong(tank.getResource()) * MekanismConfig.general.dumpExcessKeepRatio.get());
     }
 
     private boolean atDumpingExcessTarget(IChemicalTank tank) {
@@ -392,7 +392,7 @@ public class TileEntityElectrolyticSeparator extends TileEntityRecipeMachine<Ele
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override

@@ -77,7 +77,8 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
         }
         //If we can't because the tank is full, we do a slightly less accurate check and validate that the type matches the stored type
         // and that it is still actually valid for the tank, as a reload could theoretically make it no longer be valid while there is still some stored
-        return chemicalTank.getNeededAsLong() == 0 && chemicalTank.getResource().equals(conversionType) && chemicalTank.isValid(conversionType);
+        ChemicalResource currentType = chemicalTank.getResource();
+        return chemicalTank.getNeededAsLong(currentType) == 0 && currentType.equals(conversionType) && chemicalTank.isValid(conversionType);
     }
 
     public static Predicate<ItemResource> getFillExtractPredicate(IChemicalTank chemicalTank) {
@@ -279,7 +280,11 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
     }
 
     public static boolean fillTank(IInventorySlot slot, IChemicalTank chemicalTank, ItemAccess itemAccess) {
-        if (slot.isEmpty() || chemicalTank.getNeededAsInt() == 0) {
+        if (slot.isEmpty()) {
+            return false;
+        }
+        int needed = chemicalTank.getNeededAsInt(chemicalTank.getResource());
+        if (needed == 0) {
             return false;
         }
         //TODO: Do we need to/want to add any special handling for if the handler is stacked? For example with how buckets are for fluids
@@ -293,7 +298,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             }
             int amountToExtract;
             try (Transaction simulation = Transaction.openRoot()) {
-                amountToExtract = handler.extract(typeToExtract, chemicalTank.getNeededAsInt(), simulation);
+                amountToExtract = handler.extract(typeToExtract, needed, simulation);
                 if (amountToExtract == 0) {
                     return false;
                 }

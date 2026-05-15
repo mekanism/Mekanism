@@ -91,6 +91,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -218,12 +219,8 @@ public final class MekanismUtils {
         return 0;
     }
 
-    public static float getScale(float prevScale, IResourceContainer<?> container) {
-        return getScale(prevScale, container.amountAsLong(), container.getCurrentCapacityAsLong(), container.isEmpty());
-    }
-
-    public static float getScale(float prevScale, int stored, int capacity, boolean empty) {
-        return getScale(prevScale, capacity == 0 ? 0 : stored / (float) capacity, empty, stored == capacity);
+    public static <RESOURCE extends Resource> float getScale(float prevScale, IResourceContainer<RESOURCE> container) {
+        return getScale(prevScale, container.amountAsLong(), container.capacityAsLong(container.getResource()), container.isEmpty());
     }
 
     public static float getScale(float prevScale, long stored, long capacity, boolean empty) {
@@ -623,11 +620,6 @@ public final class MekanismUtils {
         return false;
     }
 
-    //TODO - 26.1: Docs
-    public static int redstoneLevelFromContents(IResourceContainer<?> container) {
-        return redstoneLevelFromContents(container.amountAsLong(), container.getCurrentCapacityAsLong());
-    }
-
     /**
      * @param amount   Amount currently stored
      * @param capacity Total amount that can be stored.
@@ -637,25 +629,6 @@ public final class MekanismUtils {
     public static int redstoneLevelFromContents(long amount, long capacity) {
         double fractionFull = capacity == 0 ? 0 : ((double) amount / capacity);
         return Mth.lerpDiscrete((float) fractionFull, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
-    }
-
-    /**
-     * Calculates the redstone level based on the percentage of amount stored.
-     *
-     * @return A redstone level based on the percentage of the amount stored.
-     */
-    public static int redstoneLevelFromContents(List<IInventorySlot> slots) {//TODO - 26.1: Can we just replace this with the ResourceHandlerUtil variant?
-        long totalCount = 0;
-        long totalLimit = 0;
-        for (IInventorySlot slot : slots) {
-            if (slot.isEmpty()) {
-                totalLimit += slot.capacityAsLong(ItemResource.EMPTY);
-            } else {
-                totalCount += slot.amountAsLong();
-                totalLimit += slot.getCurrentCapacityAsLong();
-            }
-        }
-        return redstoneLevelFromContents(totalCount, totalLimit);
     }
 
     /**

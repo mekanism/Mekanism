@@ -76,7 +76,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
 
             @Override
             public double getLevel() {
-                return MathUtils.divideToLevel(tank.amountAsLong(), tank.getCurrentCapacityAsInt());
+                return MathUtils.divideToLevel(tank.amountAsLong(), tank.capacityAsLong(tank.getResource()));
             }
         };
     }

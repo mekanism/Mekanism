@@ -43,7 +43,7 @@ import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IBoundingBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -213,7 +213,7 @@ public class TileEntitySolarNeutronActivator extends TileEntityRecipeMachine<Che
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(inputTank);
     }
 
     @Override

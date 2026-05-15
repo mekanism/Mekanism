@@ -21,7 +21,6 @@ import mekanism.common.integration.computer.SpecialComputerMethodWrapper.Compute
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -100,7 +99,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
                 } else {
                     //If the block below this barrel, is also a barrel. Only emit as much as it might be able to accept.
                     // This prevents it then trying to go up the chain back to this barrel and any ones above it
-                    ResourceUtils.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeededAsInt(), chemicalTank.getCurrentCapacityAsInt()), null);
+                    ResourceUtils.emit(chemicalHandlerBelow, chemicalTank, Math.min(below.getNeededAsInt(below.getResource()), chemicalTank.capacityAsInt(chemicalTank.getResource())), null);
                 }
             }
             //Note: We don't need to do any checking here if the packet needs due to capacity changing as we do it
@@ -131,7 +130,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
     }
 
     public double getChemicalScale() {
-        return chemicalTank.amountAsLong() / (double) chemicalTank.getCurrentCapacityAsInt();
+        return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.getResource());
     }
 
     @Override
@@ -167,7 +166,7 @@ public class TileEntityRadioactiveWasteBarrel extends TileEntityMekanism impleme
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(chemicalTank);
     }
 
     @Override

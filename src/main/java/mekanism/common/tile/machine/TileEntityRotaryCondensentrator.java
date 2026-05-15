@@ -13,6 +13,7 @@ import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.container.IResourceContainer;
 import mekanism.api.recipes.RotaryRecipe;
 import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
@@ -58,7 +59,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.interfaces.IHasMode;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -262,10 +263,8 @@ public class TileEntityRotaryCondensentrator extends TileEntityRecipeMachine<Rot
 
     @Override
     public int getRedstoneLevel() {
-        if (mode) {
-            return MekanismUtils.redstoneLevelFromContents(fluidTank);
-        }
-        return MekanismUtils.redstoneLevelFromContents(gasTank);
+        IResourceContainer<?> tank = mode ? fluidTank : gasTank;
+        return ResourceUtils.getRedstoneSignalFromContainer(tank);
     }
 
     @Override

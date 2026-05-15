@@ -46,8 +46,8 @@ import mekanism.common.tile.interfaces.IHasGasMode;
 import mekanism.common.tile.prefab.TileEntityConfigurableMachine;
 import mekanism.common.upgrade.ChemicalTankUpgradeData;
 import mekanism.common.upgrade.IUpgradeData;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
@@ -166,7 +166,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(chemicalTank);
     }
 
     @Override

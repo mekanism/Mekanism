@@ -125,14 +125,13 @@ public class ItemMekaTool extends ItemEnergized implements IRadialModuleContaine
         if (!(instance instanceof ItemStack stack)) {
             return false;
         }
-        if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
-            IModuleContainer container = moduleContainer(stack);
-            return container != null && hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
-        }
-        IModuleContainer moduleContainer = moduleContainer(stack);
-        if (moduleContainer != null) {
-            for (IModule<?> module : moduleContainer.modules()) {
-                if (module.isEnabled() && canPerformAction(module, moduleContainer, stack, action)) {
+        IModuleContainer container = moduleContainer(stack);
+        if (container != null) {
+            if (ItemAtomicDisassembler.ALWAYS_SUPPORTED_ACTIONS.contains(action)) {
+                return hasEnergyForDigAction(container, StorageUtils.getEnergyContainer(stack, 0));
+            }
+            for (IModule<?> module : container.modules()) {
+                if (module.isEnabled() && canPerformAction(module, container, stack, action)) {
                     return true;
                 }
             }

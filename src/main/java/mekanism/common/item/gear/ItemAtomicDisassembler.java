@@ -125,7 +125,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
             if (energyContainer != null) {
                 //Note: We use a hardness of zero here as that will get the minimum potential destroy energy required
                 // as that is the best guess we can currently give whether the corresponding dig action is supported
-                long energyRequired = getDestroyEnergy(stack, 0);
+                long energyRequired = getDestroyEnergy(instance, 0);
                 long energyAvailable = energyContainer.getEnergy();
                 //If we don't have enough energy to break at full speed check if the reduced speed could actually mine
                 return energyRequired <= energyAvailable || energyAvailable / (double) energyRequired > Constants.EPSILON;
@@ -202,7 +202,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return true;
     }
 
-    private long getDestroyEnergy(ItemStack itemStack, float hardness) {
+    private long getDestroyEnergy(ItemInstance itemStack, float hardness) {
         return getDestroyEnergy(getDestroyEnergy(itemStack), hardness);
     }
 
@@ -210,7 +210,7 @@ public class ItemAtomicDisassembler extends ItemEnergized implements IItemHUDPro
         return hardness == 0 ? Math.max(baseDestroyEnergy / 2, 1) : baseDestroyEnergy;
     }
 
-    private long getDestroyEnergy(ItemStack itemStack) {
+    private long getDestroyEnergy(ItemInstance itemStack) {
         return MathUtils.multiplyClamped(MekanismConfig.gear.disassemblerEnergyUsage.get(), getMode(itemStack).getEfficiency());
     }
 

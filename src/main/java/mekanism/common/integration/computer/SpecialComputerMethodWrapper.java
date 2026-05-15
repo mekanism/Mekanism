@@ -28,19 +28,19 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IChemicalTank tank) {
             //TODO - 26.1: Should this return maximum capacity (as in getLimitAsLong(ChemicalResource.EMPTY)?)
-            return tank.getCurrentCapacityAsLong();
+            return tank.capacityAsLong(tank.getResource());
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
         public static long getNeeded(IChemicalTank tank) {
-            return tank.getNeededAsLong();
+            return tank.getNeededAsLong(tank.getResource());
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IChemicalTank tank) {
-            return tank.amountAsLong() / (double) tank.getCurrentCapacityAsLong();
+            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.getResource());
         }
     }
 
@@ -55,20 +55,20 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(1)
         @WrappingComputerMethodHelp("Get the capacity of the %s.")
         public static long getCapacity(IFluidTank tank) {
-            //TODO - 26.1: Should this return maximum capacity (as in getLimitAsLong(FluidResource.EMPTY)?)
-            return tank.getCurrentCapacityAsLong();
+            //TODO - 26.1: Should this return maximum capacity (as in capacityAsLong(FluidResource.EMPTY)?)
+            return tank.capacityAsLong(tank.getResource());
         }
 
         @WrappingComputerMethodIndex(2)
         @WrappingComputerMethodHelp("Get the amount needed to fill the %s.")
         public static long getNeeded(IFluidTank tank) {
-            return tank.getNeededAsLong();
+            return tank.getNeededAsLong(tank.getResource());
         }
 
         @WrappingComputerMethodIndex(3)
         @WrappingComputerMethodHelp("Get the filled percentage of the %s.")
         public static double getFilledPercentage(IFluidTank tank) {
-            return tank.amountAsLong() / (double) tank.getCurrentCapacityAsLong();
+            return tank.amountAsLong() / (double) tank.capacityAsLong(tank.getResource());
         }
     }
 

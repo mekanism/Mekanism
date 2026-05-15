@@ -34,7 +34,6 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.HeatUtils;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.GeneratorTags;
@@ -296,7 +295,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
                     ChemicalResource fuelType = ResourceUtils.getTypeToExtract(fuelTank, handler, AutomationType.INTERNAL, null);
                     if (!fuelType.isEmpty()) {
                         try (Transaction transaction = Transaction.openRoot()) {
-                            int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(), transaction);
+                            int availableFuel = handler.extract(fuelType, fuelTank.getNeededAsInt(fuelTank.getResource()), transaction);
                             if (availableFuel > 0 && fuelTank.insert(fuelType, availableFuel, transaction, AutomationType.INTERNAL) == availableFuel) {
                                 lastPlasmaTemperature = getPlasmaTemp();
                                 reactorSlot.setEmpty();
@@ -311,7 +310,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     }
 
     private void injectFuel() {
-        int amountNeeded = fuelTank.getNeededAsInt();
+        int amountNeeded = fuelTank.getNeededAsInt(fuelTank.getResource());
         int amountAvailable = 2 * Math.min(deuteriumTank.amountAsInt(), tritiumTank.amountAsInt());
         int amountToInject = Math.min(amountNeeded, Math.min(amountAvailable, injectionRate));
         amountToInject -= amountToInject % 2;
@@ -364,7 +363,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             FluidResource water = waterTank.getResource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt()), transaction, AutomationType.INTERNAL);
+                    int vaporized = waterTank.extract(water, Math.min(waterToVaporize, steamTank.getNeededAsInt(steamTank.getResource())), transaction, AutomationType.INTERNAL);
                     if (vaporized > 0) {
                         //TODO - 26.1: Should we be checking if this matched? I think not, as we intentionally allow excess steam to be vented
                         steamTank.insert(MekanismChemicals.STEAM.asResource(), vaporized, transaction, AutomationType.INTERNAL);
@@ -473,7 +472,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fuelTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
     }
 
     @ComputerMethod(methodDescription = "true -> water cooled, false -> air cooled")

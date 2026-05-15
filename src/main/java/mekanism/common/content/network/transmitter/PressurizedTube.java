@@ -1,6 +1,5 @@
 package mekanism.common.content.network.transmitter;
 
-import com.google.common.primitives.Ints;
 import java.util.Collection;
 import java.util.UUID;
 import mekanism.api.SerializationConstants;
@@ -56,8 +55,8 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
 
     @Override
     protected int getAvailablePull() {
-        //TODO - 26.1: Make available pull use ints natively
-        return Ints.saturatedCast(Math.min(tier.getTubePullAmount(), getContainer().getNeededAsLong()));
+        IChemicalTank container = getContainer();
+        return Math.min(tier.getTubePullAmount(), container.getNeededAsInt(container.getResource()));
     }
 
     @Nullable

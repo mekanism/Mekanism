@@ -47,6 +47,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -316,7 +317,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(inputTank);
     }
 
     @Override

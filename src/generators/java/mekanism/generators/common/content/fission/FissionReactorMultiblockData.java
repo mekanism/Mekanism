@@ -600,7 +600,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fuelTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
     }
 
     public void setRateLimit(double rate) {
@@ -654,28 +654,32 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     long getCoolantCapacity() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             //TODO - 26.1: Should this be current limit or absolute limit
-            return coolantTank.getChemicalTank().getCurrentCapacityAsInt();
+            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
+            return chemicalTank.capacityAsLong(chemicalTank.getResource());
         }
         //TODO - 26.1: Should this be current limit or absolute limit
-        return coolantTank.getFluidTank().getCurrentCapacityAsInt();
+        IFluidTank fluidTank = coolantTank.getFluidTank();
+        return fluidTank.capacityAsLong(fluidTank.getResource());
     }
 
     @ComputerMethod
     long getCoolantNeeded() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            return coolantTank.getChemicalTank().getNeededAsLong();
+            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
+            return chemicalTank.getNeededAsLong(chemicalTank.getResource());
         }
-        return coolantTank.getFluidTank().getNeededAsInt();
+        IFluidTank fluidTank = coolantTank.getFluidTank();
+        return fluidTank.getNeededAsLong(fluidTank.getResource());
     }
 
     @ComputerMethod
     double getCoolantFilledPercentage() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
-            IChemicalTank chemicalCoolantTank = coolantTank.getChemicalTank();
-            return chemicalCoolantTank.amountAsLong() / (double) chemicalCoolantTank.getCurrentCapacityAsInt();
+            IChemicalTank chemicalTank = coolantTank.getChemicalTank();
+            return chemicalTank.amountAsLong() / (double) chemicalTank.capacityAsLong(chemicalTank.getResource());
         }
-        IFluidTank fluidCoolantTank = coolantTank.getFluidTank();
-        return fluidCoolantTank.amountAsInt() / (double) fluidCoolantTank.getCurrentCapacityAsInt();
+        IFluidTank fluidTank = coolantTank.getFluidTank();
+        return fluidTank.amountAsLong() / (double) fluidTank.capacityAsLong(fluidTank.getResource());
     }
 
     @ComputerMethod

@@ -191,7 +191,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
             } else {
                 //If the block below this tank, is also a tank. Only emit as much as it might be able to accept.
                 // This prevents it then trying to go up the chain back to this tank and any ones above it
-                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(), tier.getOutput()), null);
+                ResourceUtils.emit(fluidHandlerBelow, fluidTank, Math.min(below.getNeededAsInt(below.getResource()), tier.getOutput()), null);
             }
         }
         if (needsPacket) {
@@ -242,7 +242,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override

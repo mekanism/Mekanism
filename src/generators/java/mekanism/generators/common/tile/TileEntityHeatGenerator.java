@@ -29,7 +29,7 @@ import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.util.EnumUtils;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -220,7 +220,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(lavaTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(lavaTank);
     }
 
     @Override

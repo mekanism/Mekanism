@@ -35,6 +35,7 @@ import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.base.TileEntityMekanism;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UpgradeUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.SharedConstants;
@@ -315,7 +316,7 @@ public class TileEntityFluidicPlenisher extends TileEntityMekanism implements IC
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fluidTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fluidTank);
     }
 
     @Override

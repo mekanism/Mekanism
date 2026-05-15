@@ -124,7 +124,7 @@ public record PacketDropperUse(DropperAction action, TankType tankType, int tank
                 );
             } else if (action == DropperAction.DRAIN_DROPPER) {
                 //Extract fluid from dropper
-                int tankNeeded = tank.getNeededAsInt();
+                int tankNeeded = tank.getNeededAsInt(tank.getResource());
                 if (tankNeeded > 0) {
                     RESOURCE currentType = ResourceUtils.getTypeToExtract(tank, dropperHandler, AutomationType.MANUAL, null);
                     if (currentType.isEmpty()) {

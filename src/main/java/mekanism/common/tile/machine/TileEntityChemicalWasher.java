@@ -53,7 +53,7 @@ import mekanism.common.recipe.lookup.cache.InputRecipeCache.FluidChemical;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.tile.component.TileComponentEjector;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -213,7 +213,7 @@ public class TileEntityChemicalWasher extends TileEntityRecipeMachine<FluidChemi
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(inputTank);
     }
 
     @Override

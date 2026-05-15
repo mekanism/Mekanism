@@ -48,8 +48,8 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
     protected void drawForegroundText(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         renderTitleText(guiGraphics);
         BoilerMultiblockData multiblock = tile.getMultiblock();
-        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.getCurrentCapacityAsInt())), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
-        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.getCurrentCapacityAsInt())), 0, 35, TextAlignment.LEFT, titleTextColor(), 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_WATER.translate(TextUtils.format(multiblock.waterTank.capacityAsLong(multiblock.waterTank.getResource()))), 0, 26, TextAlignment.LEFT, titleTextColor(), 8, false);
+        drawScrollingString(guiGraphics, MekanismLang.BOILER_MAX_STEAM.translate(TextUtils.format(multiblock.steamTank.capacityAsLong(multiblock.steamTank.getResource()))), 0, 35, TextAlignment.LEFT, titleTextColor(), 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_HEAT_TRANSFER.translate(), 0, 49, TextAlignment.LEFT, subheadingTextColor(), 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_HEATERS.translate(multiblock.superheatingElements), 6, 58, TextAlignment.LEFT, titleTextColor(), this.getImageWidth() - 6, 8, false);
         drawScrollingString(guiGraphics, MekanismLang.BOILER_CAPACITY.translate(TextUtils.format(multiblock.getBoilCapacity())), 0, 72, TextAlignment.LEFT, titleTextColor(), 8, false);

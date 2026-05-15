@@ -17,6 +17,7 @@ import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.generators.common.GeneratorTags;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
@@ -117,7 +118,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(bioFuelTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(bioFuelTank);
     }
 
     @Override

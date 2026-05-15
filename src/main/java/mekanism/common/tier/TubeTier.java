@@ -2,6 +2,7 @@ package mekanism.common.tier;
 
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import mekanism.common.util.EnumUtils;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -13,12 +14,12 @@ public enum TubeTier implements ITier {
     ULTIMATE(BaseTier.ULTIMATE, 1_024 * FluidType.BUCKET_VOLUME, 256 * FluidType.BUCKET_VOLUME);
 
     private final long baseCapacity;
-    private final long basePull;
+    private final int basePull;
     private final BaseTier baseTier;
     private CachedLongValue capacityReference;
-    private CachedLongValue pullReference;
+    private CachedIntValue pullReference;
 
-    TubeTier(BaseTier tier, long capacity, long pullAmount) {
+    TubeTier(BaseTier tier, long capacity, int pullAmount) {
         baseCapacity = capacity;
         basePull = pullAmount;
         baseTier = tier;
@@ -42,7 +43,7 @@ public enum TubeTier implements ITier {
         return capacityReference == null ? getBaseCapacity() : capacityReference.getOrDefault();
     }
 
-    public long getTubePullAmount() {
+    public int getTubePullAmount() {
         return pullReference == null ? getBasePull() : pullReference.getOrDefault();
     }
 
@@ -50,14 +51,14 @@ public enum TubeTier implements ITier {
         return baseCapacity;
     }
 
-    public long getBasePull() {
+    public int getBasePull() {
         return basePull;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the TubeTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue capacityReference, CachedLongValue pullReference) {
+    public void setConfigReference(CachedLongValue capacityReference, CachedIntValue pullReference) {
         this.capacityReference = capacityReference;
         this.pullReference = pullReference;
     }

@@ -12,6 +12,8 @@ import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.content.network.distribution.ResourceHandlerTarget;
 import net.minecraft.core.Direction;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.redstone.Redstone;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
@@ -89,7 +91,7 @@ public final class ResourceUtils {
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
           CONTAINER tank, @Nullable TransactionContext transaction) {
-        return emit(targets, tank, tank.getCurrentCapacityAsInt(), transaction);
+        return emit(targets, tank, tank.capacityAsInt(tank.getResource()), transaction);
     }
 
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int emit(Collection<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> targets,
@@ -170,5 +172,46 @@ public final class ResourceUtils {
                 container.setContentsUnchecked(resource, capacity);
             }
         }
+    }
+
+    /**
+     * Calculates the redstone level based on the percentage of amount stored.
+     *
+     * @return A redstone level based on the percentage of the amount stored.
+     *
+     * @see ResourceHandlerUtil#getRedstoneSignalFromResourceHandler(ResourceHandler)
+     */
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> int getRedstoneSignalFromContainers(List<CONTAINER> containers) {
+        float proportion = 0.0F;
+        int sampleCount = 0; // Number of samples in proportion
+        for (CONTAINER container : containers) {
+            long containerFill = container.amountAsLong();
+            if (containerFill > 0) {
+                long capacity = container.capacityAsLong(container.getResource());
+                if (capacity > 0) {
+                    // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
+                    proportion += Math.min(1.0f, (float) containerFill / capacity);
+                    sampleCount++;
+                }
+            }
+        }
+        if (sampleCount == 0) {
+            return Redstone.SIGNAL_NONE;
+        }
+        proportion /= sampleCount;
+        return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
+    }
+
+    public static <RESOURCE extends Resource> int getRedstoneSignalFromContainer(IResourceContainer<RESOURCE> container) {
+        long containerFill = container.amountAsLong();
+        if (containerFill > 0) {
+            long capacity = container.capacityAsLong(container.getResource());
+            if (capacity > 0) {
+                // Clamp to 1 to avoid overfilled slots increasing the signal strength beyond 15
+                float proportion = Math.min(1.0f, (float) containerFill / capacity);
+                return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
+            }
+        }
+        return Redstone.SIGNAL_NONE;
     }
 }

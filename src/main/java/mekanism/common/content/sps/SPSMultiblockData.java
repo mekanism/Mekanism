@@ -25,7 +25,6 @@ import mekanism.common.registries.MekanismDamageTypes;
 import mekanism.common.tags.MekanismTags;
 import mekanism.common.tile.multiblock.TileEntitySPSCasing;
 import mekanism.common.tile.multiblock.TileEntitySPSPort;
-import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
@@ -104,7 +103,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
         if (couldOperate && receivedEnergy > 0L) {
             double lastProgress = progress;
             final int inputPerAntimatter = MekanismConfig.general.spsInputPerAntimatter.get();
-            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt() - 1);
+            int inputNeeded = (inputPerAntimatter - inputProcessed) + inputPerAntimatter * (outputTank.getNeededAsInt(outputTank.getResource()) - 1);
             double processable = (double) receivedEnergy / MekanismConfig.general.spsEnergyPerInput.get();
             if (processable + progress >= inputNeeded) {
                 processed = process(inputNeeded);
@@ -172,7 +171,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(inputTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(inputTank);
     }
 
     private int process(int operations) {
@@ -259,7 +258,7 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     }
 
     private boolean canOperate() {
-        return !inputTank.isEmpty() && outputTank.getNeededAsLong() > 0;
+        return !inputTank.isEmpty() && outputTank.getNeededAsLong(outputTank.getResource()) > 0;
     }
 
     private static int getCoilLevel(long energy) {

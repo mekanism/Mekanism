@@ -116,12 +116,6 @@ public class BinInventorySlot extends BasicInventorySlot {
         return super.extract(resource, amount, transaction, automationType);
     }
 
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long getCurrentCapacityAsLong() {
-        return this.capacityAsLong(getBinItemType());
-    }
-
     @Nullable
     @Override
     public InventoryContainerSlot createContainerSlot() {

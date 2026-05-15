@@ -273,7 +273,7 @@ public class TurbineMultiblockData extends MultiblockData {
 
     @Override
     protected int getMultiblockRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(chemicalTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(chemicalTank);
     }
 
     @ComputerMethod

@@ -84,7 +84,7 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
             ItemResource inputType = inputSlot.getResource();
             ItemResource result = getResult(filterManager.getEnabledFilters(), inputType);
             if (!result.isEmpty()) {
-                int outputNeeded = outputSlot.capacityAsInt(result) - outputSlot.amountAsInt();
+                int outputNeeded = outputSlot.getNeededAsInt(result);
                 if (outputNeeded > 0) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         int available = inputSlot.extract(inputType, outputNeeded, transaction, AutomationType.INTERNAL);

@@ -25,7 +25,7 @@ import mekanism.common.inventory.container.slot.SlotOverlay;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
-import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.ResourceUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -119,7 +119,7 @@ public class TileEntityGasGenerator extends TileEntityGenerator {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(fuelTank);
+        return ResourceUtils.getRedstoneSignalFromContainer(fuelTank);
     }
 
     @Override
