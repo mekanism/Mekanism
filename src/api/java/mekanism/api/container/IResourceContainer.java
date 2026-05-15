@@ -43,7 +43,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// @implNote This method should not be implemented. The default method will call [#amountAsLong] and convert the result appropriately.
     /// @see #amountAsLong() the long-returning overload
-    @NonExtendable//TODO - 26.1: Do we want to rename this method to amountAsInt
+    @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int amountAsInt() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
@@ -114,9 +114,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @see #capacityAsLong(Resource)
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int capacityAsInt(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to getLimitAsLong
-        //TODO - 26.1: Update docs
-        //TODO - 26.1: Do we want limit and amount to both have asInt for the base method name?
+    default int capacityAsInt(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to capacityAsLong
         return Ints.saturatedCast(capacityAsLong(resource));
     }
 
@@ -136,7 +134,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`.
     /// @see #capacityAsInt(Resource)
     @Range(from = 0, to = Long.MAX_VALUE)
-    long capacityAsLong(RESOURCE resource);//TODO - 26.1: Do we want to rename these getLimit to getCapacity?
+    long capacityAsLong(RESOURCE resource);
 
     //TODO - 26.1: Re-evaluate name and add docs
     @NonExtendable
@@ -154,8 +152,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeededAsInt() {
         //TODO - 26.1: Do we want to allow passing a resource for calculating a more accurate limit when empty
-        //TODO - 26.1: Should this be a saturated cast of getNeededAsLong
-        //return Math.max(0, getCurrentLimit() - amount());
         return Ints.saturatedCast(getNeededAsLong());
     }
 

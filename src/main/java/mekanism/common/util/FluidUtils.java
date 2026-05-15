@@ -34,7 +34,7 @@ public final class FluidUtils {
         if (attachment != null) {
             FluidResource fluidType = FluidResource.of(fluid);
             for (IFluidTank fluidTank : attachment.getContainers()) {
-                fluidTank.setContents(fluidType, fluidTank.capacityAsInt(fluidType));
+                fluidTank.setContents(fluidType, fluidTank.capacityAsLong(fluidType));
             }
         }
         //The item is now filled return it for convenience

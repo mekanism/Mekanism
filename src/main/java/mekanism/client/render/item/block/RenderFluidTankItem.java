@@ -72,7 +72,7 @@ public class RenderFluidTankItem implements SpecialModelRenderer<RenderFluidTank
                 FluidResource fluidType = container.getResource();
                 if (!fluidType.isEmpty()) {
                     FluidStack fluid = fluidType.toStack(container.amountAsInt());
-                    fluidScale = (float) container.amountAsInt() / container.capacityAsInt(fluidType);
+                    fluidScale = (float) container.amountAsLong() / container.capacityAsLong(fluidType);
                     fluidModel = RenderFluidTank.getFluidModel(fluid, fluidScale);
                     fluidLight = fluidType.getFluidType().getLightLevel(fluid);
                     fluidColor = MekanismRenderer.getColorARGB(fluid, fluidScale);

@@ -54,14 +54,20 @@ public class FluidTankFluidTank extends BasicFluidTank {
     public int insert(FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         int inserted;
         if (isCreative) {
-            if (isEmpty() && automationType != AutomationType.EXTERNAL) {//TODO - 26.1: Test that this behaves correctly
+            if (isEmpty() && automationType != AutomationType.EXTERNAL) {
                 //If a player manually inserts into a creative tank (or internally, via a FluidInventorySlot), that is empty we need to allow setting the type,
                 // Note: We check that it is not external insertion because an empty creative tanks acts as a "void" for automation
-                int limit = capacityAsInt(resource);
-                //Try to insert the entire limit so that then it just updates to being a full stack
-                inserted = super.insert(resource, limit, transaction, automationType);
-                //If we did manage to insert anything then return that we inserted the entire amount that we were passed
-                return inserted == 0 ? 0 : amount;
+                try (Transaction simulation = Transaction.open(transaction)) {
+                    if (super.insert(resource, amount, simulation, automationType) == 0) {
+                        return 0;
+                    }
+                }
+                //If we managed to insert anything, set the contents to the maximum amount of that item type
+                updateSnapshots(transaction);
+                // Note: We just set it as unchecked as we have already validated it
+                setContentsUnchecked(resource, capacityAsLong(resource));
+                //Return that we accepted the entire amount we were passed
+                return amount;
             }
             //Return the result without actually changing the contents (accepting without providing any changes
             try (Transaction simulation = Transaction.open(transaction)) {

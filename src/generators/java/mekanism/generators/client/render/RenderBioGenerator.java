@@ -55,7 +55,7 @@ public class RenderBioGenerator extends MekanismTileEntityRenderer<TileEntityBio
         super.extractRenderState(generator, state, partialTick, cameraPosition, breakProgress);
         FluidResource fluidType = generator.bioFuelTank.getResource();
         FluidStack fluid = fluidType.toStack(generator.bioFuelTank.amountAsInt());
-        float fluidScale = generator.bioFuelTank.amountAsInt() / (float) generator.bioFuelTank.capacityAsInt(fluidType);
+        float fluidScale = generator.bioFuelTank.amountAsLong() / (float) generator.bioFuelTank.capacityAsLong(fluidType);
         state.model = getModel(fluid, generator.getDirection(), fluidScale);
         state.fluidTexture = MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(fluidType, FluidTextureType.STILL));
         state.tint = MekanismRenderer.getColorARGB(fluid, fluidScale);

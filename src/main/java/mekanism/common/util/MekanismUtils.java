@@ -649,10 +649,10 @@ public final class MekanismUtils {
         long totalLimit = 0;
         for (IInventorySlot slot : slots) {
             if (slot.isEmpty()) {
-                totalLimit += slot.capacityAsInt(ItemResource.EMPTY);
+                totalLimit += slot.capacityAsLong(ItemResource.EMPTY);
             } else {
-                totalCount += slot.amountAsInt();
-                totalLimit += slot.getCurrentCapacityAsInt();
+                totalCount += slot.amountAsLong();
+                totalLimit += slot.getCurrentCapacityAsLong();
             }
         }
         return redstoneLevelFromContents(totalCount, totalLimit);
