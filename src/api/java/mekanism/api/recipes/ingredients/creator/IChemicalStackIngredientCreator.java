@@ -1,5 +1,6 @@
 package mekanism.api.recipes.ingredients.creator;
 
+import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -16,68 +17,27 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @Override
     default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
-        return fromHolder(instance.typeHolder(), instance.amount());
+        //TODO - 26.1: Make chemical stacks be ints
+        return fromHolder(instance.typeHolder(), Ints.saturatedCast(instance.amount()));
     }
 
     @Override
     default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, int amount) {
-        return fromHolder(instance, (long) amount);
+        Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null chemical provider.");
+        return from(IngredientCreatorAccess.chemical().of(instance), amount);
     }
 
     @Override
     @SuppressWarnings("unchecked")
     default ChemicalStackIngredient fromHolders(int amount, Holder<Chemical>... holders) {
-        return fromHolders((long) amount, holders);
-    }
-
-    /**
-     * Creates a Chemical Stack Ingredient that matches a provided chemical and amount.
-     *
-     * @param instance Chemical to match.
-     * @param amount   Amount needed.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one.
-     * @since 10.5.0
-     */
-    default ChemicalStackIngredient fromHolder(Holder<Chemical> instance, long amount) {
-        Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null chemical provider.");
-        return from(IngredientCreatorAccess.chemical().of(instance), amount);
-    }
-
-    /**
-     * Creates a Chemical Stack Ingredient that matches any of the provided chemicals.
-     *
-     * @param amount    Amount needed.
-     * @param chemicals Chemicals to match.
-     *
-     * @throws NullPointerException     if the given instance is null.
-     * @throws IllegalArgumentException if the given instance is empty or an amount smaller than one; or if no chemicals are passed.
-     * @since 10.7.11
-     */
-    @SuppressWarnings("unchecked")
-    default ChemicalStackIngredient fromHolders(long amount, Holder<Chemical>... chemicals) {
-        if (chemicals.length == 0) {
+        if (holders.length == 0) {
             throw new IllegalArgumentException("Attempted to create a ChemicalStackIngredient with no chemicals.");
         }
-        return from(IngredientCreatorAccess.chemical().of(chemicals), amount);
+        return from(IngredientCreatorAccess.chemical().of(holders), amount);
     }
 
     @Override
     default ChemicalStackIngredient from(HolderGetter<Chemical> lookup, TagKey<Chemical> tag, int amount) {
-        return from(lookup, tag, (long) amount);
-    }
-
-    /**
-     * Creates a Chemical Stack Ingredient that matches a given chemical tag and amount.
-     *
-     * @param tag    Tag to match.
-     * @param amount Amount needed.
-     *
-     * @throws NullPointerException     if the given tag is null.
-     * @throws IllegalArgumentException if the given amount smaller than one.
-     */
-    default ChemicalStackIngredient from(HolderGetter<Chemical> lookup, TagKey<Chemical> tag, long amount) {
         Objects.requireNonNull(tag, "ChemicalStackIngredients cannot be created from a null tag.");
         //TODO - 26.1: Make use of this holder getter
         return from(IngredientCreatorAccess.chemical().tag(tag), amount);
@@ -92,5 +52,8 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
      * @throws NullPointerException     if the given ingredient is null.
      * @throws IllegalArgumentException if the ingredient is explicitly empty or the given amount smaller than one.
      */
-    ChemicalStackIngredient from(ChemicalIngredient ingredient, long amount);
+    default ChemicalStackIngredient from(ChemicalIngredient ingredient, int amount) {
+        Objects.requireNonNull(ingredient, "ChemicalStackIngredients cannot be created from a null ingredient.");
+        return ChemicalStackIngredient.of(ingredient, amount);
+    }
 }

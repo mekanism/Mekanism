@@ -93,8 +93,8 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
     public void addRecipes(RecipeOutput consumer, HolderLookup.Provider registries) {
         String basePath = "painting/";
         addDyeRecipes(consumer, basePath);
-        long oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;
-        long eightAtATime = oneAtATime / 8;
+        int oneAtATime = PigmentExtractingRecipeProvider.DYE_RATE;
+        int eightAtATime = oneAtATime / 8;
         //Some base input tags are effectively duplicates of vanilla, but are done to make sure we don't change
         // things that make no sense to be colored, such as some sort of fancy carpets, or a unique type of glass that
         // is tagged as glass, but shouldn't be able to be converted directly into stained-glass
@@ -140,7 +140,7 @@ class PaintingRecipeProvider implements ISubRecipeProvider {
         ).save(consumer, Mekanism.rl(basePath + color.getRegistryPrefix()));
     }
 
-    private void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, long rate, Map<EnumColor, Item> outputs, String basePath) {
+    private void addRecoloringRecipes(RecipeOutput consumer, TagKey<Item> input, int rate, Map<EnumColor, Item> outputs, String basePath) {
         HolderSet<Item> inputTag = this.items.getOrThrow(input);
         for (Map.Entry<EnumColor, Item> entry : outputs.entrySet()) {
             EnumColor color = entry.getKey();

@@ -13,6 +13,7 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
+import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -61,7 +62,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         for (Map.Entry<ResourceKey<Chemical>, CooledCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()).entrySet()) {
             ResourceKey<Chemical> key = entry.getKey();
             CooledCoolant coolant = entry.getValue();
-            long amount = Math.round(energyPerFuel / coolant.thermalEnthalpy());
+            int amount = MathUtils.clampToInt(Math.round(energyPerFuel / coolant.thermalEnthalpy()));
             recipes.add(new FissionRecipeViewerRecipe(
                   RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),

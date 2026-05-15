@@ -1,6 +1,5 @@
 package mekanism.common.tile.factory;
 
-import com.google.common.primitives.Ints;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -162,7 +161,7 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
 
     @Override
     protected int getNeededInput(ItemStackChemicalToItemStackRecipe recipe, ItemResource inputType) {
-        return Ints.saturatedCast(recipe.getItemInput().getNeededAmount(inputType));
+        return recipe.getItemInput().getNeededAmount(inputType);
     }
 
     @Override

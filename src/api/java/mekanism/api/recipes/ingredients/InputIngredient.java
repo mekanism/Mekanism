@@ -38,7 +38,7 @@ public interface InputIngredient<HOLDER_TYPE, STACK extends TypedInstance<HOLDER
      *
      * @return Amount of the given argument that is needed.
      */
-    long getNeededAmount(TypedInstance<HOLDER_TYPE> type);
+    int getNeededAmount(TypedInstance<HOLDER_TYPE> type);
 
     /**
      * Checks if this ingredient has any matching instances, in most cases this should be {@code false}, but for cases like tags this may not always be the case.

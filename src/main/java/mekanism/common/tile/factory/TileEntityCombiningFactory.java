@@ -1,6 +1,5 @@
 package mekanism.common.tile.factory;
 
-import com.google.common.primitives.Ints;
 import java.util.List;
 import java.util.Set;
 import mekanism.api.IContentsListener;
@@ -91,7 +90,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
 
     @Override
     protected int getNeededInput(CombinerRecipe recipe, ItemResource inputType) {
-        return Ints.saturatedCast(recipe.getMainInput().getNeededAmount(inputType));
+        return recipe.getMainInput().getNeededAmount(inputType);
     }
 
     @Override

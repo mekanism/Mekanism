@@ -257,10 +257,7 @@ public abstract class BaseCrTExampleProvider implements DataProvider {
               (imports, ingredient) -> getIngredientRepresentation(ingredient, imports.addImport(CrTConstants.CLASS_CHEMICAL_STACK_INGREDIENT), CrTChemicalStack::new, CrTUtils.chemicalTags()),
               (imports, ingredient) -> {
                   if (ingredient.ingredient() instanceof TagChemicalIngredient tagged) {
-                      long amount = ingredient.amount();
-                      if (amount > 0 && amount <= Integer.MAX_VALUE) {
-                          return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount((int) amount).getCommandString();
-                      }
+                      return CrTUtils.chemicalTags().tag(tagged.tag()).withAmount(ingredient.amount()).getCommandString();
                   } else {
                       List<ChemicalStack> chemicals = ingredient.getRepresentations(ContextMap.EMPTY);
                       if (chemicals.size() == 1) {

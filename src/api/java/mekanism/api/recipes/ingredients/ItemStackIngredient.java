@@ -94,7 +94,7 @@ public final class ItemStackIngredient implements InputIngredient<Item, @NotNull
     }
 
     @Override
-    public long getNeededAmount(TypedInstance<Item> instance) {
+    public int getNeededAmount(TypedInstance<Item> instance) {
         return testType(instance) ? ingredient.count() : 0;
     }
 

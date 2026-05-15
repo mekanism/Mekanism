@@ -93,7 +93,7 @@ public final class FluidStackIngredient implements InputIngredient<Fluid, @NotNu
     }
 
     @Override
-    public long getNeededAmount(TypedInstance<Fluid> instance) {
+    public int getNeededAmount(TypedInstance<Fluid> instance) {
         return testType(instance) ? ingredient.amount() : 0;
     }
 

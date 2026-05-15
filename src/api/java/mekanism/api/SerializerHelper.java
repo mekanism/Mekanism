@@ -35,7 +35,7 @@ public class SerializerHelper {
     /**
      * Long Codec which accepts a number >= 0
      */
-    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(() -> {
+    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(() -> {//TODO - 26.1: Replace with ExtraCodecs.NON_NEGATIVE_LONG
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
@@ -43,7 +43,7 @@ public class SerializerHelper {
     /**
      * Long Codec which accepts a number > 0
      */
-    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {
+    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {//TODO - 26.1: Replace with ExtraCodecs.POSITIVE_LONG
         final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
         return Codec.LONG.flatXmap(checker, checker);
     });
