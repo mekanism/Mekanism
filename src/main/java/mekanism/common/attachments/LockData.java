@@ -10,7 +10,6 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
-//TODO - 26.1: Re-evaluate all other data components that use ItemStacks and either transfer them to ItemResource or ItemStackTemplate
 @NothingNullByDefault
 public record LockData(ItemResource lock) {
 

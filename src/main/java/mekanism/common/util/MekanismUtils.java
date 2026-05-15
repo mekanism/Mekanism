@@ -509,18 +509,13 @@ public final class MekanismUtils {
      *
      * @param resize True to clamp the stacks to a size of one.
      */
-    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemStack> slots, boolean resize) {
+    public static CraftingInput.Positioned getCraftingInput(int width, int height, List<ItemResource> slots) {
         if (width * height != slots.size()) {
             throw new IllegalStateException("Expected there to be a slot for every index in a " + width + " by " + height + " grid.");
         }
         List<ItemStack> stacks = new ArrayList<>(slots.size());
-        for (ItemStack slot : slots) {
-            //Note: copyWithCount returns EMPTY if the stack is empty, so we can skip checking
-            if (resize) {
-                stacks.add(slot.copyWithCount(1));
-            } else {
-                stacks.add(slot.copy());
-            }
+        for (ItemResource slot : slots) {
+            stacks.add(slot.toStack());
         }
         return CraftingInput.ofPositioned(width, height, stacks);
     }

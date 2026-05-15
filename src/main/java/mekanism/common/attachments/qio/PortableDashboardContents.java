@@ -13,7 +13,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 //Note: While technically we could use an ItemStack or ItemStackTemplate for the list of contents, we use the custom large resource stack as it is immutable
@@ -38,9 +37,9 @@ public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> c
         contents = Collections.unmodifiableList(contents);
     }
 
-    public PortableDashboardContents with(int window, int index, ItemStack stack) {
+    public PortableDashboardContents with(int window, int index, ItemResource itemType, long amount) {
         List<LargeResourceStack<ItemResource>> copy = new ArrayList<>(contents);
-        copy.set(getIndex(window, index), stack.isEmpty() ? LargeResourceStack.EMPTY_ITEM_STACK : new LargeResourceStack<>(ItemResource.of(stack), stack.count()));
+        copy.set(getIndex(window, index), itemType.isEmpty() || amount <= 0 ? LargeResourceStack.EMPTY_ITEM_STACK : new LargeResourceStack<>(itemType, amount));
         return new PortableDashboardContents(copy);
     }
 

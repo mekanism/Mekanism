@@ -55,7 +55,7 @@ public class QIOServerCraftingTransferHandler {
 
     private final Byte2ObjectMap<SlotData> availableItems = new Byte2ObjectOpenHashMap<>();
     private final Map<UUID, FrequencySlotData> frequencyAvailableItems = new HashMap<>();
-    private final NonNullList<ItemStack> recipeToTest = NonNullList.withSize(9, ItemStack.EMPTY);
+    private final NonNullList<ItemResource> recipeToTest = NonNullList.withSize(9, ItemResource.EMPTY);
 
     public static void tryTransfer(QIOItemViewerContainer container, byte selectedCraftingGrid, boolean rejectToInventory, Player player, Identifier recipeID,
           CraftingRecipe recipe, Byte2ObjectMap<List<SingularItemTypeSource>> sources) {
@@ -138,7 +138,7 @@ public class QIOServerCraftingTransferHandler {
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, that had no valid sources, this should not be possible.", player, recipeID);
                 return;
             }
-            ItemStack resultItem = recipeToTest.get(targetSlot);
+            ItemResource resultItem = recipeToTest.get(targetSlot);
             if (!resultItem.isEmpty() && resultItem.getMaxStackSize() < stackSize) {
                 //Note: This should never happen as if it would happen it should be caught in the above simulation and have the amount used reduced to not happen
                 Mekanism.logger.warn("Received transfer request from: {}, for: {}, that tried to transfer more items into: {} than can stack ({}) in one slot.",
@@ -146,7 +146,7 @@ public class QIOServerCraftingTransferHandler {
                 return;
             }
         }
-        CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest, true).input();
+        CraftingInput dummy = MekanismUtils.getCraftingInput(3, 3, recipeToTest).input();
         if (!recipe.matches(dummy, player.level())) {
             Mekanism.logger.warn("Received transfer request from: {}, but source items aren't valid for the requested recipe: {}.", player, recipeID);
         } else if (!hasRoomToShuffle(transaction)) {
@@ -253,7 +253,7 @@ public class QIOServerCraftingTransferHandler {
             }
             used = slotData.getAvailable();
         }
-        ItemStack currentRecipeTarget = recipeToTest.get(targetSlot);
+        ItemResource currentRecipeTarget = recipeToTest.get(targetSlot);
         ItemResource slotResource = slotData.getResource();
         if (currentRecipeTarget.isEmpty()) {
             int max = slotResource.getMaxStackSize();
@@ -264,8 +264,8 @@ public class QIOServerCraftingTransferHandler {
                 used = max;
             }
             //We copy the stack in case any mods do dumb things in their recipes and would end up mutating our stacks that shouldn't be mutated by accident
-            recipeToTest.set(targetSlot, slotResource.toStack(slotData.getAvailable()));
-        } else if (!slotResource.matches(currentRecipeTarget)) {
+            recipeToTest.set(targetSlot, slotResource);
+        } else if (!slotResource.equals(currentRecipeTarget)) {
             //If our stack can't stack with the item we already are going to put in the slot, fail "gracefully"
             //Note: debug level because this may happen due to not knowing all NBT
             Mekanism.logger.debug("Received transfer request from: {}, for: {}, but found items for target slot: {} cannot stack. "

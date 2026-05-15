@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;
@@ -45,7 +46,7 @@ public class TransporterStack {
           Path.STREAM_CODEC, TransporterStack::getPathType,
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientNext == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientNext),
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientPrev == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientPrev),
-          ItemStack.OPTIONAL_STREAM_CODEC, stack -> stack.itemStack,
+          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, stack -> stack.itemStack,
           (color, progress, originalLocation, pathType, clientNext, clientPrev, itemStack) -> {
               TransporterStack stack = new TransporterStack();
               stack.color = color.orElse(null);
@@ -59,8 +60,7 @@ public class TransporterStack {
           }
     );
 
-    //TODO - 26.1: Switch this to storing the item resource and size separately?
-    private ItemStack itemStack = ItemStack.EMPTY;
+    private LargeResourceStack<ItemResource> itemStack = LargeResourceStack.EMPTY_ITEM_STACK;
 
     public int progress;
 
@@ -89,7 +89,7 @@ public class TransporterStack {
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
         this.pathType = NBTUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
-        this.itemStack = input.read(SerializationConstants.ITEM, SerializerHelper.OVERSIZED_ITEM_CODEC).orElse(ItemStack.EMPTY);
+        this.itemStack = input.read(SerializationConstants.ITEM, SerializerHelper.ITEM_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_ITEM_STACK);
     }
 
     public static TransporterStack read(@NotNull ValueInput input) {
@@ -112,8 +112,8 @@ public class TransporterStack {
         }
         output.putInt(SerializationConstants.PROGRESS, progress);
         output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
-        if (!itemStack.isEmpty()) {
-            output.store(SerializationConstants.ITEM_OVERSIZED, SerializerHelper.OVERSIZED_ITEM_CODEC, itemStack);
+        if (!isEmpty()) {
+            output.store(SerializationConstants.ITEM, SerializerHelper.ITEM_RESOURCE_STACK_CODEC, itemStack);
         }
     }
 
@@ -150,19 +150,23 @@ public class TransporterStack {
     }
 
     public ItemStack asItemStack() {
-        return itemStack;
+        return getItemType().toStack(size());
     }
 
     public ItemResource getItemType() {
-        return ItemResource.of(itemStack);
+        return itemStack.resource();
     }
 
     public int size() {
-        return itemStack.count();
+        return itemStack.amountAsInt();
     }
 
     public void setStack(ItemResource itemType, int amount) {
-        this.itemStack = itemType.toStack(amount);
+        if (itemType.isEmpty() || amount <= 0) {
+            this.itemStack = LargeResourceStack.EMPTY_ITEM_STACK;
+        } else {
+            this.itemStack = new LargeResourceStack<>(itemType, amount);
+        }
     }
 
     private void setPath(Level world, @NotNull LongList path, @NotNull Path type, boolean updateFlowing) {

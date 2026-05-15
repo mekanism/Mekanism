@@ -8,9 +8,9 @@ import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -32,7 +32,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         this.parent = null;
         for (SlotData slotData : loadedData) {
             IInventorySlot slot = slots.get(slotData.slot);
-            slot.setContentsUnchecked(slotData.resource(), slotData.amount());
+            slot.setContentsUnchecked(slotData.stack().resource(), slotData.stack().amount());
         }
     }
 
@@ -49,7 +49,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         for (int i = 0; i < slots.size(); i++) {
             IInventorySlot slot = slots.get(i);
             if (!slot.isEmpty()) {
-                out.add(new SlotData(i, slot.getResource(), slot.amount()));
+                out.add(new SlotData(i, slot.asStack()));
             }
         }
         return out;
@@ -60,17 +60,16 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         Objects.requireNonNull(parent, "Incorrect deserialisation, setParent not called").onContentsChanged();
     }
 
-    record SlotData(int slot, ItemResource resource, int amount) {
+    record SlotData(int slot, LargeResourceStack<ItemResource> stack) {
 
-        SlotData(Pair<Integer, ItemStack> pair) {
-            this(pair.getFirst(), ItemResource.of(pair.getSecond()), pair.getSecond().count());
+        SlotData(Pair<Integer, LargeResourceStack<ItemResource>> pair) {
+            this(pair.getFirst(), pair.getSecond());
         }
 
-        public Pair<Integer, ItemStack> asPair() {
-            return Pair.of(slot, resource.toStack(amount));
+        public Pair<Integer, LargeResourceStack<ItemResource>> asPair() {
+            return Pair.of(slot, stack);
         }
 
-        //TODO - 26.1: Rewrite this codec to probably not be a pair codec, but at the very least not bother using the oversized item codec
-        public static Codec<SlotData> CODEC = Codec.pair(Codec.INT, SerializerHelper.OVERSIZED_ITEM_CODEC).xmap(SlotData::new, SlotData::asPair);
+        public static Codec<SlotData> CODEC = Codec.pair(Codec.INT, SerializerHelper.OPTIONAL_ITEM_RESOURCE_STACK_CODEC).xmap(SlotData::new, SlotData::asPair);
     }
 }

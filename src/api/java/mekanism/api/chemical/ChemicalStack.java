@@ -68,12 +68,6 @@ public final class ChemicalStack implements ChemicalInstance, IHasTextComponent,
     public static final Codec<ChemicalStack> OPTIONAL_CODEC = ExtraCodecs.optionalEmptyMap(CODEC)
           .xmap(optional -> optional.orElse(EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
     /**
-     * A standard codec for Chemical stacks that accepts empty stacks, serializing them as {@code {}}.
-     *
-     * @since 10.7.9
-     */
-    public static final Codec<ChemicalStack> LENIENT_OPTIONAL_CODEC = OPTIONAL_CODEC.promotePartial(ON_STACK_LOAD_ERROR).orElse(EMPTY);
-    /**
      * A stream codec for Chemical stacks that accepts empty stacks.
      *
      * @since 10.6.0

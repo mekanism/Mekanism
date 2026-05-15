@@ -35,27 +35,6 @@ public class MissingObjectSerializationTest {
 
     @GameTest
     @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidItemSerializationCycle(SerializerHelper.LENIENT_OPTIONAL_STACK_CODEC, MissingObjectTestHelper::failureItem, ItemStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional fluid stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalFluidStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidFluidSerializationCycle(SerializerHelper.LENIENT_OPTIONAL_FLUID_CODEC, MissingObjectTestHelper::failureFluid, FluidStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
-    @TestHolder(description = "Tests to make sure that the lenient optional chemical stack codec returns empty instead of throwing if used to deserialize an invalid stack.")
-    public static void testLenientOptionalChemicalStack(final MissingObjectTestHelper helper) {
-        helper.succeedIfInvalidChemicalSerializationCycle(ChemicalStack.LENIENT_OPTIONAL_CODEC, MissingObjectTestHelper::failureChemical, ChemicalStack::isEmpty);
-    }
-
-    @GameTest
-    @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached items load as best as they can when an item is missing.")
     public static void testAttachedItems(final MissingObjectTestHelper helper) {
         //TODO - 26.1: Can we add a helper to generify this test easier now that it is more generic between the resource types?

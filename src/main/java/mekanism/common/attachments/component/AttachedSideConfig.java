@@ -15,10 +15,10 @@ import mekanism.common.tile.component.config.ConfigInfo;
 import mekanism.common.tile.component.config.DataType;
 import mekanism.common.tile.component.config.IPersistentConfigInfo;
 import mekanism.common.util.EnumUtils;
-import net.minecraft.util.Util;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -191,8 +191,8 @@ public record AttachedSideConfig(Map<TransmissionType, LightConfigInfo> configIn
         configInfo = Collections.unmodifiableMap(configInfo);
     }
 
-    public static IPersistentConfigInfo getStoredConfigInfo(ItemStack stack, AttachedSideConfig fallback, TransmissionType transmissionType) {
-        AttachedSideConfig existingData = stack.getOrDefault(MekanismDataComponents.SIDE_CONFIG, fallback);
+    public static IPersistentConfigInfo getStoredConfigInfo(DataComponentGetter componentGetter, AttachedSideConfig fallback, TransmissionType transmissionType) {
+        AttachedSideConfig existingData = componentGetter.getOrDefault(MekanismDataComponents.SIDE_CONFIG, fallback);
         LightConfigInfo config = existingData.configInfo.get(transmissionType);
         if (config.sideConfig.isEmpty()) {
             if (existingData == fallback) {

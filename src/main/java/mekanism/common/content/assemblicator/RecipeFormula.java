@@ -21,7 +21,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
 
     public static RecipeFormula create(Level world, FormulaAttachment attachment) {
         //Should always be a 3x3 grid for the size
-        return create(world, MekanismUtils.getCraftingInput(3, 3, attachment.inventory(), true));
+        return create(world, MekanismUtils.getCraftingInput(3, 3, attachment.inventory()));
     }
 
     public static RecipeFormula create(Level world, List<IInventorySlot> craftingGridSlots) {
@@ -40,7 +40,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
         if (isEmpty() && stack.isEmpty()) {
             return this;
         }
-        List<ItemStack> copy = getCopy(false);
+        List<ItemStack> copy = getCopy();
         ItemStack old = copy.set(index, stack);
         if (old != null && ItemStack.isSameItemSameComponents(old, stack)) {
             //Nothing changed, don't bother creating new objects
@@ -98,7 +98,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
             return true;
         }
 
-        List<ItemStack> dummy = getCopy(false);
+        List<ItemStack> dummy = getCopy();
         dummy.set(i, itemType.toStack());
         return recipe.value().matches(CraftingInput.of(3, 3, dummy), world);
     }
@@ -111,7 +111,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
                     return true;
                 }
             }
-            List<ItemStack> dummy = getCopy(false);
+            List<ItemStack> dummy = getCopy();
             for (int i = 0; i < 9; i++) {
                 ItemStack inputItem = dummy.get(i);
                 //Skip slots that aren't expected to be empty
@@ -127,7 +127,7 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
         return false;
     }
 
-    public List<ItemStack> getCopy(boolean copyStacks) {
+    private List<ItemStack> getCopy() {
         List<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
         if (isEmpty()) {
             return stacks;
@@ -137,10 +137,25 @@ public record RecipeFormula(CraftingInput.Positioned craftingInput, @Nullable Re
             int shiftedRow = 3 * (craftingInput.top() + row);
             for (int column = 0; column < input.width(); column++) {
                 int index = shiftedRow + craftingInput.left() + column;
-                ItemStack stack = input.getItem(column, row);
-                stacks.set(index, copyStacks ? stack.copy() : stack);
+                stacks.set(index, input.getItem(column, row));
             }
         }
         return stacks;
+    }
+
+    public List<ItemResource> getItemTypes() {
+        List<ItemResource> itemTypes = NonNullList.withSize(9, ItemResource.EMPTY);
+        if (isEmpty()) {
+            return itemTypes;
+        }
+        CraftingInput input = craftingInput.input();
+        for (int row = 0; row < input.height(); row++) {
+            int shiftedRow = 3 * (craftingInput.top() + row);
+            for (int column = 0; column < input.width(); column++) {
+                int index = shiftedRow + craftingInput.left() + column;
+                itemTypes.set(index, ItemResource.of(input.getItem(column, row)));
+            }
+        }
+        return itemTypes;
     }
 }

@@ -76,12 +76,12 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
         }
         ItemResource inputType = ItemResource.EMPTY;
         ItemResource outputType = ItemResource.EMPTY;
-        int inputAmount = 0;
-        int outputAmount = 0;
+        long inputAmount = 0;
+        long outputAmount = 0;
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
                 ItemResource resource = slot.getResource();
-                int amount = slot.amount();
+                long amount = slot.amountAsLong();
                 Upgrade upgrade = resource.getItem() instanceof IUpgradeItem upgradeItem ? upgradeItem.getUpgradeType() : null;
                 if (upgrade == null) {
                     //Not an upgrade
@@ -93,7 +93,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                         inputAmount = amount;
                         continue;
                     } else if (inputAmount < inputType.getMaxStackSize() && resource.equals(inputType)) {
-                        int needed = inputType.getMaxStackSize() - inputAmount;
+                        long needed = inputType.getMaxStackSize() - inputAmount;
                         if (amount <= needed) {
                             //All fits, increment and continue
                             inputAmount += amount;
@@ -108,7 +108,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                     outputType = resource;
                     outputAmount = amount;
                 } else if (outputAmount < outputType.getMaxStackSize() && resource.equals(outputType)) {
-                    int needed = outputType.getMaxStackSize() - outputAmount;
+                    long needed = outputType.getMaxStackSize() - outputAmount;
                     if (amount > needed) {
                         //Doesn't all fit
                         return false;

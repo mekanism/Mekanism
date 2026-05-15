@@ -4,6 +4,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.TextComponentUtil;
@@ -15,7 +16,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.component.TooltipDisplay;
@@ -34,7 +34,7 @@ public class ItemCraftingFormula extends Item {
     public void appendHoverText(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltipDisplay, tooltipAdder, flag);
         Map<ItemResource, Integer> stacks = stack.getOrDefault(MekanismDataComponents.FORMULA_HOLDER, FormulaAttachment.EMPTY).nonEmptyItems()
-              .collect(Collectors.toMap(ItemResource::of, ItemInstance::count, Integer::sum, LinkedHashMap::new));
+              .collect(Collectors.toMap(Function.identity(), _ -> 1, Integer::sum, LinkedHashMap::new));
         if (!stacks.isEmpty()) {
             tooltipAdder.accept(MekanismLang.INGREDIENTS.translateColored(EnumColor.GRAY));
             for (Entry<ItemResource, Integer> entry : stacks.entrySet()) {

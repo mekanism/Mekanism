@@ -16,7 +16,6 @@ import mekanism.common.inventory.container.slot.InventoryContainerSlot;
 import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
@@ -140,13 +139,6 @@ public class BinInventorySlot extends BasicInventorySlot {
         }
         lockType = lock ? getResource() : ItemResource.EMPTY;
         return true;
-    }
-
-    /**
-     * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
-     */
-    public void setLockStack(@Nullable ItemStackTemplate template) {
-        lockType = template == null ? ItemResource.EMPTY : ItemResource.of(template);
     }
 
     /**

@@ -7,37 +7,35 @@ import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.Set;
 import mekanism.api.SerializationConstants;
+import mekanism.api.SerializerHelper;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.container.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.transfer.item.ItemResource;
-import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public record UpgradeAware(Map<Upgrade, Integer> upgrades, @Nullable ItemStackTemplate inputSlot, @Nullable ItemStackTemplate outputSlot) {
+public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<ItemResource> inputSlot, LargeResourceStack<ItemResource> outputSlot) {
 
-    public static final UpgradeAware EMPTY = new UpgradeAware(Collections.emptyMap(), null, (ItemStackTemplate) null);
+    public static final UpgradeAware EMPTY = new UpgradeAware(Collections.emptyMap(), LargeResourceStack.EMPTY_ITEM_STACK, LargeResourceStack.EMPTY_ITEM_STACK);
     private static final Set<Upgrade> SUPPORTS_ALL = EnumSet.allOf(Upgrade.class);
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
-          //TODO - 26.1: Do we care that this no longer logs a warning about it failing
-          ItemStackTemplate.CODEC.lenientOptionalFieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::optionalInputSlot),
-          ItemStackTemplate.CODEC.lenientOptionalFieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::optionalOutputSlot)
+          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::inputSlot),
+          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
     ).apply(instance, UpgradeAware::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeAware> STREAM_CODEC = StreamCodec.composite(
-          ByteBufCodecs.map(size -> new EnumMap<>(Upgrade.class), Upgrade.STREAM_CODEC, ByteBufCodecs.VAR_INT), UpgradeAware::upgrades,
-          ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), UpgradeAware::optionalInputSlot,
-          ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), UpgradeAware::optionalOutputSlot,
+          ByteBufCodecs.map(_ -> new EnumMap<>(Upgrade.class), Upgrade.STREAM_CODEC, ByteBufCodecs.VAR_INT), UpgradeAware::upgrades,
+          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, UpgradeAware::inputSlot,
+          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, UpgradeAware::outputSlot,
           UpgradeAware::new
     );
 
@@ -46,31 +44,17 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, @Nullable ItemStackTe
         upgrades = Collections.unmodifiableMap(upgrades);
     }
 
-    public UpgradeAware(Map<Upgrade, Integer> upgrades, ItemResource inputResource, int inputAmount, ItemResource outputResource, int outputAmount) {
+    public UpgradeAware(Map<Upgrade, Integer> upgrades, ItemResource inputResource, long inputAmount, ItemResource outputResource, long outputAmount) {
         if (inputResource.isEmpty() != (inputAmount == 0)) {
             throw new IllegalArgumentException("Input amount must be zero for an empty resource");
         } else if (outputResource.isEmpty() != (outputAmount == 0)) {
             throw new IllegalArgumentException("Output amount must be zero for an empty resource");
         }
-        this(upgrades, inputResource.isEmpty() ? null : new ItemStackTemplate(inputResource.typeHolder(), inputAmount, inputResource.getComponentsPatch()),
-              outputResource.isEmpty() ? null : new ItemStackTemplate(outputResource.typeHolder(), outputAmount, outputResource.getComponentsPatch()));
-    }
-
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    private UpgradeAware(Map<Upgrade, Integer> upgrades, Optional<ItemStackTemplate> inputSlot, Optional<ItemStackTemplate> outputSlot) {
-        this(upgrades, inputSlot.orElse(null), outputSlot.orElse(null));
+        this(upgrades, new LargeResourceStack<>(inputResource, inputAmount), new LargeResourceStack<>(outputResource, outputAmount));
     }
 
     public int getUpgradeCount(Upgrade upgrade) {
         return upgrades.getOrDefault(upgrade, 0);
-    }
-
-    private Optional<ItemStackTemplate> optionalInputSlot() {
-        return Optional.ofNullable(inputSlot);
-    }
-
-    private Optional<ItemStackTemplate> optionalOutputSlot() {
-        return Optional.ofNullable(outputSlot);
     }
 
     public List<IInventorySlot> asInventorySlots() {
@@ -80,16 +64,8 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, @Nullable ItemStackTe
     public List<IInventorySlot> asInventorySlots(Set<Upgrade> supportedUpgrades) {
         UpgradeInventorySlot input = UpgradeInventorySlot.input(null, supportedUpgrades);
         UpgradeInventorySlot output = UpgradeInventorySlot.output(null);
-        setSlot(input, inputSlot);
-        setSlot(output, outputSlot);
+        input.setContents(inputSlot);
+        output.setContents(outputSlot);
         return List.of(input, output);
-    }
-
-    public static void setSlot(UpgradeInventorySlot slot, @Nullable ItemStackTemplate template) {
-        if (template == null) {
-            slot.setEmpty();
-        } else {
-            slot.setContents(ItemResource.of(template), template.count());
-        }
     }
 }

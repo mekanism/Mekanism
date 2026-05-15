@@ -1,5 +1,6 @@
 package mekanism.api.container;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
@@ -29,6 +30,10 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
     @Override
     public String toString() {
         return amount + "x " + resource;
+    }
+
+    public int amountAsInt() {
+        return Ints.saturatedCast(amount);
     }
 
     public static <RESOURCE extends @NonNull Resource> Codec<LargeResourceStack<RESOURCE>> codec(Codec<RESOURCE> resourceCodec) {

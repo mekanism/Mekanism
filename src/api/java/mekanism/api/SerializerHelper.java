@@ -10,22 +10,16 @@ import com.mojang.serialization.MapDecoder.Implementation;
 import com.mojang.serialization.MapLike;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.container.LargeResourceStack;
-import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Util;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemInstance;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -54,59 +48,11 @@ public class SerializerHelper {
         return Codec.LONG.flatXmap(checker, checker);
     });
 
-    private static final Consumer<String> ON_STACK_LOAD_ERROR = error -> MekanismAPI.logger.error("Tried to load invalid item: '{}'", error);
-    /**
-     * Helper codec to deserialize an optional item stack and fall back to the empty stack if an error is encountered in deserialization.
-     *
-     * @since 10.7.9
-     */
-    public static final Codec<ItemStack> LENIENT_OPTIONAL_STACK_CODEC = ItemStack.OPTIONAL_CODEC
-          .promotePartial(ON_STACK_LOAD_ERROR)
-          .orElse(ItemStack.EMPTY);
-    /**
-     * Helper codec to deserialize an optional item stack and fall back to the empty stack if an error is encountered in deserialization.
-     *
-     * @since 10.7.9
-     * @deprecated Use an ItemStackTemplate instead
-     */
-    @Deprecated(forRemoval = true, since = "10.8.0")
-    public static final Codec<ItemStack> OPTIONAL_SINGLE_ITEM_CODEC = ExtraCodecs.optionalEmptyMap(ItemStack.CODEC)
-          .xmap(stack -> stack.orElse(ItemStack.EMPTY), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack.copyWithCount(1)));
-    /**
-     * Helper codec to deserialize an optional item stack with a constant count of one and fall back to the empty stack if an error is encountered in deserialization.
-     *
-     * @since 10.7.9
-     * @deprecated Use an ItemStackTemplate instead
-     */
-    @Deprecated(forRemoval = true, since = "10.8.0")
-    public static final Codec<ItemStack> LENIENT_OPTIONAL_SINGLE_ITEM_CODEC = OPTIONAL_SINGLE_ITEM_CODEC
-          .promotePartial(ON_STACK_LOAD_ERROR)
-          .orElse(ItemStack.EMPTY);
-    /**
-     * Helper codec to deserialize an optional fluid stack and fall back to the empty stack if an error is encountered in deserialization.
-     *
-     * @since 10.7.9
-     */
-    public static final Codec<FluidStack> LENIENT_OPTIONAL_FLUID_CODEC = FluidStack.OPTIONAL_CODEC
-          .promotePartial(error -> MekanismAPI.logger.error("Tried to load invalid fluid: '{}'", error))
-          .orElse(FluidStack.EMPTY);
-
-    /**
-     * Custom codec to allow serializing an item stack without the upper bounds.
-     *
-     * @since 10.6.1
-     */
-    public static final Codec<ItemStack> OVERSIZED_ITEM_CODEC = Codec.lazyInitialized(() -> RecordCodecBuilder.create(instance -> instance.group(
-          Item.CODEC.fieldOf(ItemInstance.FIELD_ID).forGetter(ItemStack::typeHolder),
-          ExtraCodecs.POSITIVE_INT.fieldOf(ItemInstance.FIELD_COUNT).orElse(1).forGetter(ItemInstance::count),
-          DataComponentPatch.CODEC.optionalFieldOf(ItemInstance.FIELD_COMPONENTS, DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
-    ).apply(instance, ItemStack::new)));
-
-
     //TODO - 26.1: Docs and decide where we want to store these
     // Modify tests that test the attached items to double check it handles empty stacks in general fine
     public static final Codec<LargeResourceStack<ItemResource>> ITEM_RESOURCE_STACK_CODEC = LargeResourceStack.codec(ItemResource.CODEC);
     public static final Codec<LargeResourceStack<ItemResource>> OPTIONAL_ITEM_RESOURCE_STACK_CODEC = makeOptionalCodec(ITEM_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
+    //TODO - 26.1: Evaluate this vs Codec#lenientOptionalFieldOf
     public static final Codec<LargeResourceStack<ItemResource>> LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC = makeLenientOptionalCodec(OPTIONAL_ITEM_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
     public static final StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<ItemResource>> ITEM_RESOURCE_STACK_STREAM_CODEC = LargeResourceStack.streamCodec(ItemResource.STREAM_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
 

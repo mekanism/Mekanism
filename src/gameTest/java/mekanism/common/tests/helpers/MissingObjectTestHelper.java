@@ -66,11 +66,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ItemStack failureItem() {
-        return failureItem(1);
-    }
-
-    public ItemStack failureItem(int count) {
-        return failureItemType().toStack(count);
+        return failureItemType().toStack();
     }
 
     public FluidResource failureFluidType() {
@@ -78,11 +74,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public FluidStack failureFluid() {
-        return failureFluid(FluidType.BUCKET_VOLUME);
-    }
-
-    public FluidStack failureFluid(int amount) {
-        return failureFluidType().toStack(amount);
+        return failureFluidType().toStack(FluidType.BUCKET_VOLUME);
     }
 
     public ChemicalResource failureChemicalType() {
@@ -90,11 +82,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public ChemicalStack failureChemical() {
-        return failureChemical(FluidType.BUCKET_VOLUME);
-    }
-
-    public ChemicalStack failureChemical(long amount) {
-        return failureChemicalType().toStack(amount);
+        return failureChemicalType().toStack(FluidType.BUCKET_VOLUME);
     }
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
@@ -114,7 +102,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         succeedIf(() -> {
             TYPE val = cycleSerialization(codec, sourceSupplier.apply(this), rawJsonReplacer);
             if (!resultValidator.test(val)) {//TODO: Allow for custom messages?
-                throw assertionException( "Resulting value after cycling serialization was not what was expected");
+                throw assertionException("Resulting value after cycling serialization was not what was expected");
             }
         });
     }
@@ -130,13 +118,13 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     }
 
     public FormulaAttachment makeFormula() {
-        List<ItemStack> stacks = NonNullList.withSize(9, ItemStack.EMPTY);
-        ItemStack planks = new ItemStack(Items.OAK_PLANKS);
-        stacks.set(0, planks.copy());
-        stacks.set(2, planks.copy());
-        stacks.set(3, planks.copy());
-        stacks.set(4, failureItem());
-        stacks.set(5, planks.copy());
+        List<ItemResource> stacks = NonNullList.withSize(9, ItemResource.EMPTY);
+        ItemResource planks = ItemResource.of(Items.OAK_PLANKS);
+        stacks.set(0, planks);
+        stacks.set(2, planks);
+        stacks.set(3, planks);
+        stacks.set(4, failureItemType());
+        stacks.set(5, planks);
         return new FormulaAttachment(stacks, false);
     }
 
@@ -160,13 +148,13 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
     public PortableDashboardContents makeDashboard() {
         return PortableDashboardContents.EMPTY
               //First crafting window has a recipe for sticks stored
-              .with(0, 1, new ItemStack(Items.OAK_PLANKS, 4))
-              .with(0, 4, new ItemStack(Items.OAK_PLANKS, 5))
+              .with(0, 1, ItemResource.of(Items.OAK_PLANKS), 4)
+              .with(0, 4, ItemResource.of(Items.OAK_PLANKS), 5)
               //Second has some contents, recipe doesn't matter as one of the things will be invalid
-              .with(1, 0, new ItemStack(Items.STONE))
-              .with(1, 4, failureItem())
+              .with(1, 0, ItemResource.of(Items.STONE), 1)
+              .with(1, 4, failureItemType(), 1)
               //Third window has a recipe for planks
-              .with(2, 8, new ItemStack(Items.OAK_LOG, 64));
+              .with(2, 8, ItemResource.of(Items.OAK_LOG), 64);
     }
 
     public boolean validateDashboard(PortableDashboardContents contents) {
@@ -200,8 +188,8 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private boolean validateUpgrades(UpgradeAware upgradeAware, boolean validFirstSlot, boolean validSecondSlot) {
         if (upgradeAware.upgrades().equals(getUpgrades())) {
-            boolean firstSlot = validFirstSlot ? ItemStack.matches(MekanismItems.SPEED_UPGRADE.asStack(3), upgradeAware.inputSlot()) : upgradeAware.inputSlot() == null;
-            boolean secondSlot = validSecondSlot ? ItemStack.matches(MekanismItems.ENERGY_UPGRADE.asStack(5), upgradeAware.outputSlot()) : upgradeAware.outputSlot() == null;
+            boolean firstSlot = validFirstSlot ? MekanismItems.SPEED_UPGRADE.is(upgradeAware.inputSlot().resource()) && upgradeAware.inputSlot().amount() == 3 : upgradeAware.inputSlot().isEmpty();
+            boolean secondSlot = validSecondSlot ? MekanismItems.ENERGY_UPGRADE.is(upgradeAware.outputSlot().resource()) && upgradeAware.outputSlot().amount() == 5 : upgradeAware.outputSlot().isEmpty();
             return firstSlot && secondSlot;
         }
         return false;
@@ -239,7 +227,7 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         SorterItemStackFilter filter = new SorterItemStackFilter();
         filter.setItem(item);
         filter.min = 2;
-        filter.max  = 3;
+        filter.max = 3;
         filter.color = EnumColor.AQUA;
         filter.sizeMode = true;
         if (item == Items.STONE) {

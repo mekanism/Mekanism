@@ -15,7 +15,6 @@ import mekanism.common.item.block.ItemBlockBin;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tier.BinTier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -100,7 +99,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     /**
      * For use by upgrade recipes
      *
-     * @see BinInventorySlot#setLockStack(ItemStackTemplate)
+     * @see BinInventorySlot#setLockStack(ItemResource)
      */
     public void setLockType(ItemResource lockType) {
         if (lockType.isEmpty()) {

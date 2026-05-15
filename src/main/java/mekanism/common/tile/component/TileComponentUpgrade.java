@@ -210,15 +210,15 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (upgradeAware != null) {
             upgrades.clear();
             upgrades.putAll(upgradeAware.upgrades());
-            UpgradeAware.setSlot(upgradeSlot, upgradeAware.inputSlot());
-            UpgradeAware.setSlot(upgradeOutputSlot, upgradeAware.outputSlot());
+            upgradeSlot.setContents(upgradeAware.inputSlot());
+            upgradeOutputSlot.setContents(upgradeAware.outputSlot());
         }
     }
 
     @Override
     public void collectImplicitComponents(DataComponentMap.Builder builder) {
         //Note: UpgradeAware will copy the stacks
-        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.getResource(), upgradeSlot.amount(), upgradeOutputSlot.getResource(), upgradeOutputSlot.amount()));
+        builder.set(MekanismDataComponents.UPGRADES, new UpgradeAware(new EnumMap<>(upgrades), upgradeSlot.asStack(), upgradeOutputSlot.asStack()));
     }
 
     @Override
