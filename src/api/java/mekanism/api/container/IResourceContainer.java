@@ -9,51 +9,109 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
+import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 
-//TODO - 26.1: Docs and decide if we want the bound for RESOURCE to be RegisteredResource or just Resource
+//TODO - 26.1: Docs
 //TODO - 26.1: Should we rename this package to resource?
 @NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 
-    RESOURCE getResource();
+    /// {@return the resource in this container, which may be empty}
+    ///
+    /// If the resource is empty, the [stored amount][#amountAsLong()] must be 0.
+    RESOURCE getResource();//TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
 
     default LargeResourceStack<RESOURCE> asStack() {
         //TODO - 26.1: Re-evaluate this method
         return new LargeResourceStack<>(getResource(), amountAsLong());
     }
 
-    //TODO - 26.1: Do we want to have two forms of get amount for our slot type similar to how the handler supports reporting a long variant?
-    // It might be worth it, so that then fluids and chemicals can have storage of longs
-    @NonExtendable
+    /// Returns the amount of the [currently stored resource][#getResource] in this container, as an `int`.
+    ///
+    /// This is a convenience method to clamp the amount to an `int`, for the cases where the container is known to only support amounts up to `Integer.MAX_VALUE`, or if
+    /// the caller prefers to deal in `int`s only.
+    ///
+    /// The returned amount must be **non-negative**. If the [stored resource][#getResource] is empty, the amount must be 0.
+    ///
+    /// @return the amount in this container, as an `int`
+    ///
+    /// @implNote This method should not be implemented. The default method will call [#amountAsLong()] and convert the result appropriately.
+    /// @see #amountAsLong() the long-returning overload
+    @NonExtendable//TODO - 26.1: Do we want to rename this method to amountAsInt
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int amount() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
     }
 
+    /// Returns the amount of the [currently stored resource][#getResource] in this container, as a `long`.
+    ///
+    /// In general, resource containers can report `long` amounts. However, if the container is known to only support amounts up to `Integer.MAX_VALUE`, or if the caller
+    /// prefers to deal in `int`s only, the [int-returning overload][#amount] can be used instead.
+    ///
+    /// The returned amount must be **non-negative**. If the [stored resource][#getResource] is empty, the amount must be 0.
+    ///
+    /// @return the amount in this container, as a long
+    ///
+    /// @see #amount()
     @Range(from = 0, to = Long.MAX_VALUE)
     long amountAsLong();
 
-    //TODO - 26.1: Re-evaluate this method
-    default void setContents(LargeResourceStack<RESOURCE> stack) {
-        setContents(stack.resource(), stack.amount());
-    }
-
-    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
-
-    //TODO - 26.1: Re-evaluate this method and its callers
-    void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
-
+    /// Inserts up to the given amount of a resource into this container.
+    ///
+    /// Changes to this container are made in the context of a [transaction][Transaction].
+    ///
+    /// @param resource    The resource to insert. **Must be non-empty.**
+    /// @param amount      The maximum amount of the resource to insert. **Must be non-negative.**
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource container.
     @Range(from = 0, to = Integer.MAX_VALUE)
     int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
 
-    //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past for items extraction would be clamped at the max stack size
+    /// Tries to extract up to the given amount of a resource from this container.
+    ///
+    /// Changes to this container are made in the context of a [transaction][Transaction].
+    ///
+    /// @param resource    The resource to extract. **Must be non-empty.**
+    /// @param amount      The maximum amount of the resource to extract. **Must be non-negative.**
+    /// @param transaction The transaction that this operation is part of.
+    ///
+    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource container.
     @Range(from = 0, to = Integer.MAX_VALUE)
     int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType);
+    //TODO - 26.1: Check callers and make sure none are relying on the fact that in the past for items extraction would be clamped at the max stack size
 
+    /// Returns the capacity of this container for the given resource, irrespective of the current amount or resource currently in this container is, as an `int`.
+    ///
+    /// This is a convenience method to get the capacity clamped to an `int`, for the cases where this container is known to only support capacities up to
+    /// `Integer.MAX_VALUE`, or if the caller prefers to deal in `int`s only.
+    ///
+    /// This function serves as a hint on the maximum [amount][#amount()] the resource container might contain, for example the container can be considered full if
+    /// `amount >= capacity`. Note that the returned capacity may overestimate the actual allowed amount, and it might be smaller than the current amount. The only way to
+    /// know if a container will accept a resource, is to try to [`insert`][#insert] it.
+    ///
+    /// @param resource The resource to get the limit for. May be empty to get the general capacity of this container.
+    ///
+    /// @return the capacity in this container, as an `int`
+    ///
+    /// @implNote This method should not be implemented. The default method will call [#getLimitAsLong(Resource)] and convert the result appropriately.
+    /// @see #getLimitAsLong(Resource)
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getLimit(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to getLimitAsLong
@@ -62,8 +120,23 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         return Ints.saturatedCast(getLimitAsLong(resource));
     }
 
+    /// Returns the capacity of this container for the given resource, irrespective of the current amount or resource currently in this container is, as a `long`.
+    ///
+    /// In general, resource containers can report `long` capacities. However, if the container is known to only support capacities up to `Integer.MAX_VALUE`, or if the
+    /// caller prefers to deal in `int`s only, the [int-returning overload][#getLimit] can be used instead.
+    ///
+    /// This function serves as a hint on the maximum [amount][#amountAsLong()] the resource container might contain, for example the container can be considered full if
+    /// `amount >= capacity`. Note that the returned capacity may overestimate the actual allowed amount, and it might be smaller than the current amount. The only way to
+    /// know if a container will accept a resource, is to try to [`insert`][#insert] it.
+    ///
+    /// @param resource The resource to get the capacity for. May be empty to get the general capacity of this container.
+    ///
+    /// @return the capacity in this container, as a long
+    ///
+    /// @implSpec This method should return 0 for any resource for which [#isValid(Resource)] returns `false`.
+    /// @see #getLimit(Resource)
     @Range(from = 0, to = Long.MAX_VALUE)
-    long getLimitAsLong(RESOURCE resource);
+    long getLimitAsLong(RESOURCE resource);//TODO - 26.1: Do we want to rename these getLimit to getCapacity?
 
     //TODO - 26.1: Re-evaluate name and add docs
     @NonExtendable
@@ -77,11 +150,6 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         return getLimitAsLong(getResource());
     }
 
-    /**
-     * Gets the amount of fluid needed by this {@link IResourceContainer} to reach a filled state.
-     *
-     * @return Amount of fluid needed
-     */
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeeded() {
@@ -98,30 +166,40 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         return Math.max(0, getLimitAsLong(getResource()) - amountAsLong());
     }
 
-    boolean isValid(RESOURCE type);
-    //TODO - 26.1: Update docs and figure out handling of empty resource
-    // Also Neo changed it to be if it is ever valid instead of valid for insertion, I believe we already behaved as such
-    // but we should validate that we obey that properly
+    /// {@return whether the given resource is generally allowed to be contained in this container, irrespective of the current amount or resource currently in this
+    /// container}
+    ///
+    /// This function serves as a hint on whether this container can contain the resource or not. The only way to know if a container will accept a resource, is to try to
+    /// [`insert`][#insert] it.
+    ///
+    /// @param resource The resource to check. **Must be non-empty.**
+    boolean isValid(RESOURCE resource);
 
-    /**
-     * Ignores current contents
-     */
-    default boolean isCurrentValidForExtraction(AutomationType automationType) {//TODO - 26.1: Update docs
+    /// {@return whether the current stored resource is generally allowed to be extracted from this container using the given automation type}
+    ///
+    /// This function serves as a hint on whether the current stored resource can be extracted from this container or not. The only way to know if a container will allow
+    /// the current resource to be extracted, is to try to [`extract`][#extract] it.
+    ///
+    /// @param automationType The automation type to check.
+    default boolean isCurrentValidForExtraction(AutomationType automationType) {
         return true;
     }
 
-    /**
-     * Ignores current contents
-     */
-    default boolean isValidForInsertion(RESOURCE type, AutomationType automationType) {//TODO - 26.1: Update docs
+    /// {@return whether the given resource is generally allowed to be inserted into this container when using the given automation type, irrespective of the current
+    /// amount or resource currently in this container}
+    ///
+    /// This function serves as a hint on whether this container is able to accept the resource or not. The only way to know if a container will currently accept a
+    /// resource, is to try to [`insert`][#insert] it.
+    ///
+    /// @param resource       The resource to check. **Must be non-empty.**
+    /// @param automationType The automation type to check.
+    default boolean isValidForInsertion(RESOURCE resource, AutomationType automationType) {//TODO - 26.1: Update docs and state that the empty type can not be passed for resource
         return true;
     }
 
-    /**
-     * Convenience method for checking if this slot is empty.
-     *
-     * @return True if the slot is empty, false otherwise.
-     */
+    /// Convenience method for checking if this container is empty.
+    ///
+    /// @return True if the container is empty, false otherwise.
     default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
         return getResource().isEmpty();
     }
@@ -155,6 +233,16 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         // crashing due to the stack not being valid
         setContentsUnchecked(stack.resource(), stack.amount());
     }
+
+    //TODO - 26.1: Re-evaluate this method
+    default void setContents(LargeResourceStack<RESOURCE> stack) {
+        setContents(stack.resource(), stack.amount());
+    }
+
+    void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
+
+    //TODO - 26.1: Re-evaluate this method and its callers
+    void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
     Codec<LargeResourceStack<RESOURCE>> resourceStackCodec();
 
