@@ -119,7 +119,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                         for (int slot = 0, size = robitSlots.size(); slot < stackInventory.size() && slot < size; slot++) {
                             LargeResourceStack<ItemResource> stackInSlot = stackInventory.getContents(slot);
                             if (!stackInSlot.isEmpty()) {//TODO - 26.1: Do we want to set this anyway?
-                                robitSlots.get(slot).setContentsUnchecked(stackInSlot.resource(), stackInSlot.amount());
+                                robitSlots.get(slot).setContentsUnchecked(stackInSlot);
                             }
                         }
                     }

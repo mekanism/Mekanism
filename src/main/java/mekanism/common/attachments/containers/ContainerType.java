@@ -82,17 +82,17 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     public static final ContainerType<IInventorySlot, AttachedResources<ItemResource>, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
           SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedResources.empty(),
           TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory,
-          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
+          (from, to) -> to.setContentsUnchecked(from.asStack()));
 
     public static final ContainerType<IFluidTank, AttachedResources<FluidResource>, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedResources.empty(),
           TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid,
-          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
+          (from, to) -> to.setContentsUnchecked(from.asStack()));
 
     public static final ContainerType<IChemicalTank, AttachedResources<ChemicalResource>, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
           SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedResources.empty(),
           TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals,
-          (from, to) -> to.setContentsUnchecked(from.getResource(), from.amountAsLong()));
+          (from, to) -> to.setContentsUnchecked(from.asStack()));
 
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,

@@ -314,10 +314,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
-            inputSlot.setContents(data.inputSlot.getResource(), data.inputSlot.amountAsInt());
-            outputSlot.setContents(data.outputSlot.getResource(), data.outputSlot.amountAsInt());
+            inputSlot.setContentsUnchecked(data.inputSlot.asStack());
+            outputSlot.setContentsUnchecked(data.outputSlot.asStack());
             editMode = data.editMode;
-            fluidTank.setContents(data.stored);
+            fluidTank.setContentsUnchecked(data.stored);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -386,7 +386,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //TODO - 26.1: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
-        fluidTank.setContents(input.read(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_FLUID_STACK));
+        fluidTank.setContentsUnchecked(input.read(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_FLUID_STACK));
         valveFluid = input.read(SerializationConstants.VALVE, VALVE_FLUID_CODEC).orElse(FluidStack.EMPTY);
     }
 

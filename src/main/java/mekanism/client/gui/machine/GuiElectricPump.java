@@ -45,7 +45,7 @@ public class GuiElectricPump extends GuiMekanismTile<TileEntityElectricPump, Mek
                     list.add(fallBack.getHoverName());
                 }
             } else {
-                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.getResource(), TextUtils.format(tile.fluidTank.amountAsInt())));
+                list.add(MekanismLang.GENERIC_STORED_MB.translate(tile.fluidTank.getResource(), TextUtils.format(tile.fluidTank.amountAsLong())));
             }
             return list;
         }));

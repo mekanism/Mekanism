@@ -126,7 +126,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
             redstone = data.redstone;
             setControlType(data.controlType);
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
-            chargeSlot.setContents(data.chargeSlot.getResource(), data.chargeSlot.amountAsInt());
+            chargeSlot.setContentsUnchecked(data.chargeSlot.asStack());
             ContainerType.ITEM.copy(data.dischargeSlot, dischargeSlot);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);

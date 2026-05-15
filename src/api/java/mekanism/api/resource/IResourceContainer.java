@@ -220,6 +220,11 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         setContents(stack.resource(), stack.amount());
     }
 
+    //TODO - 26.1: Re-evaluate this method
+    default void setContentsUnchecked(LargeResourceStack<RESOURCE> stack) {
+        setContentsUnchecked(stack.resource(), stack.amount());
+    }
+
     void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
     //TODO - 26.1: Re-evaluate this method and its callers

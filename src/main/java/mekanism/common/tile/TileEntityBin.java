@@ -156,7 +156,7 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof BinUpgradeData(boolean redstoneData, BinInventorySlot slot)) {
             redstone = redstoneData;
-            binSlot.setContents(slot.getResource(), slot.amountAsInt());
+            binSlot.setContentsUnchecked(slot.asStack());
             binSlot.setLockStack(slot.getLockType());
         } else {
             super.parseUpgradeData(upgradeData, provider);

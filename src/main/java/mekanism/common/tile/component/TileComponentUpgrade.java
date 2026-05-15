@@ -210,8 +210,8 @@ public class TileComponentUpgrade implements ITileComponent, ISpecificContainerT
         if (upgradeAware != null) {
             upgrades.clear();
             upgrades.putAll(upgradeAware.upgrades());
-            upgradeSlot.setContents(upgradeAware.inputSlot());
-            upgradeOutputSlot.setContents(upgradeAware.outputSlot());
+            upgradeSlot.setContentsUnchecked(upgradeAware.inputSlot());
+            upgradeOutputSlot.setContentsUnchecked(upgradeAware.outputSlot());
         }
     }
 

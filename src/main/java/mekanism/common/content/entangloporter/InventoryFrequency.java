@@ -81,9 +81,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
         InventoryFrequency frequency = new InventoryFrequency(name, owner.orElse(null), securityMode);
         frequency.storedEnergy.setEnergy(energy);
-        frequency.storedFluid.setContentsUnchecked(fluid.resource(), fluid.amount());
-        frequency.storedChemical.setContentsUnchecked(chemical.resource(), chemical.amount());
-        frequency.storedItem.setContentsUnchecked(item.resource(), item.amount());
+        frequency.storedFluid.setContentsUnchecked(fluid);
+        frequency.storedChemical.setContentsUnchecked(chemical);
+        frequency.storedItem.setContentsUnchecked(item);
         frequency.storedHeat.setHeat(heat);
         frequency.storedHeat.setHeatCapacity(heatCapacity, false);
         return frequency;
@@ -97,10 +97,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);
-              //TODO - 26.1: Should these be set unchecked?
-              frequency.storedFluid.setContents(fluid.resource(), fluid.amount());
-              frequency.storedChemical.setContents(chemical.resource(), chemical.amount());
-              frequency.storedItem.setContents(item.resource(), item.amount());
+              frequency.storedFluid.setContentsUnchecked(fluid);
+              frequency.storedChemical.setContentsUnchecked(chemical);
+              frequency.storedItem.setContentsUnchecked(item);
               frequency.storedHeat.setHeat(heat);
               return frequency;
           }

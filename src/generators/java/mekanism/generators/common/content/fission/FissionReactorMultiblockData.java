@@ -267,10 +267,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(coolantTank.getFluidTank()::setContents);
-        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(fuelTank::setContents);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(heatedCoolantTank::setContents);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(wasteTank::setContents);
+        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(coolantTank.getFluidTank()::setContentsUnchecked);
+        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(fuelTank::setContentsUnchecked);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(heatedCoolantTank::setContentsUnchecked);
+        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(wasteTank::setContentsUnchecked);
         readValves(input);
         assemblies.clear();
         for (FormedAssembly assembly : input.listOrEmpty(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC)) {

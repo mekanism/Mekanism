@@ -65,7 +65,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.amountAsInt();
+        return container == null ? 0 : container.amountAsLong();
     }
 
     @Range(from = 0, to = Integer.MAX_VALUE)
@@ -159,7 +159,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
         CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.capacityAsInt(resource);
+        return container == null ? 0 : container.capacityAsLong(resource);
     }
 
     @Override

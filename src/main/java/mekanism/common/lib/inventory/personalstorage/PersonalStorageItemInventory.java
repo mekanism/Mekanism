@@ -32,7 +32,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         this.parent = null;
         for (SlotData slotData : loadedData) {
             IInventorySlot slot = slots.get(slotData.slot);
-            slot.setContentsUnchecked(slotData.stack().resource(), slotData.stack().amount());
+            slot.setContentsUnchecked(slotData.stack());
         }
     }
 

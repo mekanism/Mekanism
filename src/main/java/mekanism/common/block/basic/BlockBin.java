@@ -89,8 +89,8 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
         } else if (!world.isClientSide()) {
             BinInventorySlot binSlot = bin.getBinSlot();
             ItemResource binItemType = binSlot.getBinItemType();
-            int binMaxSize = binSlot.capacityAsInt(binItemType);
-            if (binSlot.amountAsInt() < binMaxSize) {
+            long binMaxSize = binSlot.capacityAsLong(binItemType);
+            if (binSlot.amountAsLong() < binMaxSize) {
                 //TODO - 1.21: Make add ticks and removeTicks functional somehow when the game isn't ticking?
                 // at the very least make adding and removing, force sync an update packet if it isn't ticking
                 if (bin.addTicks == 0) {
@@ -125,7 +125,7 @@ public class BlockBin extends BlockTile<TileEntityBin, BlockTypeTile<TileEntityB
                                     if (inserted == extracted) {
                                         //Validate we were actually able to extract the amount we inserted
                                         added = true;
-                                        if (binSlot.amountAsInt() == binMaxSize) {
+                                        if (binSlot.amountAsLong() == binMaxSize) {
                                             break;
                                         }
                                     }

@@ -61,7 +61,7 @@ public class GuiFluidBar extends GuiTankBar<FluidStack> {
                 } else if (tank.amountAsLong() == Long.MAX_VALUE) {
                     return MekanismLang.GENERIC_STORED.translate(tank.getResource(), MekanismLang.INFINITE);
                 }
-                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amountAsInt()));
+                return MekanismLang.GENERIC_STORED_MB.translate(tank.getResource(), TextUtils.format(tank.amountAsLong()));
             }
 
             @Override

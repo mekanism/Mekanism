@@ -81,8 +81,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
                 if (slot instanceof CraftingWindowOutputInventorySlot) {
                     slot.setEmpty();
                 } else {
-                    LargeResourceStack<ItemResource> stack = stacks.get(i);
-                    slot.setContentsUnchecked(stack.resource(), stack.amount());
+                    slot.setContentsUnchecked(stacks.get(i));
                 }
             }
         }
