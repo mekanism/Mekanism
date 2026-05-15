@@ -89,8 +89,6 @@ import net.neoforged.neoforge.common.UsernameCache;
 import net.neoforged.neoforge.event.level.block.BreakBlockEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.ItemHandlerHelper;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -642,8 +640,7 @@ public final class MekanismUtils {
     }
 
     /**
-     * Calculates the redstone level based on the percentage of amount stored. Like {@link ItemHandlerHelper#calcRedstoneFromInventory(IItemHandler)} except without
-     * limiting slots to the max stack size of the item to allow for better support for bins
+     * Calculates the redstone level based on the percentage of amount stored.
      *
      * @return A redstone level based on the percentage of the amount stored.
      */

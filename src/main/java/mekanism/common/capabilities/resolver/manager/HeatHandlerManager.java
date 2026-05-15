@@ -15,6 +15,7 @@ import org.jetbrains.annotations.Nullable;
 public class HeatHandlerManager extends CapabilityHandlerManager<IHeatCapacitorHolder, IHeatCapacitor, IHeatHandler> {
 
     public HeatHandlerManager(@Nullable IHeatCapacitorHolder holder, @NotNull ISidedHeatHandler baseHandler) {
-        super(holder, baseHandler, Capabilities.HEAT, ProxyHeatHandler::new, IHeatCapacitorHolder::getHeatCapacitors);
+        //TODO - 26.1: Evaluate if we want to change this to be more like the other things where the handler isn't implemented by the tile itself
+        super(holder, Capabilities.HEAT, IHeatCapacitorHolder::getHeatCapacitors, (side, h) -> new ProxyHeatHandler(baseHandler, side, h));
     }
 }
