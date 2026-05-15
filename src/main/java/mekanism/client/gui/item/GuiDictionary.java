@@ -68,7 +68,7 @@ public class GuiDictionary extends GuiMekanism<DictionaryContainer> {
     @Override
     public boolean mouseClicked(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && event.hasShiftDown() && !target.hasTarget()) {
-            Slot slot = getSlotUnderMouse();
+            Slot slot = getHoveredSlot();
             if (slot != null) {
                 ItemStack stack = slot.getItem();
                 if (!stack.isEmpty()) {

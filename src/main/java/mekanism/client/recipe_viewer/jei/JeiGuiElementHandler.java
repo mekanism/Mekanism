@@ -8,15 +8,19 @@ import mekanism.client.gui.GuiMekanism;
 import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.window.GuiWindow;
 import mekanism.client.recipe_viewer.GuiElementHandler;
+import mekanism.client.recipe_viewer.interfaces.IRecipeViewerIngredientHelper;
 import mekanism.client.recipe_viewer.interfaces.IRecipeViewerRecipeArea;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
+import mezz.jei.api.gui.builder.IClickableIngredientFactory;
 import mezz.jei.api.gui.handlers.IGuiClickableArea;
 import mezz.jei.api.gui.handlers.IGuiContainerHandler;
+import mezz.jei.api.ingredients.IIngredientType;
 import mezz.jei.api.runtime.IClickableIngredient;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.client.gui.components.events.ContainerEventHandler;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.renderer.Rect2i;
+import org.jspecify.annotations.Nullable;
 
 public class JeiGuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>> {
 
@@ -32,16 +36,23 @@ public class JeiGuiElementHandler implements IGuiContainerHandler<GuiMekanism<?>
     }
 
     @Override
-    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(GuiMekanism<?> gui, double mouseX, double mouseY) {
-        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) ->
-              ingredientManager.createClickableIngredient(ingredient, helper.getIngredientBounds(mouseX, mouseY), false).orElse(null));
+    public Optional<IClickableIngredient<?>> getClickableIngredientUnderMouse(IClickableIngredientFactory builder, GuiMekanism<?> gui, double mouseX, double mouseY) {
+        return GuiElementHandler.getClickableIngredientUnderMouse(gui, mouseX, mouseY, (helper, ingredient) -> wrapIngredient(builder, mouseX, mouseY, helper, ingredient));
     }
+
+    @Nullable
+    private <INGREDIENT> IClickableIngredient<INGREDIENT> wrapIngredient(IClickableIngredientFactory builder, double mouseX, double mouseY,
+          IRecipeViewerIngredientHelper helper, INGREDIENT ingredient) {
+        IIngredientType<INGREDIENT> ingredientType = ingredientManager.getIngredientType(ingredient);
+        return ingredientType == null ? null : builder.createBuilder(ingredientType, ingredient).buildWithArea(helper.getIngredientBounds(mouseX, mouseY)).orElse(null);
+    }
+
 
     @Override
     public Collection<IGuiClickableArea> getGuiClickableAreas(GuiMekanism<?> gui, double mouseX, double mouseY) {
         //Make mouseX and mouseY not be relative
-        mouseX += gui.getGuiLeft();
-        mouseY += gui.getGuiTop();
+        mouseX += gui.getLeftPos();
+        mouseY += gui.getTopPos();
         GuiWindow guiWindow = gui.getWindowHovering(mouseX, mouseY);
         if (guiWindow == null) {
             //If no window is being hovered, then check the elements in general

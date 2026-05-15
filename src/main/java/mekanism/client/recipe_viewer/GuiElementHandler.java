@@ -48,10 +48,10 @@ public class GuiElementHandler {
     }
 
     public static List<Rect2i> getGuiExtraAreas(GuiMekanism<?> gui) {
-        int parentX = gui.getGuiLeft();
-        int parentY = gui.getGuiTop();
+        int parentX = gui.getLeftPos();
+        int parentY = gui.getTopPos();
         int parentWidth = gui.getImageWidth();
-        int parentHeight = gui.getYSize();
+        int parentHeight = gui.getImageHeight();
         //Add any children the gui has and any windows the gui has including all grandchildren that poke out of the main gui
         List<Rect2i> extraAreas = getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.children());
         extraAreas.addAll(getAreasFor(parentX, parentY, parentWidth, parentHeight, gui.getWindows()));
