@@ -1,7 +1,7 @@
 package mekanism.api.chemical;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.resource.IMekanismResourceHandler;
 
 @NothingNullByDefault
 public interface IMekanismChemicalHandler extends IMekanismResourceHandler<ChemicalResource, IChemicalTank> {

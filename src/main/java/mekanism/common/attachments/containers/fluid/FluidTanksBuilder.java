@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.AttachedResources;

@@ -1,7 +1,7 @@
 package mekanism.api.fluid;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.resource.IMekanismResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 
 @NothingNullByDefault

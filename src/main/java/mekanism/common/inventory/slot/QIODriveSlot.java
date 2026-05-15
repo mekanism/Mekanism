@@ -4,7 +4,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.IQIODriveItem;

@@ -1,7 +1,7 @@
 package mekanism.common.upgrade;
 
 import java.util.List;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.tile.component.ITileComponent;

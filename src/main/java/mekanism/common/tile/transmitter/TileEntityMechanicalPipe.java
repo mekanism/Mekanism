@@ -3,7 +3,7 @@ package mekanism.common.tile.transmitter;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;

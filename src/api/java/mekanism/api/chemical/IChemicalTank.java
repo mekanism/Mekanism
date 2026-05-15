@@ -4,8 +4,8 @@ import com.mojang.serialization.Codec;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.container.IResourceContainer;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
 @NothingNullByDefault

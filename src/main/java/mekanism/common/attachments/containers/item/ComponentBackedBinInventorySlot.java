@@ -5,7 +5,7 @@ import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.AttachedResources;

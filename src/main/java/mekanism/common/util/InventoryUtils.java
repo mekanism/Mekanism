@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Function;
 import mekanism.api.AutomationType;
-import mekanism.api.container.IResourceContainer;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;

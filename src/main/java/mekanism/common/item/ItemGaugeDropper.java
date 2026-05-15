@@ -1,8 +1,8 @@
 package mekanism.common.item;
 
 import java.util.function.Consumer;
-import mekanism.api.container.IMekanismResourceHandler;
-import mekanism.api.container.IResourceContainer;
+import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTank;
 import mekanism.common.attachments.containers.chemical.merged.MergedTankCreator;

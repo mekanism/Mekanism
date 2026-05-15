@@ -2,7 +2,7 @@ package mekanism.client.gui;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.container.IResourceContainer;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.element.GuiDownArrow;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;

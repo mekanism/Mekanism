@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.function.IntFunction;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.container.IResourceContainer;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.radiation.IRadiationManager;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.Mekanism;

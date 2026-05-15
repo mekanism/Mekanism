@@ -2,7 +2,7 @@ package mekanism.common.capabilities.proxy;
 
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.common.capabilities.holder.IHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.ResourceHandler;

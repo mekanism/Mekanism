@@ -1,7 +1,7 @@
 package mekanism.common.upgrade.transmitter;
 
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.lib.transmitter.ConnectionType;
 
 public class PressurizedTubeUpgradeData extends TransmitterUpgradeData {

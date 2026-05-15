@@ -12,7 +12,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.inventory.slot.UpgradeInventorySlot;
 import net.minecraft.network.RegistryFriendlyByteBuf;

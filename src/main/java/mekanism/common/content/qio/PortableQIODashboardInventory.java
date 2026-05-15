@@ -2,7 +2,7 @@ package mekanism.common.content.qio;
 
 import java.util.ArrayList;
 import java.util.List;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.attachments.qio.PortableDashboardContents;

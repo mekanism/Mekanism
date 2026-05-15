@@ -10,7 +10,7 @@ import java.util.Set;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterPathfinder.Destination;

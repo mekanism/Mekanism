@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.attachments.containers.AttachedResources;

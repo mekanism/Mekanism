@@ -3,8 +3,8 @@ package mekanism.api.fluid;
 import com.mojang.serialization.Codec;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IResourceContainer;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 

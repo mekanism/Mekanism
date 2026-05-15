@@ -1,6 +1,6 @@
 package mekanism.common.upgrade.transmitter;
 
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.lib.transmitter.ConnectionType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 

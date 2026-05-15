@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;

@@ -7,7 +7,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.BasicResourceContainer;
+import mekanism.api.resource.BasicResourceContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;

@@ -1,4 +1,4 @@
-package mekanism.api.container;
+package mekanism.api.resource;
 
 import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;

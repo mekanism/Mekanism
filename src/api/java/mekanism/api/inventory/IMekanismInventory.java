@@ -1,7 +1,7 @@
 package mekanism.api.inventory;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.IMekanismResourceHandler;
+import mekanism.api.resource.IMekanismResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 
 @NothingNullByDefault//TODO - 26.1: Docs and generify to support other resource types

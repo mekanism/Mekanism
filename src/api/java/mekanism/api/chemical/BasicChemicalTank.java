@@ -8,7 +8,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.container.BasicResourceContainer;
+import mekanism.api.resource.BasicResourceContainer;
 import mekanism.api.functions.ConstantPredicates;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import org.jetbrains.annotations.Nullable;

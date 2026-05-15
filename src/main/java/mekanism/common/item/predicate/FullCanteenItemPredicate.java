@@ -2,7 +2,7 @@ package mekanism.common.item.predicate;
 
 import com.mojang.serialization.MapCodec;
 import java.util.List;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.config.MekanismConfig;

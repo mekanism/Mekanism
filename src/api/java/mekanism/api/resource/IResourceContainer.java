@@ -1,4 +1,4 @@
-package mekanism.api.container;
+package mekanism.api.resource;
 
 import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
@@ -18,7 +18,6 @@ import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Docs
-//TODO - 26.1: Should we rename this package to resource?
 @NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 

@@ -1,7 +1,7 @@
 package mekanism.common.content.network.distribution;
 
 import java.util.Collection;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.network.transmitter.BufferedResourceTransmitter;
 import mekanism.common.lib.distribution.Target;
 import net.neoforged.neoforge.transfer.resource.Resource;

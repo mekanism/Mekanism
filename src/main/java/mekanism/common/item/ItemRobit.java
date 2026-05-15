@@ -3,7 +3,7 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.robit.RobitSkin;

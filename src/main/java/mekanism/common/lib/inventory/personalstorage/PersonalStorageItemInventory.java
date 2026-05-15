@@ -8,7 +8,7 @@ import java.util.Objects;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.container.LargeResourceStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import net.neoforged.neoforge.transfer.item.ItemResource;
