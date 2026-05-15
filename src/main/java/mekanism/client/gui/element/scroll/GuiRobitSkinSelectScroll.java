@@ -10,7 +10,6 @@ import mekanism.client.gui.element.GuiElement;
 import mekanism.client.gui.element.GuiElementHolder;
 import mekanism.client.gui.element.GuiInnerScreen;
 import mekanism.client.gui.tooltip.TooltipUtils;
-import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.registries.MekanismRobitSkins;
@@ -50,7 +49,7 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     public GuiRobitSkinSelectScroll(IGuiWrapper gui, int x, int y, EntityRobit robit, Supplier<List<ResourceKey<RobitSkin>>> unlockedSkins) {
         super(gui, x, y, INNER_DIMENSIONS + 12, INNER_DIMENSIONS);
         this.robit = robit;
-        this.selectedSkin = this.robit.getSkin();
+        this.selectedSkin = this.robit.getSkinId();
         this.unlockedSkins = unlockedSkins;
         scrollBar = addChild(new GuiScrollBar(gui, relativeX + INNER_DIMENSIONS, relativeY, INNER_DIMENSIONS,
               () -> getUnlockedSkins() == null ? 0 : Mth.ceil((double) getUnlockedSkins().size() / SLOT_COUNT), () -> SLOT_COUNT));
@@ -182,10 +181,6 @@ public class GuiRobitSkinSelectScroll extends GuiElement {
     private void renderRobit(GuiGraphicsExtractor guiGraphics, ResourceKey<RobitSkin> skinKey, int x, int y, Quaternionf rotation, int index) {
         SkinLookup skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), skinKey);
         List<Identifier> textures = skinLookup.textures();
-        if (textures.isEmpty()) {
-            Mekanism.logger.error("Failed to render skin: {}, as it has no textures.", skinLookup.identifier());
-            return;
-        }
         //TODO - 26.1 robit model
         /*BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(skinLookup);
         if (model == null) {

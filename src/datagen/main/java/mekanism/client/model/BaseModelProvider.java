@@ -75,9 +75,12 @@ public abstract class BaseModelProvider extends ModelProvider {
     }
 
     protected void simpleISTER(ItemModelGenerators itemModels, Holder<Item> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender) {
-        Item item = itemRegistryObject.value();
-        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(existingModel(item), unbakedRender);
-        itemModels.itemModelOutput.accept(item, unbaked);
+        simpleISTER(itemModels, itemRegistryObject, unbakedRender, existingModel(itemRegistryObject.value()));
+    }
+
+    protected void simpleISTER(ItemModelGenerators itemModels, Holder<Item> itemRegistryObject, SpecialModelRenderer.Unbaked<?> unbakedRender, Identifier modelLoc) {
+        ItemModel.Unbaked unbaked = ItemModelUtils.specialModel(modelLoc, unbakedRender);
+        itemModels.itemModelOutput.accept(itemRegistryObject.value(), unbaked);
     }
 
     public boolean textureExists(Identifier texture) {

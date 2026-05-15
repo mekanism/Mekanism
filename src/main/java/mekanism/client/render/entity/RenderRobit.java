@@ -1,31 +1,45 @@
 package mekanism.client.render.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Axis;
 import java.util.Collections;
 import mekanism.client.RobitSpriteUploader;
-import mekanism.client.render.entity.RenderRobit.RobitModelWrapper;
+import mekanism.client.model.robit.RobitSkinManager;
+import mekanism.client.model.robit.RobitSkinManager.BakeResult;
 import mekanism.client.render.entity.RenderRobit.RobitRenderState;
 import mekanism.common.entity.EntityRobit;
-import mekanism.common.registries.MekanismRobitSkins;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.resources.Identifier;
-import net.neoforged.neoforge.model.data.ModelData;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-//TODO - 26.1 robit model: not this... perhaps just manually submit(...)
-// or patch LivingEntityRenderer to use getModel() instead of direct field, override that
-public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, RobitModelWrapper> {
+@NullMarked
+public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, EntityModel<RobitRenderState>> {
+
+    private static final ModelPart EMPTY_MODEL_PART = new ModelPart(Collections.emptyList(), Collections.emptyMap());
+    private static final EntityModel<RobitRenderState> EMPTY_MODEL = new EntityModel<>(
+          EMPTY_MODEL_PART,
+          _ -> {
+              throw new UnsupportedOperationException("Should not be rendered");
+          }
+    ) {};
 
     public RenderRobit(EntityRendererProvider.Context context) {
-        //TODO - 26.1: Figure out the model part to pass?
-        super(context, new RobitModelWrapper(new ModelPart(Collections.emptyList(), Collections.emptyMap())), 0.5F);
+        super(context, EMPTY_MODEL, 0.5F);
+    }
+
+    @Override
+    @Nullable
+    protected RenderType getRenderType(RobitRenderState state, boolean isBodyVisible, boolean forceTransparent, boolean appearGlowing) {
+        return null;//prevent super.render from rendering a model
     }
 
     @Override
@@ -36,75 +50,51 @@ public class RenderRobit extends MobRenderer<EntityRobit, RobitRenderState, Robi
     @Override
     public void extractRenderState(EntityRobit robit, RobitRenderState state, float partialTick) {
         super.extractRenderState(robit, state, partialTick);
-        state.skinLookup = MekanismRobitSkins.lookup(robit.level().registryAccess(), robit.getSkin());
-        state.modelData = robit.getModelData();
+        state.model = RobitSkinManager.get().getBaked(robit.getSkin(), robit.getModelTexture());
     }
 
     @Override
-    public void submit(@NotNull RobitRenderState state, @NotNull PoseStack poseStack, @NotNull SubmitNodeCollector nodeCollector, @NotNull CameraRenderState camera) {
-        if (state.skinLookup != null) {
-            //TODO - 26.1: Replace the model here, and don't capture the state as part of setupAnim
-            //this.model = new RobitModelWrapper(state);
-            super.submit(state, poseStack, nodeCollector, camera);
+    public void submit(RobitRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector, CameraRenderState camera) {
+        boolean isBodyVisible = this.isBodyVisible(state);
+        boolean forceTransparent = !isBodyVisible && !state.isInvisibleToPlayer;
+        //nb: this segment copied from super, bed & layer checks removed, invisibility check moved, and model submit replaced with submitRobitSkin()
+        if (!forceTransparent) {
+            poseStack.pushPose();
+            {
+                float scale = state.scale;
+                poseStack.scale(scale, scale, scale);
+                this.setupRotations(state, poseStack, state.bodyRot, scale);
+                poseStack.scale(-1.0F, -1.0F, 1.0F);
+                this.scale(state, poseStack);
+                poseStack.translate(0.0F, -1.501F, 0.0F);
+                //isBodyVisible & forceTransparent moved above
+                submitRobitSkin(state, poseStack, nodeCollector);
+            }
+            poseStack.popPose();
         }
+        //allow any layers/nametag/leash states to submit
+        super.submit(state, poseStack, nodeCollector, camera);
     }
 
-    @NotNull
+    private void submitRobitSkin(RobitRenderState state, PoseStack poseStack, SubmitNodeCollector nodeCollector) {
+        poseStack.pushPose();
+        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        poseStack.translate(-0.5, -1.5, -0.5);
+        submitRobitSkin(state.model, poseStack, nodeCollector, getOverlayCoords(state, this.getWhiteOverlayProgress(state)), state.lightCoords, state.outlineColor);
+        poseStack.popPose();
+    }
+
+    public static void submitRobitSkin(BakeResult baked, PoseStack poseStack, SubmitNodeCollector nodeCollector, int overlay, int lightCoords, int outlineColor) {
+        nodeCollector.submitBlockModel(poseStack, baked.renderType(), baked.model(), BlockModelRenderState.EMPTY_TINTS, lightCoords, overlay, outlineColor);
+    }
+
     @Override
-    public Identifier getTextureLocation(@NotNull RobitRenderState state) {
+    public Identifier getTextureLocation(RobitRenderState state) {
         return RobitSpriteUploader.ATLAS_LOCATION;
     }
 
     public static class RobitRenderState extends LivingEntityRenderState {
 
-        @Nullable
-        public MekanismRobitSkins.SkinLookup skinLookup;
-        public ModelData modelData = ModelData.EMPTY;
-    }
-
-    public static class RobitModelWrapper extends EntityModel<RobitRenderState> {
-
-        @Nullable
-        private RobitRenderState robit;
-
-        RobitModelWrapper(ModelPart root) {
-            super(root);
-        }
-
-        @Override
-        public void setupAnim(@NotNull RobitRenderState robit) {
-            //this.robit = robit;
-            super.setupAnim(robit);
-        }
-
-        //TODO - 26.1 robit model
-        /*@Override
-        public void renderToBuffer(@NotNull PoseStack matrix, @NotNull VertexConsumer builder, int light, int overlayLight, int color) {
-            if (robit == null || robit.skinLookup == null) {
-                //Setup didn't happen right
-                return;
-            }
-
-            BakedModel model = MekanismModelCache.INSTANCE.getRobitSkin(robit.skinLookup);
-            if (model == null) {
-                //No model means we can't render (this shouldn't happen as we try to fall back to the default skin)
-                Mekanism.logger.warn("Robit with skin: {} does not have a model. If this happened during a resource reload this can be ignored.", robit.skinLookup.identifier());
-            } else {
-                matrix.pushPose();
-                matrix.mulPose(Axis.XP.rotationDegrees(180));
-                matrix.translate(-0.5, -1.5, -0.5);
-                PoseStack.Pose last = matrix.last();
-                float red = ARGB.redFloat(color);
-                float green = ARGB.greenFloat(color);
-                float blue = ARGB.blueFloat(color);
-                float alpha = ARGB.alphaFloat(color);
-                for (BakedQuad quad : model.getQuads(null, null, robit.level().random, robit.modelData, null)) {
-                    builder.putBulkData(last, quad, red, green, blue, alpha, light, overlayLight);
-                }
-                matrix.popPose();
-            }
-            //Clear current robit after rendering it
-            robit = null;
-        }*/
+        public BakeResult model = RobitSkinManager.get().getMissing();
     }
 }

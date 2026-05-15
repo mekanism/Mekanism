@@ -1,7 +1,6 @@
 {
-	"parent": "mekanism:item/robit",
+	"parent": "mekanism:item/robit_transforms",
 	"credit": "Model by CyanideX, Modified by agnor99",
-	"loader": "mekanism:robit",
 	"elements": [
 		{
 			"name": "trackLeft",

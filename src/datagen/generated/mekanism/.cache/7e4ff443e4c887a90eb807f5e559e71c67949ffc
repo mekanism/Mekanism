@@ -1,11 +1,11 @@
-// 26.1.2	2026-05-02T17:07:55.3786584	Datapack registries: mekanism
+// 26.1.2	2026-05-15T18:43:37.0490568	Datapack registries: mekanism
 52821c8942920c69142705aae7c0b11038d53cdd data/mekanism/damage_type/flamethrower.json
 3569c860b35530ba451e7442db81f25f1491a9c9 data/mekanism/damage_type/laser.json
 3d56d26f6e58ced8680ed0cde116e2b4f3850aef data/mekanism/damage_type/radiation.json
 e64bec7d4e6f2fd3b9d80f0327f46e70a39f19d1 data/mekanism/damage_type/sps.json
 9eaadaf3a3535dd198e340273d2e37f773f2ea12 data/mekanism/mekanism/robit_skin/ace.json
 0d1b6505a0aec5f2664de808dfb4d954af5e70d8 data/mekanism/mekanism/robit_skin/agender.json
-f1e23db8aff6bfda685b99179902bac3b439e434 data/mekanism/mekanism/robit_skin/allay.json
+39856ac6442397e91535869612b64f7ac97fb2d2 data/mekanism/mekanism/robit_skin/allay.json
 df3a462a20d38aad8cdf6097afc9acabb68b51c1 data/mekanism/mekanism/robit_skin/aro.json
 643c68f83d46458c555f499f4d3b2cf068418322 data/mekanism/mekanism/robit_skin/bi.json
 25046b5f2891eaffb12868adf472b5d0184f5dd9 data/mekanism/mekanism/robit_skin/enby.json

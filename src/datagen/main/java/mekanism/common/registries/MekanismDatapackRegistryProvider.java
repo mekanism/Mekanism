@@ -148,13 +148,13 @@ public class MekanismDatapackRegistryProvider extends BaseDatapackRegistryProvid
               }
           })
           .add(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME, context -> {
-              context.register(MekanismRobitSkins.BASE, makeRobitSkin(Mekanism.rl("robit"), 2));
+              context.register(MekanismRobitSkins.BASE, makeRobitSkin(MekanismRobitSkins.BASE_SKIN_TEXTURE, 2));
               context.register(MekanismRobitSkins.ALLAY, new AdvancementBasedRobitSkin(
                     List.of(
                           Mekanism.rl("allay"),
                           Mekanism.rl("allay2")
                     ),
-                    Mekanism.rl("item/robit_allay"),
+                    Mekanism.rl("robit/robit_allay"),
                     Identifier.withDefaultNamespace("husbandry/allay_deliver_item_to_player")
               ));
               for (Map.Entry<RobitPrideSkinData, ResourceKey<RobitSkin>> entry : MekanismRobitSkins.PRIDE_SKINS.entrySet()) {

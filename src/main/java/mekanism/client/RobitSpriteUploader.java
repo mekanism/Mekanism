@@ -1,36 +1,47 @@
 package mekanism.client;
 
-import java.util.Collections;
-import java.util.List;
 import mekanism.common.Mekanism;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.sprite.AtlasManager.AtlasConfig;
 import net.minecraft.client.resources.model.sprite.SpriteId;
 import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.client.event.ModelEvent;
 import net.neoforged.neoforge.client.event.RegisterTextureAtlasesEvent;
-import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NullMarked;
 
-//TODO - 26.1: Maybe AtlasManager.AtlasConfig ?
+@NullMarked
 public class RobitSpriteUploader {
 
     public static final Identifier ATLAS_LOCATION = Mekanism.rl("textures/atlas/robit.png");
+    public static final Identifier ATLAS_ID = Mekanism.rl("entity/robit");
     public static final RenderType RENDER_TYPE = RenderTypes.entityCutout(ATLAS_LOCATION);
-    public static final List<RenderType> RENDER_TYPES = Collections.singletonList(RENDER_TYPE);
-    @Nullable
-    public static RobitSpriteUploader UPLOADER;
+
 
     @SubscribeEvent
     public static void registerAtlases(RegisterTextureAtlasesEvent event) {
-        event.register(new AtlasConfig(ATLAS_LOCATION, Mekanism.rl("entity/robit"), false));
+        event.register(new AtlasConfig(ATLAS_LOCATION, ATLAS_ID, false));
     }
 
     public static SpriteId getSpriteId(Identifier texture) {
-        return new SpriteId(ATLAS_LOCATION, texture);
+        return new SpriteId(ATLAS_ID, texture);
     }
 
-    /*public TextureAtlasSprite getSprite(@NotNull Identifier location) {
-        return super.getSprite(location);
-    }*/
+    @SubscribeEvent
+    public static void bakingCompleted(ModelEvent.BakingCompleted event) {
+
+    }
+
+    public static TextureAtlas getAtlas() {
+        return Minecraft.getInstance().getAtlasManager().getAtlasOrThrow(ATLAS_ID);
+    }
+
+    public static TextureAtlasSprite getSprite(Identifier location) {
+        return getAtlas().getSprite(location);
+    }
+
 }

@@ -111,6 +111,7 @@ import mekanism.client.render.hud.MekanismHUD;
 import mekanism.client.render.hud.MekanismStatusOverlay;
 import mekanism.client.render.hud.RadiationOverlay;
 import mekanism.client.render.item.MekaSuitBarDecorator;
+import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.TransmitterTypeDecorator;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
@@ -332,6 +333,7 @@ public class ClientRegistration {
         event.register(Mekanism.rl("scuba_mask"), RenderScubaMask.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("scuba_tank"), RenderScubaTank.Unbaked.MAP_CODEC);
         event.register(Mekanism.rl("energy_cube"), RenderEnergyCubeItem.Unbaked.MAP_CODEC);
+        event.register(Mekanism.rl("robit"), RenderRobitItem.Unbaked.MAP_CODEC);
     }
 
     @SubscribeEvent

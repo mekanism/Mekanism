@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import mekanism.client.model.robit.RobitSkinManager;
 import mekanism.client.render.RenderTickHandler;
 import mekanism.client.render.tileentity.RenderSPS;
 import mekanism.client.sound.SoundHandler;
@@ -39,6 +40,7 @@ public class MekanismClient {
     public MekanismClient(ModContainer container, IEventBus modEventBus) {
         container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
         modEventBus.register(RobitSpriteUploader.class);
+        modEventBus.register(RobitSkinManager.class);
     }
 
     public static final Map<UUID, SecurityData> clientSecurityMap = new Object2ObjectOpenHashMap<>();

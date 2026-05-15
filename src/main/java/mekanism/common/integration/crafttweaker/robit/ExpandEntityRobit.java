@@ -25,7 +25,7 @@ public class ExpandEntityRobit {
     @ZenCodeType.Method
     @ZenCodeType.Getter("skin")
     public static RobitSkin getSkin(EntityRobit internal) {
-        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkin()).skin();
+        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkinId()).skin();
     }
 
     /**
@@ -37,7 +37,7 @@ public class ExpandEntityRobit {
     @ZenCodeType.Getter("skinName")
     public static Identifier getSkinName(EntityRobit internal) {
         //Note: We perform a lookup in case the skin is invalid and thus would fall back to being the base skin
-        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkin()).identifier();
+        return MekanismRobitSkins.lookup(internal.level().registryAccess(), internal.getSkinId()).identifier();
     }
 
     /**

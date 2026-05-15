@@ -1,6 +1,9 @@
 {
   "model": {
-    "type": "minecraft:model",
-    "model": "mekanism:item/robit"
+    "type": "minecraft:special",
+    "base": "mekanism:item/robit_transforms",
+    "model": {
+      "type": "mekanism:robit"
+    }
   }
 }

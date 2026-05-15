@@ -18,7 +18,7 @@ public interface IRobit extends ISecurityObject {
      *
      * @return Current skin.
      */
-    ResourceKey<RobitSkin> getSkin();
+    ResourceKey<RobitSkin> getSkinId();
 
     /**
      * Tries to set this Robit's skin to the given skin.

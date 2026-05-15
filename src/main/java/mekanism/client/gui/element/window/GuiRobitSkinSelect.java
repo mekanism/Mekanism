@@ -28,7 +28,7 @@ public class GuiRobitSkinSelect extends GuiWindow {
         addChild(new TranslationButton(gui, relativeX + width / 2 - 61, relativeY + 165, 60, 20, MekanismLang.BUTTON_CANCEL, this::close));
         addChild(new TranslationButton(gui, relativeX + width / 2 + 1, relativeY + 165, 60, 20, MekanismLang.BUTTON_CONFIRM, (element, event, isDoubleClick) -> {
             ResourceKey<RobitSkin> selectedSkin = selection.getSelectedSkin();
-            if (selectedSkin != this.robit.getSkin()) {
+            if (selectedSkin != this.robit.getSkinId()) {
                 PacketUtils.sendToServer(new PacketRobitSkin(this.robit, selectedSkin));
             }
             return close(element, event, isDoubleClick);

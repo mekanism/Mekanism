@@ -68,7 +68,7 @@ public record PacketRobitName(int entityId, String name) implements IMekanismPac
         //Validate the player can access the robit before changing the robit's name
         if (entity instanceof EntityRobit robit && IEntitySecurityUtils.INSTANCE.canAccess(player, robit)) {
             robit.setCustomName(TextComponentUtil.getString(name));
-            if (robit.getSkin() == MekanismRobitSkins.BASE) {
+            if (robit.getSkinId() == MekanismRobitSkins.BASE) {
                 //If the robit has the base skin currently equipped, check if there are any skins paired with the name that got set as an Easter egg,
                 // and then pick a random one and set it
                 // Note: We use null for the player instead of the actual player in case we ever

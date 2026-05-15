@@ -17,6 +17,7 @@ import mekanism.client.model.itemtint.ColorModulationTint;
 import mekanism.client.model.props.ClientRadiationScale;
 import mekanism.client.model.props.ConfigCardEncoded;
 import mekanism.client.model.props.CraftingFormulaStatus;
+import mekanism.client.render.item.RenderRobitItem;
 import mekanism.client.render.item.block.RenderEnergyCubeItem;
 import mekanism.client.render.item.block.RenderFluidTankItem;
 import mekanism.client.render.item.gear.RenderAtomicDisassembler;
@@ -190,6 +191,7 @@ public class MekanismModelProvider extends BaseModelProvider {
         simpleISTER(itemModels, MekanismItems.FLAMETHROWER, RenderFlameThrower.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_MASK, RenderScubaMask.Unbaked.INSTANCE);
         simpleISTER(itemModels, MekanismItems.SCUBA_TANK, RenderScubaTank.Unbaked.INSTANCE);
+        simpleISTER(itemModels, MekanismItems.ROBIT, RenderRobitItem.Unbaked.INSTANCE, existingModel("item/robit_transforms"));
 
         //todo - 26.1: we could possibly merge the base item models to one now? Assuming the perspective translations are the same
         simpleISTER(itemModels, MekanismBlocks.ADVANCED_FLUID_TANK.getItemHolder(), RenderFluidTankItem.Unbaked.INSTANCE);
@@ -224,8 +226,6 @@ public class MekanismModelProvider extends BaseModelProvider {
             );
             itemModels.itemModelOutput.accept(MekanismItems.MEKA_TOOL.asItem(), modelToRegister);
         }
-
-        itemModels.declareCustomModelItem(MekanismItems.ROBIT.asItem());//todo renderer?
 
         registerManualItemModels(itemModels);
 

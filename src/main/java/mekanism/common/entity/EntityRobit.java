@@ -124,8 +124,6 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.damagesource.DamageContainer;
-import net.neoforged.neoforge.model.data.ModelData;
-import net.neoforged.neoforge.model.data.ModelProperty;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -137,7 +135,6 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         return createMobAttributes().add(Attributes.MAX_HEALTH, 1.0D).add(Attributes.MOVEMENT_SPEED, 0.3F);
     }
 
-    public static final ModelProperty<Identifier> SKIN_TEXTURE_PROPERTY = new ModelProperty<>();
     private static final Codec<ResourceKey<RobitSkin>> SKIN_KEY_CODEC = ResourceKey.codec(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
 
     private static <T> EntityDataAccessor<T> define(EntityDataSerializer<T> dataSerializer) {
@@ -340,7 +337,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             energySlot.fillContainerOrConvert();
             recipeCacheLookupMonitor.updateAndProcess();
 
-            if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkin() == MekanismRobitSkins.BASE) {
+            if (!isDefaultSkinManuallySelected() && HolidayManager.hasRobitSkinsToday() && getSkinId() == MekanismRobitSkins.BASE) {
                 //Randomize the robit's skin
                 setSkin(HolidayManager.getRandomBaseSkin(level().getRandom()), null);
             }
@@ -462,7 +459,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             security.setSecurityMode(getSecurityMode());
         }
         stack.set(MekanismDataComponents.DEFAULT_MANUALLY_SELECTED, isDefaultSkinManuallySelected());
-        stack.set(MekanismDataComponents.ROBIT_SKIN, getSkin());
+        stack.set(MekanismDataComponents.ROBIT_SKIN, getSkinId());
         return stack;
     }
 
@@ -497,7 +494,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
         ContainerType.ITEM.saveTo(output, getInventorySlots(null));
         ContainerType.ENERGY.saveTo(output, getEnergyContainers(null));
         output.putInt(SerializationConstants.PROGRESS, getOperatingTicks());
-        output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkin());
+        output.store(SerializationConstants.SKIN, SKIN_KEY_CODEC, getSkinId());
     }
 
     @Override
@@ -732,14 +729,20 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
 
     @NotNull
     @Override
-    public ResourceKey<RobitSkin> getSkin() {
+    public ResourceKey<RobitSkin> getSkinId() {
         return entityData.get(SKIN);
     }
+
+    public RobitSkin getSkin() {
+        return MekanismRobitSkins.get(Objects.requireNonNull(getLevel(), "not in level").registryAccess(), getSkinId());
+    }
+
+    //todo - 26.1: cache the skin instance and index
 
     @Override
     public boolean setSkin(@NotNull ResourceKey<RobitSkin> skinKey, @Nullable Player player) {
         Objects.requireNonNull(skinKey, "Robit skin cannot be null.");
-        if (getSkin() == skinKey) {
+        if (getSkinId() == skinKey) {
             //Don't do anything if the robit already has that skin selected
             return true;
         }
@@ -749,7 +752,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
             }
             SkinLookup skinLookup = MekanismRobitSkins.lookup(level().registryAccess(), skinKey);
             skinKey = skinLookup.name();
-            if (getSkin() == skinKey) {
+            if (getSkinId() == skinKey) {
                 //Don't do anything if the robit already has that skin selected
                 //Note: We double-check this in case we ended up being changed to the default skin due to it not existing
                 return true;
@@ -769,17 +772,9 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismInven
     /**
      * @apiNote Only call on the client.
      */
-    public ModelData getModelData() {
-        //TODO: Eventually we might want to evaluate caching this model data object
-        return ModelData.of(SKIN_TEXTURE_PROPERTY, getModelTexture());
-    }
-
-    /**
-     * @apiNote Only call on the client.
-     */
-    private Identifier getModelTexture() {
+    public Identifier getModelTexture() {
         Registry<RobitSkin> robitSkins = level().registryAccess().lookupOrThrow(MekanismAPI.ROBIT_SKIN_REGISTRY_NAME);
-        ResourceKey<RobitSkin> skinKey = getSkin();
+        ResourceKey<RobitSkin> skinKey = getSkinId();
         Optional<Holder.Reference<RobitSkin>> optionalSkin = robitSkins.get(skinKey);
         Holder.Reference<RobitSkin> skin;
         if (optionalSkin.isPresent()) {

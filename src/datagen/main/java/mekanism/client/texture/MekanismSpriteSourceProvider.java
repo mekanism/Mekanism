@@ -1,6 +1,7 @@
 package mekanism.client.texture;
 
 import java.util.concurrent.CompletableFuture;
+import mekanism.client.RobitSpriteUploader;
 import mekanism.common.Mekanism;
 import net.minecraft.client.renderer.texture.atlas.sources.DirectoryLister;
 import net.minecraft.core.HolderLookup.Provider;
@@ -38,7 +39,7 @@ public class MekanismSpriteSourceProvider extends BaseSpriteSourceProvider {
         blockAtlas.addSource(new DirectoryLister("mek_liquid", "mek_liquid/"));
         blockAtlas.addSource(new DirectoryLister("mek_chemical", "mek_chemical/"));
 
-        SourceList robitAtlas = atlas(Mekanism.rl("entity/robit"));
+        SourceList robitAtlas = atlas(RobitSpriteUploader.ATLAS_ID);
         addDirectory(robitAtlas, "entity/robit", "");
     }
 }
