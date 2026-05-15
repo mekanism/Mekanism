@@ -588,8 +588,8 @@ methods:
   - description: Get the maximum number of items the bin can contain.
     methodName: getCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the type of item the Bin is locked to (or Air if not locked)
     methodName: getLock
     returns:
@@ -620,8 +620,8 @@ methods:
   - description: Get the capacity of the biofuel tank.
     methodName: getBioFuelCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the biofuel tank.
     methodName: getBioFuelFilledPercentage
     returns:
@@ -630,8 +630,8 @@ methods:
   - description: Get the amount needed to fill the biofuel tank.
     methodName: getBioFuelNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the energy item.
     methodName: getEnergyItem
     returns:
@@ -742,8 +742,8 @@ methods:
   - description: Get the capacity of the water tank.
     methodName: getWaterCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the water tank.
     methodName: getWaterFilledPercentage
     returns:
@@ -752,8 +752,8 @@ methods:
   - description: Get the amount needed to fill the water tank.
     methodName: getWaterNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   Boiler Valve:
   - description: Toggle the current valve configuration to the previous option in
       the list
@@ -1074,8 +1074,8 @@ methods:
   - description: Get the capacity of the fluid tank.
     methodName: getFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the fluid tank.
     methodName: getFluidFilledPercentage
     returns:
@@ -1094,8 +1094,8 @@ methods:
   - description: Get the amount needed to fill the fluid tank.
     methodName: getFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the slurry item output slot.
     methodName: getOutputItem
     returns:
@@ -1309,15 +1309,6 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-  - description: Get the contents of the internal inventory slot. 0 based.
-    methodName: getItemInSlot
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - description: Get the maximum allowable Radius value, determined from the mod's
       config
     methodName: getMaxRadius
@@ -1551,10 +1542,6 @@ methods:
       type: String (DiversionControl)
   Dynamic Tank Multiblock (formed):
   - methodName: decrementContainerEditMode
-  - methodName: getChemicalTankCapacity
-    returns:
-      java_type: long
-      type: Number (long)
   - methodName: getContainerEditMode
     returns:
       java_type: mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode
@@ -1573,17 +1560,10 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
-  - methodName: getStored
-    returns:
-      java_extra:
-      - mekanism.api.chemical.ChemicalStack
-      - net.neoforged.neoforge.fluids.FluidStack
-      java_type: com.mojang.datafixers.util.Either
-      type: Table (ChemicalStack) or Table (FluidStack)
   - methodName: getTankCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - methodName: incrementContainerEditMode
   - methodName: setContainerEditMode
     params:
@@ -1625,8 +1605,8 @@ methods:
   - description: Get the capacity of the buffer tank.
     methodName: getFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the buffer tank.
     methodName: getFluidFilledPercentage
     returns:
@@ -1635,8 +1615,8 @@ methods:
   - description: Get the amount needed to fill the buffer tank.
     methodName: getFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
@@ -1672,8 +1652,8 @@ methods:
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the input tank.
     methodName: getInputFilledPercentage
     returns:
@@ -1687,8 +1667,8 @@ methods:
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the left output tank.
     methodName: getLeftOutput
     returns:
@@ -1785,22 +1765,6 @@ methods:
     returns:
       java_type: long
       type: Number (long)
-  - methodName: getInput
-    params:
-    - java_type: int
-      name: process
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
-  - methodName: getOutput
-    params:
-    - java_type: int
-      name: process
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - methodName: getRecipeProgress
     params:
     - java_type: int
@@ -1866,20 +1830,11 @@ methods:
       name: value
       type: boolean
   Filter Wrapper (ItemStack):
-  - methodName: getItemStack
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - methodName: setItem
     params:
     - java_type: net.minecraft.world.item.Item
       name: item
       type: String (Item)
-  - methodName: setItemStack
-    params:
-    - java_type: net.minecraft.world.item.ItemStack
-      name: stack
-      type: Table (ItemStack)
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
     returns:
@@ -2009,13 +1964,6 @@ methods:
     returns:
       java_type: double
       type: Number (double)
-  - methodName: getCoolant
-    returns:
-      java_extra:
-      - mekanism.api.chemical.ChemicalStack
-      - net.neoforged.neoforge.fluids.FluidStack
-      java_type: com.mojang.datafixers.util.Either
-      type: Table (ChemicalStack) or Table (FluidStack)
   - methodName: getCoolantCapacity
     returns:
       java_type: long
@@ -2090,8 +2038,8 @@ methods:
       type: Number (long)
   - methodName: getHeatingRate
     returns:
-      java_type: long
-      type: Number (long)
+      java_type: int
+      type: Number (int)
   - methodName: getMaxBurnRate
     returns:
       java_type: long
@@ -2155,8 +2103,8 @@ methods:
   - description: Get the capacity of the tank.
     methodName: getCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - methodName: getContainerEditMode
     returns:
       java_type: mekanism.common.tile.interfaces.IFluidContainerManager$ContainerEditMode
@@ -2174,8 +2122,8 @@ methods:
   - description: Get the amount needed to fill the tank.
     methodName: getNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the output slot.
     methodName: getOutputItem
     returns:
@@ -2208,8 +2156,8 @@ methods:
   - description: Get the capacity of the buffer tank.
     methodName: getFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the buffer tank.
     methodName: getFluidFilledPercentage
     returns:
@@ -2218,8 +2166,8 @@ methods:
   - description: Get the amount needed to fill the buffer tank.
     methodName: getFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the input slot.
     methodName: getInputItem
     returns:
@@ -2254,22 +2202,6 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-  - methodName: getCraftingInputSlot
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
-  - methodName: getCraftingOutputSlot
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - methodName: getCraftingOutputSlots
     returns:
       java_type: int
@@ -2287,14 +2219,6 @@ methods:
       type: List (Table (ItemStack))
   - description: Get the contents of the formula slot.
     methodName: getFormulaItem
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
-  - methodName: getItemInSlot
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
@@ -2538,8 +2462,8 @@ methods:
   - description: Get the capacity of the water tank.
     methodName: getWaterCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the water tank.
     methodName: getWaterFilledPercentage
     returns:
@@ -2548,8 +2472,8 @@ methods:
   - description: Get the amount needed to fill the water tank.
     methodName: getWaterNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Checks if a reaction is occurring.
     methodName: isIgnited
     returns:
@@ -2679,8 +2603,8 @@ methods:
   - description: Get the capacity of the lava tank.
     methodName: getLavaCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the lava tank.
     methodName: getLavaFilledPercentage
     returns:
@@ -2689,8 +2613,8 @@ methods:
   - description: Get the amount needed to fill the lava tank.
     methodName: getLavaNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the temperature of the generator in Kelvin.
     methodName: getTemperature
     returns:
@@ -2927,14 +2851,6 @@ methods:
       type: String (RedstoneOutput)
     requires_public_security: true
   Laser Tractor Beam:
-  - methodName: getItemInSlot
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - methodName: getSlotCount
     returns:
       java_type: int
@@ -3194,10 +3110,6 @@ methods:
       java_type: java.util.Set
       type: List (String (Upgrade))
   Mechanical Pipe:
-  - methodName: getBuffer
-    returns:
-      java_type: net.neoforged.neoforge.fluids.FluidStack
-      type: Table (FluidStack)
   - methodName: getCapacity
     returns:
       java_type: long
@@ -3335,8 +3247,8 @@ methods:
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the output tank.
     methodName: getOutputFilledPercentage
     returns:
@@ -3350,8 +3262,8 @@ methods:
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   Oredictionificator:
   - methodName: addFilter
     params:
@@ -3605,8 +3517,8 @@ methods:
   - description: Get the capacity of the fluid input.
     methodName: getInputFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the fluid input.
     methodName: getInputFluidFilledPercentage
     returns:
@@ -3615,8 +3527,8 @@ methods:
   - description: Get the amount needed to fill the fluid input.
     methodName: getInputFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the gas input.
     methodName: getInputGas
     returns:
@@ -3668,10 +3580,6 @@ methods:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
   Pressurized Tube:
-  - methodName: getBuffer
-    returns:
-      java_type: mekanism.api.chemical.ChemicalStack
-      type: Table (ChemicalStack)
   - methodName: getCapacity
     returns:
       java_type: long
@@ -3684,35 +3592,7 @@ methods:
     returns:
       java_type: long
       type: Number (long)
-  QIO Dashboard:
-  - methodName: getCraftingInput
-    params:
-    - java_type: int
-      name: window
-      type: Number (int)
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
-  - methodName: getCraftingOutput
-    params:
-    - java_type: int
-      name: window
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   QIO Drive Array:
-  - methodName: getDrive
-    params:
-    - java_type: int
-      name: slot
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   - methodName: getDriveStatus
     params:
     - java_type: int
@@ -3948,8 +3828,8 @@ methods:
   - description: Get the capacity of the fluid buffer.
     methodName: getBufferFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the fluid buffer.
     methodName: getBufferFluidFilledPercentage
     returns:
@@ -3958,12 +3838,8 @@ methods:
   - description: Get the amount needed to fill the fluid buffer.
     methodName: getBufferFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
-  - methodName: getBufferItem
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: long
+      type: Number (long)
   - description: May not be accurate if there is no frequency
     methodName: getEnvironmentalLoss
     returns:
@@ -4076,8 +3952,8 @@ methods:
   - description: Get the capacity of the fluid tank.
     methodName: getFluidCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the fluid tank.
     methodName: getFluidFilledPercentage
     returns:
@@ -4096,8 +3972,8 @@ methods:
   - description: Get the amount needed to fill the fluid tank.
     methodName: getFluidNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the gas tank.
     methodName: getGas
     returns:
@@ -4199,15 +4075,6 @@ methods:
     - java_type: boolean
       name: output
       type: boolean
-  Sawing Factory:
-  - methodName: getSecondaryOutput
-    params:
-    - java_type: int
-      name: process
-      type: Number (int)
-    returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
   Seismic Vibrator:
   - methodName: getBlockAt
     params:
@@ -4404,8 +4271,8 @@ methods:
   - description: Get the capacity of the input tank.
     methodName: getInputCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the input tank.
     methodName: getInputFilledPercentage
     returns:
@@ -4424,8 +4291,8 @@ methods:
   - description: Get the amount needed to fill the input tank.
     methodName: getInputNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the contents of the output tank.
     methodName: getOutput
     returns:
@@ -4434,8 +4301,8 @@ methods:
   - description: Get the capacity of the output tank.
     methodName: getOutputCapacity
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - description: Get the filled percentage of the output tank.
     methodName: getOutputFilledPercentage
     returns:
@@ -4454,8 +4321,8 @@ methods:
   - description: Get the amount needed to fill the output tank.
     methodName: getOutputNeeded
     returns:
-      java_type: int
-      type: Number (int)
+      java_type: long
+      type: Number (long)
   - methodName: getProductionAmount
     returns:
       java_type: double

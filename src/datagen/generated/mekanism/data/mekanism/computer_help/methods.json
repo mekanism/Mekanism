@@ -282,8 +282,8 @@
       "description": "Get the maximum number of items the bin can contain.",
       "methodName": "getCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -332,8 +332,8 @@
       "description": "Get the capacity of the biofuel tank.",
       "methodName": "getBioFuelCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -348,8 +348,8 @@
       "description": "Get the amount needed to fill the biofuel tank.",
       "methodName": "getBioFuelNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -526,8 +526,8 @@
       "description": "Get the capacity of the water tank.",
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -542,8 +542,8 @@
       "description": "Get the amount needed to fill the water tank.",
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -1061,8 +1061,8 @@
       "description": "Get the capacity of the fluid tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1093,8 +1093,8 @@
       "description": "Get the amount needed to fill the fluid tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1435,21 +1435,6 @@
       "returns": {
         "type": "boolean",
         "java_type": "boolean"
-      }
-    },
-    {
-      "description": "Get the contents of the internal inventory slot. 0 based.",
-      "methodName": "getItemInSlot",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
       }
     },
     {
@@ -1821,13 +1806,6 @@
       "methodName": "decrementContainerEditMode"
     },
     {
-      "methodName": "getChemicalTankCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
       "methodName": "getContainerEditMode",
       "returns": {
         "type": "String (ContainerEditMode)",
@@ -1858,21 +1836,10 @@
       }
     },
     {
-      "methodName": "getStored",
-      "returns": {
-        "type": "Table (ChemicalStack) or Table (FluidStack)",
-        "java_extra": [
-          "mekanism.api.chemical.ChemicalStack",
-          "net.neoforged.neoforge.fluids.FluidStack"
-        ],
-        "java_type": "com.mojang.datafixers.util.Either"
-      }
-    },
-    {
       "methodName": "getTankCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1944,8 +1911,8 @@
       "description": "Get the capacity of the buffer tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -1960,8 +1927,8 @@
       "description": "Get the amount needed to fill the buffer tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2022,8 +1989,8 @@
       "description": "Get the capacity of the input tank.",
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2046,8 +2013,8 @@
       "description": "Get the amount needed to fill the input tank.",
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2211,34 +2178,6 @@
       }
     },
     {
-      "methodName": "getInput",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "process"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "methodName": "getOutput",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "process"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
       "methodName": "getRecipeProgress",
       "params": [
         {
@@ -2357,29 +2296,12 @@
   ],
   "Filter Wrapper (ItemStack)": [
     {
-      "methodName": "getItemStack",
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
       "methodName": "setItem",
       "params": [
         {
           "type": "String (Item)",
           "java_type": "net.minecraft.world.item.Item",
           "name": "item"
-        }
-      ]
-    },
-    {
-      "methodName": "setItemStack",
-      "params": [
-        {
-          "type": "Table (ItemStack)",
-          "java_type": "net.minecraft.world.item.ItemStack",
-          "name": "stack"
         }
       ]
     }
@@ -2620,17 +2542,6 @@
       }
     },
     {
-      "methodName": "getCoolant",
-      "returns": {
-        "type": "Table (ChemicalStack) or Table (FluidStack)",
-        "java_extra": [
-          "mekanism.api.chemical.ChemicalStack",
-          "net.neoforged.neoforge.fluids.FluidStack"
-        ],
-        "java_type": "com.mojang.datafixers.util.Either"
-      }
-    },
-    {
       "methodName": "getCoolantCapacity",
       "returns": {
         "type": "Number (long)",
@@ -2753,8 +2664,8 @@
     {
       "methodName": "getHeatingRate",
       "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
+        "type": "Number (int)",
+        "java_type": "int"
       }
     },
     {
@@ -2868,8 +2779,8 @@
       "description": "Get the capacity of the tank.",
       "methodName": "getCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2899,8 +2810,8 @@
       "description": "Get the amount needed to fill the tank.",
       "methodName": "getNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2956,8 +2867,8 @@
       "description": "Get the capacity of the buffer tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -2972,8 +2883,8 @@
       "description": "Get the amount needed to fill the buffer tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3033,34 +2944,6 @@
       }
     },
     {
-      "methodName": "getCraftingInputSlot",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "methodName": "getCraftingOutputSlot",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
       "methodName": "getCraftingOutputSlots",
       "returns": {
         "type": "Number (int)",
@@ -3088,20 +2971,6 @@
     {
       "description": "Get the contents of the formula slot.",
       "methodName": "getFormulaItem",
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "methodName": "getItemInSlot",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
       "returns": {
         "type": "Table (ItemStack)",
         "java_type": "net.minecraft.world.item.ItemStack"
@@ -3509,8 +3378,8 @@
       "description": "Get the capacity of the water tank.",
       "methodName": "getWaterCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3525,8 +3394,8 @@
       "description": "Get the amount needed to fill the water tank.",
       "methodName": "getWaterNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3742,8 +3611,8 @@
       "description": "Get the capacity of the lava tank.",
       "methodName": "getLavaCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -3758,8 +3627,8 @@
       "description": "Get the amount needed to fill the lava tank.",
       "methodName": "getLavaNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4168,20 +4037,6 @@
     }
   ],
   "Laser Tractor Beam": [
-    {
-      "methodName": "getItemInSlot",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
     {
       "methodName": "getSlotCount",
       "returns": {
@@ -4640,13 +4495,6 @@
   ],
   "Mechanical Pipe": [
     {
-      "methodName": "getBuffer",
-      "returns": {
-        "type": "Table (FluidStack)",
-        "java_type": "net.neoforged.neoforge.fluids.FluidStack"
-      }
-    },
-    {
       "methodName": "getCapacity",
       "returns": {
         "type": "Number (long)",
@@ -4872,8 +4720,8 @@
       "description": "Get the capacity of the output tank.",
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -4896,8 +4744,8 @@
       "description": "Get the amount needed to fill the output tank.",
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     }
   ],
@@ -5308,8 +5156,8 @@
       "description": "Get the capacity of the fluid input.",
       "methodName": "getInputFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5324,8 +5172,8 @@
       "description": "Get the amount needed to fill the fluid input.",
       "methodName": "getInputFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5411,13 +5259,6 @@
   ],
   "Pressurized Tube": [
     {
-      "methodName": "getBuffer",
-      "returns": {
-        "type": "Table (ChemicalStack)",
-        "java_type": "mekanism.api.chemical.ChemicalStack"
-      }
-    },
-    {
       "methodName": "getCapacity",
       "returns": {
         "type": "Number (long)",
@@ -5439,56 +5280,7 @@
       }
     }
   ],
-  "QIO Dashboard": [
-    {
-      "methodName": "getCraftingInput",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "window"
-        },
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
-    {
-      "methodName": "getCraftingOutput",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "window"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    }
-  ],
   "QIO Drive Array": [
-    {
-      "methodName": "getDrive",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "slot"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
-    },
     {
       "methodName": "getDriveStatus",
       "params": [
@@ -5884,8 +5676,8 @@
       "description": "Get the capacity of the fluid buffer.",
       "methodName": "getBufferFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -5900,15 +5692,8 @@
       "description": "Get the amount needed to fill the fluid buffer.",
       "methodName": "getBufferFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
-      }
-    },
-    {
-      "methodName": "getBufferItem",
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6095,8 +5880,8 @@
       "description": "Get the capacity of the fluid tank.",
       "methodName": "getFluidCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6127,8 +5912,8 @@
       "description": "Get the amount needed to fill the fluid tank.",
       "methodName": "getFluidNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6297,22 +6082,6 @@
           "name": "output"
         }
       ]
-    }
-  ],
-  "Sawing Factory": [
-    {
-      "methodName": "getSecondaryOutput",
-      "params": [
-        {
-          "type": "Number (int)",
-          "java_type": "int",
-          "name": "process"
-        }
-      ],
-      "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
-      }
     }
   ],
   "Seismic Vibrator": [
@@ -6635,8 +6404,8 @@
       "description": "Get the capacity of the input tank.",
       "methodName": "getInputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6667,8 +6436,8 @@
       "description": "Get the amount needed to fill the input tank.",
       "methodName": "getInputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6683,8 +6452,8 @@
       "description": "Get the capacity of the output tank.",
       "methodName": "getOutputCapacity",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
@@ -6715,8 +6484,8 @@
       "description": "Get the amount needed to fill the output tank.",
       "methodName": "getOutputNeeded",
       "returns": {
-        "type": "Number (int)",
-        "java_type": "int"
+        "type": "Number (long)",
+        "java_type": "long"
       }
     },
     {
