@@ -113,9 +113,9 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
         //TODO: Do we want to make a PR to Neo that adds this overload, even if it is as simple as only checking the count
         // and doesn't also add support for checking item handlers?
         BlockEntity blockentity = getLevel().getBlockEntity(absolutePos(relativePos));
-        boolean sameCount;
+        int found;
         if (blockentity instanceof BaseContainerBlockEntity containerBE) {
-            sameCount = containerBE.countItem(item) == count;
+            found = containerBE.countItem(item);
         } else {
             ResourceHandler<ItemResource> handler = getCapability(Capabilities.ITEM.block(), relativePos, null);
             if (handler == null) {
@@ -123,17 +123,16 @@ public class MekGameTestHelper extends ExtendedGameTestHelper {
                                                       (blockentity == null ? Util.getRegisteredName(BuiltInRegistries.BLOCK, getBlockState(relativePos).getBlock())
                                                                            : Util.getRegisteredName(BuiltInRegistries.BLOCK_ENTITY_TYPE, blockentity.getType())));
             }
-            int found = 0;
+            found = 0;
             for (int i = 0, slots = handler.size(); i < slots; i++) {
                 ItemResource resource = handler.getResource(i);
                 if (resource.is(item)) {
                     found += handler.getAmountAsInt(i);
                 }
             }
-            sameCount = found == count;
         }
-        if (!sameCount) {
-            throw assertionException(relativePos, "test.error.expected_container_contents", count + " " + getItemName(item));
+        if (found != count) {
+            throw assertionException(relativePos, "test.error.expected_container_contents", count + " " + getItemName(item) + " but contained " + found);
         }
     }
 
