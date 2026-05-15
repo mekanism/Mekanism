@@ -69,7 +69,7 @@ public class TileEntityBioGenerator extends TileEntityGenerator {
     @Override
     protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
         InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem, GeneratorsFluids.BIOETHANOL.asResource(),
+        builder.addSlot(fuelSlot = FluidFuelInventorySlot.forFuel(bioFuelTank, TileEntityBioGenerator::biofuelFromItem, GeneratorsFluids.BIOETHANOL,
                     listener, 17, 35), RelativeSide.FRONT, RelativeSide.LEFT, RelativeSide.BACK, RelativeSide.TOP,
               RelativeSide.BOTTOM);
         builder.addSlot(energySlot = EnergyInventorySlot.drain(getEnergyContainer(), listener, 143, 35), RelativeSide.RIGHT);

@@ -10,6 +10,11 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.FuelInventorySlot;
+import net.minecraft.core.Holder;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -22,12 +27,14 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class FluidFuelInventorySlot extends FluidInventorySlot {
 
+    private static final ResourceKey<Fluid> EMPTY_KEY = ResourceKey.create(Registries.FLUID, Identifier.withDefaultNamespace("empty"));
+
     public static FluidFuelInventorySlot forFuel(IFluidTank fluidTank, ToIntFunction<ItemResource> fuelValue,
-          FluidResource fuelType, @Nullable IContentsListener listener, int x, int y) {
+          Holder<Fluid> fuelType, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(fluidTank, "Fluid tank cannot be null");
         Objects.requireNonNull(fuelType, "Fuel fluid type cannot be null");
         Objects.requireNonNull(fuelValue, "Fuel value calculator cannot be null");
-        if (fuelType.isEmpty()) {
+        if (fuelType.is(EMPTY_KEY)) {
             throw new IllegalArgumentException("Fuel fluid type cannot be empty");
         }
         Predicate<ItemResource> fillPredicate = getFillPredicate(fluidTank);
@@ -50,9 +57,9 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
     }
 
     private final ToIntFunction<ItemResource> fuelValue;
-    private final FluidResource fuelType;
+    private final Holder<Fluid> fuelType;
 
-    private FluidFuelInventorySlot(IFluidTank fluidTank, FluidResource fuelType, ToIntFunction<ItemResource> fuelValue, Predicate<ItemResource> canExtract,
+    private FluidFuelInventorySlot(IFluidTank fluidTank, Holder<Fluid> fuelType, ToIntFunction<ItemResource> fuelValue, Predicate<ItemResource> canExtract,
           Predicate<ItemResource> canInsert, @Nullable IContentsListener listener, int x, int y) {
         super(fluidTank, canExtract, canInsert, listener, x, y);
         this.fuelType = fuelType;
@@ -73,7 +80,7 @@ public class FluidFuelInventorySlot extends FluidInventorySlot {
                 if (fuel > 0 && fuel <= needed) {
                     try (Transaction transaction = Transaction.openRoot()) {
                         if (FuelInventorySlot.consumeAndReplace(this, transaction)) {
-                            int inserted = fluidTank.insert(fuelType, fuel, transaction, AutomationType.INTERNAL);
+                            int inserted = fluidTank.insert(FluidResource.of(fuelType), fuel, transaction, AutomationType.INTERNAL);
                             if (inserted == fuel) {
                                 //If we were able to insert it all the fuel into the fluid tank, commit all of the changes
                                 transaction.commit();
