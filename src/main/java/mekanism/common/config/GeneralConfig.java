@@ -43,10 +43,10 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue superheatingHeatTransfer;
     public final CachedIntValue maxSolarNeutronActivatorRate;
     public final CachedIntValue fluidItemFillRate;
-    public final CachedLongValue chemicalItemFillRate;
+    public final CachedIntValue chemicalItemFillRate;
     //Auto eject
     public final CachedIntValue fluidAutoEjectRate;
-    public final CachedLongValue chemicalAutoEjectRate;
+    public final CachedIntValue chemicalAutoEjectRate;
     public final CachedDoubleValue dumpExcessKeepRatio;
     //Dynamic Tank
     public final CachedLongValue dynamicTankFluidPerTank;
@@ -155,8 +155,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GENERAL_FILL_RATE.applyToBuilder(builder).push("item_fill_rate");
         fluidItemFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_FILL_RATE_FLUID.applyToBuilder(builder)
               .defineInRange("fluid", 1_024, 1, Integer.MAX_VALUE));
-        chemicalItemFillRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_FILL_RATE_CHEMICAL.applyToBuilder(builder)
-              .defineInRange("chemical", 1_024, 1, Long.MAX_VALUE));
+        chemicalItemFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_FILL_RATE_CHEMICAL.applyToBuilder(builder)
+              .defineInRange("chemical", 1_024, 1, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_DYNAMIC_TANK.applyToBuilder(builder).push("dynamic_tank");
@@ -169,8 +169,8 @@ public class GeneralConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GENERAL_AUTO_EJECT.applyToBuilder(builder).push("auto_eject");
         fluidAutoEjectRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_FLUID.applyToBuilder(builder)
               .defineInRange("fluid", 1_024, 1, Integer.MAX_VALUE));
-        chemicalAutoEjectRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_CHEMICAL.applyToBuilder(builder)
-              .defineInRange("chemical", 1_024L, 1, Long.MAX_VALUE));
+        chemicalAutoEjectRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_RATE_CHEMICAL.applyToBuilder(builder)
+              .defineInRange("chemical", 1_024, 1, Integer.MAX_VALUE));
         dumpExcessKeepRatio = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_AUTO_EJECT_EXCESS.applyToBuilder(builder)
               .defineInRange("dumpExcessKeepRatio", 0.85D, 0.001D, 1D));
         builder.pop();

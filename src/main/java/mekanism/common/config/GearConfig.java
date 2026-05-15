@@ -47,7 +47,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue gaugeDropperCapacity;
     //Flamethrower
     public final CachedLongValue flamethrowerCapacity;
-    public final CachedLongValue flamethrowerFillRate;
+    public final CachedIntValue flamethrowerFillRate;
     public final CachedBooleanValue flamethrowerDestroyItems;
     //Free runner
     public final CachedLongValue freeRunnerFallEnergyCost;
@@ -56,7 +56,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue freeRunnerChargeRate;
     //Jetpack
     public final CachedLongValue jetpackCapacity;
-    public final CachedLongValue jetpackFillRate;
+    public final CachedIntValue jetpackFillRate;
     //Portable Teleporter
     public final CachedLongValue portableTeleporterMaxEnergy;
     public final CachedLongValue portableTeleporterChargeRate;
@@ -67,7 +67,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue networkReaderEnergyUsage;
     //Scuba Tank
     public final CachedLongValue scubaTankCapacity;
-    public final CachedLongValue scubaFillRate;
+    public final CachedIntValue scubaFillRate;
     //Seismic Reader
     public final CachedLongValue seismicReaderMaxEnergy;
     public final CachedLongValue seismicReaderChargeRate;
@@ -113,7 +113,7 @@ public class GearConfig extends BaseMekanismConfig {
     public final CachedLongValue mekaSuitNutritionalMaxStorage;
     public final CachedIntValue mekaSuitNutritionalTransferRate;
     public final CachedLongValue mekaSuitJetpackMaxStorage;
-    public final CachedLongValue mekaSuitJetpackTransferRate;
+    public final CachedIntValue mekaSuitJetpackTransferRate;
 
     public final CachedFloatValue mekaSuitFallDamageRatio;
     public final CachedFloatValue mekaSuitMagicDamageRatio;
@@ -165,8 +165,8 @@ public class GearConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GEAR_FLAMETHROWER.applyToBuilder(builder).push("flamethrower");
         flamethrowerCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_CAPACITY.applyToBuilder(builder)
               .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        flamethrowerFillRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_FILL_RATE.applyToBuilder(builder)
-              .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
+        flamethrowerFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_FILL_RATE.applyToBuilder(builder)
+              .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         flamethrowerDestroyItems = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_DESTROY_ITEMS.applyToBuilder(builder)
               .define("destroyItems", true));
         builder.pop();
@@ -182,8 +182,8 @@ public class GearConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GEAR_JETPACK.applyToBuilder(builder).push(JETPACK_CATEGORY);
         jetpackCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_CAPACITY.applyToBuilder(builder)
               .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        jetpackFillRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_FILL_RATE.applyToBuilder(builder)
-              .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
+        jetpackFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_FILL_RATE.applyToBuilder(builder)
+              .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_NETWORK_READER.applyToBuilder(builder).push("network_reader");
@@ -202,8 +202,8 @@ public class GearConfig extends BaseMekanismConfig {
         MekanismConfigTranslations.GEAR_SCUBA_TANK.applyToBuilder(builder).push("scuba_tank");
         scubaTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_CAPACITY.applyToBuilder(builder)
               .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        scubaFillRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_FILL_RATE.applyToBuilder(builder)
-              .defineInRange("fillRate", 16, 1, Long.MAX_VALUE));
+        scubaFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_FILL_RATE.applyToBuilder(builder)
+              .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_SEISMIC_READER.applyToBuilder(builder).push("seismic_reader");
@@ -258,8 +258,8 @@ public class GearConfig extends BaseMekanismConfig {
               .defineInRange("nutritionalTransferRate", 256, 1, Integer.MAX_VALUE));
         mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_JETPACK_CAPACITY.applyToBuilder(builder)
               .defineInRange("jetpackMaxStorage", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
-        mekaSuitJetpackTransferRate = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE.applyToBuilder(builder)
-              .defineInRange("jetpackTransferRate", 256, 1, Long.MAX_VALUE));
+        mekaSuitJetpackTransferRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE.applyToBuilder(builder)
+              .defineInRange("jetpackTransferRate", 256, 1, Integer.MAX_VALUE));
 
         MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE.applyToBuilder(builder).push("energy_usage");
         mekaSuitEnergyUsageDamage = CachedLongValue.definePositive(this, builder, MekanismConfigTranslations.GEAR_MEKA_SUIT_ENERGY_USAGE_DAMAGE, "damage", 100_000L);

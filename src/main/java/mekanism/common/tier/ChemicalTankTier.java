@@ -3,6 +3,7 @@ package mekanism.common.tier;
 import java.util.Locale;
 import mekanism.api.tier.BaseTier;
 import mekanism.api.tier.ITier;
+import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.fluids.FluidType;
@@ -13,17 +14,17 @@ public enum ChemicalTankTier implements ITier, StringRepresentable {
     ADVANCED(BaseTier.ADVANCED, 256 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
     ELITE(BaseTier.ELITE, 1_024 * FluidType.BUCKET_VOLUME, 128 * FluidType.BUCKET_VOLUME),
     ULTIMATE(BaseTier.ULTIMATE, 8_192 * FluidType.BUCKET_VOLUME, 512 * FluidType.BUCKET_VOLUME),
-    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Long.MAX_VALUE / 2);
+    CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
     private final long baseStorage;
-    private final long baseOutput;
+    private final int baseOutput;
     private final BaseTier baseTier;
     private CachedLongValue storageReference;
-    private CachedLongValue outputReference;
+    private CachedIntValue outputReference;
 
-    ChemicalTankTier(BaseTier tier, long s, long o) {
-        baseStorage = s;
-        baseOutput = o;
+    ChemicalTankTier(BaseTier tier, long storage, int output) {
+        baseStorage = storage;
+        baseOutput = output;
         baseTier = tier;
     }
 
@@ -42,7 +43,7 @@ public enum ChemicalTankTier implements ITier, StringRepresentable {
         return storageReference == null ? getBaseStorage() : storageReference.getOrDefault();
     }
 
-    public long getOutput() {
+    public int getOutput() {
         return outputReference == null ? getBaseOutput() : outputReference.getOrDefault();
     }
 
@@ -50,14 +51,14 @@ public enum ChemicalTankTier implements ITier, StringRepresentable {
         return baseStorage;
     }
 
-    public long getBaseOutput() {
+    public int getBaseOutput() {
         return baseOutput;
     }
 
     /**
      * ONLY CALL THIS FROM TierConfig. It is used to give the GasTankTier a reference to the actual config value object
      */
-    public void setConfigReference(CachedLongValue storageReference, CachedLongValue outputReference) {
+    public void setConfigReference(CachedLongValue storageReference, CachedIntValue outputReference) {
         this.storageReference = storageReference;
         this.outputReference = outputReference;
     }

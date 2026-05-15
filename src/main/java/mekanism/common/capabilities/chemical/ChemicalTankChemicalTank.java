@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.chemical;
 
-import com.google.common.primitives.Ints;
 import java.util.Objects;
 import java.util.function.IntSupplier;
 import mekanism.api.AutomationType;
@@ -31,8 +30,7 @@ public class ChemicalTankChemicalTank extends BasicChemicalTank {
         super(tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
               tier == ChemicalTankTier.CREATIVE ? ChemicalAttributeValidator.ALWAYS_ALLOW : null, listener);
         isCreative = tier == ChemicalTankTier.CREATIVE;
-        //TODO - 26.1: Make getOutput return an int
-        rate = () -> Ints.saturatedCast(tier.getOutput());
+        rate = tier::getOutput;
     }
 
     @Override

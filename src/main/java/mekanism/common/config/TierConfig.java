@@ -71,8 +71,8 @@ public class TierConfig extends BaseMekanismConfig {
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
             CachedLongValue storageReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
                   .defineInRange(tierName + "Capacity", tier.getBaseStorage(), 1, Long.MAX_VALUE));
-            CachedLongValue outputReference = CachedLongValue.wrap(this, translations.second().applyToBuilder(builder)
-                  .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Long.MAX_VALUE));
+            CachedIntValue outputReference = CachedIntValue.wrap(this, translations.second().applyToBuilder(builder)
+                  .defineInRange(tierName + "Output", tier.getBaseOutput(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(storageReference, outputReference);
         }
         builder.pop();

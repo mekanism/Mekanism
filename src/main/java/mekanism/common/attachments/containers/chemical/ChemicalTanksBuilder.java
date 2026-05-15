@@ -2,6 +2,7 @@ package mekanism.common.attachments.containers.chemical;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.chemical.ChemicalResource;
@@ -56,7 +57,7 @@ public class ChemicalTanksBuilder {
               MekanismConfig.general.chemicalItemFillRate, capacity, null));
     }
 
-    public ChemicalTanksBuilder addInternalStorage(LongSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
+    public ChemicalTanksBuilder addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
         return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
               containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity, null));
     }

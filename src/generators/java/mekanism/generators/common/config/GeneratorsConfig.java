@@ -64,7 +64,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fissionExcessWasteRatio;
 
     public final CachedLongValue hohlraumMaxGas;
-    public final CachedLongValue hohlraumFillRate;
+    public final CachedIntValue hohlraumFillRate;
 
     public final CachedDoubleValue fusionThermocoupleEfficiency;
     public final CachedDoubleValue fusionCasingThermalConductivity;
@@ -80,8 +80,8 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         GeneratorsConfigTranslations.SERVER_HOHLRAUM.applyToBuilder(builder).push("hohlraum");
         hohlraumMaxGas = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_CAPACITY.applyToBuilder(builder)
               .defineInRange("capacity", 10, 1, Long.MAX_VALUE));
-        hohlraumFillRate = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_FILL_RATE.applyToBuilder(builder)
-              .defineInRange("fillRate", 1, 1, Long.MAX_VALUE));
+        hohlraumFillRate = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_HOHLRAUM_FILL_RATE.applyToBuilder(builder)
+              .defineInRange("fillRate", 1, 1, Integer.MAX_VALUE));
         builder.pop();
 
         GeneratorsConfigTranslations.SERVER_GENERATOR_SOLAR.applyToBuilder(builder).push("solar_generator");

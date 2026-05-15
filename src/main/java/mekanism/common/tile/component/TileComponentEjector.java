@@ -1,6 +1,5 @@
 package mekanism.common.tile.component;
 
-import com.google.common.primitives.Ints;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -78,7 +77,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private final Function<LogisticalTransporterBase, EnumColor> outputColorFunction;
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
-    private final LongSupplier chemicalEjectRate;
+    private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
     @Nullable
     private final LongSupplier energyEjectRate;
@@ -94,11 +93,11 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this(tile, MekanismConfig.general.chemicalAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate) {
         this(tile, chemicalEjectRate, MekanismConfig.general.fluidAutoEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate) {
         this(tile, chemicalEjectRate, fluidEjectRate, null);
     }
 
@@ -106,7 +105,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this(tile, MekanismConfig.general.chemicalAutoEjectRate, MekanismConfig.general.fluidAutoEjectRate, energyEjectRate);
     }
 
-    public TileComponentEjector(TileEntityMekanism tile, LongSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
+    public TileComponentEjector(TileEntityMekanism tile, IntSupplier chemicalEjectRate, IntSupplier fluidEjectRate, @Nullable LongSupplier energyEjectRate) {
         this.tile = tile;
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
@@ -225,8 +224,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                     case CHEMICAL -> {
                         IChemicalTank tank = (IChemicalTank) entry.getKey();
                         List<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
-                        //TODO - 26.1: Make the chemical eject rate be an int? Or do we want to allow ejecting as long, but have to split among the different outputs?
-                        ResourceUtils.emit(caches, tank, Ints.saturatedCast(chemicalEjectRate.getAsLong()), null);
+                        ResourceUtils.emit(caches, tank, chemicalEjectRate.getAsInt(), null);
                     }
                     case FLUID -> {
                         List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);

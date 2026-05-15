@@ -1,7 +1,7 @@
 package mekanism.common.attachments.containers.chemical;
 
-import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -23,10 +23,10 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     @Nullable
     private final ChemicalAttributeValidator attributeValidator;
     private final LongSupplier capacity;
-    private final LongSupplier rate;
+    private final IntSupplier rate;
 
     public ComponentBackedChemicalTank(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
-          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, LongSupplier rate, LongSupplier capacity,
+          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity,
           @Nullable ChemicalAttributeValidator attributeValidator) {
         super(attachedTo, tankIndex, capacity.getAsLong(), canExtract, canInsert, validator);
         this.capacity = capacity;
@@ -60,12 +60,12 @@ public class ComponentBackedChemicalTank extends ComponentBackedResourceContaine
     @Override
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? super.getInsertionRate(automationType) : Ints.saturatedCast(rate.getAsLong());
+        return automationType == null || automationType == AutomationType.MANUAL ? super.getInsertionRate(automationType) : rate.getAsInt();
     }
 
     @Override
     protected int getExtractionRate(@Nullable AutomationType automationType) {
         //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : Ints.saturatedCast(rate.getAsLong());
+        return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : rate.getAsInt();
     }
 }

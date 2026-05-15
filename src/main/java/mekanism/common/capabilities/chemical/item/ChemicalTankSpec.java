@@ -1,6 +1,7 @@
 package mekanism.common.capabilities.chemical.item;
 
 import java.util.function.BiPredicate;
+import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import java.util.function.ToLongFunction;
@@ -20,26 +21,26 @@ import org.jetbrains.annotations.Nullable;
 
 public class ChemicalTankSpec extends GenericTankSpec<ChemicalResource> {
 
-    private final LongSupplier rate;
+    private final IntSupplier rate;
     private final LongSupplier capacity;
     @Nullable
     private final ToLongFunction<ItemStack> stackBasedCapacity;
     @Nullable
     private final ChemicalAttributeValidator validator;
 
-    private ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    private ChemicalTankSpec(IntSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           TriPredicate<ChemicalResource, AutomationType, ItemStack> canInsert, Predicate<ChemicalResource> isValid, @Nullable ChemicalAttributeValidator validator,
           Predicate<ItemStack> supportsStack) {
         this(rate, capacity, null, canExtract, canInsert, isValid, validator, supportsStack);
     }
 
-    private ChemicalTankSpec(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+    private ChemicalTankSpec(IntSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
           TriPredicate<ChemicalResource, AutomationType, ItemStack> canInsert, Predicate<ChemicalResource> isValid, @Nullable ChemicalAttributeValidator validator,
           Predicate<ItemStack> supportsStack) {
         this(rate, ConstantPredicates.ZERO_LONG, stackBasedCapacity, canExtract, canInsert, isValid, validator, supportsStack);
     }
 
-    private ChemicalTankSpec(LongSupplier rate, LongSupplier capacity, @Nullable ToLongFunction<ItemStack> stackBasedCapacity,
+    private ChemicalTankSpec(IntSupplier rate, LongSupplier capacity, @Nullable ToLongFunction<ItemStack> stackBasedCapacity,
           BiPredicate<ChemicalResource, AutomationType> canExtract, TriPredicate<ChemicalResource, AutomationType, ItemStack> canInsert,
           Predicate<ChemicalResource> isValid, @Nullable ChemicalAttributeValidator validator, Predicate<ItemStack> supportsStack) {
         super(canExtract, canInsert, isValid, supportsStack);
@@ -66,20 +67,20 @@ public class ChemicalTankSpec extends GenericTankSpec<ChemicalResource> {
         }
     }
 
-    public static ChemicalTankSpec create(LongSupplier rate, LongSupplier capacity) {
+    public static ChemicalTankSpec create(IntSupplier rate, LongSupplier capacity) {
         return new ChemicalTankSpec(rate, capacity, ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueTri(), ConstantPredicates.alwaysTrue(),
               null, ConstantPredicates.alwaysTrue());
     }
 
-    public static ChemicalTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
+    public static ChemicalTankSpec createFillOnly(IntSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
         return createFillOnly(rate, capacity, isValid, ConstantPredicates.alwaysTrue());
     }
 
-    public static ChemicalTankSpec createFillOnly(LongSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid, Predicate<@NotNull ItemStack> supportsStack) {
+    public static ChemicalTankSpec createFillOnly(IntSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid, Predicate<@NotNull ItemStack> supportsStack) {
         return new ChemicalTankSpec(rate, capacity, ConstantPredicates.notExternal(), (_, _, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
     }
 
-    public static ChemicalTankSpec createFillOnly(LongSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, Predicate<ChemicalResource> isValid,
+    public static ChemicalTankSpec createFillOnly(IntSupplier rate, ToLongFunction<ItemStack> stackBasedCapacity, Predicate<ChemicalResource> isValid,
           Predicate<@NotNull ItemStack> supportsStack) {
         return new ChemicalTankSpec(rate, stackBasedCapacity, ConstantPredicates.notExternal(),
               (_, _, stack) -> supportsStack.test(stack), isValid, null, supportsStack);
@@ -89,10 +90,10 @@ public class ChemicalTankSpec extends GenericTankSpec<ChemicalResource> {
     public interface ComponentTankFromSpecCreator {
 
         ComponentBackedChemicalTank create(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
-              BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> isValid, LongSupplier rate, LongSupplier capacity,
+              BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> isValid, IntSupplier rate, LongSupplier capacity,
               @Nullable ChemicalAttributeValidator validator);
 
-        default ComponentBackedChemicalTank create(ItemStack attachedTo, int tankIndex, LongSupplier rate, LongSupplier capacity,
+        default ComponentBackedChemicalTank create(ItemStack attachedTo, int tankIndex, IntSupplier rate, LongSupplier capacity,
               BiPredicate<ChemicalResource, AutomationType> canExtract, BiPredicate<ChemicalResource, AutomationType> canInsert,
               Predicate<ChemicalResource> isValid) {
             return create(attachedTo, tankIndex, canExtract, canInsert, isValid, rate, capacity, null);
@@ -102,16 +103,16 @@ public class ChemicalTankSpec extends GenericTankSpec<ChemicalResource> {
     @FunctionalInterface
     public interface TankFromSpecCreator {
 
-        IChemicalTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+        IChemicalTank create(IntSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
               BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> isValid, @Nullable ChemicalAttributeValidator validator,
               @Nullable IContentsListener listener);
 
-        default IChemicalTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+        default IChemicalTank create(IntSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
               BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> isValid, @Nullable IContentsListener listener) {
             return create(rate, capacity, canExtract, canInsert, isValid, null, listener);
         }
 
-        default IChemicalTank create(LongSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
+        default IChemicalTank create(IntSupplier rate, LongSupplier capacity, BiPredicate<ChemicalResource, AutomationType> canExtract,
               BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> isValid) {
             return create(rate, capacity, canExtract, canInsert, isValid, null);
         }
