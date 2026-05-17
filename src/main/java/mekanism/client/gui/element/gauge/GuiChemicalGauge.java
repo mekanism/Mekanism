@@ -98,7 +98,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
             return dummyType;
         }
         IChemicalTank tank = getTank();
-        return tank == null ? dummyType : tank.getResource().toStack(tank.amountAsLong());
+        return tank == null ? dummyType : tank.getResource().toStack(tank.amountAsInt());
     }
 
     @Override
@@ -126,7 +126,7 @@ public class GuiChemicalGauge extends GuiTankGauge<ChemicalStack, IChemicalTank>
     @Override
     public Optional<?> getIngredient(double mouseX, double mouseY) {
         IChemicalTank tank = getTank();
-        return tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amountAsLong()));
+        return tank.isEmpty() ? Optional.empty() : Optional.of(tank.getResource().toStack(tank.amountAsInt()));
     }
 
     @Override

@@ -28,7 +28,7 @@ public class DeferredChemical<TYPE extends Chemical> extends MekanismDeferredHol
         return get().getTranslationKey();
     }
 
-    public ChemicalStack asStack(long size) {
+    public ChemicalStack asStack(int size) {
         return new ChemicalStack(this, size);
     }
 

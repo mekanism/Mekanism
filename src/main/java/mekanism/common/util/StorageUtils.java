@@ -6,7 +6,6 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
@@ -14,6 +13,8 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.math.MathUtils;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.api.text.TextComponentUtil;
@@ -31,6 +32,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -117,47 +119,83 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * @implNote Assumes there is only one "type" per substance type
      */
     public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
-        FluidStack fluidStack = getStoredFluidFromAttachment(stack);
-        ChemicalStack chemicalStack = getStoredChemicalFromAttachment(stack);
+        LargeResourceStack<FluidResource> fluidStack = getStoredFluidFromAttachment(stack);
+        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(stack, ContainerType.CHEMICAL, LargeResourceStack.EMPTY_CHEMICAL_STACK);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translate());
             return;
         }
         ILangEntry type;
-        Object contents;
-        long amount;
+        LargeResourceStack<?> contents;
         if (!fluidStack.isEmpty()) {
             contents = fluidStack;
-            amount = fluidStack.amount();
             type = MekanismLang.LIQUID;
         } else {
             contents = chemicalStack;
-            amount = chemicalStack.amount();
             type = MekanismLang.CHEMICAL;
         }
         if (isCreative) {
-            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents, EnumColor.GRAY, MekanismLang.INFINITE)));
+            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED.translate(contents.resource(), EnumColor.GRAY, MekanismLang.INFINITE)));
         } else {
-            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents, EnumColor.GRAY, TextUtils.format(amount))));
+            tooltipAdder.accept(type.translateColored(EnumColor.YELLOW, EnumColor.ORANGE, MekanismLang.GENERIC_STORED_MB.translate(contents.resource(), EnumColor.GRAY, TextUtils.format(contents.amount()))));
         }
     }
 
-    @NotNull
-    public static ChemicalStack getContainedChemical(ItemStack stack, Holder<Chemical> type) {
+    public static long getContainedChemical(ItemStack stack, Holder<Chemical> type) {
         return getContainedChemical(Capabilities.CHEMICAL.getCapability(ItemAccess.forStack(stack)), type);
     }
 
-    @NotNull
-    public static ChemicalStack getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, Holder<Chemical> type) {
+    public static long getContainedChemical(@Nullable ResourceHandler<ChemicalResource> handler, Holder<Chemical> type) {
         if (handler != null) {
             for (int tank = 0, tanks = handler.size(); tank < tanks; tank++) {
                 ChemicalResource chemicalInTank = handler.getResource(tank);
                 if (chemicalInTank.is(type)) {
-                    return chemicalInTank.toStack(handler.getAmountAsLong(tank));
+                    return handler.getAmountAsLong(tank);
                 }
             }
         }
-        return ChemicalStack.EMPTY;
+        return 0;
+    }
+
+    /**
+     * Gets the fluid stored in an item's container by checking the attachment. This is for cases when we may not actually have a fluid handler provided as a capability
+     * from our item, but it may have stored data in its container from when it was a block
+     */
+    @NotNull//TODO - 26.1: Update docs
+    public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemStack stack,
+          ContainerType<CONTAINER, ?, ?> containerType, LargeResourceStack<RESOURCE> emptyStack) {
+        List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
+        return switch (containers.size()) {
+            case 0 -> emptyStack;
+            case 1 -> containers.getFirst().asStack();
+            default -> {
+                RESOURCE type = emptyStack.resource();
+                long storedAmount = 0;
+                for (CONTAINER container : containers) {
+                    if (container.isEmpty()) {
+                        continue;
+                    }
+                    RESOURCE tankType = container.getResource();
+                    long tankAmount = container.amountAsLong();
+                    if (type.isEmpty()) {
+                        type = tankType;
+                        storedAmount = tankAmount;
+                    } else if (tankType.equals(type)) {
+                        if (storedAmount < Long.MAX_VALUE - tankAmount) {
+                            storedAmount += tankAmount;
+                        } else {
+                            storedAmount = Long.MAX_VALUE;
+                            break;
+                        }
+                    }
+                    //Note: If we have multiple tanks that have different types stored we only return the first type
+                }
+                if (type.isEmpty()) {
+                    yield emptyStack;
+                }
+                yield new LargeResourceStack<>(type, storedAmount);
+            }
+        };
     }
 
     /**
@@ -165,39 +203,8 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      * from our item, but it may have stored data in its container from when it was a block
      */
     @NotNull
-    public static FluidStack getStoredFluidFromAttachment(ItemStack stack) {
-        List<IFluidTank> containers = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-        return switch (containers.size()) {
-            case 0 -> FluidStack.EMPTY;
-            case 1 -> {
-                IFluidTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amountAsInt());
-            }
-            default -> {
-                FluidResource fluidType = FluidResource.EMPTY;
-                int storedAmount = 0;
-                for (IFluidTank tank : containers) {
-                    if (tank.isEmpty()) {
-                        continue;
-                    }
-                    FluidResource tankType = tank.getResource();
-                    int tankAmount = tank.amountAsInt();
-                    if (fluidType.isEmpty()) {
-                        fluidType = tankType;
-                        storedAmount = tankAmount;
-                    } else if (tankType.equals(fluidType)) {
-                        if (storedAmount < Integer.MAX_VALUE - tankAmount) {
-                            storedAmount += tankAmount;
-                        } else {
-                            storedAmount = Integer.MAX_VALUE;
-                            break;
-                        }
-                    }
-                    //Note: If we have multiple tanks that have different types stored we only return the first type
-                }
-                yield fluidType.toStack(storedAmount);
-            }
-        };
+    public static LargeResourceStack<FluidResource> getStoredFluidFromAttachment(ItemStack stack) {
+        return getStoredContentsFromAttachment(stack, ContainerType.FLUID, LargeResourceStack.EMPTY_FLUID_STACK);
     }
 
     /**
@@ -226,68 +233,25 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     }
 
     /**
-     * Gets the chemical stored in an item's container by checking the attachment. This is for cases when we may not actually have a chemical handler provided as a
-     * capability from our item, but it may have stored data in its container from when it was a block
-     */
-    @NotNull
-    public static ChemicalStack getStoredChemicalFromAttachment(ItemStack stack) {
-        List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
-        return switch (containers.size()) {
-            case 0 -> ChemicalStack.EMPTY;
-            case 1 -> {
-                IChemicalTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amountAsLong());
-            }
-            default -> {
-                ChemicalResource chemicalType = ChemicalResource.EMPTY;
-                long storedAmount = 0;
-                for (IChemicalTank tank : containers) {
-                    if (tank.isEmpty()) {
-                        continue;
-                    }
-                    ChemicalResource tankType = tank.getResource();
-                    long tankAmount = tank.amountAsLong();
-                    if (chemicalType.isEmpty()) {
-                        chemicalType = tankType;
-                        storedAmount = tankAmount;
-                    } else if (tankType.equals(chemicalType)) {
-                        if (storedAmount < Long.MAX_VALUE - tankAmount) {
-                            storedAmount += tankAmount;
-                        } else {
-                            storedAmount = Long.MAX_VALUE;
-                            break;
-                        }
-                    }
-                    //Note: If we have multiple tanks that have different types stored we only return the first type
-                }
-                yield chemicalType.toStack(storedAmount);
-            }
-        };
-    }
-
-    /**
      * Gets the FIRST chemical stored in an item's container by checking the attachment. This is for cases when we may not actually have a chemical handler provided as a
      * capability from our item, but it may have stored data in its container from when it was a block. Do NOT modify the result
      *
      * @return the first found chemical FOR DISPLAY. Do NOT modify.
      */
     @NotNull
-    public static ChemicalStack getFirstChemicalFromAttachment(ItemStack stack) {
+    public static ChemicalResource getFirstChemicalFromAttachment(ItemStack stack) {
         List<IChemicalTank> containers = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
         int size = containers.size();
         return switch (size) {
-            case 0 -> ChemicalStack.EMPTY;
-            case 1 -> {
-                IChemicalTank tank = containers.getFirst();
-                yield tank.getResource().toStack(tank.amountAsLong());
-            }
+            case 0 -> ChemicalResource.EMPTY;
+            case 1 -> containers.getFirst().getResource();
             default -> {
                 for (IChemicalTank tank : containers) {
                     if (!tank.isEmpty()) {
-                        yield tank.getResource().toStack(tank.amountAsLong());
+                        yield tank.getResource();
                     }
                 }
-                yield ChemicalStack.EMPTY;
+                yield ChemicalResource.EMPTY;
             }
         };
     }
@@ -332,7 +296,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     @Nullable
     public static IEnergyContainer getEnergyContainer(ItemAccess itemAccess, int container) {//TODO - 26.1: Re-evaluate callers
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(itemAccess);
-        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
+        if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler && container >= 0 && container < energyHandler.size()) {
             return energyHandler.getContainer(container);
         }
         return null;

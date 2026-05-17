@@ -56,7 +56,7 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalStack> {
             @NotNull
             @Override
             public ChemicalStack getStack() {
-                return tank.getResource().toStack(tank.amountAsLong());
+                return tank.getResource().toStack(tank.amountAsInt());
             }
 
             @Override

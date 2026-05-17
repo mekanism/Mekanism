@@ -5,8 +5,10 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
+import mekanism.common.attachments.containers.energy.ComponentBackedResistiveEnergyContainer;
 import mekanism.common.block.attribute.AttributeEnergy;
 import mekanism.common.tile.machine.TileEntityResistiveHeater;
 import net.minecraft.world.level.storage.ValueInput;
@@ -40,13 +42,24 @@ public class ResistiveHeaterEnergyContainer extends MachineEnergyContainer<TileE
     }
 
     @Override
+    public void copyContents(IEnergyContainer other) {
+        if (other instanceof ResistiveHeaterEnergyContainer otherContainer) {
+            updateEnergyUsage(otherContainer.getEnergyPerTick());
+        } else if (other instanceof ComponentBackedResistiveEnergyContainer otherContainer) {
+            updateEnergyUsage(otherContainer.getEnergyPerTick());
+        }
+        super.copyContents(other);
+    }
+
+    @Override
     public void serialize(ValueOutput output) {
+        super.serialize(output);
         output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 
     @Override
     public void deserialize(ValueInput input) {
-        input.getInt(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
+        input.getLong(SerializationConstants.ENERGY_USAGE).ifPresent(this::updateEnergyUsage);
         super.deserialize(input);
     }
 }

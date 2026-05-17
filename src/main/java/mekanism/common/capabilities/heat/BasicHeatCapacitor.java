@@ -119,6 +119,7 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
 
     @Override
     public void serialize(ValueOutput output) {
+        IHeatCapacitor.super.serialize(output);
         output.putDouble(SerializationConstants.HEAT_CAPACITY, getHeatCapacity());
     }
 

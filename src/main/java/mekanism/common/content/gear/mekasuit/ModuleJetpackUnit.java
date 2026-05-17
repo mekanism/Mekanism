@@ -8,7 +8,6 @@ import java.util.function.IntFunction;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
@@ -52,8 +51,8 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
             if (chemicalHandler == null) {
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), 1));
             } else {
-                ChemicalStack stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
-                double ratio = StorageUtils.getRatio(stored.amount(), chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
+                long stored = StorageUtils.getContainedChemical(chemicalHandler, MekanismChemicals.HYDROGEN);
+                double ratio = StorageUtils.getRatio(stored, chemicalHandler.getCapacityAsLong(0, chemicalHandler.getResource(0)));
                 hudElementAdder.accept(IModuleHelper.INSTANCE.hudElementPercent(mode.getHUDIcon(), ratio));
             }
         }

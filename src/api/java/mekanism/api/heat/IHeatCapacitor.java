@@ -4,6 +4,7 @@ import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.minecraft.util.Mth;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 
@@ -60,11 +61,6 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      */
     void setHeat(double heat);
 
-    //TODO - 26.1: Docs
-    default void copyContents(IHeatCapacitor other) {
-        setHeat(other.getHeat());
-    }
-
     /**
      * Handles a change of heat in this capacitor. Can be positive or negative.
      *
@@ -89,5 +85,15 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
     @Override
     default void serialize(ValueOutput output) {
         output.putDouble(SerializationConstants.STORED, getHeat());
+    }
+
+    @Override
+    default void deserialize(ValueInput input) {
+        setHeat(input.getDoubleOr(SerializationConstants.STORED, getHeat()));
+    }
+
+    //TODO - 26.1: Docs
+    default void copyContents(IHeatCapacitor other) {
+        setHeat(other.getHeat());
     }
 }

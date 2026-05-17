@@ -3,13 +3,12 @@ package mekanism.common.integration.lookingat;
 import java.util.List;
 import java.util.Map.Entry;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IMekanismResourceHandler;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -212,7 +211,7 @@ public class LookingAtUtils {
             } else {
                 for (int i = 0, size = handler.size(); i < size; i++) {
                     ChemicalResource resource = handler.getResource(i);
-                    addChemicalInfo(info, resource.toStack(handler.getAmountAsLong(i)), handler.getCapacityAsLong(i, resource), fallback);
+                    addChemicalInfo(info, resource, handler.getAmountAsLong(i), handler.getCapacityAsLong(i, resource), fallback);
                 }
             }
         } else if (structure != null && structure.isFormed()) {
@@ -233,15 +232,15 @@ public class LookingAtUtils {
             }
         }
         ChemicalResource resource = chemicalTank.getResource();
-        addChemicalInfo(info, resource.toStack(chemicalTank.amountAsLong()), chemicalTank.capacityAsLong(resource), fallback);
+        addChemicalInfo(info, resource, chemicalTank.amountAsLong(), chemicalTank.capacityAsLong(resource), fallback);
     }
 
-    private static void addChemicalInfo(LookingAtHelper info, ChemicalStack chemicalInTank, long capacity, ChemicalResource fallback) {
-        if (!chemicalInTank.isEmpty()) {
-            info.addText(MekanismLang.CHEMICAL.translate(chemicalInTank));
+    private static void addChemicalInfo(LookingAtHelper info, ChemicalResource chemicalType, long stored, long capacity, ChemicalResource fallback) {
+        if (!chemicalType.isEmpty()) {
+            info.addText(MekanismLang.CHEMICAL.translate(chemicalType));
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.CHEMICAL.translate(fallback));
         }
-        info.addChemicalElement(new ChemicalElement(chemicalInTank, capacity));
+        info.addChemicalElement(new ChemicalElement(new LargeResourceStack<>(chemicalType, stored), capacity));
     }
 }

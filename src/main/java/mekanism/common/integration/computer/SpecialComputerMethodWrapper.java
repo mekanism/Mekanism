@@ -21,7 +21,7 @@ public class SpecialComputerMethodWrapper {
         @WrappingComputerMethodIndex(0)
         @WrappingComputerMethodHelp("Get the contents of the %s.")
         public static ChemicalStack getStack(IChemicalTank tank) {
-            return tank.getResource().toStack(tank.amountAsLong());
+            return tank.getResource().toStack(tank.amountAsInt());
         }
 
         @WrappingComputerMethodIndex(1)

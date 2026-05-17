@@ -5,11 +5,9 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -174,11 +172,6 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     @Override
     public final boolean isValidForInsertion(AutomationType automationType) {
         return canInsert.test(automationType);
-    }
-
-    @Override
-    public void deserialize(ValueInput input) {
-        input.getInt(SerializationConstants.STORED).ifPresent(this::setEnergy);
     }
 
     @Override

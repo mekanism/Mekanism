@@ -3,6 +3,7 @@ package mekanism.common.item.block.machine;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -61,7 +62,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult.Type;
 import net.neoforged.neoforge.common.NeoForgeMod;
 import net.neoforged.neoforge.common.SoundActions;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
@@ -87,13 +87,13 @@ public class ItemBlockFluidTank extends ItemBlockTooltip<BlockTile<?, ?>> implem
     @Override
     protected void addStats(@NotNull ItemStack stack, @NotNull Item.TooltipContext context, @NotNull TooltipDisplay tooltipDisplay, @NotNull Consumer<Component> tooltipAdder, @NotNull TooltipFlag flag) {
         FluidTankTier tier = getTier();
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
+        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (fluidStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translateColored(EnumColor.DARK_RED));
         } else if (tier == FluidTankTier.CREATIVE) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, MekanismLang.INFINITE));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, MekanismLang.INFINITE));
         } else {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
         if (tier == FluidTankTier.CREATIVE) {
             tooltipAdder.accept(MekanismLang.CAPACITY.translateColored(EnumColor.INDIGO, EnumColor.GRAY, MekanismLang.INFINITE));

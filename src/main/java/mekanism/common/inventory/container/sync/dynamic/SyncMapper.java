@@ -53,13 +53,13 @@ public class SyncMapper extends BaseAnnotationScanner {
         // used unchecked setters is that if a recipe got removed so there is a substance in a tank that was valid but no
         // longer is valid, we want to ensure that the client is able to properly render it instead of printing an error due
         // to the client thinking that it is invalid
-        //TODO - 26.1: Re-evaluate these as fluids and eventually chemicals will fail to sync fully if there is more than max int stored
+        //TODO - 26.1: Re-evaluate these as fluids and chemicals will fail to sync fully if there is more than max int stored
         specialProperties.add(new SpecialPropertyHandler<>(IFluidTank.class,
               SpecialPropertyData.create(FluidStack.class, tank -> tank.getResource().toStack(tank.amountAsInt()),
                     (tank, stack) -> tank.setContentsUnchecked(FluidResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IChemicalTank.class,
-              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getResource().toStack(tank.amountAsLong()),
+              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getResource().toStack(tank.amountAsInt()),
                     (tank, stack) -> tank.setContentsUnchecked(ChemicalResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(IEnergyContainer.class,
@@ -72,7 +72,7 @@ public class SyncMapper extends BaseAnnotationScanner {
         specialProperties.add(new SpecialPropertyHandler<>(MergedTank.class,
               SpecialPropertyData.create(FluidStack.class, tank -> tank.getFluidTank().getResource().toStack(tank.getFluidTank().amountAsInt()),
                     (tank, stack) -> tank.getFluidTank().setContentsUnchecked(FluidResource.of(stack), stack.amount())),
-              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getChemicalTank().getResource().toStack(tank.getChemicalTank().amountAsLong()),
+              SpecialPropertyData.create(ChemicalStack.class, tank -> tank.getChemicalTank().getResource().toStack(tank.getChemicalTank().amountAsInt()),
                     (tank, stack) -> tank.getChemicalTank().setContentsUnchecked(ChemicalResource.of(stack), stack.amount()))
         ));
         specialProperties.add(new SpecialPropertyHandler<>(VoxelCuboid.class,

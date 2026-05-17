@@ -107,6 +107,12 @@ public class ComponentBackedHeatCapacitor extends ComponentBackedContainer<HeatC
     }
 
     @Override
+    public void copyContents(IHeatCapacitor other) {
+        AttachedHeat attachedHeat = getAttached();
+        setContents(attachedHeat, new HeatCapacitorData(other.getHeat(), other.getHeatCapacity()));
+    }
+
+    @Override
     public void serialize(ValueOutput output) {
         HeatCapacitorData data = getData();
         if (data.heat().isPresent()) {

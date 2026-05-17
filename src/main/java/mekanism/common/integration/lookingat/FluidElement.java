@@ -39,7 +39,6 @@ public class FluidElement extends LookingAtElement {
     protected final LargeResourceStack<FluidResource> stored;
     protected final long capacity;
 
-    //TODO - 26.1: Replace the fluid stack with this
     public FluidElement(LargeResourceStack<FluidResource> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;

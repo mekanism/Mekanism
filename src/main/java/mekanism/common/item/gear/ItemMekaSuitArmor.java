@@ -8,7 +8,6 @@ import java.util.function.Consumer;
 import java.util.function.LongSupplier;
 import mekanism.api.MekanismAPITags;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.MekaSuitAbsorption;
 import mekanism.api.energy.IStrictEnergyHandler;
@@ -366,11 +365,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
             //Note: We verified we have at least one mB of gas before we get to the point of getting the thrust,
             // so we only need to do extra validation if we need more than a single mB of hydrogen
             if (neededGas > 1) {
-                ChemicalStack containedGas = StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN);
-                if (neededGas > containedGas.amount()) {
+                long containedGas = StorageUtils.getContainedChemical(stack, MekanismChemicals.HYDROGEN);
+                if (neededGas > containedGas) {
                     //If we don't have enough gas stored to go at the set thrust, scale down the thrust
                     // to be whatever gas we have remaining
-                    thrustMultiplier = containedGas.amount();
+                    thrustMultiplier = containedGas;
                 }
             }
             return 0.15 * thrustMultiplier;

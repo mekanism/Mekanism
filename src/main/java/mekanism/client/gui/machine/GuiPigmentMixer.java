@@ -103,7 +103,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                         }
                     }
                     if (recipe != null) {
-                        ChemicalStack output = recipe.getOutput(leftInput.toStack(tile.leftInputTank.amountAsLong()), rightInput.toStack(tile.rightInputTank.amountAsLong()));
+                        ChemicalStack output = recipe.getOutput(leftInput.toStack(tile.leftInputTank.amountAsInt()), rightInput.toStack(tile.rightInputTank.amountAsInt()));
                         return getColor(output.getChemicalColorRepresentation());
                     }
                 }

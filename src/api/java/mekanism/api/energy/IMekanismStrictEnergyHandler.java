@@ -1,12 +1,12 @@
 package mekanism.api.energy;
 
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
@@ -14,11 +14,10 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
 
     List<IEnergyContainer> getContainers();
 
-    @Nullable
     default IEnergyContainer getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
         List<IEnergyContainer> containers = getContainers();
-        return index >= 0 && index < containers.size() ? containers.get(index) : null;
+        Objects.checkIndex(index, containers.size());
+        return containers.get(index);
     }
 
     @Override
@@ -30,23 +29,19 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        IEnergyContainer container = getContainer(index);
-        return container == null ? 0 : container.getEnergy();
+        return getContainer(index).getEnergy();
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        IEnergyContainer container = getContainer(index);
-        return container == null ? 0 : container.getCapacity();
+        return getContainer(index).getCapacity();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
     default long insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction,
           AutomationType automationType) {
-        MekanismPreconditions.checkNonNegative(amount);
-        IEnergyContainer container = getContainer(index);
-        return container == null ? 0 : container.insert(amount, transaction, automationType);
+        return getContainer(index).insert(amount, transaction, automationType);
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -76,9 +71,7 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
 
     @Range(from = 0, to = Long.MAX_VALUE)
     default long extract(int index, @Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType) {
-        MekanismPreconditions.checkNonNegative(amount);
-        IEnergyContainer container = getContainer(index);
-        return container == null ? 0 : container.extract(amount, transaction, automationType);
+        return getContainer(index).extract(amount, transaction, automationType);
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -108,19 +101,14 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
 
 
     @Override
-    default void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
-        MekanismPreconditions.checkNonNegative(energy);
-        IEnergyContainer energyContainer = getContainer(container);
-        if (energyContainer != null) {
-            energyContainer.setEnergy(energy);
-        }
+    default void setEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index, @Range(from = 0, to = Long.MAX_VALUE) long energy) {
+        getContainer(index).setEnergy(energy);
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int container) {
-        IEnergyContainer energyContainer = getContainer(container);
-        return energyContainer == null ? 0L : energyContainer.getNeeded();
+    default long getNeededEnergy(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
+        return getContainer(index).getNeeded();
     }
 
     @Override

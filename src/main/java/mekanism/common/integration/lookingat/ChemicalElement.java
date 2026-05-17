@@ -4,8 +4,9 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.math.MathUtils;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.common.MekanismLang;
 import mekanism.common.util.text.TextUtils;
@@ -21,20 +22,20 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalElement extends LookingAtElement {
 
     public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          ChemicalStack.OPTIONAL_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
+          SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
           SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.MAX).forGetter(ChemicalElement::getCapacity)
     ).apply(instance, ChemicalElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(
-          ChemicalStack.OPTIONAL_STREAM_CODEC, ChemicalElement::getStored,
+          SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC, ChemicalElement::getStored,
           ByteBufCodecs.VAR_LONG, ChemicalElement::getCapacity,
           ChemicalElement::new
     );
 
     @NotNull
-    protected final ChemicalStack stored;
+    protected final LargeResourceStack<ChemicalResource> stored;
     protected final long capacity;
 
-    public ChemicalElement(@NotNull ChemicalStack stored, long capacity) {
+    public ChemicalElement(@NotNull LargeResourceStack<ChemicalResource> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);
         this.stored = stored;
         this.capacity = capacity;
@@ -49,7 +50,7 @@ public class ChemicalElement extends LookingAtElement {
     }
 
     @NotNull
-    public ChemicalStack getStored() {
+    public LargeResourceStack<ChemicalResource> getStored() {
         return stored;
     }
 
@@ -59,7 +60,7 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     public TextureAtlasSprite getIcon() {
-        return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored);
+        return stored.isEmpty() ? null : MekanismRenderer.getChemicalTexture(stored.resource());
     }
 
     @Override
@@ -75,7 +76,7 @@ public class ChemicalElement extends LookingAtElement {
 
     @Override
     protected boolean applyRenderColor(GuiGraphicsExtractor guiGraphics) {
-        MekanismRenderer.color(stored);
+        MekanismRenderer.color(stored.resource());
         return true;
     }
 

@@ -156,11 +156,11 @@ public class MekanismRenderer {
         return -1;
     }
 
-    public static int color(@NotNull ChemicalStack chemicalStack) {
-        if (!chemicalStack.isEmpty()) {
-            return color(chemicalStack.getChemicalTint(), 1F);
+    public static int color(@NotNull TypedInstance<Chemical> instance) {
+        if (instance.is(MekanismAPI.EMPTY_CHEMICAL_KEY)) {
+            return -1;
         }
-        return -1;
+        return color(instance.typeHolder().value().getTint(), 1F);
     }
 
     public static int color(@Nullable SupportsColorMap color) {

@@ -52,7 +52,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         List<FissionRecipeViewerRecipe> recipes = new ArrayList<>();
         long energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get();
         //Special case water recipe
-        long coolantAmount = Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy());
+        int coolantAmount = MathUtils.clampToInt(Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy()));
         recipes.add(new FissionRecipeViewerRecipe(
               RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),

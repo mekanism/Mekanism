@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.Upgrade;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.api.text.EnumColor;
 import mekanism.client.key.MekKeyHandler;
@@ -48,7 +49,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends ItemBlockMekanism<BLOCK> implements ICapabilityAware, IAttachmentAware {
@@ -105,9 +106,9 @@ public class ItemBlockTooltip<BLOCK extends Block & IHasDescription> extends Ite
         IItemSecurityUtils.INSTANCE.addSecurityTooltip(stack, tooltipAdder);
         addTypeDetails(stack, context, tooltipDisplay, tooltipAdder, flag);
         //TODO: Make this support "multiple" fluid types (and maybe display multiple tanks of the same fluid)
-        FluidStack fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
+        LargeResourceStack<FluidResource> fluidStack = StorageUtils.getStoredFluidFromAttachment(stack);
         if (!fluidStack.isEmpty()) {
-            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack, EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
+            tooltipAdder.accept(MekanismLang.GENERIC_STORED_MB.translateColored(EnumColor.PINK, fluidStack.resource(), EnumColor.GRAY, TextUtils.format(fluidStack.amount())));
         }
         if (Attribute.has(getBlock(), AttributeInventory.class) && ContainerType.ITEM.supports(stack)) {
             tooltipAdder.accept(MekanismLang.HAS_INVENTORY.translateColored(EnumColor.AQUA, EnumColor.GRAY, YesNo.hasInventory(stack)));

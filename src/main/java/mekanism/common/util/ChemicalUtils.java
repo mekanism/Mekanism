@@ -5,7 +5,6 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
@@ -73,8 +72,8 @@ public class ChemicalUtils {
     }
 
     public static int getRGBDurabilityForDisplay(ItemStack stack) {
-        ChemicalStack chemicalStack = StorageUtils.getFirstChemicalFromAttachment(stack);
-        return chemicalStack.isEmpty() ? 0 : chemicalStack.getChemicalColorRepresentation();
+        ChemicalResource chemicalType = StorageUtils.getFirstChemicalFromAttachment(stack);
+        return chemicalType.isEmpty() ? 0 : chemicalType.value().getColorRepresentation();
     }
 
     public static boolean hasAnyChemical(ItemStack stack) {

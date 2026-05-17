@@ -3,6 +3,7 @@ package mekanism.common.attachments.containers.energy;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.math.MathUtils;
 import mekanism.common.attachments.containers.ContainerType;
@@ -50,7 +51,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
         return automationType == null || automationType == AutomationType.MANUAL ? Long.MAX_VALUE : getRate();
     }
 
-    private long getEnergyPerTick() {
+    public long getEnergyPerTick() {
         return attachedTo.getOrDefault(MekanismDataComponents.ENERGY_USAGE, TileEntityResistiveHeater.BASE_USAGE);
     }
 
@@ -61,7 +62,18 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     }
 
     @Override
+    public void copyContents(IEnergyContainer other) {
+        if (other instanceof ResistiveHeaterEnergyContainer otherContainer) {
+            updateEnergyUsage(otherContainer.getEnergyPerTick());
+        } else if (other instanceof ComponentBackedResistiveEnergyContainer otherContainer) {
+            updateEnergyUsage(otherContainer.getEnergyPerTick());
+        }
+        super.copyContents(other);
+    }
+
+    @Override
     public void serialize(ValueOutput output) {
+        super.serialize(output);
         output.putLong(SerializationConstants.ENERGY_USAGE, getEnergyPerTick());
     }
 

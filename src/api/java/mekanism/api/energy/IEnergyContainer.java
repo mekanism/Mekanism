@@ -4,6 +4,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
+import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.common.util.ValueIOSerializable;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -29,10 +30,6 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      * @implNote If the internal amount does get updated make sure to call {@link #onContentsChanged()}
      */
     void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
-
-    default void copyContents(IEnergyContainer other) {
-        setEnergy(other.getEnergy());
-    }
 
     //TODO - 26.1: Docs
     @Range(from = 0, to = Long.MAX_VALUE)
@@ -92,8 +89,19 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
 
     @Override
     default void serialize(ValueOutput output) {
-        if (!isEmpty()) {
-            output.putLong(SerializationConstants.STORED, getEnergy());
+        long energy = getEnergy();
+        if (energy > 0) {
+            output.putLong(SerializationConstants.STORED, energy);
         }
+    }
+
+    @Override
+    default void deserialize(ValueInput input) {
+        setEnergy(input.getLongOr(SerializationConstants.STORED, 0));
+    }
+
+    //TODO - 26.1: Docs
+    default void copyContents(IEnergyContainer other) {
+        setEnergy(other.getEnergy());
     }
 }

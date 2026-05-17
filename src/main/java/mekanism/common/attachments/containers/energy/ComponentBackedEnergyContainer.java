@@ -4,14 +4,11 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.MekanismPreconditions;
-import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.ComponentBackedContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.ValueInput;
-import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -144,18 +141,5 @@ public class ComponentBackedEnergyContainer extends ComponentBackedContainer<Lon
     @Override
     public boolean isValidForInsertion(AutomationType automationType) {
         return canInsert.test(automationType);
-    }
-
-    @Override
-    public void serialize(ValueOutput output) {
-        long stored = getEnergy();
-        if (stored > 0L) {
-            output.putLong(SerializationConstants.STORED, stored);
-        }
-    }
-
-    @Override
-    public void deserialize(ValueInput input) {
-        input.getLong(SerializationConstants.STORED).ifPresent(this::setEnergy);
     }
 }
