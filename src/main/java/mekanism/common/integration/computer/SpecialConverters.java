@@ -233,6 +233,19 @@ public class SpecialConverters {
         return wrapped;
     }
 
+    static Map<String, Object> wrapResource(String name, @NotNull DataComponentPatch components) {
+        int elements = 1;
+        if (!components.isEmpty()) {
+            elements++;
+        }
+        Map<String, Object> wrapped = new HashMap<>(elements);
+        wrapped.put(SerializationConstants.NAME, name);
+        if (!components.isEmpty()) {
+            wrapped.put(SerializationConstants.COMPONENTS, wrapComponents(components));
+        }
+        return wrapped;
+    }
+
     static String wrapComponents(@NotNull DataComponentPatch components) {
         return NbtUtils.structureToSnbt((CompoundTag) DataComponentPatch.CODEC.encodeStart(getRegistryNbtOps(), components).getOrThrow());
     }

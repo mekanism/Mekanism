@@ -74,9 +74,8 @@ import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableLargeResourceStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
-import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.dynamic.SyncMapper;
 import mekanism.common.item.ItemConfigurationCard;
 import mekanism.common.item.ItemConfigurator;
@@ -924,20 +923,17 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableBoolean.create(this::wasPowered, value -> redstoneLastTick = value));
         }
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
-            List<IChemicalTank> chemicalTanks = getChemicalTanks();
-            for (IChemicalTank chemicalTank : chemicalTanks) {
-                container.track(SyncableChemicalStack.create(chemicalTank));
+            for (IChemicalTank chemicalTank : getChemicalTanks()) {
+                container.track(SyncableLargeResourceStack.create(chemicalTank));
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
-            List<IFluidTank> fluidTanks = getFluidTanks();
-            for (IFluidTank fluidTank : fluidTanks) {
-                container.track(SyncableFluidStack.create(fluidTank));
+            for (IFluidTank fluidTank : getFluidTanks()) {
+                container.track(SyncableLargeResourceStack.create(fluidTank));
             }
         }
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {
-            List<IHeatCapacitor> heatCapacitors = getHeatCapacitors(null);
-            for (IHeatCapacitor capacitor : heatCapacitors) {
+            for (IHeatCapacitor capacitor : getHeatCapacitors(null)) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
                     container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
@@ -946,8 +942,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         }
         if (canHandleEnergy() && syncs(ContainerType.ENERGY)) {
             trackLastEnergy(container);
-            List<IEnergyContainer> energyContainers = getEnergyContainers();
-            for (IEnergyContainer energyContainer : energyContainers) {
+            for (IEnergyContainer energyContainer : getEnergyContainers()) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
                         container.track(SyncableLong.create(machineEnergy::getCapacity, machineEnergy::setMaxEnergy));

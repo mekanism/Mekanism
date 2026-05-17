@@ -7,12 +7,12 @@ import io.netty.buffer.ByteBuf;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.containers.IAttachedContainerStacks;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 
 @NothingNullByDefault
 public record AttachedEnergy(List<Long> containers) implements IAttachedContainerStacks<Long, AttachedEnergy> {
@@ -20,7 +20,7 @@ public record AttachedEnergy(List<Long> containers) implements IAttachedContaine
     public static final AttachedEnergy EMPTY = new AttachedEnergy(Collections.emptyList());
 
     public static final Codec<AttachedEnergy> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SerializerHelper.POSITIVE_LONG_CODEC.listOf().fieldOf(SerializationConstants.ENERGY_CONTAINERS).forGetter(AttachedEnergy::containers)
+          ExtraCodecs.NON_NEGATIVE_LONG.listOf().fieldOf(SerializationConstants.ENERGY_CONTAINERS).forGetter(AttachedEnergy::containers)
     ).apply(instance, AttachedEnergy::new));
     public static final StreamCodec<ByteBuf, AttachedEnergy> STREAM_CODEC =
           ByteBufCodecs.VAR_LONG.<List<Long>>apply(ByteBufCodecs.collection(NonNullList::createWithCapacity))

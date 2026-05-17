@@ -31,7 +31,7 @@ import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
+import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.slot.EnergyInventorySlot;
 import mekanism.common.inventory.slot.FluidInventorySlot;
 import mekanism.common.inventory.slot.OutputInventorySlot;
@@ -417,8 +417,7 @@ public class TileEntityElectricPump extends TileEntityMekanism implements IConfi
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
         container.track(SyncableBoolean.create(this::usedEnergy, value -> usedEnergy = value));
-        //TODO - 26.1: SyncableFluidResource?
-        container.track(SyncableFluidStack.create(() -> getActiveType().toStack(FluidType.BUCKET_VOLUME), value -> activeType = FluidResource.of(value)));
+        container.track(SyncableResource.createFluid(this::getActiveType, value -> activeType = value));
     }
 
     //Methods relating to IComputerTile

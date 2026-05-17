@@ -1,13 +1,11 @@
 package mekanism.api.recipes.outputs;
 
-import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.recipes.ElectrolysisRecipe.ElectrolysisRecipeOutput;
@@ -16,6 +14,7 @@ import mekanism.api.recipes.PressurizedReactionRecipe.PressurizedReactionRecipeO
 import mekanism.api.recipes.SawmillRecipe.ChanceOutput;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
+import mekanism.api.resource.IResourceContainer;
 import net.minecraft.world.item.ItemStackTemplate;
 import net.neoforged.neoforge.fluids.FluidStackTemplate;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -244,7 +243,7 @@ public class OutputHelper {
     private static void handleOutput(IChemicalTank tank, ChemicalStack toOutput, int operations, TransactionContext transaction) {
         if (operations > 0) {
             //TODO - 26.1: Evaluate this and adjust things so that it shouldn't have to clamp
-            tank.insert(ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount() * operations), transaction, AutomationType.INTERNAL);
+            tank.insert(ChemicalResource.of(toOutput), toOutput.amount() * operations, transaction, AutomationType.INTERNAL);
         }
     }
 
@@ -270,8 +269,7 @@ public class OutputHelper {
      * @param notEnoughSpace The error to apply if the output causes the recipe to not be able to perform any operations.
      */
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IChemicalTank tank, ChemicalStack toOutput) {
-        //TODO - 26.1: Re-evaluate this clamping
-        calculateOperationsCanSupport(tracker, notEnoughSpace, tank, ChemicalResource.of(toOutput), Ints.saturatedCast(toOutput.amount()), Integer.MAX_VALUE);
+        calculateOperationsCanSupport(tracker, notEnoughSpace, tank, ChemicalResource.of(toOutput), toOutput.amount(), Integer.MAX_VALUE);
     }
 
     private static void calculateOperationsCanSupport(OperationTracker tracker, RecipeError notEnoughSpace, IFluidTank tank, @Nullable FluidStackTemplate toOutput) {

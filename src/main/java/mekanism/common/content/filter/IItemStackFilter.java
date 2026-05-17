@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 public interface IItemStackFilter<FILTER extends IItemStackFilter<FILTER>> extends IFilter<FILTER> {
 
     @NotNull
-    //@ComputerMethod(threadSafe = true)//TODO - 26.1: Expose item resources to computers
+    @ComputerMethod(threadSafe = true)
     ItemResource getItemType();
 
-    //@ComputerMethod(threadSafe = true)//TODO - 26.1: Expose item resources to computers
+    @ComputerMethod(threadSafe = true)
     void setItemType(@NotNull ItemResource itemType);
 
     @Override

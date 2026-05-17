@@ -4,7 +4,6 @@ import com.mojang.serialization.Codec;
 import java.util.UUID;
 import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.attachments.FrequencyAware;
 import mekanism.common.lib.frequency.Frequency;
@@ -57,7 +56,7 @@ public class DataComponentDeferredRegister extends MekanismDeferredRegister<Data
     }
 
     public MekanismDeferredHolder<DataComponentType<?>, DataComponentType<Long>> registerNonNegativeLong(String name) {
-        return simple(name, builder -> builder.persistent(SerializerHelper.POSITIVE_LONG_CODEC)
+        return simple(name, builder -> builder.persistent(ExtraCodecs.NON_NEGATIVE_LONG)
               .networkSynchronized(ByteBufCodecs.VAR_LONG));
     }
 

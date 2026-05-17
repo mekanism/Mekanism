@@ -8,8 +8,8 @@ import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.inventory.container.MekanismContainer;
 import mekanism.common.inventory.container.sync.SyncableBoolean;
-import mekanism.common.inventory.container.sync.SyncableItemStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
+import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.registries.MekanismDataComponents;
 import net.minecraft.core.BlockPos;
@@ -177,9 +177,8 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     }
 
     @ComputerMethod(nameOverride = "getTargetItem")
-    public ItemStack getItemType() {
-        //TODO - 26.1: Just return an item resource?
-        return itemType == null ? ItemStack.EMPTY : itemType.toStack();
+    public ItemResource getItemType() {
+        return itemType;
     }
 
     @ComputerMethod(nameOverride = "getTriggerAmount")
@@ -204,8 +203,7 @@ public class TileEntityQIORedstoneAdapter extends TileEntityQIOComponent {
     @Override
     public void addContainerTrackers(MekanismContainer container) {
         super.addContainerTrackers(container);
-        //TODO - 26.1: SyncableItemResource?
-        container.track(SyncableItemStack.create(this::getItemType, value -> itemType = ItemResource.of(value)));
+        container.track(SyncableResource.createItem(this::getItemType, value -> itemType = value));
         container.track(SyncableLong.create(this::getCount, value -> count = value));
         container.track(SyncableBoolean.create(this::getFuzzyMode, value -> fuzzy = value));
         container.track(SyncableBoolean.create(this::isInverted, value -> inverted = value));

@@ -38,16 +38,16 @@ public class ElectrolysisRecipeMapper extends TypedMekanismRecipeMapper<Electrol
     private static boolean addConversions(IMappingCollector<NormalizedSimpleStack, Long> mapper, ElectrolysisRecipeOutput output, Object2IntMap<NormalizedSimpleStack> inputs) {
         ChemicalStack leftOutput = output.left();
         ChemicalStack rightOutput = output.right();
-        if (inputs.isEmpty() || leftOutput.amount() > Integer.MAX_VALUE || rightOutput.amount() > Integer.MAX_VALUE) {
+        if (inputs.isEmpty()) {
             return false;
         }
         //Use bitwise or as we want to try and add both of them
         return addConversion(mapper, leftOutput, forIngredients(
               inputs,
-              NSSChemical.createChemical(rightOutput), (int) -rightOutput.amount()
+              NSSChemical.createChemical(rightOutput), -rightOutput.amount()
         )) | addConversion(mapper, rightOutput, forIngredients(
               inputs,
-              NSSChemical.createChemical(leftOutput), (int) -leftOutput.amount()
+              NSSChemical.createChemical(leftOutput), -leftOutput.amount()
         ));
     }
 }

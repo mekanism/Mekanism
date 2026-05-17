@@ -19,7 +19,6 @@ import mekanism.api.resource.LargeResourceStack;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.Util;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -31,22 +30,6 @@ public class SerializerHelper {
 
     private SerializerHelper() {
     }
-
-    /**
-     * Long Codec which accepts a number >= 0
-     */
-    public static final Codec<Long> POSITIVE_LONG_CODEC = Util.make(() -> {//TODO - 26.1: Replace with ExtraCodecs.NON_NEGATIVE_LONG
-        final Function<Long, DataResult<Long>> checker = Codec.checkRange(0L, Long.MAX_VALUE);
-        return Codec.LONG.flatXmap(checker, checker);
-    });
-
-    /**
-     * Long Codec which accepts a number > 0
-     */
-    public static final Codec<Long> POSITIVE_NONZERO_LONG_CODEC = Util.make(() -> {//TODO - 26.1: Replace with ExtraCodecs.POSITIVE_LONG
-        final Function<Long, DataResult<Long>> checker = Codec.checkRange(1L, Long.MAX_VALUE);
-        return Codec.LONG.flatXmap(checker, checker);
-    });
 
     //TODO - 26.1: Docs and decide where we want to store these
     // Modify tests that test the attached items to double check it handles empty stacks in general fine

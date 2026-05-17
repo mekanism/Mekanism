@@ -324,7 +324,7 @@ public abstract class BaseRecipeCategory<RECIPE> extends AbstractContainerEventH
         int width = element.getWidth() - 2;
         int height = element.getHeight() - 2;
         //If we have no max (no chemicals or just an empty chemical) we mirror how we handle fluids and just return a capacity for the render of a bucket
-        long max = stacks.stream().mapToLong(ChemicalStack::amount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
+        int max = stacks.stream().mapToInt(ChemicalStack::amount).filter(stackSize -> stackSize > 0).max().orElse(FluidType.BUCKET_VOLUME);
         return init(builder, MekanismJEI.TYPE_CHEMICAL, role, element, stacks)
               .setCustomRenderer(MekanismJEI.TYPE_CHEMICAL, new ChemicalStackRenderer(max, width, height));
     }

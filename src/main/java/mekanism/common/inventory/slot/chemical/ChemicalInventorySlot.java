@@ -1,6 +1,5 @@
 package mekanism.common.inventory.slot.chemical;
 
-import com.google.common.primitives.Ints;
 import java.util.Objects;
 import java.util.function.BooleanSupplier;
 import java.util.function.Predicate;
@@ -70,8 +69,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
             return false;
         }
         ChemicalResource conversionType = ChemicalResource.of(conversion);
-        //TODO - 26.1: Re-evaluate this clamping
-        if (simulateCanInsert(chemicalTank, conversionType, Ints.saturatedCast(conversion.amount()))) {
+        if (simulateCanInsert(chemicalTank, conversionType, conversion.amount())) {
             //If we can insert the converted substance into the tank allow insertion
             return true;
         }
@@ -255,8 +253,7 @@ public class ChemicalInventorySlot extends BasicInventorySlot {
                     if (!output.isEmpty()) {
                         try (Transaction transaction = Transaction.openRoot()) {
                             int recipeNeeded = itemInput.count();
-                            //TODO - 26.1: Make chemical stacks just be ints?
-                            int chemicalProduced = Ints.saturatedCast(output.amount());
+                            int chemicalProduced = output.amount();
                             //Try to extract the amount we need from our slot, and then insert the produced chemical into our tank
                             if (extract(ItemResource.of(itemInput), recipeNeeded, transaction, AutomationType.INTERNAL) == recipeNeeded &&
                                 //Note: We use manual as the automation type to bypass our container's rate limit insertion checks

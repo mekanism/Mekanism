@@ -1,6 +1,5 @@
 package mekanism.api.recipes.ingredients.creator;
 
-import com.google.common.primitives.Ints;
 import java.util.Objects;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
@@ -17,8 +16,7 @@ public interface IChemicalStackIngredientCreator extends IIngredientCreator<Chem
     @Override
     default ChemicalStackIngredient from(ChemicalStack instance) {
         Objects.requireNonNull(instance, "ChemicalStackIngredients cannot be created from a null ChemicalStack.");
-        //TODO - 26.1: Make chemical stacks be ints
-        return fromHolder(instance.typeHolder(), Ints.saturatedCast(instance.amount()));
+        return fromHolder(instance.typeHolder(), instance.amount());
     }
 
     @Override

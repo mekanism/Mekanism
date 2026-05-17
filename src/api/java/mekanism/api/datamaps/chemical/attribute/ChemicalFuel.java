@@ -5,7 +5,6 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.List;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.text.APILang;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ITooltipHelper;
@@ -37,7 +36,7 @@ public record ChemicalFuel(int maxBurnPerTick, long energyPerTick) implements IC
      */
     public static final Codec<ChemicalFuel> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           ExtraCodecs.POSITIVE_INT.fieldOf(SerializationConstants.MAX_BURN_RATE).forGetter(ChemicalFuel::maxBurnPerTick),
-          SerializerHelper.POSITIVE_NONZERO_LONG_CODEC.fieldOf(SerializationConstants.ENERGY).forGetter(ChemicalFuel::energyPerTick)
+          ExtraCodecs.POSITIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(ChemicalFuel::energyPerTick)
     ).apply(instance, ChemicalFuel::new));
 
     public ChemicalFuel {

@@ -1,6 +1,5 @@
 package mekanism.api.recipes.inputs;
 
-import com.google.common.primitives.Ints;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
@@ -152,8 +151,7 @@ public class InputHelper {
 
         @Override
         protected int getAmount(ChemicalStack stack) {
-            //TODO - 26.1: Make chemical stacks just use ints?
-            return Ints.saturatedCast(stack.amount());
+            return stack.amount();
         }
 
         @Override

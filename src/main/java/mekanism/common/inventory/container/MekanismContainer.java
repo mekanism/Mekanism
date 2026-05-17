@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
-import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.inventory.container.slot.ArmorSlot;
 import mekanism.common.inventory.container.slot.HotBarSlot;
@@ -27,14 +27,14 @@ import mekanism.common.inventory.container.sync.SyncableByteArray;
 import mekanism.common.inventory.container.sync.SyncableDouble;
 import mekanism.common.inventory.container.sync.SyncableEnum;
 import mekanism.common.inventory.container.sync.SyncableFloat;
-import mekanism.common.inventory.container.sync.SyncableFluidStack;
 import mekanism.common.inventory.container.sync.SyncableFrequency;
 import mekanism.common.inventory.container.sync.SyncableInt;
 import mekanism.common.inventory.container.sync.SyncableItemStack;
+import mekanism.common.inventory.container.sync.SyncableLargeResourceStack;
 import mekanism.common.inventory.container.sync.SyncableLong;
 import mekanism.common.inventory.container.sync.SyncableRegistryEntry;
+import mekanism.common.inventory.container.sync.SyncableResource;
 import mekanism.common.inventory.container.sync.SyncableShort;
-import mekanism.common.inventory.container.sync.chemical.SyncableChemicalStack;
 import mekanism.common.inventory.container.sync.list.SyncableCollection;
 import mekanism.common.inventory.container.sync.list.SyncableList;
 import mekanism.common.network.PacketUtils;
@@ -56,9 +56,9 @@ import net.minecraft.world.inventory.DataSlot;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
@@ -560,8 +560,6 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
             syncable.set(value);
         } else if (data instanceof SyncableEnum<?> syncable) {
             syncable.set(value);
-        } else if (data instanceof SyncableFluidStack syncable) {
-            syncable.set(value);
         } else if (data instanceof SyncableItemStack syncable) {
             syncable.set(value);
         } else if (data instanceof SyncableRegistryEntry<?> syncable) {
@@ -573,7 +571,7 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableLong syncable) {
             syncable.set(value);
-        } else if (data instanceof SyncableChemicalStack syncable) {
+        } else if (data instanceof SyncableLargeResourceStack<?> syncable) {
             syncable.set(value);
         }
     }
@@ -599,23 +597,23 @@ public abstract class MekanismContainer extends AbstractContainerMenu implements
         }
     }
 
-    public void handleWindowProperty(short property, @NotNull FluidStack value) {
+    public <RESOURCE extends Resource> void handleWindowProperty(short property, @NotNull RESOURCE value) {
         ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableFluidStack syncable) {
-            syncable.set(value);
+        if (data instanceof SyncableResource) {
+            ((SyncableResource<RESOURCE>) data).set(value);
+        }
+    }
+
+    public <RESOURCE extends Resource> void handleWindowProperty(short property, @NotNull LargeResourceStack<RESOURCE> value) {
+        ISyncableData data = getTrackedData(property);
+        if (data instanceof SyncableLargeResourceStack) {
+            ((SyncableLargeResourceStack<RESOURCE>) data).set(value);
         }
     }
 
     public void handleWindowProperty(short property, @Nullable BlockPos value) {
         ISyncableData data = getTrackedData(property);
         if (data instanceof SyncableBlockPos syncable) {
-            syncable.set(value);
-        }
-    }
-
-    public void handleWindowProperty(short property, @NotNull ChemicalStack value) {
-        ISyncableData data = getTrackedData(property);
-        if (data instanceof SyncableChemicalStack syncable) {
             syncable.set(value);
         }
     }

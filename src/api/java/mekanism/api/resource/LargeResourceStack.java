@@ -4,10 +4,10 @@ import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.resource.Resource;
@@ -37,10 +37,17 @@ public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE re
         return Ints.saturatedCast(amount);
     }
 
+    public LargeResourceStack<RESOURCE> with(long amount) {
+        if (amount == this.amount) {
+            return this;
+        }
+        return new LargeResourceStack<>(resource, amount);
+    }
+
     public static <RESOURCE extends @NonNull Resource> Codec<LargeResourceStack<RESOURCE>> codec(Codec<RESOURCE> resourceCodec) {
         return RecordCodecBuilder.create(instance -> instance.group(
               resourceCodec.fieldOf(SerializationConstants.TYPE).forGetter(LargeResourceStack::resource),
-              SerializerHelper.POSITIVE_LONG_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(LargeResourceStack::amount)
+              ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.AMOUNT).forGetter(LargeResourceStack::amount)
         ).apply(instance, LargeResourceStack::new));
     }
 
