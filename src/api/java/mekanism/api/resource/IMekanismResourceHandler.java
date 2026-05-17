@@ -43,6 +43,8 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Nullable
     default CONTAINER getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
+        // Our callers that are from indexed based methods, are allowed/supposed to throw, similar to doing a Objects.checkIndex(index, size()); check
+        // So probably it makes sense?
         List<CONTAINER> containers = getContainers();
         return index >= 0 && index < containers.size() ? containers.get(index) : null;
     }
@@ -164,6 +166,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
 
     @Override
     default boolean isValid(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
+        TransferPreconditions.checkNonEmpty(resource);
         CONTAINER container = getContainer(index);
         return container != null && container.isValid(resource);
     }

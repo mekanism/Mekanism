@@ -4,7 +4,6 @@ import mekanism.api.RelativeSide;
 import mekanism.api.text.EnumColor;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
-import mekanism.common.content.transporter.TransporterManager;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.IAdvancedTransportEjector;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -12,13 +11,12 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import mekanism.common.tile.transmitter.TileEntityTransmitter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
 
@@ -66,18 +64,6 @@ public final class TransporterUtils {
         return color.ordinal() == 0 ? null : color.getPrevious();
     }
 
-    public static void drop(LogisticalTransporterBase transporter, TransporterStack stack) {
-        BlockPos blockPos;
-        if (stack.hasPath()) {
-            Vector3f pos = getStackPosition(transporter, stack, 0);
-            blockPos = transporter.getBlockPos().offset(Mth.floor(pos.x()), Mth.floor(pos.y()), Mth.floor(pos.z()));
-        } else {
-            blockPos = transporter.getBlockPos();
-        }
-        TransporterManager.remove(transporter.getLevel(), stack);
-        InventoryUtils.dropStack(transporter.getLevel(), blockPos, null, stack.asItemStack(), (level, pos, ignored, item) -> Block.popResource(level, pos, item));
-    }
-
     public static Vector3f getStackPosition(LogisticalTransporterBase transporter, TransporterStack stack, float partial) {
         return stack.getSide(transporter)
               .step()//Note: Direction#step returns a new Vector3f
@@ -85,14 +71,15 @@ public final class TransporterUtils {
               .add(0.5F, 0.25F, 0.5F);
     }
 
-    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force) {
-        return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force);
+    public static boolean canInsert(Level level, BlockPos pos, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force, @Nullable TransactionContext transaction) {
+        return canInsert(level, pos, WorldUtils.getTileEntity(level, pos), color, itemType, itemAmount, side, force, transaction);
     }
 
     //TODO - 26.1: What do we want to return if itemType is empty
-    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force) {
+    public static boolean canInsert(Level level, BlockPos pos, @Nullable BlockEntity tile, EnumColor color, ItemResource itemType, int itemAmount, Direction side, boolean force,
+          @Nullable TransactionContext transaction) {
         if (force && tile instanceof IAdvancedTransportEjector sorter) {
-            return sorter.canSendHome(itemType, itemAmount);
+            return sorter.canSendHome(itemType, itemAmount, transaction);
         }
         if (!force && tile instanceof ISideConfiguration config && config.getEjector().hasStrictInput()) {
             Direction tileSide = config.getDirection();
@@ -105,11 +92,11 @@ public final class TransporterUtils {
         if (inventory == null) {
             return false;
         }
-        try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+        try (Transaction simulation = Transaction.open(transaction)) {
             // Simulate insert, this will handle validating the item is valid for the inventory
             //TODO - 26.1: Should we be taking the item stack's count into account, and only return true if it can all be inserted, or should we maybe just try inserting
             // a single thing of the item for the simulation
-            return inventory.insert(itemType, itemAmount, transaction) > 0;
+            return inventory.insert(itemType, itemAmount, simulation) > 0;
         }
     }
 }

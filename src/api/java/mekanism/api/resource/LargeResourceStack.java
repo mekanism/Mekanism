@@ -15,6 +15,7 @@ import org.jspecify.annotations.NonNull;
 
 //TODO - 26.1: Docs and reference ResourceStack
 //TODO - 26.1: Should we sanitize the input amount and clamp or throw it so it isn't negative?(if we do add a Range annotation)
+//TODO - 26.1: Would it be of more use for some of the usages of this to just add codecs for ResourceStack, rather than using LargeResourceStack
 public record LargeResourceStack<RESOURCE extends @NonNull Resource>(RESOURCE resource, long amount) {
 
     //TODO - 26.1: Re-evaluate these constants

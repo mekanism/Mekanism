@@ -8,7 +8,6 @@ import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -43,6 +42,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -105,9 +105,11 @@ public class TileEntityBin extends TileEntityMekanism implements IConfigurable {
                 if (targetInventory == null) {
                     targetInventory = Capabilities.ITEM.createCache((ServerLevel) level, getBlockPos().below(), Direction.UP);
                 }
-                TransitResponse response = request.eject(this, targetInventory.getCapability(), 0, LogisticalTransporterBase::getColor);
-                if (!response.isEmpty()) {
-                    response.useAll();
+                try (Transaction transaction = Transaction.openRoot()) {
+                    TransitResponse response = request.eject(this, targetInventory.getCapability(), 1, null, transaction);
+                    if (response.useAll(transaction)) {
+                        transaction.commit();
+                    }
                 }
                 delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
             }

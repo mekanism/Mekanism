@@ -11,7 +11,6 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.item.CursedTransporterItemHandler;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.transporter.SorterFilter;
@@ -54,6 +53,8 @@ import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -123,28 +124,26 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
                 }
                 ResourceHandler<ItemResource> frontCap = targetInventory.getCapability();
                 if (frontCap != null) {
-                    boolean sentItems = false;
-                    for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
-                        TransitRequest request = filter.mapInventory(back, singleItem);
-                        if (request.isEmpty()) {
-                            continue;
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        TransitResponse response = TransitResponse.EMPTY;
+                        for (SorterFilter<?> filter : filterManager.getEnabledFilters()) {
+                            TransitRequest request = filter.mapInventory(back, singleItem, transaction);
+                            if (request.isEmpty()) {
+                                continue;
+                            }
+                            response = request.eject(this, frontCap, !singleItem && filter.sizeMode ? filter.min : 1, filter.color, transaction);
+                            if (!response.isEmpty()) {
+                                break;
+                            }
                         }
-                        int min = singleItem ? 1 : filter.sizeMode ? filter.min : 0;
-                        TransitResponse response = emitItemToTransporter(frontCap, request, filter.color, min);
-                        if (!response.isEmpty()) {
-                            response.useAll();
-                            setActive(true);
-                            sentItems = true;
-                            break;
-                        }
-                    }
 
-                    if (!sentItems && autoEject) {
-                        //TODO - 1.21: Evaluate if this (and SorterFilter#mapInventory) should use a stack's max stack size or the absolute stack size
-                        TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, strictFinder);
-                        TransitResponse response = emitItemToTransporter(frontCap, request, color, 0);
-                        if (!response.isEmpty()) {
-                            response.useAll();
+                        if (autoEject && response.isEmpty()) {
+                            //TODO - 1.21: Evaluate if this (and SorterFilter#mapInventory) should use a stack's max stack size or the absolute stack size
+                            TransitRequest request = TransitRequest.definedItem(back, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, strictFinder, transaction);
+                            response = request.eject(this, frontCap, 1, color, transaction);
+                        }
+                        if (response.useAll(transaction)) {
+                            transaction.commit();
                             setActive(true);
                         }
                     }
@@ -153,15 +152,6 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
             delayTicks = MekanismUtils.TICKS_PER_HALF_SECOND;
         }
         return sendUpdatePacket;
-    }
-
-    private TransitResponse emitItemToTransporter(ResourceHandler<ItemResource> target, TransitRequest request, EnumColor filterColor, int min) {
-        if (request.isEmpty()) {
-            return request.getEmptyResponse();
-        } else if (target instanceof CursedTransporterItemHandler cursed) {
-            return cursed.getTransporter().insertMaybeRR(this, getBlockPos(), request, filterColor, true, min);
-        }
-        return request.addToInventoryUnchecked(target, min);
     }
 
     @Override
@@ -273,19 +263,19 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
     }
 
     @Override
-    public boolean canSendHome(@NotNull ItemResource itemType, int amount) {
+    public boolean canSendHome(@NotNull ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
         Direction oppositeDirection = getOppositeDirection();
-        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, itemType, amount, oppositeDirection, true);
+        return TransporterUtils.canInsert(level, worldPosition.relative(oppositeDirection), null, itemType, amount, oppositeDirection, true, transaction);
     }
 
     @NotNull
     @Override
-    public TransitResponse sendHome(@NotNull TransitRequest request) {
+    public TransitResponse sendHome(@NotNull TransitRequest request, @NotNull TransactionContext transaction) {
         Direction direction = getDirection();
         BlockPos pos = worldPosition.relative(direction.getOpposite());
         //Note: We pass false as we have no reason to allow daisy-chaining sorters given a sorter can't send from a sorter to another
         // and the only case would be if an inventory was replaced with another sorter connected to an inventory to proxy it back an extra spot
-        return request.addToInventory(getLevel(), pos, getHomeInventory(), 0, false);
+        return request.addToInventory(getLevel(), pos, getHomeInventory(), 0, false, transaction);
     }
 
     @Override

@@ -23,6 +23,7 @@ import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends BaseFilter<FILTER> implements Finder {
@@ -91,11 +92,11 @@ public abstract class SorterFilter<FILTER extends SorterFilter<FILTER>> extends 
         max = filter.max;
     }
 
-    public TransitRequest mapInventory(ResourceHandler<ItemResource> itemHandler, boolean singleItem) {
+    public TransitRequest mapInventory(ResourceHandler<ItemResource> itemHandler, boolean singleItem, @Nullable TransactionContext transaction) {
         if (sizeMode && !singleItem) {
-            return TransitRequest.definedItem(itemHandler, min, max, this);
+            return TransitRequest.definedItem(itemHandler, min, max, this, transaction);
         }
-        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, this);
+        return TransitRequest.definedItem(itemHandler, singleItem ? 1 : Item.ABSOLUTE_MAX_STACK_SIZE, this, transaction);
     }
 
     @Override

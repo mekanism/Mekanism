@@ -5,12 +5,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
+import java.util.function.ToLongFunction;
 import mekanism.api.AutomationType;
-import mekanism.api.resource.IResourceContainer;
+import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.math.MathUtils;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.attachments.containers.ContainerType;
@@ -25,7 +30,6 @@ import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
@@ -72,71 +76,38 @@ public final class InventoryUtils {
             }
             UpgradeAware upgradeAware = stack.get(MekanismDataComponents.UPGRADES);
             if (upgradeAware != null) {
-                dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, s -> s.resource().toStack(s.amountAsInt()));
-                dropItemContents(level, blockPos, upgradeAware.upgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getStack(entry.getKey(), entry.getValue()));
+                dropItemContents(level, blockPos, List.of(upgradeAware.inputSlot(), upgradeAware.outputSlot()), scalar, dropper, LargeResourceStack::resource, LargeResourceStack::amount);
+                dropItemContents(level, blockPos, upgradeAware.upgrades().entrySet(), scalar, dropper, entry -> UpgradeUtils.getResource(entry.getKey()),
+                      Map.Entry::getValue);
             }
             IModuleContainer moduleContainer = IModuleHelper.INSTANCE.getModuleContainer(stack);
             if (moduleContainer != null) {
-                dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper, module -> new ItemStack(module.getUntypedData().getItemHolder(), module.getInstalledCount()));
+                dropItemContents(level, blockPos, moduleContainer.modules(), scalar, dropper,
+                      module -> ItemResource.of(module.getUntypedData().getItemHolder()), IModule::getInstalledCount);
             }
         }
     }
 
     private static void dropItemContents(Level level, BlockPos pos, List<IInventorySlot> slots, int scalar, ItemDropper<BlockPos> dropper) {
-        dropItemContents(level, pos, slots, scalar, dropper, slot -> slot.getResource().toStack(slot.amountAsInt()));
+        dropItemContents(level, pos, slots, scalar, dropper, IResourceContainer::getResource, IResourceContainer::amountAsLong);
     }
 
-    /**
-     * @param stackExtractor It is expected the stack returned by the stack extractor can be safely mutated
-     */
     private static <T> void dropItemContents(Level level, BlockPos pos, Collection<T> toDrop, int scalar, ItemDropper<BlockPos> dropper,
-          Function<T, ItemStack> stackExtractor) {
+          Function<T, ItemResource> itemTypeExtractor, ToLongFunction<T> sizeExtractor) {
         for (T drop : toDrop) {
-            ItemStack stackToDrop = stackExtractor.apply(drop);
-            if (!stackToDrop.isEmpty()) {
+            ItemResource typeToDrop = itemTypeExtractor.apply(drop);
+            if (!typeToDrop.isEmpty()) {
+                long amount = sizeExtractor.applyAsLong(drop);
                 //Note: We increase the size of the stack we are dropping based on the size of the stack we are dropping,
                 // this makes it so that if there are two items that are stacked because they have the same inventory that
                 // then we actually end up dropping the stack for each of the items. dropStack handles ensuring that we don't
                 // drop items past their max stack size
                 if (scalar > 1) {
-                    if (stackToDrop.count() > stackToDrop.getMaxStackSize()) {
-                        //If it is already a super sized stack (for example bins), we do a bit of extra math just to ensure the value doesn't overflow
-                        // though we don't bother making sure we actually drop past MAX_INT of the item, as we really would rather not be dropping that
-                        // much in the first place.
-                        stackToDrop.setCount(Ints.saturatedCast((long) scalar * stackToDrop.count()));
-                    } else {
-                        stackToDrop.setCount(scalar * stackToDrop.count());
-                    }
+                    amount = MathUtils.multiplyClamped(amount, scalar);
                 }
                 //Copy the stack as the passed slot is likely to be the actual backing slot
-                dropStack(level, pos, null, stackToDrop, dropper);
+                dropStack(level, pos, null, typeToDrop, amount, dropper);
             }
-        }
-    }
-
-    /**
-     * Helper to drop a stack that may potentially be oversized.
-     *
-     * @param stack   Item Stack to drop, may be passed directly to the dropper.
-     * @param dropper Called to drop the item.
-     */
-    public static <POS> void dropStack(Level level, POS pos, Direction side, ItemStack stack, ItemDropper<POS> dropper) {
-        int count = stack.count();
-        int max = stack.getMaxStackSize();
-        if (count > max) {
-            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
-            // stack counts, drop as many stacks as we need at their max size
-            while (count > max) {
-                dropper.drop(level, pos, side, stack.copyWithCount(max));
-                count -= max;
-            }
-            if (count > 0) {
-                //If we have anything left to drop afterward, do so
-                dropper.drop(level, pos, side, stack.copyWithCount(count));
-            }
-        } else {
-            //If we have a valid stack, we can just directly drop that instead without requiring any copies
-            dropper.drop(level, pos, side, stack);
         }
     }
 
@@ -150,19 +121,14 @@ public final class InventoryUtils {
         //TODO - 26.1: Do we really want to be letting it drop long amount of stacks?
         // This never *really* would happen because of how our multiblock's inventories are currently setup... but this feels wrong
         int max = itemType.getMaxStackSize();
-        if (amount > max) {
-            //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
-            // stack counts, drop as many stacks as we need at their max size
-            while (amount > max) {
-                dropper.drop(level, pos, side, itemType.toStack(max));
-                amount -= max;
-            }
-            if (amount > 0) {
-                //If we have anything left to drop afterward, do so
-                dropper.drop(level, pos, side, itemType.toStack(Ints.saturatedCast(amount)));
-            }
-        } else {
-            //If we have a valid stack, we can just directly drop that instead without requiring any copies
+        //If we have more than a stack of the item (such as we are a bin) or some other thing that allows for compressing
+        // stack counts, drop as many stacks as we need at their max size
+        while (amount > max) {
+            dropper.drop(level, pos, side, itemType.toStack(max));
+            amount -= max;
+        }
+        if (amount > 0) {
+            //If we have anything left to drop afterward, do so
             dropper.drop(level, pos, side, itemType.toStack(Ints.saturatedCast(amount)));
         }
     }
@@ -180,13 +146,6 @@ public final class InventoryUtils {
             return true;
         }
         return inSlot.matches(toInsert);
-    }
-
-    public static boolean areItemsStackable(ItemStackTemplate toInsert, ItemStack inSlot) {
-        if (toInsert == null || inSlot.isEmpty()) {
-            return true;
-        }
-        return ItemStack.isSameItemSameComponents(inSlot, toInsert);
     }
 
     //TODO - 26.1: Re-evaluate this

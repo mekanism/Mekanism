@@ -43,7 +43,6 @@ import mekanism.common.content.miner.MinerFilter;
 import mekanism.common.content.miner.MinerRegionCache;
 import mekanism.common.content.miner.ThreadMinerSearch;
 import mekanism.common.content.miner.ThreadMinerSearch.State;
-import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
@@ -288,9 +287,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
             if (ejectHandler != null && targetHandler != null) {
                 TransitRequest ejectMap = InventoryUtils.getEjectItemMap(ejectHandler, mainSlots);
                 if (!ejectMap.isEmpty()) {
-                    TransitResponse response = ejectMap.eject(this, ejectPos, targetHandler, 0, LogisticalTransporterBase::getColor);
-                    if (!response.isEmpty()) {
-                        response.useAll();
+                    try (Transaction transaction = Transaction.openRoot()) {
+                        TransitResponse response = ejectMap.eject(this, ejectPos, targetHandler, 1, null, transaction);
+                        if (response.useAll(transaction)) {
+                            transaction.commit();
+                        }
                     }
                 }
             }

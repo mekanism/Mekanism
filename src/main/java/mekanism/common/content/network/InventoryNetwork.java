@@ -31,7 +31,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResource>, InventoryNetwork, LogisticalTransporterBase> {
 
@@ -44,8 +46,8 @@ public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResourc
         adoptAllAndRegister(networks);
     }
 
-    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap,
-          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks, LogisticalTransporterBase start) {
+    public List<AcceptorData> calculateAcceptors(TransitRequest request, TransporterStack stack, Long2ObjectMap<ChunkAccess> chunkMap, LogisticalTransporterBase start,
+          @Nullable TransactionContext transaction) {
         List<AcceptorData> toReturn = new ArrayList<>();
         for (ObjectIterator<Long2ObjectMap.Entry<Map<Direction, ResourceHandler<ItemResource>>>> iterator = acceptorCache.getAcceptorFastIterator(); iterator.hasNext(); ) {
             Long2ObjectMap.Entry<Map<Direction, ResourceHandler<ItemResource>>> entry = iterator.next();
@@ -73,7 +75,7 @@ public class InventoryNetwork extends DynamicNetwork<ResourceHandler<ItemResourc
                             }
                         }
                     }
-                    TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler, request, additionalFlowingStacks);
+                    TransitResponse response = TransporterManager.getPredictedInsert(position, side, handler, request, transaction);
                     if (!response.isEmpty()) {
                         Direction opposite = side.getOpposite();
                         //If the response isn't empty, check if we already have acceptor data for

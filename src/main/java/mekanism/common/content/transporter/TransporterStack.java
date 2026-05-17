@@ -3,10 +3,7 @@ package mekanism.common.content.transporter;
 import io.netty.buffer.ByteBuf;
 import it.unimi.dsi.fastutil.longs.LongArrayList;
 import it.unimi.dsi.fastutil.longs.LongList;
-import java.util.Collections;
-import java.util.Map;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
@@ -21,7 +18,6 @@ import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import mekanism.common.util.NBTUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.Direction;
-import net.minecraft.core.GlobalPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
@@ -32,6 +28,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -169,17 +166,17 @@ public class TransporterStack {
         }
     }
 
-    private void setPath(Level world, @NotNull LongList path, @NotNull Path type, boolean updateFlowing) {
+    private void setPath(Level world, @NotNull LongList path, @NotNull Path type, @Nullable TransactionContext transaction) {
         //Make sure old path isn't null
-        if (updateFlowing && (pathType == null || pathType.hasTarget())) {
+        if (pathType == null || pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
-            TransporterManager.remove(world, this);
+            TransporterManager.remove(world, this, transaction);
         }
         pathToTarget = path;
         pathType = type;
-        if (updateFlowing && pathType.hasTarget()) {
+        if (pathType.hasTarget()) {
             //Only update the actual flowing stacks if we want to modify more than our current stack
-            TransporterManager.add(world, this);
+            TransporterManager.add(world, this, transaction);
         }
     }
 
@@ -195,59 +192,41 @@ public class TransporterStack {
         return pathType == null ? Path.NONE : pathType;
     }
 
-    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min) {
-        return recalculatePath(request, transporter, min, true);
+    public final TransitResponse recalculatePath(TransitRequest request, BlockEntity ignored, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+        return recalculatePath(request, transporter, min, transaction);
     }
 
-    public final TransitResponse recalculatePath(TransitRequest request, BlockEntity ignored, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
-        return recalculatePath(request, transporter, min, updateFlowing);
-    }
-
-    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
-        return recalculatePath(request, transporter, min, updateFlowing, Collections.emptyMap());
-    }
-
-    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min,
-          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
-        return recalculatePath(request, transporter, min, false, additionalFlowingStacks);
-    }
-
-    private TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, boolean updateFlowing,
-          Map<GlobalPos, Set<TransporterStack>> additionalFlowingStacks) {
-        Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min, additionalFlowingStacks);
+    public TransitResponse recalculatePath(TransitRequest request, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+        Destination newPath = TransporterPathfinder.getNewBasePath(transporter, this, request, min, transaction);
         if (newPath == null) {
-            return request.getEmptyResponse();
+            return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, updateFlowing);
+        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, transaction);
         initiatedPath = true;
         return newPath.getResponse();
     }
 
-    public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse recalculateRRPath(TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min) {
-        return recalculateRRPath(request, outputter, transporter, min, true);
-    }
-
-    public <BE extends BlockEntity & IAdvancedTransportEjector> TransitResponse recalculateRRPath(TransitRequest request, BE outputter, LogisticalTransporterBase transporter, int min, boolean updateFlowing) {
-        Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min);
+    public TransitResponse recalculateRRPath(TransitRequest request, IAdvancedTransportEjector outputter, LogisticalTransporterBase transporter, int min, @Nullable TransactionContext transaction) {
+        Destination newPath = TransporterPathfinder.getNewRRPath(transporter, this, request, outputter, min, transaction);
         if (newPath == null) {
-            return request.getEmptyResponse();
+            return TransitResponse.EMPTY;
         }
         idleDir = null;
-        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, updateFlowing);
+        setPath(transporter.getLevel(), newPath.getPath(), Path.DEST, transaction);
         initiatedPath = true;
         return newPath.getResponse();
     }
 
-    public boolean calculateIdle(LogisticalTransporterBase transporter) {
-        IdlePathData newPath = TransporterPathfinder.getIdlePath(transporter, this);
+    public boolean calculateIdle(LogisticalTransporterBase transporter, @Nullable TransactionContext transaction) {
+        IdlePathData newPath = TransporterPathfinder.getIdlePath(transporter, this, transaction);
         if (newPath == null) {
             return false;
         }
         if (newPath.type().isHome()) {
             idleDir = null;
         }
-        setPath(transporter.getLevel(), newPath.path(), newPath.type(), true);
+        setPath(transporter.getLevel(), newPath.path(), newPath.type(), transaction);
         originalLocation = transporter.getWorldPositionLong();
         initiatedPath = true;
         return true;
@@ -318,20 +297,23 @@ public class TransporterStack {
     }
 
     @Contract("null, _, _ -> false")
-    public boolean canInsertToTransporter(@Nullable LogisticalTransporterBase transmitter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
-        return transmitter != null && canInsertToTransporterNN(transmitter, from, transporterFrom);
-    }
-
-    public boolean canInsertToTransporterNN(@NotNull LogisticalTransporterBase transporter, Direction from, @Nullable BlockEntity tileFrom) {
-        //If the color is valid, make sure that the connection is valid
-        EnumColor color = transporter.getColor();
-        return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
-    }
-
-    public boolean canInsertToTransporterNN(@NotNull LogisticalTransporterBase transporter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
+    public boolean canInsertToTransporter(@Nullable LogisticalTransporterBase transporter, Direction from, @Nullable LogisticalTransporterBase transporterFrom) {
+        if (transporter == null) {
+            return false;
+        }
         //If the color is valid, make sure that the connection is valid
         EnumColor color = transporter.getColor();
         return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), transporterFrom);
+    }
+
+    @Contract("null, _, _ -> false")
+    public boolean canInsertToTransporter(@Nullable LogisticalTransporterBase transporter, Direction from, @Nullable BlockEntity tileFrom) {
+        if (transporter == null) {
+            return false;
+        }
+        //If the color is valid, make sure that the connection is valid
+        EnumColor color = transporter.getColor();
+        return (color == null || color == this.color) && transporter.canConnectMutual(from.getOpposite(), tileFrom);
     }
 
     public long getDest() {

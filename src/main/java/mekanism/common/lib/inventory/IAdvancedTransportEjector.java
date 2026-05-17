@@ -5,6 +5,7 @@ import mekanism.common.content.transporter.TransporterPathfinder.Destination;
 import mekanism.common.lib.SidedBlockPos;
 import mekanism.common.lib.inventory.TransitRequest.TransitResponse;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
@@ -23,7 +24,7 @@ public interface IAdvancedTransportEjector {
 
     void toggleRoundRobin();
 
-    boolean canSendHome(ItemResource itemType, int amount);
+    boolean canSendHome(ItemResource itemType, int amount, @Nullable TransactionContext transaction);
 
-    TransitResponse sendHome(TransitRequest request);
+    TransitResponse sendHome(TransitRequest request, TransactionContext transaction);
 }

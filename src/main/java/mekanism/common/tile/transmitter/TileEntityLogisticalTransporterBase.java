@@ -6,12 +6,11 @@ import java.util.List;
 import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.item.CursedTransporterItemHandler;
+import mekanism.common.capabilities.item.TransporterItemHandler;
 import mekanism.common.capabilities.resolver.ICapabilityResolver;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.transmitter.ConnectionType;
-import mekanism.common.util.TransporterUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -60,7 +59,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
             if (!transporter.isUpgrading()) {
                 //If the transporter is not currently being upgraded, drop the contents
                 for (TransporterStack stack : transporter.getTransit()) {
-                    TransporterUtils.drop(transporter, stack);
+                    transporter.drop(stack, null);
                 }
             }
         }
@@ -86,7 +85,7 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
 
         private static final List<BlockCapability<?, @Nullable Direction>> SUPPORTED_CAPABILITY = Collections.singletonList(Capabilities.ITEM.block());
 
-        private final Map<Direction, CursedTransporterItemHandler> cursedHandlers = new EnumMap<>(Direction.class);
+        private final Map<Direction, TransporterItemHandler> transporterHandlers = new EnumMap<>(Direction.class);
         private final Map<Direction, ResourceHandler<ItemResource>> handlers = new EnumMap<>(Direction.class);
 
         @Override
@@ -109,10 +108,10 @@ public abstract class TileEntityLogisticalTransporterBase extends TileEntityTran
                 LogisticalTransporterBase transporter = getTransmitter();
                 //Note: We check here whether it exposes the cap rather than in the cap itself as we invalidate the cached cap whenever this changes
                 if (transporter.exposesInsertCap(side)) {
-                    CursedTransporterItemHandler cached = cursedHandlers.get(side);
+                    TransporterItemHandler cached = transporterHandlers.get(side);
                     if (cached == null) {
-                        cached = new CursedTransporterItemHandler(transporter, WorldUtils.relativePos(getWorldPositionLong(), side), () -> level == null ? -1 : level.getGameTime());
-                        cursedHandlers.put(side, cached);
+                        cached = new TransporterItemHandler(transporter, WorldUtils.relativePos(getWorldPositionLong(), side));
+                        transporterHandlers.put(side, cached);
                     }
                     handlers.put(side, cached);
                     return (T) cached;

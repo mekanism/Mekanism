@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
@@ -25,7 +24,6 @@ import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
@@ -64,6 +62,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -75,7 +74,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     private final Map<TransmissionType, Map<Direction, BlockCapabilityCache<?, @Nullable Direction>>> capabilityCaches = new EnumMap<>(TransmissionType.class);
     private final Map<Direction, BlockEnergyCapabilityCache> energyCapabilityCache = new EnumMap<>(Direction.class);
 
-    private final Function<LogisticalTransporterBase, EnumColor> outputColorFunction;
     private final EnumColor[] inputColors = new EnumColor[EnumUtils.SIDES.length];
     private final IntSupplier chemicalEjectRate;
     private final IntSupplier fluidEjectRate;
@@ -110,7 +108,6 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
         this.chemicalEjectRate = chemicalEjectRate;
         this.fluidEjectRate = fluidEjectRate;
         this.energyEjectRate = energyEjectRate;
-        this.outputColorFunction = transporter -> this.outputColor;
         tile.addComponent(this);
     }
 
@@ -309,16 +306,18 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             }
                         } else {
                             //Update the handler so that if/when the response uses it, it makes sure it is using the correct side's restrictions
-                            ejectMap.handler = handler;
+                            ejectMap.setHandler(handler);
                         }
                         //If the spot is not loaded just skip trying to eject to it
-                        TransitResponse response = ejectMap.eject(tile, capability, 0, this.outputColorFunction);
-                        if (!response.isEmpty()) {
-                            // use the items returned by the TransitResponse; will be visible next loop
-                            response.useAll();
-                            if (ejectMap.isEmpty()) {
-                                //If we are out of items to eject, break
-                                break;
+                        try (Transaction transaction = Transaction.openRoot()) {
+                            TransitResponse response = ejectMap.eject(tile, capability, 1, this.outputColor, transaction);
+                            if (response.useAll(transaction)) {
+                                // use the items returned by the TransitResponse; will be visible next loop
+                                transaction.commit();
+                                if (ejectMap.isEmpty()) {
+                                    //If we are out of items to eject, break
+                                    break;
+                                }
                             }
                         }
                     }
@@ -541,16 +540,12 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
 
     private static class EjectTransitRequest extends HandlerTransitRequest {
 
-        public ResourceHandler<ItemResource> handler;
-
         public EjectTransitRequest(ResourceHandler<ItemResource> handler) {
             super(handler);
-            this.handler = handler;
         }
 
-        @Override
-        protected ResourceHandler<ItemResource> getHandler() {
-            return handler;
+        protected void setHandler(ResourceHandler<ItemResource> handler) {
+            this.handler = handler;
         }
     }
 }

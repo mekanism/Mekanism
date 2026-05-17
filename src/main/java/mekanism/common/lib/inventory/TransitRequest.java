@@ -3,27 +3,26 @@ package mekanism.common.lib.inventory;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.function.Function;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
-import mekanism.common.capabilities.item.CursedTransporterItemHandler;
+import mekanism.common.capabilities.item.TransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.transporter.TransporterStack;
 import mekanism.common.lib.inventory.TransitRequest.ItemData;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
 public abstract class TransitRequest implements Iterable<ItemData> {
-
-    private final TransitResponse EMPTY = new TransitResponse(ItemResource.EMPTY, 0, null);
 
     public static SimpleTransitRequest simple(ItemResource itemType, int amount) {
         return new SimpleTransitRequest(itemType, amount);
@@ -33,22 +32,21 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         return simple(stack.getItemType(), stack.size());
     }
 
-    public static TransitRequest anyItem(ResourceHandler<ItemResource> inventory, int amount) {
-        return definedItem(inventory, amount, Finder.ANY);
+    public static TransitRequest anyItem(ResourceHandler<ItemResource> inventory, int amount, @Nullable TransactionContext transaction) {
+        return definedItem(inventory, amount, Finder.ANY, transaction);
     }
 
-    public static TransitRequest definedItem(ResourceHandler<ItemResource> inventory, int amount, Finder finder) {
-        return definedItem(inventory, 1, amount, finder);
+    public static TransitRequest definedItem(ResourceHandler<ItemResource> inventory, int amount, Finder finder, @Nullable TransactionContext transaction) {
+        return definedItem(inventory, 1, amount, finder, transaction);
     }
 
     //TODO - 26.1: Evaluate what callers of this could just be replaced with using ResourceHandlerUtil calls
-    public static TransitRequest definedItem(ResourceHandler<ItemResource> inventory, int min, int max, Finder finder) {
+    public static TransitRequest definedItem(ResourceHandler<ItemResource> inventory, int min, int max, Finder finder, @Nullable TransactionContext transaction) {
         HandlerTransitRequest ret = new HandlerTransitRequest(inventory);
         if (inventory == null) {
             return ret;
         }
-        //TODO - 26.1: Re-evaluate callers and see if we have a transaction context from any of them that we need to use rather than opening root
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             // count backwards: we start from the bottom of the inventory and go back for consistency
             for (int i = inventory.size() - 1; i >= 0; i--) {
                 ItemResource itemType = inventory.getResource(i);
@@ -74,54 +72,59 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         }
         return ret;
     }
-
     @NotNull
-    public TransitResponse eject(BlockEntity outputter, @Nullable ResourceHandler<ItemResource> target, int min, Function<LogisticalTransporterBase, EnumColor> outputColor) {
-        return eject(outputter, outputter.getBlockPos(), target, min, outputColor);
+    public TransitResponse eject(BlockEntity outputter, @Nullable ResourceHandler<ItemResource> target, int min, @Nullable EnumColor outputColor,
+          @NotNull TransactionContext transaction) {
+        return eject(outputter, outputter.getBlockPos(), target, min, outputColor, transaction);
     }
 
     @NotNull
     public TransitResponse eject(BlockEntity outputter, BlockPos outputterPos, @Nullable ResourceHandler<ItemResource> target, int min,
-          Function<LogisticalTransporterBase, EnumColor> outputColor) {
+          @Nullable EnumColor outputColor, @NotNull TransactionContext transaction) {
         if (isEmpty()) {//Short circuit if our request is empty
-            return getEmptyResponse();
-        } else if (target instanceof CursedTransporterItemHandler cursed) {
+            return TransitResponse.EMPTY;
+        } else if (target instanceof TransporterItemHandler cursed) {
             LogisticalTransporterBase transporter = cursed.getTransporter();
-            return transporter.insert(outputter, outputterPos, this, outputColor.apply(transporter), true, min);
+            //TODO - 26.1: Re-evaluate this, but I am fairly sure that if the color is null, then it basically is "no color" so would just take the color of the transporter it is being inserted directly into
+            EnumColor color = outputColor == null ? transporter.getColor() : outputColor;
+            return transporter.insert(outputter, outputterPos, this, color, min, transaction);
         }
-        return addToInventoryUnchecked(target, min);
+        return addToInventoryUnchecked(target, min, transaction);
     }
 
     @NotNull
-    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable ResourceHandler<ItemResource> inventory, int min, boolean force) {
+    public TransitResponse addToInventory(Level level, BlockPos pos, @Nullable ResourceHandler<ItemResource> inventory, int min, boolean force, @NotNull TransactionContext transaction) {
         if (isEmpty()) {//Short circuit if our request is empty
-            return getEmptyResponse();
+            return TransitResponse.EMPTY;
         } else if (force && WorldUtils.getTileEntity(level, pos) instanceof IAdvancedTransportEjector sorter) {
-            return sorter.sendHome(this);
+            return sorter.sendHome(this, transaction);
         }
-        return addToInventoryUnchecked(inventory, min);
+        return addToInventoryUnchecked(inventory, min, transaction);
     }
 
     //Note: We are unchecked because we don't validate if we are empty or not
     @NotNull
-    public TransitResponse addToInventoryUnchecked(@Nullable ResourceHandler<ItemResource> inventory, int min) {
+    private TransitResponse addToInventoryUnchecked(@Nullable ResourceHandler<ItemResource> inventory, int min, @NotNull TransactionContext transaction) {
         if (inventory == null || inventory.size() == 0) {
             //If the inventory has no slots just exit early with the result that we can't send any items
-            return getEmptyResponse();
+            return TransitResponse.EMPTY;
         }
         for (ItemData data : this) {
-            try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
-                ItemResource itemType = data.getItemType();
-                int inserted = inventory.insert(itemType, data.getTotalCount(), transaction);
-                if (inserted > 0 && inserted >= min) {
-                    //If we are able to send any items, and the amount we are sending is at least what our minimum required amount is
-                    // commit the transaction and return a response of how much of the item was actually inserted
-                    transaction.commit();
-                    return createResponse(itemType, inserted, data);
+            int count = data.getTotalCount();
+            if (count > 0) {
+                try (Transaction subTransaction = Transaction.open(transaction)) {
+                    ItemResource itemType = data.getItemType();
+                    int inserted = inventory.insert(itemType, count, subTransaction);
+                    if (inserted > 0 && inserted >= min) {
+                        //If we are able to send any items, and the amount we are sending is at least what our minimum required amount is
+                        // commit the transaction and return a response of how much of the item was actually inserted
+                        subTransaction.commit();
+                        return createResponse(itemType, inserted, data);
+                    }
                 }
             }
         }
-        return getEmptyResponse();
+        return TransitResponse.EMPTY;
     }
 
     public boolean isEmpty() {
@@ -131,17 +134,20 @@ public abstract class TransitRequest implements Iterable<ItemData> {
     @NotNull
     public TransitResponse createResponse(ItemResource itemType, int inserted, ItemData data) {
         if (itemType.isEmpty() || inserted <= 0) {
-            return getEmptyResponse();
+            return TransitResponse.EMPTY;
         }
         return new TransitResponse(itemType, inserted, data);
     }
 
     @NotNull
     public TransitResponse getEmptyResponse() {
-        return EMPTY;
+        //TODO - 26.1: Evaluate if we want to inline this
+        return TransitResponse.EMPTY;
     }
 
     public record TransitResponse(ItemResource itemType, int sendingAmount, ItemData slotData) {
+
+        public static TransitResponse EMPTY = new TransitResponse(ItemResource.EMPTY, 0, null);
 
         public boolean isEmpty() {
             return itemType.isEmpty() || sendingAmount <= 0 || slotData.getTotalCount() == 0;
@@ -151,19 +157,19 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             if (isEmpty()) {
                 return 0;
             }
-            return slotData.getTotalCount() - sendingAmount();
+            return slotData.getTotalCount() - sendingAmount;
         }
 
-        public ItemStack use(int amount) {
-            return slotData.use(amount);
+        public int use(int amount, @Nullable TransactionContext transaction) {
+            return isEmpty() ? 0 : slotData.use(amount, transaction);
         }
 
-        public ItemStack useAll() {
-            return use(sendingAmount());
+        public boolean useAll(@Nullable TransactionContext transaction) {
+            return !isEmpty() && use(sendingAmount, transaction) == sendingAmount;
         }
     }
 
-    public static class ItemData {
+    public static class ItemData extends SnapshotJournal<Integer> {
 
         private final ItemResource itemType;
         protected int totalCount;
@@ -180,13 +186,10 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             return totalCount;
         }
 
-        public ItemStack getStack() {
-            return getItemType().toStack(getTotalCount());
-        }
-
-        public ItemStack use(int amount) {
+        /// @return Amount actually used
+        public int use(int amount, @Nullable TransactionContext transaction) {
             Mekanism.logger.error("Can't 'use' with this type of TransitResponse: {}", getClass().getName());
-            return ItemStack.EMPTY;
+            return 0;
         }
 
         @Override
@@ -204,9 +207,19 @@ public abstract class TransitRequest implements Iterable<ItemData> {
         public int hashCode() {
             return 31 * getItemType().hashCode() + getTotalCount();
         }
+
+        @Override
+        protected Integer createSnapshot() {
+            return totalCount;
+        }
+
+        @Override
+        protected void revertToSnapshot(Integer snapshot) {
+            totalCount = snapshot;
+        }
     }
 
-    public static class SimpleTransitRequest extends CollectionTransitRequest {
+    public static class SimpleTransitRequest extends TransitRequest {
 
         private final List<ItemData> slotData;
 
@@ -219,9 +232,15 @@ public abstract class TransitRequest implements Iterable<ItemData> {
             }
         }
 
+        @NonNull
         @Override
-        public List<ItemData> getItemData() {
-            return slotData;
+        public Iterator<ItemData> iterator() {
+            return slotData.iterator();
+        }
+
+        @Override
+        public boolean isEmpty() {
+            return slotData.isEmpty();
         }
 
         public static class SimpleItemData extends ItemData {

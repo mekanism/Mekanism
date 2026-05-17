@@ -1,22 +1,24 @@
 package mekanism.common.lib.inventory;
 
-import it.unimi.dsi.fastutil.ints.Int2IntLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMap;
-import it.unimi.dsi.fastutil.ints.Int2IntMaps;
+import it.unimi.dsi.fastutil.ints.Int2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
+import it.unimi.dsi.fastutil.ints.Int2ObjectMaps;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import mekanism.common.Mekanism;
-import net.minecraft.world.item.ItemStack;
+import mekanism.common.lib.transaction.SimpleIntegerJournal;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
+import org.jetbrains.annotations.Nullable;
 
 public class HandlerTransitRequest extends CollectionTransitRequest {
 
-    private final ResourceHandler<ItemResource> handler;
+    protected ResourceHandler<ItemResource> handler;
     private Map<ItemResource, HandlerItemData> itemMap = Collections.emptyMap();
 
     public HandlerTransitRequest(ResourceHandler<ItemResource> handler) {
@@ -37,78 +39,105 @@ public class HandlerTransitRequest extends CollectionTransitRequest {
         return data == null ? 0 : data.getTotalCount();
     }
 
-    protected ResourceHandler<ItemResource> getHandler() {
-        return handler;
-    }
-
     @Override
-    public Collection<HandlerItemData> getItemData() {
+    protected Collection<? extends ItemData> getItemData() {
         return itemMap.values();
     }
 
     @Override
     public boolean isEmpty() {
         //Skip the values call
-        return itemMap.isEmpty();
+        if (itemMap.isEmpty()) {
+            return true;
+        }
+        for (HandlerItemData data : itemMap.values()) {
+            if (data.getTotalCount() > 0) {
+                return false;
+            }
+        }
+        return true;
     }
 
     public class HandlerItemData extends ItemData {
 
-        private final Int2IntMap slotMap = new Int2IntLinkedOpenHashMap();
+        private final Int2ObjectMap<AmountJournal> slotMap = new Int2ObjectLinkedOpenHashMap<>();
 
         public HandlerItemData(ItemResource itemType) {
             super(itemType);
         }
 
-        public void addSlot(int id, int amount) {
+        public void addSlot(int slot, int amount) {
             //TODO - 26.1: Evaluate not bothering to keep track of the slot index, and just letting the handler figure out how it wants things extracted?
-            slotMap.put(id, amount);
+            slotMap.put(slot, new AmountJournal(slot, amount));
             totalCount += amount;
         }
 
         @Override
-        public ItemStack use(int amount) {//TODO - 26.1: Can callers be done in such a way that they have a transaction, and just have to commit it to actually use?
-            ResourceHandler<ItemResource> handler = getHandler();
+        public int use(int amount, @Nullable TransactionContext transaction) {
             ItemResource itemType = getItemType();
-            if (handler != null && !slotMap.isEmpty()) {
-                //TODO - 26.1: Evaluate callers, and see if we should be passing a transaction context from there that then we need to open as a sub transaction
-                try (Transaction transaction = Transaction.openRoot()) {
-                    for (ObjectIterator<Int2IntMap.Entry> iterator = Int2IntMaps.fastIterator(slotMap); iterator.hasNext(); ) {
-                        Int2IntMap.Entry entry = iterator.next();
-                        int slot = entry.getIntKey();
-                        int currentCount = entry.getIntValue();
-                        int toUse = Math.min(amount, currentCount);
-                        int extracted = handler.extract(slot, itemType, toUse, transaction);
-                        if (extracted != toUse) { // be loud if an InvStack's prediction doesn't line up
-                            //Double check if the type that is stored even matches
-                            Mekanism.logger.warn("An inventory's returned content count does not line up with HandlerTransitRequest's prediction.");
-                            Mekanism.logger.warn("HandlerTransitRequest slot: {}, item: {}, toUse: {}, stored type: {}, extracted: {}", slot, itemType, toUse,
-                                  handler.getResource(slot), extracted);
-                            Mekanism.logger.warn("ResourceHandler<ItemResource>: {}", handler.getClass().getName());
-                        }
-                        //TODO - 26.1: Should this be adjusting by extracted instead of toUse? As if extracted != toUse it should always be less than toUse
-                        // so realistically we should be adjusting by that reduced amount instead
-                        amount -= toUse;
-                        totalCount -= toUse;
-                        if (totalCount == 0) {
-                            itemMap.remove(itemType);
-                        }
-                        currentCount = currentCount - toUse;
-                        if (currentCount == 0) {
-                            //If we removed all items from this slot, remove the slot
-                            iterator.remove();
-                        } else {
-                            // otherwise, update the amount in it
-                            entry.setValue(currentCount);
-                        }
-                        if (amount == 0) {
-                            break;
-                        }
+            if (handler == null || slotMap.isEmpty()) {
+                return 0;
+            }
+            try (Transaction subTransaction = Transaction.open(transaction)) {
+                int usedSoFar = 0;
+                for (ObjectIterator<Int2ObjectMap.Entry<AmountJournal>> iterator = Int2ObjectMaps.fastIterator(slotMap); iterator.hasNext(); ) {
+                    Int2ObjectMap.Entry<AmountJournal> entry = iterator.next();
+                    AmountJournal currentAmount = entry.getValue();
+                    int toUse = Math.min(amount - usedSoFar, currentAmount.value);
+                    if (toUse == 0) {//If we are being called before committing all the changes, our value might be zero
+                        continue;
                     }
-                    transaction.commit();
+                    int slot = entry.getIntKey();
+                    int extracted = handler.extract(slot, itemType, toUse, subTransaction);
+                    if (extracted < toUse) { // be loud if an InvStack's prediction doesn't line up
+                        //TODO - 26.1: Re-evaluate this, and if we actually care about being loud here now that nothing is voided or duped
+                        Mekanism.logger.warn("An inventory's returned content count does not line up with HandlerTransitRequest's prediction.");
+                        Mekanism.logger.warn("HandlerTransitRequest slot: {}, item: {}, toUse: {}, stored type: {}, extracted: {}", slot, itemType, toUse,
+                              handler.getResource(slot), extracted);
+                        Mekanism.logger.warn("ResourceHandler<ItemResource>: {}", handler.getClass().getName());
+                        //Return that we failed to extract the expected amount, which will lead to us rolling back, and then our caller also rolling back the transfer
+                        return 0;
+                    }
+                    usedSoFar += extracted;
+                    //Note: If there is already a snapshot taken, updateSnapshots won't bother taking a new one that overwrites this
+                    // so it is safe for us to do here, directly before adjusting the total count, rather than forcing us to do it before the loop
+                    updateSnapshots(subTransaction);
+                    totalCount -= extracted;
+                    currentAmount.updateSnapshots(subTransaction);
+                    currentAmount.value -= extracted;
+                    if (usedSoFar == amount) {
+                        break;
+                    }
+                }
+                subTransaction.commit();
+                return usedSoFar;
+            }
+        }
+
+        @Override
+        protected void onRootCommit(Integer originalState) {
+            super.onRootCommit(originalState);
+            if (totalCount == 0) {//This item is no longer stored, remove it
+                itemMap.remove(getItemType());
+            }
+        }
+
+        private class AmountJournal extends SimpleIntegerJournal {
+
+            private final int slot;
+
+            public AmountJournal(int slot, int amount) {
+                super(amount);
+                this.slot = slot;
+            }
+
+            @Override
+            protected void onRootCommit(Integer originalState) {
+                super.onRootCommit(originalState);
+                if (value == 0) {//There is no more stored in this slot, remove it
+                    slotMap.remove(slot);
                 }
             }
-            return getStack();
         }
     }
 }

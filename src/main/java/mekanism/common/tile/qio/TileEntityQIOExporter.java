@@ -21,7 +21,7 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
-import mekanism.common.capabilities.item.CursedTransporterItemHandler;
+import mekanism.common.capabilities.item.TransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase.PathCalculator;
 import mekanism.common.content.qio.QIOFrequency;
@@ -57,6 +57,7 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -247,38 +248,36 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
     }
 
     @Override
-    public boolean canSendHome(@NotNull ItemResource itemType, int amount) {
+    public boolean canSendHome(@NotNull ItemResource itemType, int amount, @Nullable TransactionContext transaction) {
         QIOFrequency frequency = getQIOFrequency();
         if (frequency == null) {
             return false;
         }
-        //TODO - 26.1: Do we ever call this method from within a transactional context?
-        try (Transaction simulation = Transaction.openRoot()) {
+        try (Transaction simulation = Transaction.open(transaction)) {
             return frequency.massInsert(itemType, amount, simulation) > 0;
         }
     }
 
     @NotNull
     @Override
-    public TransitRequest.TransitResponse sendHome(@NotNull TransitRequest request) {
+    public TransitRequest.TransitResponse sendHome(@NotNull TransitRequest request, @NotNull TransactionContext transaction) {
         if (request.isEmpty()) {//Short circuit if our request is empty
-            return request.getEmptyResponse();
+            return TransitResponse.EMPTY;
         }
         QIOFrequency frequency = getQIOFrequency();
         if (frequency != null) {
-            //TODO - 26.1: Do we ever call this method from within a transactional context?
-            try (Transaction transaction = Transaction.openRoot()) {
-                for (ItemData data : request) {
+            for (ItemData data : request) {
+                int count = data.getTotalCount();
+                if (count > 0) {
                     ItemResource itemType = data.getItemType();
-                    int inserted = frequency.addItem(itemType, data.getTotalCount(), transaction);
+                    int inserted = frequency.addItem(itemType, count, transaction);
                     if (inserted > 0) {
-                        transaction.commit();
                         return request.createResponse(itemType, inserted, data);
                     }
                 }
             }
         }
-        return request.getEmptyResponse();
+        return TransitResponse.EMPTY;
     }
 
     //Methods relating to IComputerTile
@@ -328,7 +327,7 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
             }
             LogisticalTransporterBase transporter = null;
             PathCalculator<TileEntityQIOExporter> pathCalculator = null;
-            if (inventory instanceof CursedTransporterItemHandler cursed) {
+            if (inventory instanceof TransporterItemHandler cursed) {
                 transporter = cursed.getTransporter();
                 if (!transporter.hasTransmitterNetwork()) {//Probably will never happen, but if we don't have a network just skip doing anything
                     return;
@@ -357,28 +356,28 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
                 }
                 ItemResource type = typeSupplier.apply(obj);
                 int amountToInsert = Math.min(maxCount - amountRemoved, countSupplier.applyAsInt(obj));
+                //TODO - 26.1: Validate that the type can't somehow be empty
                 int toUse;
-                if (transporter == null) {
-                    try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+                try (Transaction transaction = Transaction.openRoot()) {//TODO - 26.1: Check callers and see if any are already in a transaction context
+                    if (transporter == null) {
                         //Insert the item into the resource handler, allowing the handler to decide how it is split among slots
-                        //TODO - 26.1: Validate that the type can't somehow be empty
                         toUse = inventory.insert(type, amountToInsert, transaction);
-                        transaction.commit();
+                    } else {
+                        //Note: We just simplify the logic that we would have when sending to a transporter via the handler
+                        // and add support for also performing round-robin distribution. We don't just use a custom transit request
+                        // as we want to be able to send multiple types at once, which is not that straightforward to do when trying
+                        // to re-use where we currently are in the iteration. Without that extra handling we can easily do a custom
+                        // transit request similar to https://gist.github.com/pupnewfster/d0dac2098a2755dc60220f89873ff461,
+                        // but it means we may not properly respect the maxTypes and maxCount
+                        TransitRequest request = TransitRequest.simple(type, amountToInsert);
+                        //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
+                        // destinations, which this doesn't do as it only checks once, rather than trying to check again if we still have some that we
+                        // are able to insert
+                        //Note: We don't use transporter#insertMaybeRR so that we only have to validate the transporter once
+                        TransitResponse response = transporter.insertUnchecked(exporter, request, transporter.getColor(), 1, transaction, pathCalculator);
+                        toUse = response.sendingAmount();
                     }
-                } else {
-                    //Note: We just simplify the logic that we would have when sending to a transporter via the handler
-                    // and add support for also performing round-robin distribution. We don't just use a custom transit request
-                    // as we want to be able to send multiple types at once, which is not that straightforward to do when trying
-                    // to re-use where we currently are in the iteration. Without that extra handling we can easily do a custom
-                    // transit request similar to https://gist.github.com/pupnewfster/d0dac2098a2755dc60220f89873ff461,
-                    // but it means we may not properly respect the maxTypes and maxCount
-                    TransitRequest request = TransitRequest.simple(type, amountToInsert);
-                    //TODO: Technically if we still have more of the same item input, we want to allow trying to insert it into different transport
-                    // destinations, which this doesn't do as it only checks once, rather than trying to check again if we still have some that we
-                    // are able to insert
-                    //Note: We don't use transporter#insertMaybeRR so that we only have to validate the transporter once
-                    TransitResponse response = transporter.insertUnchecked(exporter, request, transporter.getColor(), true, 1, pathCalculator);
-                    toUse = response.sendingAmount();
+                    transaction.commit();
                 }
                 if (toUse > 0) {
                     amountRemoved += toUse;
