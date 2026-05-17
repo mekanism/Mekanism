@@ -5,12 +5,13 @@ import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.sound.SoundHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.transporter.SorterFilter;
@@ -93,10 +94,10 @@ public class TileEntityLogisticalSorter extends TileEntityMekanism implements IT
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         //TODO - 1.20.4: Re-evaluate the internal inventory slot and why do we even have a slot on the sorter
-        builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.FRONT);
+        builder.addContainer(InternalInventorySlot.create(listener), RelativeSide.FRONT);
         return builder.build();
     }
 

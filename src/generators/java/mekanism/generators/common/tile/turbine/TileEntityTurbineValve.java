@@ -4,9 +4,10 @@ import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 import mekanism.api.IContentsListener;
+import mekanism.api.chemical.IChemicalTank;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.integration.energy.BlockEnergyCapabilityCache;
 import mekanism.generators.common.registries.GeneratorsBlocks;
 import net.minecraft.core.BlockPos;
@@ -25,13 +26,13 @@ public class TileEntityTurbineValve extends TileEntityTurbineCasing {
 
     @NotNull
     @Override
-    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+    public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return _ -> getMultiblock().getChemicalTanks();
     }
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
         return _ -> getMultiblock().getEnergyContainers();
     }
 

@@ -5,6 +5,7 @@ import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.lasers.ILaserDissipation;
 import mekanism.api.lasers.ILaserReceptor;
 import mekanism.api.math.MathUtils;
@@ -12,8 +13,8 @@ import mekanism.common.advancements.MekanismCriteriaTriggers;
 import mekanism.common.base.MekFakePlayer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.LaserEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.annotation.SyntheticComputerMethod;
 import mekanism.common.item.gear.ItemAtomicDisassembler;
@@ -83,13 +84,13 @@ public abstract class TileEntityBasicLaser extends TileEntityMekanism {
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
+        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
         addInitialEnergyContainers(builder, listener);
         return builder.build();
     }
 
-    protected abstract void addInitialEnergyContainers(EnergyContainerHelper builder, IContentsListener listener);
+    protected abstract void addInitialEnergyContainers(MekContainerHelper<IEnergyContainer> builder, IContentsListener listener);
 
     @Override
     protected boolean onUpdateServer() {

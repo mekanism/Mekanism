@@ -6,12 +6,13 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.item.block.ItemBlockPersonalStorage;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
 import mekanism.common.util.InventoryUtils;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,7 +50,7 @@ public class ItemRecipeData implements RecipeUpgradeData<ItemRecipeData> {
             }
             return false;
         }
-        IMekanismInventory outputHandler = ContainerType.ITEM.createHandler(stack);
+        ComponentBackedResourceHandler<ItemResource, IInventorySlot> outputHandler = ContainerType.ITEM.createHandler(stack);
         //Something went wrong, fail
         return outputHandler != null && applyToStack(outputHandler.getContainers(), slots);
     }

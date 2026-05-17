@@ -9,12 +9,12 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.annotations.ParametersAreNotNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.gear.ICustomModule;
 import mekanism.api.gear.IHUDElement;
 import mekanism.api.gear.IModule;
 import mekanism.api.gear.IModuleContainer;
 import mekanism.api.gear.IModuleHelper;
+import mekanism.api.resource.IMekanismResourceHandler;
 import mekanism.api.text.IHasTextComponent;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.common.Mekanism;
@@ -81,7 +81,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
                     long capacity = chemicalHandler.getCapacityAsLong(tank, storedType);
                     if (chemicalHandler.getAmountAsLong(tank) > capacity) {
                         //TODO - 26.1: Figure out how to reimplement this
-                        if (chemicalHandler instanceof IMekanismChemicalHandler mekChemicalHandler) {
+                        if (chemicalHandler instanceof IMekanismResourceHandler<ChemicalResource, ?> mekChemicalHandler) {
                             mekChemicalHandler.getContainer(tank).setContentsUnchecked(storedType, capacity);
                         }
                     }

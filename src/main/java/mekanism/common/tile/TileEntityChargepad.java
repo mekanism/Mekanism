@@ -4,12 +4,13 @@ import java.util.List;
 import java.util.function.Predicate;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.entity.EntityRobit;
 import mekanism.common.integration.curios.CuriosIntegration;
 import mekanism.common.integration.energy.EnergyCompatUtils;
@@ -44,8 +45,8 @@ public class TileEntityChargepad extends TileEntityMekanism {
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
+        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener), RelativeSide.BACK, RelativeSide.BOTTOM);
         return builder.build();
     }

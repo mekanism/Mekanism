@@ -16,11 +16,12 @@ import java.util.function.ToIntFunction;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.capabilities.item.TransporterItemHandler;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase.PathCalculator;
@@ -83,11 +84,11 @@ public class TileEntityQIOExporter extends TileEntityQIOFilterHandler implements
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         //TODO - 1.20.4: Re-evaluate the internal inventory slot and why do we even have a slot on the exporter
         // I think it is so that transporters can connect, but it seems a bit silly
-        builder.addSlot(InternalInventorySlot.create(listener), RelativeSide.BACK);
+        builder.addContainer(InternalInventorySlot.create(listener), RelativeSide.BACK);
         return builder.build();
     }
 

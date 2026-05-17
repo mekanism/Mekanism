@@ -11,13 +11,8 @@ import org.jetbrains.annotations.Range;
 @NothingNullByDefault
 public class ComponentBackedEnergyHandler extends ComponentBackedHandler<Long, IEnergyContainer, AttachedEnergy> implements IMekanismStrictEnergyHandler {
 
-    public ComponentBackedEnergyHandler(ItemStack attachedTo, int totalContainers) {
-        super(attachedTo, totalContainers);
-    }
-
-    @Override
-    protected ContainerType<IEnergyContainer, AttachedEnergy, ?> containerType() {
-        return ContainerType.ENERGY;
+    public ComponentBackedEnergyHandler(ContainerType<IEnergyContainer, AttachedEnergy, ? extends ComponentBackedEnergyHandler> containerType, ItemStack attachedTo, int totalContainers) {
+        super(containerType, attachedTo, totalContainers);
     }
 
     @Override

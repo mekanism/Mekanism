@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import mekanism.common.content.qio.QIOCraftingWindow;
 import mekanism.common.content.qio.QIOFrequency;
@@ -58,15 +58,15 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         //TODO - 1.18: Re-evaluate/make an improved performance ItemHandlerManager that uses this method
         // that is for read only slots instead of actually exposing slots to various sides
-        InventorySlotHelper builder = InventorySlotHelper.readOnly();
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.readOnly();
         for (QIOCraftingWindow craftingWindow : craftingWindows) {
             for (int slot = 0; slot < 9; slot++) {
-                builder.addSlot(craftingWindow.getInputSlot(slot));
+                builder.addContainer(craftingWindow.getInputSlot(slot));
             }
-            builder.addSlot(craftingWindow.getOutputSlot());
+            builder.addContainer(craftingWindow.getOutputSlot());
         }
         return builder.build();
     }

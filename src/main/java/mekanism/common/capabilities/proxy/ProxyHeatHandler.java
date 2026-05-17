@@ -1,9 +1,10 @@
 package mekanism.common.capabilities.proxy;
 
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.heat.IHeatHandler;
 import mekanism.api.heat.ISidedHeatHandler;
-import mekanism.common.capabilities.holder.IHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 
@@ -12,7 +13,7 @@ public class ProxyHeatHandler extends ProxyHandler implements IHeatHandler {
 
     private final ISidedHeatHandler heatHandler;
 
-    public ProxyHeatHandler(ISidedHeatHandler heatHandler, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyHeatHandler(ISidedHeatHandler heatHandler, @Nullable Direction side, @Nullable IContainerHolder<IHeatCapacitor> holder) {
         super(side, holder);
         this.heatHandler = heatHandler;
     }

@@ -15,16 +15,15 @@ import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.content.assemblicator.RecipeFormula;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
@@ -126,15 +125,15 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSideWithConfig(this);
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
+        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSideWithEnergyConfig(this);
         builder.addContainer(energyContainer = MachineEnergyContainer.input(this, listener));
         return builder.build();
     }
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         craftingGridSlots = new ArrayList<>();
         inputSlots = new ArrayList<>();
         outputSlots = new ArrayList<>();
@@ -150,9 +149,9 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
             recalculateRecipe();
         };
 
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         //If the formula slot changes we want to make sure to recheck the recipe
-        builder.addSlot(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26, 1))
+        builder.addContainer(formulaSlot = BasicInventorySlot.at(FORMULA_SLOT_VALIDATOR, listenAndRecheckRecipe, 6, 26, 1))
               .setSlotOverlay(SlotOverlay.FORMULA);
         for (int slotY = 0; slotY < 2; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
@@ -171,24 +170,24 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
                     }
                     return formula.isValidIngredient(level, itemType);
                 }, ConstantPredicates.alwaysTrue(), inputSlotChanged, 8 + slotX * 18, 98 + slotY * 18);
-                inputSlots.add(builder.addSlot(inputSlot));
+                inputSlots.add(builder.addContainer(inputSlot));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 3; slotX++) {
                 //If a crafting slot changes then we want to make sure that we recheck the recipe
                 IInventorySlot craftingSlot = FormulaicCraftingSlot.at(this::getAutoMode, listenAndRecheckRecipe, 26 + slotX * 18, 17 + slotY * 18);
-                craftingGridSlots.add(builder.addSlot(craftingSlot));
+                craftingGridSlots.add(builder.addContainer(craftingSlot));
             }
         }
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 2; slotX++) {
                 OutputInventorySlot outputSlot = OutputInventorySlot.at(listener, 116 + slotX * 18, 17 + slotY * 18);
-                outputSlots.add(builder.addSlot(outputSlot));
+                outputSlots.add(builder.addContainer(outputSlot));
             }
         }
         //Add the energy slot after adding the other slots so that it has the lowest priority in shift clicking
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
+        builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 76));
         return builder.build();
     }
 

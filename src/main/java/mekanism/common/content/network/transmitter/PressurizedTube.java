@@ -1,8 +1,8 @@
 package mekanism.common.content.network.transmitter;
 
+import com.mojang.serialization.Codec;
 import java.util.Collection;
 import java.util.UUID;
-import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
@@ -23,7 +23,6 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -46,6 +45,11 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     @Override
     public LargeResourceStack<ChemicalResource> getEmptyResourceStack() {
         return LargeResourceStack.EMPTY_CHEMICAL_STACK;
+    }
+
+    @Override
+    protected Codec<ChemicalResource> resourceCodec() {
+        return ChemicalResource.CODEC;
     }
 
     @Override
@@ -100,13 +104,6 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
     @Override
     public long getCapacity() {
         return tier.getTubeCapacity();
-    }
-
-    @Override
-    protected void handleContentsUpdateTag(@NotNull ChemicalNetwork network, @NotNull ValueInput input) {
-        super.handleContentsUpdateTag(network, input);
-        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
-        network.setLastType(input.read(SerializationConstants.CHEMICAL, ChemicalResource.CODEC).orElse(ChemicalResource.EMPTY));
     }
 
     public float getRadiationScale() {

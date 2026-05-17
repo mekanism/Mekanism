@@ -24,6 +24,7 @@ import mekanism.api.MekanismAPI;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
@@ -33,10 +34,8 @@ import mekanism.common.base.MekFakePlayer;
 import mekanism.common.block.BlockBounding;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.MinerEnergyContainer;
-import mekanism.common.capabilities.holder.energy.EnergyContainerHelper;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.SortableFilterManager;
 import mekanism.common.content.miner.MinerFilter;
@@ -173,22 +172,22 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
-        EnergyContainerHelper builder = EnergyContainerHelper.forSide(facingSupplier);
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
+        MekContainerHelper<IEnergyContainer> builder = MekContainerHelper.forSide(facingSupplier);
         builder.addContainer(energyContainer = MinerEnergyContainer.input(this, listener), RelativeSide.LEFT, RelativeSide.RIGHT, RelativeSide.BOTTOM);
         return builder.build();
     }
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         mainSlots = new ArrayList<>();
         IContentsListener mainSlotListener = () -> {
             listener.onContentsChanged();
             //Ensure we recheck if our overflow can fit anywhere
             recheckOverflow = true;
         };
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier, side -> side == RelativeSide.TOP, side -> side == RelativeSide.BACK);
         //Allow insertion manually or internally, or if it is a replace stack
         BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInsert = (itemType, automationType) -> automationType != AutomationType.EXTERNAL || isReplaceTarget(itemType);
         //Allow extraction if it is manual or for internal usage, or if it is not a replace stack
@@ -197,11 +196,11 @@ public class TileEntityDigitalMiner extends TileEntityMekanism implements IChunk
         for (int slotY = 0; slotY < 3; slotY++) {
             for (int slotX = 0; slotX < 9; slotX++) {
                 BasicInventorySlot slot = BasicInventorySlot.at(canExtract, canInsert, mainSlotListener, 8 + slotX * 18, 92 + slotY * 18);
-                builder.addSlot(slot, RelativeSide.BACK, RelativeSide.TOP);
+                builder.addContainer(slot, RelativeSide.BACK, RelativeSide.TOP);
                 mainSlots.add(slot);
             }
         }
-        builder.addSlot(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 20));
+        builder.addContainer(energySlot = EnergyInventorySlot.fillOrConvert(energyContainer, this::getLevel, listener, 152, 20));
         return builder.build();
     }
 

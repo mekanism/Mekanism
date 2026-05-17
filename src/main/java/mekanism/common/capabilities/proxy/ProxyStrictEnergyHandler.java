@@ -2,9 +2,10 @@ package mekanism.common.capabilities.proxy;
 
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
+import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IMekanismStrictEnergyHandler;
 import mekanism.api.energy.IStrictEnergyHandler;
-import mekanism.common.capabilities.holder.IHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +16,7 @@ public class ProxyStrictEnergyHandler extends ProxyHandler implements IStrictEne
 
     private final IMekanismStrictEnergyHandler handler;
 
-    public ProxyStrictEnergyHandler(IMekanismStrictEnergyHandler handler, @Nullable Direction side, @Nullable IHolder holder) {
+    public ProxyStrictEnergyHandler(IMekanismStrictEnergyHandler handler, @Nullable Direction side, @Nullable IContainerHolder<IEnergyContainer> holder) {
         super(side, holder);
         this.handler = handler;
     }

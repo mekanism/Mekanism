@@ -16,8 +16,9 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
-public abstract class ConfigHolder<TYPE> implements IHolder {
+public class ConfigHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
 
     private static final Predicate<ISlotInfo> CAN_INPUT = ISlotInfo::canInput;
     private static final Predicate<ISlotInfo> CAN_OUTPUT = ISlotInfo::canOutput;
@@ -49,7 +50,10 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
 
     private final Map<Direction, ISlotInfo> cachedSlotInfo = new EnumMap<>(Direction.class);
     private final ISideConfiguration sideConfiguration;
-    protected final List<TYPE> slots = new ArrayList<>();
+    private final TransmissionType transmissionType;
+    private final List<CONTAINER> containers = new ArrayList<>();
+    @UnknownNullability
+    private final Function<ISlotInfo, List<CONTAINER>> slotInfoParser;
     @Nullable
     private Direction lastDirection;
 
@@ -57,11 +61,15 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     private ConfigInfo lazyConfig;
     private boolean retrievedConfig;
 
-    protected ConfigHolder(ISideConfiguration sideConfiguration) {
+    public ConfigHolder(ISideConfiguration sideConfiguration, TransmissionType transmissionType, @UnknownNullability Function<ISlotInfo, List<CONTAINER>> slotInfoParser) {
         this.sideConfiguration = sideConfiguration;
+        this.transmissionType = transmissionType;
+        this.slotInfoParser = slotInfoParser;
     }
 
-    protected abstract TransmissionType getTransmissionType();
+    void addContainer(@NotNull CONTAINER container) {
+        containers.add(container);
+    }
 
     @Override
     public boolean canInsert(@Nullable Direction side) {
@@ -86,15 +94,16 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
     }
 
     @NotNull
-    protected List<TYPE> getSlots(@Nullable Direction side, @NotNull Function<ISlotInfo, List<TYPE>> slotInfoParser) {
+    @Override
+    public List<CONTAINER> getContainers(@Nullable Direction side) {
         if (side == null) {
             //If we want the internal, give all of our slots
-            return slots;
+            return containers;
         }
         ISlotInfo slotInfo = getSlotInfo(side);
         if (slotInfo == NO_CONFIG) {
             //If we don't have a config (most likely case is it hasn't been set up yet, or we don't support this type of data in our configuration), just return all
-            return slots;
+            return containers;
         } else if (slotInfo == null) {
             return Collections.emptyList();
         }
@@ -116,7 +125,6 @@ public abstract class ConfigHolder<TYPE> implements IHolder {
             retrievedConfig = true;
             TileComponentConfig config = sideConfiguration.getConfig();
             if (config != null) {
-                TransmissionType transmissionType = getTransmissionType();
                 lazyConfig = config.getConfig(transmissionType);
                 if (lazyConfig != null) {
                     //If we haven't added a listener to our config yet add one to remove the cached info we have for that side

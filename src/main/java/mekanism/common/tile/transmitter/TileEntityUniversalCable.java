@@ -8,7 +8,7 @@ import mekanism.api.math.MathUtils;
 import mekanism.api.tier.BaseTier;
 import mekanism.common.block.states.BlockStateHelper;
 import mekanism.common.block.states.TransmitterType;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
 import mekanism.common.content.network.EnergyNetwork;
 import mekanism.common.content.network.transmitter.UniversalCable;
@@ -30,9 +30,9 @@ public class TileEntityUniversalCable extends TileEntityTransmitter implements I
 
     public TileEntityUniversalCable(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
-        addCapabilityResolver(new EnergyHandlerManager(new IEnergyContainerHolder() {
+        addCapabilityResolver(new EnergyHandlerManager(new IContainerHolder<>() {
             @Override
-            public @NotNull List<IEnergyContainer> getEnergyContainers(@Nullable Direction direction) {
+            public @NotNull List<IEnergyContainer> getContainers(@Nullable Direction direction) {
                 UniversalCable cable = TileEntityUniversalCable.this.getTransmitter();
                 if (direction != null && (cable.getConnectionTypeRaw(direction) == ConnectionType.NONE) || cable.isRedstoneActivated()) {
                     //If we actually have a side, and our connection type on that side is none, or we are currently activated by redstone,

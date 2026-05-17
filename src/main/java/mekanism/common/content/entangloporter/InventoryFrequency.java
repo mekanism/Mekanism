@@ -164,6 +164,11 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     }
 
     @NotNull
+    public List<IHeatCapacitor> getHeatCapacitors() {
+        return heatCapacitors;
+    }
+
+    @NotNull
     @Override
     public List<IHeatCapacitor> getHeatCapacitors(@Nullable Direction side) {
         return heatCapacitors;

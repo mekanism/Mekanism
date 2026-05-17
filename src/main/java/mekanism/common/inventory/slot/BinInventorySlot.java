@@ -9,8 +9,8 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.inventory.IMekanismInventory;
 import mekanism.api.resource.IResourceContainer;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -35,7 +35,8 @@ public class BinInventorySlot extends BasicInventorySlot {
     @Nullable
     public static ComponentBackedBinInventorySlot getForStack(@NotNull ItemStack stack) {
         if (!stack.isEmpty() && stack.getItem() instanceof ItemBlockBin) {
-            IMekanismInventory attachment = ContainerType.ITEM.createHandler(stack);
+            //TODO - 26.1: Should this use getAttachmentContainersIfPresent
+            ComponentBackedResourceHandler<ItemResource, IInventorySlot> attachment = ContainerType.ITEM.createHandler(stack);
             if (attachment != null) {
                 List<IInventorySlot> slots = attachment.getContainers();
                 if (slots.size() == 1) {

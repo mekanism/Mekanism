@@ -2,6 +2,7 @@ package mekanism.api.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -9,7 +10,6 @@ import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
-import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.Range;
 
 //TODO - 26.1: Make it so that things like TileEntityMekanism don't directly implement IMekanismInventory and friends so that methods like getContainers are not confusing
@@ -40,13 +40,13 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
      *
      * @since 10.8.0
      */
-    @Nullable
     default CONTAINER getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
         // Our callers that are from indexed based methods, are allowed/supposed to throw, similar to doing a Objects.checkIndex(index, size()); check
         // So probably it makes sense?
         List<CONTAINER> containers = getContainers();
-        return index >= 0 && index < containers.size() ? containers.get(index) : null;
+        Objects.checkIndex(index, containers.size());
+        return containers.get(index);
     }
 
     @Override
@@ -55,27 +55,21 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         return getContainers().size();
     }
 
-    RESOURCE getEmptyResource();
-
-    @Override
+    @Override//Note: We override this to specify a range on the param
     default RESOURCE getResource(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        CONTAINER container = getContainer(index);
-        return container == null ? getEmptyResource() : container.getResource();
+        return getContainer(index).getResource();
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.amountAsLong();
+        return getContainer(index).amountAsLong();
     }
 
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
           TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.insert(resource, amount, transaction, automationType);
+        return getContainer(index).insert(resource, amount, transaction, automationType);
     }
 
     @Range(from = 0, to = Integer.MAX_VALUE)
@@ -127,9 +121,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
           TransactionContext transaction, AutomationType automationType) {
-        TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
-        CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.extract(resource, amount, transaction, automationType);
+        return getContainer(index).extract(resource, amount, transaction, automationType);
     }
 
     @Range(from = 0, to = Integer.MAX_VALUE)
@@ -160,15 +152,12 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
-        CONTAINER container = getContainer(index);
-        return container == null ? 0 : container.capacityAsLong(resource);
+        return getContainer(index).capacityAsLong(resource);
     }
 
     @Override
     default boolean isValid(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource) {
-        TransferPreconditions.checkNonEmpty(resource);
-        CONTAINER container = getContainer(index);
-        return container != null && container.isValid(resource);
+        return getContainer(index).isValid(resource);
     }
 
     /**

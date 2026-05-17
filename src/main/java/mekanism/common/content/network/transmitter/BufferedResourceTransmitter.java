@@ -6,9 +6,9 @@ import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.api.functions.ConstantPredicates;
 import mekanism.common.lib.transmitter.ConnectionType;
 import mekanism.common.lib.transmitter.DynamicBufferedResourceNetwork;
 import mekanism.common.lib.transmitter.TransmissionType;
@@ -46,6 +46,8 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     }
 
     public abstract LargeResourceStack<RESOURCE> getEmptyResourceStack();
+
+    protected abstract Codec<RESOURCE> resourceCodec();;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -85,6 +87,14 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         } else {
             output.store(SerializationConstants.STORED, resourceStackCodec, saveShare);
         }
+    }
+
+    @Override
+    protected void handleContentsUpdateTag(@NotNull NETWORK network, @NotNull ValueInput input) {
+        super.handleContentsUpdateTag(network, input);
+        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
+        //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
+        network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(getEmptyResourceStack().resource()));
     }
 
     protected CONTAINER getContainer() {

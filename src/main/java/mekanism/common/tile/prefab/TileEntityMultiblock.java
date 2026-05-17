@@ -5,11 +5,12 @@ import java.util.UUID;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.text.EnumColor;
 import mekanism.client.SparkleAnimation;
 import mekanism.common.MekanismLang;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.integration.computer.BoundMethodHolder;
 import mekanism.common.integration.computer.FactoryRegistry;
@@ -342,7 +343,7 @@ public abstract class TileEntityMultiblock<T extends MultiblockData> extends Til
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         return _ -> getMultiblock().getInventorySlots();
     }
 

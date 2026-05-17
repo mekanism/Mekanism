@@ -1,6 +1,5 @@
 package mekanism.common.capabilities.resolver.manager;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -11,41 +10,22 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER> extends BasicSidedCapabilityResolver<HANDLER>
+public class CapabilityHandlerManager<HOLDER extends IHolder, CONTAINER, HANDLER> extends BasicSidedCapabilityResolver<HOLDER, HANDLER>
       implements ICapabilityHandlerManager<CONTAINER> {
 
     private final BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter;
-    private final boolean canHandle;
-    @Nullable
-    protected final HOLDER holder;
 
-    protected CapabilityHandlerManager(@Nullable HOLDER holder, BlockCapability<HANDLER, @Nullable Direction> supportedCapability,
-          BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter, ProxyCreator<HANDLER> proxyCreator) {
-        super(supportedCapability, holder != null, proxyCreator);
-        this.holder = holder;
-        this.canHandle = this.holder != null;
+    protected CapabilityHandlerManager(HOLDER holder, BlockCapability<HANDLER, @Nullable Direction> supportedCapability,
+          BiFunction<HOLDER, Direction, List<CONTAINER>> containerGetter, ProxyCreator<HOLDER, HANDLER> proxyCreator) {
+        super(holder, supportedCapability, proxyCreator);
         this.containerGetter = containerGetter;
     }
 
     @Override
-    public boolean canHandle() {
-        return canHandle;
-    }
-
-    @Override
     public List<CONTAINER> getContainers(@Nullable Direction side) {
-        return canHandle() ? containerGetter.apply(holder, side) : Collections.emptyList();
+        return containerGetter.apply(getHolder(), side);
     }
 
-    @Nullable
-    @Override
-    protected IHolder getHolder() {
-        return holder;
-    }
-
-    /**
-     * @apiNote Assumes that {@link #canHandle} has been called before this and that it was {@code true}.
-     */
     @Nullable
     @Override
     public <T> T resolve(BlockCapability<T, @Nullable Direction> capability, @Nullable Direction side) {

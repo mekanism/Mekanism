@@ -1,12 +1,12 @@
 package mekanism.common.content.network.transmitter;
 
+import com.mojang.serialization.Codec;
 import java.util.Collection;
 import java.util.UUID;
-import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -23,14 +23,12 @@ import mekanism.common.upgrade.transmitter.TransmitterUpgradeData;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.storage.ValueInput;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe>
-      implements IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
+public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, IFluidTank, FluidNetwork, MechanicalPipe> implements IUpgradeableTransmitter<MechanicalPipeUpgradeData> {
 
     public final PipeTier tier;
 
@@ -48,6 +46,11 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     @Override
     public LargeResourceStack<FluidResource> getEmptyResourceStack() {
         return LargeResourceStack.EMPTY_FLUID_STACK;
+    }
+
+    @Override
+    protected Codec<FluidResource> resourceCodec() {
+        return FluidResource.CODEC;
     }
 
     @Override
@@ -102,12 +105,5 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
     @Override
     public long getCapacity() {
         return tier.getPipeCapacity();
-    }
-
-    @Override
-    protected void handleContentsUpdateTag(@NotNull FluidNetwork network, @NotNull ValueInput input) {
-        super.handleContentsUpdateTag(network, input);
-        network.setLastType(input.read(SerializationConstants.FLUID, FluidResource.CODEC).orElse(FluidResource.EMPTY));
-        network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
     }
 }

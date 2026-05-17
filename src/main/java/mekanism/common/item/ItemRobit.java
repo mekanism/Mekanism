@@ -11,8 +11,8 @@ import mekanism.api.security.ISecurityObject;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.MekanismLang;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.ICapabilityAware;
 import mekanism.common.capabilities.security.SecurityObject;
@@ -50,6 +50,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,7 +113,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                         robit.setOwnerUUID(ownerUUID);
                     }
                     List<IInventorySlot> robitSlots = robit.getInventorySlots();
-                    ComponentBackedItemHandler stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
+                    ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
                     if (stackInventory != null) {
                         int slot = 0;
                         for (IInventorySlot container : stackInventory.getContainers()) {

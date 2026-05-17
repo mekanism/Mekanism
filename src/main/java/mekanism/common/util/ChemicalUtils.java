@@ -7,10 +7,10 @@ import mekanism.api.chemical.ChemicalBuilder;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.chemical.IMekanismChemicalHandler;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.ChemicalFuel;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.registries.MekanismBlocks;
@@ -61,7 +61,7 @@ public class ChemicalUtils {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Chemical> provider) {
-        IMekanismChemicalHandler attachment = ContainerType.CHEMICAL.createHandler(toFill);
+        ComponentBackedResourceHandler<ChemicalResource, IChemicalTank> attachment = ContainerType.CHEMICAL.createHandler(toFill);
         if (attachment != null) {
             ChemicalResource chemicalType = ChemicalResource.of(provider);
             for (IChemicalTank tank : attachment.getContainers()) {

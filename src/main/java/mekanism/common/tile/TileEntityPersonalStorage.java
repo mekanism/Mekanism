@@ -9,8 +9,8 @@ import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.inventory.container.tile.MekanismTileContainer;
 import mekanism.common.lib.inventory.personalstorage.AbstractPersonalStorageItemInventory;
 import mekanism.common.lib.inventory.personalstorage.PersonalStorageManager;
@@ -63,8 +63,8 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
         //Note: We always allow manual interaction (even for insertion), as if a player has the GUI open we treat that as they are allowed to interact with it
         // and if the security mode changes we then boot any players who can't interact with it anymore out of the GUI
         //Note: We can just directly pass ourselves as a security object as we know we are present and that we aren't just an owner item
@@ -72,7 +72,7 @@ public abstract class TileEntityPersonalStorage extends TileEntityMekanism {
         // We did that to ensure that things like hoppers that could check IInventory did not bypass any restrictions
         BiPredicate<@NotNull ItemResource, @NotNull AutomationType> canInteract = (_, automationType) ->
               automationType == AutomationType.MANUAL || ISecurityUtils.INSTANCE.getEffectiveSecurityMode(this, isRemote()) == SecurityMode.PUBLIC;
-        PersonalStorageManager.createSlots(builder::addSlot, canInteract, listener);
+        PersonalStorageManager.createSlots(builder::addContainer, canInteract, listener);
         return builder.build();
     }
 

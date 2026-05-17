@@ -13,13 +13,8 @@ import org.jetbrains.annotations.Nullable;
 @NothingNullByDefault
 public class ComponentBackedHeatHandler extends ComponentBackedHandler<HeatCapacitorData, IHeatCapacitor, AttachedHeat> implements IMekanismHeatHandler {
 
-    public ComponentBackedHeatHandler(ItemStack attachedTo, int totalCapacitors) {
-        super(attachedTo, totalCapacitors);
-    }
-
-    @Override
-    protected ContainerType<IHeatCapacitor, AttachedHeat, ?> containerType() {
-        return ContainerType.HEAT;
+    public ComponentBackedHeatHandler(ContainerType<IHeatCapacitor, AttachedHeat, ? extends ComponentBackedHeatHandler> containerType, ItemStack attachedTo, int totalCapacitors) {
+        super(containerType, attachedTo, totalCapacitors);
     }
 
     @Override

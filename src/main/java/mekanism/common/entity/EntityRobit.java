@@ -41,8 +41,8 @@ import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
 import mekanism.common.MekanismLang;
 import mekanism.common.advancements.MekanismCriteriaTriggers;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
-import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.base.holiday.HolidayManager;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
@@ -435,7 +435,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         if (energyHandlerItem != null && energyHandlerItem.size() > 0) {
             energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
         }
-        ComponentBackedItemHandler stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
+        ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
             IInventorySlot inventorySlot = inventorySlots.get(slot);
             if (!inventorySlot.isEmpty()) {

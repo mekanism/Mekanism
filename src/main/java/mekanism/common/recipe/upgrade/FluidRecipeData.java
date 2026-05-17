@@ -5,7 +5,7 @@ import java.util.List;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
@@ -34,7 +34,7 @@ public class FluidRecipeData implements RecipeUpgradeData<FluidRecipeData> {
         if (fluidTanks.isEmpty()) {
             return true;
         }
-        IMekanismFluidHandler outputHandler = ContainerType.FLUID.createHandler(stack);
+        ComponentBackedResourceHandler<FluidResource, IFluidTank> outputHandler = ContainerType.FLUID.createHandler(stack);
         if (outputHandler == null) {
             //Something went wrong, fail
             return false;

@@ -20,16 +20,9 @@ import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.chemical.QuantumEntangloporterChemicalTankHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
 import mekanism.common.capabilities.holder.energy.QuantumEntangloporterEnergyContainerHolder;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.fluid.QuantumEntangloporterFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.heat.QuantumEntangloporterHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.QuantumEntangloporterInventorySlotHolder;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;
@@ -86,7 +79,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
         ConfigInfo heatConfig = configComponent.getConfig(TransmissionType.HEAT);
         if (heatConfig != null) {
-            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? getFreq().getHeatCapacitors(null) : Collections.emptyList();
+            Supplier<List<IHeatCapacitor>> capacitorSupplier = () -> hasFrequency() ? getFreq().getHeatCapacitors() : Collections.emptyList();
             heatConfig.addSlotInfo(DataType.INPUT_OUTPUT, new HeatProxy(true, false, capacitorSupplier));
             heatConfig.setCanEject(false);
         }
@@ -113,32 +106,32 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
 
     @NotNull
     @Override
-    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
-        return new QuantumEntangloporterChemicalTankHolder(this, TransmissionType.CHEMICAL, InventoryFrequency::getChemicalTanks);
+    public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
+        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.CHEMICAL, InventoryFrequency::getChemicalTanks);
     }
 
     @NotNull
     @Override
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
-        return new QuantumEntangloporterFluidTankHolder(this);
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
+        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.FLUID, InventoryFrequency::getFluidTanks);
     }
 
     @NotNull
     @Override
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
         return new QuantumEntangloporterEnergyContainerHolder(this);
     }
 
     @NotNull
     @Override
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
-        return new QuantumEntangloporterHeatCapacitorHolder(this);
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.HEAT, InventoryFrequency::getHeatCapacitors);
     }
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        return new QuantumEntangloporterInventorySlotHolder(this);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        return new QuantumEntangloporterConfigHolder<>(this, TransmissionType.ITEM, InventoryFrequency::getInventorySlots);
     }
 
     @Override

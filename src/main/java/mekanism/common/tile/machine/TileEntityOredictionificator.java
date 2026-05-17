@@ -7,9 +7,10 @@ import java.util.Map;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.CommonWorldTickHandler;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.config.value.CachedValue.IConfigValueInvalidationListener;
 import mekanism.common.content.filter.FilterManager;
@@ -63,11 +64,11 @@ public class TileEntityOredictionificator extends TileEntityConfigurableMachine 
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSideWithConfig(this);
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         //Only allow inserting items with tags that match filters, but mark all items that have any filterable tags as valid
-        builder.addSlot(inputSlot = InputInventorySlot.inputAt(itemType -> hasResult(filterManager.getEnabledFilters(), itemType), this::hasFilterableTags, listener, 56, 115));
-        builder.addSlot(outputSlot = OutputInventorySlot.at(listener, 164, 115));
+        builder.addContainer(inputSlot = InputInventorySlot.inputAt(itemType -> hasResult(filterManager.getEnabledFilters(), itemType), this::hasFilterableTags, listener, 56, 115));
+        builder.addContainer(outputSlot = OutputInventorySlot.at(listener, 164, 115));
         return builder.build();
     }
 

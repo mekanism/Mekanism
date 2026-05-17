@@ -3,10 +3,11 @@ package mekanism.common.tile;
 import java.util.Optional;
 import java.util.UUID;
 import mekanism.api.IContentsListener;
+import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.security.ISecurityUtils;
 import mekanism.api.security.SecurityMode;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
+import mekanism.common.capabilities.holder.IContainerHolder;
+import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.inventory.container.ISecurityContainer;
 import mekanism.common.inventory.slot.SecurityInventorySlot;
 import mekanism.common.lib.frequency.FrequencyTypes;
@@ -23,6 +24,7 @@ import net.minecraft.server.players.UserNameToIdResolver;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.network.PacketDistributor;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +39,10 @@ public class TileEntitySecurityDesk extends TileEntityMekanism implements IBound
 
     @NotNull
     @Override
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
-        InventorySlotHelper builder = InventorySlotHelper.forSide(facingSupplier);
-        builder.addSlot(unlockSlot = SecurityInventorySlot.unlock(this::getOwnerUUID, listener, 146, 18));
-        builder.addSlot(lockSlot = SecurityInventorySlot.lock(listener, 146, 97));
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
+        MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSide(facingSupplier);
+        builder.addContainer(unlockSlot = SecurityInventorySlot.unlock(this::getOwnerUUID, listener, 146, 18));
+        builder.addContainer(lockSlot = SecurityInventorySlot.lock(listener, 146, 97));
         return builder.build();
     }
 

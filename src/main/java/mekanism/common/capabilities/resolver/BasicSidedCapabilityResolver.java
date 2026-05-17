@@ -11,26 +11,19 @@ import net.neoforged.neoforge.capabilities.BlockCapability;
 import org.jetbrains.annotations.Nullable;
 
 @NothingNullByDefault
-public class BasicSidedCapabilityResolver<HANDLER> implements ICapabilityResolver<@Nullable Direction> {
+public class BasicSidedCapabilityResolver<HOLDER extends IHolder, HANDLER> implements ICapabilityResolver<@Nullable Direction> {
 
-    private final ProxyCreator<HANDLER> proxyCreator;
-    private final Map<Direction, HANDLER> handlers;
+    private final ProxyCreator<HOLDER, HANDLER> proxyCreator;
+    private final Map<Direction, HANDLER> handlers = new EnumMap<>(Direction.class);
     private final List<BlockCapability<?, @Nullable Direction>> supportedCapability;
+    private final HOLDER holder;
     @Nullable
     private HANDLER readOnlyHandler;
 
-    public BasicSidedCapabilityResolver(BlockCapability<HANDLER, @Nullable Direction> supportedCapability, BasicProxyCreator<HANDLER> proxyCreator) {
-        this(supportedCapability, true, proxyCreator);
-    }
-
-    protected BasicSidedCapabilityResolver(BlockCapability<HANDLER, @Nullable Direction> supportedCapability, boolean canHandle, ProxyCreator<HANDLER> proxyCreator) {
+    public BasicSidedCapabilityResolver(HOLDER holder, BlockCapability<HANDLER, @Nullable Direction> supportedCapability, ProxyCreator<HOLDER, HANDLER> proxyCreator) {
         this.supportedCapability = Collections.singletonList(supportedCapability);
         this.proxyCreator = proxyCreator;
-        if (canHandle) {
-            handlers = new EnumMap<>(Direction.class);
-        } else {
-            handlers = Collections.emptyMap();
-        }
+        this.holder = holder;
     }
 
     @Override
@@ -38,9 +31,8 @@ public class BasicSidedCapabilityResolver<HANDLER> implements ICapabilityResolve
         return supportedCapability;
     }
 
-    @Nullable
-    protected IHolder getHolder() {
-        return null;
+    protected HOLDER getHolder() {
+        return holder;
     }
 
     /**
@@ -79,19 +71,8 @@ public class BasicSidedCapabilityResolver<HANDLER> implements ICapabilityResolve
     }
 
     @FunctionalInterface
-    public interface ProxyCreator<HANDLER> {
+    public interface ProxyCreator<HOLDER extends IHolder, HANDLER> {
 
-        HANDLER create(@Nullable Direction side, @Nullable IHolder holder);
-    }
-
-    @FunctionalInterface
-    public interface BasicProxyCreator<HANDLER> extends ProxyCreator<HANDLER> {
-
-        HANDLER create(@Nullable Direction side);
-
-        @Override
-        default HANDLER create(@Nullable Direction side, @Nullable IHolder holder) {
-            return create(side);
-        }
+        HANDLER create(@Nullable Direction side, HOLDER holder);
     }
 }

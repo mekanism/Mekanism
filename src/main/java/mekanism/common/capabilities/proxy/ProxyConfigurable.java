@@ -12,7 +12,7 @@ public class ProxyConfigurable extends ProxyHandler implements IConfigurable {
 
     private final ISidedConfigurable configurable;
 
-    public ProxyConfigurable(ISidedConfigurable configurable, @Nullable Direction side) {
+    public ProxyConfigurable(@Nullable Direction side, ISidedConfigurable configurable) {
         super(side, null);
         this.configurable = configurable;
     }

@@ -17,6 +17,7 @@ import mekanism.common.block.states.TransmitterType.Size;
 import mekanism.common.block.transmitter.BlockLargeTransmitter;
 import mekanism.common.block.transmitter.BlockSmallTransmitter;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.holder.IHolder;
 import mekanism.common.capabilities.proxy.ProxyConfigurable;
 import mekanism.common.capabilities.proxy.ProxyConfigurable.ISidedConfigurable;
 import mekanism.common.capabilities.resolver.BasicSidedCapabilityResolver;
@@ -53,10 +54,10 @@ import net.neoforged.neoforge.model.data.ModelProperty;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction {
+public abstract class TileEntityTransmitter extends CapabilityTileEntity implements ISidedConfigurable, IAlloyInteraction, IHolder {
 
-    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER =
-          capabilityProvider(Capabilities.CONFIGURABLE, (tile, cap) -> new BasicSidedCapabilityResolver<>(cap, side -> new ProxyConfigurable(tile, side)));
+    public static final ICapabilityProvider<TileEntityTransmitter, @Nullable Direction, IConfigurable> CONFIGURABLE_PROVIDER = capabilityProvider(Capabilities.CONFIGURABLE,
+          (tile, cap) -> new BasicSidedCapabilityResolver<>(tile, cap, ProxyConfigurable::new));
 
     public static final ModelProperty<TransmitterModelData> TRANSMITTER_PROPERTY = new ModelProperty<>();
 
@@ -420,7 +421,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
     public void redstoneChanged(boolean powered) {
     }
 
-    protected boolean canExtract(@Nullable Direction side) {
+    @Override
+    public boolean canExtract(@Nullable Direction side) {
         if (side == null) {
             //Note: We return true here, but extraction isn't actually allowed and gets blocked by the read only handler
             return true;
@@ -429,7 +431,8 @@ public abstract class TileEntityTransmitter extends CapabilityTileEntity impleme
         return getTransmitter().getConnectionType(side).canSendTo();
     }
 
-    protected boolean canInsert(@Nullable Direction side) {
+    @Override
+    public boolean canInsert(@Nullable Direction side) {
         if (side == null) {
             //Note: We return true here, but insertion isn't actually allowed and gets blocked by the read only handler
             return true;

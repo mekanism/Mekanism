@@ -2,8 +2,8 @@ package mekanism.common.util;
 
 import mekanism.api.AutomationType;
 import mekanism.api.fluid.IFluidTank;
-import mekanism.api.fluid.IMekanismFluidHandler;
 import mekanism.client.render.MekanismRenderer;
+import mekanism.common.attachments.containers.ComponentBackedResourceHandler;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.Capabilities;
 import net.minecraft.core.Holder;
@@ -30,7 +30,7 @@ public final class FluidUtils {
     }
 
     public static ItemStack getFilledVariant(ItemStack toFill, Holder<Fluid> fluid) {
-        IMekanismFluidHandler attachment = ContainerType.FLUID.createHandler(toFill);
+        ComponentBackedResourceHandler<FluidResource, IFluidTank> attachment = ContainerType.FLUID.createHandler(toFill);
         if (attachment != null) {
             FluidResource fluidType = FluidResource.of(fluid);
             for (IFluidTank fluidTank : attachment.getContainers()) {

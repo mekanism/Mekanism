@@ -18,8 +18,6 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.Upgrade;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.IResourceContainer;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
@@ -27,6 +25,8 @@ import mekanism.api.heat.IHeatHandler;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IBlockSecurityUtils;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.TextComponentUtil;
@@ -56,17 +56,11 @@ import mekanism.common.capabilities.energy.MachineEnergyContainer;
 import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.heat.ITileHeatHandler;
-import mekanism.common.capabilities.holder.chemical.IChemicalTankHolder;
-import mekanism.common.capabilities.holder.energy.IEnergyContainerHolder;
-import mekanism.common.capabilities.holder.fluid.IFluidTankHolder;
-import mekanism.common.capabilities.holder.heat.IHeatCapacitorHolder;
-import mekanism.common.capabilities.holder.slot.IInventorySlotHolder;
-import mekanism.common.capabilities.resolver.manager.ChemicalHandlerManager;
+import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.resolver.manager.EnergyHandlerManager;
-import mekanism.common.capabilities.resolver.manager.FluidHandlerManager;
 import mekanism.common.capabilities.resolver.manager.HeatHandlerManager;
 import mekanism.common.capabilities.resolver.manager.ICapabilityHandlerManager;
-import mekanism.common.capabilities.resolver.manager.ItemHandlerManager;
+import mekanism.common.capabilities.resolver.manager.ResourceHandlerManager;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.filter.FilterManager;
 import mekanism.common.integration.computer.BoundMethodHolder;
@@ -222,26 +216,18 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     protected final TileComponentFrequency frequencyComponent;
     //End variables IFrequencyHandler
 
-    //Variables for handling ITileContainer
     @Nullable
-    protected final ItemHandlerManager itemHandlerManager;
-    //End variables ITileContainer
-
-    //Variables for handling IMekanismChemicalHandler
+    protected final ResourceHandlerManager<ItemResource, IInventorySlot> itemHandlerManager;
     @Nullable
-    protected final ChemicalHandlerManager chemicalHandlerManager;
-    private float radiationScale;
-    //End variables IMekanismChemicalHandler
-
-    //Variables for handling IMekanismFluidHandler
+    protected final ResourceHandlerManager<FluidResource, IFluidTank> fluidHandlerManager;
     @Nullable
-    protected final FluidHandlerManager fluidHandlerManager;
-    //End variables IMekanismFluidHandler
-
-    //Variables for handling IMekanismStrictEnergyHandler
+    protected final ResourceHandlerManager<ChemicalResource, IChemicalTank> chemicalHandlerManager;
     @Nullable
     protected final EnergyHandlerManager energyHandlerManager;
-    //End variables IMekanismStrictEnergyHandler
+
+    //Variables for handling IMekanismChemicalHandler
+    private float radiationScale;
+    //End variables IMekanismChemicalHandler
 
     //Variables for handling IMekanismHeatHandler
     protected final Map<Direction, BlockCapabilityCache<IHeatHandler, @Nullable Direction>> adjacentHeatCaps;
@@ -282,36 +268,36 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
         List<ICapabilityHandlerManager<?>> capabilityHandlerManagers = new ArrayList<>();
 
-        IChemicalTankHolder initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
+        IContainerHolder<IChemicalTank> initialChemicalTanks = getInitialChemicalTanks(getListener(ContainerType.CHEMICAL, saveOnlyListener));
         if (initialChemicalTanks != null) {
-            capabilityHandlerManagers.add(chemicalHandlerManager = new ChemicalHandlerManager(initialChemicalTanks, this));
+            capabilityHandlerManagers.add(chemicalHandlerManager = new ResourceHandlerManager<>(Capabilities.CHEMICAL, initialChemicalTanks, this));
         } else {
             chemicalHandlerManager = null;
         }
 
-        IFluidTankHolder initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
+        IContainerHolder<IFluidTank> initialFluidTanks = getInitialFluidTanks(getListener(ContainerType.FLUID, saveOnlyListener));
         if (initialFluidTanks != null) {
-            capabilityHandlerManagers.add(fluidHandlerManager = new FluidHandlerManager(initialFluidTanks, this));
+            capabilityHandlerManagers.add(fluidHandlerManager = new ResourceHandlerManager<>(Capabilities.FLUID, initialFluidTanks, this));
         } else {
             fluidHandlerManager = null;
         }
 
-        IEnergyContainerHolder initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
+        IContainerHolder<IEnergyContainer> initialEnergyContainers = getInitialEnergyContainers(getListener(ContainerType.ENERGY, saveOnlyListener));
         if (initialEnergyContainers != null) {
             capabilityHandlerManagers.add(energyHandlerManager = new EnergyHandlerManager(initialEnergyContainers, this, () -> level == null ? 0 : level.getGameTime()));
         } else {
             energyHandlerManager = null;
         }
 
-        IInventorySlotHolder initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
+        IContainerHolder<IInventorySlot> initialInventory = getInitialInventory(getListener(ContainerType.ITEM, saveOnlyListener));
         if (initialInventory != null) {
-            capabilityHandlerManagers.add(itemHandlerManager = new ItemHandlerManager(initialInventory, this));
+            capabilityHandlerManagers.add(itemHandlerManager = new ResourceHandlerManager<>(Capabilities.ITEM, initialInventory, this));
         } else {
             itemHandlerManager = null;
         }
 
         CachedAmbientTemperature ambientTemperature = new CachedAmbientTemperature(this::getLevel, this::getBlockPos);
-        IHeatCapacitorHolder initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
+        IContainerHolder<IHeatCapacitor> initialHeatCapacitors = getInitialHeatCapacitors(getListener(ContainerType.HEAT, saveOnlyListener), ambientTemperature);
         if (initialHeatCapacitors != null) {
             capabilityHandlerManagers.add(heatHandlerManager = new HeatHandlerManager(initialHeatCapacitors, this));
         } else {
@@ -445,24 +431,24 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
      * @implNote If this returns false the capability should not be exposed AND methods should turn reasonable defaults for not doing anything.
      */
     public final boolean hasInventory() {//TODO - 26.1: Should we throw this check in an interface?
-        return itemHandlerManager != null && itemHandlerManager.canHandle();
+        return itemHandlerManager != null;
     }
 
     public boolean canHandleChemicals() {
-        return chemicalHandlerManager != null && chemicalHandlerManager.canHandle();
+        return chemicalHandlerManager != null;
     }
 
     public final boolean canHandleFluid() {//TODO - 26.1: Should we throw this check in an interface?
-        return fluidHandlerManager != null && fluidHandlerManager.canHandle();
+        return fluidHandlerManager != null;
     }
 
     public final boolean canHandleEnergy() {
-        return energyHandlerManager != null && energyHandlerManager.canHandle();
+        return energyHandlerManager != null;
     }
 
     @Override
     public final boolean canHandleHeat() {
-        return heatHandlerManager != null && heatHandlerManager.canHandle();
+        return heatHandlerManager != null;
     }
 
     public void addComponent(ITileComponent component) {
@@ -1215,7 +1201,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing ITileContainer
     @Nullable
-    protected IInventorySlotHolder getInitialInventory(IContentsListener listener) {
+    protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener) {
         return null;
     }
 
@@ -1228,7 +1214,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return itemHandlerManager != null ? itemHandlerManager.getContainers(side) : Collections.emptyList();
+        return itemHandlerManager == null ? Collections.emptyList() : itemHandlerManager.getContainers(side);
     }
 
     @Override
@@ -1294,7 +1280,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     }
 
     @Nullable
-    public IChemicalTankHolder getInitialChemicalTanks(IContentsListener listener) {
+    public IContainerHolder<IChemicalTank> getInitialChemicalTanks(IContentsListener listener) {
         return null;
     }
 
@@ -1335,7 +1321,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IMekanismFluidHandler
     @Nullable
-    protected IFluidTankHolder getInitialFluidTanks(IContentsListener listener) {
+    protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         return null;
     }
 
@@ -1348,7 +1334,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidHandlerManager != null ? fluidHandlerManager.getContainers(side) : Collections.emptyList();
+        return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(side);
     }
 
     public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedResources<FluidResource> attachedFluids) {
@@ -1363,7 +1349,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IMekanismStrictEnergyHandler
     @Nullable
-    protected IEnergyContainerHolder getInitialEnergyContainers(IContentsListener listener) {
+    protected IContainerHolder<IEnergyContainer> getInitialEnergyContainers(IContentsListener listener) {
         return null;
     }
 
@@ -1415,7 +1401,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     //Methods for implementing IInWorldHeatHandler
     @Nullable
-    protected IHeatCapacitorHolder getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
+    protected IContainerHolder<IHeatCapacitor> getInitialHeatCapacitors(IContentsListener listener, CachedAmbientTemperature ambientTemperature) {
         return null;
     }
 

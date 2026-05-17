@@ -21,14 +21,11 @@ import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.resource.IResourceContainer;
-import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalHandler;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
 import mekanism.common.attachments.containers.energy.ComponentBackedEnergyHandler;
-import mekanism.common.attachments.containers.fluid.ComponentBackedFluidHandler;
 import mekanism.common.attachments.containers.heat.AttachedHeat;
 import mekanism.common.attachments.containers.heat.ComponentBackedHeatHandler;
-import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.config.IMekanismConfig;
@@ -70,35 +67,45 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
 
     //TODO - 26.1 - these collect/apply methods should be static, they don't actually use the tile. QIO has an item override, but other than that the inheritance is irrelevant
     //possibly change to use copy?
-    public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
-          SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
-          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy,
-          IEnergyContainer::copyContents) {
+    public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(
+          MekanismDataComponents.ATTACHED_ENERGY, SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER,
+          ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
+          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers,
+          TileEntityMekanism::canHandleEnergy, IEnergyContainer::copyContents
+    ) {
         @Override
         @SuppressWarnings("unchecked")
         public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
             EnergyCompatUtils.registerItemCapabilities(event, item, (ICapabilityProvider<ItemStack, ItemAccess, IStrictEnergyHandler>) getCapabilityProvider(exposeWhenStacked, requiredConfigs));
         }
     };
-    public static final ContainerType<IInventorySlot, AttachedResources<ItemResource>, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
-          SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedResources.empty(),
-          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory,
-          IResourceContainer::copyContents);
+    public static final ContainerType<IInventorySlot, AttachedResources<ItemResource>, ComponentBackedResourceHandler<ItemResource, IInventorySlot>> ITEM = new ContainerType<>(
+          MekanismDataComponents.ATTACHED_ITEMS, SerializationConstants.ITEMS, SerializationConstants.SLOT,
+          ComponentBackedResourceHandler::new, Capabilities.ITEM, AttachedResources.empty(),
+          TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots,
+          TileEntityMekanism::hasInventory, IResourceContainer::copyContents
+    );
 
-    public static final ContainerType<IFluidTank, AttachedResources<FluidResource>, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
-          SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedResources.empty(),
-          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid,
-          IResourceContainer::copyContents);
+    public static final ContainerType<IFluidTank, AttachedResources<FluidResource>, ComponentBackedResourceHandler<FluidResource, IFluidTank>> FLUID = new ContainerType<>(
+          MekanismDataComponents.ATTACHED_FLUIDS, SerializationConstants.FLUID_TANKS, SerializationConstants.TANK,
+          ComponentBackedResourceHandler::new, Capabilities.FLUID, AttachedResources.empty(),
+          TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks,
+          TileEntityMekanism::canHandleFluid, IResourceContainer::copyContents
+    );
 
-    public static final ContainerType<IChemicalTank, AttachedResources<ChemicalResource>, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
-          SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedResources.empty(),
-          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals,
-          IResourceContainer::copyContents);
+    public static final ContainerType<IChemicalTank, AttachedResources<ChemicalResource>, ComponentBackedResourceHandler<ChemicalResource, IChemicalTank>> CHEMICAL = new ContainerType<>(
+          MekanismDataComponents.ATTACHED_CHEMICALS, SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK,
+          ComponentBackedResourceHandler::new, Capabilities.CHEMICAL, AttachedResources.empty(),
+          TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks,
+          TileEntityMekanism::canHandleChemicals, IResourceContainer::copyContents
+    );
 
-    public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
-          SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
-          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat,
-          IHeatCapacitor::copyContents);
+    public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(
+          MekanismDataComponents.ATTACHED_HEAT, SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER,
+          ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
+          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors,
+          TileEntityMekanism::canHandleHeat, IHeatCapacitor::copyContents
+    );
 
     //TODO - 1.20.5: Re-evaluate this codec implementation
     //TODO - 26.1: seems unused?
@@ -113,7 +120,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }, containerType -> containerType.component.get());
 
     private final Map<Item, Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
-    private final HandlerConstructor<HANDLER> handlerConstructor;
+    private final HandlerConstructor<CONTAINER, ATTACHED, HANDLER> handlerConstructor;
     private final BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile;
     private final CopyFromTile<CONTAINER, ATTACHED> copyFromTile;
     private final CopyToTile<CONTAINER, ATTACHED> copyToTile;
@@ -124,10 +131,10 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     private final Predicate<TileEntityMekanism> canHandle;
     private final ATTACHED emptyAttachment;
     private final String containerTag;
-    protected final String containerKey;
+    private final String containerKey;
 
     private ContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
-          HandlerConstructor<HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability, ATTACHED emptyAttachment,
+          HandlerConstructor<CONTAINER, ATTACHED, HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability, ATTACHED emptyAttachment,
           BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, CopyFromTile<CONTAINER, ATTACHED> copyFromTile,
           CopyToTile<CONTAINER, ATTACHED> copyToTile, Predicate<TileEntityMekanism> canHandle, CopyHandler<CONTAINER> copyHandler) {
         TYPES_INTERNAL.add(this);
@@ -198,10 +205,10 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     public HANDLER createHandlerIfData(ItemStack stack) {
         ATTACHED attached = getOrEmpty(stack);
         //TODO - 1.21: Do we need to look it up in case the max size changed since we were last saved?
-        return attached.isEmpty() ? null : handlerConstructor.create(stack, attached.size());
+        return attached.isEmpty() ? null : handlerConstructor.create(this, stack, attached.size());
     }
 
-    @Nullable
+    @Nullable//TODO - 26.1: Should this just use caps?
     public HANDLER createHandler(ItemStack stack) {
         //TODO - 1.21: Do we want local callers to just directly access the handler constructor as we wouldn't be exposing the cap
         // if we didn't have any creators?
@@ -209,7 +216,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         if (count == 0) {
             return null;
         }
-        return handlerConstructor.create(stack, count);
+        return handlerConstructor.create(this, stack, count);
     }
 
     public ATTACHED createNewAttachment(ItemStack stack) {
@@ -343,9 +350,10 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     @FunctionalInterface
-    private interface HandlerConstructor<HANDLER extends ComponentBackedHandler<?, ?, ?>> {
+    private interface HandlerConstructor<CONTAINER extends ValueIOSerializable, ATTACHED extends IAttachedContainers<?, ATTACHED>,
+          HANDLER extends ComponentBackedHandler<?, CONTAINER, ATTACHED>> {
 
-        HANDLER create(ItemStack attachedTo, int totalContainers);
+        HANDLER create(ContainerType<CONTAINER, ATTACHED, HANDLER> containerType, ItemStack attachedTo, int totalContainers);
     }
 
     @FunctionalInterface

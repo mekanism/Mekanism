@@ -63,9 +63,7 @@ public abstract class CapabilityTileEntity extends TileEntityUpdateable {
     protected final void addCapabilityResolvers(List<ICapabilityHandlerManager<?>> capabilityHandlerManagers) {
         for (ICapabilityHandlerManager<?> capabilityHandlerManager : capabilityHandlerManagers) {
             //Add all managers that we support in our tile, as capability resolvers
-            if (capabilityHandlerManager.canHandle()) {
-                capabilityCache.addCapabilityResolver(capabilityHandlerManager);
-            }
+            capabilityCache.addCapabilityResolver(capabilityHandlerManager);
         }
     }
 

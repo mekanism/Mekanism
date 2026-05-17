@@ -279,14 +279,14 @@ public class MissingObjectSerializationTest {
         helper.succeedIfSerializationCycle(InventoryFrequency.CODEC, help -> {
                   InventoryFrequency frequency = new InventoryFrequency("test", null, SecurityMode.PUBLIC);
                   frequency.getEnergyContainers().getFirst().setEnergy(100);
-                  frequency.getHeatCapacitors(null).getFirst().setHeat(1_000);
+                  frequency.getHeatCapacitors().getFirst().setHeat(1_000);
                   frequency.getChemicalTanks().getFirst().setContents(help.failureChemicalType(), 1);
                   frequency.getFluidTanks().getFirst().setContents(help.failureFluidType(), FluidType.BUCKET_VOLUME);
                   frequency.getInventorySlots().getFirst().setContents(help.failureItemType(), 1);
                   return frequency;
               }, frequency -> frequency.getName().equals("test") && frequency.getSecurity() == SecurityMode.PUBLIC &&
                               frequency.getEnergyContainers().getFirst().getEnergy() == 100 &&
-                              frequency.getHeatCapacitors(null).getFirst().getHeat() == 1_000 &&
+                              frequency.getHeatCapacitors().getFirst().getHeat() == 1_000 &&
                               frequency.getChemicalTanks().getFirst().isEmpty() &&
                               frequency.getFluidTanks().getFirst().isEmpty() &&
                               frequency.getInventorySlots().getFirst().isEmpty(),
