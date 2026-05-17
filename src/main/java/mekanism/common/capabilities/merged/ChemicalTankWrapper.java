@@ -6,6 +6,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
+import mekanism.api.resource.IResourceContainer;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
@@ -107,6 +108,11 @@ public class ChemicalTankWrapper implements IChemicalTank {//TODO - 26.1: Re-eva
     @Override
     public ChemicalAttributeValidator getAttributeValidator() {
         return internal.getAttributeValidator();
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<ChemicalResource> other) {
+        internal.copyContents(other);
     }
 
     @Override

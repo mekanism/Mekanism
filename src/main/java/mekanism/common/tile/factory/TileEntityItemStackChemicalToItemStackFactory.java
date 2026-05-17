@@ -26,7 +26,6 @@ import mekanism.api.recipes.vanilla_input.SingleItemChemicalRecipeInput;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.holder.chemical.ChemicalTankHelper;
@@ -296,8 +295,8 @@ public class TileEntityItemStackChemicalToItemStackFactory extends TileEntityIte
         if (upgradeData instanceof AdvancedMachineUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData, provider);
-            ContainerType.CHEMICAL.copy(data.stored, chemicalTank);
-            ContainerType.ITEM.copy(data.chemicalSlot, extraSlot);
+            chemicalTank.copyContents(data.stored);
+            extraSlot.copyContents(data.chemicalSlot);
             System.arraycopy(data.usedSoFar, 0, usedSoFar, 0, data.usedSoFar.length);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());

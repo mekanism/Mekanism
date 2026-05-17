@@ -30,6 +30,10 @@ public interface IEnergyContainer extends ValueIOSerializable, IContentsListener
      */
     void setEnergy(@Range(from = 0, to = Long.MAX_VALUE) long energy);
 
+    default void copyContents(IEnergyContainer other) {
+        setEnergy(other.getEnergy());
+    }
+
     //TODO - 26.1: Docs
     @Range(from = 0, to = Long.MAX_VALUE)
     long insert(@Range(from = 0, to = Long.MAX_VALUE) long amount, TransactionContext transaction, AutomationType automationType);

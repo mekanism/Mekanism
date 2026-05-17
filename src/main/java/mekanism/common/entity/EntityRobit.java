@@ -439,7 +439,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
             IInventorySlot inventorySlot = inventorySlots.get(slot);
             if (!inventorySlot.isEmpty()) {
-                stackInventory.setContents(slot, inventorySlot.getResource(), inventorySlot.amountAsInt());
+                stackInventory.getContainer(slot).copyContents(inventorySlot);
             }
         }
         if (hasCustomName()) {

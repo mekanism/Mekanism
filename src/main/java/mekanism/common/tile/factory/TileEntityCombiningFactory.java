@@ -13,7 +13,6 @@ import mekanism.api.recipes.inputs.InputHelper;
 import mekanism.client.recipe_viewer.type.IRecipeViewerRecipeType;
 import mekanism.client.recipe_viewer.type.RecipeViewerRecipeType;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.holder.slot.InventorySlotHelper;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -144,7 +143,7 @@ public class TileEntityCombiningFactory extends TileEntityItemToItemFactory<Comb
         if (upgradeData instanceof CombinerUpgradeData data) {
             //Generic factory upgrade data handling
             super.parseUpgradeData(upgradeData, provider);
-            ContainerType.ITEM.copy(data.extraSlot, extraSlot);
+            extraSlot.copyContents(data.extraSlot);
         } else {
             Mekanism.logger.warn("Unhandled upgrade data.", new Throwable());
         }

@@ -9,6 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.merged.MergedTank;
 import mekanism.common.inventory.slot.chemical.ChemicalInventorySlot;
@@ -101,6 +102,15 @@ public class HybridInventorySlot extends BasicInventorySlot implements IFluidHan
     @Override
     public void setFilling(boolean filling) {
         isFilling = filling;
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<ItemResource> other) {
+        super.copyContents(other);
+        if (other instanceof IFluidHandlerSlot otherSlot) {
+            setDraining(otherSlot.isDraining());
+            setFilling(otherSlot.isDraining());
+        }
     }
 
     @Override

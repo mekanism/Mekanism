@@ -70,7 +70,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     public void read(@NotNull ValueInput input) {
         super.read(input);
         saveShare = input.read(SerializationConstants.STORED, resourceStackCodec).orElse(getEmptyResourceStack());
-        bufferContainer.setContents(getCurrentSaveType(),  getCurrentSaveAmount());
+        bufferContainer.setContentsUnchecked(saveShare);
     }
 
     @Override
@@ -129,11 +129,9 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         if (hasTransmitterNetwork()) {
             CONTAINER networkContainer = getTransmitterNetwork().getContainer();
             if (!networkContainer.isEmpty() && !saveShare.isEmpty()) {
-                RESOURCE currentSaveType = getCurrentSaveType();
-                long amount = getCurrentSaveAmount();
                 //TODO - 26.1: Re-evaluate this
-                networkContainer.setContentsUnchecked(networkContainer.getResource(), networkContainer.amountAsLong() - amount);
-                bufferContainer.setContents(currentSaveType, amount);
+                networkContainer.setContentsUnchecked(networkContainer.getResource(), networkContainer.amountAsLong() - getCurrentSaveAmount());
+                bufferContainer.setContentsUnchecked(saveShare);
             }
         }
     }

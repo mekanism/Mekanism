@@ -87,7 +87,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     public TileEntityChemicalTank(Holder<Block> blockProvider, BlockPos pos, BlockState state) {
         super(blockProvider, pos, state);
         configComponent.setupIOConfig(TransmissionType.ITEM, drainSlot, fillSlot, RelativeSide.FRONT, true).setCanEject(false);
-        configComponent.setupIOConfig(TransmissionType.CHEMICAL, getChemicalTank(), RelativeSide.FRONT);
+        configComponent.setupIOConfig(TransmissionType.CHEMICAL, chemicalTank, RelativeSide.FRONT);
         ejectorComponent = new TileComponentEjector(this, () -> tier.getOutput());
         ejectorComponent.setOutputData(configComponent, TransmissionType.CHEMICAL)
               .setCanEject(type -> canFunction() && (tier == ChemicalTankTier.CREATIVE || dumping != GasMode.DUMPING));
@@ -187,10 +187,10 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
         if (upgradeData instanceof ChemicalTankUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            drainSlot.setContentsUnchecked(data.drainSlot.asStack());
-            fillSlot.setContentsUnchecked(data.fillSlot.asStack());
+            drainSlot.copyContents(data.drainSlot);
+            fillSlot.copyContents(data.fillSlot);
             dumping = data.dumping;
-            getChemicalTank().setContentsUnchecked(data.storedChemical);
+            chemicalTank.copyContents(data.chemicalTank);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -205,7 +205,7 @@ public class TileEntityChemicalTank extends TileEntityConfigurableMachine implem
     @NotNull
     @Override
     public ChemicalTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new ChemicalTankUpgradeData(provider, redstone, getControlType(), drainSlot, fillSlot, dumping, getChemicalTank().asStack(), getComponents(), problemPath());
+        return new ChemicalTankUpgradeData(provider, redstone, getControlType(), drainSlot, fillSlot, dumping, chemicalTank, getComponents(), problemPath());
     }
 
     @Override

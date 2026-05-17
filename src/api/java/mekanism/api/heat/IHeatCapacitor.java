@@ -60,6 +60,11 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
      */
     void setHeat(double heat);
 
+    //TODO - 26.1: Docs
+    default void copyContents(IHeatCapacitor other) {
+        setHeat(other.getHeat());
+    }
+
     /**
      * Handles a change of heat in this capacitor. Can be positive or negative.
      *

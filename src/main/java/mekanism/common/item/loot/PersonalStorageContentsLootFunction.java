@@ -58,7 +58,10 @@ public class PersonalStorageContentsLootFunction implements LootItemFunction {
                 for (int i = 0, size = tileSlots.size(); i < size; i++) {
                     IInventorySlot tileSlot = tileSlots.get(i);
                     if (!tileSlot.isEmpty()) {
-                        destInv.setContents(i, tileSlot.getResource(), tileSlot.amountAsInt());
+                        IInventorySlot container = destInv.getContainer(i);
+                        if (container != null) {
+                            container.copyContents(tileSlot);
+                        }
                     }
                 }
             }

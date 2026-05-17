@@ -59,7 +59,7 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
                     type.prefab(this, containersToCopy.size());
                 }
                 for (int i = 0; i < containersToCopy.size(); i++) {
-                    type.sync(cacheContainers.get(i), containersToCopy.get(i));
+                    type.copy(containersToCopy.get(i), cacheContainers.get(i));
                 }
             }
         }
@@ -151,11 +151,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             protected List<IInventorySlot> containerList(IMultiblockContents inventory) {
                 return inventory.getInventorySlots();
             }
-
-            @Override
-            public void sync(IInventorySlot cache, IInventorySlot data) {
-                cache.setContents(data.asStack());
-            }
         };
 
         public static final CacheSubstance<IFluidTank> FLUID = new CacheSubstance<>(ContainerType.FLUID) {
@@ -167,11 +162,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             @Override
             protected List<IFluidTank> containerList(IMultiblockContents fluidHandler) {
                 return fluidHandler.getFluidTanks();
-            }
-
-            @Override
-            public void sync(IFluidTank cache, IFluidTank data) {
-                cache.setContents(data.asStack());
             }
         };
 
@@ -185,11 +175,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             protected List<IChemicalTank> containerList(IMultiblockContents tracker) {
                 return tracker.getChemicalTanks();
             }
-
-            @Override
-            public void sync(IChemicalTank cache, IChemicalTank data) {
-                cache.setContents(data.asStack());
-            }
         };
 
         public static final CacheSubstance<IEnergyContainer> ENERGY = new CacheSubstance<>(ContainerType.ENERGY) {
@@ -202,11 +187,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             protected List<IEnergyContainer> containerList(IMultiblockContents handler) {
                 return handler.getEnergyContainers();
             }
-
-            @Override
-            public void sync(IEnergyContainer cache, IEnergyContainer data) {
-                cache.setEnergy(data.getEnergy());
-            }
         };
 
         public static final CacheSubstance<IHeatCapacitor> HEAT = new CacheSubstance<>(ContainerType.HEAT) {
@@ -218,14 +198,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
             @Override
             protected List<IHeatCapacitor> containerList(IMultiblockContents handler) {
                 return handler.getHeatCapacitors();
-            }
-
-            @Override
-            public void sync(IHeatCapacitor cache, IHeatCapacitor data) {
-                cache.setHeat(data.getHeat());
-                if (cache instanceof BasicHeatCapacitor heatCapacitor) {
-                    heatCapacitor.setHeatCapacity(data.getHeatCapacity(), false);
-                }
             }
         };
 
@@ -253,8 +225,6 @@ public class MultiblockCache<T extends MultiblockData> implements IMultiblockCon
                 defaultPrefab(cache);
             }
         }
-
-        public abstract void sync(ELEMENT cache, ELEMENT data);
 
         public void copy(ELEMENT from, ELEMENT to) {
             containerType.copy(from, to);

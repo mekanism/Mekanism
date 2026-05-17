@@ -70,13 +70,13 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         currentScale = Math.min(1, capacity == 0 ? 0 : (currentScale * oldCapacity + net.currentScale * net.capacity) / capacity);
         if (isRemote()) {
             if (this.container.isEmpty()) {
-                this.container.setContents(net.container.asStack());
+                this.container.copyContents(net.container);
                 net.container.setEmpty();
             }
         } else {
             if (!net.container.isEmpty()) {
                 if (this.container.isEmpty()) {
-                    this.container.setContents(net.container.asStack());
+                    this.container.copyContents(net.container);
                     net.container.setEmpty();
                 } else {
                     // compare the chemicals themselves
@@ -112,7 +112,7 @@ public abstract class DynamicBufferedResourceNetwork<RESOURCE extends Resource, 
         LargeResourceStack<RESOURCE> transmitterReleased = transmitter.releaseShare();
         if (!transmitterReleased.isEmpty()) {
             if (container.isEmpty()) {
-                container.setContents(transmitterReleased);
+                container.setContentsUnchecked(transmitterReleased);
             } else if (container.getResource().equals(transmitterReleased.resource())) {
                 //TODO - 26.1: evaluate if we actually do want helpers for growing and shrinking for use cases like this
                 container.setContentsUnchecked(transmitterReleased.resource(), container.amountAsLong() + transmitterReleased.amount());

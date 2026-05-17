@@ -190,7 +190,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
      */
     @NonExtendable
     default void setEmpty() {//TODO - 26.1: Re-evaluate usages and the existence of this method
-        setContents(emptyStack());
+        setContentsUnchecked(emptyStack());
     }
 
     @Override
@@ -215,9 +215,9 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         setContentsUnchecked(stack.resource(), stack.amount());
     }
 
-    //TODO - 26.1: Re-evaluate this method
-    default void setContents(LargeResourceStack<RESOURCE> stack) {
-        setContents(stack.resource(), stack.amount());
+    //TODO - 26.1: Docs that say to override this if serializing is being overridden
+    default void copyContents(IResourceContainer<RESOURCE> container) {
+        setContentsUnchecked(container.getResource(), container.amountAsLong());
     }
 
     //TODO - 26.1: Re-evaluate this method

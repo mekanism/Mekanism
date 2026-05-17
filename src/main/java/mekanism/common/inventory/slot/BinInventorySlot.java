@@ -10,6 +10,7 @@ import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.inventory.IMekanismInventory;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.item.ComponentBackedBinInventorySlot;
 import mekanism.common.inventory.container.slot.InventoryContainerSlot;
@@ -144,7 +145,7 @@ public class BinInventorySlot extends BasicInventorySlot {
     /**
      * For use by tier installers and parsing placement data, do not use this in place of {@link #setLocked(boolean)}
      */
-    public void setLockStack(ItemResource lockType) {
+    public void setLockType(ItemResource lockType) {
         this.lockType = lockType;
     }
 
@@ -158,6 +159,16 @@ public class BinInventorySlot extends BasicInventorySlot {
 
     public ItemResource getLockType() {
         return lockType;
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<ItemResource> other) {
+        super.copyContents(other);
+        if (other instanceof BinInventorySlot otherSlot) {
+            setLockType(otherSlot.getLockType());
+        } else if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
+            setLockType(otherSlot.getLockType());
+        }
     }
 
     @Override

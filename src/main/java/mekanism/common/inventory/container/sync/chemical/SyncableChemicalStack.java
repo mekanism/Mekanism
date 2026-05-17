@@ -18,18 +18,13 @@ import org.jetbrains.annotations.NotNull;
 public final class SyncableChemicalStack implements ISyncableData {
 
     public static SyncableChemicalStack create(IChemicalTank handler) {
-        return create(handler, false);
-    }
-
-    public static SyncableChemicalStack create(IChemicalTank handler, boolean isClient) {
         //Note: While strictly speaking the server should never end up having the setter called, because we have side
         // information readily available here we use the checked setter on the server side just to be safe. The reason
         // that we need to use unchecked setters on the client is that if a recipe got removed so there is a substance
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
         //TODO - 26.1: Re-evaluate this
-        return create(() -> handler.getResource().toStack(handler.amountAsInt()), isClient ? stack -> handler.setContentsUnchecked(ChemicalResource.of(stack), stack.amount())
-                                                                                           : stack -> handler.setContents(ChemicalResource.of(stack), stack.amount()));
+        return create(() -> handler.getResource().toStack(handler.amountAsInt()), stack -> handler.setContentsUnchecked(ChemicalResource.of(stack), stack.amount()));
     }
 
     public static SyncableChemicalStack create(Supplier<@NotNull ChemicalStack> getter, Consumer<@NotNull ChemicalStack> setter) {

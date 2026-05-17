@@ -5,8 +5,9 @@ import com.google.common.primitives.Ints;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
@@ -103,7 +104,7 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
     /**
      * For use by upgrade recipes
      *
-     * @see BinInventorySlot#setLockStack(ItemResource)
+     * @see BinInventorySlot#setLockType(ItemResource)
      */
     public void setLockType(ItemResource lockType) {
         if (lockType.isEmpty()) {
@@ -115,6 +116,16 @@ public class ComponentBackedBinInventorySlot extends ComponentBackedInventorySlo
 
     public ItemResource getLockType() {
         return attachedTo.getOrDefault(MekanismDataComponents.LOCK, LockData.EMPTY).lock();
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<ItemResource> other) {
+        super.copyContents(other);
+        if (other instanceof ComponentBackedBinInventorySlot otherSlot) {
+            setLockType(otherSlot.getLockType());
+        } else if (other instanceof BinInventorySlot otherSlot) {
+            setLockType(otherSlot.getLockType());
+        }
     }
 
     @Override

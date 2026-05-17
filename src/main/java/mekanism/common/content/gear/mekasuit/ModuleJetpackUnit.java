@@ -82,7 +82,7 @@ public record ModuleJetpackUnit(JetpackMode mode, ThrustMultiplier thrustMultipl
                     if (chemicalHandler.getAmountAsLong(tank) > capacity) {
                         //TODO - 26.1: Figure out how to reimplement this
                         if (chemicalHandler instanceof IMekanismChemicalHandler mekChemicalHandler) {
-                            mekChemicalHandler.setContents(tank, storedType, capacity);
+                            mekChemicalHandler.getContainer(tank).setContentsUnchecked(storedType, capacity);
                         }
                     }
                 }

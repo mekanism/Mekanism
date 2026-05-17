@@ -937,17 +937,16 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             container.track(SyncableBoolean.create(this::isPowered, value -> redstone = value));
             container.track(SyncableBoolean.create(this::wasPowered, value -> redstoneLastTick = value));
         }
-        boolean isClient = isRemote();
         if (canHandleChemicals() && syncs(ContainerType.CHEMICAL)) {
             List<IChemicalTank> chemicalTanks = getChemicalTanks();
             for (IChemicalTank chemicalTank : chemicalTanks) {
-                container.track(SyncableChemicalStack.create(chemicalTank, isClient));
+                container.track(SyncableChemicalStack.create(chemicalTank));
             }
         }
         if (canHandleFluid() && syncs(ContainerType.FLUID)) {
             List<IFluidTank> fluidTanks = getFluidTanks();
             for (IFluidTank fluidTank : fluidTanks) {
-                container.track(SyncableFluidStack.create(fluidTank, isClient));
+                container.track(SyncableFluidStack.create(fluidTank));
             }
         }
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {

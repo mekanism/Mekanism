@@ -136,6 +136,13 @@ public class BasicHeatCapacitor implements IHeatCapacitor {
         }
     }
 
+    @Override
+    public void copyContents(IHeatCapacitor other) {
+        IHeatCapacitor.super.copyContents(other);
+        //TODO - 26.1: Should heat capacity be copied before or after?
+        setHeatCapacity(other.getHeatCapacity(), false);
+    }
+
     public void setHeatCapacity(double newCapacity, boolean updateHeat) {
         if (updateHeat && storedHeat != -1) {
             setHeat(getHeat() + (newCapacity - getHeatCapacity()) * getAmbientTemperature());

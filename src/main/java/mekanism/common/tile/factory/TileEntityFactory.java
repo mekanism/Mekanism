@@ -21,7 +21,6 @@ import mekanism.api.recipes.cache.CachedRecipe;
 import mekanism.api.recipes.cache.CachedRecipe.OperationTracker.RecipeError;
 import mekanism.common.CommonWorldTickHandler;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeFactoryType;
 import mekanism.common.capabilities.energy.MachineEnergyContainer;
@@ -478,14 +477,13 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
             getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
             sorting = data.sorting;
             PathElement problemPath = problemPath();
-            ContainerType.ITEM.copy(data.energySlot, energySlot);
+            energySlot.copyContents(data.energySlot);
             System.arraycopy(data.progress, 0, progress, 0, data.progress.length);
             for (int i = 0; i < data.inputSlots.size(); i++) {
-                ContainerType.ITEM.copy(data.inputSlots.get(i), inputSlots.get(i));
+                inputSlots.get(i).copyContents(data.inputSlots.get(i));
             }
             for (int i = 0; i < data.outputSlots.size(); i++) {
-                IInventorySlot outputSlot = data.outputSlots.get(i);
-                outputSlots.get(i).setContentsUnchecked(outputSlot.asStack());
+                outputSlots.get(i).copyContents(data.outputSlots.get(i));
             }
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);

@@ -9,6 +9,7 @@ import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import net.minecraft.world.level.storage.ValueInput;
@@ -238,6 +239,15 @@ public class FluidInventorySlot extends BasicInventorySlot implements IFluidHand
     @Override
     public void setFilling(boolean filling) {
         isFilling = filling;
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<ItemResource> other) {
+        super.copyContents(other);
+        if (other instanceof IFluidHandlerSlot otherSlot) {
+            setDraining(otherSlot.isDraining());
+            setFilling(otherSlot.isDraining());
+        }
     }
 
     @Override

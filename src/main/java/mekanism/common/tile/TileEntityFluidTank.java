@@ -314,10 +314,10 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     public void parseUpgradeData(@NotNull IUpgradeData upgradeData, Provider provider) {
         if (upgradeData instanceof FluidTankUpgradeData data) {
             redstone = data.redstone;
-            inputSlot.setContentsUnchecked(data.inputSlot.asStack());
-            outputSlot.setContentsUnchecked(data.outputSlot.asStack());
+            inputSlot.copyContents(data.inputSlot);
+            outputSlot.copyContents(data.outputSlot);
             editMode = data.editMode;
-            fluidTank.setContentsUnchecked(data.stored);
+            fluidTank.copyContents(data.fluidTank);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {
                 ValueInput input = TagValueInput.create(reporter, provider, data.components);
                 for (ITileComponent component : getComponents()) {
@@ -332,7 +332,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     public FluidTankUpgradeData getUpgradeData(HolderLookup.Provider provider) {
-        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank.asStack(), getComponents(), problemPath());
+        return new FluidTankUpgradeData(provider, redstone, inputSlot, outputSlot, editMode, fluidTank, getComponents(), problemPath());
     }
 
     @Override

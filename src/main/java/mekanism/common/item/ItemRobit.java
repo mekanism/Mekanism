@@ -3,7 +3,6 @@ package mekanism.common.item;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Consumer;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.api.robit.RobitSkin;
@@ -51,7 +50,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -116,11 +114,9 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     List<IInventorySlot> robitSlots = robit.getInventorySlots();
                     ComponentBackedItemHandler stackInventory = ContainerType.ITEM.createHandlerIfData(stack);
                     if (stackInventory != null) {
-                        for (int slot = 0, size = robitSlots.size(); slot < stackInventory.size() && slot < size; slot++) {
-                            LargeResourceStack<ItemResource> stackInSlot = stackInventory.getContents(slot);
-                            if (!stackInSlot.isEmpty()) {//TODO - 26.1: Do we want to set this anyway?
-                                robitSlots.get(slot).setContentsUnchecked(stackInSlot);
-                            }
+                        int slot = 0;
+                        for (IInventorySlot container : stackInventory.getContainers()) {
+                            robitSlots.get(slot++).copyContents(container);
                         }
                     }
                     Component name = stack.get(MekanismDataComponents.ROBIT_NAME);

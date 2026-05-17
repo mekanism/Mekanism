@@ -4,6 +4,7 @@ import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.capabilities.merged.ChemicalTankWrapper;
 import mekanism.common.capabilities.merged.MergedTank;
 import net.minecraft.world.level.storage.ValueInput;
@@ -68,6 +69,11 @@ public class FluidTankWrapper implements IFluidTank {//TODO - 26.1: Re-evaluate 
     @Override
     public boolean isEmpty() {
         return internal.isEmpty();
+    }
+
+    @Override
+    public void copyContents(IResourceContainer<FluidResource> other) {
+        internal.copyContents(other);
     }
 
     @Override

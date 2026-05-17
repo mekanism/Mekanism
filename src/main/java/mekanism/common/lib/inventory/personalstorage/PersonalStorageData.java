@@ -10,7 +10,6 @@ import mekanism.api.IContentsListener;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
-import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.saveddata.SavedDataType;
@@ -52,7 +51,7 @@ class PersonalStorageData extends SavedData {
             inventoriesById.put(id, inventory);
             List<IInventorySlot> inventorySlots = inventory.getContainers();
             for (int i = 0, slots = contents.size(); i < slots; i++) {
-                ContainerType.ITEM.copy(contents.get(i), inventorySlots.get(i));
+                inventorySlots.get(i).copyContents(contents.get(i));
             }
             setDirty();
         }

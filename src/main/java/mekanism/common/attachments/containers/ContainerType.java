@@ -20,6 +20,7 @@ import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalHandler;
 import mekanism.common.attachments.containers.creator.IContainerCreator;
 import mekanism.common.attachments.containers.energy.AttachedEnergy;
@@ -30,7 +31,6 @@ import mekanism.common.attachments.containers.heat.ComponentBackedHeatHandler;
 import mekanism.common.attachments.containers.item.ComponentBackedItemHandler;
 import mekanism.common.capabilities.Capabilities;
 import mekanism.common.capabilities.IMultiTypeCapability;
-import mekanism.common.capabilities.heat.BasicHeatCapacitor;
 import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
@@ -72,7 +72,8 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     //possibly change to use copy?
     public static final ContainerType<IEnergyContainer, AttachedEnergy, ComponentBackedEnergyHandler> ENERGY = new ContainerType<>(MekanismDataComponents.ATTACHED_ENERGY,
           SerializationConstants.ENERGY_CONTAINERS, SerializationConstants.CONTAINER, ComponentBackedEnergyHandler::new, Capabilities.STRICT_ENERGY, AttachedEnergy.EMPTY,
-          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy, (from, to) -> to.setEnergy(from.getEnergy())) {
+          TileEntityMekanism::getEnergyContainers, TileEntityMekanism::collectEnergyContainers, TileEntityMekanism::applyEnergyContainers, TileEntityMekanism::canHandleEnergy,
+          IEnergyContainer::copyContents) {
         @Override
         @SuppressWarnings("unchecked")
         public void registerItemCapabilities(RegisterCapabilitiesEvent event, Item item, boolean exposeWhenStacked, IMekanismConfig... requiredConfigs) {
@@ -82,26 +83,22 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     public static final ContainerType<IInventorySlot, AttachedResources<ItemResource>, ComponentBackedItemHandler> ITEM = new ContainerType<>(MekanismDataComponents.ATTACHED_ITEMS,
           SerializationConstants.ITEMS, SerializationConstants.SLOT, ComponentBackedItemHandler::new, Capabilities.ITEM, AttachedResources.empty(),
           TileEntityMekanism::getInventorySlots, TileEntityMekanism::collectInventorySlots, TileEntityMekanism::applyInventorySlots, TileEntityMekanism::hasInventory,
-          (from, to) -> to.setContentsUnchecked(from.asStack()));
+          IResourceContainer::copyContents);
 
     public static final ContainerType<IFluidTank, AttachedResources<FluidResource>, ComponentBackedFluidHandler> FLUID = new ContainerType<>(MekanismDataComponents.ATTACHED_FLUIDS,
           SerializationConstants.FLUID_TANKS, SerializationConstants.TANK, ComponentBackedFluidHandler::new, Capabilities.FLUID, AttachedResources.empty(),
           TileEntityMekanism::getFluidTanks, TileEntityMekanism::collectFluidTanks, TileEntityMekanism::applyFluidTanks, TileEntityMekanism::canHandleFluid,
-          (from, to) -> to.setContentsUnchecked(from.asStack()));
+          IResourceContainer::copyContents);
 
     public static final ContainerType<IChemicalTank, AttachedResources<ChemicalResource>, ComponentBackedChemicalHandler> CHEMICAL = new ContainerType<>(MekanismDataComponents.ATTACHED_CHEMICALS,
           SerializationConstants.CHEMICAL_TANKS, SerializationConstants.TANK, ComponentBackedChemicalHandler::new, Capabilities.CHEMICAL, AttachedResources.empty(),
           TileEntityMekanism::getChemicalTanks, TileEntityMekanism::collectChemicalTanks, TileEntityMekanism::applyChemicalTanks, TileEntityMekanism::canHandleChemicals,
-          (from, to) -> to.setContentsUnchecked(from.asStack()));
+          IResourceContainer::copyContents);
 
     public static final ContainerType<IHeatCapacitor, AttachedHeat, ComponentBackedHeatHandler> HEAT = new ContainerType<>(MekanismDataComponents.ATTACHED_HEAT,
           SerializationConstants.HEAT_CAPACITORS, SerializationConstants.CONTAINER, ComponentBackedHeatHandler::new, null, AttachedHeat.EMPTY,
-          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat, (from, to) -> {
-        to.setHeat(from.getHeat());
-        if (to instanceof BasicHeatCapacitor heatCapacitor) {
-            heatCapacitor.setHeatCapacity(from.getHeatCapacity(), false);
-        }
-    });
+          TileEntityMekanism::getHeatCapacitors, TileEntityMekanism::collectHeatCapacitors, TileEntityMekanism::applyHeatCapacitors, TileEntityMekanism::canHandleHeat,
+          IHeatCapacitor::copyContents);
 
     //TODO - 1.20.5: Re-evaluate this codec implementation
     //TODO - 26.1: seems unused?
@@ -334,7 +331,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     public void copy(CONTAINER from, CONTAINER to) {
-        copyHandler.copy(from, to);
+        copyHandler.copy(to, from);
     }
 
     public boolean canHandle(TileEntityMekanism tile) {
@@ -367,6 +364,6 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     @FunctionalInterface
     public interface CopyHandler<CONTAINER extends ValueIOSerializable> {
 
-        void copy(CONTAINER from, CONTAINER to);
+        void copy(CONTAINER to, CONTAINER from);
     }
 }
