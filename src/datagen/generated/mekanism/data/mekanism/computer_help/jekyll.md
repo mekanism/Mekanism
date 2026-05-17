@@ -1,5 +1,13 @@
 ---
 built_in_tables:
+  mekanism.api.chemical.ChemicalResource:
+    description: A chemical type
+    fields:
+      name:
+        description: The Chemical's registered name
+        java_type: net.minecraft.world.item.Item
+        type: String (Item)
+    human_name: ChemicalResource
   mekanism.api.chemical.ChemicalStack:
     description: An amount of Gas/Fluid/Slurry/Pigment
     fields:
@@ -283,6 +291,30 @@ built_in_tables:
         java_type: net.minecraft.resources.Identifier
         type: String (Identifier)
     human_name: Table (FluidStack)
+  net.neoforged.neoforge.transfer.fluid.FluidResource:
+    description: A fluid type
+    fields:
+      components:
+        description: Any non default components of the fluid, in Command JSON format
+        java_type: java.lang.String
+        type: String
+      name:
+        description: The Fluid's registered name, e.g. minecraft:water
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
+    human_name: FluidResource
+  net.neoforged.neoforge.transfer.item.ItemResource:
+    description: An item type
+    fields:
+      components:
+        description: Any non default components of the item, in Command JSON format
+        java_type: java.lang.String
+        type: String
+      name:
+        description: The Item's registered name
+        java_type: net.minecraft.world.item.Item
+        type: String (Item)
+    human_name: ItemResource
 enums:
   mekanism.api.RelativeSide:
   - FRONT
@@ -1830,11 +1862,20 @@ methods:
       name: value
       type: boolean
   Filter Wrapper (ItemStack):
+  - methodName: getItemType
+    returns:
+      java_type: net.neoforged.neoforge.transfer.item.ItemResource
+      type: ItemResource
   - methodName: setItem
     params:
     - java_type: net.minecraft.world.item.Item
       name: item
       type: String (Item)
+  - methodName: setItemType
+    params:
+    - java_type: net.neoforged.neoforge.transfer.item.ItemResource
+      name: itemType
+      type: ItemResource
   Filter Wrapper (Logistical Sorter):
   - methodName: clone
     returns:
@@ -3109,19 +3150,6 @@ methods:
       - mekanism.api.Upgrade
       java_type: java.util.Set
       type: List (String (Upgrade))
-  Mechanical Pipe:
-  - methodName: getCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - methodName: getFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - methodName: getNeeded
-    returns:
-      java_type: long
-      type: Number (long)
   Metallurgic Infuser:
   - methodName: dumpInfuseType
     requires_public_security: true
@@ -3579,19 +3607,6 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
-  Pressurized Tube:
-  - methodName: getCapacity
-    returns:
-      java_type: long
-      type: Number (long)
-  - methodName: getFilledPercentage
-    returns:
-      java_type: double
-      type: Number (double)
-  - methodName: getNeeded
-    returns:
-      java_type: long
-      type: Number (long)
   QIO Drive Array:
   - methodName: getDriveStatus
     params:
@@ -3752,8 +3767,8 @@ methods:
       type: boolean
   - methodName: getTargetItem
     returns:
-      java_type: net.minecraft.world.item.ItemStack
-      type: Table (ItemStack)
+      java_type: net.neoforged.neoforge.transfer.item.ItemResource
+      type: ItemResource
   - methodName: getTriggerAmount
     returns:
       java_type: long
@@ -3933,6 +3948,19 @@ methods:
       name: usage
       type: Number (long)
     requires_public_security: true
+  Resource Transmitter:
+  - methodName: getCapacity
+    returns:
+      java_type: long
+      type: Number (long)
+  - methodName: getFilledPercentage
+    returns:
+      java_type: double
+      type: Number (double)
+  - methodName: getNeeded
+    returns:
+      java_type: long
+      type: Number (long)
   Rotary Condensentrator:
   - description: Get the contents of the energy slot.
     methodName: getEnergyItem

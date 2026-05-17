@@ -2296,12 +2296,29 @@
   ],
   "Filter Wrapper (ItemStack)": [
     {
+      "methodName": "getItemType",
+      "returns": {
+        "type": "ItemResource",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
+      }
+    },
+    {
       "methodName": "setItem",
       "params": [
         {
           "type": "String (Item)",
           "java_type": "net.minecraft.world.item.Item",
           "name": "item"
+        }
+      ]
+    },
+    {
+      "methodName": "setItemType",
+      "params": [
+        {
+          "type": "ItemResource",
+          "java_type": "net.neoforged.neoforge.transfer.item.ItemResource",
+          "name": "itemType"
         }
       ]
     }
@@ -4493,29 +4510,6 @@
       }
     }
   ],
-  "Mechanical Pipe": [
-    {
-      "methodName": "getCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "methodName": "getFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "methodName": "getNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    }
-  ],
   "Metallurgic Infuser": [
     {
       "methodName": "dumpInfuseType",
@@ -5257,29 +5251,6 @@
       }
     }
   ],
-  "Pressurized Tube": [
-    {
-      "methodName": "getCapacity",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    },
-    {
-      "methodName": "getFilledPercentage",
-      "returns": {
-        "type": "Number (double)",
-        "java_type": "double"
-      }
-    },
-    {
-      "methodName": "getNeeded",
-      "returns": {
-        "type": "Number (long)",
-        "java_type": "long"
-      }
-    }
-  ],
   "QIO Drive Array": [
     {
       "methodName": "getDriveStatus",
@@ -5548,8 +5519,8 @@
     {
       "methodName": "getTargetItem",
       "returns": {
-        "type": "Table (ItemStack)",
-        "java_type": "net.minecraft.world.item.ItemStack"
+        "type": "ItemResource",
+        "java_type": "net.neoforged.neoforge.transfer.item.ItemResource"
       }
     },
     {
@@ -5849,6 +5820,29 @@
         }
       ],
       "requires_public_security": true
+    }
+  ],
+  "Resource Transmitter": [
+    {
+      "methodName": "getCapacity",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
+    },
+    {
+      "methodName": "getFilledPercentage",
+      "returns": {
+        "type": "Number (double)",
+        "java_type": "double"
+      }
+    },
+    {
+      "methodName": "getNeeded",
+      "returns": {
+        "type": "Number (long)",
+        "java_type": "long"
+      }
     }
   ],
   "Rotary Condensentrator": [

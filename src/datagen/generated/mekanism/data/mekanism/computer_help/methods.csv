@@ -259,7 +259,9 @@ Filter Wrapper (Digital Miner),getRequiresReplacement,,boolean,,false,
 Filter Wrapper (Digital Miner),hasBlacklistedElement,,boolean,,false,
 Filter Wrapper (Digital Miner),setReplaceTarget,value: String (Item),,,false,
 Filter Wrapper (Digital Miner),setRequiresReplacement,value: boolean,,,false,
+Filter Wrapper (ItemStack),getItemType,,ItemResource,,false,
 Filter Wrapper (ItemStack),setItem,item: String (Item),,,false,
+Filter Wrapper (ItemStack),setItemType,itemType: ItemResource,,,false,
 Filter Wrapper (Logistical Sorter),clone,,Table (SorterFilter),,false,
 Filter Wrapper (Logistical Sorter),getAllowDefault,,boolean,,false,
 Filter Wrapper (Logistical Sorter),getColor,,String (EnumColor),,false,
@@ -515,9 +517,6 @@ Machine with Side Configuration Component,setEjecting,"type: String (Transmissio
 Machine with Side Configuration Component,setMode,"type: String (TransmissionType), side: String (RelativeSide), mode: String (DataType)",,,true,
 Machine with Upgrade Component,getInstalledUpgrades,,Table (String (Upgrade) => Number (int)),,false,
 Machine with Upgrade Component,getSupportedUpgrades,,List (String (Upgrade)),,false,
-Mechanical Pipe,getCapacity,,Number (long),,false,
-Mechanical Pipe,getFilledPercentage,,Number (double),,false,
-Mechanical Pipe,getNeeded,,Number (long),,false,
 Metallurgic Infuser,dumpInfuseType,,,,true,
 Metallurgic Infuser,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Metallurgic Infuser,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
@@ -607,9 +606,6 @@ Pressurized Reaction Chamber,getOutputGasCapacity,,Number (long),,false,Get the 
 Pressurized Reaction Chamber,getOutputGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas output.
 Pressurized Reaction Chamber,getOutputGasNeeded,,Number (long),,false,Get the amount needed to fill the gas output.
 Pressurized Reaction Chamber,getOutputItem,,Table (ItemStack),,false,Get the contents of the item output slot.
-Pressurized Tube,getCapacity,,Number (long),,false,
-Pressurized Tube,getFilledPercentage,,Number (double),,false,
-Pressurized Tube,getNeeded,,Number (long),,false,
 QIO Drive Array,getDriveStatus,slot: Number (int),String (DriveStatus),,false,
 QIO Drive Array,getFrequencyItemCapacity,,Number (long),,false,Requires a frequency to be selected
 QIO Drive Array,getFrequencyItemCount,,Number (long),,false,Requires a frequency to be selected
@@ -638,7 +634,7 @@ QIO Machine with Filter,getFilters,,List (Table (QIOFilter)),,false,
 QIO Machine with Filter,removeFilter,filter: Table (QIOFilter),boolean,,true,
 QIO Redstone Adapter,clearTargetItem,,,,true,
 QIO Redstone Adapter,getFuzzyMode,,boolean,,false,
-QIO Redstone Adapter,getTargetItem,,Table (ItemStack),,false,
+QIO Redstone Adapter,getTargetItem,,ItemResource,,false,
 QIO Redstone Adapter,getTriggerAmount,,Number (long),,false,
 QIO Redstone Adapter,invertSignal,,,,true,
 QIO Redstone Adapter,isInverted,,boolean,,false,
@@ -674,6 +670,9 @@ Resistive Heater,getEnvironmentalLoss,,Number (double),,false,
 Resistive Heater,getTemperature,,Number (double),,false,Get the temperature of the heater in Kelvin.
 Resistive Heater,getTransferLoss,,Number (double),,false,
 Resistive Heater,setEnergyUsage,usage: Number (long),,,true,
+Resource Transmitter,getCapacity,,Number (long),,false,
+Resource Transmitter,getFilledPercentage,,Number (double),,false,
+Resource Transmitter,getNeeded,,Number (long),,false,
 Rotary Condensentrator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Rotary Condensentrator,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
 Rotary Condensentrator,getFluid,,Table (FluidStack),,false,Get the contents of the fluid tank.
