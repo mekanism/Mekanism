@@ -301,7 +301,7 @@ project.base.archivesName = 'Mekanism'
 java {
     toolchain {
         languageVersion.set(JavaLanguageVersion.of("${java_version}"))
-        vendor.set(JvmVendorSpec.JETBRAINS)
+        //vendor.set(JvmVendorSpec.JETBRAINS)
     }
     withSourcesJar()
 }
