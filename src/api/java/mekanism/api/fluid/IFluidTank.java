@@ -8,6 +8,7 @@ import mekanism.api.resource.LargeResourceStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 
+/// Represents a [`resource container`][IResourceContainer] that contains [`fluids`][FluidResource].
 @NothingNullByDefault
 public interface IFluidTank extends IResourceContainer<FluidResource> {
 

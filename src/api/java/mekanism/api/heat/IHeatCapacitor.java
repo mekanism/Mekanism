@@ -92,7 +92,12 @@ public interface IHeatCapacitor extends ValueIOSerializable, IContentsListener {
         setHeat(input.getDoubleOr(SerializationConstants.STORED, getHeat()));
     }
 
-    //TODO - 26.1: Docs
+    /// Helper method to copy all pertinent data from another [`heat capacitor`][IHeatCapacitor] to this one without requiring a serialization, deserialization cycle.
+    ///
+    /// @param other Capacitor to copy data from.
+    ///
+    /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    /// @since 10.8.0
     default void copyContents(IHeatCapacitor other) {
         setHeat(other.getHeat());
     }

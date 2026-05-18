@@ -54,10 +54,10 @@ public class RecipeCacheLookupMonitor<RECIPE extends MekanismRecipe<?>> implemen
     public long updateAndProcess(IEnergyContainer energyContainer) {
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
-        long prev = energyContainer.getEnergy();
+        long prev = energyContainer.energy();
         if (updateAndProcess()) {
             //Update amount of energy that actually got used, as if we are "near" full we may not have performed our max number of operations
-            return Math.max(0, prev - energyContainer.getEnergy());
+            return Math.max(0, prev - energyContainer.energy());
         }
         //If we don't have a cached recipe so didn't process anything at all just return zero
         return 0L;

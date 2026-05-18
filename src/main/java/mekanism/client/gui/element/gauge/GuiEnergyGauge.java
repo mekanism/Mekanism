@@ -20,12 +20,12 @@ public class GuiEnergyGauge extends GuiGauge<Void> {
         this(new IEnergyInfoHandler() {
             @Override
             public long getEnergy() {
-                return container.getEnergy();
+                return container.energy();
             }
 
             @Override
             public long getMaxEnergy() {
-                return container.getCapacity();
+                return container.capacity();
             }
         }, type, gui, x, y);
     }

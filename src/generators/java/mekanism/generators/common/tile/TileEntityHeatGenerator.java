@@ -114,7 +114,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         boolean sendUpdatePacket = super.onUpdateServer();
         energySlot.drainContainer();
         fuelSlot.fillOrBurn();
-        long prev = getEnergyContainer().getEnergy();
+        long prev = getEnergyContainer().energy();
         heatCapacitor.handleHeat(getBoost());
         FluidResource lavaResource = lavaTank.getResource();
         boolean isActive = false;
@@ -132,7 +132,7 @@ public class TileEntityHeatGenerator extends TileEntityGenerator {
         HeatTransfer loss = simulate();
         lastTransferLoss = loss.adjacentTransfer();
         lastEnvironmentLoss = loss.environmentTransfer();
-        producingEnergy = getEnergyContainer().getEnergy() - prev;
+        producingEnergy = getEnergyContainer().energy() - prev;
         return sendUpdatePacket;
     }
 

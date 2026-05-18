@@ -244,7 +244,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
 
         //Copy this so that if it changes we still have the original amount. Don't bother making it a constant though as this way
         // we can then use minusEqual instead of subtract to remove an extra copy call
-        long prev = energyContainer.getEnergy();
+        long prev = energyContainer.energy();
         for (int i = 0; i < recipeCacheLookupMonitors.length; i++) {
             if (!recipeCacheLookupMonitors[i].updateAndProcess()) {
                 //If we don't have a recipe in that slot make sure that our active state for that position is false
@@ -262,7 +262,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         }
         setActive(isActive);
         //If none of the recipes are actively processing don't bother with any subtraction
-        lastUsage = isActive ? prev - energyContainer.getEnergy() : 0L;
+        lastUsage = isActive ? prev - energyContainer.energy() : 0L;
         return sendUpdatePacket;
     }
 
@@ -473,7 +473,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         if (upgradeData instanceof MachineUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
+            getEnergyContainer().setEnergy(data.energyContainer.energy());
             sorting = data.sorting;
             PathElement problemPath = problemPath();
             energySlot.copyContents(data.energySlot);

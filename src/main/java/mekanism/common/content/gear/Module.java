@@ -144,7 +144,7 @@ public final class Module<MODULE extends ICustomModule<MODULE>> implements IModu
             return true;
         }
         IEnergyContainer energyContainer = getEnergyContainer(stack);
-        return energyContainer != null && energyContainer.getEnergy() >= energy;
+        return energyContainer != null && energyContainer.energy() >= energy;
     }
 
     @Override

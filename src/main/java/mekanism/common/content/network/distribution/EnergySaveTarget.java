@@ -60,7 +60,7 @@ public class EnergySaveTarget<HANDLER extends EnergySaveTarget.SaveHandler> exte
         private final IEnergyContainer delegate;
 
         public DelegateSaveHandler(IEnergyContainer delegate) {
-            super(delegate.getCapacity());
+            super(delegate.capacity());
             this.delegate = delegate;
         }
 

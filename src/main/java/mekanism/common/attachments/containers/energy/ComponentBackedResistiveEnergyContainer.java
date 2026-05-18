@@ -31,12 +31,12 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getCapacity() {
+    public long capacity() {
         return MathUtils.multiplyClamped(getEnergyPerTick(), ResistiveHeaterEnergyContainer.USAGE_MULTIPLIER);
     }
 
     private long getRate() {
-        return MekanismUtils.calculateUsage(this.getCapacity());
+        return MekanismUtils.calculateUsage(this.capacity());
     }
 
     @Override
@@ -58,7 +58,7 @@ public class ComponentBackedResistiveEnergyContainer extends ComponentBackedEner
     private void updateEnergyUsage(long energyUsage) {
         attachedTo.set(MekanismDataComponents.ENERGY_USAGE, energyUsage);
         //Clamp the energy
-        setEnergy(getEnergy());
+        setEnergy(energy());
     }
 
     @Override

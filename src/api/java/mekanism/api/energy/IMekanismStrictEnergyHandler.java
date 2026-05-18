@@ -29,13 +29,13 @@ public interface IMekanismStrictEnergyHandler extends IStrictEnergyHandler, ICon
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getAmountAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return getContainer(index).getEnergy();
+        return getContainer(index).energy();
     }
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     default long getCapacityAsLong(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        return getContainer(index).getCapacity();
+        return getContainer(index).capacity();
     }
 
     @Range(from = 0, to = Long.MAX_VALUE)

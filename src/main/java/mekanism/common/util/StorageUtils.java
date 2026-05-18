@@ -263,7 +263,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
     public static long getStoredEnergyFromAttachment(ItemStack stack) {
         long energy = 0;
         for (IEnergyContainer energyContainer : ContainerType.ENERGY.getAttachmentContainersIfPresent(stack)) {
-            energy = MathUtils.addClamped(energy, energyContainer.getEnergy());
+            energy = MathUtils.addClamped(energy, energyContainer.energy());
         }
         return energy;
     }
@@ -276,7 +276,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         IMekanismStrictEnergyHandler attachment = ContainerType.ENERGY.createHandler(toFill);
         if (attachment != null) {
             for (IEnergyContainer energyContainer : attachment.getContainers()) {
-                energyContainer.setEnergy(energyContainer.getCapacity());
+                energyContainer.setEnergy(energyContainer.capacity());
             }
         }
         //The item is now filled return it for convenience
@@ -304,7 +304,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
 
     public static double getEnergyRatio(ItemStack stack) {
         IEnergyContainer container = getEnergyContainer(stack, 0);
-        return container == null ? 0 : MathUtils.divideToLevel(container.getEnergy(), container.getCapacity());
+        return container == null ? 0 : MathUtils.divideToLevel(container.energy(), container.capacity());
     }
 
     public static Component getEnergyPercent(ItemStack stack, boolean colorText) {
@@ -395,7 +395,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
         for (int i = 0; i < toAdd.size(); i++) {
             IEnergyContainer container = containers.get(i);
             IEnergyContainer mergeContainer = toAdd.get(i);
-            container.setEnergy(MathUtils.addClamped(container.getEnergy(), mergeContainer.getEnergy()));
+            container.setEnergy(MathUtils.addClamped(container.energy(), mergeContainer.energy()));
         }
     }
 

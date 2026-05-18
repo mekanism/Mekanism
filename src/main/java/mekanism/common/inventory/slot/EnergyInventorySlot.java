@@ -77,7 +77,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             if (itemEnergyHandler == null) {
                 return false;
             }
-            long storedEnergy = energyContainer.getEnergy();
+            long storedEnergy = energyContainer.energy();
             if (storedEnergy == 0L) {
                 //If the energy container is empty, accept the energy item as long as it is not full
                 for (int container = 0; container < itemEnergyHandler.size(); container++) {
@@ -220,7 +220,7 @@ public class EnergyInventorySlot extends BasicInventorySlot {
             long availableEnergy;
             try (Transaction simulation = Transaction.open(transaction)) {
                 //TODO - 26.1: Evaluate if we want to bother with this simulation or if there is a different way to do this
-                availableEnergy = energyContainer.extract(energyContainer.getEnergy(), simulation, AutomationType.INTERNAL);
+                availableEnergy = energyContainer.extract(energyContainer.energy(), simulation, AutomationType.INTERNAL);
                 if (availableEnergy == 0) {
                     //Short circuit, theoretically the item energy handler will do so as well, but we might as well ensure that it happens
                     return;

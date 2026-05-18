@@ -246,7 +246,7 @@ public class TileEntityQuantumEntangloporter extends TileEntityConfigurableMachi
         trackLastEnergy(container);
         container.track(SyncableLong.create(() -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers();
-            return energyContainers.isEmpty() ? 0L : energyContainers.getFirst().getEnergy();
+            return energyContainers.isEmpty() ? 0L : energyContainers.getFirst().energy();
         }, energy -> {
             List<IEnergyContainer> energyContainers = getEnergyContainers();
             if (!energyContainers.isEmpty()) {

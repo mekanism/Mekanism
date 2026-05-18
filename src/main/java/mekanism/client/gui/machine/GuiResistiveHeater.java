@@ -49,7 +49,7 @@ public class GuiResistiveHeater extends GuiMekanismTile<TileEntityResistiveHeate
                   return energyContainer.isEmpty() && energyContainer.getEnergyPerTick() > 0;
               }).warning(WarningType.NOT_ENOUGH_ENERGY_REDUCED_RATE, () -> {
                   MachineEnergyContainer<TileEntityResistiveHeater> energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiEnergyTab(this, tile.getEnergyContainer(), tile::getEnergyUsed));
         addRenderableWidget(new GuiHeatTab(this, () -> {

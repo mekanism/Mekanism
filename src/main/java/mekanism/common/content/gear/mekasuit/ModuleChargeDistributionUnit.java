@@ -66,7 +66,7 @@ public record ModuleChargeDistributionUnit(boolean chargeSuit, boolean chargeInv
             if (energyContainer != null) {
                 saveTarget.addHandler(new DelegateSaveHandler(energyContainer));
                 //TODO - 26.1: Do we need to worry about overflow?
-                availableEnergy += energyContainer.getEnergy();
+                availableEnergy += energyContainer.energy();
             }
         }
         //If we only have one handler we can skip charging as it will all just go back into the chest piece

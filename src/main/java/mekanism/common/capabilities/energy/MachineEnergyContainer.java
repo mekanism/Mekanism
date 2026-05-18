@@ -65,18 +65,18 @@ public class MachineEnergyContainer<TILE extends TileEntityMekanism> extends Bas
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getCapacity() {
-        return Math.max(currentMaxEnergy, getEnergy());
+    public long capacity() {
+        return Math.max(currentMaxEnergy, energy());
     }
 
     public long getBaseMaxEnergy() {
-        return super.getCapacity();
+        return super.capacity();
     }
 
     public void setMaxEnergy(long maxEnergy) {
         this.currentMaxEnergy = maxEnergy;
         //Clamp the energy
-        setEnergy(getEnergy());
+        setEnergy(energy());
     }
 
     public long getEnergyPerTick() {

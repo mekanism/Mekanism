@@ -42,7 +42,7 @@ public class ModuleEnergyUnit implements ICustomModule<ModuleEnergyUnit> {
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));//TODO - 26.1: check itemaccess
         if (energyHandlerItem instanceof IMekanismStrictEnergyHandler energyHandler) {
             for (IEnergyContainer energyContainer : energyHandler.getContainers()) {
-                energyContainer.setEnergy(Math.min(energyContainer.getEnergy(), energyContainer.getCapacity()));
+                energyContainer.setEnergy(Math.min(energyContainer.energy(), energyContainer.capacity()));
             }
         }
     }

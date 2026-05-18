@@ -65,7 +65,7 @@ public class PortableTeleporterContainer extends FrequencyItemContainer<Teleport
                     if (coords != null) {
                         long energyNeeded = TileEntityTeleporter.calculateEnergyCost(inv.player, coords);
                         //TODO - 26.1: Is this rough estimate good enough? It allows us to skip needing a transactional state for sync checking
-                        if (energyNeeded != -1 && energyContainer.getEnergy() < energyNeeded) {
+                        if (energyNeeded != -1 && energyContainer.energy() < energyNeeded) {
                             return TeleporterStatus.NOT_ENOUGH_ENERGY;
                         }
                     }

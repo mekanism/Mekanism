@@ -238,7 +238,7 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
                             }
                             caches.add(cache);
                         }
-                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.getCapacity() : energyEjectRate.getAsLong(), null);
+                        EnergyUtils.emit(caches, container, energyEjectRate == null ? container.capacity() : energyEjectRate.getAsLong(), null);
                     }
                 }
             }

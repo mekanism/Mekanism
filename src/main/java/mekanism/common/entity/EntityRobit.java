@@ -433,7 +433,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
         ItemStack stack = MekanismItems.ROBIT.asStack();
         IStrictEnergyHandler energyHandlerItem = Capabilities.STRICT_ENERGY.getCapability(ItemAccess.forStack(stack));
         if (energyHandlerItem != null && energyHandlerItem.size() > 0) {
-            energyHandlerItem.setEnergy(0, energyContainer.getEnergy());
+            energyHandlerItem.setEnergy(0, energyContainer.energy());
         }
         ComponentBackedResourceHandler<ItemResource, IInventorySlot> stackInventory = Objects.requireNonNull(ContainerType.ITEM.createHandler(stack), "Robit Handler expected");
         for (int slot = 0; slot < stackInventory.size() && slot < inventorySlots.size(); slot++) {
@@ -689,7 +689,7 @@ public class EntityRobit extends PathfinderMob implements IRobit, IMekanismStric
     public void addContainerTrackers(MekanismContainer container) {
         MenuType<?> containerType = container.getType();
         if (containerType == MekanismContainerTypes.MAIN_ROBIT.get()) {
-            container.track(SyncableLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+            container.track(SyncableLong.create(energyContainer::energy, energyContainer::setEnergy));
         } else if (containerType == MekanismContainerTypes.SMELTING_ROBIT.get()) {
             container.track(SyncableInt.create(() -> progress, value -> progress = value));
             container.trackArray(trackedErrors);

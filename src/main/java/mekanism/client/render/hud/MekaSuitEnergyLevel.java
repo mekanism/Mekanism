@@ -44,8 +44,8 @@ public class MekaSuitEnergyLevel implements GuiLayer {
             if (!itemType.isEmpty() && itemType.value() instanceof ItemMekaSuitArmor) {
                 IEnergyContainer container = StorageUtils.getEnergyContainer(ItemAccess.forHandlerIndexStrict(armorSlots, slot), 0);
                 if (container != null) {
-                    capacity = MathUtils.addClamped(capacity, container.getCapacity());
-                    stored = MathUtils.addClamped(stored, container.getEnergy());
+                    capacity = MathUtils.addClamped(capacity, container.capacity());
+                    stored = MathUtils.addClamped(stored, container.energy());
                 }
             }
         }

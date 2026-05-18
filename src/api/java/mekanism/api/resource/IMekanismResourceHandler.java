@@ -9,41 +9,35 @@ import mekanism.api.annotations.NothingNullByDefault;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.resource.Resource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.Range;
 
-//TODO - 26.1: Make it so that things like TileEntityMekanism don't directly implement IMekanismInventory and friends so that methods like getContainers are not confusing
-@NothingNullByDefault//TODO - 26.1: Docs and re-evaluate the package this is in
+/// A generic handler for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
+/// ## Indices
+/// A resource handler is organized into indices, which are addressed using an int between `0` and `size() - 1`.
+///
+/// An index represents a "slot", "tank", "buffer", depending on the type of resource.
+///
+/// Out-of-bounds access using methods that accept an `index` will usually throw an exception, so only indices between 0 (included) and the size (excluded) should be
+/// used. If a storage has a dynamic size, it should be lenient to accommodate for callers holding onto a previously returned size.
+///
+/// ## Containers
+/// This interface exists as a helper to allow implementing [`resource handlers`][ResourceHandler] on a per-index basis via [`resource containers`][IResourceContainer].
+///
+/// @param <RESOURCE>  The type of resource this handler manages.
+/// @param <CONTAINER> The type of resource containers this handler is backed by.
+@NothingNullByDefault
 public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends ResourceHandler<RESOURCE>, IContentsListener {
 
-    /**
-     * Returns the list of IInventorySlots that this inventory exposes on the given side.
-     *
-     * @param side The side we are interacting with the handler from (null for internal).
-     *
-     * @return The list of all IInventorySlots that this {@link IMekanismResourceHandler} contains for the given side. If there are no slots for the side or
-     * {@link #hasInventory()} is false then it returns an empty list.
-     *
-     * @implNote When side is null (an internal request), this method <em>MUST</em> return all slots in the inventory. This will be used by the container generating code
-     * to add all the proper slots that are needed. Additionally, if {@link #hasInventory()} is false, this <em>MUST</em> return an empty list.
-     * @since 10.8.0
-     */
+    /// {@return the list of containers that this resource handler exposes}
     List<CONTAINER> getContainers();
 
-    /**
-     * Returns the {@link IResourceContainer} that has the given index from the list of slots on the given side.
-     *
-     * @param index The index of the container to retrieve.
-     * @param side  The side we are interacting with the handler from (null for internal).
-     *
-     * @return The {@link IResourceContainer} that has the given index from the list of slots on the given side.
-     *
-     * @since 10.8.0
-     */
+    /// {@return the resource container at the given index}
+    ///
+    /// @param index The index to get the resource container from.
     default CONTAINER getContainer(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
-        //TODO - 26.1: Should we make this throw instead of return null when invalid? That means it would propagate the exception times that resource handler defines
-        // Our callers that are from indexed based methods, are allowed/supposed to throw, similar to doing a Objects.checkIndex(index, size()); check
-        // So probably it makes sense?
         List<CONTAINER> containers = getContainers();
         Objects.checkIndex(index, containers.size());
         return containers.get(index);
@@ -55,7 +49,7 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         return getContainers().size();
     }
 
-    @Override//Note: We override this to specify a range on the param
+    @Override
     default RESOURCE getResource(@Range(from = 0, to = Integer.MAX_VALUE) int index) {
         return getContainer(index).getResource();
     }
@@ -66,17 +60,56 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         return getContainer(index).amountAsLong();
     }
 
+    /// Inserts up to the given amount of a resource into the handler at the given index.
+    ///
+    /// Changes to the handler are made in the context of a [transaction][Transaction].
+    ///
+    /// @param index          The index to insert the resource into.
+    /// @param resource       The resource to insert. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to insert. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource handler.
+    /// @see #insert(Resource, int, TransactionContext, AutomationType) Inserting without a specific index, which can be more efficient.
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
           TransactionContext transaction, AutomationType automationType) {
         return getContainer(index).insert(resource, amount, transaction, automationType);
     }
 
+    /// Inserts up to the given amount of a resource into the handler.
+    ///
+    /// This function is preferred to the [index-specific overload][#insert(int, Resource, int, TransactionContext, AutomationType)] since it lets the handler decide how
+    /// to distribute the resource.
+    ///
+    /// This method is expected to be more efficient than callers trying to find a suitable index for insertion themselves.
+    ///
+    /// Changes to the handler are made in the context of a [transaction][Transaction].
+    ///
+    /// @param resource       The resource to insert. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to insert. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource handler.
+    /// @see #insert(int, Resource, int, TransactionContext, AutomationType) Inserting into a specific index of the handler.
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
         //TODO - 26.1: Add comments and document how this inserts into non empty matching containers first?
         // Also re-evaluate if that is actually the behavior we want vs making call sites use something like ResourceHandlerUtil#insertStacking
+        // We used to only have this for chemical and fluid handlers, which we only had one or two tanks in general, so is that a feature that we ever made use of?
         List<CONTAINER> containers = getContainers();
         if (containers.isEmpty()) {
             return 0;
@@ -107,23 +140,59 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        //TODO - 26.1: Evaluate calls to this and extract for all resource handlers and see what can be moved over to indexless interactions
-        //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
-        return insert(index, resource, amount, transaction, AutomationType.INTERNAL);
+        return insert(index, resource, amount, transaction, defaultAutomationType());
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int insert(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        return insert(resource, amount, transaction, AutomationType.INTERNAL);
+        return insert(resource, amount, transaction, defaultAutomationType());
     }
 
+    /// Extracts up to the given amount of a resource from the handler at the given index.
+    ///
+    /// Changes to the handler are made in the context of a [transaction][Transaction].
+    ///
+    /// @param index          The index to extract the resource from.
+    /// @param resource       The resource to extract. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to extract. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource handler.
+    /// @see #extract(Resource, int, TransactionContext, AutomationType) Extracting without a specific index, which can be more efficient.
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount,
           TransactionContext transaction, AutomationType automationType) {
         return getContainer(index).extract(resource, amount, transaction, automationType);
     }
 
+    /// Tries to extract up to the given amount of a resource from the handler.
+    ///
+    /// This function is preferred to the [index-specific overload][#extract(int, Resource, int, TransactionContext, AutomationType)] since it lets the handler decide how
+    /// to find indices that contain the resource.
+    ///
+    /// This method is expected to be more efficient than callers trying to find indices that contain the resource themselves.
+    ///
+    /// Changes to the handler are made in the context of a [transaction][Transaction].
+    ///
+    /// @param resource       The resource to extract. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to extract. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
+    ///
+    /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
+    ///
+    /// @throws IllegalArgumentException If the resource is empty or the amount is negative. See also [TransferPreconditions#checkNonEmptyNonNegative] to help perform
+    /// this check.
+    /// @implSpec Implementations must properly support [transactions][Transaction]. Note that [SnapshotJournal] can serve as the base class for a transaction-aware
+    /// resource handler.
+    /// @see #extract(int, Resource, int, TransactionContext, AutomationType) Extracting from a specific index of the handler.
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction, AutomationType automationType) {
         TransferPreconditions.checkNonEmptyNonNegative(resource, amount);
@@ -140,13 +209,14 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(@Range(from = 0, to = Integer.MAX_VALUE) int index, RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        return extract(index, resource, amount, transaction, AutomationType.INTERNAL);
+        //TODO - 26.1: Evaluate calls to this for all our interactions with resource handlers and see what can be moved over to indexless interactions
+        return extract(index, resource, amount, transaction, defaultAutomationType());
     }
 
     @Override
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int extract(RESOURCE resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, TransactionContext transaction) {
-        return extract(resource, amount, transaction, AutomationType.INTERNAL);
+        return extract(resource, amount, transaction, defaultAutomationType());
     }
 
     @Override
@@ -160,17 +230,9 @@ public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER e
         return getContainer(index).isValid(resource);
     }
 
-    /**
-     * Sided inventory helper for isEmpty
-     *
-     * @return true if completely empty on the default side
-     */
-    default boolean isEmpty() {//TODO - 26.1: Update docs
-        for (CONTAINER container : getContainers()) {
-            if (!container.isEmpty()) {
-                return false;
-            }
-        }
-        return true;
+    /// Determines which automation type methods defined via [ResourceHandler] methods will use.
+    private AutomationType defaultAutomationType() {
+        //TODO - 26.1: Should this fallback for insert and extract use internal or external as the automation type?
+        return AutomationType.INTERNAL;
     }
 }

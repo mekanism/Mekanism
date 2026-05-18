@@ -38,7 +38,7 @@ public final class EnergyUtils {//TODO - 26.1: Update docs
     }
 
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, @Nullable TransactionContext transaction) {
-        return emit(targets, energyContainer, energyContainer.getCapacity(), transaction);
+        return emit(targets, energyContainer, energyContainer.capacity(), transaction);
     }
 
     public static long emit(Collection<BlockEnergyCapabilityCache> targets, IEnergyContainer energyContainer, long maxOutput, @Nullable TransactionContext transaction) {

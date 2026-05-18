@@ -17,7 +17,11 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.ApiStatus.NonExtendable;
 import org.jetbrains.annotations.Range;
 
-//TODO - 26.1: Docs
+/// A generic container for the transfer and storage of [`resources`][Resource] whether it be inserting, extracting, querying some value, etc.
+///
+/// @param <RESOURCE> The type of resource this container manages.
+///
+/// @see BasicResourceContainer A functional implementation of this interface
 @NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 
@@ -26,8 +30,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// If the resource is empty, the [stored amount][#amountAsLong()] must be 0.
     RESOURCE getResource();//TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
 
-    default LargeResourceStack<RESOURCE> asStack() {
-        //TODO - 26.1: Re-evaluate this method
+    default LargeResourceStack<RESOURCE> asStack() {//TODO - 26.1: Docs
         return new LargeResourceStack<>(getResource(), amountAsLong());
     }
 
@@ -44,7 +47,8 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @see #amountAsLong() the long-returning overload
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int amountAsInt() {//TODO - 26.1: Review uses and see what should be moved to amountAsLong
+    default int amountAsInt() {
+        //TODO - 26.1: Review uses and see what should be moved to amountAsLong
         return Ints.saturatedCast(amountAsLong());
     }
 
@@ -65,9 +69,10 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// Changes to this container are made in the context of a [transaction][Transaction].
     ///
-    /// @param resource    The resource to insert. **Must be non-empty.**
-    /// @param amount      The maximum amount of the resource to insert. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
+    /// @param resource       The resource to insert. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to insert. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
     ///
     /// @return The amount that was inserted. Between `0` (inclusive, nothing was inserted) and `amount` (inclusive, everything was inserted).
     ///
@@ -82,9 +87,10 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     ///
     /// Changes to this container are made in the context of a [transaction][Transaction].
     ///
-    /// @param resource    The resource to extract. **Must be non-empty.**
-    /// @param amount      The maximum amount of the resource to extract. **Must be non-negative.**
-    /// @param transaction The transaction that this operation is part of.
+    /// @param resource       The resource to extract. **Must be non-empty.**
+    /// @param amount         The maximum amount of the resource to extract. **Must be non-negative.**
+    /// @param transaction    The transaction that this operation is part of.
+    /// @param automationType The method that this handler is being interacted from.
     ///
     /// @return The amount that was extracted. Between `0` (inclusive, nothing was extracted) and `amount` (inclusive, everything was extracted).
     ///
@@ -113,7 +119,8 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     /// @see #capacityAsLong(Resource)
     @NonExtendable
     @Range(from = 0, to = Integer.MAX_VALUE)
-    default int capacityAsInt(RESOURCE resource) {//TODO - 26.1: Review uses and see what should be moved to capacityAsLong
+    default int capacityAsInt(RESOURCE resource) {
+        //TODO - 26.1: Review uses and see what should be moved to capacityAsLong
         return Ints.saturatedCast(capacityAsLong(resource));
     }
 
@@ -135,14 +142,14 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @Range(from = 0, to = Long.MAX_VALUE)
     long capacityAsLong(RESOURCE resource);
 
-    @NonExtendable
+    @NonExtendable//TODO - 26.1: Docs
     @Range(from = 0, to = Integer.MAX_VALUE)
     default int getNeededAsInt(RESOURCE resource) {
         return Ints.saturatedCast(getNeededAsLong(resource));
     }
 
     //TODO - 26.1: Re-evaluate callers of this method that used to use IChemicalTank#getNeeded. Do they need to know it as a long? Most probably don't
-    @Range(from = 0, to = Long.MAX_VALUE)
+    @Range(from = 0, to = Long.MAX_VALUE)//TODO - 26.1: Docs
     default long getNeededAsLong(RESOURCE resource) {
         return Math.max(0, capacityAsLong(resource) - amountAsLong());
     }
@@ -180,16 +187,15 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
 
     /// Convenience method for checking if this container is empty.
     ///
-    /// @return True if the container is empty, false otherwise.
+    /// @return `true` if the container is empty, `false` otherwise.
     default boolean isEmpty() {//TODO - 26.1: Should we also validate that the amount isn't somehow zero?
         return getResource().isEmpty();
     }
 
-    /**
-     * Convenience method for emptying this {@link IResourceContainer}.
-     */
+    /// Convenience method for emptying this [IResourceContainer].
     @NonExtendable
-    default void setEmpty() {//TODO - 26.1: Re-evaluate usages and the existence of this method
+    default void setEmpty() {
+        //TODO - 26.1: Re-evaluate usages and the existence of this method, I think we may want to remove it so people are less tempted to bypass insertions/extractions
         setContentsUnchecked(emptyStack());
     }
 
@@ -215,23 +221,30 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
         setContentsUnchecked(stack.resource(), stack.amount());
     }
 
-    //TODO - 26.1: Docs that say to override this if serializing is being overridden
-    default void copyContents(IResourceContainer<RESOURCE> container) {
-        setContentsUnchecked(container.getResource(), container.amountAsLong());
+    /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
+    /// cycle.
+    ///
+    /// @param other Container to copy data from.
+    ///
+    /// @implSpec If [#serialize] is overridden, this method should be overridden as well to transfer the relevant data.
+    default void copyContents(IResourceContainer<RESOURCE> other) {
+        setContentsUnchecked(other.getResource(), other.amountAsLong());
     }
 
-    //TODO - 26.1: Re-evaluate this method
+    //TODO - 26.1: Docs and Re-evaluate this method
     default void setContentsUnchecked(LargeResourceStack<RESOURCE> stack) {
         setContentsUnchecked(stack.resource(), stack.amount());
     }
 
+    //TODO - 26.1: Docs
     void setContents(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);//TODO - 26.1: Do we want a transactional form of this? Probably would be semi useful
 
-    //TODO - 26.1: Re-evaluate this method and its callers
+    //TODO - 26.1: Docs and Re-evaluate this method and its callers
     void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
+    //TODO - 26.1: Docs
     Codec<LargeResourceStack<RESOURCE>> resourceStackCodec();
 
-    //TODO - 26.1: Re-evaluate this method vs having inheritors implement deserialize and setEmpty
+    //TODO - 26.1: Docs and Re-evaluate this method vs having inheritors implement deserialize and setEmpty
     LargeResourceStack<RESOURCE> emptyStack();
 }

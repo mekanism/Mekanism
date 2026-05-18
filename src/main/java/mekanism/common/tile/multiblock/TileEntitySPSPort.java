@@ -48,7 +48,7 @@ public class TileEntitySPSPort extends TileEntitySPSCasing {
         if (multiblock.isFormed()) {
             if (!energyContainer.isEmpty() && multiblock.canSupplyCoilEnergy(this)) {
                 try (Transaction transaction = Transaction.openRoot()) {
-                    multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.getEnergy(), transaction, AutomationType.INTERNAL));
+                    multiblock.supplyCoilEnergy(this, energyContainer.extract(energyContainer.energy(), transaction, AutomationType.INTERNAL));
                     transaction.commit();
                 }
             }

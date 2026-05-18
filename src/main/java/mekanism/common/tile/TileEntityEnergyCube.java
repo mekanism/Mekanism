@@ -112,7 +112,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
 
     @Override
     public int getRedstoneLevel() {
-        return MekanismUtils.redstoneLevelFromContents(energyContainer.getEnergy(), energyContainer.getCapacity());
+        return MekanismUtils.redstoneLevelFromContents(energyContainer.energy(), energyContainer.capacity());
     }
 
     @Override
@@ -125,7 +125,7 @@ public class TileEntityEnergyCube extends TileEntityConfigurableMachine {
         if (upgradeData instanceof EnergyCubeUpgradeData data) {
             redstone = data.redstone;
             setControlType(data.controlType);
-            getEnergyContainer().setEnergy(data.energyContainer.getEnergy());
+            getEnergyContainer().setEnergy(data.energyContainer.energy());
             chargeSlot.copyContents(data.chargeSlot);
             dischargeSlot.copyContents(data.dischargeSlot);
             try (var reporter = new ProblemReporter.ScopedCollector(problemPath(), Mekanism.logger)) {

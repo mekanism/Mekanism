@@ -68,7 +68,7 @@ public class GuiIndustrialTurbine extends GuiMekanismTile<TileEntityTurbineCasin
             public double getLevel() {
                 TurbineMultiblockData multiblock = tile.getMultiblock();
                 if (multiblock.isFormed()) {
-                    return MathUtils.divideToLevel(multiblock.energyContainer.getEnergy(), multiblock.energyContainer.getCapacity());
+                    return MathUtils.divideToLevel(multiblock.energyContainer.energy(), multiblock.energyContainer.capacity());
                 }
                 return 1;
             }

@@ -60,7 +60,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiInnerScreen(this, 7, 19, 77, 69, () -> {
             List<Component> list = new ArrayList<>();
             ILangEntry runningType;
-            if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().getCapacity()) {
+            if (tile.getEnergyContainer().getEnergyPerTick() > tile.getEnergyContainer().capacity()) {
                 runningType = MekanismLang.MINER_LOW_POWER;
             } else if (tile.isRunning()) {
                 runningType = MekanismLang.MINER_RUNNING;
@@ -92,7 +92,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiVerticalPowerBar(this, tile.getEnergyContainer(), 157, 39, 47))
               .warning(WarningType.NOT_ENOUGH_ENERGY, () -> {
                   MinerEnergyContainer energyContainer = tile.getEnergyContainer();
-                  return energyContainer.getEnergyPerTick() > energyContainer.getEnergy();
+                  return energyContainer.getEnergyPerTick() > energyContainer.energy();
               });
         addRenderableWidget(new GuiVisualsTab(this, tile));
         addRenderableWidget(new GuiSlot(SlotType.DIGITAL, this, missingStackX, 21).setRenderAboveSlots().validity(() -> tile.missingStack)
@@ -101,7 +101,7 @@ public class GuiDigitalMiner extends GuiMekanismTile<TileEntityDigitalMiner, Mek
         addRenderableWidget(new GuiEnergyTab(this, () -> {
             MinerEnergyContainer energyContainer = tile.getEnergyContainer();
             return List.of(
-                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.getCapacity())),
+                  MekanismLang.MINER_ENERGY_CAPACITY.translate(EnergyDisplay.of(energyContainer.capacity())),
                   MekanismLang.NEEDED_PER_TICK.translate(EnergyDisplay.of(energyContainer.getEnergyPerTick())),
                   MekanismLang.MINER_BUFFER_FREE.translate(EnergyDisplay.of(energyContainer.getNeeded()))
             );

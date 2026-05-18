@@ -41,7 +41,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(FE_CAPACITY, inserted, "Inserted FE");
             Assertions.assertEquals(FE_CAPACITY, feHandler.getAmountAsInt(), "stored energy (fe)");
-            Assertions.assertEquals(JOULES_CAPACITY, joulesContainer.getEnergy(), "stored energy (joules)");
+            Assertions.assertEquals(JOULES_CAPACITY, joulesContainer.energy(), "stored energy (joules)");
         }
     }
 
@@ -55,7 +55,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             int inserted = feHandler.insert(1, transaction);
             Assertions.assertEquals(0, inserted, "inserted energy");
             Assertions.assertEquals(0, feHandler.getAmountAsInt(), "stored energy");
-            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "raw stored energy");
+            Assertions.assertEquals(0L, joulesContainer.energy(), "raw stored energy");
         }
     }
 
@@ -75,7 +75,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             int extractedFE = feHandler.extract(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(FE_CAPACITY, extractedFE, "extracted energy (fe)");
             Assertions.assertEquals(0, feHandler.getAmountAsInt(), "stored energy (fe)");
-            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "stored energy (joules)");
+            Assertions.assertEquals(0L, joulesContainer.energy(), "stored energy (joules)");
         }
     }
 
@@ -96,7 +96,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(0, inserted, "inserted energy (fe)");
-            Assertions.assertEquals(JOULES_CAPACITY - 2, joulesContainer.getEnergy(), "joules contents");
+            Assertions.assertEquals(JOULES_CAPACITY - 2, joulesContainer.energy(), "joules contents");
         }
     }
 
@@ -114,7 +114,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(0, inserted, "inserted energy (fe)");
-            Assertions.assertEquals(997L, joulesContainer.getEnergy(), "stored joules after insert");
+            Assertions.assertEquals(997L, joulesContainer.energy(), "stored joules after insert");
         }
     }
 
@@ -129,7 +129,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int extracted = feHandler.extract(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(0, extracted, "extracted energy (fe)");
-            Assertions.assertEquals(2L, joulesContainer.getEnergy(), "stored energy (joules)");
+            Assertions.assertEquals(2L, joulesContainer.energy(), "stored energy (joules)");
         }
     }
 
@@ -147,7 +147,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(2, inserted, "inserted energy (fe)");
-            Assertions.assertEquals(997L, joulesContainer.getEnergy(), "stored joules after insert");
+            Assertions.assertEquals(997L, joulesContainer.energy(), "stored joules after insert");
         }
     }
 
@@ -163,7 +163,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
 
         try (Transaction transaction = Transaction.openRoot()) {
             int inserted = feHandler.insert(3, transaction);
-            Assertions.assertEquals(5L, joulesContainer.getEnergy(), "stored joules after insert");
+            Assertions.assertEquals(5L, joulesContainer.energy(), "stored joules after insert");
             Assertions.assertEquals(2, inserted, "inserted energy (fe)");
         }
     }
@@ -179,7 +179,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int extracted = feHandler.extract(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(2, extracted, "extracted energy (fe)");
-            Assertions.assertEquals(3L, joulesContainer.getEnergy(), "stored energy (joules)");
+            Assertions.assertEquals(3L, joulesContainer.energy(), "stored energy (joules)");
         }
     }
 
@@ -194,7 +194,7 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
         try (Transaction transaction = Transaction.openRoot()) {
             int inserted = feHandler.insert(JOULES_CAPACITY, transaction);
             Assertions.assertEquals(0, inserted, "inserted energy (fe)");
-            Assertions.assertEquals(0L, joulesContainer.getEnergy(), "stored energy (joules)");
+            Assertions.assertEquals(0L, joulesContainer.energy(), "stored energy (joules)");
         }
     }
 
@@ -368,12 +368,12 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             int inserted = handler.insert(100, transaction);
             Assertions.assertEquals(100, inserted, "inserted energy");
             Assertions.assertEquals(100, handler.getAmountAsInt(), "stored energy");
-            Assertions.assertEquals(100L, container.getEnergy(), "raw stored energy");
+            Assertions.assertEquals(100L, container.energy(), "raw stored energy");
 
             int extracted = handler.extract(100, transaction);
             Assertions.assertEquals(100, extracted, "extracted energy");
             Assertions.assertEquals(0, handler.getAmountAsInt(), "stored energy");
-            Assertions.assertEquals(0L, container.getEnergy(), "raw stored energy");
+            Assertions.assertEquals(0L, container.energy(), "raw stored energy");
         }
     }
 
@@ -388,12 +388,12 @@ class EnergyConversionTest {//TODO - 26.1: Add tests related to simulating vs ac
             int inserted = handler.insert(100, transaction);
             Assertions.assertEquals(100, inserted, "inserted energy");
             Assertions.assertEquals(Integer.MAX_VALUE, handler.getAmountAsInt(), "stored energy");
-            Assertions.assertEquals(3_000_000_100L, container.getEnergy(), "raw stored energy");
+            Assertions.assertEquals(3_000_000_100L, container.energy(), "raw stored energy");
 
             int extracted = handler.extract(100, transaction);
             Assertions.assertEquals(100, extracted, "extracted energy");
             Assertions.assertEquals(Integer.MAX_VALUE, handler.getAmountAsInt(), "stored energy");
-            Assertions.assertEquals(3_000_000_000L, container.getEnergy(), "raw stored energy");
+            Assertions.assertEquals(3_000_000_000L, container.energy(), "raw stored energy");
         }
     }
 

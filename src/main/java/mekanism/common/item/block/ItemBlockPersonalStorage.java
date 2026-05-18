@@ -26,6 +26,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.neoforged.neoforge.transfer.ResourceHandlerUtil;
 import org.jetbrains.annotations.NotNull;
 
 public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> extends ItemBlockTooltip<BLOCK> implements IDroppableContents, IGuiItem {
@@ -80,7 +81,7 @@ public class ItemBlockPersonalStorage<BLOCK extends BlockPersonalStorage<?, ?>> 
         if (!item.level().isClientSide()) {
             ItemStack stack = item.getItem();
             AbstractPersonalStorageItemInventory inventory = PersonalStorageManager.getInventoryIfPresent(stack);
-            if (inventory != null && inventory.isEmpty()) {
+            if (inventory != null && ResourceHandlerUtil.isEmpty(inventory)) {
                 //If the inventory was actually empty we can prune the data from the storage manager
                 // (if it isn't empty we want to persist it so that server admins can recover their items)
                 PersonalStorageManager.deleteInventory(stack);

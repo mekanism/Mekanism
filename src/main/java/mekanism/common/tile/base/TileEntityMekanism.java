@@ -945,12 +945,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             for (IEnergyContainer energyContainer : getEnergyContainers()) {
                 if (energyContainer instanceof MachineEnergyContainer<?> machineEnergy) {
                     if (supportsUpgrades() || machineEnergy.adjustableRates()) {
-                        container.track(SyncableLong.create(machineEnergy::getCapacity, machineEnergy::setMaxEnergy));
+                        container.track(SyncableLong.create(machineEnergy::capacity, machineEnergy::setMaxEnergy));
                         container.track(SyncableLong.create(machineEnergy::getEnergyPerTick, machineEnergy::setEnergyPerTick));
                     }
                 }
                 //Ensure energy is synced after the max energy adjustment is synced so that the client doesn't try to clamp what the energy is to the max value
-                container.track(SyncableLong.create(energyContainer::getEnergy, energyContainer::setEnergy));
+                container.track(SyncableLong.create(energyContainer::energy, energyContainer::setEnergy));
             }
         }
     }
@@ -1385,7 +1385,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         boolean hasNonEmpty = false;
         List<Long> stored = new ArrayList<>(containers.size());
         for (IEnergyContainer container : containers) {
-            stored.add(container.getEnergy());
+            stored.add(container.energy());
             if (!container.isEmpty()) {
                 hasNonEmpty = true;
             }
@@ -1629,12 +1629,12 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
     // getEnergy, getEnergyFE for us with us only having to define getEnergy
     @ComputerMethod(nameOverride = "getEnergy", restriction = MethodRestriction.ENERGY)
     long getTotalEnergy() {
-        return getTotalEnergy(IEnergyContainer::getEnergy);
+        return getTotalEnergy(IEnergyContainer::energy);
     }
 
     @ComputerMethod(nameOverride = "getMaxEnergy", restriction = MethodRestriction.ENERGY)
     long getTotalMaxEnergy() {
-        return getTotalEnergy(IEnergyContainer::getCapacity);
+        return getTotalEnergy(IEnergyContainer::capacity);
     }
 
     @ComputerMethod(nameOverride = "getEnergyNeeded", restriction = MethodRestriction.ENERGY)
@@ -1657,8 +1657,8 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         long max = 0;
         List<IEnergyContainer> energyContainers = getEnergyContainers();
         for (IEnergyContainer energyContainer : energyContainers) {
-            stored = MathUtils.addClamped(stored, energyContainer.getEnergy());
-            max = MathUtils.addClamped(max, energyContainer.getCapacity());
+            stored = MathUtils.addClamped(stored, energyContainer.energy());
+            max = MathUtils.addClamped(max, energyContainer.capacity());
         }
         return MathUtils.divideToLevel(stored, max);
     }

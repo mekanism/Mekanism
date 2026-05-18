@@ -47,8 +47,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         //As we already have the two different variables just pass them instead of accessing world to get tile again
         MachineEnergyContainer<TileEntityInductionCell> energyContainer = cell.getEnergyContainer();
         cells.put(pos, energyContainer);
-        storageCap = MathUtils.addClamped(storageCap, energyContainer.getCapacity());
-        cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.getEnergy());
+        storageCap = MathUtils.addClamped(storageCap, energyContainer.capacity());
+        cachedTotal = MathUtils.addClamped(cachedTotal, energyContainer.energy());
     }
 
     public void addProvider(BlockPos pos, TileEntityInductionProvider provider) {
@@ -70,8 +70,8 @@ public class MatrixEnergyContainer implements IEnergyContainer {
                 //TODO: Handle this better, as I believe we *technically* could have this cause the cached total to become negative
                 // It may work better if we just flush the buffer writing immediately, and then recalculate the cached totals/caps
                 IEnergyContainer cellContainer = cells.get(pos);
-                storageCap += cellContainer.getCapacity();
-                cachedTotal -= cellContainer.getEnergy();
+                storageCap += cellContainer.capacity();
+                cachedTotal -= cellContainer.energy();
             }
         }
     }
@@ -156,7 +156,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
      * @return The energy post queue when this container next actually updates/saves to disk
      */
     @Override
-    public long getEnergy() {
+    public long energy() {
         return cachedTotal + getQueuedChange();
     }
 
@@ -195,7 +195,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
         // as we want to be as accurate as possible with the values we return
         // It is possible that the energy we have stored is a lot less than the amount we
         // can output at once such as if the matrix is almost empty.
-        amount = Math.min(Math.min(amount, getRemainingOutput()), getEnergy());
+        amount = Math.min(Math.min(amount, getRemainingOutput()), energy());
         if (amount > 0L) {
             //Increase how much we are outputting by the amount we accepted
             queuedOutput.updateSnapshots(transaction);
@@ -207,7 +207,7 @@ public class MatrixEnergyContainer implements IEnergyContainer {
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getCapacity() {
+    public long capacity() {
         return storageCap;
     }
 

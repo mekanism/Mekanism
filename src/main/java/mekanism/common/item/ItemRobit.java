@@ -102,7 +102,7 @@ public class ItemRobit extends ItemEnergized implements ICapabilityAware {
                     robit.setHome(chargepad.getTileGlobalPos());
                     IEnergyContainer energyContainer = StorageUtils.getEnergyContainer(stack, 0);
                     if (energyContainer != null) {
-                        robit.getEnergyContainer().setEnergy(energyContainer.getEnergy());
+                        robit.getEnergyContainer().setEnergy(energyContainer.energy());
                     }
                     UUID ownerUUID = IItemSecurityUtils.INSTANCE.getOwnerUUID(stack);
                     if (ownerUUID == null) {

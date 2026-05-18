@@ -125,7 +125,7 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     public void parseUpgradeData(@NotNull UniversalCableUpgradeData data) {
         redstoneReactive = data.redstoneReactive;
         setConnectionTypesRaw(data.connectionTypes);
-        buffer.setEnergy(data.buffer.getEnergy());
+        buffer.setEnergy(data.buffer.energy());
     }
 
     @Override
@@ -161,15 +161,15 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
     @NotNull
     @Override
     public Long releaseShare() {
-        long energy = buffer.getEnergy();
-        buffer.setEmpty();
+        long energy = buffer.energy();
+        buffer.setEnergy(0);
         return energy;
     }
 
     @NotNull
     @Override
     public Long getShare() {
-        return buffer.getEnergy();
+        return buffer.energy();
     }
 
     @Override
@@ -194,8 +194,8 @@ public class UniversalCable extends BufferedTransmitter<IStrictEnergyHandler, En
             EnergyNetwork transmitterNetwork = getTransmitterNetwork();
             if (!transmitterNetwork.energyContainer.isEmpty() && lastWrite != 0L) {
                 //Clamp the value so that we can't error if the network's energy is less than the amount we are saving
-                lastWrite = Math.min(transmitterNetwork.energyContainer.getEnergy(), lastWrite);
-                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.getEnergy() - lastWrite);
+                lastWrite = Math.min(transmitterNetwork.energyContainer.energy(), lastWrite);
+                transmitterNetwork.energyContainer.setEnergy(transmitterNetwork.energyContainer.energy() - lastWrite);
                 buffer.setEnergy(lastWrite);
             }
         }

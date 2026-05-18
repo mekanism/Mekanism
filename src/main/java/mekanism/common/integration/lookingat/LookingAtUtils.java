@@ -126,7 +126,7 @@ public class LookingAtUtils {
         } else if (structure != null && structure.isFormed()) {
             //Special handling to allow viewing the energy of multiblock's when looking at things other than the ports
             for (IEnergyContainer container : structure.getEnergyContainers()) {
-                info.addEnergyElement(new EnergyElement(container.getEnergy(), container.getCapacity()));
+                info.addEnergyElement(new EnergyElement(container.energy(), container.capacity()));
             }
         }
         if (displayTanks) {

@@ -41,7 +41,7 @@ public class EnergyRecipeData implements RecipeUpgradeData<EnergyRecipeData> {
         try (Transaction transaction = Transaction.openRoot()) {
             for (IEnergyContainer energyContainer : this.energyContainers) {
                 if (!energyContainer.isEmpty()) {
-                    long toInsert = energyContainer.getEnergy();
+                    long toInsert = energyContainer.energy();
                     //Insert into the output using manual as the automation type
                     if (outputHandler.insert(toInsert, transaction, AutomationType.MANUAL) < toInsert) {
                         //If we have a remainder, stop trying to insert as our upgraded item's buffer is just full

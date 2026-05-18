@@ -63,12 +63,12 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     }
 
     @Override
-    public long getEnergy() {
+    public long energy() {
         return stored;
     }
 
     protected long clampEnergy(long energy) {
-        return Math.min(energy, getCapacity());
+        return Math.min(energy, capacity());
     }
 
     @Override
@@ -121,9 +121,9 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
             //"Fail quick" if nothing is being inserted, or we don't allow insertion for the given automation type
             return 0;
         }
-        long currentStored = getEnergy();
+        long currentStored = energy();
         //Validate that we aren't at max stack size before we try to see if we can insert the resource, as on average this will be a cheaper check
-        long needed = getCapacity() - currentStored;
+        long needed = capacity() - currentStored;
         //Limit how much we can add at once to the insertion rate the container sets
         needed = Math.min(needed, getInsertionRate(automationType));
         if (needed <= 0) {
@@ -145,7 +145,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
             //"Fail quick" if we are empty, nothing is being extracted, or if we can never extract from this slot
             return 0;
         }
-        long currentStored = getEnergy();
+        long currentStored = energy();
         //If we are trying to extract more than we have, just change it so that we are extracting it all
         long toRemove = Math.min(amount, currentStored);
         //Limit how much we can remove at once to the extraction rate the container sets
@@ -160,7 +160,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
 
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
-    public long getCapacity() {
+    public long capacity() {
         return maxEnergy;
     }
 
@@ -176,7 +176,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
 
     @Override
     protected Long createSnapshot() {
-        return getEnergy();
+        return energy();
     }
 
     @Override
@@ -187,7 +187,7 @@ public class BasicEnergyContainer extends SnapshotJournal<Long> implements IEner
     @Override
     protected void onRootCommit(Long originalState) {
         super.onRootCommit(originalState);
-        if (getEnergy() != originalState) {
+        if (energy() != originalState) {
             //Fire content change listeners during root commit if the final state is different from the original one
             onContentsChanged();
         }

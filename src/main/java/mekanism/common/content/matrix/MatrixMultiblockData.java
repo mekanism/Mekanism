@@ -90,7 +90,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getEnergy() {
-        return isRemote() ? clientEnergy : energyContainer.getEnergy();
+        return isRemote() ? clientEnergy : energyContainer.energy();
     }
 
     @Override
@@ -130,7 +130,7 @@ public class MatrixMultiblockData extends MultiblockData {
     }
 
     public long getStorageCap() {
-        return isRemote() ? clientMaxEnergy : energyContainer.getCapacity();
+        return isRemote() ? clientMaxEnergy : energyContainer.capacity();
     }
 
     @ComputerMethod

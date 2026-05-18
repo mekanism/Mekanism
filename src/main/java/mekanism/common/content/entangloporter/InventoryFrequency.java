@@ -72,7 +72,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           ExtraCodecs.NON_EMPTY_STRING.fieldOf(SerializationConstants.NAME).forGetter(Frequency::getName),
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
-          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.getEnergy()),
+          ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.energy()),
           SerializerHelper.LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.asStack()),
           SerializerHelper.LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.asStack()),
           SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.asStack()),
@@ -90,7 +90,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     }));
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
-          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.getEnergy(),
+          ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.energy(),
           SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedFluid.asStack(),
           SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedChemical.asStack(),
           SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedItem.asStack(),
@@ -260,7 +260,7 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     }
 
     private void addEnergyTransferHandler(Map<TransmissionType, Consumer<?>> typesToEject, List<TargetExecution> transferHandlers, int expected, TransactionContext simulation) {
-        long toSend = storedEnergy.extract(storedEnergy.getCapacity(), simulation, AutomationType.INTERNAL);
+        long toSend = storedEnergy.extract(storedEnergy.capacity(), simulation, AutomationType.INTERNAL);
         if (toSend > 0L) {
             SendingEnergyAcceptorTarget target = new SendingEnergyAcceptorTarget(expected, storedEnergy, toSend);
             typesToEject.put(TransmissionType.ENERGY, target);
