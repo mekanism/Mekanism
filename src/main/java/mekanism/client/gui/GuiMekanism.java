@@ -40,6 +40,7 @@ import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Util;
@@ -53,6 +54,7 @@ import org.jetbrains.annotations.Nullable;
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
 
     public static final Identifier BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
+    public static final Identifier BASE_BACKGROUND_SLICE = Mekanism.rl("base");
     public static final Identifier SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
     public static final Identifier BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
     //TODO: Look into defaulting this to true
@@ -726,15 +728,13 @@ public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> exten
     }
 
     @Override
-    protected void extractMenuBackground(@NotNull GuiGraphicsExtractor guiGraphics) {
-        //Ensure the GL color is white as mods adding an overlay (such as JEI for bookmarks), might have left
-        // it in an unexpected state.
-        MekanismRenderer.resetColor(guiGraphics);
+    public void extractBackground(GuiGraphicsExtractor graphics, int mouseX, int mouseY, float a) {
+        super.extractBackground(graphics, mouseX, mouseY, a);
         if (getImageWidth() < 8 || getImageHeight() < 8) {
             Mekanism.logger.warn("Gui: {}, was too small to draw the background of. Unable to draw a background for a gui smaller than 8 by 8.", getClass().getSimpleName());
             return;
         }
-        GuiUtils.renderBackgroundTexture(guiGraphics, BASE_BACKGROUND, 4, 4, leftPos, topPos, imageWidth, imageHeight, 256, 256);
+        graphics.blitSprite(RenderPipelines.GUI_TEXTURED, BASE_BACKGROUND_SLICE, leftPos, topPos, imageWidth, imageHeight);
     }
 
     @Override
