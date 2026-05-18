@@ -19,6 +19,7 @@ import mekanism.common.lib.Color;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.util.Util;
@@ -77,7 +78,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
     }
 
     private GuiWindow(IGuiWrapper gui, WindowPosition calculatedPosition, int width, int height, SelectedWindowData windowData) {
-        super(GuiMekanism.BASE_BACKGROUND, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
+        super(GuiMekanism.BASE_BACKGROUND_SLICE, gui, calculatedPosition.x(), calculatedPosition.y(), width, height);
         this.windowData = windowData;
         this.pinned = calculatedPosition.pinned();
         isOverlay = true;
@@ -163,7 +164,7 @@ public class GuiWindow extends GuiTexturedElement implements IGUIWindow {
             GuiUtils.renderBackgroundTexture(guiGraphics, GuiMekanism.SHADOW, 4, 4, relativeX - 3, relativeY - 3, width + 6, height + 6, 256, 256);
             MekanismRenderer.resetColor(guiGraphics);
         }
-        renderBackgroundTexture(guiGraphics, getResource(), 4, 4);
+        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, getResource(), getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
     }
 
     @Override

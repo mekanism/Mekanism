@@ -52,8 +52,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GuiMekanism<CONTAINER extends AbstractContainerMenu> extends VirtualSlotContainerScreen<CONTAINER> implements IGuiWrapper {
-
-    public static final Identifier BASE_BACKGROUND = MekanismUtils.getResource(ResourceType.GUI, "base.png");
+    
     public static final Identifier BASE_BACKGROUND_SLICE = Mekanism.rl("base");
     public static final Identifier SHADOW = MekanismUtils.getResource(ResourceType.GUI, "shadow.png");
     public static final Identifier BLUR = MekanismUtils.getResource(ResourceType.GUI, "blur.png");
