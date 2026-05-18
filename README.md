@@ -21,7 +21,7 @@ Mekanism has a [discord server](https://discord.gg/nmSjMGc) where you can chat w
 
 # Translating #
 
-If you would like to help translate Mekanism, you can do so through [Crowdin](https://crowdin.com/project/mekanism).
+If you would like to help translate Mekanism, you can do so through [Crowdin](https://mekanism.crowdin.com/u/projects/1).
 
 # License #
 
