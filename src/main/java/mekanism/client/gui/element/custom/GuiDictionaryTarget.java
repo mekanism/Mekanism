@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.text.TextComponentUtil;
 import mekanism.client.gui.GuiUtils.TilingDirection;
@@ -45,7 +44,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -179,25 +178,9 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
                     }
                     ItemAccess itemAccess = ItemAccess.forStack(itemStack);
                     //Get tags of any contained fluids
-                    ResourceHandler<FluidResource> fluidHandler = Capabilities.FLUID.getCapability(itemAccess);
-                    if (fluidHandler != null) {
-                        tags.put(DictionaryTagType.FLUID, TagCache.getTagsAsStrings(IntStream.range(0, fluidHandler.size())
-                              .mapToObj(fluidHandler::getResource)
-                              .filter(fluidInTank -> !fluidInTank.isEmpty())
-                              .flatMap(fs -> fs.typeHolder().tags())
-                              .distinct()
-                        ));
-                    }
+                    collectTags(DictionaryTagType.FLUID, Capabilities.FLUID.getCapability(itemAccess));
                     //Get tags of any contained chemicals
-                    ResourceHandler<ChemicalResource> chemicalHandler = Capabilities.CHEMICAL.getCapability(itemAccess);
-                    if (chemicalHandler != null) {
-                        tags.put(DictionaryTagType.CHEMICAL, TagCache.getTagsAsStrings(IntStream.range(0, chemicalHandler.size())
-                              .mapToObj(chemicalHandler::getResource)
-                              .filter(chemicalInTank -> !chemicalInTank.isEmpty())
-                              .flatMap(fs -> fs.typeHolder().tags())
-                              .distinct()
-                        ));
-                    }
+                    collectTags(DictionaryTagType.CHEMICAL, Capabilities.CHEMICAL.getCapability(itemAccess));
                     //TODO: Support other types of things?
                 }
             }
@@ -225,6 +208,17 @@ public class GuiDictionaryTarget extends GuiElement implements IRecipeViewerGhos
         //Update the list being viewed
         tagSetter.accept(tags.keySet());
         playClickSound(BUTTON_CLICK_SOUND);
+    }
+
+    private <RESOURCE extends RegisteredResource<?>> void collectTags(DictionaryTagType tagType, @Nullable ResourceHandler<RESOURCE> handler) {
+        if (handler != null) {
+            tags.put(tagType, TagCache.getTagsAsStrings(IntStream.range(0, handler.size())
+                  .mapToObj(handler::getResource)
+                  .filter(typeInTank -> !typeInTank.isEmpty())
+                  .flatMap(fs -> fs.typeHolder().tags())
+                  .distinct()
+            ));
+        }
     }
 
     @Override
