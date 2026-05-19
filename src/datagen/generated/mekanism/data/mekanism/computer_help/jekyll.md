@@ -1357,7 +1357,7 @@ methods:
     returns:
       java_type: boolean
       type: boolean
-  - description: Get the contents of the internal inventory slot. 0 based..
+  - description: Get the contents of the internal inventory slot. 0 based.
     methodName: getItemInSlot
     params:
     - java_type: int
@@ -1826,7 +1826,7 @@ methods:
     returns:
       java_type: long
       type: Number (long)
-  - description: Get the contents of the input output slot.
+  - description: Get the contents of the input slot.
     methodName: getInput
     params:
     - java_type: int

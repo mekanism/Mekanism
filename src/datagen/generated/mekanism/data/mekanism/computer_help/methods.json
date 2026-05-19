@@ -1438,7 +1438,7 @@
       }
     },
     {
-      "description": "Get the contents of the internal inventory slot. 0 based..",
+      "description": "Get the contents of the internal inventory slot. 0 based.",
       "methodName": "getItemInSlot",
       "params": [
         {
@@ -2200,7 +2200,7 @@
       }
     },
     {
-      "description": "Get the contents of the input output slot.",
+      "description": "Get the contents of the input slot.",
       "methodName": "getInput",
       "params": [
         {

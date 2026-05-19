@@ -517,7 +517,7 @@ public abstract class TileEntityFactory<RECIPE extends MekanismRecipe<?>> extend
         return getProgress(process);
     }
 
-    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input output slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getInput", docPlaceholder = "input slot")
     IInventorySlot getInputSlot(int process) throws ComputerException {
         validateValidProcess(process);
         return processInfoSlots[process].inputSlot();

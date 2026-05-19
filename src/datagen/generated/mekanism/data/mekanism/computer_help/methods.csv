@@ -164,7 +164,7 @@ Digital Miner,getFilters,,List (Table (MinerFilter)),,false,Get the current list
 Digital Miner,getInverseMode,,boolean,,false,Whether Inverse Mode is enabled or not
 Digital Miner,getInverseModeReplaceTarget,,String (Item),,false,Get the configured Replacement target item
 Digital Miner,getInverseModeRequiresReplacement,,boolean,,false,Whether Inverse Mode Require Replacement is turned on
-Digital Miner,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the internal inventory slot. 0 based..
+Digital Miner,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the internal inventory slot. 0 based.
 Digital Miner,getMaxRadius,,Number (int),,false,"Get the maximum allowable Radius value, determined from the mod's config"
 Digital Miner,getMaxY,,Number (int),,false,Gets the configured maximum Y level for mining
 Digital Miner,getMinY,,Number (int),,false,Gets the configured minimum Y level for mining
@@ -248,7 +248,7 @@ Energy Cube,getChargeItem,,Table (ItemStack),,false,Get the contents of the char
 Energy Cube,getDischargeItem,,Table (ItemStack),,false,Get the contents of the discharge slot.
 Factory Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Factory Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
-Factory Machine,getInput,process: Number (int),Table (ItemStack),,false,Get the contents of the input output slot.
+Factory Machine,getInput,process: Number (int),Table (ItemStack),,false,Get the contents of the input slot.
 Factory Machine,getOutput,process: Number (int),Table (ItemStack),,false,Get the contents of the output slot.
 Factory Machine,getRecipeProgress,process: Number (int),Number (int),,false,
 Factory Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently for the recipe to complete
