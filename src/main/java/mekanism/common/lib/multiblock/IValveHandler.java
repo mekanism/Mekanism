@@ -2,8 +2,13 @@ package mekanism.common.lib.multiblock;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import java.util.Collection;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 import mekanism.api.SerializationConstants;
+import mekanism.api.fluid.IFluidTank;
+import mekanism.common.capabilities.fluid.ValveFluidTankWrapper;
 import mekanism.common.util.MekanismUtils;
 import net.minecraft.SharedConstants;
 import net.minecraft.core.BlockPos;
@@ -11,15 +16,19 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.level.storage.ValueOutput.TypedOutputList;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
+import org.jspecify.annotations.Nullable;
 
 public interface IValveHandler {
 
     default void writeValves(@NotNull ValueOutput output) {
-        TypedOutputList<ValveData> valveList = output.list(SerializationConstants.VALVE, ValveData.CODEC);
-        for (ValveData valveData : getValveData()) {
+        TypedOutputList<PositionedValve> valveList = output.list(SerializationConstants.VALVE, PositionedValve.CODEC);
+        for (Map.Entry<BlockPos, ValveData> entry : getValveData().entrySet()) {
+            ValveData valveData = entry.getValue();
             if (valveData.activeTicks > 0) {
-                valveList.add(valveData);
+                valveList.add(new PositionedValve(entry.getKey(), valveData));
             }
         }
         if (valveList.isEmpty()) {
@@ -28,63 +37,95 @@ public interface IValveHandler {
     }
 
     default void readValves(@NotNull ValueInput input) {
-        Collection<ValveData> valveData = getValveData();
+        Map<BlockPos, ValveData> valveData = getValveData();
         valveData.clear();
-        for (ValveData data : input.listOrEmpty(SerializationConstants.VALVE, ValveData.CODEC)) {
-            valveData.add(data);
+        for (PositionedValve valve : input.listOrEmpty(SerializationConstants.VALVE, PositionedValve.CODEC)) {
+            valveData.put(valve.location(), valve.valve());
         }
     }
 
-    //TODO - 26.1: Hook valve transferring back up
-    default void triggerValveTransfer(IMultiblock<?> multiblock) {
+    default void triggerValveTransfer(IMultiblock<?> multiblock, TransactionContext transaction) {
         if (multiblock.getMultiblock().isFormed()) {
-            BlockPos pos = multiblock.getBlockPos();
-            for (ValveData data : getValveData()) {
-                if (pos.equals(data.location)) {
-                    data.onTransfer();
-                    break;
-                }
+            ValveData data = getValveData().get(multiblock.getBlockPos());
+            if (data != null) {
+                data.onTransfer(transaction);
             }
         }
     }
 
-    Collection<ValveData> getValveData();
+    Map<BlockPos, ValveData> getValveData();
 
-    class ValveData {
+    record PositionedValve(BlockPos location, ValveData valve) {
 
-        //TODO - 26.1: Re-evaluate how we get the side, do we want to just store the side itself?
+        public static final Codec<PositionedValve> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(PositionedValve::location),
+              ValveData.CODEC.fieldOf(SerializationConstants.VALVE).forGetter(PositionedValve::valve)
+        ).apply(instance, PositionedValve::new));
+    }
+
+    class ValveData extends SnapshotJournal<Integer> {
+
         public static final Codec<ValveData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-              BlockPos.CODEC.fieldOf(SerializationConstants.POSITION).forGetter(data -> data.location),
-              Direction.LEGACY_ID_CODEC.fieldOf(SerializationConstants.AMOUNT).forGetter(data -> data.side)
+              Direction.CODEC.fieldOf(SerializationConstants.SIDE).forGetter(data -> data.side)
         ).apply(instance, ValveData::new));
 
-
-        public final BlockPos location;
         public final Direction side;
 
-        public boolean prevActive;
-        public int activeTicks;
+        @Nullable
+        private List<IFluidTank> valveTanks;
+        private boolean prevActive;
+        private int activeTicks;
 
-        public ValveData(BlockPos location, Direction side) {
-            this.location = location;
+        public ValveData(Direction side) {
             this.side = side;
         }
 
-        public void onTransfer() {
+        //TODO - 26.1: Validate that this only gets called once per valve per multiblock
+        public void addTank(IFluidTank tank, boolean wrap) {
+            if (this.valveTanks == null) {
+                this.valveTanks = new ArrayList<>();
+            }
+            this.valveTanks.add(wrap ? new ValveFluidTankWrapper(tank, this) : tank);
+        }
+
+        public List<IFluidTank> getValveTanks() {
+            return valveTanks == null ? Collections.emptyList() : valveTanks;
+        }
+
+        public void onTransfer(TransactionContext transaction) {
+            updateSnapshots(transaction);
             activeTicks = SharedConstants.TICKS_PER_SECOND + MekanismUtils.TICKS_PER_HALF_SECOND;
+        }
+
+        public boolean tick() {
+            if (activeTicks > 0) {
+                activeTicks--;
+            }
+            if (activeTicks > 0 == prevActive) {
+                return false;
+            }
+            prevActive = !prevActive;
+            return true;
         }
 
         @Override
         public int hashCode() {
-            int code = 1;
-            code = 31 * code + side.ordinal();
-            code = 31 * code + location.hashCode();
-            return code;
+            return side.ordinal();
         }
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof ValveData other && other.side == side && other.location.equals(location);
+            return obj instanceof ValveData other && other.side == side;
+        }
+
+        @Override
+        protected Integer createSnapshot() {
+            return activeTicks;
+        }
+
+        @Override
+        protected void revertToSnapshot(Integer snapshot) {
+            activeTicks = snapshot;
         }
     }
 }

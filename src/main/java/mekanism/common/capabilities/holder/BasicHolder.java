@@ -14,7 +14,7 @@ import org.jetbrains.annotations.Nullable;
 
 public class BasicHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
 
-    private final Map<RelativeSide, List<CONTAINER>> directionalContaineres = new EnumMap<>(RelativeSide.class);
+    private Map<RelativeSide, List<CONTAINER>> directionalContainers = Collections.emptyMap();
     private final List<CONTAINER> containers = new ArrayList<>();
     protected final Supplier<Direction> facingSupplier;
     @Nullable
@@ -31,23 +31,28 @@ public class BasicHolder<CONTAINER> implements IContainerHolder<CONTAINER> {
 
     void addContainer(@NotNull CONTAINER container, RelativeSide... sides) {
         containers.add(container);
-        for (RelativeSide side : sides) {
-            directionalContaineres.computeIfAbsent(side, k -> new ArrayList<>()).add(container);
+        if (sides.length > 0) {
+            if (directionalContainers.isEmpty()) {//Lazily initialize the map in case our holder has no directional containers
+                directionalContainers = new EnumMap<>(RelativeSide.class);
+            }
+            for (RelativeSide side : sides) {
+                directionalContainers.computeIfAbsent(side, _ -> new ArrayList<>()).add(container);
+            }
         }
     }
 
     @NotNull
     @Override
     public List<CONTAINER> getContainers(@Nullable Direction side) {
-        if (side == null || directionalContaineres.isEmpty()) {
-            //If we want the internal OR we have no side specification, give all of our slots
+        if (side == null || directionalContainers.isEmpty()) {
+            //If we want the internal OR we have no side specification, give all of our containers
             return containers;
         }
-        List<CONTAINER> slots = directionalContaineres.get(RelativeSide.fromDirections(facingSupplier.get(), side));
-        if (slots == null) {
+        List<CONTAINER> containers = directionalContainers.get(RelativeSide.fromDirections(facingSupplier.get(), side));
+        if (containers == null) {
             return Collections.emptyList();
         }
-        return slots;
+        return containers;
     }
 
     @Override

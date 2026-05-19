@@ -1,7 +1,6 @@
 package mekanism.client.render.data;
 
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.common.lib.multiblock.IValveHandler.ValveData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 
@@ -19,8 +18,8 @@ public class ValveRenderData extends FluidRenderData {
         this.valveLocation = valveLocation;
     }
 
-    public static ValveRenderData get(FluidRenderData renderData, ValveData valveData) {
-        return new ValveRenderData(renderData, valveData.side, valveData.location);
+    public static ValveRenderData get(FluidRenderData renderData, BlockPos valvePos, Direction valveSide) {
+        return new ValveRenderData(renderData, valveSide, valvePos);
     }
 
     public int getValveFluidHeight() {

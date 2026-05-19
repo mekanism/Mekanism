@@ -1,10 +1,11 @@
 package mekanism.common.tile;
 
-import com.mojang.serialization.Codec;
 import java.util.Collections;
 import java.util.List;
+import mekanism.api.AutomationType;
 import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
+import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
 import mekanism.api.SerializerHelper;
 import mekanism.api.fluid.IFluidTank;
@@ -15,6 +16,7 @@ import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.ResourceContainerWrapper;
 import mekanism.common.capabilities.fluid.FluidTankFluidTank;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
@@ -63,13 +65,13 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
+import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.Range;
 
 public class TileEntityFluidTank extends TileEntityMekanism implements IConfigurable, IFluidContainerManager {
-
-    private static Codec<FluidStack> VALVE_FLUID_CODEC = FluidStack.fixedAmountCodec(1);
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getStored", "getCapacity", "getNeeded",
                                                                                      "getFilledPercentage"}, docPlaceholder = "tank")
@@ -83,9 +85,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
 
     public FluidTankTier tier;
 
-    private int valve;
-    @NotNull
-    public FluidStack valveFluid = FluidStack.EMPTY;
+    private final ValveJournal valveJournal = new ValveJournal();
     private List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> fluidHandlerBelow = Collections.emptyList();
 
     public float prevScale;
@@ -115,7 +115,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
         MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
-        builder.addContainer(fluidTank = FluidTankFluidTank.create(this, listener));
+        //Note: We add an override to the top of the fluid tank, to handle valve contents being inserted
+        //TODO - 26.1: Should we add it as relative side top or Direction.UP? We used to use direction up, and this is technically the same
+        // because our fluid tanks don't support being placed on their side, but which implementation would be more robust?
+        fluidTank = builder.addContainer(FluidTankFluidTank.create(this, listener),
+              (tank, side) -> side == RelativeSide.TOP ? new ValveFluidTankWrapper(tank, valveJournal) : tank);
         return builder.build();
     }
 
@@ -152,12 +156,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @Override
     protected boolean onUpdateServer() {
         boolean sendUpdatePacket = super.onUpdateServer();
-        if (valve > 0) {
-            valve--;
-            if (valve == 0) {
-                valveFluid = FluidStack.EMPTY;
-                needsPacket = true;
-            }
+        if (valveJournal.tick()) {
+            sendUpdatePacket = true;
         }
         checkLight();
 
@@ -250,31 +250,6 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         return type == ContainerType.FLUID;
     }
 
-    /*@NotNull
-    @Override
-    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
-        return insertExcess(stack, side, action, super.insertFluid(tank, stack, side, action));
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(@NotNull FluidStack stack, @Nullable Direction side, @NotNull Action action) {
-        return insertExcess(stack, side, action, super.insertFluid(stack, side, action));
-    }*/
-
-    //TODO - 26.1: Hook valve transferring back up
-    private FluidStack insertExcess(@NotNull FluidStack stack, @Nullable Direction side, boolean execute, @NotNull FluidStack remainder) {
-        if (side == Direction.UP && execute && remainder.amount() < stack.amount() && !isRemote()) {
-            if (valve == 0) {
-                //TODO - 1.21: Only mark it as needing a packet if our fluid tank volume is below a certain amount??
-                needsPacket = true;
-            }
-            valve = SharedConstants.TICKS_PER_SECOND;
-            valveFluid = stack.copyWithAmount(1);
-        }
-        return remainder;
-    }
-
     @Override
     public InteractionResult onSneakRightClick(Player player) {
         if (!isRemote()) {
@@ -364,8 +339,8 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         if (!fluid.isEmpty()) {
             output.store(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC, fluid);
         }
-        if (!valveFluid.isEmpty()) {
-            output.store(SerializationConstants.VALVE, VALVE_FLUID_CODEC, valveFluid);
+        if (!valveJournal.fluid.isEmpty()) {
+            output.store(SerializationConstants.VALVE, FluidResource.CODEC, valveJournal.fluid);
         }
     }
 
@@ -387,7 +362,11 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         prevScale = scale;
 
         fluidTank.setContentsUnchecked(input.read(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_FLUID_STACK));
-        valveFluid = input.read(SerializationConstants.VALVE, VALVE_FLUID_CODEC).orElse(FluidStack.EMPTY);
+        valveJournal.fluid = input.read(SerializationConstants.VALVE, FluidResource.CODEC).orElse(FluidResource.EMPTY);
+    }
+
+    public FluidStack getValveFluid() {
+        return valveJournal.fluid.toStack(1);
     }
 
     //Methods relating to IComputerTile
@@ -412,4 +391,69 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         previousMode();
     }
     //End methods IComputerTile
+
+    private class ValveJournal extends SnapshotJournal<ValveJournal.ValveData> {
+
+        private FluidResource fluid = FluidResource.EMPTY;
+        private int valve;
+
+        public void onTransfer(FluidResource resource, TransactionContext transaction) {
+            if (!isRemote()) {
+                updateSnapshots(transaction);
+                valve = SharedConstants.TICKS_PER_SECOND;
+                fluid = resource;
+            }
+        }
+
+        private boolean tick() {
+            if (valve > 0 && --valve == 0) {
+                valveJournal.fluid = FluidResource.EMPTY;
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        protected ValveData createSnapshot() {
+            return new ValveData(fluid, valve);
+        }
+
+        @Override
+        protected void revertToSnapshot(@NotNull ValveData snapshot) {
+            fluid = snapshot.valveFluid;
+            valve = snapshot.valve;
+        }
+
+        @Override
+        protected void onRootCommit(@NotNull ValveData originalState) {
+            super.onRootCommit(originalState);
+            if (originalState.valve == 0 || !originalState.valveFluid().equals(fluid)) {
+                //If the valve was zero so now has contents, or the valve fluid changed, we need to request an update for our tile
+                needsPacket = true;
+            }
+        }
+
+        private record ValveData(FluidResource valveFluid, int valve) {
+        }
+    }
+
+    private static class ValveFluidTankWrapper extends ResourceContainerWrapper<FluidResource, IFluidTank> implements IFluidTank {
+
+        private final ValveJournal valveJournal;
+
+        public ValveFluidTankWrapper(IFluidTank internal, ValveJournal valveJournal) {
+            super(internal);
+            this.valveJournal = valveJournal;
+        }
+
+        @Override
+        @Range(from = 0, to = Integer.MAX_VALUE)
+        public int insert(@NotNull FluidResource resource, @Range(from = 0, to = Integer.MAX_VALUE) int amount, @NotNull TransactionContext transaction, @NotNull AutomationType automationType) {
+            int inserted = super.insert(resource, amount, transaction, automationType);
+            if (inserted > 0) {
+                valveJournal.onTransfer(resource, transaction);
+            }
+            return inserted;
+        }
+    }
 }

@@ -1,5 +1,6 @@
 package mekanism.generators.client.recipe_viewer.recipe;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -51,7 +51,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         List<FissionRecipeViewerRecipe> recipes = new ArrayList<>();
         long energyPerFuel = MekanismGeneratorsConfig.generators.energyPerFissionFuel.get();
         //Special case water recipe
-        int coolantAmount = MathUtils.clampToInt(Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy()));
+        int coolantAmount = Ints.saturatedCast(Math.round(energyPerFuel * HeatUtils.getSteamEnergyEfficiency() / HeatUtils.getWaterThermalEnthalpy()));
         recipes.add(new FissionRecipeViewerRecipe(
               RegistryUtils.synthetic(MekanismGenerators.rl("water"), "fission"),
               null, IngredientCreatorAccess.chemicalStack().fromHolder(MekanismChemicals.FISSILE_FUEL, 1),
@@ -61,7 +61,7 @@ public record FissionRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIn
         for (Map.Entry<ResourceKey<Chemical>, CooledCoolant> entry : MekanismAPI.CHEMICAL_REGISTRY.getDataMap(IMekanismDataMapTypes.INSTANCE.cooledChemicalCoolant()).entrySet()) {
             ResourceKey<Chemical> key = entry.getKey();
             CooledCoolant coolant = entry.getValue();
-            int amount = MathUtils.clampToInt(Math.round(energyPerFuel / coolant.thermalEnthalpy()));
+            int amount = Ints.saturatedCast(Math.round(energyPerFuel / coolant.thermalEnthalpy()));
             recipes.add(new FissionRecipeViewerRecipe(
                   RegistryUtils.synthetic(key.identifier(), "fission", MekanismGenerators.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), amount),

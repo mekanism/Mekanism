@@ -2,6 +2,7 @@ package mekanism.common.capabilities.holder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -102,6 +103,18 @@ public class MekContainerHelper<CONTAINER> {
             holder.addContainer(container, sides);
         } else {
             throw new IllegalArgumentException("Holder does not know how to add containers on specific sides");
+        }
+        return container;
+    }
+
+    public <CONT extends CONTAINER> CONT addContainer(@NotNull CONT container, BiFunction<CONTAINER, RelativeSide, @Nullable CONTAINER> containerTransformer) {
+        if (built) {
+            throw new IllegalStateException("Builder has already built.");
+        }
+        if (containerHolder instanceof OverridingHolder<CONTAINER> holder) {
+            holder.addContainer(container, containerTransformer);
+        } else {
+            throw new IllegalArgumentException("Holder does not know how to add container overrides on specific sides");
         }
         return container;
     }

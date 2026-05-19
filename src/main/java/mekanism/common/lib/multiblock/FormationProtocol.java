@@ -48,7 +48,7 @@ public class FormationProtocol<T extends MultiblockData> {
 
     public final Set<BlockPos> locations = new ObjectOpenHashSet<>();
     public final Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public final Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public final Map<BlockPos, ValveData> valves = new HashMap<>();
     public final Map<UUID, MultiblockCache<T>> idsFound = new HashMap<>();
 
     public FormationProtocol(IMultiblock<T> tile, Structure structure) {

@@ -27,9 +27,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -56,7 +54,7 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
     @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
-        return _ -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getFluidTanks() : Collections.emptyList();
+        return _ -> getMode() == BoilerValveMode.INPUT ? getMultiblock().getValveFluidTanks(getBlockPos()) : Collections.emptyList();
     }
 
     @Override
@@ -103,26 +101,6 @@ public class TileEntityBoilerValve extends TileEntityBoilerCasing {
             player.sendOverlayMessage(MekanismLang.BOILER_VALVE_MODE_CHANGE.translateColored(EnumColor.GRAY, mode));
         }
         return InteractionResult.SUCCESS;
-    }
-
-    /*@NotNull
-    @Override
-    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }*/
-
-    //TODO - 26.1: Hook valve transferring back up
-    private FluidStack handleValves(@NotNull FluidStack stack, boolean execute, @NotNull FluidStack remainder) {
-        if (execute && remainder.amount() < stack.amount()) {
-            getMultiblock().triggerValveTransfer(this);
-        }
-        return remainder;
     }
 
     //Methods relating to IComputerTile

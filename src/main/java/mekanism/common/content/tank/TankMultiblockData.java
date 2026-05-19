@@ -2,13 +2,14 @@ package mekanism.common.content.tank;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.merged.MergedTank;
@@ -25,9 +26,13 @@ import mekanism.common.lib.multiblock.IValveHandler;
 import mekanism.common.lib.multiblock.MultiblockData;
 import mekanism.common.tile.interfaces.IFluidContainerManager.ContainerEditMode;
 import mekanism.common.tile.multiblock.TileEntityDynamicTank;
+import mekanism.common.tile.multiblock.TileEntityDynamicValve;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
+import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.redstone.Redstone;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
@@ -89,6 +94,22 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityDynamicValve tile = WorldUtils.getTileEntity(TileEntityDynamicValve.class, world, entry.getKey());
+            if (tile != null) {
+                ValveData valve = entry.getValue();
+                valve.addTank(mergedTank.getFluidTank(), true);
+            }
+        }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
     }
 
     @Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
@@ -12,14 +13,14 @@ import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
-import mekanism.api.resource.IResourceContainer;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.CooledCoolant;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.IRadiationManager;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.capabilities.chemical.VariableCapacityChemicalTank;
 import mekanism.common.capabilities.fluid.VariableCapacityFluidTank;
 import mekanism.common.capabilities.heat.VariableHeatCapacitor;
@@ -52,6 +53,7 @@ import mekanism.generators.common.content.fission.FissionReactorValidator.Formed
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorCasing;
 import mekanism.generators.common.tile.fission.TileEntityFissionReactorPort;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
@@ -234,12 +236,19 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @Override
     protected void updateEjectors(Level world) {
         chemicalOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityFissionReactorPort tile = WorldUtils.getTileEntity(TileEntityFissionReactorPort.class, world, entry.getKey());
             if (tile != null) {
+                ValveData valve = entry.getValue();
                 tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
+                valve.addTank(coolantTank.getFluidTank(), true);
             }
         }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
     }
 
     public List<IChemicalTank> getChemicalTanks(FissionPortMode mode) {
@@ -477,7 +486,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         storedFuel -= toBurn;
         ChemicalResource fuel = fuelTank.getResource();
         //TODO - 26.1: Re-evaluate this.. it seems weird
-        fuelTank.setContentsUnchecked(fuel, Math.min((long) storedFuel, fuelTank.capacityAsLong(fuel)));
+        fuelTank.setContentsUnchecked(fuel, Math.min(MathUtils.clampToLong(storedFuel), fuelTank.capacityAsLong(fuel)));
         burnRemaining = storedFuel % 1;
         heatCapacitor.handleHeat(toBurn * MekanismGeneratorsConfig.generators.energyPerFissionFuel.get());
         // handle waste

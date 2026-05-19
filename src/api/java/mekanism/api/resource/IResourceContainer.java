@@ -232,6 +232,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     }
 
     //TODO - 26.1: Docs and Re-evaluate this method
+    @NonExtendable
     default void setContentsUnchecked(LargeResourceStack<RESOURCE> stack) {
         setContentsUnchecked(stack.resource(), stack.amount());
     }

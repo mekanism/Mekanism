@@ -2,6 +2,7 @@ package mekanism.common.content.matrix;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
 import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
@@ -19,6 +20,7 @@ import mekanism.common.tile.multiblock.TileEntityInductionProvider;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.WorldUtils;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
@@ -121,10 +123,10 @@ public class MatrixMultiblockData extends MultiblockData {
     @Override
     protected void updateEjectors(Level world) {
         energyOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityInductionPort tile = WorldUtils.getTileEntity(TileEntityInductionPort.class, world, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+                tile.addEnergyTargetCapability(energyOutputTargets, entry.getValue().side);
             }
         }
     }

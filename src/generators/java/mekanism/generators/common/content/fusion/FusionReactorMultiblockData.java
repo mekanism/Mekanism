@@ -3,6 +3,7 @@ package mekanism.generators.common.content.fusion;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
@@ -45,13 +46,14 @@ import mekanism.generators.common.slot.ReactorInventorySlot;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorBlock;
 import mekanism.generators.common.tile.fusion.TileEntityFusionReactorPort;
 import net.minecraft.SharedConstants;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.util.Mth;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.minecraft.world.phys.AABB;
@@ -166,9 +168,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
     @Override
     public void onCreated(Level world) {
         super.onCreated(world);
-        for (ValveData data : valves) {
-            BlockEntity tile = WorldUtils.getTileEntity(world, data.location);
-            if (tile instanceof TileEntityFusionReactorPort port) {
+        for (BlockPos valvePos : valves.keySet()) {
+            TileEntityFusionReactorPort port = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valvePos);
+            if (port != null) {
                 heatHandlers.add(port);
             }
         }
@@ -259,11 +261,12 @@ public class FusionReactorMultiblockData extends MultiblockData {
     protected void updateEjectors(Level world) {
         energyOutputTargets.clear();
         chemicalOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityFusionReactorPort tile = WorldUtils.getTileEntity(TileEntityFusionReactorPort.class, world, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
-                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
+                Direction side = entry.getValue().side;
+                tile.addEnergyTargetCapability(energyOutputTargets, side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, side);
             }
         }
     }
@@ -335,9 +338,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
             return 0;
         }
         try (Transaction transaction = Transaction.openRoot()) {
-            //TODO - 26.1: Evaluate clamping this to int, and if we can simplify the math so that it just acts on ints
-            // I assume we should also change it to fuelTank.amountAsInt?
-            int fuelBurned = MathUtils.clampToInt(Mth.clamp((lastPlasmaTemperature - burnTemperature) * burnRatio, 0, fuelTank.amountAsLong()));
+            int fuelBurned = Mth.clamp(MathUtils.clampToInt((lastPlasmaTemperature - burnTemperature) * burnRatio), 0, fuelTank.amountAsInt());
             int fuelUsed = fuelTank.extract(fuel, fuelBurned, transaction, AutomationType.INTERNAL);
             if (fuelUsed < fuelBurned) {//Failed to actually burn anything
                 return 0;
@@ -359,7 +360,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         //Transfer from casing to water if necessary
         double caseWaterHeat = MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * (lastCaseTemperature - biomeAmbientTemp);
         if (Math.abs(caseWaterHeat) > HeatAPI.EPSILON) {
-            int waterToVaporize = (int) (HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
+            int waterToVaporize = MathUtils.clampToInt(HeatUtils.getSteamEnergyEfficiency() * caseWaterHeat / HeatUtils.getWaterThermalEnthalpy());
             FluidResource water = waterTank.getResource();
             if (!water.isEmpty()) {
                 try (Transaction transaction = Transaction.openRoot()) {
@@ -517,9 +518,9 @@ public class FusionReactorMultiblockData extends MultiblockData {
                                      MekanismGeneratorsConfig.generators.fusionCasingThermalConductivity.get() * temperature);
     }
 
-    public long getSteamPerTick(boolean current) {
+    public int getSteamPerTick(boolean current) {
         double temperature = current ? getLastCaseTemp() : getMaxCasingTemperature(true);
-        return MathUtils.clampToLong(HeatUtils.getSteamEnergyEfficiency() * MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * temperature / HeatUtils.getWaterThermalEnthalpy());
+        return MathUtils.clampToInt(HeatUtils.getSteamEnergyEfficiency() * MekanismGeneratorsConfig.generators.fusionWaterHeatingRatio.get() * temperature / HeatUtils.getWaterThermalEnthalpy());
     }
 
     private static double getInverseConductionCoefficient() {

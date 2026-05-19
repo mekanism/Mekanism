@@ -1,10 +1,10 @@
 package mekanism.client.gui.element.gauge;
 
+import com.google.common.primitives.Ints;
 import com.mojang.blaze3d.platform.InputConstants;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import mekanism.api.math.MathUtils;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.client.gui.GuiMekanismTile;
 import mekanism.client.gui.IGuiWrapper;
@@ -131,7 +131,7 @@ public abstract class GuiTankGauge<RESOURCE extends Resource, CONTAINER extends 
             return height - 2;
         }
         double scale = stored / (double) capacity;
-        return Math.max(1, MathUtils.clampToInt(Math.round(scale * (height - 2))));
+        return Math.max(1, Ints.saturatedCast(Math.round(scale * (height - 2))));
     }
 
     @Override

@@ -3,7 +3,6 @@ package mekanism.common.lib.radiation;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import java.util.Map;
 import java.util.UUID;
-import mekanism.api.math.MathUtils;
 import mekanism.api.radiation.capability.IRadiationEntity;
 import mekanism.common.Mekanism;
 import mekanism.common.capabilities.Capabilities;
@@ -14,6 +13,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -123,7 +123,7 @@ public class PlayerExposure {
     private record PreviousRadiationData(double magnitude, int power, double base) {
 
         private static int getPower(double magnitude) {
-            return MathUtils.clampToInt(Math.floor(Math.log10(magnitude)));
+            return Mth.floor(Math.log10(magnitude));
         }
 
         @Nullable

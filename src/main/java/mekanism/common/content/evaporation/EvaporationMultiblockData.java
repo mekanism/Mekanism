@@ -4,6 +4,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectArrayMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
@@ -44,10 +45,12 @@ import mekanism.common.recipe.lookup.ISingleRecipeLookupHandler.FluidRecipeLooku
 import mekanism.common.recipe.lookup.cache.InputRecipeCache.SingleFluid;
 import mekanism.common.recipe.lookup.monitor.RecipeCacheLookupMonitor;
 import mekanism.common.tile.multiblock.TileEntityThermalEvaporationBlock;
+import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.ResourceUtils;
+import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
@@ -169,6 +172,23 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
             needsPacket = true;
         }
         return needsPacket;
+    }
+
+    @Override
+    protected void updateEjectors(Level world) {
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityThermalEvaporationValve tile = WorldUtils.getTileEntity(TileEntityThermalEvaporationValve.class, world, entry.getKey());
+            if (tile != null) {
+                ValveData valve = entry.getValue();
+                valve.addTank(inputTank, true);
+                valve.addTank(outputTank, false);
+            }
+        }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
     }
 
     @Override

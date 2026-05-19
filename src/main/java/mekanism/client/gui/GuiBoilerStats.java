@@ -41,7 +41,7 @@ public class GuiBoilerStats extends GuiMekanismTile<TileEntityBoilerCasing, Empt
         }));
         boilGraph = addRenderableWidget(new GuiLongGraph(this, 7, 82, 162, 38, MekanismLang.BOIL_RATE::translate));
         maxGraph = addRenderableWidget(new GuiLongGraph(this, 7, 121, 162, 38, MekanismLang.MAX_BOIL_RATE::translate));
-        maxGraph.enableFixedScale(MathUtils.clampToLong((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
+        maxGraph.enableFixedScale(MathUtils.clampToInt((MekanismConfig.general.superheatingHeatTransfer.get() * tile.getMultiblock().superheatingElements) / HeatUtils.getWaterThermalEnthalpy()));
     }
 
     @Override

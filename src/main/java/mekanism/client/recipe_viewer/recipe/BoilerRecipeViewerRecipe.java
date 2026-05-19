@@ -1,5 +1,6 @@
 package mekanism.client.recipe_viewer.recipe;
 
+import com.google.common.primitives.Ints;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
@@ -12,7 +13,6 @@ import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.datamaps.IMekanismDataMapTypes;
 import mekanism.api.datamaps.chemical.attribute.HeatedCoolant;
-import mekanism.api.math.MathUtils;
 import mekanism.api.recipes.ingredients.ChemicalStackIngredient;
 import mekanism.api.recipes.ingredients.FluidStackIngredient;
 import mekanism.api.recipes.ingredients.creator.IngredientCreatorAccess;
@@ -60,7 +60,7 @@ public record BoilerRecipeViewerRecipe(Identifier id, @Nullable ChemicalStackIng
             ResourceKey<Chemical> key = entry.getKey();
             HeatedCoolant coolant = entry.getValue();
             //Amount of coolant that is actually used to
-            int coolantAmount = MathUtils.clampToInt(Math.round(waterToSteamHeatNecessary / coolant.thermalEnthalpy()));
+            int coolantAmount = Ints.saturatedCast(Math.round(waterToSteamHeatNecessary / coolant.thermalEnthalpy()));
             recipes.add(new BoilerRecipeViewerRecipe(
                   RegistryUtils.synthetic(key.identifier(), "boiler", Mekanism.MODID),
                   IngredientCreatorAccess.chemicalStack().fromHolder(MekanismAPI.CHEMICAL_REGISTRY.getOrThrow(key), coolantAmount), water,

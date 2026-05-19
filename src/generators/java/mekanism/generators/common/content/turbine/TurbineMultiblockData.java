@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
@@ -118,10 +119,10 @@ public class TurbineMultiblockData extends MultiblockData {
     protected void updateEjectors(Level world) {
         fluidOutputTargets.clear();
         energyOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityTurbineValve tile = WorldUtils.getTileEntity(TileEntityTurbineValve.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityTurbineValve tile = WorldUtils.getTileEntity(TileEntityTurbineValve.class, world, entry.getKey());
             if (tile != null) {
-                tile.addEnergyTargetCapability(energyOutputTargets, valve.side);
+                tile.addEnergyTargetCapability(energyOutputTargets, entry.getValue().side);
             }
         }
         for (VentData data : ventData) {

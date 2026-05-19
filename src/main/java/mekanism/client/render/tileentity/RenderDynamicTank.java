@@ -3,6 +3,7 @@ package mekanism.client.render.tileentity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.client.render.MekanismRenderer;
 import mekanism.client.render.ModelRenderer;
@@ -25,6 +26,7 @@ import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.core.BlockPos;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -53,8 +55,8 @@ public class RenderDynamicTank extends MultiblockTileEntityRenderer<TankMultiblo
         state.valveTexture = null;
         if (state.renderData instanceof FluidRenderData fluidRenderData) {
             state.valveTexture = MekanismRenderer.getValveTexture(multiblock.getFluidTank().getResource());
-            for (IValveHandler.ValveData valve : multiblock.valves) {//todo - 26.1: are these always active? (when not empty) Should they be?
-                state.valves.add(ValveRenderData.get(fluidRenderData, valve));
+            for (Map.Entry<BlockPos, IValveHandler.ValveData> entry : multiblock.valves.entrySet()) {//todo - 26.1: are these always active? (when not empty) Should they be?
+                state.valves.add(ValveRenderData.get(fluidRenderData, entry.getKey(), entry.getValue().side));
             }
         }
     }

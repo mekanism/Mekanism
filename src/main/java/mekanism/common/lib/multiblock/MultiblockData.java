@@ -2,9 +2,10 @@ package mekanism.common.lib.multiblock;
 
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -60,7 +61,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
      * replacing the blocks inside a multiblock (which is unsupported) it will handle it fine, and we can easily special-case it becoming air as having been "broken"
      */
     public Set<BlockPos> internalLocations = new ObjectOpenHashSet<>();
-    public Set<ValveData> valves = new ObjectOpenHashSet<>();
+    public Map<BlockPos, ValveData> valves = new HashMap<>();
 
     @ContainerSync(getter = "getVolume", setter = "setVolume")
     private int volume;
@@ -150,12 +151,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
      */
     public boolean tick(ServerLevel world) {
         boolean needsPacket = false;
-        for (ValveData data : valves) {
-            data.activeTicks = Math.max(0, data.activeTicks - 1);
-            if (data.activeTicks > 0 != data.prevActive) {
-                needsPacket = true;
-            }
-            data.prevActive = data.activeTicks > 0;
+        for (ValveData data : valves.values()) {
+            needsPacket |= data.tick();
         }
         return needsPacket;
     }
@@ -375,6 +372,25 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
         return isFormed() || isRemote() ? fluidTanks : Collections.emptyList();
     }
 
+    protected boolean hasFluidValveHandling() {
+        return false;
+    }
+
+    public List<IFluidTank> getValveFluidTanks(BlockPos pos) {
+        if (!hasFluidValveHandling()) {
+            return getFluidTanks();
+        } else if (isFormed() || isRemote()) {
+            //TODO - 26.1: Does the client know about valves? Or do they get synced in some other way
+            ValveData valve = valves.get(pos);
+            if (valve == null) {
+                //Just return all as we don't have any specific valve wrapping
+                return fluidTanks;
+            }
+            return valve.getValveTanks();
+        }
+        return Collections.emptyList();
+    }
+
     @NotNull
     @Override
     public List<IChemicalTank> getChemicalTanks() {
@@ -397,7 +413,7 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
         return locations.contains(pos) || internalLocations.contains(pos);
     }
 
-    public Collection<ValveData> getValveData() {
+    public Map<BlockPos, ValveData> getValveData() {
         return valves;
     }
 
@@ -461,8 +477,8 @@ public class MultiblockData implements IMultiblockContents, ITileHeatHandler {
     }
 
     public void notifyAllUpdateComparator(Level world) {
-        for (ValveData valve : valves) {
-            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valve.location);
+        for (BlockPos valvePos: valves.keySet()) {
+            TileEntityMultiblock<?> tile = WorldUtils.getTileEntity(TileEntityMultiblock.class, world, valvePos);
             if (tile != null) {
                 tile.markDirtyComparator();
             }

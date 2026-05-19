@@ -145,10 +145,10 @@ public class SPSMultiblockData extends MultiblockData implements IValveHandler {
     @Override
     protected void updateEjectors(Level world) {
         chemicalOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntitySPSPort tile = WorldUtils.getTileEntity(TileEntitySPSPort.class, world, entry.getKey());
             if (tile != null) {
-                tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
+                tile.addChemicalTargetCapability(chemicalOutputTargets, entry.getValue().side);
             }
         }
     }

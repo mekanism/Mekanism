@@ -1,7 +1,6 @@
 package mekanism.common.tile.multiblock;
 
 import mekanism.api.IContentsListener;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
@@ -9,8 +8,6 @@ import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.registries.MekanismBlocks;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import org.jetbrains.annotations.NotNull;
 
 public class TileEntityDynamicValve extends TileEntityDynamicTank {
@@ -22,7 +19,7 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
     @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
-        return _ -> getMultiblock().getFluidTanks();
+        return _ -> getMultiblock().getValveFluidTanks(getBlockPos());
     }
 
     @NotNull
@@ -38,26 +35,6 @@ public class TileEntityDynamicValve extends TileEntityDynamicTank {
             return false;
         }
         return super.persists(type);
-    }
-
-    /*@NotNull
-    @Override
-    public FluidStack insertFluid(int tank, @NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(tank, stack, side, action));
-    }
-
-    @NotNull
-    @Override
-    public FluidStack insertFluid(@NotNull FluidStack stack, Direction side, @NotNull Action action) {
-        return handleValves(stack, action, super.insertFluid(stack, side, action));
-    }*/
-
-    //TODO - 26.1: Hook valve transferring back up
-    private FluidStack handleValves(@NotNull FluidStack stack, boolean execute, @NotNull FluidStack remainder) {
-        if (execute && remainder.amount() < stack.amount()) {
-            getMultiblock().triggerValveTransfer(this);
-        }
-        return remainder;
     }
 
     @Override

@@ -6,6 +6,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
@@ -226,12 +227,19 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @Override
     protected void updateEjectors(Level world) {
         chemicalOutputTargets.clear();
-        for (ValveData valve : valves) {
-            TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, world, valve.location);
+        for (Map.Entry<BlockPos, ValveData> entry : valves.entrySet()) {
+            TileEntityBoilerValve tile = WorldUtils.getTileEntity(TileEntityBoilerValve.class, world, entry.getKey());
             if (tile != null) {
+                ValveData valve = entry.getValue();
                 tile.addChemicalTargetCapability(chemicalOutputTargets, valve.side);
+                valve.addTank(waterTank, true);
             }
         }
+    }
+
+    @Override
+    protected boolean hasFluidValveHandling() {
+        return true;
     }
 
     public List<IChemicalTank> getChemicalTanks(BoilerValveMode mode) {
@@ -312,8 +320,8 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     }
 
     @ComputerMethod(methodDescription = "Get the maximum possible boil rate for this Boiler, based on the number of Superheating Elements")
-    public long getBoilCapacity() {
+    public int getBoilCapacity() {
         double boilCapacity = MekanismConfig.general.superheatingHeatTransfer.get() * superheatingElements / HeatUtils.getWaterThermalEnthalpy();
-        return MathUtils.clampToLong(boilCapacity * HeatUtils.getSteamEnergyEfficiency());
+        return MathUtils.clampToInt(boilCapacity * HeatUtils.getSteamEnergyEfficiency());
     }
 }
