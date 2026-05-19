@@ -278,14 +278,14 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
         return stack.has(component) || knownDefaultCreators.containsKey(stack.getItem());
     }
 
-    public void addDefault(Holder<Item> item, DataComponentMap.Builder builder) {
-        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(item.value());
+    public void addDefault(Item item, DataComponentMap.Builder components) {
+        Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>> lazy = knownDefaultCreators.get(item);
         if (lazy != null) {
             //Supports the type
             IContainerCreator<? extends CONTAINER, ATTACHED> containerCreator = lazy.get();
             int count = containerCreator.totalContainers();
             if (count > 0) {
-                builder.set(component.get(), containerCreator.initStorage(count));
+                components.set(component.get(), containerCreator.initStorage(count));
             }
         }
     }

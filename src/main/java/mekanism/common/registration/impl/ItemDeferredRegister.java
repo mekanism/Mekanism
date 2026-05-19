@@ -52,9 +52,9 @@ public class ItemDeferredRegister extends MekanismDeferredRegister<Item> {
 
         bus.addListener(EventPriority.LOWEST, ModifyDefaultComponentsEvent.class, event -> forEntries(registryObject -> {
             if (ContainerType.anySupports(registryObject)) {
-                event.modify(registryObject, builder -> {
+                event.modify(registryObject, (components, _, item) -> {
                     for (ContainerType<?, ?, ?> type : ContainerType.TYPES) {
-                        type.addDefault(registryObject, builder);
+                        type.addDefault(item, components);
                     }
                 });
             }
