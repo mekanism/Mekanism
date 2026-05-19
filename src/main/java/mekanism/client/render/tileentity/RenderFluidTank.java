@@ -57,9 +57,10 @@ public class RenderFluidTank extends MekanismTileEntityRenderer<TileEntityFluidT
         state.fluidGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.fluid);
         state.fluidScale = state.fluid.isEmpty() ? 0 : tank.prevScale;
         state.fluidTexture = state.fluid.isEmpty() ? null : MekanismRenderer.getSinglePicker(MekanismRenderer.getFluidTexture(state.fluid, FluidTextureType.STILL));
-        if (!tank.valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(tank.getValveFluid())) {
+        FluidStack valveFluid = tank.getValveFluid();
+        if (!valveFluid.isEmpty() && !MekanismUtils.lighterThanAirGas(valveFluid)) {
             //If it is lighter than air we don't need to render the valve
-            state.valveFluid = tank.getValveFluid();
+            state.valveFluid = valveFluid;
             state.valveTint = MekanismRenderer.getColorARGB(state.valveFluid);
             state.valveGlow = MekanismRenderer.calculateGlowLight(state.lightCoords, state.valveFluid);
             state.valveFluidTexture = MekanismRenderer.getValveTexture(state.valveFluid);
