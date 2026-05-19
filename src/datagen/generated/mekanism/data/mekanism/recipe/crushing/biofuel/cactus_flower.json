@@ -2,12 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": [
-      "minecraft:short_dry_grass",
-      "minecraft:short_grass"
-    ]
+    "ingredient": "minecraft:cactus_flower"
   },
   "output": {
+    "count": 2,
     "id": "mekanism:bio_fuel"
   }
 }

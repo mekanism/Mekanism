@@ -532,33 +532,40 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "berries", 1, 1, Tags.Items.FOODS_BERRY);
         biofuel(consumer, basePath, "big_dripleaf", 2, 1, Items.BIG_DRIPLEAF);
         biofuel(consumer, basePath, "bread", 4, 1, Items.BREAD);
+        biofuel(consumer, basePath, "bush", 1, 1, Items.BUSH);
+        biofuel(consumer, basePath, "cactus_flower", 2, 1, Items.CACTUS_FLOWER);
         biofuel(consumer, basePath, "cake", 6, 1, Items.CAKE);
         biofuel(consumer, basePath, "carved_pumpkin", 2, 1, Items.CARVED_PUMPKIN);//pumpkin minus 4 seeds (sawmill)
         biofuel(consumer, basePath, "crimson_roots", 1, 1, Items.CRIMSON_ROOTS);
         biofuel(consumer, basePath, "cookie", 3, 4, Items.COOKIE);
         //TODO - 1.21.1: Make our own tag that contains all of these
-        biofuel(consumer, basePath, "crops_tags", 2, 1, Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO, Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN);
+        biofuel(consumer, basePath, "crops_tags", 2, 1, Tags.Items.CROPS_CARROT, Tags.Items.CROPS_CACTUS, Tags.Items.CROPS_POTATO,
+              Tags.Items.CROPS_WHEAT, Tags.Items.CROPS_BEETROOT, Tags.Items.CROPS_NETHER_WART, Tags.Items.CROPS_COCOA_BEAN);
         biofuel(consumer, basePath, "crops", 2, 1, Items.POISONOUS_POTATO);
         biofuel(consumer, basePath, "dried_kelp", 1, 1, Items.DRIED_KELP);
         biofuelBlock(consumer, basePath, "dried_kelp_block", 1, 1, Tags.Items.STORAGE_BLOCKS_DRIED_KELP);
         biofuel(consumer, basePath, "fern", 2, 1, Items.FERN);
+        biofuel(consumer, basePath, "firefly_bush", 1, 1, Items.FIREFLY_BUSH);
         biofuel(consumer, basePath, "fungus", 1, 1, Items.CRIMSON_FUNGUS, Items.WARPED_FUNGUS);
         biofuel(consumer, basePath, "glow_lichen", 1, 1, Items.GLOW_LICHEN);
         biofuel(consumer, basePath, "hanging_roots", 1, 1, Items.HANGING_ROOTS);
         biofuelBlock(consumer, basePath, "hay_block", 2, 1, Tags.Items.STORAGE_BLOCKS_WHEAT);
         biofuel(consumer, basePath, "kelp", 2, 1, Items.KELP);
         biofuel(consumer, basePath, "large_fern", 3, 1, Items.LARGE_FERN);
+        //1:1 with leaves because they can be produced by smelting leaves
+        biofuel(consumer, basePath, "leaf_litter", 1, 10, Items.LEAF_LITTER);
         biofuel(consumer, basePath, "leaves", 1, 10, ItemTags.LEAVES);
         biofuel(consumer, basePath, "lily_pad", 1, 1, Items.LILY_PAD);
         biofuel(consumer, basePath, "mangrove_roots", 1, 1, Items.MANGROVE_ROOTS);
         biofuel(consumer, basePath, "melon", 6, 1, Tags.Items.CROPS_MELON);
         biofuel(consumer, basePath, "melon_slice", 1, 1, Items.MELON_SLICE);
-        biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK);
-        biofuel(consumer, basePath, "moss_carpet", 4, 3, Items.MOSS_CARPET);
+        biofuel(consumer, basePath, "moss_block", 2, 1, Items.MOSS_BLOCK, Items.PALE_MOSS_BLOCK);
+        biofuel(consumer, basePath, "moss_carpet", 4, 3, Items.MOSS_CARPET, Items.PALE_MOSS_CARPET);
         biofuel(consumer, basePath, "mushroom_blocks", 4, 1, Items.BROWN_MUSHROOM_BLOCK, Items.RED_MUSHROOM_BLOCK, Items.MUSHROOM_STEM);
         biofuel(consumer, basePath, "mushrooms", 1, 1, Tags.Items.MUSHROOMS);
         biofuel(consumer, basePath, "nether_sprouts", 1, 1, Items.NETHER_SPROUTS);
         biofuelBlock(consumer, basePath, "nether_wart_block", 2, 1, Items.NETHER_WART_BLOCK);
+        biofuel(consumer, basePath, "pale_hanging_moss", 1, 1, Items.PALE_HANGING_MOSS);
         biofuel(consumer, basePath, "pitcher_pod", 1, 1, Items.PITCHER_POD);
         final int pumpkinOutput = 6;
         biofuel(consumer, basePath, "pumpkin", pumpkinOutput, 1, Tags.Items.CROPS_PUMPKIN);
@@ -568,7 +575,7 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "sea_pickle", 1, 1, Items.SEA_PICKLE);
         biofuel(consumer, basePath, "seagrass", 1, 1, Items.SEAGRASS);
         biofuel(consumer, basePath, "seeds", 1, 1, Tags.Items.SEEDS);
-        biofuel(consumer, basePath, "short_grass", 1, 1, Items.SHORT_GRASS);
+        biofuel(consumer, basePath, "short_grass", 1, 1, Items.DRY_SHORT_GRASS, Items.SHORT_GRASS);
         biofuel(consumer, basePath, "shroomlight", 4, 1, Items.SHROOMLIGHT);
         biofuel(consumer, basePath, "small_dripleaf", 1, 1, Items.SMALL_DRIPLEAF);
         biofuel(consumer, basePath, "small_flowers", 1, 1, ItemTags.SMALL_FLOWERS);
@@ -576,10 +583,11 @@ class CrusherRecipeProvider implements ISubRecipeProvider {
         biofuel(consumer, basePath, "spore_blossom", 2, 1, Items.SPORE_BLOSSOM);
         biofuel(consumer, basePath, "sugar_cane", 1, 1, Tags.Items.CROPS_SUGAR_CANE);
         biofuel(consumer, basePath, "tall_flowers", 2, 1, Tags.Items.FLOWERS_TALL);
-        biofuel(consumer, basePath, "tall_grass", 2, 1, Items.TALL_GRASS);
+        biofuel(consumer, basePath, "tall_grass", 2, 1, Items.DRY_TALL_GRASS, Items.TALL_GRASS);
         biofuel(consumer, basePath, "vines", 1, 1, Items.VINE, Items.TWISTING_VINES, Items.WEEPING_VINES);
         biofuel(consumer, basePath, "warped_roots", 1, 1, Items.WARPED_ROOTS);
         biofuel(consumer, basePath, "warped_wart_block", 4, 1, Items.WARPED_WART_BLOCK);
+        biofuel(consumer, basePath, "wildflowers", 1, 1, Items.WILDFLOWERS);//not in small_flowers tag
     }
 
     private void biofuel(RecipeOutput consumer, String basePath, String filename, int countOutput, int countInput, Item... items) {

@@ -1,4 +1,4 @@
-// Recipes: mekanism	2026-05-08T12:21:55.5982229	Recipes: mekanism
+// Recipes: mekanism	2026-05-19T16:58:28.1416579	Recipes: mekanism
 2c60c221737a7e8b2f675ab87db2924d49b0dca1 data/mekanism/recipe/antiprotonic_nucleosynthesizer.json
 bcf460616c15620125e6c29d7dfa3dc72956c9c6 data/mekanism/recipe/atomic_disassembler.json
 bd5850e773f876316c16606ca0500004b3572fc8 data/mekanism/recipe/bin/advanced.json
@@ -787,6 +787,8 @@ c459b4760982b783c794071bd026bf106695bef7 data/mekanism/recipe/crushing/biofuel/b
 7fe88187b600b3aad6298ea4eea878dae3e3877b data/mekanism/recipe/crushing/biofuel/berries.json
 90143b3f264c200154f7a3d02fc07e3f786391a3 data/mekanism/recipe/crushing/biofuel/big_dripleaf.json
 47577e76378600afb9bfbb2889881cffb2277a77 data/mekanism/recipe/crushing/biofuel/bread.json
+885547df7cbd50a8d354639491d33d2321f43911 data/mekanism/recipe/crushing/biofuel/bush.json
+ea684466dcc3536bb8ea7024fb4fe4d7057618c2 data/mekanism/recipe/crushing/biofuel/cactus_flower.json
 2710e39f35395b227ede14a7438e7f1c22f86b52 data/mekanism/recipe/crushing/biofuel/cake.json
 32ece7d5979e344e7076a033aa0ba7be2c2878a9 data/mekanism/recipe/crushing/biofuel/carved_pumpkin.json
 89e7b0b8e7b9d758d2fc502a9e5bfb00e7023e1f data/mekanism/recipe/crushing/biofuel/cookie.json
@@ -796,23 +798,26 @@ c58f2c3bec556ba899a6e202a38170788470b32c data/mekanism/recipe/crushing/biofuel/c
 f50108aee9f2c2121b98a19b57346f86fed18980 data/mekanism/recipe/crushing/biofuel/dried_kelp.json
 48577a4196d5cccc37c3c731eae6fa558698a9b4 data/mekanism/recipe/crushing/biofuel/dried_kelp_block.json
 cf7724fa8729de2314e3b96d0984eac9b23c4ed4 data/mekanism/recipe/crushing/biofuel/fern.json
+89abf4c49b63250b3212bb7e208f8990f0bb171f data/mekanism/recipe/crushing/biofuel/firefly_bush.json
 d47726c6b91978ba640e33d146fa12a22e8bbd17 data/mekanism/recipe/crushing/biofuel/fungus.json
 70e7b38273beacce6af6a4465339d263f0296171 data/mekanism/recipe/crushing/biofuel/glow_lichen.json
 ad0fb52bfa3dc5439c0d7e4dfe463dec16f00a3e data/mekanism/recipe/crushing/biofuel/hanging_roots.json
 e374107d48d8ff181b4bc7613e266a69c66cf364 data/mekanism/recipe/crushing/biofuel/hay_block.json
 8a49a38d0be557deac721c9fb9f488f7161226e8 data/mekanism/recipe/crushing/biofuel/kelp.json
 92551d9724bcc01aa54a266219d8746853390076 data/mekanism/recipe/crushing/biofuel/large_fern.json
+7d478d2bbceda323a66fd53d5a47a650a7c32217 data/mekanism/recipe/crushing/biofuel/leaf_litter.json
 7c63a008da808bcc8acea48b76ab666bf4614cfe data/mekanism/recipe/crushing/biofuel/leaves.json
 1eefe6751ad44eaa2c894b464098a79401b7d904 data/mekanism/recipe/crushing/biofuel/lily_pad.json
 4980978bce0275775f384776f8585282c760e6de data/mekanism/recipe/crushing/biofuel/mangrove_roots.json
 cca0b98de499373885e4df54ae56868672eead84 data/mekanism/recipe/crushing/biofuel/melon.json
 5fc1dca8e5f613a7d6750b33f4eee6bf752aa79f data/mekanism/recipe/crushing/biofuel/melon_slice.json
-9ec518117bd54aad730a706020acff933e262100 data/mekanism/recipe/crushing/biofuel/moss_block.json
-9360884ef92c4ed927ce9bc0f5213840ab5d093a data/mekanism/recipe/crushing/biofuel/moss_carpet.json
+3ff59a80586c68e23188430fb249777e2d9af773 data/mekanism/recipe/crushing/biofuel/moss_block.json
+cb15c17a63c598d063e15887edd8246d9fe701ba data/mekanism/recipe/crushing/biofuel/moss_carpet.json
 d8eac3e8e107fd10b52e62cf2939e8e18275212a data/mekanism/recipe/crushing/biofuel/mushrooms.json
 d49ae5018c945de21a837f6dbc24747b8971b696 data/mekanism/recipe/crushing/biofuel/mushroom_blocks.json
 ccfb67df8bb4c7abc47d73905df76d5105208ab1 data/mekanism/recipe/crushing/biofuel/nether_sprouts.json
 fda8f42ca50a2e845d3a01966a44d265da56283f data/mekanism/recipe/crushing/biofuel/nether_wart_block.json
+71227b5bcd48f196f30adbe6769554cbe60c9331 data/mekanism/recipe/crushing/biofuel/pale_hanging_moss.json
 81f88f4f2e5fda347ec2e08048e0cfa53f2111db data/mekanism/recipe/crushing/biofuel/pink_petals.json
 50d7569e751dec02bddd30a2f844392fbb317bf0 data/mekanism/recipe/crushing/biofuel/pitcher_pod.json
 6a449b13a23dad8c94c443fb94a42f5a277389d5 data/mekanism/recipe/crushing/biofuel/pumpkin.json
@@ -822,17 +827,18 @@ fda8f42ca50a2e845d3a01966a44d265da56283f data/mekanism/recipe/crushing/biofuel/n
 5dd1ce150c2d8d4ea49a7bef89d1d254225f0839 data/mekanism/recipe/crushing/biofuel/seagrass.json
 aa48a87d28226f90a766690fa40f9c5e7e19f3c3 data/mekanism/recipe/crushing/biofuel/sea_pickle.json
 29409dca41500158fc44b86041f9275ed13ee2e8 data/mekanism/recipe/crushing/biofuel/seeds.json
-f88b7137d1e064a3877a1fae8036d19b3e16aa18 data/mekanism/recipe/crushing/biofuel/short_grass.json
+3294da0ab4e848b77f947dd98ecca8d2e7f0e003 data/mekanism/recipe/crushing/biofuel/short_grass.json
 42f9bb995ca183f71fd2ec40cef3edb9c164982c data/mekanism/recipe/crushing/biofuel/shroomlight.json
 dd3e10aaad39f2742271a7c2d48c233ad539eee5 data/mekanism/recipe/crushing/biofuel/small_dripleaf.json
 9d42067f129fb5c62700de0d06f574f0eef83b1c data/mekanism/recipe/crushing/biofuel/small_flowers.json
 342bc15a19cd757bb1443adf44010e59f102ed75 data/mekanism/recipe/crushing/biofuel/spore_blossom.json
 7f59c2f31c9b6e2d14fbb75cfaba322c68ed8c16 data/mekanism/recipe/crushing/biofuel/sugar_cane.json
 2931a752c4fffdec2eceda1c1d32f8b532a773bf data/mekanism/recipe/crushing/biofuel/tall_flowers.json
-9ec2f0b891637a65a08a4b61f87d2d006aa42746 data/mekanism/recipe/crushing/biofuel/tall_grass.json
+57b33fd7c976f0e3afb1ec7f76e5b458d6b2a332 data/mekanism/recipe/crushing/biofuel/tall_grass.json
 6d163ef9da0487fb9cc3fc98f3323f4ab8b9e3cd data/mekanism/recipe/crushing/biofuel/vines.json
 9fd7b27c6efec67cc2680c4bd99d1c144f80c5ce data/mekanism/recipe/crushing/biofuel/warped_roots.json
 fb9fcb0c0ce517347316a80c9775be37c0ebb37c data/mekanism/recipe/crushing/biofuel/warped_wart_block.json
+a973ef6ea348beb061092955a177caa145d73d92 data/mekanism/recipe/crushing/biofuel/wildflowers.json
 4691b62c577c743021e76df818b85ebad99c0384 data/mekanism/recipe/crushing/blackstone/bricks_to_cracked_bricks.json
 eb02f4f813b5a4d7cb5dd54a126e54b92d69da84 data/mekanism/recipe/crushing/blackstone/chiseled_bricks_to_bricks.json
 def03e84c2cb49d7d56f17a93cb7b911b0a87270 data/mekanism/recipe/crushing/blackstone/from_cracked_bricks.json

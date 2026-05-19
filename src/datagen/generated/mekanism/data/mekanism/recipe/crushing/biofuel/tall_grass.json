@@ -2,7 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": "minecraft:tall_grass"
+    "ingredient": [
+      "minecraft:tall_dry_grass",
+      "minecraft:tall_grass"
+    ]
   },
   "output": {
     "count": 2,

@@ -2,7 +2,10 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 3,
-    "ingredient": "minecraft:moss_carpet"
+    "ingredient": [
+      "minecraft:moss_carpet",
+      "minecraft:pale_moss_carpet"
+    ]
   },
   "output": {
     "count": 4,

@@ -2,10 +2,7 @@
   "type": "mekanism:crushing",
   "input": {
     "count": 1,
-    "ingredient": [
-      "minecraft:short_dry_grass",
-      "minecraft:short_grass"
-    ]
+    "ingredient": "minecraft:firefly_bush"
   },
   "output": {
     "id": "mekanism:bio_fuel"
