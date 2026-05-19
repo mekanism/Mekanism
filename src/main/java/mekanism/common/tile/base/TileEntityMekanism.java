@@ -933,7 +933,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             }
         }
         if (canHandleHeat() && syncs(ContainerType.HEAT)) {
-            for (IHeatCapacitor capacitor : getHeatCapacitors(null)) {
+            for (IHeatCapacitor capacitor : getHeatCapacitors()) {
                 container.track(SyncableDouble.create(capacitor::getHeat, capacitor::setHeat));
                 if (capacitor instanceof BasicHeatCapacitor heatCapacitor) {
                     container.track(SyncableDouble.create(capacitor::getHeatCapacity, capacity -> heatCapacitor.setHeatCapacity(capacity, false)));
@@ -1202,14 +1202,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IInventorySlot> getInventorySlots() {
-        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
-        // and maybe rename the one that does take a side as it is mostly used for ContainerType
-        return getInventorySlots(null);
-    }
-
-    @NotNull
-    public final List<IInventorySlot> getInventorySlots(@Nullable Direction side) {
-        return itemHandlerManager == null ? Collections.emptyList() : itemHandlerManager.getContainers(side);
+        return itemHandlerManager == null ? Collections.emptyList() : itemHandlerManager.getContainers(null);
     }
 
     @Override
@@ -1281,14 +1274,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IChemicalTank> getChemicalTanks() {
-        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
-        // and maybe rename the one that does take a side as it is mostly used for ContainerType
-        return getChemicalTanks(null);
-    }
-
-    @NotNull
-    public List<IChemicalTank> getChemicalTanks(@Nullable Direction side) {
-        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(side);
+        return chemicalHandlerManager == null ? Collections.emptyList() : chemicalHandlerManager.getContainers(null);
     }
 
     public void applyChemicalTanks(DataComponentGetter input, List<IChemicalTank> tanks, AttachedResources<ChemicalResource> attachedChemicals) {
@@ -1322,14 +1308,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IFluidTank> getFluidTanks() {
-        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
-        // and maybe rename the one that does take a side as it is mostly used for ContainerType
-        return getFluidTanks(null);
-    }
-
-    @NotNull
-    public final List<IFluidTank> getFluidTanks(@Nullable Direction side) {
-        return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(side);
+        return fluidHandlerManager == null ? Collections.emptyList() : fluidHandlerManager.getContainers(null);
     }
 
     public void applyFluidTanks(DataComponentGetter input, List<IFluidTank> tanks, AttachedResources<FluidResource> attachedFluids) {
@@ -1350,14 +1329,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
 
     @NotNull
     public final List<IEnergyContainer> getEnergyContainers() {
-        //TODO - 26.1: This is equivalent to how it used to be called from various places, but we should re-evaluate and check that it makes sense
-        // and maybe rename the one that does take a side as it is mostly used for ContainerType
-        return getEnergyContainers(null);
-    }
-
-    @NotNull
-    public final List<IEnergyContainer> getEnergyContainers(@Nullable Direction side) {
-        return energyHandlerManager != null ? energyHandlerManager.getContainers(side) : Collections.emptyList();
+        return energyHandlerManager == null ? Collections.emptyList() : energyHandlerManager.getContainers(null);
     }
 
     @Nullable
@@ -1425,6 +1397,11 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
             adjacentHeatCaps.put(side, cache);
         }
         return cache.getCapability();
+    }
+
+    @NotNull
+    public final List<IHeatCapacitor> getHeatCapacitors() {
+        return getHeatCapacitors(null);
     }
 
     @NotNull

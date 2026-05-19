@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import mekanism.api.DataHandlerUtils;
@@ -32,7 +32,6 @@ import mekanism.common.config.IMekanismConfig;
 import mekanism.common.integration.energy.EnergyCompatUtils;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.base.TileEntityMekanism;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.core.component.DataComponentMap;
@@ -121,7 +120,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
 
     private final Map<Item, Lazy<? extends IContainerCreator<? extends CONTAINER, ATTACHED>>> knownDefaultCreators = new Reference2ObjectOpenHashMap<>();
     private final HandlerConstructor<CONTAINER, ATTACHED, HANDLER> handlerConstructor;
-    private final BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile;
+    private final Function<TileEntityMekanism, List<CONTAINER>> containersFromTile;
     private final CopyFromTile<CONTAINER, ATTACHED> copyFromTile;
     private final CopyToTile<CONTAINER, ATTACHED> copyToTile;
     private final CopyHandler<CONTAINER> copyHandler;
@@ -135,7 +134,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
 
     private ContainerType(DeferredHolder<DataComponentType<?>, DataComponentType<ATTACHED>> component, String containerTag, String containerKey,
           HandlerConstructor<CONTAINER, ATTACHED, HANDLER> handlerConstructor, @Nullable IMultiTypeCapability<? super HANDLER, ?> capability, ATTACHED emptyAttachment,
-          BiFunction<TileEntityMekanism, @Nullable Direction, List<CONTAINER>> containersFromTile, CopyFromTile<CONTAINER, ATTACHED> copyFromTile,
+          Function<TileEntityMekanism, List<CONTAINER>> containersFromTile, CopyFromTile<CONTAINER, ATTACHED> copyFromTile,
           CopyToTile<CONTAINER, ATTACHED> copyToTile, Predicate<TileEntityMekanism> canHandle, CopyHandler<CONTAINER> copyHandler) {
         TYPES_INTERNAL.add(this);
         this.component = component;
@@ -346,7 +345,7 @@ public class ContainerType<CONTAINER extends ValueIOSerializable, ATTACHED exten
     }
 
     public List<CONTAINER> getContainers(TileEntityMekanism tile) {
-        return containersFromTile.apply(tile, null);
+        return containersFromTile.apply(tile);
     }
 
     @FunctionalInterface
