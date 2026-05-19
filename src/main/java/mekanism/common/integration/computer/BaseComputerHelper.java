@@ -12,6 +12,7 @@ import java.util.function.Function;
 import mekanism.api.SerializationConstants;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.ChemicalStack;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
 import mekanism.common.Mekanism;
@@ -252,7 +253,7 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), DataComponentPatch.EMPTY);
     }
 
-    public Object convert(@Nullable ChemicalResource type) {
+    public Map<String, Object> convert(@Nullable ChemicalResource type) {
         if (type == null) {
             return null;
         }
@@ -266,14 +267,31 @@ public abstract class BaseComputerHelper {
         return SpecialConverters.wrapStack(stack.typeHolder().getRegisteredName(), SerializationConstants.AMOUNT, stack.amount(), stack.getComponentsPatch());
     }
 
-    public Object convert(@Nullable FluidResource type) {
+    public Map<String, Object> convert(@Nullable FluidResource type) {
         if (type == null) {
             return null;
         }
         return SpecialConverters.wrapResource(type.typeHolder().getRegisteredName(), type.getComponentsPatch());
     }
 
-    public Object convert(@Nullable ItemResource type) {
+    public Object convert(@Nullable LargeResourceStack<?> stack) {
+        if (stack == null) {
+            return null;
+        }
+        Map<String, Object> wrapped = switch (stack.resource()) {
+            case ItemResource resource -> convert(resource);
+            case FluidResource resource -> convert(resource);
+            case ChemicalResource resource -> convert(resource);
+            default -> null;
+        };
+        if (wrapped == null) {
+            return null;
+        }
+        wrapped.put(SerializationConstants.AMOUNT, stack.amount());
+        return wrapped;
+    }
+
+    public Map<String, Object> convert(@Nullable ItemResource type) {
         if (type == null) {
             return null;
         }
@@ -536,12 +554,18 @@ public abstract class BaseComputerHelper {
               .build(types);
 
         TableType.builder(ChemicalStack.class, "An amount of Gas/Fluid/Slurry/Pigment")
-              .addField(SerializationConstants.NAME, Item.class, "The Chemical's registered name")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Chemical's registered name")
               .addField(SerializationConstants.AMOUNT, int.class, "The amount in mB")
               .build(types);
 
         TableType.builder(ChemicalResource.class, "A chemical type")
-              .addField(SerializationConstants.NAME, Item.class, "The Chemical's registered name")
+              .addField(SerializationConstants.NAME, Identifier.class, "The Chemical's registered name")
+              .build(types);
+
+        TableType.builder(LargeResourceStack.class, "An amount of a resource")
+              .addField(SerializationConstants.NAME, Identifier.class, "The registry name of the backing resource")
+              .addField(SerializationConstants.COMPONENTS, String.class, "Any non default components of the resource, in Command JSON format")
+              .addField(SerializationConstants.AMOUNT, int.class, "The amount of resource stored")
               .build(types);
 
         TableType.builder(BlockState.class, "A Block State")

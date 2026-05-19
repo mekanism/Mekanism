@@ -178,7 +178,6 @@ public class ComputerHandlerBuilder {
      * @param annotationValues an annotation helper for this annotation's values
      */
     private void handleAtWrappingComputerMethod(Element annotatedElement, String annotatedName, boolean isPrivate, boolean isStatic, AnnotationHelper annotationValues) {
-        //TODO - 26.1: Make sure this supports wrapping methods that take a parameter (for example getting specific slots)
         //get the wrapper type and find its static methods
         TypeElement wrapperTypeEl;
         TypeMirror wrapperTypeMirror = annotationValues.getClassValue("wrapper");
@@ -201,6 +200,7 @@ public class ComputerHandlerBuilder {
 
         //get the value part of the getter (i.e. what we use as the param to the wrapper)
         CodeBlock targetReference;
+        List<VariableElement> parameters = Collections.emptyList();
         if (annotatedElement instanceof VariableElement fieldElement) {
             targetReference = getReadTargetReferenceForField(annotatedName, isPrivate, isStatic, fieldElement);
         } else if (annotatedElement instanceof ExecutableElement executableElement) {
@@ -213,7 +213,9 @@ public class ComputerHandlerBuilder {
                     targetReference = CodeBlock.of("$N($N)", proxyMethod, subjectParam);
                 }
             } else {
-                targetReference = callTargetMethod(annotatedName, isStatic, Collections.emptyList());
+                //noinspection unchecked
+                parameters = (List<VariableElement>) executableElement.getParameters();
+                targetReference = callTargetMethod(annotatedName, isStatic, parameters);
             }
         } else {
             throw new IllegalStateException("Unknown element type: " + annotatedElement.getClass());
@@ -263,7 +265,7 @@ public class ComputerHandlerBuilder {
             }
 
             //add a call to register() in the handler class's constructor
-            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, Collections.emptyList(), wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getBooleanValue("threadSafe", false), methodDescription);
+            CodeBlock registerMethodBuilder = buildRegisterMethodCall(annotationValues, parameters, wrapperMethod.getReturnType(), handlerMethod, targetMethodName, annotationValues.getBooleanValue("threadSafe", false), methodDescription);
             constructorBuilder.addStatement(registerMethodBuilder);
 
         }

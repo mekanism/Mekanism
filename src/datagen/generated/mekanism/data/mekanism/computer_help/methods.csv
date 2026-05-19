@@ -164,6 +164,7 @@ Digital Miner,getFilters,,List (Table (MinerFilter)),,false,Get the current list
 Digital Miner,getInverseMode,,boolean,,false,Whether Inverse Mode is enabled or not
 Digital Miner,getInverseModeReplaceTarget,,String (Item),,false,Get the configured Replacement target item
 Digital Miner,getInverseModeRequiresReplacement,,boolean,,false,Whether Inverse Mode Require Replacement is turned on
+Digital Miner,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the internal inventory slot. 0 based..
 Digital Miner,getMaxRadius,,Number (int),,false,"Get the maximum allowable Radius value, determined from the mod's config"
 Digital Miner,getMaxY,,Number (int),,false,Gets the configured maximum Y level for mining
 Digital Miner,getMinY,,Number (int),,false,Gets the configured minimum Y level for mining
@@ -202,6 +203,7 @@ Dynamic Tank Multiblock (formed),getContainerEditMode,,String (ContainerEditMode
 Dynamic Tank Multiblock (formed),getFilledPercentage,,Number (double),,false,
 Dynamic Tank Multiblock (formed),getInputItem,,Table (ItemStack),,false,Get the contents of the input slot.
 Dynamic Tank Multiblock (formed),getOutputItem,,Table (ItemStack),,false,Get the contents of the output slot.
+Dynamic Tank Multiblock (formed),getStored,,LargeResourceStack,,false,
 Dynamic Tank Multiblock (formed),getTankCapacity,,Number (long),,false,
 Dynamic Tank Multiblock (formed),incrementContainerEditMode,,,,false,
 Dynamic Tank Multiblock (formed),setContainerEditMode,mode: String (ContainerEditMode),,,false,
@@ -246,6 +248,8 @@ Energy Cube,getChargeItem,,Table (ItemStack),,false,Get the contents of the char
 Energy Cube,getDischargeItem,,Table (ItemStack),,false,Get the contents of the discharge slot.
 Factory Machine,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Factory Machine,getEnergyUsage,,Number (long),,false,Get the energy used in the last tick by the machine
+Factory Machine,getInput,process: Number (int),Table (ItemStack),,false,Get the contents of the input output slot.
+Factory Machine,getOutput,process: Number (int),Table (ItemStack),,false,Get the contents of the output slot.
 Factory Machine,getRecipeProgress,process: Number (int),Number (int),,false,
 Factory Machine,getTicksRequired,,Number (int),,false,Total number of ticks it takes currently for the recipe to complete
 Factory Machine,isAutoSortEnabled,,boolean,,false,
@@ -289,6 +293,7 @@ Fission Reactor Multiblock (formed),activate,,,,false,"Must be disabled, and if 
 Fission Reactor Multiblock (formed),getActualBurnRate,,Number (double),,false,Actual burn rate as it may be lower if say there is not enough fuel
 Fission Reactor Multiblock (formed),getBoilEfficiency,,Number (double),,false,
 Fission Reactor Multiblock (formed),getBurnRate,,Number (double),,false,Configured burn rate
+Fission Reactor Multiblock (formed),getCoolant,,LargeResourceStack,,false,
 Fission Reactor Multiblock (formed),getCoolantCapacity,,Number (long),,false,
 Fission Reactor Multiblock (formed),getCoolantFilledPercentage,,Number (double),,false,
 Fission Reactor Multiblock (formed),getCoolantNeeded,,Number (long),,false,
@@ -344,10 +349,13 @@ Formulaic Assemblicator,emptyGrid,,,,true,Requires auto mode to be disabled
 Formulaic Assemblicator,encodeFormula,,,,true,Requires an unencoded formula in the formula slot and a valid recipe
 Formulaic Assemblicator,fillGrid,,,,true,Requires auto mode to be disabled
 Formulaic Assemblicator,getAutoMode,,boolean,,true,Requires valid encoded formula
+Formulaic Assemblicator,getCraftingInputSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the crafting input slot.
+Formulaic Assemblicator,getCraftingOutputSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the crafting output slot.
 Formulaic Assemblicator,getCraftingOutputSlots,,Number (int),,false,
 Formulaic Assemblicator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.
 Formulaic Assemblicator,getExcessRemainingItems,,List (Table (ItemStack)),,false,
 Formulaic Assemblicator,getFormulaItem,,Table (ItemStack),,false,Get the contents of the formula slot.
+Formulaic Assemblicator,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the input slot.
 Formulaic Assemblicator,getRecipeProgress,,Number (int),,false,
 Formulaic Assemblicator,getSlots,,Number (int),,false,
 Formulaic Assemblicator,getStockControl,,boolean,,true,Requires valid encoded formula
@@ -474,6 +482,7 @@ Laser Amplifier,setDelay,delay: Number (int),,,true,
 Laser Amplifier,setMaxThreshold,threshold: Number (long),,,true,
 Laser Amplifier,setMinThreshold,threshold: Number (long),,,true,
 Laser Amplifier,setRedstoneOutputMode,mode: String (RedstoneOutput),,,true,
+Laser Tractor Beam,getItemInSlot,slot: Number (int),Table (ItemStack),,false,Get the contents of the amplifier slot.
 Laser Tractor Beam,getSlotCount,,Number (int),,false,
 Logistical Sorter,addFilter,filter: Table (SorterFilter),boolean,,true,
 Logistical Sorter,clearDefaultColor,,,,true,
@@ -606,6 +615,9 @@ Pressurized Reaction Chamber,getOutputGasCapacity,,Number (long),,false,Get the 
 Pressurized Reaction Chamber,getOutputGasFilledPercentage,,Number (double),,false,Get the filled percentage of the gas output.
 Pressurized Reaction Chamber,getOutputGasNeeded,,Number (long),,false,Get the amount needed to fill the gas output.
 Pressurized Reaction Chamber,getOutputItem,,Table (ItemStack),,false,Get the contents of the item output slot.
+QIO Dashboard,getCraftingInput,"window: Number (int), slot: Number (int)",Table (ItemStack),,false,Get the contents of the crafting input slot.
+QIO Dashboard,getCraftingOutput,window: Number (int),Table (ItemStack),,false,Get the contents of the crafting output slot.
+QIO Drive Array,getDrive,slot: Number (int),Table (ItemStack),,false,Get the contents of the drive slot.
 QIO Drive Array,getDriveStatus,slot: Number (int),String (DriveStatus),,false,
 QIO Drive Array,getFrequencyItemCapacity,,Number (long),,false,Requires a frequency to be selected
 QIO Drive Array,getFrequencyItemCount,,Number (long),,false,Requires a frequency to be selected
@@ -652,6 +664,7 @@ Quantum Entangloporter,getBufferFluid,,Table (FluidStack),,false,Get the content
 Quantum Entangloporter,getBufferFluidCapacity,,Number (long),,false,Get the capacity of the fluid buffer.
 Quantum Entangloporter,getBufferFluidFilledPercentage,,Number (double),,false,Get the filled percentage of the fluid buffer.
 Quantum Entangloporter,getBufferFluidNeeded,,Number (long),,false,Get the amount needed to fill the fluid buffer.
+Quantum Entangloporter,getBufferItem,,Table (ItemStack),,false,Get the contents of the buffer slot.
 Quantum Entangloporter,getEnvironmentalLoss,,Number (double),,false,May not be accurate if there is no frequency
 Quantum Entangloporter,getFrequencies,,List (Table (InventoryFrequency)),,false,Lists public frequencies
 Quantum Entangloporter,getFrequency,,Table (InventoryFrequency),,false,Requires a frequency to be selected
@@ -670,6 +683,7 @@ Resistive Heater,getEnvironmentalLoss,,Number (double),,false,
 Resistive Heater,getTemperature,,Number (double),,false,Get the temperature of the heater in Kelvin.
 Resistive Heater,getTransferLoss,,Number (double),,false,
 Resistive Heater,setEnergyUsage,usage: Number (long),,,true,
+Resource Transmitter,getBuffer,,LargeResourceStack,,false,
 Resource Transmitter,getCapacity,,Number (long),,false,
 Resource Transmitter,getFilledPercentage,,Number (double),,false,
 Resource Transmitter,getNeeded,,Number (long),,false,
@@ -701,6 +715,7 @@ SPS Multiblock (formed),getOutputNeeded,,Number (long),,false,Get the amount nee
 SPS Multiblock (formed),getProcessRate,,Number (double),,false,
 SPS Port,getMode,,boolean,,false,"true -> output, false -> input."
 SPS Port,setMode,output: boolean,,,false,"true -> output, false -> input."
+Sawing Factory,getSecondaryOutput,process: Number (int),Table (ItemStack),,false,Get the contents of the secondary output slot.
 Seismic Vibrator,getBlockAt,"chunkRelativeX: Number (int), y: Number (int), chunkRelativeZ: Number (int)",Table (BlockState),,false,
 Seismic Vibrator,getColumnAt,"chunkRelativeX: Number (int), chunkRelativeZ: Number (int)",Table (Number (int) => Table (BlockState)),,false,"Get a column info, table key is the Y level"
 Seismic Vibrator,getEnergyItem,,Table (ItemStack),,false,Get the contents of the energy slot.

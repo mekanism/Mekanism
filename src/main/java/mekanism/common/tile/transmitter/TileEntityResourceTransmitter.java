@@ -118,7 +118,7 @@ public abstract class TileEntityResourceTransmitter<RESOURCE extends Resource, C
     }
 
     //Methods relating to IComputerTile
-    //@ComputerMethod//TODO - 26.1: Figure this out
+    @ComputerMethod
     LargeResourceStack<RESOURCE> getBuffer() {
         return getTransmitter().getBufferWithFallback();
     }

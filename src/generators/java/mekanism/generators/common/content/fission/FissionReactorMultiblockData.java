@@ -642,7 +642,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         setRateLimit(rate);
     }
 
-    //@ComputerMethod//TODO - 26.1: Add a wrapper type for this
+    @ComputerMethod
     LargeResourceStack<?> getCoolant() {
         if (coolantTank.getCurrentType() == CurrentType.CHEMICAL) {
             return coolantTank.getChemicalTank().asStack();

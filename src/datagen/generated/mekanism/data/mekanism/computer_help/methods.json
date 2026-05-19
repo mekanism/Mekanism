@@ -1438,6 +1438,21 @@
       }
     },
     {
+      "description": "Get the contents of the internal inventory slot. 0 based..",
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
       "description": "Get the maximum allowable Radius value, determined from the mod's config",
       "methodName": "getMaxRadius",
       "returns": {
@@ -1836,6 +1851,13 @@
       }
     },
     {
+      "methodName": "getStored",
+      "returns": {
+        "type": "LargeResourceStack",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
+      }
+    },
+    {
       "methodName": "getTankCapacity",
       "returns": {
         "type": "Number (long)",
@@ -2175,6 +2197,36 @@
       "returns": {
         "type": "Number (long)",
         "java_type": "long"
+      }
+    },
+    {
+      "description": "Get the contents of the input output slot.",
+      "methodName": "getInput",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Get the contents of the output slot.",
+      "methodName": "getOutput",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
       }
     },
     {
@@ -2556,6 +2608,13 @@
       "returns": {
         "type": "Number (double)",
         "java_type": "double"
+      }
+    },
+    {
+      "methodName": "getCoolant",
+      "returns": {
+        "type": "LargeResourceStack",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
       }
     },
     {
@@ -2961,6 +3020,36 @@
       }
     },
     {
+      "description": "Get the contents of the crafting input slot.",
+      "methodName": "getCraftingInputSlot",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Get the contents of the crafting output slot.",
+      "methodName": "getCraftingOutputSlot",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
       "methodName": "getCraftingOutputSlots",
       "returns": {
         "type": "Number (int)",
@@ -2988,6 +3077,21 @@
     {
       "description": "Get the contents of the formula slot.",
       "methodName": "getFormulaItem",
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Get the contents of the input slot.",
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
       "returns": {
         "type": "Table (ItemStack)",
         "java_type": "net.minecraft.world.item.ItemStack"
@@ -4054,6 +4158,21 @@
     }
   ],
   "Laser Tractor Beam": [
+    {
+      "description": "Get the contents of the amplifier slot.",
+      "methodName": "getItemInSlot",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
     {
       "methodName": "getSlotCount",
       "returns": {
@@ -5251,7 +5370,59 @@
       }
     }
   ],
+  "QIO Dashboard": [
+    {
+      "description": "Get the contents of the crafting input slot.",
+      "methodName": "getCraftingInput",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "window"
+        },
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
+      "description": "Get the contents of the crafting output slot.",
+      "methodName": "getCraftingOutput",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "window"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    }
+  ],
   "QIO Drive Array": [
+    {
+      "description": "Get the contents of the drive slot.",
+      "methodName": "getDrive",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "slot"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
     {
       "methodName": "getDriveStatus",
       "params": [
@@ -5668,6 +5839,14 @@
       }
     },
     {
+      "description": "Get the contents of the buffer slot.",
+      "methodName": "getBufferItem",
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
+    },
+    {
       "description": "May not be accurate if there is no frequency",
       "methodName": "getEnvironmentalLoss",
       "returns": {
@@ -5823,6 +6002,13 @@
     }
   ],
   "Resource Transmitter": [
+    {
+      "methodName": "getBuffer",
+      "returns": {
+        "type": "LargeResourceStack",
+        "java_type": "mekanism.api.resource.LargeResourceStack"
+      }
+    },
     {
       "methodName": "getCapacity",
       "returns": {
@@ -6076,6 +6262,23 @@
           "name": "output"
         }
       ]
+    }
+  ],
+  "Sawing Factory": [
+    {
+      "description": "Get the contents of the secondary output slot.",
+      "methodName": "getSecondaryOutput",
+      "params": [
+        {
+          "type": "Number (int)",
+          "java_type": "int",
+          "name": "process"
+        }
+      ],
+      "returns": {
+        "type": "Table (ItemStack)",
+        "java_type": "net.minecraft.world.item.ItemStack"
+      }
     }
   ],
   "Seismic Vibrator": [

@@ -5,8 +5,8 @@ built_in_tables:
     fields:
       name:
         description: The Chemical's registered name
-        java_type: net.minecraft.world.item.Item
-        type: String (Item)
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
     human_name: ChemicalResource
   mekanism.api.chemical.ChemicalStack:
     description: An amount of Gas/Fluid/Slurry/Pigment
@@ -17,9 +17,25 @@ built_in_tables:
         type: Number (int)
       name:
         description: The Chemical's registered name
-        java_type: net.minecraft.world.item.Item
-        type: String (Item)
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
     human_name: Table (ChemicalStack)
+  mekanism.api.resource.LargeResourceStack:
+    description: An amount of a resource
+    fields:
+      amount:
+        description: The amount of resource stored
+        java_type: int
+        type: Number (int)
+      components:
+        description: Any non default components of the resource, in Command JSON format
+        java_type: java.lang.String
+        type: String
+      name:
+        description: The registry name of the backing resource
+        java_type: net.minecraft.resources.Identifier
+        type: String (Identifier)
+    human_name: LargeResourceStack
   mekanism.common.content.filter.IFilter:
     description: |-
       Common Filter properties. Use the API Global to make constructing these a little easier.
@@ -1341,6 +1357,15 @@ methods:
     returns:
       java_type: boolean
       type: boolean
+  - description: Get the contents of the internal inventory slot. 0 based..
+    methodName: getItemInSlot
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - description: Get the maximum allowable Radius value, determined from the mod's
       config
     methodName: getMaxRadius
@@ -1592,6 +1617,10 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
+  - methodName: getStored
+    returns:
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: LargeResourceStack
   - methodName: getTankCapacity
     returns:
       java_type: long
@@ -1797,6 +1826,24 @@ methods:
     returns:
       java_type: long
       type: Number (long)
+  - description: Get the contents of the input output slot.
+    methodName: getInput
+    params:
+    - java_type: int
+      name: process
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
+  - description: Get the contents of the output slot.
+    methodName: getOutput
+    params:
+    - java_type: int
+      name: process
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - methodName: getRecipeProgress
     params:
     - java_type: int
@@ -2005,6 +2052,10 @@ methods:
     returns:
       java_type: double
       type: Number (double)
+  - methodName: getCoolant
+    returns:
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: LargeResourceStack
   - methodName: getCoolantCapacity
     returns:
       java_type: long
@@ -2243,6 +2294,24 @@ methods:
     returns:
       java_type: boolean
       type: boolean
+  - description: Get the contents of the crafting input slot.
+    methodName: getCraftingInputSlot
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
+  - description: Get the contents of the crafting output slot.
+    methodName: getCraftingOutputSlot
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - methodName: getCraftingOutputSlots
     returns:
       java_type: int
@@ -2260,6 +2329,15 @@ methods:
       type: List (Table (ItemStack))
   - description: Get the contents of the formula slot.
     methodName: getFormulaItem
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
+  - description: Get the contents of the input slot.
+    methodName: getItemInSlot
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
@@ -2892,6 +2970,15 @@ methods:
       type: String (RedstoneOutput)
     requires_public_security: true
   Laser Tractor Beam:
+  - description: Get the contents of the amplifier slot.
+    methodName: getItemInSlot
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - methodName: getSlotCount
     returns:
       java_type: int
@@ -3607,7 +3694,38 @@ methods:
     returns:
       java_type: net.minecraft.world.item.ItemStack
       type: Table (ItemStack)
+  QIO Dashboard:
+  - description: Get the contents of the crafting input slot.
+    methodName: getCraftingInput
+    params:
+    - java_type: int
+      name: window
+      type: Number (int)
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
+  - description: Get the contents of the crafting output slot.
+    methodName: getCraftingOutput
+    params:
+    - java_type: int
+      name: window
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   QIO Drive Array:
+  - description: Get the contents of the drive slot.
+    methodName: getDrive
+    params:
+    - java_type: int
+      name: slot
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - methodName: getDriveStatus
     params:
     - java_type: int
@@ -3855,6 +3973,11 @@ methods:
     returns:
       java_type: long
       type: Number (long)
+  - description: Get the contents of the buffer slot.
+    methodName: getBufferItem
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   - description: May not be accurate if there is no frequency
     methodName: getEnvironmentalLoss
     returns:
@@ -3949,6 +4072,10 @@ methods:
       type: Number (long)
     requires_public_security: true
   Resource Transmitter:
+  - methodName: getBuffer
+    returns:
+      java_type: mekanism.api.resource.LargeResourceStack
+      type: LargeResourceStack
   - methodName: getCapacity
     returns:
       java_type: long
@@ -4103,6 +4230,16 @@ methods:
     - java_type: boolean
       name: output
       type: boolean
+  Sawing Factory:
+  - description: Get the contents of the secondary output slot.
+    methodName: getSecondaryOutput
+    params:
+    - java_type: int
+      name: process
+      type: Number (int)
+    returns:
+      java_type: net.minecraft.world.item.ItemStack
+      type: Table (ItemStack)
   Seismic Vibrator:
   - methodName: getBlockAt
     params:

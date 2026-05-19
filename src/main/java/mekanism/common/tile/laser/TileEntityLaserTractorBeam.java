@@ -11,7 +11,9 @@ import mekanism.common.capabilities.energy.LaserEnergyContainer;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.MekContainerHelper;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.container.slot.ContainerSlotType;
 import mekanism.common.inventory.slot.OutputInventorySlot;
 import mekanism.common.registries.MekanismBlocks;
@@ -119,8 +121,7 @@ public class TileEntityLaserTractorBeam extends TileEntityLaserReceptor {
         return getInventorySlots().size();
     }
 
-    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
-    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "amplifier slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "amplifier slot")
     IInventorySlot getSlot(int slot) throws ComputerException {
         List<IInventorySlot> slots = getInventorySlots();
         if (slot < 0 || slot >= slots.size()) {

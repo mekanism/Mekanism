@@ -176,7 +176,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         setContainerEditMode(editMode.getPrevious());
     }
 
-    //@ComputerMethod//TODO - 26.1: Add a wrapper type for this
+    @ComputerMethod
     LargeResourceStack<?> getStored() {
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> getFluidTank().asStack();

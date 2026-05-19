@@ -778,8 +778,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
     }
 
     //Methods relating to IComputerTile
-    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
-    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInputSlot", docPlaceholder = "crafting input slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingInputSlot", docPlaceholder = "crafting input slot")
     IInventorySlot getCraftingInputSlot(int slot) throws ComputerException {
         if (slot < 0 || slot >= craftingGridSlots.size()) {
             throw new ComputerException("Crafting Input Slot '%d' is out of bounds, must be between 0 and %d.", slot, craftingGridSlots.size());
@@ -792,8 +791,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return outputSlots.size();
     }
 
-    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
-    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutputSlot", docPlaceholder = "crafting output slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getCraftingOutputSlot", docPlaceholder = "crafting output slot")
     IInventorySlot getCraftingOutputSlot(int slot) throws ComputerException {
         int size = getCraftingOutputSlots();
         if (slot < 0 || slot >= size) {
@@ -807,8 +805,7 @@ public class TileEntityFormulaicAssemblicator extends TileEntityConfigurableMach
         return inputSlots.size();
     }
 
-    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
-    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "input slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getItemInSlot", docPlaceholder = "input slot")
     IInventorySlot getCorrespondingSlot(int slot) throws ComputerException {
         int size = computerGetSlots();
         if (slot < 0 || slot >= size) {

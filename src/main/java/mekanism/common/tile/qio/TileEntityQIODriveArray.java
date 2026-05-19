@@ -18,7 +18,9 @@ import mekanism.common.content.qio.IQIODriveHolder;
 import mekanism.common.content.qio.QIODriveData;
 import mekanism.common.content.qio.QIOFrequency;
 import mekanism.common.integration.computer.ComputerException;
+import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerIInventorySlotWrapper;
 import mekanism.common.integration.computer.annotation.ComputerMethod;
+import mekanism.common.integration.computer.annotation.WrappingComputerMethod;
 import mekanism.common.inventory.slot.QIODriveSlot;
 import mekanism.common.registries.MekanismBlocks;
 import mekanism.common.util.MekanismUtils;
@@ -32,7 +34,6 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.model.data.ModelData;
 import net.neoforged.neoforge.model.data.ModelProperty;
-import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -161,8 +162,7 @@ public class TileEntityQIODriveArray extends TileEntityQIOComponent implements I
         }
     }
 
-    //TODO - 26.1: Re-evaluate how we want to handle exposing this to computer integration
-    //@WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrive", docPlaceholder = "drive slot")
+    @WrappingComputerMethod(wrapper = ComputerIInventorySlotWrapper.class, methodNames = "getDrive", docPlaceholder = "drive slot")
     IInventorySlot getDriveSlot(int slot) throws ComputerException {
         validateSlot(slot);
         return driveSlots.get(slot);
