@@ -136,7 +136,7 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
     @ContainerSync
     private boolean forceDisable;
 
-    private int cooledCoolantCapacity;
+    private long cooledCoolantCapacity;
     private long heatedCoolantCapacity;
     private long fuelCapacity;
 

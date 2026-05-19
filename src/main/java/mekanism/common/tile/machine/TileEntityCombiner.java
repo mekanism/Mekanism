@@ -98,10 +98,10 @@ public class TileEntityCombiner extends TileEntityProgressMachine<CombinerRecipe
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(mainInputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeAB(itemType, extraInputSlot.getResource()), this::containsRecipeA, recipeCacheListener,
+        builder.addContainer(mainInputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, extraInputSlot.getResource()), this::containsRecipeA, recipeCacheListener,
               64, 17)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
-        builder.addContainer(extraInputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeBA(mainInputSlot.getResource(), itemType), this::containsRecipeB, recipeCacheListener,
+        builder.addContainer(extraInputSlot = InputInventorySlot.at(itemType -> containsRecipeBA(mainInputSlot.getResource(), itemType), this::containsRecipeB, recipeCacheListener,
               64, 53)
         ).tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_SECONDARY_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))

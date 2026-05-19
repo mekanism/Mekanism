@@ -28,7 +28,7 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
     private static final int TEXTURE_SIZE = 16;
     private static final int MIN_CHEMICAL_HEIGHT = 1; // ensure tiny amounts of chemical are still visible
 
-    private final long capacityMb;
+    private final int capacityMb;
     private final TooltipMode tooltipMode;
     private final int width;
     private final int height;
@@ -37,11 +37,11 @@ public class ChemicalStackRenderer implements IIngredientRenderer<ChemicalStack>
         this(FluidType.BUCKET_VOLUME, TooltipMode.ITEM_LIST, TEXTURE_SIZE, TEXTURE_SIZE);
     }
 
-    public ChemicalStackRenderer(long capacityMb, int width, int height) {
+    public ChemicalStackRenderer(int capacityMb, int width, int height) {
         this(capacityMb, TooltipMode.SHOW_AMOUNT, width, height);
     }
 
-    private ChemicalStackRenderer(long capacityMb, TooltipMode tooltipMode, int width, int height) {
+    private ChemicalStackRenderer(int capacityMb, TooltipMode tooltipMode, int width, int height) {
         Preconditions.checkArgument(capacityMb > 0, "capacity must be > 0");
         this.capacityMb = capacityMb;
         this.tooltipMode = tooltipMode;

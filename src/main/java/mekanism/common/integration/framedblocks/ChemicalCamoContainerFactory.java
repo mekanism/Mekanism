@@ -27,6 +27,7 @@ import net.neoforged.neoforge.transfer.access.ItemAccess;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.Nullable;
 
+//TODO - 26.1: Make use of https://github.com/XFactHD/FramedBlocks/commit/98a92c86d28c7f3c6011ce7444c07d54cd0e2115 once there is a released version that contains that
 final class ChemicalCamoContainerFactory extends CamoContainerFactory<ChemicalCamoContainer> {
 
     private static final MapCodec<ChemicalCamoContainer> CODEC = ChemicalResource.CODEC.xmap(

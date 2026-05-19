@@ -9,6 +9,7 @@ import java.util.Set;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.component.UpgradeAware;
 import mekanism.common.block.attribute.Attribute;
 import mekanism.common.block.attribute.AttributeUpgradeSupport;
@@ -74,10 +75,8 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             //Not all upgrades are supported, fail
             return false;
         }
-        ItemResource inputType = ItemResource.EMPTY;
-        ItemResource outputType = ItemResource.EMPTY;
-        long inputAmount = 0;
-        long outputAmount = 0;
+        LargeResourceStack<ItemResource> inputType = LargeResourceStack.EMPTY_ITEM_STACK;
+        LargeResourceStack<ItemResource> outputType = LargeResourceStack.EMPTY_ITEM_STACK;
         for (IInventorySlot slot : slots) {
             if (!slot.isEmpty()) {
                 ItemResource resource = slot.getResource();
@@ -89,31 +88,29 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
                 }
                 if (supportedUpgrades.contains(upgrade)) {
                     if (inputType.isEmpty()) {
-                        inputType = resource;
-                        inputAmount = amount;
+                        inputType = new LargeResourceStack<>(resource, amount);
                         continue;
-                    } else if (inputAmount < inputType.getMaxStackSize() && resource.equals(inputType)) {
-                        long needed = inputType.getMaxStackSize() - inputAmount;
+                    } else if (inputType.amount() < inputType.resource().getMaxStackSize() && resource.equals(inputType.resource())) {
+                        long needed = inputType.resource().getMaxStackSize() - inputType.amount();
                         if (amount <= needed) {
                             //All fits, increment and continue
-                            inputAmount += amount;
+                            inputType = inputType.with(inputType.amount() + amount);
                             continue;
                         }
                         //Add what we can from it, and then see if we can add it to the output slot
-                        inputAmount += needed;
+                        inputType = inputType.with(inputType.amount() + needed);
                         amount -= needed;
                     }
                 }
                 if (outputType.isEmpty()) {
-                    outputType = resource;
-                    outputAmount = amount;
-                } else if (outputAmount < outputType.getMaxStackSize() && resource.equals(outputType)) {
-                    long needed = outputType.getMaxStackSize() - outputAmount;
+                    outputType = new LargeResourceStack<>(resource, amount);
+                } else if (outputType.amount() < outputType.resource().getMaxStackSize() && resource.equals(outputType.resource())) {
+                    long needed = outputType.resource().getMaxStackSize() - outputType.amount();
                     if (amount > needed) {
                         //Doesn't all fit
                         return false;
                     }
-                    outputAmount += amount;
+                    outputType = outputType.with(outputType.amount() + amount);
                 } else {
                     //Can't fit all the items
                     return false;
@@ -121,7 +118,7 @@ public class UpgradesRecipeData implements RecipeUpgradeData<UpgradesRecipeData>
             }
         }
         //Add any upgrades we might have to the stack, and allow it to take over the map
-        stack.set(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, inputType, inputAmount, outputType, outputAmount));
+        stack.set(MekanismDataComponents.UPGRADES, new UpgradeAware(upgrades, inputType, outputType));
         //Try merging stored stacks
         return true;
     }

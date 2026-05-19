@@ -27,14 +27,6 @@ public interface IQIOFrequency extends IFrequency {//TODO - 26.1: Update docs
     long getStored(ItemResource type);
 
     /**
-     * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with a new {@link ItemStack} with a size of {@code 1}
-     * representing the type, and a long representing the amount of that item type that is stored.
-     *
-     * @param consumer Action to be performed.
-     */
-    void forAllStored(ObjLongConsumer<ItemStack> consumer);
-
-    /**
      * Performs the given action for every item type stored in this QIO Frequency. Each action will be provided with the stored {@link ItemResource} representing the type,
      * and a long representing the amount of that item type that is stored.
      *

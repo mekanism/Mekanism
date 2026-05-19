@@ -6,11 +6,11 @@ import mekanism.common.config.value.CachedIntValue;
 import mekanism.common.config.value.CachedLongValue;
 import net.neoforged.neoforge.fluids.FluidType;
 
-public enum FluidTankTier implements ITier {
-    BASIC(BaseTier.BASIC, 32 * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
-    ADVANCED(BaseTier.ADVANCED, 64 * FluidType.BUCKET_VOLUME, 4 * FluidType.BUCKET_VOLUME),
-    ELITE(BaseTier.ELITE, 128 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
-    ULTIMATE(BaseTier.ULTIMATE, 256 * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
+public enum FluidTankTier implements ITier {//TODO - 26.1: Do we want to change capacities to match chemicals?
+    BASIC(BaseTier.BASIC, 32L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
+    ADVANCED(BaseTier.ADVANCED, 64L * FluidType.BUCKET_VOLUME, 4 * FluidType.BUCKET_VOLUME),
+    ELITE(BaseTier.ELITE, 128L * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
+    ULTIMATE(BaseTier.ULTIMATE, 256L * FluidType.BUCKET_VOLUME, 64 * FluidType.BUCKET_VOLUME),
     CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
     private final long baseStorage;

@@ -17,11 +17,10 @@ public class InputInventorySlot extends BasicInventorySlot {
     }
 
     public static InputInventorySlot at(Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
-        return inputAt(ConstantPredicates.alwaysTrue(), isItemValid, listener, x, y);
+        return at(ConstantPredicates.alwaysTrue(), isItemValid, listener, x, y);
     }
 
-    public static InputInventorySlot inputAt(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener,
-          int x, int y) {
+    public static InputInventorySlot at(Predicate<ItemResource> insertPredicate, Predicate<ItemResource> isItemValid, @Nullable IContentsListener listener, int x, int y) {
         Objects.requireNonNull(insertPredicate, "Insertion check cannot be null");
         Objects.requireNonNull(isItemValid, "Item validity check cannot be null");
         return new InputInventorySlot(insertPredicate, isItemValid, listener, x, y);

@@ -28,7 +28,6 @@ public class FluidTankFluidTank extends BasicFluidTank {
     private final IntSupplier rate;
 
     private FluidTankFluidTank(TileEntityFluidTank tile, @Nullable IContentsListener listener) {
-        //TODO - 26.1: Make storage support longs
         super(tile.tier.getStorage(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(), listener);
         this.tile = tile;
         rate = tile.tier::getOutput;

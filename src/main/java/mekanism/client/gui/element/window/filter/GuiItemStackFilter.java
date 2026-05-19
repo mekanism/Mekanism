@@ -46,7 +46,7 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
     @Nullable
     @Override
     protected IGhostItemConsumer getGhostHandler() {
-        return ingredient -> setFilterStackWithSound(((ItemStack) ingredient).copyWithCount(1));
+        return ingredient -> setFilterStackWithSound(ItemResource.of((ItemStack) ingredient));
     }
 
     @Nullable
@@ -55,13 +55,13 @@ public abstract class GuiItemStackFilter<FILTER extends IItemStackFilter<FILTER>
         return getHandleClickSlot(NOT_EMPTY, this::setFilterStack);
     }
 
-    private void setFilterStack(@NotNull ItemStack stack) {
-        filter.setItemType(ItemResource.of(stack));
+    private void setFilterStack(@NotNull ItemResource itemType) {
+        filter.setItemType(itemType);
         slotDisplay.updateStackList();
     }
 
-    protected void setFilterStackWithSound(@NotNull ItemStack stack) {
-        setFilterStack(stack);
+    protected void setFilterStackWithSound(@NotNull ItemResource itemType) {
+        setFilterStack(itemType);
         playClickSound(BUTTON_CLICK_SOUND);
     }
 }

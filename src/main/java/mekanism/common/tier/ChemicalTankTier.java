@@ -10,10 +10,10 @@ import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
 
 public enum ChemicalTankTier implements ITier, StringRepresentable {
-    BASIC(BaseTier.BASIC, 64 * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
-    ADVANCED(BaseTier.ADVANCED, 256 * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
-    ELITE(BaseTier.ELITE, 1_024 * FluidType.BUCKET_VOLUME, 128 * FluidType.BUCKET_VOLUME),
-    ULTIMATE(BaseTier.ULTIMATE, 8_192 * FluidType.BUCKET_VOLUME, 512 * FluidType.BUCKET_VOLUME),
+    BASIC(BaseTier.BASIC, 64L * FluidType.BUCKET_VOLUME, FluidType.BUCKET_VOLUME),
+    ADVANCED(BaseTier.ADVANCED, 256L * FluidType.BUCKET_VOLUME, 16 * FluidType.BUCKET_VOLUME),
+    ELITE(BaseTier.ELITE, 1_024L * FluidType.BUCKET_VOLUME, 128 * FluidType.BUCKET_VOLUME),
+    ULTIMATE(BaseTier.ULTIMATE, 8_192L * FluidType.BUCKET_VOLUME, 512 * FluidType.BUCKET_VOLUME),
     CREATIVE(BaseTier.CREATIVE, Long.MAX_VALUE, Integer.MAX_VALUE);
 
     private final long baseStorage;

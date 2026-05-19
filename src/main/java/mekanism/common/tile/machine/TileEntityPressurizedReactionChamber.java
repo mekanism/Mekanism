@@ -75,7 +75,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
           RecipeError.INPUT_DOESNT_PRODUCE_OUTPUT
     );
     private static final int BASE_DURATION = 5 * SharedConstants.TICKS_PER_SECOND;
-    public static final long MAX_FLUID = 10 * FluidType.BUCKET_VOLUME;
+    public static final long MAX_FLUID = 10L * FluidType.BUCKET_VOLUME;
     public static final long MAX_GAS = 10L * FluidType.BUCKET_VOLUME;
 
     @WrappingComputerMethod(wrapper = ComputerFluidTankWrapper.class, methodNames = {"getInputFluid", "getInputFluidCapacity", "getInputFluidNeeded",
@@ -152,7 +152,7 @@ public class TileEntityPressurizedReactionChamber extends TileEntityProgressMach
     @Override
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
-        builder.addContainer(inputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeABC(itemType, inputFluidTank.getResource(), inputGasTank.getResource()),
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeABC(itemType, inputFluidTank.getResource(), inputGasTank.getResource()),
                     this::containsRecipeA, recipeCacheListener, 54, 40))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(NOT_ENOUGH_ITEM_INPUT_ERROR)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 40))

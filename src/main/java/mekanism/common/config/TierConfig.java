@@ -136,8 +136,8 @@ public class TierConfig extends BaseMekanismConfig {
         for (PipeTier tier : EnumUtils.PIPE_TIERS) {
             TierTranslations translations = TierTranslations.create(tier);
             String tierName = tier.getBaseTier().getSimpleName().toLowerCase(Locale.ROOT);
-            CachedIntValue capacityReference = CachedIntValue.wrap(this, translations.first().applyToBuilder(builder)
-                  .defineInRange(tierName + "Capacity", tier.getBaseCapacity(), 1, Integer.MAX_VALUE));
+            CachedLongValue capacityReference = CachedLongValue.wrap(this, translations.first().applyToBuilder(builder)
+                  .defineInRange(tierName + "Capacity", tier.getBaseCapacity(), 1, Long.MAX_VALUE));
             CachedIntValue pullReference = CachedIntValue.wrap(this, translations.second().applyToBuilder(builder)
                   .defineInRange(tierName + "PullAmount", tier.getBasePull(), 1, Integer.MAX_VALUE));
             tier.setConfigReference(capacityReference, pullReference);

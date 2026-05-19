@@ -85,7 +85,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     private double biomeAmbientTemp;
     private double tempMultiplier;
 
-    private int inputTankCapacity;
+    private long inputTankCapacity;
     public float prevScale;
     @ContainerSync
     @SyntheticComputerMethod(getter = "getProductionAmount")
@@ -227,7 +227,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
         }
     }
 
-    public int getMaxFluid() {
+    public long getMaxFluid() {
         return inputTankCapacity;
     }
 

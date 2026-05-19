@@ -137,7 +137,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
     private boolean clientBurning;
     private double clientTemp;
 
-    private int maxWater;
+    private long maxWater;
     private long maxSteam;
 
     private AABB deathZone;
@@ -446,7 +446,7 @@ public class FusionReactorMultiblockData extends MultiblockData {
         }
     }
 
-    public int getMaxWater() {
+    public long getMaxWater() {
         return maxWater;
     }
 

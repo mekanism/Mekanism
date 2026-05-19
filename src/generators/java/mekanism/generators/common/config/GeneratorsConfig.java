@@ -59,7 +59,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue defaultBurnRate;
     public final CachedLongValue burnPerAssembly;
     public final CachedLongValue maxFuelPerAssembly;
-    public final CachedIntValue fissionCooledCoolantPerTank;
+    public final CachedLongValue fissionCooledCoolantPerTank;
     public final CachedLongValue fissionHeatedCoolantPerTank;
     public final CachedDoubleValue fissionExcessWasteRatio;
 
@@ -71,7 +71,7 @@ public class GeneratorsConfig extends BaseMekanismConfig {
     public final CachedDoubleValue fusionWaterHeatingRatio;
     public final CachedLongValue fusionFuelCapacity;
     public final CachedLongValue fusionEnergyCapacity;
-    public final CachedIntValue fusionWaterPerInjection;
+    public final CachedLongValue fusionWaterPerInjection;
     public final CachedLongValue fusionSteamPerInjection;
 
     GeneratorsConfig() {
@@ -160,8 +160,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
         maxFuelPerAssembly = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_FUEL_CAPACITY.applyToBuilder(builder)
               .defineInRange("maxFuelPerAssembly", 8L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / 4_096));
         int maxVolume = 18 * 18 * 18;
-        fissionCooledCoolantPerTank = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_COOLED_COOLANT_CAPACITY.applyToBuilder(builder)
-              .defineInRange("cooledCoolantPerTank", 100 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
+        //TODO - 26.1: Should we merge these two configs into one, and/or make the cooled coolant per tank have the same default as heated?
+        fissionCooledCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_COOLED_COOLANT_CAPACITY.applyToBuilder(builder)
+              .defineInRange("cooledCoolantPerTank", 100L * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
         fissionHeatedCoolantPerTank = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_HEATED_COOLANT_CAPACITY.applyToBuilder(builder)
               .defineInRange("heatedCoolantPerTank", 1_000L * FluidType.BUCKET_VOLUME, 1_000, Long.MAX_VALUE / maxVolume));
         fissionExcessWasteRatio = CachedDoubleValue.wrap(this, GeneratorsConfigTranslations.SERVER_FISSION_EXCESS_WASTE.applyToBuilder(builder)
@@ -194,9 +195,9 @@ public class GeneratorsConfig extends BaseMekanismConfig {
               .defineInRange("fuelCapacity", FluidType.BUCKET_VOLUME, 2, 1_000L * FluidType.BUCKET_VOLUME));
         fusionEnergyCapacity = CachedLongValue.define(this, builder, GeneratorsConfigTranslations.SERVER_FUSION_ENERGY_CAPACITY,
               "energyCapacity", 1_000_000_000, 1, Long.MAX_VALUE);
-        int baseMaxWater = 1_000 * FluidType.BUCKET_VOLUME;
-        fusionWaterPerInjection = CachedIntValue.wrap(this, GeneratorsConfigTranslations.SERVER_FUSION_WATER_INJECTION.applyToBuilder(builder)
-              .defineInRange("waterPerInjection", 1_000 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
+        long baseMaxWater = 1_000L * FluidType.BUCKET_VOLUME;
+        fusionWaterPerInjection = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FUSION_WATER_INJECTION.applyToBuilder(builder)
+              .defineInRange("waterPerInjection", baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         fusionSteamPerInjection = CachedLongValue.wrap(this, GeneratorsConfigTranslations.SERVER_FUSION_STEAM_INJECTION.applyToBuilder(builder)
               .defineInRange("steamPerInjection", 100L * baseMaxWater, 1, Long.MAX_VALUE / FusionReactorMultiblockData.MAX_INJECTION));
         builder.pop();

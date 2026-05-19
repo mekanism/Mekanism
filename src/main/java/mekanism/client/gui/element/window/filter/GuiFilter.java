@@ -31,6 +31,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -232,16 +233,16 @@ public abstract class GuiFilter<FILTER extends IFilter<FILTER>, TILE extends Til
 
     protected abstract FILTER createNewFilter();
 
-    public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemStack> itemConsumer) {
+    public static IClickable getHandleClickSlot(Predicate<ItemStack> stackValidator, Consumer<ItemResource> itemConsumer) {
         return (element, event, isDoubleClick) -> {
             if (event.hasShiftDown()) {
-                itemConsumer.accept(ItemStack.EMPTY);
+                itemConsumer.accept(ItemResource.EMPTY);
             } else {
                 ItemStack stack = element.gui().getCarriedItem();
                 if (!stackValidator.test(stack)) {
                     return false;
                 }
-                itemConsumer.accept(stack.copyWithCount(1));
+                itemConsumer.accept(ItemResource.of(stack));
             }
             return true;
         };

@@ -181,8 +181,8 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
         return new UpgradeAware(getUpgrades(),
-              validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3,
-              validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5
+              new LargeResourceStack<>(validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3),
+              new LargeResourceStack<>(validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5)
         );
     }
 

@@ -44,15 +44,6 @@ public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<It
         upgrades = Collections.unmodifiableMap(upgrades);
     }
 
-    public UpgradeAware(Map<Upgrade, Integer> upgrades, ItemResource inputResource, long inputAmount, ItemResource outputResource, long outputAmount) {
-        if (inputResource.isEmpty() != (inputAmount == 0)) {
-            throw new IllegalArgumentException("Input amount must be zero for an empty resource");
-        } else if (outputResource.isEmpty() != (outputAmount == 0)) {
-            throw new IllegalArgumentException("Output amount must be zero for an empty resource");
-        }
-        this(upgrades, new LargeResourceStack<>(inputResource, inputAmount), new LargeResourceStack<>(outputResource, outputAmount));
-    }
-
     public int getUpgradeCount(Upgrade upgrade) {
         return upgrades.getOrDefault(upgrade, 0);
     }

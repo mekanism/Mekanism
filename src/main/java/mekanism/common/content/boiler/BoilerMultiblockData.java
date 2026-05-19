@@ -107,8 +107,7 @@ public class BoilerMultiblockData extends MultiblockData implements IValveHandle
     @ContainerSync(setter = "setSteamVolume")
     private int steamVolume;
 
-    private int waterTankCapacity;
-    private long superheatedCoolantCapacity, steamTankCapacity, cooledCoolantCapacity;
+    private long waterTankCapacity, superheatedCoolantCapacity, steamTankCapacity, cooledCoolantCapacity;
 
     public BlockPos upperRenderLocation;
 

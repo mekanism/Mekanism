@@ -63,13 +63,7 @@ public record HeatedCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         }
     }
 
-    /**
-     * Produce the given amount of the cold variant of this coolant.
-     *
-     * @param amountCooled Amount of heated coolant to cool.
-     *
-     * @return Chemical stack representing the cooled coolant.
-     */
+    /// {@return a chemical resource representing the type of the cooled coolant}
     public ChemicalResource cool() {//TODO - 26.1: Update docs
         return ChemicalResource.of(otherVariant);
     }

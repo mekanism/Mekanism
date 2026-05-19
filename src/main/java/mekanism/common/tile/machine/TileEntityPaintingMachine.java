@@ -128,7 +128,7 @@ public class TileEntityPaintingMachine extends TileEntityProgressMachine<ItemSta
     protected IContainerHolder<IInventorySlot> getInitialInventory(IContentsListener listener, IContentsListener recipeCacheListener, IContentsListener recipeCacheUnpauseListener) {
         MekContainerHelper<IInventorySlot> builder = MekContainerHelper.forSideWithItemConfig(this);
         builder.addContainer(pigmentInputSlot = ChemicalInventorySlot.fill(pigmentTank, listener, 6, 56));
-        builder.addContainer(inputSlot = InputInventorySlot.inputAt(itemType -> containsRecipeAB(itemType, pigmentTank.getResource()), this::containsRecipeA, recipeCacheListener, 45, 35))
+        builder.addContainer(inputSlot = InputInventorySlot.at(itemType -> containsRecipeAB(itemType, pigmentTank.getResource()), this::containsRecipeA, recipeCacheListener, 45, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_MATCHING_RECIPE, getWarningCheck(RecipeError.NOT_ENOUGH_INPUT)));
         builder.addContainer(outputSlot = OutputInventorySlot.at(recipeCacheUnpauseListener, 116, 35))
               .tracksWarnings(slot -> slot.warning(WarningType.NO_SPACE_IN_OUTPUT, getWarningCheck(RecipeError.NOT_ENOUGH_OUTPUT_SPACE)));

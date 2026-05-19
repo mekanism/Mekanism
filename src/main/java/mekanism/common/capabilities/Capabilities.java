@@ -81,6 +81,7 @@ public class Capabilities {
         event.setProxyable(STRICT_ENERGY.block());
     }
 
+    //TODO - 26.1: All of our capabilities that we register to stacks should act on the corresponding ItemAccess
     public static void registerCapabilities(RegisterCapabilitiesEvent event) {
         Mekanism.hooks.hookCapabilityRegistration(event);
 

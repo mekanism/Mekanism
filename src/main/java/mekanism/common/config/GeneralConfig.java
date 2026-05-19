@@ -94,7 +94,7 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedFloatValue nutritionalPasteSaturation;
     public final CachedIntValue nutritionalPasteMBPerFood;
     //Boiler
-    public final CachedIntValue boilerWaterPerTank;
+    public final CachedLongValue boilerWaterPerTank;
     public final CachedLongValue boilerSteamPerTank;
     public final CachedLongValue boilerHeatedCoolantPerTank;
     public final CachedLongValue boilerCooledCoolantPerTank;
@@ -103,8 +103,8 @@ public class GeneralConfig extends BaseMekanismConfig {
     public final CachedDoubleValue evaporationTempMultiplier;
     public final CachedDoubleValue evaporationSolarMultiplier;
     public final CachedDoubleValue evaporationHeatCapacity;
-    public final CachedIntValue evaporationFluidPerTank;
-    public final CachedIntValue evaporationOutputTankCapacity;
+    public final CachedLongValue evaporationFluidPerTank;
+    public final CachedLongValue evaporationOutputTankCapacity;
     //SPS
     public final CachedIntValue spsInputPerAntimatter;
     public final CachedLongValue spsOutputTankCapacity;
@@ -273,8 +273,9 @@ public class GeneralConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GENERAL_BOILER.applyToBuilder(builder).push("boiler");
         //Note: We use maxVolume as it still is a large number, and we have no reason to go higher even if some things we technically could
-        boilerWaterPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_WATER.applyToBuilder(builder)
-              .defineInRange("waterPerTank", 16 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / maxVolume));
+        //TODO - 26.1: Do we want to up the water per tank default to match the cooledCoolantPerTank config?
+        boilerWaterPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_WATER.applyToBuilder(builder)
+              .defineInRange("waterPerTank", 16L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / maxVolume));
         boilerSteamPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_STEAM.applyToBuilder(builder)
               .defineInRange("steamPerTank", 160L * FluidType.BUCKET_VOLUME, 10, Long.MAX_VALUE / maxVolume));
         boilerHeatedCoolantPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_BOILER_CAPACITY_HEATED_COOLANT.applyToBuilder(builder)
@@ -296,10 +297,10 @@ public class GeneralConfig extends BaseMekanismConfig {
               .defineInRange("tempMultiplier", 0.4, 0.001, 1_000_000));
         evaporationHeatCapacity = CachedDoubleValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_HEAT.applyToBuilder(builder)
               .defineInRange("heatCapacity", 100D, 1, 1_000_000));
-        evaporationFluidPerTank = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_INPUT.applyToBuilder(builder)
-              .defineInRange("fluidPerTank", 64 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE / (EvaporationMultiblockData.MAX_HEIGHT * 4)));
-        evaporationOutputTankCapacity = CachedIntValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_OUTPUT.applyToBuilder(builder)
-              .defineInRange("outputTankCapacity", 10 * FluidType.BUCKET_VOLUME, 1, Integer.MAX_VALUE));
+        evaporationFluidPerTank = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_INPUT.applyToBuilder(builder)
+              .defineInRange("fluidPerTank", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE / (EvaporationMultiblockData.MAX_HEIGHT * 4)));
+        evaporationOutputTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GENERAL_TEP_CAPACITY_OUTPUT.applyToBuilder(builder)
+              .defineInRange("outputTankCapacity", 10L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GENERAL_SPS.applyToBuilder(builder).push("sps");

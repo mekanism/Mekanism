@@ -129,14 +129,14 @@ public class MekanismContentsProcessor implements IDataComponentProcessor {
                 if (itemEmc == 0) {
                     return 0;
                 }
-                currentEMC = addEmc(currentEMC, itemEmc, slot.amountAsInt());
+                currentEMC = addEmc(currentEMC, itemEmc, slot.amountAsLong());
             }
         }
         return currentEMC;
     }
 
     @Range(from = 1, to = Long.MAX_VALUE)
-    private static long addEmc(@Range(from = 1, to = Long.MAX_VALUE) long currentEMC, @Range(from = 1, to = Long.MAX_VALUE) long itemEmc, int count) throws ArithmeticException {
+    private static long addEmc(@Range(from = 1, to = Long.MAX_VALUE) long currentEMC, @Range(from = 1, to = Long.MAX_VALUE) long itemEmc, long count) throws ArithmeticException {
         return Math.addExact(currentEMC, Math.multiplyExact(itemEmc, count));
     }
 }

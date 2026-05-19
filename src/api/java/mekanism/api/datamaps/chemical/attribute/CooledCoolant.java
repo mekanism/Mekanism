@@ -40,14 +40,8 @@ public record CooledCoolant(Holder<Chemical> otherVariant, double thermalEnthalp
         IChemicalCoolant.validateCoolantParams(otherVariant, thermalEnthalpy, conductivity);
     }
 
-    /**
-     * Produce the given amount of the hot variant of this coolant.
-     *
-     * @param amountHeated Amount of coolant to heat.
-     *
-     * @return Chemical stack representing the heated coolant.
-     */
-    public ChemicalResource heat() {//TODO - 26.1: Update docs
+    /// {@return a chemical resource representing the type of the heated coolant}
+    public ChemicalResource heat() {
         return ChemicalResource.of(otherVariant);
     }
 }

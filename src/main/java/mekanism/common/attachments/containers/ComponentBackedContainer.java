@@ -8,6 +8,7 @@ import net.neoforged.neoforge.transfer.transaction.SnapshotJournal;
 @NothingNullByDefault
 public abstract class ComponentBackedContainer<TYPE, ATTACHED extends IAttachedContainers<TYPE, ATTACHED>> extends SnapshotJournal<TYPE> implements IContentsListener {
 
+    //TODO - 26.1: I suspect we should change this ItemStack attachedTo into an ItemAccess
     protected final ItemStack attachedTo;
     protected final int containerIndex;
 

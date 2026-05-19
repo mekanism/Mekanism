@@ -52,7 +52,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.common.util.Lazy;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -139,13 +138,6 @@ public class QIOFrequency extends Frequency implements IColorableFrequency, IQIO
      */
     public Map<ItemResource, QIOItemTypeData> getItemDataMap() {
         return itemDataMap;
-    }
-
-    @Override
-    public void forAllStored(ObjLongConsumer<ItemStack> consumer) {
-        for (Entry<ItemResource, QIOItemTypeData> entry : itemDataMap.entrySet()) {
-            consumer.accept(entry.getKey().toStack(), entry.getValue().getCount());
-        }
     }
 
     @Override

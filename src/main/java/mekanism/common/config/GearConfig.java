@@ -157,14 +157,14 @@ public class GearConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GEAR_GAUGE_DROPPER.applyToBuilder(builder).push("gauge_dropper");
         gaugeDropperCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_GAUGE_DROPPER_CAPACITY.applyToBuilder(builder)
-              .defineInRange("capacity", 16 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("capacity", 16L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         gaugeDroppedTransferRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_GAUGE_DROPPER_TRANSFER_RATE.applyToBuilder(builder)
               .defineInRange("transferRate", 250, 1, Integer.MAX_VALUE));
         builder.pop();
 
         MekanismConfigTranslations.GEAR_FLAMETHROWER.applyToBuilder(builder).push("flamethrower");
         flamethrowerCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_CAPACITY.applyToBuilder(builder)
-              .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("capacity", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         flamethrowerFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_FILL_RATE.applyToBuilder(builder)
               .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         flamethrowerDestroyItems = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_FLAMETHROWER_DESTROY_ITEMS.applyToBuilder(builder)
@@ -181,7 +181,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GEAR_JETPACK.applyToBuilder(builder).push(JETPACK_CATEGORY);
         jetpackCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("capacity", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         jetpackFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_JETPACK_FILL_RATE.applyToBuilder(builder)
               .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         builder.pop();
@@ -201,7 +201,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GEAR_SCUBA_TANK.applyToBuilder(builder).push("scuba_tank");
         scubaTankCapacity = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("capacity", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("capacity", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         scubaFillRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_SCUBA_TANK_FILL_RATE.applyToBuilder(builder)
               .defineInRange("fillRate", 16, 1, Integer.MAX_VALUE));
         builder.pop();
@@ -214,7 +214,7 @@ public class GearConfig extends BaseMekanismConfig {
 
         MekanismConfigTranslations.GEAR_CANTEEN.applyToBuilder(builder).push("canteen");
         canteenMaxStorage = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_CANTEEN_CAPACITY.applyToBuilder(builder)
-              .defineInRange("maxStorage", 64 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("maxStorage", 64L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         canteenTransferRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_CANTEEN_TRANSFER_RATE.applyToBuilder(builder)
               .defineInRange("transferRate", 128, 1, Integer.MAX_VALUE));
         builder.pop();
@@ -253,11 +253,11 @@ public class GearConfig extends BaseMekanismConfig {
         mekaSuitGravitationalVibrations = CachedBooleanValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_FLIGHT_VIBRATIONS.applyToBuilder(builder)
               .define("gravitationalVibrations", true));
         mekaSuitNutritionalMaxStorage = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_PASTE_CAPACITY.applyToBuilder(builder)
-              .defineInRange("nutritionalMaxStorage", 128 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("nutritionalMaxStorage", 128L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         mekaSuitNutritionalTransferRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_PASTE_TRANSFER_RATE.applyToBuilder(builder)
               .defineInRange("nutritionalTransferRate", 256, 1, Integer.MAX_VALUE));
         mekaSuitJetpackMaxStorage = CachedLongValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_JETPACK_CAPACITY.applyToBuilder(builder)
-              .defineInRange("jetpackMaxStorage", 24 * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
+              .defineInRange("jetpackMaxStorage", 24L * FluidType.BUCKET_VOLUME, 1, Long.MAX_VALUE));
         mekaSuitJetpackTransferRate = CachedIntValue.wrap(this, MekanismConfigTranslations.GEAR_MEKA_SUIT_JETPACK_TRANSFER_RATE.applyToBuilder(builder)
               .defineInRange("jetpackTransferRate", 256, 1, Integer.MAX_VALUE));
 
