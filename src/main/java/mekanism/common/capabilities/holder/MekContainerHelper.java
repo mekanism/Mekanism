@@ -52,9 +52,18 @@ public class MekContainerHelper<CONTAINER> {
         return forSide(facingSupplier, null, null);
     }
 
-    public static <CONTAINER> MekContainerHelper<CONTAINER> forSide( Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
+    public static <CONTAINER> MekContainerHelper<CONTAINER> forSide(Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
           @Nullable Predicate<RelativeSide> extractPredicate) {
         return new MekContainerHelper<>(new BasicHolder<>(facingSupplier, insertPredicate, extractPredicate));
+    }
+
+    public static <CONTAINER> MekContainerHelper<CONTAINER> forSideWithOverrides(Supplier<Direction> facingSupplier) {
+        return forSideWithOverrides(facingSupplier, null, null);
+    }
+
+    public static <CONTAINER> MekContainerHelper<CONTAINER> forSideWithOverrides(Supplier<Direction> facingSupplier, @Nullable Predicate<RelativeSide> insertPredicate,
+          @Nullable Predicate<RelativeSide> extractPredicate) {
+        return new MekContainerHelper<>(new OverridingHolder<>(facingSupplier, insertPredicate, extractPredicate));
     }
 
     public static MekContainerHelper<IInventorySlot> forSideWithItemConfig(ISideConfiguration sideConfiguration) {

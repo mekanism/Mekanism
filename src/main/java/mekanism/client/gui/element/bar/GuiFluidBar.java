@@ -25,7 +25,7 @@ public class GuiFluidBar extends GuiTankBar<FluidResource, IFluidTank> {
     }
 
     @Override
-    protected TankType getType(FluidResource resource) {
+    protected TankType getType() {
         return TankType.FLUID_TANK;
     }
 

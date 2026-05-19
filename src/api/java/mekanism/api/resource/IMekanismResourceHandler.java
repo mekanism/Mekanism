@@ -28,6 +28,8 @@ import org.jetbrains.annotations.Range;
 ///
 /// @param <RESOURCE>  The type of resource this handler manages.
 /// @param <CONTAINER> The type of resource containers this handler is backed by.
+///
+/// @since 10.8.0
 @NothingNullByDefault
 public interface IMekanismResourceHandler<RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> extends ResourceHandler<RESOURCE>, IContentsListener {
 

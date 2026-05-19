@@ -15,10 +15,10 @@ import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.fluid.IFluidTank;
+import mekanism.api.resource.IResourceContainer;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.component.AttachedEjector;
 import mekanism.common.capabilities.Capabilities;
@@ -60,8 +60,8 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.transfer.ResourceHandler;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -218,15 +218,8 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
             for (Map.Entry<Object, Set<Direction>> entry : outputData.entrySet()) {
                 Set<Direction> sides = entry.getValue();
                 switch (type) {
-                    case CHEMICAL -> {
-                        IChemicalTank tank = (IChemicalTank) entry.getKey();
-                        List<BlockCapabilityCache<ResourceHandler<ChemicalResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.CHEMICAL);
-                        ResourceUtils.emit(caches, tank, chemicalEjectRate.getAsInt(), null);
-                    }
-                    case FLUID -> {
-                        List<BlockCapabilityCache<ResourceHandler<FluidResource>, @Nullable Direction>> caches = getCapabilityCaches(level, pos, typeCapabilityCaches, sides, Capabilities.FLUID);
-                        ResourceUtils.emit(caches, (IFluidTank) entry.getKey(), fluidEjectRate.getAsInt(), null);
-                    }
+                    case CHEMICAL -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.CHEMICAL, chemicalEjectRate);
+                    case FLUID -> emitResource(level, pos, sides, entry.getKey(), typeCapabilityCaches, Capabilities.FLUID, fluidEjectRate);
                     case ENERGY -> {
                         IEnergyContainer container = (IEnergyContainer) entry.getKey();
                         List<BlockEnergyCapabilityCache> caches = new ArrayList<>(sides.size());
@@ -246,18 +239,18 @@ public class TileComponentEjector implements ITileComponent, ISpecificContainerT
     }
 
     @SuppressWarnings("unchecked")
-    private static <HANDLER> List<BlockCapabilityCache<HANDLER, @Nullable Direction>> getCapabilityCaches(ServerLevel level, BlockPos pos,
-          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, Set<Direction> sides, IMultiTypeCapability<HANDLER, ?> capability) {
-        List<BlockCapabilityCache<HANDLER, @Nullable Direction>> caches = new ArrayList<>(sides.size());
+    private <RESOURCE extends Resource> void emitResource(ServerLevel level, BlockPos pos, Set<Direction> sides, Object container,
+          Map<Direction, BlockCapabilityCache<?, @Nullable Direction>> typeCapabilityCaches, IMultiTypeCapability<ResourceHandler<RESOURCE>, ?> capability, IntSupplier ejectRate) {
+        List<BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>> caches = new ArrayList<>(sides.size());
         for (Direction side : sides) {
-            BlockCapabilityCache<HANDLER, @Nullable Direction> cache = (BlockCapabilityCache<HANDLER, @Nullable Direction>) typeCapabilityCaches.get(side);
+            BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction> cache = (BlockCapabilityCache<ResourceHandler<RESOURCE>, @Nullable Direction>) typeCapabilityCaches.get(side);
             if (cache == null) {
                 cache = capability.createCache(level, pos.relative(side), side.getOpposite());
                 typeCapabilityCaches.put(side, cache);
             }
             caches.add(cache);
         }
-        return caches;
+        ResourceUtils.emit(caches, (IResourceContainer<RESOURCE>) container, ejectRate.getAsInt(), null);
     }
 
     /**

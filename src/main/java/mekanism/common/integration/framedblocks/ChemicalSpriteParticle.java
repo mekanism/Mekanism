@@ -9,7 +9,6 @@ import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Holder;
 import net.minecraft.util.ARGB;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
@@ -31,7 +30,7 @@ final class ChemicalSpriteParticle extends SingleQuadParticle {
         this.vo = random.nextFloat() * 3F;
         this.brightness = 0;
 
-        int tint = chemical.getChemical().getTint();
+        int tint = chemical.getChemicalTint();
         this.rCol = 0.6F * ARGB.redFloat(tint);
         this.gCol = 0.6F * ARGB.greenFloat(tint);
         this.bCol = 0.6F * ARGB.blueFloat(tint);

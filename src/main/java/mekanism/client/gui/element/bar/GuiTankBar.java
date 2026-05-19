@@ -47,8 +47,7 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
         super(TextureAtlas.LOCATION_BLOCKS, gui, infoProvider, x, y, width, height, horizontal);
     }
 
-    @Nullable
-    protected abstract TankType getType(RESOURCE resource);
+    protected abstract TankType getType();
 
     @Override
     public void updateTooltip(int mouseX, int mouseY) {
@@ -100,20 +99,16 @@ public abstract class GuiTankBar<RESOURCE extends Resource, CONTAINER extends IR
     @Override
     public void onClick(@NotNull MouseButtonEvent event, boolean isDoubleClick) {
         ItemStack stack = gui().getCarriedItem();
-        if (gui() instanceof GuiMekanismTile<?, ?> gui && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
-            ResourceTankInfoProvider<RESOURCE, CONTAINER> handler = getHandler();
-            TankType tankType = getType(handler.getContainer().getResource());
-            if (tankType != null) {
-                int index = handler.getContainerIndex();
-                if (index != -1) {
-                    DropperAction action;
-                    if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
-                        action = event.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
-                    } else { //InputConstants.MOUSE_BUTTON_RIGHT
-                        action = DropperAction.DRAIN_DROPPER;
-                    }
-                    PacketUtils.sendToServer(new PacketDropperUse(action, tankType, index));
+        if (gui() instanceof GuiMekanismTile && !stack.isEmpty() && stack.getItem() instanceof ItemGaugeDropper) {
+            int index = getHandler().getContainerIndex();
+            if (index != -1) {
+                DropperAction action;
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
+                    action = event.hasShiftDown() ? DropperAction.DUMP_TANK : DropperAction.FILL_DROPPER;
+                } else { //InputConstants.MOUSE_BUTTON_RIGHT
+                    action = DropperAction.DRAIN_DROPPER;
                 }
+                PacketUtils.sendToServer(new PacketDropperUse(action, getType(), index));
             }
         }
     }

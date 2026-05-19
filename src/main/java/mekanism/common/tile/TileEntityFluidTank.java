@@ -114,7 +114,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
     @NotNull
     @Override
     protected IContainerHolder<IFluidTank> getInitialFluidTanks(IContentsListener listener) {
-        MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSide(facingSupplier);
+        MekContainerHelper<IFluidTank> builder = MekContainerHelper.forSideWithOverrides(facingSupplier);
         //Note: We add an override to the top of the fluid tank, to handle valve contents being inserted
         //TODO - 26.1: Should we add it as relative side top or Direction.UP? We used to use direction up, and this is technically the same
         // because our fluid tanks don't support being placed on their side, but which implementation would be more robust?

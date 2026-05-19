@@ -63,7 +63,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.getResource().getChemical().getColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.leftInputTank.getResource().getChemicalColorRepresentation());
         }
     }
 
@@ -71,7 +71,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
 
         @Override
         public int getColorFrom() {
-            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.getResource().getChemical().getColorRepresentation());
+            return tile == null ? 0xFFFFFFFF : getColor(tile.rightInputTank.getResource().getChemicalColorRepresentation());
         }
     }
 
@@ -109,7 +109,7 @@ public class GuiPigmentMixer extends GuiConfigurableTile<TileEntityPigmentMixer,
                 }
                 return 0xFFFFFFFF;
             }
-            return getColor(tile.outputTank.getResource().getChemical().getColorRepresentation());
+            return getColor(tile.outputTank.getResource().getChemicalColorRepresentation());
         }
 
         private ChemicalChemicalToChemicalRecipe getRecipeAndCache() {

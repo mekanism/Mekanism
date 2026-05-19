@@ -92,8 +92,8 @@ public class TileEntityDimensionalStabilizer extends TileEntityMekanism implemen
         //Only attempt to use power if chunk loading isn't disabled in the config
         boolean isActive = false;
         if (MekanismConfig.general.allowChunkloading.get() && canFunction()) {
-            long energyPerTick = energyContainer.getEnergyPerTick();
             try (Transaction transaction = Transaction.openRoot()) {
+                long energyPerTick = energyContainer.getEnergyPerTick();
                 if (energyContainer.extract(energyPerTick, transaction, AutomationType.INTERNAL) == energyPerTick) {
                     isActive = true;
                     transaction.commit();

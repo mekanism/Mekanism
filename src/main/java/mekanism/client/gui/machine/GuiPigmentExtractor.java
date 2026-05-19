@@ -85,7 +85,7 @@ public class GuiPigmentExtractor extends GuiConfigurableTile<TileEntityPigmentEx
                 }
                 return 0xFFFFFFFF;
             }
-            return getColor(tile.pigmentTank.getResource().getChemical().getColorRepresentation());
+            return getColor(tile.pigmentTank.getResource().getChemicalColorRepresentation());
         }
 
         private ItemStackToChemicalRecipe getRecipeAndCache() {

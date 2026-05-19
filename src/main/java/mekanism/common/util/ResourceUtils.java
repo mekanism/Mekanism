@@ -198,6 +198,8 @@ public final class ResourceUtils {
         if (sampleCount == 0) {
             return Redstone.SIGNAL_NONE;
         }
+        //TODO - 26.1: This ignores empty slots? I think that is wrong, even though it is like ResourceHandlerUtil...
+        // Vanilla's getRedstoneSignalFromContainer takes the container size
         proportion /= sampleCount;
         return Mth.lerpDiscrete(proportion, Redstone.SIGNAL_NONE, Redstone.SIGNAL_MAX);
     }

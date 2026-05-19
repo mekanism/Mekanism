@@ -22,9 +22,8 @@ public class GuiChemicalBar extends GuiTankBar<ChemicalResource, IChemicalTank> 
         super(gui, infoProvider, x, y, width, height, horizontal);
     }
 
-    @Nullable
     @Override
-    protected TankType getType(ChemicalResource resource) {
+    protected TankType getType() {
         return TankType.CHEMICAL_TANK;
     }
 

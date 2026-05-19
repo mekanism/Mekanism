@@ -106,7 +106,7 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
 
     @Nullable
     @Override
-    public <T> T getData(DataMapType<Chemical, T> type) {
+    public <T> T getData(DataMapType<Chemical, T> type) {//TODO - 26.1: https://github.com/neoforged/NeoForge/pull/3185
         //Note: We only accept reference holders, and reference holders can be queried directly for data
         return typeHolder().getData(type);
     }
@@ -201,5 +201,26 @@ public final class ChemicalResource implements RegisteredResource<Chemical>, IHa
      */
     public double getRadioactivity() {
         return value().getRadioactivity();
+    }
+
+    /**
+     * Helper to get the tint of the stored chemical. This is equivalent to calling {@code value().getTint()}
+     *
+     * @return The tint of the stored chemical.
+     */
+    public int getChemicalTint() {
+        return value().getTint();
+    }
+
+    /**
+     * Helper to get the color representation of the stored chemical. This is equivalent to calling {@code value().getColorRepresentation()} and is used for things like
+     * durability bars of chemical tanks.
+     *
+     * @return The color representation of the stored chemical.
+     *
+     * @apiNote Does not have any special handling for when the stack is empty.
+     */
+    public int getChemicalColorRepresentation() {
+        return value().getColorRepresentation();
     }
 }

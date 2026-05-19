@@ -22,6 +22,8 @@ import org.jetbrains.annotations.Range;
 /// @param <RESOURCE> The type of resource this container manages.
 ///
 /// @see BasicResourceContainer A functional implementation of this interface
+///
+/// @since 10.8.0
 @NothingNullByDefault
 public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSerializable, IContentsListener {
 

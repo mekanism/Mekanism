@@ -34,7 +34,7 @@ final class ChemicalCamoContent extends CamoContent<ChemicalCamoContent> {
 
     ChemicalCamoContent(ChemicalResource chemicalType) {
         this.chemicalType = chemicalType;
-        this.mapColor = FluidDeferredRegister.getClosestColor(this.chemicalType.value().getColorRepresentation());
+        this.mapColor = FluidDeferredRegister.getClosestColor(this.chemicalType.getChemicalColorRepresentation());
     }
 
     ChemicalResource getChemicalType() {
