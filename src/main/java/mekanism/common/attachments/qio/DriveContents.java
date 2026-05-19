@@ -52,9 +52,7 @@ public record DriveContents(Object2LongSortedMap<UUID> namedItemMap) {
     public void loadItemMap(ObjLongConsumer<ItemResource> consumer) {
         for (ObjectIterator<Object2LongMap.Entry<UUID>> iterator = Object2LongMaps.fastIterator(namedItemMap); iterator.hasNext(); ) {
             Object2LongMap.Entry<UUID> entry = iterator.next();
-            ItemResource type = QIOGlobalItemLookup.instance().getTypeByUUID(entry.getKey());
-
-                consumer.accept(type, entry.getLongValue());
+            consumer.accept(QIOGlobalItemLookup.instance().getTypeByUUID(entry.getKey()), entry.getLongValue());
         }
     }
 

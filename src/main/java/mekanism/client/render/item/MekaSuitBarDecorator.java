@@ -3,18 +3,20 @@ package mekanism.client.render.item;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import java.util.List;
+import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.capabilities.GenericTankSpec;
-import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.item.gear.ItemMekaSuitArmor;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
+import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.Resource;
 
 public class MekaSuitBarDecorator implements IItemDecorator {
 
@@ -34,10 +36,10 @@ public class MekaSuitBarDecorator implements IItemDecorator {
             yOffset--;
         }
 
-        List<FluidTankSpec> fluidTankSpecs = armor.getFluidTankSpecs();
+        List<GenericTankSpec<FluidResource>> fluidTankSpecs = armor.getFluidTankSpecs();
         if (!fluidTankSpecs.isEmpty()) {
             List<IFluidTank> tanks = ContainerType.FLUID.getAttachmentContainersIfPresent(stack);
-            int tank = getDisplayTank(fluidTankSpecs, stack, tanks.size());
+            int tank = getDisplayTank(fluidTankSpecs, ItemResource.of(stack), tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
             } else if (tanks.isEmpty()) {
@@ -47,10 +49,10 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return true;
     }
 
-    private boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xOffset, int yOffset, List<ChemicalTankSpec> chemicalTankSpecs) {
+    private boolean tryRender(GuiGraphicsExtractor guiGraphics, ItemStack stack, int xOffset, int yOffset, List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs) {
         if (!chemicalTankSpecs.isEmpty()) {
             List<IChemicalTank> tanks = ContainerType.CHEMICAL.getAttachmentContainersIfPresent(stack);
-            int tank = getDisplayTank(chemicalTankSpecs, stack, tanks.size());
+            int tank = getDisplayTank(chemicalTankSpecs, ItemResource.of(stack), tanks.size());
             if (tank != -1) {
                 ChemicalFluidBarDecorator.renderBar(guiGraphics, xOffset, yOffset, tanks.get(tank));
             } else if (tanks.isEmpty()) {
@@ -61,13 +63,13 @@ public class MekaSuitBarDecorator implements IItemDecorator {
         return false;
     }
 
-    private static <TYPE> int getDisplayTank(List<? extends GenericTankSpec<TYPE>> tankSpecs, ItemStack stack, int tanks) {
+    private static <RESOURCE extends Resource> int getDisplayTank(List<GenericTankSpec<RESOURCE>> tankSpecs, ItemResource itemType, int tanks) {
         if (tanks == 0) {
             return -1;
         } else if (tanks > 1 && tanks == tankSpecs.size() && Minecraft.getInstance().level != null) {
             IntList tankIndices = new IntArrayList(tanks);
             for (int i = 0; i < tanks; i++) {
-                if (tankSpecs.get(i).supportsStack(stack)) {
+                if (tankSpecs.get(i).supportsStack(itemType)) {
                     tankIndices.add(i);
                 }
             }
@@ -75,7 +77,7 @@ public class MekaSuitBarDecorator implements IItemDecorator {
             return displayTank == -1 ? -1 : tankIndices.getInt(displayTank);
         }
         for (int i = 0; i < tanks && i < tankSpecs.size(); i++) {
-            if (tankSpecs.get(i).supportsStack(stack)) {
+            if (tankSpecs.get(i).supportsStack(itemType)) {
                 return i;
             }
         }

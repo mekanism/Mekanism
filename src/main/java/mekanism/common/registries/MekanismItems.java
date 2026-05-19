@@ -121,8 +121,8 @@ public class MekanismItems {
                 .build(), MekanismConfig.gear
           );
     public static final ItemRegistryObject<ItemGaugeDropper> GAUGE_DROPPER = ITEMS.registerItem("gauge_dropper", ItemGaugeDropper::new)
-          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
-          .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder().addTank(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear);
+          .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder().addContainer(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear)
+          .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder().addContainer(ItemGaugeDropper.MERGED_TANK_CREATOR).build(), MekanismConfig.gear);
     public static final ItemRegistryObject<ItemGeigerCounter> GEIGER_COUNTER = ITEMS.registerItem("geiger_counter", ItemGeigerCounter::new);
     public static final ItemRegistryObject<ItemDosimeter> DOSIMETER = ITEMS.registerItem("dosimeter", ItemDosimeter::new);
     public static final ItemRegistryObject<ItemCanteen> CANTEEN = ITEMS.registerItem("canteen", ItemCanteen::new)

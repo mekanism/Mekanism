@@ -1,70 +1,43 @@
 package mekanism.common.attachments.containers.chemical;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiPredicate;
 import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
+import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
-import mekanism.api.functions.ConstantPredicates;
-import mekanism.api.recipes.MekanismRecipe;
 import mekanism.common.attachments.containers.AttachedResources;
-import mekanism.common.attachments.containers.ContainsRecipe;
+import mekanism.common.attachments.containers.ResourceContainersBuilder;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.config.MekanismConfig;
-import mekanism.common.recipe.IMekanismRecipeTypeProvider;
-import mekanism.common.recipe.lookup.cache.IInputRecipeCache;
-import net.minecraft.world.item.crafting.RecipeInput;
+import net.minecraft.world.item.ItemStack;
 
-public class ChemicalTanksBuilder {
+public class ChemicalTanksBuilder extends ResourceContainersBuilder<ChemicalResource, ComponentBackedChemicalTank, ChemicalTanksBuilder> {
 
     public static ChemicalTanksBuilder builder() {
         return new ChemicalTanksBuilder();
     }
 
-    protected final List<IBasicContainerCreator<? extends ComponentBackedChemicalTank>> tankCreators = new ArrayList<>();
-
-    protected ChemicalTanksBuilder() {
+    private ChemicalTanksBuilder() {
     }
 
+    @Override
     public BaseContainerCreator<AttachedResources<ChemicalResource>, ComponentBackedChemicalTank> build() {
-        return new BaseChemicalTankBuilder(tankCreators);
+        return new BaseChemicalTankBuilder(containerCreators);
     }
 
-    public <VANILLA_INPUT extends RecipeInput, RECIPE extends MekanismRecipe<VANILLA_INPUT>, INPUT_CACHE extends IInputRecipeCache> ChemicalTanksBuilder addBasic(long capacity,
-          IMekanismRecipeTypeProvider<VANILLA_INPUT, RECIPE, INPUT_CACHE> recipeType, ContainsRecipe<INPUT_CACHE, ChemicalResource> containsRecipe) {
-        return addBasic(capacity, chemical -> containsRecipe.check(recipeType.getInputCache(), null, chemical));
+    @Override
+    protected IntSupplier defaultRate() {
+        return MekanismConfig.general.chemicalItemFillRate;
     }
 
-    public ChemicalTanksBuilder addBasic(long capacity, Predicate<ChemicalResource> isValid) {
-        return addBasic(() -> capacity, isValid);
-    }
-
-    public ChemicalTanksBuilder addBasic(LongSupplier capacity, Predicate<ChemicalResource> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), isValid, MekanismConfig.general.chemicalItemFillRate, capacity, null));
-    }
-
-    public ChemicalTanksBuilder addBasic(long capacity) {
-        return addBasic(() -> capacity);
-    }
-
-    public ChemicalTanksBuilder addBasic(LongSupplier capacity) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.manualOnly(), ConstantPredicates.alwaysTrueBi(), ConstantPredicates.alwaysTrue(),
-              MekanismConfig.general.chemicalItemFillRate, capacity, null));
-    }
-
-    public ChemicalTanksBuilder addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<ChemicalResource> isValid) {
-        return addTank((type, attachedTo, containerIndex) -> new ComponentBackedChemicalTank(attachedTo,
-              containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity, null));
-    }
-
-    public ChemicalTanksBuilder addTank(IBasicContainerCreator<? extends ComponentBackedChemicalTank> tank) {
-        tankCreators.add(tank);
-        return this;
+    @Override
+    protected ComponentBackedChemicalTank createBasicContainer(ItemStack attachedTo, int tankIndex, BiPredicate<ChemicalResource, AutomationType> canExtract,
+          BiPredicate<ChemicalResource, AutomationType> canInsert, Predicate<ChemicalResource> validator, IntSupplier rate, LongSupplier capacity) {
+        return new ComponentBackedChemicalTank(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity, null);
     }
 
     private static class BaseChemicalTankBuilder extends BaseContainerCreator<AttachedResources<ChemicalResource>, ComponentBackedChemicalTank> {

@@ -12,42 +12,17 @@ import mekanism.common.attachments.containers.ComponentBackedResourceContainer;
 import mekanism.common.attachments.containers.ContainerType;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.Range;
 
 @NothingNullByDefault
 public class ComponentBackedFluidTank extends ComponentBackedResourceContainer<FluidResource> implements IFluidTank {
 
-    private final LongSupplier capacity;
-    private final IntSupplier rate;
-
     public ComponentBackedFluidTank(ItemStack attachedTo, int tankIndex, BiPredicate<FluidResource, AutomationType> canExtract,
           BiPredicate<FluidResource, AutomationType> canInsert, Predicate<FluidResource> validator, IntSupplier rate, LongSupplier capacity) {
-        super(attachedTo, tankIndex, capacity.getAsLong(), canExtract, canInsert, validator);
-        this.capacity = capacity;
-        this.rate = rate;
+        super(attachedTo, tankIndex, canExtract, canInsert, validator, rate, capacity);
     }
 
     @Override
     protected ContainerType<?, AttachedResources<FluidResource>, ?> containerType() {
         return ContainerType.FLUID;
-    }
-
-    @Override
-    @Range(from = 0, to = Long.MAX_VALUE)
-    public long capacityAsLong(FluidResource resource) {
-        return capacity.getAsLong();
-    }
-
-    @Override
-    protected int getInsertionRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? super.getInsertionRate(automationType) : rate.getAsInt();
-    }
-
-    @Override
-    protected int getExtractionRate(@Nullable AutomationType automationType) {
-        //Allow unknown or manual interaction to bypass rate limit for the item
-        return automationType == null || automationType == AutomationType.MANUAL ? super.getExtractionRate(automationType) : rate.getAsInt();
     }
 }

@@ -15,9 +15,12 @@ import mekanism.common.item.interfaces.IHasConditionalAttributes;
 import mekanism.common.item.interfaces.IItemHUDProvider;
 import mekanism.common.item.interfaces.IModeItem;
 import net.minecraft.core.Holder;
+import net.minecraft.core.TypedInstance;
+import net.minecraft.core.component.DataComponentGetter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.event.ItemAttributeModifierEvent;
@@ -28,14 +31,14 @@ import org.jetbrains.annotations.Nullable;
 public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasConditionalAttributes {
 
     @Nullable
-    default IModuleContainer moduleContainer(ItemStack stack) {
-        return IModuleHelper.INSTANCE.getModuleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> IModuleContainer moduleContainer(ITEM itemType) {
+        return IModuleHelper.INSTANCE.getModuleContainer(itemType);
     }
 
     @Nullable
     default IModuleContainer moduleContainer(ItemInstance instance) {
         if (instance instanceof ItemStack stack) {
-            return moduleContainer(stack);
+            return IModuleHelper.INSTANCE.getModuleContainer(stack);
         } else if (IModuleHelper.INSTANCE.isModuleContainer(instance)) {
             return ModuleHelper.get().getModuleContainerUnsafe(instance);
         }
@@ -81,8 +84,8 @@ public interface IModuleContainerItem extends IModeItem, IItemHUDProvider, IHasC
         }
     }
 
-    default boolean hasModule(ItemStack stack, Holder<ModuleData<?>> type) {
-        IModuleContainer container = moduleContainer(stack);
+    default <ITEM extends TypedInstance<Item> & DataComponentGetter> boolean hasModule(ITEM itemType, Holder<ModuleData<?>> type) {
+        IModuleContainer container = moduleContainer(itemType);
         return container != null && container.has(type);
     }
 

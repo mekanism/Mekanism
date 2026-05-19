@@ -956,7 +956,7 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_fluid_tank", properties -> new BlockFluidTank(type, properties), ItemBlockFluidTank::new)
               .forItemHolder(holder -> holder
                     .addAttachedContainerCapabilities(ContainerType.FLUID, () -> FluidTanksBuilder.builder()
-                          .addTank(ComponentBackedFluidTankFluidTank::create)
+                          .addContainer(ComponentBackedFluidTankFluidTank::create)
                           .build()
                     ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                           .addFluidInputSlot(0)
@@ -1005,7 +1005,7 @@ public class MekanismBlocks {
         return registerTieredBlock(type, "_chemical_tank", (properties, color) -> new BlockTileModel<>(type, BlockTile.defaultProperties(properties).mapColor(color)), ItemBlockChemicalTank::new)
               .forItemHolder(holder -> holder
                     .addAttachedContainerCapabilities(ContainerType.CHEMICAL, () -> ChemicalTanksBuilder.builder()
-                          .addTank(ComponentBackedChemicalTankTank::create).build()
+                          .addContainer(ComponentBackedChemicalTankTank::create).build()
                     ).addAttachmentOnlyContainers(ContainerType.ITEM, () -> ItemSlotsBuilder.builder()
                           .addChemicalDrainSlot(0)
                           .addChemicalFillSlot(0)

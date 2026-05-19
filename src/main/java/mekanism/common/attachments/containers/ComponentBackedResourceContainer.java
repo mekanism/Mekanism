@@ -2,6 +2,8 @@ package mekanism.common.attachments.containers;
 
 import com.google.common.primitives.Ints;
 import java.util.function.BiPredicate;
+import java.util.function.IntSupplier;
+import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.annotations.NothingNullByDefault;
@@ -20,16 +22,17 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     private final BiPredicate<RESOURCE, AutomationType> canExtract;
     private final BiPredicate<RESOURCE, AutomationType> canInsert;
     private final Predicate<RESOURCE> validator;
-    @Range(from = 0, to = Long.MAX_VALUE)
-    private final long limit;
+    private final LongSupplier capacity;
+    private final IntSupplier rate;
 
-    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, @Range(from = 0, to = Long.MAX_VALUE) long limit,
-          BiPredicate<RESOURCE, AutomationType> canExtract, BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator) {
+    public ComponentBackedResourceContainer(ItemStack attachedTo, int slotIndex, BiPredicate<RESOURCE, AutomationType> canExtract,
+          BiPredicate<RESOURCE, AutomationType> canInsert, Predicate<RESOURCE> validator, IntSupplier rate, LongSupplier capacity) {
         super(attachedTo, slotIndex);
         this.canExtract = canExtract;
         this.canInsert = canInsert;
         this.validator = validator;
-        this.limit = limit;
+        this.rate = rate;
+        this.capacity = capacity;
     }
 
     @Override
@@ -71,7 +74,7 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     @Override
     @Range(from = 0, to = Long.MAX_VALUE)
     public long capacityAsLong(RESOURCE resource) {
-        return limit;
+        return capacity.getAsLong();
     }
 
     @Override
@@ -96,11 +99,13 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
 
     protected int getInsertionRate(@Nullable AutomationType automationType) {
         //TODO - 26.1: Make sure that inventory slots properly support this and getExtractionRate
-        return Integer.MAX_VALUE;
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
     protected int getExtractionRate(@Nullable AutomationType automationType) {
-        return Integer.MAX_VALUE;
+        //Allow unknown or manual interaction to bypass rate limit for the item
+        return automationType == null || automationType == AutomationType.MANUAL ? Integer.MAX_VALUE : rate.getAsInt();
     }
 
     @Override

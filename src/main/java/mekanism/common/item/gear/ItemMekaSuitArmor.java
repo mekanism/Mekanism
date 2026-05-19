@@ -29,9 +29,8 @@ import mekanism.common.attachments.containers.chemical.ComponentBackedChemicalTa
 import mekanism.common.attachments.containers.fluid.ComponentBackedFluidTank;
 import mekanism.common.attachments.containers.fluid.FluidTanksBuilder;
 import mekanism.common.capabilities.Capabilities;
+import mekanism.common.capabilities.GenericTankSpec;
 import mekanism.common.capabilities.ICapabilityAware;
-import mekanism.common.capabilities.chemical.item.ChemicalTankSpec;
-import mekanism.common.capabilities.fluid.item.FluidTankSpec;
 import mekanism.common.capabilities.laser.item.LaserDissipationHandler;
 import mekanism.common.capabilities.radiation.item.RadiationShieldingHandler;
 import mekanism.common.config.MekanismConfig;
@@ -76,6 +75,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.access.ItemAccess;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import net.neoforged.neoforge.transfer.item.LivingEntityEquipmentWrapper;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
@@ -86,10 +86,10 @@ import org.jetbrains.annotations.Nullable;
 public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContainerItem, IJetpackItem, ICustomCreativeTabContents, IAttachmentAware, ICapabilityAware {
 
     //TODO: Expand this system so that modules can maybe define needed tanks?
-    private final List<ChemicalTankSpec> chemicalTankSpecs = new ArrayList<>();
-    private final List<ChemicalTankSpec> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
-    private final List<FluidTankSpec> fluidTankSpecs = new ArrayList<>();
-    private final List<FluidTankSpec> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
+    private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecs = new ArrayList<>();
+    private final List<GenericTankSpec<ChemicalResource>> chemicalTankSpecsView = Collections.unmodifiableList(chemicalTankSpecs);
+    private final List<GenericTankSpec<FluidResource>> fluidTankSpecs = new ArrayList<>();
+    private final List<GenericTankSpec<FluidResource>> fluidTankSpecsView = Collections.unmodifiableList(fluidTankSpecs);
     private final float absorption;
     //Full laser dissipation causes 3/4 of the energy to be dissipated and the remaining energy to be refracted
     private final double laserDissipation;
@@ -103,18 +103,18 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         this.armorType = armorType;
         switch (armorType) {
             case HELMET -> {
-                fluidTankSpecs.add(FluidTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
-                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), stack -> hasModule(stack, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
+                fluidTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitNutritionalTransferRate, MekanismConfig.gear.mekaSuitNutritionalMaxStorage,
+                      fluid -> fluid.is(MekanismFluids.NUTRITIONAL_PASTE), itemType -> hasModule(itemType, MekanismModules.NUTRITIONAL_INJECTION_UNIT)));
                 absorption = 0.15F;
                 laserDissipation = 0.15;
                 laserRefraction = 0.2;
             }
             case CHESTPLATE -> {
-                chemicalTankSpecs.add(ChemicalTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, stack -> {
+                chemicalTankSpecs.add(GenericTankSpec.createFillOnly(MekanismConfig.gear.mekaSuitJetpackTransferRate, itemType -> {
                     //Note: We intentionally don't require the module to be enabled for purposes of calculating capacity
-                    IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(stack, MekanismModules.JETPACK_UNIT);
+                    IModule<ModuleJetpackUnit> module = IModuleHelper.INSTANCE.getModule(itemType, MekanismModules.JETPACK_UNIT);
                     return module != null ? MekanismConfig.gear.mekaSuitJetpackMaxStorage.get() * module.getInstalledCount() : 0L;
-                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), stack -> hasModule(stack, MekanismModules.JETPACK_UNIT)));
+                }, chemical -> chemical.is(MekanismChemicals.HYDROGEN), itemType -> hasModule(itemType, MekanismModules.JETPACK_UNIT)));
                 absorption = 0.4F;
                 laserDissipation = 0.3;
                 laserRefraction = 0.4;
@@ -250,7 +250,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!chemicalTankSpecs.isEmpty()) {
             ContainerType.CHEMICAL.addDefaultCreators(eventBus, this, () -> {
                 ChemicalTanksBuilder builder = ChemicalTanksBuilder.builder();
-                for (ChemicalTankSpec spec : chemicalTankSpecs) {
+                for (GenericTankSpec<ChemicalResource> spec : chemicalTankSpecs) {
                     spec.addTank(builder, ComponentBackedChemicalTank::new);
                 }
                 return builder.build();
@@ -259,7 +259,7 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         if (!fluidTankSpecs.isEmpty()) {
             ContainerType.FLUID.addDefaultCreators(eventBus, this, () -> {
                 FluidTanksBuilder builder = FluidTanksBuilder.builder();
-                for (FluidTankSpec spec : fluidTankSpecs) {
+                for (GenericTankSpec<FluidResource> spec : fluidTankSpecs) {
                     spec.addTank(builder, ComponentBackedFluidTank::new);
                 }
                 return builder.build();
@@ -283,11 +283,11 @@ public class ItemMekaSuitArmor extends ItemSpecialArmor implements IModuleContai
         }, this);
     }
 
-    public List<ChemicalTankSpec> getChemicalTankSpecs() {
+    public List<GenericTankSpec<ChemicalResource>> getChemicalTankSpecs() {
         return chemicalTankSpecsView;
     }
 
-    public List<FluidTankSpec> getFluidTankSpecs() {
+    public List<GenericTankSpec<FluidResource>> getFluidTankSpecs() {
         return fluidTankSpecsView;
     }
 

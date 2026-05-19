@@ -27,7 +27,8 @@ public class ComponentBackedInventorySlot extends ComponentBackedResourceContain
     public ComponentBackedInventorySlot(ItemStack attachedTo, int slotIndex, BiPredicate<ItemResource, AutomationType> canExtract,
           BiPredicate<ItemResource, AutomationType> canInsert, Predicate<@NotNull ItemResource> validator, boolean obeyStackLimit,
           @Range(from = 0, to = Long.MAX_VALUE) long limit) {
-        super(attachedTo, slotIndex, limit, canExtract, canInsert, validator);
+        //TODO - 26.1: Re-evaluate how we are doing the rate and limit for this
+        super(attachedTo, slotIndex, canExtract, canInsert, validator, () -> Integer.MAX_VALUE, () -> limit);
         this.obeyStackLimit = obeyStackLimit;
     }
 
