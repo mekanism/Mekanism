@@ -5,6 +5,7 @@ import mekanism.client.render.MekanismRenderer;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -35,7 +36,7 @@ public class FilterSelectButton extends MekanismButton {
         int height = getButtonHeight();
         int x = getButtonX();
         int y = getButtonY();
-        guiGraphics.blit(ARROWS, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, ARROWS, x, y, isMouseOverCheckWindows(mouseX, mouseY) ? width : 0, down ? 7 : 0, width, height, TEXTURE_WIDTH, TEXTURE_HEIGHT);
     }
 
     @Override

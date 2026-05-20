@@ -6,6 +6,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.client.render.MekanismRenderer;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
@@ -114,7 +115,7 @@ public abstract class GuiInstallableScrollList<TYPE> extends GuiScrollList {
             if (color != null) {
                 MekanismRenderer.color(guiGraphics, color);
             }
-            guiGraphics.blit(texture, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, textureWidth,
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX + 1, relativeY + 1 + multipliedElement, 0, elementHeight * j, textureWidth,
                   elementHeight, textureWidth, textureHeight);
             if (color != null) {
                 MekanismRenderer.resetColor(guiGraphics);

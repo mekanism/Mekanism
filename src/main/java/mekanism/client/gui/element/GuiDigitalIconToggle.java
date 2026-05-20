@@ -9,6 +9,7 @@ import mekanism.common.inventory.GuiComponents.IToggleEnum;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import org.jetbrains.annotations.NotNull;
 
 public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> extends GuiInnerScreen {
@@ -31,7 +32,7 @@ public class GuiDigitalIconToggle<TYPE extends Enum<TYPE> & IToggleEnum<TYPE>> e
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         TYPE type = typeSupplier.get();
-        guiGraphics.blit(type.getIcon(), relativeX + 3, relativeY + 3, 0, 0, width - 6, height - 6, 6, 6);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, type.getIcon(), relativeX + 3, relativeY + 3, 0, 0, width - 6, height - 6, 6, 6);
     }
 
     @Override

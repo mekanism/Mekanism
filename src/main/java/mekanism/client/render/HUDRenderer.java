@@ -16,6 +16,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.SubtitleOverlay;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -173,7 +174,7 @@ public class HUDRenderer {
         /*RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();*/
         MekanismRenderer.color(guiGraphics, color);
-        guiGraphics.blit(element.getIcon(), iconRight ? x + font.width(element.getText()) + 2 : x, y, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, element.getIcon(), iconRight ? x + font.width(element.getText()) + 2 : x, y, 0, 0, 16, 16, 16, 16);
         MekanismRenderer.resetColor(guiGraphics);
         delayedDraws.add(new DelayedString(matrix, element.getText(), iconRight ? x : x + 18, y + 5, color, false));
     }

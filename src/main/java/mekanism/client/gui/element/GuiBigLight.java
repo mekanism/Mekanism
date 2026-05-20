@@ -23,6 +23,6 @@ public class GuiBigLight extends GuiTexturedElement {
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, GuiInnerScreen.SCREEN, getButtonX(), getButtonY(), getButtonWidth(), getButtonHeight());
-        guiGraphics.blit(getResource(), relativeX + 1, relativeY + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getResource(), relativeX + 1, relativeY + 1, lightSupplier.getAsBoolean() ? 0 : 12, 0, width - 2, height - 2, 24, 12);
     }
 }

@@ -25,6 +25,7 @@ import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.tile.machine.TileEntityFormulaicAssemblicator;
 import mekanism.common.util.text.BooleanStateDisplay.OnOff;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.inventory.Slot;
@@ -127,7 +128,7 @@ public class GuiFormulaicAssemblicator extends GuiConfigurableTile<TileEntityFor
         super.extractBackground(guiGraphics, mouseX, mouseY, a);
         //TODO: Gui element
         SlotOverlay overlay = tile.hasRecipe() ? SlotOverlay.CHECK : SlotOverlay.X;
-        guiGraphics.blit(overlay.getTexture(), leftPos + 88, topPos + 22, 0, 0, overlay.getWidth(), overlay.getHeight(),
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.getTexture(), leftPos + 88, topPos + 22, 0, 0, overlay.getWidth(), overlay.getHeight(),
               overlay.getWidth(), overlay.getHeight());
     }
 

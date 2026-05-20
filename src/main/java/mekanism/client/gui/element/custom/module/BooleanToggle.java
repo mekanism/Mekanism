@@ -8,6 +8,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
 
@@ -32,10 +33,10 @@ class BooleanToggle extends MiniElement<Boolean> {
 
     private void drawRadio(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, boolean selected, int relativeX, int relativeY, int selectedU) {
         if (selected) {
-            guiGraphics.blit(RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, selectedU, RADIO_SIZE, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         } else {
             boolean hovered = mouseOver(mouseX, mouseY, relativeX, relativeY, RADIO_SIZE, RADIO_SIZE);
-            guiGraphics.blit(RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, RadioButton.RADIO, getRelativeX() + relativeX, getRelativeY() + relativeY, hovered ? RADIO_SIZE : 0, 0, RADIO_SIZE, RADIO_SIZE, 2 * RADIO_SIZE, 2 * RADIO_SIZE);
         }
     }
 

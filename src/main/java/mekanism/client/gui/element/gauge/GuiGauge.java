@@ -90,7 +90,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
         if (warning) {
             //Draw background (we do it regardless of if we are full or not as if the thing being drawn has transparency
             // we may as well show the background)
-            guiGraphics.blit(WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_BACKGROUND_TEXTURE, relativeX + 1, relativeY + 1, 0, 0, width - 2, height - 2, 256, 256);
         }
         int scale = getScaledLevel();
         TextureAtlasSprite icon = getIcon();
@@ -102,7 +102,7 @@ public abstract class GuiGauge<T> extends GuiTexturedElement implements ISupport
                 //If we have a warning and the gauge is entirely filled (or almost completely filled, > 95%), draw a warning vertically next to it
                 int halfWidth = (width - 2) / 2;
                 //Note: We also start the drawing after half the width so that we are sure it will properly line up with the background
-                guiGraphics.blit(WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX + 1 + halfWidth, relativeY + 1, halfWidth, 0, halfWidth, height - 2, 256, 256);
             }
         }
         //Draw the bar overlay

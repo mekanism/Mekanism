@@ -11,6 +11,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -43,8 +44,8 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
     @Override
     protected void renderBackground(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY) {
         int center = optionDistance * data.get().ordinal();
-        guiGraphics.blit(SLIDER, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 0, 0, 5, 6, 8, 8);
-        guiGraphics.blit(SLIDER, getRelativeX() + BAR_START, getRelativeY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, getRelativeX() + BAR_START + center - 2, getRelativeY() + 11, 0, 0, 5, 6, 8, 8);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, getRelativeX() + BAR_START, getRelativeY() + 17, 0, 6, BAR_LENGTH, 2, 8, 8);
     }
 
     @Override
@@ -66,7 +67,7 @@ class EnumToggle<TYPE extends Enum<TYPE> & IHasTextComponent> extends MiniElemen
             GuiUtils.fill(guiGraphics, getRelativeX() + optionCenter, getRelativeY() + 17, 1, 3, color);
             if (usesIcons) {
                 IHasModeIcon hasModeIcon = (IHasModeIcon) option;
-                guiGraphics.blit(hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, hasModeIcon.getModeIcon(), getRelativeX() + optionCenter - 8, getRelativeY() + 19, 0, 0, 16, 16, 16, 16);
             } else {
                 //Similar to logic for drawScaledCenteredText except shifts values slightly if they go past the max length
                 int textWidth = parent.font().width(text);

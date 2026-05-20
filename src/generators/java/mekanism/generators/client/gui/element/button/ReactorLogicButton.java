@@ -17,6 +17,7 @@ import mekanism.generators.common.base.IReactorLogic;
 import mekanism.generators.common.base.IReactorLogicMode;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
@@ -62,7 +63,7 @@ public class ReactorLogicButton<TYPE extends Enum<TYPE> & IReactorLogicMode<TYPE
         TYPE mode = modeSupplier.get();
         if (mode != null) {
             MekanismRenderer.color(guiGraphics, mode.getColor());
-            guiGraphics.blit(TEXTURE, getButtonX(), getButtonY(), 0, mode == tile.getMode() ? 22 : 0, getButtonWidth(), getButtonHeight(), 128, 44);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, getButtonX(), getButtonY(), 0, mode == tile.getMode() ? 22 : 0, getButtonWidth(), getButtonHeight(), 128, 44);
             MekanismRenderer.resetColor(guiGraphics);
         }
     }

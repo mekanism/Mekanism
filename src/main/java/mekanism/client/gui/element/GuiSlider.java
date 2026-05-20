@@ -9,6 +9,7 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.InputWithModifiers;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
@@ -39,7 +40,7 @@ public class GuiSlider extends GuiElement {
         super.renderBackgroundOverlay(guiGraphics, mouseX, mouseY);
         GuiUtils.fill(guiGraphics, relativeX + 2, relativeY + 3, width - 4, 6, 0xFF555555);
         int posX = (int) (value * (width - 6));
-        guiGraphics.blit(SLIDER, relativeX + posX, relativeY, 0, 0, 7, 12, 12, 12);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, SLIDER, relativeX + posX, relativeY, 0, 0, 7, 12, 12, 12);
     }
 
     @Override

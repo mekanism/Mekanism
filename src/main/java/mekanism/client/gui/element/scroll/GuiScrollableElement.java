@@ -124,13 +124,13 @@ public abstract class GuiScrollableElement extends GuiTexturedElement {
     protected void drawScrollBar(GuiGraphicsExtractor guiGraphics, int textureWidth, int textureHeight) {
         Identifier texture = getResource();
         //Top border
-        guiGraphics.blit(texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY - 1, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Middle border
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, barY, textureWidth, maxBarHeight, 0, 1, textureWidth, 1, textureWidth, textureHeight);
         //Bottom border
-        guiGraphics.blit(texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX - 1, relativeY + maxBarHeight + 2, 0, 0, textureWidth, 1, textureWidth, textureHeight);
         //Scroll bar
-        guiGraphics.blit(texture, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, barX, barY + getScroll(), 0, 2, barWidth, barHeight, textureWidth, textureHeight);
     }
 
     @Override

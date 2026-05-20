@@ -50,7 +50,7 @@ public class GuiProgress extends GuiTexturedElement implements IRecipeViewerReci
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         if (handler.isActive()) {
             Identifier resource = getResource();
-            guiGraphics.blit(resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, resource, relativeX, relativeY, 0, 0, width, height, type.getTextureWidth(), type.getTextureHeight());
             boolean warning = warningSupplier != null && warningSupplier.getAsBoolean();
             double progress = warning ? 1 : getProgress();
             if (type.isVertical()) {

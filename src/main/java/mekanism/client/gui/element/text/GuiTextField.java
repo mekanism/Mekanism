@@ -20,6 +20,7 @@ import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.input.MouseButtonInfo;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
@@ -227,7 +228,7 @@ public class GuiTextField extends GuiElement {
         }
         matrix.popMatrix();
         if (iconType != null) {
-            guiGraphics.blit(iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - Mth.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, iconType.getIcon(), relativeX + 2, relativeY + (height / 2) - Mth.ceil(iconType.getHeight() / 2F), 0, 0, iconType.getWidth(), iconType.getHeight(), iconType.getWidth(), iconType.getHeight());
         }
     }
 

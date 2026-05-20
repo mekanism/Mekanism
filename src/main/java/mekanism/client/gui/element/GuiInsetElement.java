@@ -5,6 +5,7 @@ import mekanism.client.gui.IGuiWrapper;
 import mekanism.common.inventory.warning.ISupportsWarning;
 import mekanism.common.inventory.warning.WarningTracker.WarningType;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,7 +78,7 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
             //TODO - 26.1: blending
             //RenderSystem.enableBlend();
             //RenderSystem.blendFunc(SourceFactor.DST_COLOR, DestFactor.ZERO);
-            guiGraphics.blit(WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WARNING_TEXTURE, relativeX, relativeY, 0, 0, width, height, 256, 256);
             //RenderSystem.disableBlend();
         } else {
             super.draw(guiGraphics);
@@ -96,6 +97,6 @@ public abstract class GuiInsetElement<DATA_SOURCE> extends GuiSideHolder impleme
     }
 
     protected void drawBackgroundOverlay(@NotNull GuiGraphicsExtractor guiGraphics) {
-        guiGraphics.blit(getOverlay(), getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, getOverlay(), getButtonX(), getButtonY(), 0, 0, innerWidth, innerHeight, innerWidth, innerHeight);
     }
 }

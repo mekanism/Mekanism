@@ -7,6 +7,7 @@ import mekanism.common.MekanismLang;
 import mekanism.common.registries.MekanismSounds;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -31,8 +32,8 @@ public class GuiScreenSwitch extends GuiInnerScreen {
         int buttonSizeX = GuiDigitalSwitch.BUTTON_SIZE_X;
         int buttonSizeY = GuiDigitalSwitch.BUTTON_SIZE_Y;
         int buttonXOffset = width - 2 - buttonSizeX;
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
-        guiGraphics.blit(GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2, 0, stateSupplier.getAsBoolean() ? 0 : buttonSizeY, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, GuiDigitalSwitch.SWITCH, relativeX + buttonXOffset, relativeY + 2 + buttonSizeY + 1, 0, stateSupplier.getAsBoolean() ? buttonSizeY : 0, buttonSizeX, buttonSizeY, buttonSizeX, buttonSizeY * 2);
     }
 
     @Override

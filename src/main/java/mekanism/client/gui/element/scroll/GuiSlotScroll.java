@@ -21,6 +21,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.Rect2i;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -53,7 +54,7 @@ public class GuiSlotScroll extends GuiElement implements IRecipeViewerIngredient
     public void drawBackground(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTicks) {
         super.drawBackground(guiGraphics, mouseX, mouseY, partialTicks);
         List<IScrollableSlot> list = getSlotList();
-        guiGraphics.blit(list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, list.isEmpty() ? SLOTS_DARK : SLOTS, relativeX, relativeY, 0, 0, xSlots * 18, ySlots * 18, 288, 288);
         if (!list.isEmpty()) {
             int slotStart = scrollBar.getCurrentSelection() * xSlots, max = xSlots * ySlots;
             for (int i = 0; i < max; i++) {

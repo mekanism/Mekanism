@@ -5,6 +5,7 @@ import mekanism.common.util.MekanismUtils;
 import mekanism.common.util.MekanismUtils.ResourceType;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.client.IItemDecorator;
@@ -32,7 +33,7 @@ public class TransmitterTypeDecorator implements IItemDecorator {
         //PoseStack pose = guiGraphics.pose();
         //pose.pushPose();
         //pose.translate(0, 0, 200);
-        guiGraphics.blit(texture, xOffset, yOffset, 0, 0, 16, 16, 16, 16);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, xOffset, yOffset, 0, 0, 16, 16, 16, 16);
         //pose.popPose();
         return true;
     }

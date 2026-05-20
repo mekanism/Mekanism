@@ -26,6 +26,7 @@ import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
@@ -341,7 +342,7 @@ public class GuiColorWindow extends GuiWindow {
             drawColorBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
             int posX = Math.round((GuiColorWindow.this.hue / 360F) * (width - 3));
-            guiGraphics.blit(HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
             GuiUtils.fill(guiGraphics, relativeX + posX, relativeY, 3, 8, Color.hsv(GuiColorWindow.this.hue, 1, 1).argb());
         }
@@ -375,7 +376,7 @@ public class GuiColorWindow extends GuiWindow {
             drawAlphaBar(guiGraphics, relativeX, relativeY, width, height);
             //Draw selector
             int posX = Math.round(GuiColorWindow.this.alpha * (width - 3));
-            guiGraphics.blit(HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, HUE_PICKER, relativeX - 2 + posX, relativeY - 2, 0, 0, 7, 12, 12, 12);
             //Note: This is needed as we want to draw same color in all three pixels instead of each having their own
             //Draw transparency checkerboard on the selector
             drawTransparencyGrid(guiGraphics, relativeX + posX, relativeY, 3, 8);

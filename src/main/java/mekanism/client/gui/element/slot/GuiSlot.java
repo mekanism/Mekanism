@@ -28,6 +28,7 @@ import mekanism.common.tile.interfaces.ISideConfiguration;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
@@ -157,12 +158,12 @@ public class GuiSlot extends GuiTexturedElement implements IRecipeViewerGhostTar
         } else {
             texture = getResource();
         }
-        guiGraphics.blit(texture, relativeX, relativeY, 0, 0, width, height, width, height);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, relativeX, relativeY, 0, 0, width, height, width, height);
         if (overlaySupplier != null) {
             overlay = overlaySupplier.get();
         }
         if (overlay != null) {
-            guiGraphics.blit(overlay.getTexture(), relativeX, relativeY, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, overlay.getTexture(), relativeX, relativeY, 0, 0, overlay.getWidth(), overlay.getHeight(), overlay.getWidth(), overlay.getHeight());
         }
         drawContents(guiGraphics);
     }
