@@ -1,7 +1,5 @@
 package mekanism.api.inventory;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -22,13 +20,7 @@ public interface IInventorySlot extends IResourceContainer<ItemResource> {
 
     @Override
     @NonExtendable
-    default Codec<LargeResourceStack<ItemResource>> resourceStackCodec() {
-        return SerializerHelper.ITEM_RESOURCE_STACK_CODEC;
-    }
-
-    @Override
-    @NonExtendable
-    default LargeResourceStack<ItemResource> emptyStack() {
-        return LargeResourceStack.EMPTY_ITEM_STACK;
+    default LargeResourceStack.StackHelper<ItemResource> stackHelper() {
+        return LargeResourceStack.ITEM_HELPER;
     }
 }

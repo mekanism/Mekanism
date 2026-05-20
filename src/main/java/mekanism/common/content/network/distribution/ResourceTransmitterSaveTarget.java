@@ -40,7 +40,7 @@ public class ResourceTransmitterSaveTarget<RESOURCE extends Resource, TRANSMITTE
 
         public SaveHandler(TRANSMITTER transmitter) {
             this.transmitter = transmitter;
-            this.currentType = this.transmitter.getEmptyResourceStack().resource();
+            this.currentType = this.transmitter.getStackHelper().empty().resource();
             this.transmitterCapacity = this.transmitter.getCapacity();
         }
 
@@ -71,13 +71,13 @@ public class ResourceTransmitterSaveTarget<RESOURCE extends Resource, TRANSMITTE
                 shouldSave = !currentType.equals(saveType) || transmitter.getCurrentSaveAmount() != currentStored;
             }
             if (shouldSave) {
-                transmitter.setSaveShare(new LargeResourceStack<>(currentType, currentStored));
+                transmitter.setSaveShare(createSnapshot());
             }
         }
 
         @Override
         protected LargeResourceStack<RESOURCE> createSnapshot() {
-            return new LargeResourceStack<>(currentType, currentStored);
+            return this.transmitter.getStackHelper().createStack(currentType, currentStored);
         }
 
         @Override

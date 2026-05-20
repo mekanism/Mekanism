@@ -3,7 +3,6 @@ package mekanism.common.content.network.transmitter;
 import com.mojang.serialization.Codec;
 import java.util.Collection;
 import java.util.UUID;
-import mekanism.api.SerializerHelper;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.resource.LargeResourceStack;
@@ -34,18 +33,13 @@ public class MechanicalPipe extends BufferedResourceTransmitter<FluidResource, I
 
     public MechanicalPipe(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, PipeTier.class);
-        super(tile, SerializerHelper.FLUID_RESOURCE_STACK_CODEC,
+        super(tile, LargeResourceStack.FLUID_HELPER,
               (capacity, listener) -> BasicFluidTank.create(capacity, ConstantPredicates.alwaysFalse(), ConstantPredicates.alwaysTrue(), listener), TransmissionType.FLUID);
     }
 
     @Override
     protected AbstractAcceptorCache<ResourceHandler<FluidResource>, ?> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.FLUID.block());
-    }
-
-    @Override
-    public LargeResourceStack<FluidResource> getEmptyResourceStack() {
-        return LargeResourceStack.EMPTY_FLUID_STACK;
     }
 
     @Override

@@ -12,13 +12,13 @@ import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.Chemical;
 import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.chemical.ChemicalStack;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.OverflowAware;
 import mekanism.common.attachments.component.UpgradeAware;
+import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.filter.BaseFilter;
 import mekanism.common.content.filter.IFilter;
@@ -33,15 +33,15 @@ import mekanism.common.registries.MekanismFluids;
 import mekanism.common.registries.MekanismItems;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.gametest.framework.GameTestInfo;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.FluidType;
 import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.item.ItemResource;
+import net.neoforged.neoforge.transfer.resource.RegisteredResource;
 
 @NothingNullByDefault
 public class MissingObjectTestHelper extends MekGameTestHelper {
@@ -65,24 +65,30 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
         return ItemResource.of(ITEM_TO_REPLACE);
     }
 
-    public ItemStack failureItem() {
-        return failureItemType().toStack();
-    }
-
     public FluidResource failureFluidType() {
         return FluidResource.of(FLUID_TO_REPLACE);
-    }
-
-    public FluidStack failureFluid() {
-        return failureFluidType().toStack(FluidType.BUCKET_VOLUME);
     }
 
     public ChemicalResource failureChemicalType() {
         return ChemicalResource.of(CHEMICAL_TO_REPLACE);
     }
 
-    public ChemicalStack failureChemical() {
-        return failureChemicalType().toStack(FluidType.BUCKET_VOLUME);
+    public <RESOURCE extends RegisteredResource<?>> void succeedIfAttachedCycle(DataComponentType<AttachedResources<RESOURCE>> dataComponentType,
+          LargeResourceStack.StackHelper<RESOURCE> stackHelper, RESOURCE failureType, RESOURCE a, RESOURCE b) {
+        LargeResourceStack<RESOURCE> initialA = stackHelper.createStack(a, 10);
+        LargeResourceStack<RESOURCE> initialB = stackHelper.createStack(b, 5);
+        succeedIfSerializationCycle(dataComponentType.codecOrThrow(), _ -> new AttachedResources<>(NonNullList.of(stackHelper.empty(),
+                    stackHelper.empty(),
+                    initialA,
+                    stackHelper.createStack(failureType, 3),
+                    initialB
+              )), attached -> attached.size() == 4 &&
+                              attached.get(0).isEmpty() &&
+                              attached.get(1).equals(initialA) &&
+                              attached.get(2).isEmpty() &&
+                              attached.get(3).equals(initialB),
+              replaceInvalid(failureType.typeHolder())
+        );
     }
 
     public <TYPE> void succeedIfInvalidItemSerializationCycle(Codec<TYPE> codec, Function<MissingObjectTestHelper, TYPE> sourceSupplier, Predicate<TYPE> resultValidator) {
@@ -181,8 +187,8 @@ public class MissingObjectTestHelper extends MekGameTestHelper {
 
     private UpgradeAware makeUpgrades(boolean validFirstSlot, boolean validSecondSlot) {
         return new UpgradeAware(getUpgrades(),
-              new LargeResourceStack<>(validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3),
-              new LargeResourceStack<>(validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5)
+              LargeResourceStack.ITEM_HELPER.createStack(validFirstSlot ? MekanismItems.SPEED_UPGRADE.asResource() : failureItemType(), 3),
+              LargeResourceStack.ITEM_HELPER.createStack(validSecondSlot ? MekanismItems.ENERGY_UPGRADE.asResource() : failureItemType(), 5)
         );
     }
 

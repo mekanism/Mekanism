@@ -22,7 +22,7 @@ import mekanism.common.capabilities.IMultiTypeCapability;
 import mekanism.common.capabilities.heat.CachedAmbientTemperature;
 import mekanism.common.capabilities.holder.IContainerHolder;
 import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
-import mekanism.common.capabilities.holder.energy.QuantumEntangloporterEnergyContainerHolder;
+import mekanism.common.capabilities.holder.QuantumEntangloporterEnergyContainerHolder;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.integration.computer.ComputerException;
 import mekanism.common.integration.computer.SpecialComputerMethodWrapper.ComputerChemicalTankWrapper;

@@ -3,7 +3,6 @@ package mekanism.common.content.network.transmitter;
 import com.mojang.serialization.Codec;
 import java.util.Collection;
 import java.util.UUID;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
@@ -34,17 +33,12 @@ public class PressurizedTube extends BufferedResourceTransmitter<ChemicalResourc
 
     public PressurizedTube(Holder<Block> blockProvider, TileEntityTransmitter tile) {
         this.tier = Attribute.getTier(blockProvider, TubeTier.class);
-        super(tile, SerializerHelper.CHEMICAL_RESOURCE_STACK_CODEC, BasicChemicalTank::createAllValid, TransmissionType.CHEMICAL);
+        super(tile, LargeResourceStack.CHEMICAL_HELPER, BasicChemicalTank::createAllValid, TransmissionType.CHEMICAL);
     }
 
     @Override
     protected AbstractAcceptorCache<ResourceHandler<ChemicalResource>, ?> createAcceptorCache() {
         return new AcceptorCache<>(getTransmitterTile(), Capabilities.CHEMICAL.block());
-    }
-
-    @Override
-    public LargeResourceStack<ChemicalResource> getEmptyResourceStack() {
-        return LargeResourceStack.EMPTY_CHEMICAL_STACK;
     }
 
     @Override

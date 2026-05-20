@@ -1,16 +1,16 @@
 package mekanism.common.lib.inventory.personalstorage;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import mekanism.api.IContentsListener;
-import mekanism.api.SerializerHelper;
+import mekanism.api.SerializationConstants;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.inventory.IInventorySlot;
 import mekanism.common.Mekanism;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.neoforge.transfer.item.ItemResource;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,8 +31,8 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
     private PersonalStorageItemInventory(List<SlotData> loadedData) {
         this.parent = null;
         for (SlotData slotData : loadedData) {
-            IInventorySlot slot = slots.get(slotData.slot);
-            slot.setContentsUnchecked(slotData.stack());
+            IInventorySlot slot = slots.get(slotData.slot());
+            slot.setContentsUnchecked(slotData.itemType(), slotData.amount());
         }
     }
 
@@ -49,7 +49,7 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         for (int i = 0; i < slots.size(); i++) {
             IInventorySlot slot = slots.get(i);
             if (!slot.isEmpty()) {
-                out.add(new SlotData(i, slot.asStack()));
+                out.add(new SlotData(i, slot.getResource(), slot.amountAsLong()));
             }
         }
         return out;
@@ -60,16 +60,12 @@ public class PersonalStorageItemInventory extends AbstractPersonalStorageItemInv
         Objects.requireNonNull(parent, "Incorrect deserialisation, setParent not called").onContentsChanged();
     }
 
-    record SlotData(int slot, LargeResourceStack<ItemResource> stack) {
+    record SlotData(int slot, ItemResource itemType, long amount) {
 
-        SlotData(Pair<Integer, LargeResourceStack<ItemResource>> pair) {
-            this(pair.getFirst(), pair.getSecond());
-        }
-
-        public Pair<Integer, LargeResourceStack<ItemResource>> asPair() {
-            return Pair.of(slot, stack);
-        }
-
-        public static Codec<SlotData> CODEC = Codec.pair(Codec.INT, SerializerHelper.OPTIONAL_ITEM_RESOURCE_STACK_CODEC).xmap(SlotData::new, SlotData::asPair);
+        public static Codec<SlotData> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+              Codec.INT.fieldOf(SerializationConstants.SLOT).forGetter(SlotData::slot),
+              ItemResource.OPTIONAL_CODEC.fieldOf(SerializationConstants.TYPE).forGetter(SlotData::itemType),
+              ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.AMOUNT).forGetter(SlotData::amount)
+        ).apply(instance, SlotData::new));
     }
 }

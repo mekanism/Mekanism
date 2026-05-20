@@ -3,7 +3,6 @@ package mekanism.common.integration.lookingat;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
@@ -23,11 +22,11 @@ import org.jetbrains.annotations.NotNull;
 public class ChemicalElement extends LookingAtElement {
 
     public static final MapCodec<ChemicalElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
+          LargeResourceStack.CHEMICAL_HELPER.optionalCodec().fieldOf(SerializationConstants.CHEMICAL).forGetter(ChemicalElement::getStored),
           ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.MAX).forGetter(ChemicalElement::getCapacity)
     ).apply(instance, ChemicalElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, ChemicalElement> STREAM_CODEC = StreamCodec.composite(
-          SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC, ChemicalElement::getStored,
+          LargeResourceStack.CHEMICAL_HELPER.streamCodec(), ChemicalElement::getStored,
           ByteBufCodecs.VAR_LONG, ChemicalElement::getCapacity,
           ChemicalElement::new
     );
@@ -35,6 +34,10 @@ public class ChemicalElement extends LookingAtElement {
     @NotNull
     protected final LargeResourceStack<ChemicalResource> stored;
     protected final long capacity;
+
+    public ChemicalElement(@NotNull ChemicalResource chemicalType, long stored, long capacity) {
+        this(LargeResourceStack.CHEMICAL_HELPER.createStack(chemicalType, stored), capacity);
+    }
 
     public ChemicalElement(@NotNull LargeResourceStack<ChemicalResource> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);

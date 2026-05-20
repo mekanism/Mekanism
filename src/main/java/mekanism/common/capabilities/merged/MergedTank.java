@@ -2,14 +2,13 @@ package mekanism.common.capabilities.merged;
 
 import java.util.Objects;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.common.capabilities.fluid.FluidTankWrapper;
+import mekanism.common.util.NBTUtils;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
-import org.jetbrains.annotations.NotNull;
 
 @NothingNullByDefault
 public class MergedTank {
@@ -43,14 +42,14 @@ public class MergedTank {
         return chemicalTank;
     }
 
-    public void addToUpdateTag(@NotNull ValueOutput output) {
-        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, fluidTank.asStack());
-        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, chemicalTank.asStack());
+    public void addToUpdateTag(ValueOutput output) {
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
     }
 
-    public void readFromUpdateTag(@NotNull ValueInput input) {
-        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(fluidTank::setContentsUnchecked);
-        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(chemicalTank::setContentsUnchecked);
+    public void readFromUpdateTag(ValueInput input) {
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
     }
 
     public enum CurrentType {

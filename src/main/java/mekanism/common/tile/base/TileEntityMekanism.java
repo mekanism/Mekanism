@@ -1290,7 +1290,7 @@ public abstract class TileEntityMekanism extends CapabilityTileEntity implements
         for (IChemicalTank tank : tanks) {
             if (tank.isEmpty() || skipRadioactive && tank.getResource().isRadioactive()) {
                 //If the tank is empty or has a radioactive gas, treat it as empty
-                stacks.add(LargeResourceStack.EMPTY_CHEMICAL_STACK);
+                stacks.add(LargeResourceStack.CHEMICAL_HELPER.empty());
             } else {
                 hasNonEmpty = true;
                 stacks.add(tank.asStack());

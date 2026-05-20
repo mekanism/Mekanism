@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.Upgrade;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.LargeResourceStack;
@@ -24,18 +23,18 @@ import net.neoforged.neoforge.transfer.item.ItemResource;
 @NothingNullByDefault
 public record UpgradeAware(Map<Upgrade, Integer> upgrades, LargeResourceStack<ItemResource> inputSlot, LargeResourceStack<ItemResource> outputSlot) {
 
-    public static final UpgradeAware EMPTY = new UpgradeAware(Collections.emptyMap(), LargeResourceStack.EMPTY_ITEM_STACK, LargeResourceStack.EMPTY_ITEM_STACK);
+    public static final UpgradeAware EMPTY = new UpgradeAware(Collections.emptyMap(), LargeResourceStack.ITEM_HELPER.empty(), LargeResourceStack.ITEM_HELPER.empty());
     private static final Set<Upgrade> SUPPORTS_ALL = EnumSet.allOf(Upgrade.class);
 
     public static final Codec<UpgradeAware> CODEC = RecordCodecBuilder.create(instance -> instance.group(
           Codec.unboundedMap(Upgrade.CODEC, ExtraCodecs.POSITIVE_INT).fieldOf(SerializationConstants.UPGRADES).forGetter(UpgradeAware::upgrades),
-          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::inputSlot),
-          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
+          LargeResourceStack.ITEM_HELPER.orEmptyCodec().fieldOf(SerializationConstants.INPUT).forGetter(UpgradeAware::inputSlot),
+          LargeResourceStack.ITEM_HELPER.orEmptyCodec().fieldOf(SerializationConstants.OUTPUT).forGetter(UpgradeAware::outputSlot)
     ).apply(instance, UpgradeAware::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeAware> STREAM_CODEC = StreamCodec.composite(
           ByteBufCodecs.map(_ -> new EnumMap<>(Upgrade.class), Upgrade.STREAM_CODEC, ByteBufCodecs.VAR_INT), UpgradeAware::upgrades,
-          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, UpgradeAware::inputSlot,
-          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, UpgradeAware::outputSlot,
+          LargeResourceStack.ITEM_HELPER.streamCodec(), UpgradeAware::inputSlot,
+          LargeResourceStack.ITEM_HELPER.streamCodec(), UpgradeAware::outputSlot,
           UpgradeAware::new
     );
 

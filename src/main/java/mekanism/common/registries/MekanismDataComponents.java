@@ -3,9 +3,9 @@ package mekanism.common.registries;
 import java.util.UUID;
 import mekanism.api.MekanismAPI;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.robit.RobitSkin;
 import mekanism.api.security.SecurityMode;
 import mekanism.api.text.EnumColor;
@@ -75,22 +75,12 @@ public class MekanismDataComponents {
                 .networkSynchronized(AttachedEnergy.STREAM_CODEC)
                 .cacheEncoding()
     );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS.simple("items",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC, SerializationConstants.ITEMS))
-                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC))
-                .cacheEncoding()
-    );
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS.simple("fluids",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC, SerializationConstants.FLUID_TANKS))
-                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC))
-                .cacheEncoding()
-    );
-
-    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS.simple("chemicals",
-          builder -> builder.persistent(AttachedResources.codec(SerializerHelper.LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, SerializationConstants.CHEMICAL_TANKS))
-                .networkSynchronized(AttachedResources.streamCodec(SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC))
-                .cacheEncoding()
-    );
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ItemResource>>> ATTACHED_ITEMS = DATA_COMPONENTS
+          .registerAttachedContents("items", LargeResourceStack.ITEM_HELPER, SerializationConstants.ITEMS);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<FluidResource>>> ATTACHED_FLUIDS = DATA_COMPONENTS
+          .registerAttachedContents("fluids", LargeResourceStack.FLUID_HELPER, SerializationConstants.FLUID_TANKS);
+    public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedResources<ChemicalResource>>> ATTACHED_CHEMICALS = DATA_COMPONENTS
+          .registerAttachedContents("chemicals", LargeResourceStack.CHEMICAL_HELPER, SerializationConstants.CHEMICAL_TANKS);
 
     public static final MekanismDeferredHolder<DataComponentType<?>, DataComponentType<AttachedHeat>> ATTACHED_HEAT = DATA_COMPONENTS.simple("heat_data",
           builder -> builder.persistent(AttachedHeat.CODEC)

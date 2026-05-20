@@ -2,7 +2,6 @@ package mekanism.common.network.to_client.container.property.resource;
 
 import io.netty.buffer.ByteBuf;
 import java.util.function.IntFunction;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
@@ -39,21 +38,21 @@ public final class ResourceStackPropertyData extends PropertyData {
     }
 
     private enum ResourceType {
-        ITEM(SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC),
-        FLUID(SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC),
-        CHEMICAL(SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC);
+        ITEM(LargeResourceStack.ITEM_HELPER),
+        FLUID(LargeResourceStack.FLUID_HELPER),
+        CHEMICAL(LargeResourceStack.CHEMICAL_HELPER);
 
         public static final IntFunction<ResourceType> BY_ID = ByIdMap.continuous(ResourceType::ordinal, values(), ByIdMap.OutOfBoundsStrategy.WRAP);
         public static final StreamCodec<ByteBuf, ResourceType> STREAM_CODEC = ByteBufCodecs.idMapper(BY_ID, ResourceType::ordinal);
 
-        private final StreamCodec<RegistryFriendlyByteBuf, ? extends LargeResourceStack<?>> streamCodec;
+        private final LargeResourceStack.StackHelper<?> stackHelper;
 
-        <RESOURCE extends Resource> ResourceType(StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>> streamCodec) {
-            this.streamCodec = streamCodec;
+        ResourceType(LargeResourceStack.StackHelper<?> stackHelper) {
+            this.stackHelper = stackHelper;
         }
 
         public static LargeResourceStack<?> decode(RegistryFriendlyByteBuf buf) {
-            return STREAM_CODEC.decode(buf).streamCodec.decode(buf);
+            return STREAM_CODEC.decode(buf).stackHelper.streamCodec().decode(buf);
         }
 
         //TODO - 26.1: Re-evaluate this
@@ -65,7 +64,7 @@ public final class ResourceStackPropertyData extends PropertyData {
                 default -> throw new IllegalArgumentException("Unknown resource type: " + stack.resource());
             };
             STREAM_CODEC.encode(buf, type);
-            ((StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<RESOURCE>>) type.streamCodec).encode(buf, stack);
+            ((LargeResourceStack.StackHelper<RESOURCE>) type.stackHelper).streamCodec().encode(buf, stack);
         }
     }
 }

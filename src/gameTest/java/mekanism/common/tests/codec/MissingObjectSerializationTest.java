@@ -1,13 +1,11 @@
 
 package mekanism.common.tests.codec;
 
-import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.attachments.FormulaAttachment;
 import mekanism.common.attachments.LockData;
 import mekanism.common.attachments.OverflowAware;
-import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.qio.PortableDashboardContents;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.registries.MekanismBlocks;
@@ -15,7 +13,6 @@ import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.registries.MekanismDataComponents;
 import mekanism.common.registries.MekanismItems;
 import mekanism.common.tests.helpers.MissingObjectTestHelper;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.material.Fluids;
@@ -34,55 +31,24 @@ public class MissingObjectSerializationTest {
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached items load as best as they can when an item is missing.")
     public static void testAttachedItems(final MissingObjectTestHelper helper) {
-        //TODO - 26.1: Can we add a helper to generify this test easier now that it is more generic between the resource types?
-        LargeResourceStack<ItemResource> initialStick = new LargeResourceStack<>(ItemResource.of(Items.STICK), 10);
-        LargeResourceStack<ItemResource> initialStone = new LargeResourceStack<>(ItemResource.of(Items.STONE), 5);
-        helper.succeedIfInvalidItemSerializationCycle(MekanismDataComponents.ATTACHED_ITEMS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(LargeResourceStack.EMPTY_ITEM_STACK,
-                    initialStick,
-                    new LargeResourceStack<>(help.failureItemType(), 3),
-                    initialStone
-              )), attached -> attached.size() == 3 &&
-                              attached.get(0).equals(initialStick) &&
-                              attached.get(1).isEmpty() &&
-                              attached.get(2).equals(initialStone)
-        );
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_ITEMS.get(), LargeResourceStack.ITEM_HELPER, helper.failureItemType(),
+              ItemResource.of(Items.STICK), ItemResource.of(Items.STONE));
     }
 
     @GameTest
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached fluids load as best as they can when a fluid is missing.")
     public static void testAttachedFluids(final MissingObjectTestHelper helper) {
-        LargeResourceStack<FluidResource> initialWater = new LargeResourceStack<>(FluidResource.of(Fluids.WATER), 10);
-        LargeResourceStack<FluidResource> initialLava = new LargeResourceStack<>(FluidResource.of(Fluids.LAVA), 5);
-        helper.succeedIfInvalidFluidSerializationCycle(MekanismDataComponents.ATTACHED_FLUIDS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(LargeResourceStack.EMPTY_FLUID_STACK,
-                    initialWater,
-                    new LargeResourceStack<>(help.failureFluidType(), 3),
-                    initialLava
-              )), attached -> attached.size() == 3 &&
-                              attached.get(0).equals(initialWater) &&
-                              attached.get(1).isEmpty() &&
-                              attached.get(2).equals(initialLava)
-        );
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_FLUIDS.get(), LargeResourceStack.FLUID_HELPER, helper.failureFluidType(),
+              FluidResource.of(Fluids.WATER), FluidResource.of(Fluids.LAVA));
     }
 
     @GameTest
     @EmptyTemplate
     @TestHolder(description = "Tests to make sure that attached chemicals load as best as they can when a chemical is missing.")
     public static void testAttachedChemicals(final MissingObjectTestHelper helper) {
-        LargeResourceStack<ChemicalResource> initialAntimatter = new LargeResourceStack<>(MekanismChemicals.ANTIMATTER.asResource(), 10);
-        LargeResourceStack<ChemicalResource> initialGold = new LargeResourceStack<>(MekanismChemicals.GOLD.asResource(), 5);
-        helper.succeedIfInvalidChemicalSerializationCycle(MekanismDataComponents.ATTACHED_CHEMICALS.get().codecOrThrow(), help -> new AttachedResources<>(
-              NonNullList.of(LargeResourceStack.EMPTY_CHEMICAL_STACK,
-                    initialAntimatter,
-                    new LargeResourceStack<>(help.failureChemicalType(), 3),
-                    initialGold
-              )), attached -> attached.size() == 3 &&
-                              attached.get(0).equals(initialAntimatter) &&
-                              attached.get(1).isEmpty() &&
-                              attached.get(2).equals(initialGold)
-        );
+        helper.succeedIfAttachedCycle(MekanismDataComponents.ATTACHED_CHEMICALS.get(), LargeResourceStack.CHEMICAL_HELPER, helper.failureChemicalType(),
+              MekanismChemicals.ANTIMATTER.asResource(), MekanismChemicals.GOLD.asResource());
     }
 
     @GameTest

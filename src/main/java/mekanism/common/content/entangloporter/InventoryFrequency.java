@@ -18,16 +18,16 @@ import java.util.function.Function;
 import mekanism.api.AutomationType;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.BasicChemicalTank;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.IResourceContainer;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.heat.IHeatCapacitor;
 import mekanism.api.inventory.IInventorySlot;
+import mekanism.api.resource.IResourceContainer;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.SecurityMode;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
 import mekanism.common.capabilities.fluid.BasicFluidTank;
@@ -73,9 +73,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
           UUIDUtil.CODEC.optionalFieldOf(SerializationConstants.OWNER_UUID).forGetter(freq -> Optional.ofNullable(freq.getOwner())),
           SecurityMode.CODEC.fieldOf(SerializationConstants.SECURITY_MODE).forGetter(Frequency::getSecurity),
           ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.ENERGY).forGetter(freq -> freq.storedEnergy.energy()),
-          SerializerHelper.LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.asStack()),
-          SerializerHelper.LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.asStack()),
-          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.asStack()),
+          LargeResourceStack.FLUID_HELPER.orEmptyCodec().fieldOf(SerializationConstants.FLUID).forGetter(freq -> freq.storedFluid.asStack()),
+          LargeResourceStack.CHEMICAL_HELPER.orEmptyCodec().fieldOf(SerializationConstants.CHEMICAL).forGetter(freq -> freq.storedChemical.asStack()),
+          LargeResourceStack.ITEM_HELPER.orEmptyCodec().fieldOf(SerializationConstants.ITEM).forGetter(freq -> freq.storedItem.asStack()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_STORED).forGetter(freq -> freq.storedHeat.getHeat()),
           Codec.DOUBLE.fieldOf(SerializationConstants.HEAT_CAPACITY).forGetter(freq -> freq.storedHeat.getHeatCapacity())
     ).apply(instance, (name, owner, securityMode, energy, fluid, chemical, item, heat, heatCapacity) -> {
@@ -91,9 +91,9 @@ public class InventoryFrequency extends Frequency implements ITileHeatHandler {
     public static final StreamCodec<RegistryFriendlyByteBuf, InventoryFrequency> STREAM_CODEC = StreamCodec.composite(
           baseStreamCodec(InventoryFrequency::new), Function.identity(),
           ByteBufCodecs.VAR_LONG, freq -> freq.storedEnergy.energy(),
-          SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedFluid.asStack(),
-          SerializerHelper.CHEMICAL_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedChemical.asStack(),
-          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, freq -> freq.storedItem.asStack(),
+          LargeResourceStack.FLUID_HELPER.streamCodec(), freq -> freq.storedFluid.asStack(),
+          LargeResourceStack.CHEMICAL_HELPER.streamCodec(), freq -> freq.storedChemical.asStack(),
+          LargeResourceStack.ITEM_HELPER.streamCodec(), freq -> freq.storedItem.asStack(),
           ByteBufCodecs.DOUBLE, freq -> freq.storedHeat.getHeat(),
           (frequency, energy, fluid, chemical, item, heat) -> {
               frequency.storedEnergy.setEnergy(energy);

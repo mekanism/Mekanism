@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.function.LongSupplier;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
@@ -43,6 +42,7 @@ import mekanism.common.registries.MekanismAttachmentTypes;
 import mekanism.common.registries.MekanismChemicals;
 import mekanism.common.util.HeatUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.UnitDisplayUtils;
 import mekanism.common.util.WorldUtils;
@@ -275,11 +275,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         prevHeatedCoolantScale = input.getFloatOr(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         prevWasteScale = input.getFloatOr(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
-        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(coolantTank.getFluidTank()::setContentsUnchecked);
-        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(fuelTank::setContentsUnchecked);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(heatedCoolantTank::setContentsUnchecked);
-        input.read(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(wasteTank::setContentsUnchecked);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, coolantTank.getFluidTank());
+        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, fuelTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
         readValves(input);
         assemblies.clear();
         for (FormedAssembly assembly : input.listOrEmpty(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC)) {
@@ -295,10 +294,10 @@ public class FissionReactorMultiblockData extends MultiblockData implements IVal
         output.putFloat(SerializationConstants.SCALE_ALT_2, prevHeatedCoolantScale);
         output.putFloat(SerializationConstants.SCALE_ALT_3, prevWasteScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
-        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, coolantTank.getFluidTank().asStack());
-        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, fuelTank.asStack());
-        output.store(SerializationConstants.CHEMICAL_STORED_ALT, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, heatedCoolantTank.asStack());
-        output.store(SerializationConstants.CHEMICAL_STORED_ALT_2, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, wasteTank.asStack());
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, coolantTank.getFluidTank());
+        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, fuelTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT, heatedCoolantTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL_STORED_ALT_2, wasteTank);
         writeValves(output);
         if (!assemblies.isEmpty()) {
             TypedOutputList<FormedAssembly> serializedAssemblies = output.list(SerializationConstants.ASSEMBLIES, FormedAssembly.CODEC);

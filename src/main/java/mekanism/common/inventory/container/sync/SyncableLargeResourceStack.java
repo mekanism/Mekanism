@@ -23,7 +23,7 @@ public final class SyncableLargeResourceStack<RESOURCE extends Resource> impleme
         // in a tank that was valid but no longer is valid, we want to ensure that the client is able to properly render
         // it instead of printing an error due to the client thinking that it is invalid
         //Note: We initialize the empty stack, so that we don't have to worry about having types we don't know how to handle
-        return new SyncableLargeResourceStack<>(handler::asStack, handler::setContentsUnchecked, handler.emptyStack());
+        return new SyncableLargeResourceStack<>(handler::asStack, handler::setContentsUnchecked, handler.stackHelper().empty());
     }
 
     @Internal
@@ -34,12 +34,14 @@ public final class SyncableLargeResourceStack<RESOURCE extends Resource> impleme
 
     private final Supplier<LargeResourceStack<RESOURCE>> getter;
     private final Consumer<LargeResourceStack<RESOURCE>> setter;
+    private final LargeResourceStack<RESOURCE> emptyStack;
     private LargeResourceStack<RESOURCE> lastKnownValue;
 
     private SyncableLargeResourceStack(Supplier<LargeResourceStack<RESOURCE>> getter, Consumer<LargeResourceStack<RESOURCE>> setter, LargeResourceStack<RESOURCE> emptyStack) {
         this.getter = getter;
         this.setter = setter;
-        this.lastKnownValue = emptyStack;
+        this.emptyStack = emptyStack;
+        this.lastKnownValue = this.emptyStack;
     }
 
     private LargeResourceStack<RESOURCE> get() {
@@ -54,7 +56,11 @@ public final class SyncableLargeResourceStack<RESOURCE extends Resource> impleme
         LargeResourceStack<RESOURCE> stack = get();
         if (!stack.isEmpty()) {
             //Double check it is not empty
-            set(stack.with(amount));
+            if (amount == 0) {
+                set(this.emptyStack);
+            } else {
+                set(new LargeResourceStack<>(stack.resource(), amount));
+            }
         }
     }
 

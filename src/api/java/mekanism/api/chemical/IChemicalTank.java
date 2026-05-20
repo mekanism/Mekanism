@@ -1,7 +1,5 @@
 package mekanism.api.chemical;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.chemical.attribute.ChemicalAttributeValidator;
 import mekanism.api.resource.IResourceContainer;
@@ -21,13 +19,7 @@ public interface IChemicalTank extends IResourceContainer<ChemicalResource> {
 
     @Override
     @NonExtendable
-    default Codec<LargeResourceStack<ChemicalResource>> resourceStackCodec() {
-        return SerializerHelper.CHEMICAL_RESOURCE_STACK_CODEC;
-    }
-
-    @Override
-    @NonExtendable
-    default LargeResourceStack<ChemicalResource> emptyStack() {
-        return LargeResourceStack.EMPTY_CHEMICAL_STACK;
+    default LargeResourceStack.StackHelper<ChemicalResource> stackHelper() {
+        return LargeResourceStack.CHEMICAL_HELPER;
     }
 }

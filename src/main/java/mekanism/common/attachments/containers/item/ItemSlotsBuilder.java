@@ -9,16 +9,17 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.security.IItemSecurityUtils;
 import mekanism.common.attachments.FilterAware;
 import mekanism.common.attachments.containers.AttachedResources;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.attachments.containers.ContainsRecipe;
+import mekanism.common.attachments.containers.ResourceContainersBuilder.BaseContainerBuilder;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.capabilities.Capabilities;
@@ -142,7 +143,7 @@ public class ItemSlotsBuilder {
     }
 
     public BaseContainerCreator<AttachedResources<ItemResource>, ComponentBackedInventorySlot> build() {
-        return new BaseInventorySlotCreator(slotCreators);
+        return new BaseContainerBuilder<>(slotCreators, LargeResourceStack.ITEM_HELPER);
     }
 
     public ItemSlotsBuilder addBasicFactorySlots(int process, Predicate<ItemResource> recipeInputPredicate) {
@@ -458,17 +459,5 @@ public class ItemSlotsBuilder {
         return addSlot((type, attachedTo, containerIndex) -> new ComponentBackedInventorySlot(attachedTo, containerIndex,
               (itemType, automationType) -> automationType == AutomationType.MANUAL || canChemicalFillOrConvertExtract(attachedTo, tankIndex, itemType),
               (itemType, _) -> canChemicalFillOrConvertInsert(attachedTo, tankIndex, itemType), ConstantPredicates.alwaysTrue()));
-    }
-
-    private static class BaseInventorySlotCreator extends BaseContainerCreator<AttachedResources<ItemResource>, ComponentBackedInventorySlot> {
-
-        public BaseInventorySlotCreator(List<IBasicContainerCreator<? extends ComponentBackedInventorySlot>> creators) {
-            super(creators);
-        }
-
-        @Override
-        public AttachedResources<ItemResource> initStorage(int containers) {
-            return AttachedResources.create(containers, LargeResourceStack.EMPTY_ITEM_STACK);
-        }
     }
 }

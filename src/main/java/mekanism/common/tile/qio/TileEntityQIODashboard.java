@@ -95,7 +95,7 @@ public class TileEntityQIODashboard extends TileEntityQIOComponent implements IQ
         boolean hasNonEmpty = false;
         List<LargeResourceStack<ItemResource>> stacks = new ArrayList<>(slots.size());
         for (IInventorySlot slot : slots) {
-            LargeResourceStack<ItemResource> stack = slot instanceof CraftingWindowOutputInventorySlot ? LargeResourceStack.EMPTY_ITEM_STACK : slot.asStack();
+            LargeResourceStack<ItemResource> stack = slot instanceof CraftingWindowOutputInventorySlot ? LargeResourceStack.ITEM_HELPER.empty() : slot.asStack();
             stacks.add(stack);
             if (!stack.isEmpty()) {
                 hasNonEmpty = true;

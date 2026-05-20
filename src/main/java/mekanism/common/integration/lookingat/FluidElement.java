@@ -4,7 +4,6 @@ import com.google.common.primitives.Ints;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.math.MathUtils;
 import mekanism.api.resource.LargeResourceStack;
@@ -28,17 +27,21 @@ import org.jetbrains.annotations.Nullable;
 public class FluidElement extends LookingAtElement {
 
     public static final MapCodec<FluidElement> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-          SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC.fieldOf(SerializationConstants.FLUID).forGetter(FluidElement::getStored),
+          LargeResourceStack.FLUID_HELPER.optionalCodec().fieldOf(SerializationConstants.FLUID).forGetter(FluidElement::getStored),
           ExtraCodecs.NON_NEGATIVE_LONG.fieldOf(SerializationConstants.MAX).forGetter(FluidElement::getCapacity)
     ).apply(instance, FluidElement::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, FluidElement> STREAM_CODEC = StreamCodec.composite(
-          SerializerHelper.FLUID_RESOURCE_STACK_STREAM_CODEC, FluidElement::getStored,
+          LargeResourceStack.FLUID_HELPER.streamCodec(), FluidElement::getStored,
           ByteBufCodecs.VAR_LONG, FluidElement::getCapacity,
           FluidElement::new
     );
 
     protected final LargeResourceStack<FluidResource> stored;
     protected final long capacity;
+
+    public FluidElement(FluidResource fluidType, long stored, long capacity) {
+        this(LargeResourceStack.FLUID_HELPER.createStack(fluidType, stored), capacity);
+    }
 
     public FluidElement(LargeResourceStack<FluidResource> stored, long capacity) {
         super(0xFF000000, 0xFFFFFF);

@@ -1,10 +1,9 @@
-package mekanism.common.capabilities.holder.energy;
+package mekanism.common.capabilities.holder;
 
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.energy.IEnergyContainer;
 import mekanism.common.capabilities.energy.BasicEnergyContainer;
-import mekanism.common.capabilities.holder.QuantumEntangloporterConfigHolder;
 import mekanism.common.config.MekanismConfig;
 import mekanism.common.content.entangloporter.InventoryFrequency;
 import mekanism.common.lib.transmitter.TransmissionType;

@@ -8,7 +8,6 @@ import mekanism.api.energy.IEnergyContainer;
 import mekanism.api.energy.IStrictEnergyHandler;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.resource.IMekanismResourceHandler;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.api.text.ILangEntry;
 import mekanism.common.Mekanism;
@@ -184,7 +183,7 @@ public class LookingAtUtils {
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.LIQUID.translate(fallback));
         }
-        info.addFluidElement(new FluidElement(new LargeResourceStack<>(fluidType, stored), capacity));
+        info.addFluidElement(new FluidElement(fluidType, stored, capacity));
     }
 
     private static void displayEnergy(LookingAtHelper info, IStrictEnergyHandler energyHandler) {
@@ -241,6 +240,6 @@ public class LookingAtUtils {
         } else if (!fallback.isEmpty()) {
             info.addText(MekanismLang.CHEMICAL.translate(fallback));
         }
-        info.addChemicalElement(new ChemicalElement(new LargeResourceStack<>(chemicalType, stored), capacity));
+        info.addChemicalElement(new ChemicalElement(chemicalType, stored, capacity));
     }
 }

@@ -14,49 +14,12 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import mekanism.api.annotations.NothingNullByDefault;
-import mekanism.api.chemical.ChemicalResource;
-import mekanism.api.resource.LargeResourceStack;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
-import net.neoforged.neoforge.transfer.fluid.FluidResource;
-import net.neoforged.neoforge.transfer.item.ItemResource;
-import net.neoforged.neoforge.transfer.resource.Resource;
-import org.jetbrains.annotations.NotNull;
 
 //TODO - 1.21: Update the wiki docs to fix the syntax
 @NothingNullByDefault
 public class SerializerHelper {
 
     private SerializerHelper() {
-    }
-
-    //TODO - 26.1: Docs and decide where we want to store these
-    // Modify tests that test the attached items to double check it handles empty stacks in general fine
-    public static final Codec<LargeResourceStack<ItemResource>> ITEM_RESOURCE_STACK_CODEC = LargeResourceStack.codec(ItemResource.CODEC);
-    public static final Codec<LargeResourceStack<ItemResource>> OPTIONAL_ITEM_RESOURCE_STACK_CODEC = makeOptionalCodec(ITEM_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
-    //TODO - 26.1: Evaluate this vs Codec#lenientOptionalFieldOf
-    public static final Codec<LargeResourceStack<ItemResource>> LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC = makeLenientOptionalCodec(OPTIONAL_ITEM_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
-    public static final StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<ItemResource>> ITEM_RESOURCE_STACK_STREAM_CODEC = LargeResourceStack.streamCodec(ItemResource.STREAM_CODEC, LargeResourceStack.EMPTY_ITEM_STACK);
-
-    public static final Codec<LargeResourceStack<FluidResource>> FLUID_RESOURCE_STACK_CODEC = LargeResourceStack.codec(FluidResource.CODEC);
-    public static final Codec<LargeResourceStack<FluidResource>> OPTIONAL_FLUID_RESOURCE_STACK_CODEC = makeOptionalCodec(FLUID_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_FLUID_STACK);
-    public static final Codec<LargeResourceStack<FluidResource>> LENIENT_OPTIONAL_FLUID_RESOURCE_STACK_CODEC = makeLenientOptionalCodec(OPTIONAL_FLUID_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_FLUID_STACK);
-    public static final StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<FluidResource>> FLUID_RESOURCE_STACK_STREAM_CODEC = LargeResourceStack.streamCodec(FluidResource.STREAM_CODEC, LargeResourceStack.EMPTY_FLUID_STACK);
-
-    public static final Codec<LargeResourceStack<ChemicalResource>> CHEMICAL_RESOURCE_STACK_CODEC = LargeResourceStack.codec(ChemicalResource.CODEC);
-    public static final Codec<LargeResourceStack<ChemicalResource>> OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC = makeOptionalCodec(CHEMICAL_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_CHEMICAL_STACK);
-    public static final Codec<LargeResourceStack<ChemicalResource>> LENIENT_OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC = makeLenientOptionalCodec(OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, LargeResourceStack.EMPTY_CHEMICAL_STACK);
-    public static final StreamCodec<RegistryFriendlyByteBuf, LargeResourceStack<ChemicalResource>> CHEMICAL_RESOURCE_STACK_STREAM_CODEC = LargeResourceStack.streamCodec(ChemicalResource.STREAM_CODEC, LargeResourceStack.EMPTY_CHEMICAL_STACK);
-
-    private static <RESOURCE extends Resource> Codec<LargeResourceStack<RESOURCE>> makeOptionalCodec(Codec<LargeResourceStack<RESOURCE>> stackCodec, LargeResourceStack<RESOURCE> emptyStack) {
-        return ExtraCodecs.optionalEmptyMap(stackCodec)
-              .xmap(optional -> optional.orElse(emptyStack), stack -> stack.isEmpty() ? Optional.empty() : Optional.of(stack));
-    }
-
-    private static <RESOURCE extends Resource> Codec<LargeResourceStack<RESOURCE>> makeLenientOptionalCodec(Codec<LargeResourceStack<RESOURCE>> stackCodec, LargeResourceStack<RESOURCE> emptyStack) {
-        return stackCodec.promotePartial(error -> MekanismAPI.logger.error("Tried to load invalid resource: '{}'", error))
-              .orElse(emptyStack);
     }
 
     /**
@@ -70,7 +33,6 @@ public class SerializerHelper {
      *
      * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
      */
-    @NotNull
     public static <SOURCE, THIS_TYPE> RecordCodecBuilder<SOURCE, Optional<THIS_TYPE>> dependentOptionality(RecordCodecBuilder<SOURCE, ? extends Optional<?>> primaryField,
           MapCodec<Optional<THIS_TYPE>> dependentCodec, Function<SOURCE, Optional<THIS_TYPE>> dependentGetter) {
         Implementation<Optional<THIS_TYPE>> dependentRequired = new Implementation<>() {
@@ -107,7 +69,6 @@ public class SerializerHelper {
      *
      * @return a RecordCodecBuilder which contains the resulting logic - use in side a `group()`
      */
-    @NotNull
     public static <SOURCE, THIS_TYPE> RecordCodecBuilder<SOURCE, Optional<THIS_TYPE>> oneRequired(RecordCodecBuilder<SOURCE, ? extends Optional<?>> otherField,
           MapCodec<Optional<THIS_TYPE>> dependentCodec, Function<SOURCE, Optional<THIS_TYPE>> dependentGetter) {
         Implementation<Optional<THIS_TYPE>> dependentRequired = new Implementation<>() {

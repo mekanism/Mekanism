@@ -9,6 +9,7 @@ import java.util.function.Predicate;
 import mekanism.api.AutomationType;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.recipes.MekanismRecipe;
+import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.attachments.containers.creator.BaseContainerCreator;
 import mekanism.common.attachments.containers.creator.IBasicContainerCreator;
 import mekanism.common.recipe.IMekanismRecipeTypeProvider;
@@ -70,5 +71,21 @@ public abstract class ResourceContainersBuilder<RESOURCE extends Resource, CONTA
     public final BUILDER addInternalStorage(IntSupplier rate, LongSupplier capacity, Predicate<RESOURCE> isValid) {
         return addContainer((_, attachedTo, containerIndex) -> createBasicContainer(attachedTo,
               containerIndex, ConstantPredicates.notExternal(), ConstantPredicates.alwaysTrueBi(), isValid, rate, capacity));
+    }
+
+    public static class BaseContainerBuilder<RESOURCE extends Resource, CONTAINER extends ComponentBackedResourceContainer<RESOURCE>> extends
+          BaseContainerCreator<AttachedResources<RESOURCE>, CONTAINER> {
+
+        private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
+
+        public BaseContainerBuilder(List<IBasicContainerCreator<? extends CONTAINER>> creators, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
+            super(creators);
+            this.stackHelper = stackHelper;
+        }
+
+        @Override
+        public AttachedResources<RESOURCE> initStorage(int containers) {
+            return AttachedResources.create(containers, stackHelper.empty());
+        }
     }
 }

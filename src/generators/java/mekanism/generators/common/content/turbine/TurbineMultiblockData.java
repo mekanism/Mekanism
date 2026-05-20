@@ -10,7 +10,6 @@ import java.util.Map;
 import java.util.UUID;
 import mekanism.api.AutomationType;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.chemical.ChemicalResource;
 import mekanism.api.chemical.IChemicalTank;
 import mekanism.api.energy.IEnergyContainer;
@@ -31,6 +30,7 @@ import mekanism.common.lib.transaction.SimpleLongJournal;
 import mekanism.common.tile.TileEntityChemicalTank.GasMode;
 import mekanism.common.util.EnergyUtils;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import mekanism.generators.common.config.MekanismGeneratorsConfig;
@@ -231,9 +231,8 @@ public class TurbineMultiblockData extends MultiblockData {
         prevSteamScale = input.getFloatOr(SerializationConstants.SCALE, prevSteamScale);
         input.getInt(SerializationConstants.VOLUME).ifPresent(this::setVolume);
         lowerVolume = input.getIntOr(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC).ifPresent(chemicalTank::setContentsUnchecked);
-        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(ventTank::setContentsUnchecked);
+        NBTUtils.readOrEmpty(input, SerializationConstants.CHEMICAL, chemicalTank);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, ventTank);
         input.read(SerializationConstants.COMPLEX, BlockPos.CODEC).ifPresent(value -> complex = value);
         clientRotation = input.getFloatOr(SerializationConstants.ROTATION, clientRotation);
         clientRotationMap.put(inventoryID, clientRotation);
@@ -245,8 +244,8 @@ public class TurbineMultiblockData extends MultiblockData {
         output.putFloat(SerializationConstants.SCALE, prevSteamScale);
         output.putInt(SerializationConstants.VOLUME, getVolume());
         output.putInt(SerializationConstants.LOWER_VOLUME, lowerVolume);
-        output.store(SerializationConstants.CHEMICAL, SerializerHelper.OPTIONAL_CHEMICAL_RESOURCE_STACK_CODEC, chemicalTank.asStack());
-        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, ventTank.asStack());
+        NBTUtils.storeNonEmpty(output, SerializationConstants.CHEMICAL, chemicalTank);
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, ventTank);
         output.store(SerializationConstants.COMPLEX, BlockPos.CODEC, complex);
         output.putFloat(SerializationConstants.ROTATION, clientRotation);
     }

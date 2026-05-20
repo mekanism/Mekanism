@@ -44,15 +44,6 @@ public interface IValveHandler {
         }
     }
 
-    default void triggerValveTransfer(IMultiblock<?> multiblock, TransactionContext transaction) {
-        if (multiblock.getMultiblock().isFormed()) {
-            ValveData data = getValveData().get(multiblock.getBlockPos());
-            if (data != null) {
-                data.onTransfer(transaction);
-            }
-        }
-    }
-
     Map<BlockPos, ValveData> getValveData();
 
     record PositionedValve(BlockPos location, ValveData valve) {

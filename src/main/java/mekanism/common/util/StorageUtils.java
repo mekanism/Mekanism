@@ -120,7 +120,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      */
     public static void addStoredSubstance(@NotNull ItemStack stack, @NotNull Consumer<Component> tooltipAdder, boolean isCreative) {
         LargeResourceStack<FluidResource> fluidStack = getStoredFluidFromAttachment(stack);
-        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(stack, ContainerType.CHEMICAL, LargeResourceStack.EMPTY_CHEMICAL_STACK);
+        LargeResourceStack<ChemicalResource> chemicalStack = getStoredContentsFromAttachment(stack, ContainerType.CHEMICAL, LargeResourceStack.CHEMICAL_HELPER);
         if (fluidStack.isEmpty() && chemicalStack.isEmpty()) {
             tooltipAdder.accept(MekanismLang.EMPTY.translate());
             return;
@@ -163,13 +163,13 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      */
     @NotNull//TODO - 26.1: Update docs
     public static <RESOURCE extends Resource, CONTAINER extends IResourceContainer<RESOURCE>> LargeResourceStack<RESOURCE> getStoredContentsFromAttachment(ItemStack stack,
-          ContainerType<CONTAINER, ?, ?> containerType, LargeResourceStack<RESOURCE> emptyStack) {
+          ContainerType<CONTAINER, ?, ?> containerType, LargeResourceStack.StackHelper<RESOURCE> stackHelper) {
         List<CONTAINER> containers = containerType.getAttachmentContainersIfPresent(stack);
         return switch (containers.size()) {
-            case 0 -> emptyStack;
+            case 0 -> stackHelper.empty();
             case 1 -> containers.getFirst().asStack();
             default -> {
-                RESOURCE type = emptyStack.resource();
+                RESOURCE type = stackHelper.empty().resource();
                 long storedAmount = 0;
                 for (CONTAINER container : containers) {
                     if (container.isEmpty()) {
@@ -190,10 +190,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
                     }
                     //Note: If we have multiple tanks that have different types stored we only return the first type
                 }
-                if (type.isEmpty()) {
-                    yield emptyStack;
-                }
-                yield new LargeResourceStack<>(type, storedAmount);
+                yield stackHelper.createStack(type, storedAmount);
             }
         };
     }
@@ -204,7 +201,7 @@ public class StorageUtils {//TODO - 26.1: Re-evaluate which of these methods are
      */
     @NotNull
     public static LargeResourceStack<FluidResource> getStoredFluidFromAttachment(ItemStack stack) {
-        return getStoredContentsFromAttachment(stack, ContainerType.FLUID, LargeResourceStack.EMPTY_FLUID_STACK);
+        return getStoredContentsFromAttachment(stack, ContainerType.FLUID, LargeResourceStack.FLUID_HELPER);
     }
 
     /**

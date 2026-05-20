@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.longs.LongList;
 import java.util.Optional;
 import java.util.function.IntFunction;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.api.text.EnumColor;
 import mekanism.common.content.network.transmitter.LogisticalTransporterBase;
@@ -43,7 +42,7 @@ public class TransporterStack {
           Path.STREAM_CODEC, TransporterStack::getPathType,
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientNext == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientNext),
           ByteBufCodecs.optional(ByteBufCodecs.VAR_LONG), stack -> stack.clientPrev == Long.MAX_VALUE ? Optional.empty() : Optional.of(stack.clientPrev),
-          SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC, stack -> stack.itemStack,
+          LargeResourceStack.ITEM_HELPER.streamCodec(), stack -> stack.itemStack,
           (color, progress, originalLocation, pathType, clientNext, clientPrev, itemStack) -> {
               TransporterStack stack = new TransporterStack();
               stack.color = color.orElse(null);
@@ -57,7 +56,7 @@ public class TransporterStack {
           }
     );
 
-    private LargeResourceStack<ItemResource> itemStack = LargeResourceStack.EMPTY_ITEM_STACK;
+    private LargeResourceStack<ItemResource> itemStack = LargeResourceStack.ITEM_HELPER.empty();
 
     public int progress;
 
@@ -86,7 +85,7 @@ public class TransporterStack {
         this.progress = input.getIntOr(SerializationConstants.PROGRESS, progress);
         this.originalLocation = input.getLongOr(SerializationConstants.ORIGINAL_LOCATION, Long.MAX_VALUE);
         this.pathType = NBTUtils.getEnum(input, SerializationConstants.PATH_TYPE, Path.BY_ID);
-        this.itemStack = input.read(SerializationConstants.ITEM, SerializerHelper.ITEM_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_ITEM_STACK);
+        this.itemStack = LargeResourceStack.ITEM_HELPER.readOrEmpty(input, SerializationConstants.ITEM);
     }
 
     public static TransporterStack read(@NotNull ValueInput input) {
@@ -109,9 +108,7 @@ public class TransporterStack {
         }
         output.putInt(SerializationConstants.PROGRESS, progress);
         output.putLong(SerializationConstants.ORIGINAL_LOCATION, originalLocation);
-        if (!isEmpty()) {
-            output.store(SerializationConstants.ITEM, SerializerHelper.ITEM_RESOURCE_STACK_CODEC, itemStack);
-        }
+        LargeResourceStack.ITEM_HELPER.storeNonEmpty(output, SerializationConstants.ITEM, itemStack);
     }
 
     public void writeToUpdateTag(LogisticalTransporterBase transporter, @NotNull ValueOutput output) {
@@ -159,11 +156,7 @@ public class TransporterStack {
     }
 
     public void setStack(ItemResource itemType, int amount) {
-        if (itemType.isEmpty() || amount <= 0) {
-            this.itemStack = LargeResourceStack.EMPTY_ITEM_STACK;
-        } else {
-            this.itemStack = new LargeResourceStack<>(itemType, amount);
-        }
+        this.itemStack = LargeResourceStack.ITEM_HELPER.createStack(itemType, amount);
     }
 
     private void setPath(Level world, @NotNull LongList path, @NotNull Path type, @Nullable TransactionContext transaction) {

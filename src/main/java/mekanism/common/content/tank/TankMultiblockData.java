@@ -202,7 +202,7 @@ public class TankMultiblockData extends MultiblockData implements IValveHandler 
         return switch (mergedTank.getCurrentType()) {
             case FLUID -> getFluidTank().asStack();
             case CHEMICAL -> getChemicalTank().asStack();
-            default -> LargeResourceStack.EMPTY_FLUID_STACK;
+            default -> LargeResourceStack.FLUID_HELPER.empty();
         };
     }
 

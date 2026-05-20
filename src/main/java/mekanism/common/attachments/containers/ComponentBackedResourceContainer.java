@@ -6,6 +6,7 @@ import java.util.function.IntSupplier;
 import java.util.function.LongSupplier;
 import java.util.function.Predicate;
 import mekanism.api.AutomationType;
+import mekanism.api.MekanismPreconditions;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -33,6 +34,9 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
         this.validator = validator;
         this.rate = rate;
         this.capacity = capacity;
+        //TODO - 1.21: Serialization for this is copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
+        // that method as special component backed inventory slots, that then access and put that other data as a different component?
+        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
     }
 
     @Override
@@ -68,7 +72,8 @@ public abstract class ComponentBackedResourceContainer<RESOURCE extends Resource
     }
 
     protected void setContents(AttachedResources<RESOURCE> attached, RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount) {
-        setContents(attached, new LargeResourceStack<>(type, storedAmount));
+        MekanismPreconditions.checkNonNegative(storedAmount);
+        setContents(attached, stackHelper().createStack(type, storedAmount));
     }
 
     @Override

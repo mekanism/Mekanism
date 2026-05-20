@@ -7,11 +7,9 @@ import mekanism.api.IConfigurable;
 import mekanism.api.IContentsListener;
 import mekanism.api.RelativeSide;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.fluid.IFluidTank;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.inventory.IInventorySlot;
-import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.Mekanism;
 import mekanism.common.attachments.containers.ContainerType;
 import mekanism.common.block.attribute.Attribute;
@@ -335,10 +333,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //updateTag.put(SerializationConstants.VALVE, valveFluid.saveOptional(provider));
         output.putFloat(SerializationConstants.SCALE, prevScale);
         //TODO - 26.1: Re-evaluate this alternate encoding further (check history)
-        LargeResourceStack<FluidResource> fluid = fluidTank.asStack();
-        if (!fluid.isEmpty()) {
-            output.store(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC, fluid);
-        }
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, fluidTank);
         if (!valveJournal.fluid.isEmpty()) {
             output.store(SerializationConstants.VALVE, FluidResource.CODEC, valveJournal.fluid);
         }
@@ -361,7 +356,7 @@ public class TileEntityFluidTank extends TileEntityMekanism implements IConfigur
         //TODO - 26.1: Should we only update this when the scale has changed? And/or if we had updated the light level?
         prevScale = scale;
 
-        fluidTank.setContentsUnchecked(input.read(SerializationConstants.FLUID, SerializerHelper.FLUID_RESOURCE_STACK_CODEC).orElse(LargeResourceStack.EMPTY_FLUID_STACK));
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, fluidTank);
         valveJournal.fluid = input.read(SerializationConstants.VALVE, FluidResource.CODEC).orElse(FluidResource.EMPTY);
     }
 

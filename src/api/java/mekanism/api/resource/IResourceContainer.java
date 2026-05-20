@@ -1,7 +1,6 @@
 package mekanism.api.resource;
 
 import com.google.common.primitives.Ints;
-import com.mojang.serialization.Codec;
 import mekanism.api.AutomationType;
 import mekanism.api.IContentsListener;
 import mekanism.api.SerializationConstants;
@@ -33,7 +32,7 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     RESOURCE getResource();//TODO - 26.1: Is the resource guaranteed to be empty if the amount is zero? (For us yes, but for resource handlers in general, figure it out as we assume that to be the case)
 
     default LargeResourceStack<RESOURCE> asStack() {//TODO - 26.1: Docs
-        return new LargeResourceStack<>(getResource(), amountAsLong());
+        return stackHelper().createStack(getResource(), amountAsLong());
     }
 
     /// Returns the amount of the [currently stored resource][#getResource] in this container, as an `int`.
@@ -198,29 +197,20 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     @NonExtendable
     default void setEmpty() {
         //TODO - 26.1: Re-evaluate usages and the existence of this method, I think we may want to remove it so people are less tempted to bypass insertions/extractions
-        setContentsUnchecked(emptyStack());
+        setContentsUnchecked(stackHelper().empty());
     }
 
     @Override
     default void serialize(ValueOutput output) {
-        //TODO - 1.21: This is a copy of BasicInventorySlot#serializeNBT. We might need to also grab the specific overrides of
-        // that method as special component backed inventory slots, that then access and put that other data as a different component?
-        // Also make sure to override things like TileEntityMekanism#applyInventorySlots and TileEntityMekanism#collectInventorySlots
-        LargeResourceStack<RESOURCE> stored = asStack();
-        if (!stored.isEmpty()) {
-            //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
-            // Items used to store to the key "item", but fluids and chemicals used "stored"
-            output.store(SerializationConstants.STORED, resourceStackCodec(), stored);
-            //TODO - 26.1: Should we remove the key if stored is empty like we do for transmitters?
-        }
+        //TODO - 26.1: Does using stored work fine for if something has multiple types of containers on a single stack?
+        // Items used to store to the key "item", but fluids and chemicals used "stored"
+        stackHelper().storeNonEmpty(output, SerializationConstants.STORED, asStack());
     }
 
     @Override
     default void deserialize(ValueInput input) {
-        LargeResourceStack<RESOURCE> stack = input.read(SerializationConstants.STORED, resourceStackCodec()).orElse(emptyStack());
-        //Set the stack in an unchecked way so that if it is no longer valid, we don't end up
-        // crashing due to the stack not being valid
-        setContentsUnchecked(stack.resource(), stack.amount());
+        //Set the stack in an unchecked way so that if it is no longer valid, we don't end up crashing due to the stack not being valid
+        setContentsUnchecked(stackHelper().readOrEmpty(input, SerializationConstants.STORED));
     }
 
     /// Helper method to copy all pertinent data from another [`resource container`][IResourceContainer] to this one without requiring a serialization, deserialization
@@ -246,8 +236,5 @@ public interface IResourceContainer<RESOURCE extends Resource> extends ValueIOSe
     void setContentsUnchecked(RESOURCE type, @Range(from = 0, to = Long.MAX_VALUE) long storedAmount);
 
     //TODO - 26.1: Docs
-    Codec<LargeResourceStack<RESOURCE>> resourceStackCodec();
-
-    //TODO - 26.1: Docs and Re-evaluate this method vs having inheritors implement deserialize and setEmpty
-    LargeResourceStack<RESOURCE> emptyStack();
+    LargeResourceStack.StackHelper<RESOURCE> stackHelper();
 }

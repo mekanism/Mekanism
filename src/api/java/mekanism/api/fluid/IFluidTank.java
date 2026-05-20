@@ -1,7 +1,5 @@
 package mekanism.api.fluid;
 
-import com.mojang.serialization.Codec;
-import mekanism.api.SerializerHelper;
 import mekanism.api.annotations.NothingNullByDefault;
 import mekanism.api.resource.IResourceContainer;
 import mekanism.api.resource.LargeResourceStack;
@@ -14,13 +12,7 @@ public interface IFluidTank extends IResourceContainer<FluidResource> {
 
     @Override
     @NonExtendable
-    default Codec<LargeResourceStack<FluidResource>> resourceStackCodec() {
-        return SerializerHelper.FLUID_RESOURCE_STACK_CODEC;
-    }
-
-    @Override
-    @NonExtendable
-    default LargeResourceStack<FluidResource> emptyStack() {
-        return LargeResourceStack.EMPTY_FLUID_STACK;
+    default LargeResourceStack.StackHelper<FluidResource> stackHelper() {
+        return LargeResourceStack.FLUID_HELPER;
     }
 }

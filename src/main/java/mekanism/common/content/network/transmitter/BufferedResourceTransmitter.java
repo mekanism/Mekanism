@@ -30,22 +30,24 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
       TRANSMITTER extends BufferedResourceTransmitter<RESOURCE, CONTAINER, NETWORK, TRANSMITTER>>
       extends BufferedTransmitter<ResourceHandler<RESOURCE>, NETWORK, LargeResourceStack<RESOURCE>, TRANSMITTER> implements IContentsListener {
 
-    private final Codec<LargeResourceStack<RESOURCE>> resourceStackCodec;
+    private final LargeResourceStack.StackHelper<RESOURCE> stackHelper;
     private final CONTAINER bufferContainer;
     private final List<CONTAINER> containers;
 
     private LargeResourceStack<RESOURCE> saveShare;
 
-    protected BufferedResourceTransmitter(TileEntityTransmitter tile, Codec<LargeResourceStack<RESOURCE>> resourceStackCodec, BufferCreator<RESOURCE, CONTAINER> bufferCreator,
+    protected BufferedResourceTransmitter(TileEntityTransmitter tile, LargeResourceStack.StackHelper<RESOURCE> stackHelper, BufferCreator<RESOURCE, CONTAINER> bufferCreator,
           TransmissionType... transmissionTypes) {
         super(tile, transmissionTypes);
-        this.resourceStackCodec = resourceStackCodec;
+        this.stackHelper = stackHelper;
         this.bufferContainer = bufferCreator.create(getCapacity(), this);
         this.containers = Collections.singletonList(this.bufferContainer);
-        saveShare = getEmptyResourceStack();
+        saveShare = this.stackHelper.empty();
     }
 
-    public abstract LargeResourceStack<RESOURCE> getEmptyResourceStack();
+    public LargeResourceStack.StackHelper<RESOURCE> getStackHelper() {
+        return this.stackHelper;
+    }
 
     protected abstract Codec<RESOURCE> resourceCodec();;
 
@@ -71,7 +73,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @Override
     public void read(@NotNull ValueInput input) {
         super.read(input);
-        saveShare = input.read(SerializationConstants.STORED, resourceStackCodec).orElse(getEmptyResourceStack());
+        saveShare = stackHelper.readOrEmpty(input, SerializationConstants.STORED);
         bufferContainer.setContentsUnchecked(saveShare);
     }
 
@@ -82,11 +84,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
             getTransmitterNetwork().validateSaveShares(getTransmitter());
         }
         //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
-        if (saveShare.isEmpty()) {
-            output.discard(SerializationConstants.STORED);
-        } else {
-            output.store(SerializationConstants.STORED, resourceStackCodec, saveShare);
-        }
+        stackHelper.storeNonEmpty(output, SerializationConstants.STORED, saveShare);
     }
 
     @Override
@@ -94,7 +92,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
         super.handleContentsUpdateTag(network, input);
         network.currentScale = input.getFloatOr(SerializationConstants.SCALE, network.currentScale);
         //TODO - 26.1: Validate if stored is fine to use as the key, or if that conflicts with another key we might have
-        network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(getEmptyResourceStack().resource()));
+        network.setLastType(input.read(SerializationConstants.STORED, resourceCodec()).orElse(stackHelper.empty().resource()));
     }
 
     protected CONTAINER getContainer() {
@@ -122,7 +120,7 @@ public abstract class BufferedResourceTransmitter<RESOURCE extends Resource, CON
     @NotNull
     @Override
     public LargeResourceStack<RESOURCE> getShare() {
-        return bufferContainer.isEmpty() ? getEmptyResourceStack() : bufferContainer.asStack();
+        return bufferContainer.asStack();
     }
 
     @NotNull

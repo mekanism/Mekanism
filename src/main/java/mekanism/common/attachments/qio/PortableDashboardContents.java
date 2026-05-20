@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.resource.LargeResourceStack;
 import mekanism.common.content.qio.IQIOCraftingWindowHolder;
 import net.minecraft.core.NonNullList;
@@ -22,14 +21,14 @@ public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> c
     public static final int TOTAL_SLOTS = 9 * IQIOCraftingWindowHolder.MAX_CRAFTING_WINDOWS;
 
     //TODO: Do we want to try and make this an empty list? It not being empty means it is easier to not serialize things when the windows become empty
-    public static final PortableDashboardContents EMPTY = new PortableDashboardContents(NonNullList.withSize(TOTAL_SLOTS, LargeResourceStack.EMPTY_ITEM_STACK));
+    public static final PortableDashboardContents EMPTY = new PortableDashboardContents(NonNullList.withSize(TOTAL_SLOTS, LargeResourceStack.ITEM_HELPER.empty()));
 
     public static final Codec<PortableDashboardContents> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-          SerializerHelper.LENIENT_OPTIONAL_ITEM_RESOURCE_STACK_CODEC.listOf(TOTAL_SLOTS, TOTAL_SLOTS).fieldOf(SerializationConstants.ITEMS).forGetter(PortableDashboardContents::contents)
+          LargeResourceStack.ITEM_HELPER.orEmptyCodec().listOf(TOTAL_SLOTS, TOTAL_SLOTS).fieldOf(SerializationConstants.ITEMS).forGetter(PortableDashboardContents::contents)
     ).apply(instance, PortableDashboardContents::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, PortableDashboardContents> STREAM_CODEC =
           ByteBufCodecs.<RegistryFriendlyByteBuf, LargeResourceStack<ItemResource>, List<LargeResourceStack<ItemResource>>>collection(
-                NonNullList::createWithCapacity, SerializerHelper.ITEM_RESOURCE_STACK_STREAM_CODEC
+                NonNullList::createWithCapacity, LargeResourceStack.ITEM_HELPER.streamCodec()
           ).map(PortableDashboardContents::new, PortableDashboardContents::contents);
 
     public PortableDashboardContents {
@@ -39,7 +38,7 @@ public record PortableDashboardContents(List<LargeResourceStack<ItemResource>> c
 
     public PortableDashboardContents with(int window, int index, ItemResource itemType, long amount) {
         List<LargeResourceStack<ItemResource>> copy = new ArrayList<>(contents);
-        copy.set(getIndex(window, index), itemType.isEmpty() || amount <= 0 ? LargeResourceStack.EMPTY_ITEM_STACK : new LargeResourceStack<>(itemType, amount));
+        copy.set(getIndex(window, index), LargeResourceStack.ITEM_HELPER.createStack(itemType, amount));
         return new PortableDashboardContents(copy);
     }
 

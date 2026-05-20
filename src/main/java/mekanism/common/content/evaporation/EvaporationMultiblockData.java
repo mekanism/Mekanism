@@ -8,7 +8,6 @@ import java.util.Map;
 import java.util.function.BooleanSupplier;
 import mekanism.api.IEvaporationSolar;
 import mekanism.api.SerializationConstants;
-import mekanism.api.SerializerHelper;
 import mekanism.api.functions.ConstantPredicates;
 import mekanism.api.heat.HeatAPI;
 import mekanism.api.recipes.FluidToFluidRecipe;
@@ -49,6 +48,7 @@ import mekanism.common.tile.multiblock.TileEntityThermalEvaporationValve;
 import mekanism.common.tile.prefab.TileEntityRecipeMachine;
 import mekanism.common.tile.prefab.TileEntityStructuralMultiblock;
 import mekanism.common.util.MekanismUtils;
+import mekanism.common.util.NBTUtils;
 import mekanism.common.util.ResourceUtils;
 import mekanism.common.util.WorldUtils;
 import net.minecraft.core.BlockPos;
@@ -199,8 +199,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void readUpdateTag(@NotNull ValueInput input) {
         super.readUpdateTag(input);
-        //TODO - 26.1: Should this be an orElse empty and then set it regardless?
-        input.read(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC).ifPresent(inputTank::setContentsUnchecked);
+        NBTUtils.readOrEmpty(input, SerializationConstants.FLUID, inputTank);
         prevScale = input.getFloatOr(SerializationConstants.SCALE, prevScale);
         readValves(input);
     }
@@ -208,7 +207,7 @@ public class EvaporationMultiblockData extends MultiblockData implements IValveH
     @Override
     public void writeUpdateTag(@NotNull ValueOutput output) {
         super.writeUpdateTag(output);
-        output.store(SerializationConstants.FLUID, SerializerHelper.OPTIONAL_FLUID_RESOURCE_STACK_CODEC, inputTank.asStack());
+        NBTUtils.storeNonEmpty(output, SerializationConstants.FLUID, inputTank);
         output.putFloat(SerializationConstants.SCALE, prevScale);
         writeValves(output);
     }
